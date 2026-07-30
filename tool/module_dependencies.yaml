@@ -1,0 +1,368 @@
+# LIBORA — Machine-readable module boundary rules
+#
+# Normative source for tool/check_module_boundaries.dart
+# Human-readable rationale: docs/architecture/LIBORA_MODULE_DEPENDENCY_MATRIX.md
+#
+# LAWS
+#   L1 acyclic (no exceptions)     L2 downward only       L3 domain -> ports only
+#   L4 capability never -> domain  L5 contracts import nothing
+#
+# MODES
+#   import  = compile-time import of the module barrel
+#   port    = interface declared by consumer, implemented elsewhere, DI-wired (NO import)
+#   event   = async only, via event platform, payload from contracts (NO import)
+#   command = published command handler via port, receiver re-validates (NO import)
+#   test    = permitted in test sources only
+
+version: 1
+default_mode: port
+default_decision: deny        # anything not listed is forbidden
+
+# ─────────────────────────────────────────────────────────────
+# RANKS — a module may only depend on strictly lower ranks
+# ─────────────────────────────────────────────────────────────
+ranks:
+  contracts: 0
+  platform/infrastructure: 1
+  platform/data: 2
+  platform/security: 2
+  platform/configuration: 3
+  platform/observability: 3
+  platform/services: 3
+  platform/event: 3
+  platform/tenancy: 4
+  platform/identity: 4
+  platform/audit: 5
+  platform/search: 5
+  platform/communication: 5
+  platform/integration: 5
+  platform/business: 6
+  platform/workflow: 6
+  platform/ai: 6
+  platform/analytics: 7
+  domain/library: 8
+  domain/social: 8
+  app: 9
+
+# Not in the runtime graph
+non_runtime:
+  - docs
+  - tool
+  - test
+
+# ─────────────────────────────────────────────────────────────
+# SHARED KERNEL (L5)
+# ─────────────────────────────────────────────────────────────
+contracts:
+  path: lib/contracts
+  rank: 0
+  allowed_imports:
+    - "dart:core"
+    - "dart:async"
+    - "dart:convert"
+    - "dart:typed_data"
+  banned_imports:
+    - "package:flutter/**"
+    - "package:**"
+    - "dart:io"
+    - "dart:ui"
+  banned_symbols:
+    # Ubiquitous-language collisions — see BOUNDED_CONTEXT_MAP.md section 5
+    - symbol: "class Student "
+      use_instead: "StudentRecord (BC-01) or GlobalStudentProfile (BC-10)"
+    - symbol: "class Member "
+      use_instead: "MembershipHolder (BC-02) or CommunityMember (BC-15)"
+    - symbol: "class Payment "
+      use_instead: "FeePayment (BC-05) or SubscriptionCharge (BC-20)"
+    - symbol: "class Plan "
+      use_instead: "MembershipPlan (BC-02) or SubscriptionPlan (BC-20)"
+    - symbol: "class Invoice "
+      use_instead: "FeeDue (BC-05) or SubscriptionInvoice (BC-20)"
+    - symbol: "class Attendance "
+      use_instead: "StudentAttendance (BC-03) or StaffAttendance (BC-07)"
+    - symbol: "class Session "
+      use_instead: "AuthSession (BC-18) or StudySession (BC-15)"
+    - symbol: "class Role "
+      use_instead: "AccessRole (BC-18) or CommunityRole (BC-15)"
+    - symbol: "class Library "
+      use_instead: "TenantOrganisation (BC-19) or Branch (BC-06)"
+
+# ─────────────────────────────────────────────────────────────
+# DOMAIN — rank 8
+# ─────────────────────────────────────────────────────────────
+domain/library:
+  rank: 8
+  classification: core
+  contexts: [enrollment, membership, attendance, seating, fee, policy]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files
+    - platform/services:qr
+    - platform/services:idempotency
+    - platform/services:offline_sync
+    - platform/services:clock
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:indexer
+    - platform/business:entitlement
+    - platform/business:payment_intent
+    - platform/workflow:process_trigger
+    - platform/ai:assist
+    - platform/analytics:read_model
+  emits_events: ["enrollment.*", "membership.*", "attendance.*", "seating.*", "fee.*", "policy.*"]
+  consumes_events:
+    - billing.EntitlementChanged
+    - tenancy.TenantSuspended
+    - safety.EnforcementActionTaken
+  internal_edges:                 # only these intra-cluster edges exist
+    - { id: E-01, from: enrollment,  to: membership,  mode: event }
+    - { id: E-02, from: membership,  to: seating,     mode: port  }
+    - { id: E-03, from: membership,  to: attendance,  mode: port  }
+    - { id: E-04, from: policy,      to: attendance,  mode: port  }
+    - { id: E-05, from: policy,      to: seating,     mode: port  }
+    - { id: E-06, from: policy,      to: fee,         mode: port  }
+    - { id: E-07, from: membership,  to: fee,         mode: event }
+    - { id: E-08, from: attendance,  to: seating,     mode: event }
+    - { id: E-09, from: enrollment,  to: fee,         mode: event }
+    - { id: E-10, from: fee,         to: membership,  mode: event }
+  banned_imports:
+    - "domain/social/**"          # X-05 Separate Ways
+    - "platform/integration/**"   # X-03 no vendor knowledge
+    - "platform/communication/**" # X-04 emit facts instead
+    - "app/**"
+    - "package:http"
+    - "package:dio"
+    - "package:firebase_**"
+    - "package:hive**"
+    - "package:shared_preferences"
+    - "package:cloud_firestore"
+    - "dart:io"
+  banned_symbols_in_domain_layer:
+    - { symbol: "DateTime.now()", use_instead: "Clock port (X-09)" }
+    - { symbol: "Uuid()",         use_instead: "IdGenerator port (X-09)" }
+    - { symbol: "Random()",       use_instead: "RandomSource port (X-09)" }
+
+domain/social:
+  rank: 8
+  classification: supporting
+  contexts: [identity, graph, messaging, safety]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files
+    - platform/services:realtime
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:indexer
+    - platform/ai:assist
+    - platform/analytics:read_model
+  emits_events: ["identity.Person*", "social.*", "messaging.*", "safety.*"]
+  consumes_events:
+    - enrollment.StudentLinkedToPerson
+    - safety.EnforcementActionTaken
+  internal_edges:
+    - { id: E-14, from: safety,   to: [graph, messaging], mode: event }
+    - { id: E-15, from: identity, to: graph,              mode: import, note: "shared kernel VOs" }
+    - { id: E-16, from: graph,    to: messaging,          mode: port  }
+  banned_imports:
+    - "domain/library/**"         # X-05 Separate Ways
+    - "app/**"
+  banned_symbols:
+    # Rule ID-2: tenant-scoped ids must never enter the social world
+    - { symbol: "StudentRecordId", use_instead: "PersonId (BOUNDED_CONTEXT_MAP section 4.1 rule ID-2)" }
+    - { symbol: "TenantId",        use_instead: "nothing — social data is not tenant-scoped" }
+
+# ─────────────────────────────────────────────────────────────
+# CAPABILITY PLATFORMS — L4: none may import domain
+# ─────────────────────────────────────────────────────────────
+platform/ai:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:vector_store
+    - platform/security:secrets
+    - platform/security:pii_redaction
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:cache
+    - platform/services:rate_limiter
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:retrieval
+    - platform/analytics:read_model
+    - platform/integration:model_provider
+  commands:
+    - { target: domain/library, requires: ApprovalRecord }
+    - { target: domain/social,  requires: ApprovalRecord }
+  consumes_events: ["*"]
+  emits_events: [ai.AgentRunCompleted, ai.AiActionApplied]
+  banned_imports: ["domain/**", "app/**"]   # X-02
+  assertions:
+    - id: AI-1
+      rule: "every retrieval call passes tenantId and actor permissions"
+    - id: AI-2
+      rule: "no model provider call without passing through security:pii_redaction"
+    - id: AI-3
+      rule: "no domain command invocation without an ApprovalRecord argument"   # F-4
+
+platform/analytics:
+  rank: 7
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:analytics_store
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+  consumes_events: ["*"]
+  banned_imports:
+    - "domain/**"                       # X-01
+    - "app/**"
+    - "platform/data:oltp_repository"   # must not read the transactional store
+  assertions:
+    - id: AN-1
+      rule: "every projection implements rebuild()"
+    - id: AN-2
+      rule: "no metric defined outside the semantic layer"
+
+platform/workflow:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:job_runtime
+    - platform/services:idempotency
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/business:entitlement
+    - platform/integration:connector
+    - platform/ai:assist
+  commands:
+    - { target: domain/library }
+    - { target: domain/social }
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: WF-1
+      rule: "every saga step declares a compensating action"
+    - id: WF-2
+      rule: "every process definition declares an idempotency key strategy"
+
+platform/audit:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  banned_method_names: ["update*", "delete*", "purge*", "modify*"]   # X-10 append-only
+  assertions:
+    - id: AU-1
+      rule: "no public mutation method exists on the audit store"
+
+platform/search:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]     # X-08
+  assertions:
+    - id: SE-1
+      rule: "every index name is tenant-prefixed"                     # X-13
+    - id: SE-2
+      rule: "every index write carries a permission scope"
+
+platform/communication:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  ports: [platform/integration:connector]
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+
+platform/business:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports: [platform/integration:payment_gateway]
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: BZ-1
+      rule: "entitlement state is written only by billing.EntitlementChanged handlers"   # X-11
+    - id: BZ-2
+      rule: "every gateway call carries an idempotency key"
+
+platform/tenancy:
+  rank: 4
+  imports:
+    - { target: contracts, mode: import }
+  banned_imports: ["domain/**", "app/**", "platform/identity/**"]
+
+platform/identity:
+  rank: 4
+  imports:
+    - { target: contracts, mode: import }
+  ports: [platform/tenancy:tenant_context, platform/integration:sso_provider]
+  banned_imports: ["domain/**", "app/**"]
+
+# ─────────────────────────────────────────────────────────────
+# EDGE — rank 9
+# ─────────────────────────────────────────────────────────────
+app:
+  rank: 9
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - domain/library
+    - domain/social
+    - platform/identity:auth
+    - platform/tenancy:tenant_context
+    - platform/analytics:read_model
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:offline_sync
+    - platform/business:entitlement
+    - platform/ai:assist
+  banned_imports:
+    - "platform/data/**"        # UI must never touch persistence directly
+    - "platform/event/**"
+    - "platform/integration/**"
+  assertions:
+    - id: AP-1
+      rule: "no business invariant is enforced in a widget"
+    - id: AP-2
+      rule: "TenantContext is written exactly once per request/route, at the shell"
+
+# ─────────────────────────────────────────────────────────────
+# GLOBAL RULES
+# ─────────────────────────────────────────────────────────────
+global:
+  barrel_only_cross_module: true      # imports must target <module>.dart, not internals
+  cycles_allowed: false               # L1 — never overridable
+  tenant_key_required_in:
+    - cache keys
+    - search index names
+    - vector namespaces
+    - storage prefixes
+    - projection table names
+  # X-13: the highest-severity failure class in the system
+  tenant_key_violation_severity: blocker
+
+# ─────────────────────────────────────────────────────────────
+# TIME-BOXED EXCEPTIONS — every entry MUST have an ADR and an expiry
+# ─────────────────────────────────────────────────────────────
+exceptions: []

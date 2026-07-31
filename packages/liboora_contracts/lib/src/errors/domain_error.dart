@@ -59,11 +59,7 @@ enum DomainErrorCode {
 /// then rendered to the user. The distinction matters: domain errors must
 /// never page an on-call engineer.
 class DomainError implements Exception {
-  const DomainError(
-    this.code,
-    this.message, {
-    this.context = const {},
-  });
+  const DomainError(this.code, this.message, {this.context = const {}});
 
   final DomainErrorCode code;
 
@@ -85,9 +81,9 @@ class DomainError implements Exception {
 /// (cross-tenant leak, forbidden edge X-13).
 class TenantContextMissing extends DomainError {
   const TenantContextMissing()
-      : super(
-          DomainErrorCode.tenantContextMissing,
-          'No tenant in scope. TenantContext must be established at the '
-          'request/route boundary before any repository access.',
-        );
+    : super(
+        DomainErrorCode.tenantContextMissing,
+        'No tenant in scope. TenantContext must be established at the '
+        'request/route boundary before any repository access.',
+      );
 }

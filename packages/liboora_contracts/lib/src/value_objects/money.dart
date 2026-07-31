@@ -10,8 +10,7 @@ final class Money implements Comparable<Money> {
   const Money._(this.minorUnits, this.currency);
 
   /// Construct from whole rupees.
-  factory Money.rupees(num amount) =>
-      Money._((amount * 100).round(), 'INR');
+  factory Money.rupees(num amount) => Money._((amount * 100).round(), 'INR');
 
   /// Construct from paise.
   factory Money.paise(int minorUnits) => Money._(minorUnits, 'INR');

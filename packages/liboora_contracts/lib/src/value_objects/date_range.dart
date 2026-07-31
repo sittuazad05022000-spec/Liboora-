@@ -10,8 +10,8 @@ library;
 /// invariant) expressible without off-by-one arguments about midnight.
 final class DateRange {
   DateRange({required DateTime start, required DateTime end})
-      : start = _dateOnly(start),
-        end = _dateOnly(end) {
+    : start = _dateOnly(start),
+      end = _dateOnly(end) {
     if (!this.end.isAfter(this.start)) {
       throw ArgumentError(
         'DateRange end ($end) must be strictly after start ($start).',
@@ -21,9 +21,9 @@ final class DateRange {
 
   /// A range of [days] length beginning at [start].
   factory DateRange.days(DateTime start, int days) => DateRange(
-        start: start,
-        end: _dateOnly(start).add(Duration(days: days)),
-      );
+    start: start,
+    end: _dateOnly(start).add(Duration(days: days)),
+  );
 
   /// A calendar-month range, correctly handling short months.
   factory DateRange.months(DateTime start, int months) {
@@ -56,8 +56,10 @@ final class DateRange {
   bool overlaps(DateRange other) =>
       start.isBefore(other.end) && other.start.isBefore(end);
 
-  DateRange extendBy(int days) =>
-      DateRange(start: start, end: end.add(Duration(days: days)));
+  DateRange extendBy(int days) => DateRange(
+    start: start,
+    end: end.add(Duration(days: days)),
+  );
 
   /// Days remaining from [now], clamped at zero.
   int daysRemainingFrom(DateTime now) {

@@ -1,4 +1,4 @@
-/// LIBORA Shared Kernel (R0) — Error taxonomy.
+/// LIBOORA Shared Kernel (R0) — Error taxonomy.
 library;
 
 /// Machine-readable error codes.

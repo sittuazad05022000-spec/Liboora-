@@ -1,11 +1,11 @@
 {
-    "name": "Libora",
-    "short_name": "Libora",
+    "name": "Liboora",
+    "short_name": "Liboora",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Libora — multi-tenant library & study-hall management platform.",
+    "description": "Liboora — multi-tenant library & study-hall management platform.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

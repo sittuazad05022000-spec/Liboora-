@@ -1,12 +1,12 @@
-name: libora_contracts
-description: LIBORA shared kernel (R0) — value objects, event schemas, error taxonomy, universal ports.
+name: liboora_contracts
+description: LIBOORA shared kernel (R0) — value objects, event schemas, error taxonomy, universal ports.
 version: 1.0.0
 publish_to: none
 
 environment:
   sdk: ^3.9.2
 
-# LAW L5 — libora_contracts imports NOTHING.
+# LAW L5 — liboora_contracts imports NOTHING.
 # No flutter, no third-party packages, no dart:io, no dart:ui.
 # Enforced by tool/module_dependencies.yaml and CI.
 dependencies:

@@ -1,5 +1,5 @@
-name: libora
-description: "Libora — multi-tenant library & study-hall management platform."
+name: liboora
+description: "Liboora — multi-tenant library & study-hall management platform."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -36,8 +36,8 @@ dependencies:
   # ── R0 SHARED KERNEL ───────────────────────────────────────
   # Extracted as a real package on day one (Dependency Matrix §9.3).
   # The compiler — not a lint rule — now enforces law L5.
-  libora_contracts:
-    path: packages/libora_contracts
+  liboora_contracts:
+    path: packages/liboora_contracts
 
   # ── State management ───────────────────────────────────────
   provider: 6.1.5+1

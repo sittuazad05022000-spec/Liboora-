@@ -1,7 +1,7 @@
-# LIBORA — Machine-readable module boundary rules
+# LIBOORA — Machine-readable module boundary rules
 #
 # Normative source for tool/check_module_boundaries.dart
-# Human-readable rationale: docs/architecture/LIBORA_MODULE_DEPENDENCY_MATRIX.md
+# Human-readable rationale: docs/architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md
 #
 # LAWS
 #   L1 acyclic (no exceptions)     L2 downward only       L3 domain -> ports only

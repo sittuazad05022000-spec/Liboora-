@@ -1,4 +1,4 @@
-/// LIBORA Shared Kernel (R0) — DateRange.
+/// LIBOORA Shared Kernel (R0) — DateRange.
 library;
 
 /// A half-open date interval `[start, end)`.

@@ -1,4 +1,4 @@
-package com.libora.app
+package com.liboora.app
 
 import io.flutter.embedding.android.FlutterActivity
 

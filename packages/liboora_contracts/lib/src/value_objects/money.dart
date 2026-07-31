@@ -1,4 +1,4 @@
-/// LIBORA Shared Kernel (R0) — Money.
+/// LIBOORA Shared Kernel (R0) — Money.
 library;
 
 /// Money stored in minor units (paise) to eliminate floating-point drift.

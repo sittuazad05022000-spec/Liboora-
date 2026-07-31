@@ -1,12 +1,12 @@
-# LIBORA — Module Dependency Matrix
+# LIBOORA — Module Dependency Matrix
 
 | Field | Value |
 |---|---|
 | **Document** | Module Dependency Matrix & Boundary Enforcement Rules |
 | **Version** | v1.0 |
 | **Status** | Draft for Architecture Review Board sign-off |
-| **Derived from** | `LIBORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
-| **Companion doc** | `LIBORA_BOUNDED_CONTEXT_MAP.md` v1.0 |
+| **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
+| **Companion doc** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.0 |
 | **Machine-readable source** | `module_dependencies.yaml` |
 | **Last Updated** | 2026-07-30 |
 
@@ -45,8 +45,8 @@ An architecture diagram that is not mechanically enforced degrades to fiction wi
 | **L1 — Acyclic** | The module dependency graph must be a DAG. No cycles at any granularity: platform, module, or file. | Cycles make independent testing, independent deployment and independent reasoning impossible. This is the one law with zero exceptions. |
 | **L2 — Downward only** | A module may depend only on modules of **strictly lower rank** (§3). Same-rank dependencies are forbidden except within a declared cluster. | Rank ordering is what makes the graph provably acyclic without inspecting it. |
 | **L3 — Domain never depends on capability implementations** | Domain platforms depend on **ports** they declare themselves. Adapters are wired at composition root. Domain code contains no vendor name, no SDK import, no HTTP client, no SQL. | Hexagonal architecture. This is what makes the core domain testable in milliseconds and portable across infrastructure. |
-| **L4 — Capability never depends on domain** | No capability, generic or platform module may import a domain module. Ever. Communication is via `libora_contracts` events and registered ports. | This is the single rule that makes microservice extraction (§12 of context map) a deployment change rather than a rewrite. |
-| **L5 — Contracts import nothing** | `libora_contracts` — the shared kernel — depends on the Dart SDK and nothing else. No Flutter, no packages, no platform code. | A shared kernel that imports anything becomes a transitive backdoor around L2 and L4. |
+| **L4 — Capability never depends on domain** | No capability, generic or platform module may import a domain module. Ever. Communication is via `liboora_contracts` events and registered ports. | This is the single rule that makes microservice extraction (§12 of context map) a deployment change rather than a rewrite. |
+| **L5 — Contracts import nothing** | `liboora_contracts` — the shared kernel — depends on the Dart SDK and nothing else. No Flutter, no packages, no platform code. | A shared kernel that imports anything becomes a transitive backdoor around L2 and L4. |
 
 **L1 is absolute. L2–L5 admit exceptions only through the ADR process in §11.**
 
@@ -58,7 +58,7 @@ Lower rank = more stable, more depended-upon, fewer dependencies. A module at ra
 
 | Rank | Platforms at this rank | Character |
 |---|---|---|
-| **R0** | `libora_contracts` *(shared kernel)* | Value objects, event schemas, error taxonomy, port interfaces of universal reach. Imports nothing. |
+| **R0** | `liboora_contracts` *(shared kernel)* | Value objects, event schemas, error taxonomy, port interfaces of universal reach. Imports nothing. |
 | **R1** | INFRASTRUCTURE | Cloud, compute, network, regions. Mostly IaC, not Dart. No app code depends on it at compile time. |
 | **R2** | DATA · SECURITY | Persistence primitives, migration, encryption, secrets, key management. |
 | **R3** | CONFIGURATION · OBSERVABILITY · PLATFORM SERVICES · EVENT | Cross-cutting runtime substrate: config, logging/metrics/tracing, jobs, files, cache, sync, event bus. |
@@ -97,7 +97,7 @@ Every allowed edge in §5 and §6 is annotated with **how** it may be traversed.
 |---|---|---|---|
 | **Direct import** | `▪` | Consumer imports the provider's public API directly. Reserved for R0 contracts and stable low-rank primitives. | Yes — provider's `lib/<name>.dart` barrel only |
 | **Port** | `◇` | Consumer declares an interface; provider (or an adapter) implements it; DI wires it at the composition root. Consumer imports **no** provider code. | **No** |
-| **Event** | `⚡` | Asynchronous only, via EVENT PLATFORM, payload from `libora_contracts`. Producer does not know consumers exist. | **No** |
+| **Event** | `⚡` | Asynchronous only, via EVENT PLATFORM, payload from `liboora_contracts`. Producer does not know consumers exist. | **No** |
 | **Command API** | `⌘` | Caller invokes the provider's published command handler through a port. Provider re-validates all invariants. Used for capability → domain writes. | **No** |
 | **Edge/HTTP** | `⇥` | Crosses a process boundary via API Platform. Client code only. | **No** |
 | **Forbidden** | `✖` | No edge exists. | **No** |
@@ -117,7 +117,7 @@ Columns are grouped by rank to keep the matrix legible. `—` = same module. `�
                           │ R0  │ R2      │ R3                  │ R4        │ R5              │ R6           │ R7  │ R8      │
 CONSUMER ↓                │ CTR │ DAT SEC │ CFG OBS PSV EVT     │ SHC IAM   │ AUD SRC COM INT │ BUS WKF AI   │ ANL │ LIB GST │
 ──────────────────────────┼─────┼─────────┼─────────────────────┼───────────┼─────────────────┼──────────────┼─────┼─────────┤
-R0  libora_contracts      │  —  │  ✖   ✖  │  ✖   ✖   ✖   ✖      │  ✖    ✖   │  ✖   ✖   ✖   ✖  │  ✖   ✖   ✖   │  ✖  │  ✖   ✖  │
+R0  liboora_contracts      │  —  │  ✖   ✖  │  ✖   ✖   ✖   ✖      │  ✖    ✖   │  ✖   ✖   ✖   ✖  │  ✖   ✖   ✖   │  ✖  │  ✖   ✖  │
 ──────────────────────────┼─────┼─────────┼─────────────────────┼───────────┼─────────────────┼──────────────┼─────┼─────────┤
 R2  DATA                  │  ▪  │  —   ◇  │  ✖   ◇   ✖   ⚡     │  ✖    ✖   │  ✖   ✖   ✖   ✖  │  ✖   ✖   ✖   │  ✖  │  ✖   ✖  │
 R2  SECURITY              │  ▪  │  ◇   —  │  ✖   ◇   ✖   ⚡     │  ✖    ✖   │  ⚡  ✖   ✖   ✖  │  ✖   ✖   ✖   │  ✖  │  ✖   ✖  │
@@ -172,7 +172,7 @@ The matrix is the human-readable form. This section is the **normative form** �
 library_management:            # R8 — CORE DOMAIN
   rank: 8
   may_import:                  # compile-time imports permitted
-    - libora_contracts
+    - liboora_contracts
   may_use_ports:               # interfaces declared BY library_management, implemented elsewhere
     - data.repository            # persistence port
     - security.crypto            # field encryption port
@@ -204,7 +204,7 @@ library_management:            # R8 — CORE DOMAIN
 
 global_student:                # R8 — SUPPORTING
   rank: 8
-  may_import: [ libora_contracts ]
+  may_import: [ liboora_contracts ]
   may_use_ports:
     - data.repository
     - security.crypto
@@ -230,7 +230,7 @@ global_student:                # R8 — SUPPORTING
 ```yaml
 ai:                            # R6
   rank: 6
-  may_import: [ libora_contracts ]
+  may_import: [ liboora_contracts ]
   may_use_ports:
     - data.vector_store, data.repository
     - security.secrets, security.pii_redaction
@@ -252,7 +252,7 @@ ai:                            # R6
 
 analytics:                     # R7
   rank: 7
-  may_import: [ libora_contracts ]
+  may_import: [ liboora_contracts ]
   may_use_ports: [ data.analytics_store, configuration.settings, observability.telemetry,
                    shared_core.tenant_context, identity.policy_decision ]
   may_consume_events: [ "*" ]
@@ -266,7 +266,7 @@ analytics:                     # R7
 
 workflow:                      # R6
   rank: 6
-  may_import: [ libora_contracts ]
+  may_import: [ liboora_contracts ]
   may_use_ports: [ data.repository, configuration.settings, observability.telemetry,
                    platform_services.job_runtime, platform_services.idempotency,
                    shared_core.tenant_context, identity.policy_decision,
@@ -279,7 +279,7 @@ workflow:                      # R6
 
 audit:                         # R5
   rank: 5
-  may_import: [ libora_contracts ]
+  may_import: [ liboora_contracts ]
   may_consume_events: [ "*" ]
   forbidden: [ "*.update", "*.delete" ]   # append-only: no mutation path may exist in code
 ```
@@ -287,7 +287,7 @@ audit:                         # R5
 ### 6.3 The shared kernel
 
 ```yaml
-libora_contracts:              # R0
+liboora_contracts:              # R0
   rank: 0
   may_import: [ "dart:core", "dart:async", "dart:convert", "dart:typed_data" ]
   forbidden:
@@ -304,7 +304,7 @@ libora_contracts:              # R0
   change_policy: "Architecture Review Board approval required. Additive only within a major version."
 ```
 
-**Why `libora_contracts` may not import Flutter:** the same event and value-object definitions must compile in a server/CLI context for the outbox publisher, migration tooling and test fixtures. One `package:flutter/material.dart` import in the shared kernel permanently couples the domain language to the UI framework.
+**Why `liboora_contracts` may not import Flutter:** the same event and value-object definitions must compile in a server/CLI context for the outbox publisher, migration tooling and test fixtures. One `package:flutter/material.dart` import in the shared kernel permanently couples the domain language to the UI framework.
 
 ---
 
@@ -315,17 +315,17 @@ Each row is a specific edge that a reasonable engineer might add under deadline 
 | # | Forbidden edge | Why it's tempting | Why it's fatal | Do this instead |
 |---|---|---|---|---|
 | **X-01** | `ANALYTICS → domain repository` | "Just query the students table for the report" | Couples read load to OLTP; makes the read model non-rebuildable; breaks extraction #4 | Consume events, build a projection |
-| **X-02** | `AI → domain model classes` | "The agent needs the Student entity" | Makes AI undeployable separately and lets model changes break AI silently | Consume the event payload from `libora_contracts` |
+| **X-02** | `AI → domain model classes` | "The agent needs the Student entity" | Makes AI undeployable separately and lets model changes break AI silently | Consume the event payload from `liboora_contracts` |
 | **X-03** | `domain → INTEGRATION` | "Just call Razorpay from the payment service" | Vendor lock-in inside the core domain; untestable; breaks gateway abstraction | Call `business.payment_intent` port |
 | **X-04** | `domain → COMMUNICATION` (sync) | "Send the SMS right after saving" | Couples a domain transaction to a third-party's availability; SMS failure rolls back a paid enrollment | Emit a fact event; Communication decides channel |
 | **X-05** | `LIBRARY MANAGEMENT ↔ GLOBAL STUDENT` | "Show the student's friends on the reception screen" | Merges two tenancy models and two privacy regimes; a social outage takes down the paying product | The consented `PersonId` link via ACL (E-13) only |
-| **X-06** | `capability → API PLATFORM` | "Reuse the DTO from the API layer" | Inverts the dependency; the edge must be replaceable without touching capabilities | Define the contract in `libora_contracts` |
+| **X-06** | `capability → API PLATFORM` | "Reuse the DTO from the API layer" | Inverts the dependency; the edge must be replaceable without touching capabilities | Define the contract in `liboora_contracts` |
 | **X-07** | `any → any` bypassing EVENT for cross-context notification | "An event bus is overkill, I'll just call it" | Recreates the distributed monolith; loses replay, DLQ, audit and ordering guarantees | Use the outbox |
 | **X-08** | `SEARCH → domain repository` for indexing | "Reindex by scanning the table" | Index and source silently diverge; breaks permission-aware indexing | Event-driven index + explicit `Index Backfill Job` |
 | **X-09** | `domain → DateTime.now()` / `Uuid()` directly | Convenience | Untestable time-dependent invariants; attendance clock-skew bugs become unreproducible | `platform_services.time` and `id` ports |
 | **X-10** | `AUDIT` with an update or delete method | "We need to fix a bad entry" | Destroys the evidentiary value of the entire audit trail | Append a correcting entry |
 | **X-11** | `BC-21 Entitlement` written by anything except Billing events | "Just grant this customer the feature manually" | Entitlement stops being derivable; rebuild-from-events diverges; revenue leakage is unauditable | Emit a `billing.EntitlementChanged` override event with actor + reason |
-| **X-12** | `libora_contracts → anything` | "Just one small helper package" | Transitive backdoor around every other law | Put the helper in the consuming module |
+| **X-12** | `liboora_contracts → anything` | "Just one small helper package" | Transitive backdoor around every other law | Put the helper in the consuming module |
 | **X-13** | Cache/index/vector key without `tenantId` | Oversight, not intent | **Cross-tenant data leak — highest-severity failure class in the system** | Tenant-prefixed key factory; enforced by lint + Multi-Tenant Test Suite |
 | **X-14** | `QUALITY → production code` in a non-test source set | Test helpers leaking into `lib/` | Ships test scaffolding and fixtures to production | Keep in `test/` or a `_test_support` dev dependency |
 
@@ -343,7 +343,7 @@ BEFORE (cycle):     Membership ──► Fee ──► Membership          ✖ L
 AFTER:              Membership ──⚡MembershipRenewed──► [EVENT] ──► Fee
                     Fee        ──⚡FeePaymentReceived──► [EVENT] ──► Membership
 
-Neither imports the other. Both import libora_contracts.
+Neither imports the other. Both import liboora_contracts.
 ```
 
 This resolves E-07 / E-10 in the context map, which would otherwise be a cycle between BC-02 and BC-05.
@@ -356,7 +356,7 @@ BEFORE:   PlatformServices.OfflineSync ──► Attendance (to resolve a confli
 AFTER:    Attendance declares:      abstract class ConflictPolicy { Resolution resolve(...); }
           Attendance implements it and registers it at the composition root.
           OfflineSync depends on the interface, which lives in... 
-             → libora_contracts (if universal) or 
+             → liboora_contracts (if universal) or 
              → OfflineSync's own port file (if sync-specific).
 
 Direction of dependency is now downward. The high-rank module supplies the policy;
@@ -369,7 +369,7 @@ This is how E-24 works, and it is the general answer to "the framework needs to 
 
 `TenantContext` is needed at R2 (row-level security) and set at R9 (request edge). A downward import would violate L2.
 
-**Resolution:** the `TenantContext` *interface* and its read-only accessor live in `libora_contracts` (R0). The API edge *writes* it once per request via an async-scoped holder; every other rank only *reads* it. Marked `◇*` in the matrix.
+**Resolution:** the `TenantContext` *interface* and its read-only accessor live in `liboora_contracts` (R0). The API edge *writes* it once per request via an async-scoped holder; every other rank only *reads* it. Marked `◇*` in the matrix.
 
 **Constraints that make this safe rather than a global variable:**
 - Read-only outside the edge — no setter is exported beyond the composition root.
@@ -382,7 +382,7 @@ The same pattern, and only this pattern, applies to `correlationId` and `actorId
 ### 8.4 Command port with re-validation — for *"a capability must change domain state"*
 
 ```
-Workflow / AI  ──⌘──►  DomainCommandPort (declared in libora_contracts)
+Workflow / AI  ──⌘──►  DomainCommandPort (declared in liboora_contracts)
                             │
                             └─► implemented by Library Management,
                                 which re-validates EVERY invariant as if
@@ -411,7 +411,7 @@ flutter_app/
 │   │   ├── env.dart
 │   │   └── tenant_scope.dart           # ambient TenantContext writer (§8.3)
 │   │
-│   ├── contracts/                      # R0 — libora_contracts (see 9.3 for extraction)
+│   ├── contracts/                      # R0 — liboora_contracts (see 9.3 for extraction)
 │   │   ├── value_objects/
 │   │   ├── events/
 │   │   ├── errors/
@@ -494,12 +494,12 @@ Folders rely on lint enforcement, which can be bypassed by disabling a rule. Rea
 
 | Trigger | Action |
 |---|---|
-| Team size > 8 engineers | Extract `libora_contracts` and `platform/*` into `packages/` with explicit `pubspec.yaml` deps |
+| Team size > 8 engineers | Extract `liboora_contracts` and `platform/*` into `packages/` with explicit `pubspec.yaml` deps |
 | A boundary violation ships to production despite CI | Extract that specific boundary immediately — the lint was insufficient |
 | First microservice extraction (context map §12) | The extracted context must already be a package |
 | Build time > 4 minutes | Package boundaries enable incremental compilation |
 
-**Recommendation:** extract `libora_contracts` as a real package on **day one**, even at V1 with a small team. It is the load-bearing rule (L5), it is cheap to do at the start, and it is the most painful to retrofit.
+**Recommendation:** extract `liboora_contracts` as a real package on **day one**, even at V1 with a small team. It is the load-bearing rule (L5), it is cheap to do at the start, and it is the most painful to retrofit.
 
 ---
 
@@ -540,7 +540,7 @@ A Dart script run in CI that parses every import in `lib/` and validates it agai
 | Rank comparison on every import | **L2** | `lib/platform/ai/x.dart imports domain/library/... — rank 6 may not import rank 8 (L4/X-02). See MODULE_DEPENDENCY_MATRIX §7.` |
 | Cycle detection via DFS on the import graph | **L1** | `Cycle detected: fee → membership → fee. L1 has no exceptions.` |
 | Barrel-only imports across contexts | §9.2 | `Import reaches past barrel into attendance/domain/. Import attendance.dart instead.` |
-| `contracts/` import allow-list | **L5** | `libora_contracts must not import package:flutter (X-12).` |
+| `contracts/` import allow-list | **L5** | `liboora_contracts must not import package:flutter (X-12).` |
 | Banned symbols in `domain/**` | **L3, X-09** | `DateTime.now() in domain code — use Clock port (X-09).` Also bans `http`, `firebase_*`, `dart:io`, `SharedPreferences`, `Hive`. |
 | Banned ubiquitous-language terms in `contracts/` | Context map §5 | `Bare type name 'Student' is banned in contracts. Use StudentRecord or GlobalStudentProfile.` |
 | Tenant key check | **X-13** | `Cache/index key built without tenantId — potential cross-tenant leak.` |
@@ -615,7 +615,7 @@ exceptions:
 | Ranks | 10 (R0–R9) |
 | Allowed cross-platform edges | 26 (context map §7) |
 | Named forbidden edges | 14 (§7) |
-| Direct-import permissions | 1 (`libora_contracts` only) |
+| Direct-import permissions | 1 (`liboora_contracts` only) |
 | Same-rank clusters | 2 (Core Library, Social) |
 | Cycle-breaking patterns | 4 |
 | CI enforcement layers | 3 |

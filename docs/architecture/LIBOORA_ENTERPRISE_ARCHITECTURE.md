@@ -1,11 +1,11 @@
-# LIBORA — Enterprise Architecture
+# LIBOORA — Enterprise Architecture
 
 > **Enterprise Education Platform Ecosystem**
 > Modular Monolith → Microservice Ready · Multi-Tenant SaaS · AI Native
 
 | Field | Value |
 |---|---|
-| **Document** | LIBORA Enterprise Architecture (Master) |
+| **Document** | LIBOORA Enterprise Architecture (Master) |
 | **Version** | `v2.0` |
 | **Status** | Reviewed & Refined — Approved for Implementation |
 | **Last Updated** | 2026-07-30 |
@@ -236,7 +236,7 @@ They would not attack the module list. They would attack these **14 things** —
 | `[OWNER of ...]` | Explicit single-owner declaration |
 
 ```
-LIBORA
+LIBOORA
 Enterprise Education Platform Ecosystem
 (25 Platforms · Modular Monolith → Microservice Ready · Multi-Tenant SaaS · AI Native)
 
@@ -2361,7 +2361,7 @@ LAYER 9 — ECOSYSTEM
 ├── Coaching / Institute Product Line (Future)
 ├── EdTech Content Platform (Future)
 ├── Public Developer Ecosystem (Future)
-└── LIBORA Open Platform (Future)
+└── LIBOORA Open Platform (Future)
 
 ═══════════════════════════════════════════════════════════════
 END OF ARCHITECTURE
@@ -2495,7 +2495,7 @@ These rules are **normative**. Any change to this architecture must satisfy all 
 
 ### `v1.0` — Baseline
 
-Original LIBORA Enterprise Architecture Tree (24 platforms) prior to review.
+Original LIBOORA Enterprise Architecture Tree (24 platforms) prior to review.
 
 ---
 

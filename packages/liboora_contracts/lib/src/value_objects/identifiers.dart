@@ -1,6 +1,6 @@
-/// LIBORA Shared Kernel (R0) — Identifiers.
+/// LIBOORA Shared Kernel (R0) — Identifiers.
 ///
-/// Implements the **Identity Triad** from LIBORA_BOUNDED_CONTEXT_MAP.md §4.
+/// Implements the **Identity Triad** from LIBOORA_BOUNDED_CONTEXT_MAP.md §4.
 /// These three ids are deliberately distinct types so the compiler enforces
 /// what a code review would otherwise have to catch by eye.
 library;

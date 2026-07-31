@@ -1,14 +1,14 @@
-# LIBORA — Bounded Context Map (V1)
+# LIBOORA — Bounded Context Map (V1)
 
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
 | **Version** | v1.0 |
 | **Status** | Draft for Architecture Review Board sign-off |
-| **Derived from** | `LIBORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
+| **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-07-30 |
 | **Context Count** | 31 (23 in V1 scope) |
-| **Companion doc** | `LIBORA_MODULE_DEPENDENCY_MATRIX.md` |
+| **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 
 ---
 
@@ -35,7 +35,7 @@
 The architecture tree answers *"what capabilities exist and who owns them."*
 This document answers the harder question: **"where are the model boundaries, and what is allowed to cross them."**
 
-A bounded context in LIBORA is a **linguistic and transactional boundary**. Inside it, one term means exactly one thing and invariants are enforced synchronously. Across it, meaning must be translated and consistency is eventual.
+A bounded context in LIBOORA is a **linguistic and transactional boundary**. Inside it, one term means exactly one thing and invariants are enforced synchronously. Across it, meaning must be translated and consistency is eventual.
 
 **Three rules govern this document:**
 
@@ -50,7 +50,7 @@ A bounded context in LIBORA is a **linguistic and transactional boundary**. Insi
 | Marker | Meaning |
 |---|---|
 | `[CORE]` | Core Domain — competitive differentiator, highest modelling investment, best engineers |
-| `[SUPPORTING]` | Supporting Domain — needed, LIBORA-specific, but not the moat |
+| `[SUPPORTING]` | Supporting Domain — needed, LIBOORA-specific, but not the moat |
 | `[GENERIC]` | Generic Subdomain — solved problem; buy or use a thin in-house wrapper |
 | `⇢` | Upstream → Downstream flow (upstream shapes the contract) |
 | `ACL` | Anti-Corruption Layer required at the receiving side |
@@ -118,7 +118,7 @@ Dashboards (`Owner`, `Manager`, `Reception`, `Parent`) are **not contexts**. The
 |---|---|---|---|---|---|
 | **BC-18** | **Identity & Access** | `[GENERIC]` | Identity & Access | V1 | Owns credentials, sessions, devices, OTP, roles, permissions, policy decisions, consent. |
 | **BC-19** | **Tenancy** | `[GENERIC]` | Shared Core | V1 | Owns the tenant (library organisation) record, tenant context propagation, tiers, residency, lifecycle. |
-| **BC-20** | **Subscription & Billing** | `[GENERIC]` | Business | V1 | Owns money owed by a **library to LIBORA**: plans, subscriptions, invoices, gateway, dunning, revenue recognition. |
+| **BC-20** | **Subscription & Billing** | `[GENERIC]` | Business | V1 | Owns money owed by a **library to LIBOORA**: plans, subscriptions, invoices, gateway, dunning, revenue recognition. |
 | **BC-21** | **Entitlement** | `[GENERIC]` | Business | V1 | Owns the answer to *"is tenant T allowed to do X, and how much of it is left?"* Single source of truth for limits and gates. |
 | **BC-22** | **Notification Delivery** | `[GENERIC]` | Communication | V1 | Owns channel selection, templates, deduplication, quiet hours, delivery guarantees, consent/unsubscribe. |
 | **BC-23** | **Search Indexing** | `[GENERIC]` | Search | V1 | Owns indices, permission-aware indexing, tenant index isolation, relevance, query rewriting. |
@@ -146,7 +146,7 @@ Dashboards (`Owner`, `Manager`, `Reception`, `Parent`) are **not contexts**. The
 
 ## 4. The Identity Triad
 
-This is the highest-risk modelling decision in LIBORA and the one most likely to be got wrong by a team moving fast.
+This is the highest-risk modelling decision in LIBOORA and the one most likely to be got wrong by a team moving fast.
 
 **A single human being appears in three contexts with three different identities and three different lifecycles.** Collapsing them into one `User` table is the mistake that makes multi-library membership, privacy, and account deletion unimplementable later.
 
@@ -189,8 +189,8 @@ Each row is a word that means **different things in different contexts**. Every 
 | **Student** | BC-01: an enrolled record in *this* library, with dues and a seat | BC-10: a public social persona across libraries | `StudentRecord` (BC-01) vs `GlobalStudentProfile` (BC-10). The bare word `Student` is **banned** in shared code. |
 | **Member** | BC-02: a holder of a paid library membership plan | BC-15: a participant in a community/study group | `MembershipHolder` (BC-02) vs `CommunityMember` (BC-15) |
 | **Attendance** | BC-03: a student's verified physical presence, drives occupancy & fee logic | BC-07: a staff member's shift presence, drives payroll | `StudentAttendance` vs `StaffAttendance`. Never a shared table. |
-| **Payment** | BC-05: cash/UPI collected from a student at reception | BC-20: a card charge from a library owner to LIBORA | `FeePayment` (BC-05) vs `SubscriptionCharge` (BC-20) |
-| **Plan** | BC-02: a library's membership offering to students (e.g. "Monthly Night Shift") | BC-20: LIBORA's SaaS tier sold to library owners (e.g. "Pro") | `MembershipPlan` (BC-02) vs `SubscriptionPlan` (BC-20) |
+| **Payment** | BC-05: cash/UPI collected from a student at reception | BC-20: a card charge from a library owner to LIBOORA | `FeePayment` (BC-05) vs `SubscriptionCharge` (BC-20) |
+| **Plan** | BC-02: a library's membership offering to students (e.g. "Monthly Night Shift") | BC-20: LIBOORA's SaaS tier sold to library owners (e.g. "Pro") | `MembershipPlan` (BC-02) vs `SubscriptionPlan` (BC-20) |
 | **Invoice** | BC-05: a fee demand issued to a student | BC-20: a tax invoice issued to a library | `FeeDue` (BC-05) vs `SubscriptionInvoice` (BC-20) |
 | **Notification** | BC-22: a message dispatched over a channel | BC-01: an in-app item in the student's feed | `DeliveryMessage` (BC-22) vs `FeedItem` (owned by BC-22's inbox projection) |
 | **Report** | BC-26: a defined analytical output | BC-13: an abuse report filed by a user | `AnalyticalReport` (BC-26) vs `AbuseReport` (BC-13) |
@@ -239,7 +239,7 @@ Each row is a word that means **different things in different contexts**. Every 
 ║  ┌──────────┐                                 ║              ╚═══════════════════════════════════╝
 ║  │ BC-05    │  dues from membership + policy   ║
 ║  │ Fee &    │◄─────────────────────────────    ║          ⚠ BC-05 (student→library money)
-║  │Collection│                                 ║             is NOT BC-20 (library→LIBORA money)
+║  │Collection│                                 ║             is NOT BC-20 (library→LIBOORA money)
 ║  └──────────┘                                 ║
 ╚═══════════════════════════════════════════════╝
 
@@ -263,7 +263,7 @@ Each row is a word that means **different things in different contexts**. Every 
 ╚═══════════════════════════════════════════════════════════════════════════════════════════╝
                                   │
 ╔═════════════════════════════════▼═════════════════════════════════════════════════════════╗
-║  SHARED KERNEL  ·  libora_contracts                                                       ║
+║  SHARED KERNEL  ·  liboora_contracts                                                       ║
 ║  Value objects (TenantId, PersonId, Money, DateRange), event schemas, error taxonomy.      ║
 ║  Importable by ALL. Imports NOTHING. Changes require Architecture Review Board approval.   ║
 ╚═══════════════════════════════════════════════════════════════════════════════════════════╝
@@ -329,7 +329,7 @@ Every edge that crosses a context boundary in V1. If an edge is not in this tabl
 | Rule | Statement |
 |---|---|
 | **F-1** | **No capability context may import, reference, or query a domain context.** Not AI, not Analytics, not Search, not Notification, not Workflow, not Audit. |
-| **F-2** | Capability contexts learn about the domain **exclusively** through Published Language events defined in `libora_contracts`. |
+| **F-2** | Capability contexts learn about the domain **exclusively** through Published Language events defined in `liboora_contracts`. |
 | **F-3** | Where a capability must *cause* a domain change (e.g. Workflow expiring a membership, AI applying a suggestion), it does so by **invoking the domain's public command API** through a registered port — with the domain re-validating every invariant. The capability is an untrusted caller. |
 | **F-4** | AI-initiated domain writes additionally require a Human-in-the-Loop approval record (BC-27) and produce an `AI Action Log` entry (BC-24). No exceptions in V1. |
 
@@ -343,7 +343,7 @@ This single set of rules is what makes the "Future Microservice readiness" claim
 | Conformist (`CF`) | 10 | Domain → capability ports, Policy → consumers |
 | Published Language (`PL`) | 7 | All event-based integration |
 | Anti-Corruption Layer (`ACL`) | 1 | E-13 Enrollment ↔ Global Identity — the only place translation is mandatory |
-| Shared Kernel (`SK`) | 2 | `libora_contracts`, `PersonId`/privacy VOs |
+| Shared Kernel (`SK`) | 2 | `liboora_contracts`, `PersonId`/privacy VOs |
 | Separate Ways | 1 | Library Management ⟷ Global Student (structural) |
 | Open Host Service (`OHS`) | 1 | API Platform edge |
 
@@ -479,7 +479,7 @@ Three places where the eventual-by-default rule is explicitly overridden, with t
 
 ## 12. Microservice Extraction Order
 
-LIBORA ships as a **modular monolith**. This is correct: at current scale, the operational cost of microservices exceeds their benefit. But the boundaries above are drawn so that extraction is a deployment change, not a redesign.
+LIBOORA ships as a **modular monolith**. This is correct: at current scale, the operational cost of microservices exceeds their benefit. But the boundaries above are drawn so that extraction is a deployment change, not a redesign.
 
 If and when extraction becomes necessary, this is the order — driven by *independent scaling need* and *lowest coupling*, using the Strangler Fig pattern:
 
@@ -508,7 +508,7 @@ Items requiring a decision before V1 implementation freeze. Each should become a
 | Q-03 | Entitlement fail-open or fail-closed on timeout? | Revenue leakage vs availability | Per-gate policy; hard paid features fail-closed, soft limits fail-open |
 | Q-04 | Retention period for `StudentAttendance` after enrollment archival? | Legal + storage cost | Define with counsel; default 7 years financial, 2 years attendance |
 | Q-05 | Is Global Student available to a person with **no** library enrollment? | Growth strategy + moderation exposure | Yes (drives PLG), but with reduced trust tier until enrolled |
-| Q-06 | Who owns proration arithmetic — BC-02 (rules) or BC-20/Business (execution)? | Currently split by design; needs explicit contract | BC-02 computes the *entitlement delta*, Business Platform executes the *money*. Contract in `libora_contracts` |
+| Q-06 | Who owns proration arithmetic — BC-02 (rules) or BC-20/Business (execution)? | Currently split by design; needs explicit contract | BC-02 computes the *entitlement delta*, Business Platform executes the *money*. Contract in `liboora_contracts` |
 | Q-07 | Does Parent get an `Account` (BC-18) or a scoped view token? | Auth complexity, consent model | Full account with guardian role — required for consent audit trail |
 
 ---

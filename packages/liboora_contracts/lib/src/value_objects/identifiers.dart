@@ -71,6 +71,50 @@ final class StudentRecordId extends Identifier {
   const StudentRecordId(super.value);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AMENDMENT A-8 — Identity & Access (BC-18) identities.
+//
+// These four were referenced as stable identities by the locked session,
+// device, invitation and permission registers but had no type. Untyped, they
+// degrade to `String` at every boundary, which is exactly how a SessionId ends
+// up in a log line or a DeviceId in a cache key without a tenant prefix
+// (X-13). Typing them makes those mistakes non-compiling rather than
+// non-reviewed.
+// ══════════════════════════════════════════════════════════════════════
+
+/// A registered device association. Owned by BC-18 Identity & Access.
+///
+/// Global, like the account: one device may serve many tenants over time
+/// (the shared reception-terminal pattern). Never a behavioural profile key.
+final class DeviceId extends Identifier {
+  const DeviceId(super.value);
+}
+
+/// An authenticated session. Owned by BC-18 Identity & Access.
+///
+/// Opaque and non-guessable. Never a log dimension, never a metric dimension
+/// (OBS-1110), and never derived from any subject attribute.
+final class SessionId extends Identifier {
+  const SessionId(super.value);
+}
+
+/// An invitation to claim an account. Owned by BC-18 Identity & Access.
+///
+/// Single-use and time-bounded. Distinct from the account it will resolve to,
+/// so that possession of an invitation never proves possession of a number.
+final class InviteId extends Identifier {
+  const InviteId(super.value);
+}
+
+/// A permission in the **closed** catalogue. Owned by BC-18 Identity & Access.
+///
+/// Typed so that a permission cannot be constructed from arbitrary input at a
+/// call site: the catalogue is closed, and a closed catalogue that accepts a
+/// `String` is not closed.
+final class PermissionId extends Identifier {
+  const PermissionId(super.value);
+}
+
 /// Idempotency key for at-most-once semantics at every boundary.
 ///
 /// Required by: API edge, attendance check-in, payment capture, workflow

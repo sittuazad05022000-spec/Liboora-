@@ -204,7 +204,15 @@ final class AppContainer {
       ledgers: ledgers,
       outstanding: OutstandingBalanceService(ledgers),
       socialProfiles: InMemoryGlobalProfileRepository(),
-      auth: AuthService(accounts, clock),
+      auth: AuthService(
+        accounts,
+        clock: clock,
+        // Challenges are drawn from a secure source, never derived (F-02).
+        random: SecureRandomSource(),
+        ids: ids,
+        // Debug-only peek. False in any release build.
+        challengePeekEnabled: !const bool.fromEnvironment('dart.vm.product'),
+      ),
       enrollStudent: EnrollStudent(
         repo: students,
         entitlements: entitlements,

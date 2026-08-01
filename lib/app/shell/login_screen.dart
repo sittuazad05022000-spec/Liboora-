@@ -34,10 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _send() {
     final s = context.read<SessionController>();
-    if (s.requestOtp(_phone.text)) {
-      setState(() => _otpSent = true);
-      _code.text = s.otpHint ?? '';
-    }
+    s.requestOtp(_phone.text);
+    // Always advances. Branching here would re-create the oracle (F-02).
+    setState(() => _otpSent = true);
+    _code.text = s.otpHint ?? '';
   }
 
   void _verify() {

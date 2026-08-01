@@ -114,11 +114,17 @@ domain/library:
     - platform/workflow:process_trigger
     - platform/ai:assist
     - platform/analytics:read_model
+    # AMENDMENT A-2 — AccountId resolution for the account-claim flow (edge E-11).
+    # Read-only, single-subject, no listing, no lookup by number.
+    - platform/identity:account_directory
   emits_events: ["enrollment.*", "membership.*", "attendance.*", "seating.*", "fee.*", "policy.*"]
   consumes_events:
     - billing.EntitlementChanged
     - tenancy.TenantSuspended
     - safety.EnforcementActionTaken
+    # AMENDMENT A-2 — claim-flow facts. Class D only.
+    - iam.AccountVerified
+    - iam.AccountStatusChanged
   internal_edges:                 # only these intra-cluster edges exist
     - { id: E-01, from: enrollment,  to: membership,  mode: event }
     - { id: E-02, from: membership,  to: seating,     mode: port  }
@@ -226,6 +232,10 @@ platform/analytics:
     - platform/tenancy:tenant_context
     - platform/identity:policy_decision
   consumes_events: ["*"]
+  # AMENDMENT A-6 — explicit, not incidental. Analytics consumes NO
+  # authentication fact. Recorded as an exclusion because "*" would otherwise
+  # silently subscribe this platform to identity behaviour.
+  excluded_events: ["iam.*"]
   banned_imports:
     - "domain/**"                       # X-01
     - "app/**"
@@ -235,6 +245,8 @@ platform/analytics:
       rule: "every projection implements rebuild()"
     - id: AN-2
       rule: "no metric defined outside the semantic layer"
+    - id: AN-3
+      rule: "no projection, metric or dimension is derived from any iam.* fact"   # A-6
 
 platform/workflow:
   rank: 6
@@ -272,6 +284,12 @@ platform/audit:
   assertions:
     - id: AU-1
       rule: "no public mutation method exists on the audit store"
+    - id: AU-2
+      rule: "this platform is the sole consumer of every Class A authentication fact"       # A-5
+    - id: AU-3
+      rule: "unavailability of this platform delays audit visibility only; recording occurs in the emitter's transaction"
+    - id: AU-4
+      rule: "erasure makes a record non-identifying by key destruction; no record is ever removed"
 
 platform/search:
   rank: 5
@@ -289,9 +307,21 @@ platform/communication:
   rank: 5
   imports:
     - { target: contracts, mode: import }
-  ports: [platform/integration:connector]
+  ports:
+    - platform/integration:connector
+    # AMENDMENT A-3 — the narrow, purpose-limited delivery-address port.
+    # Resolves ONE address for ONE queued delivery, at delivery time.
+    # Closes QA-24. This port is the reason no event ever carries a number.
+    - platform/identity:notification_address
   consumes_events: ["*"]
   banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: CM-1
+      rule: "notification_address is called with an AccountId and a delivery purpose; never with a number, never in bulk, never to test existence"   # A-3
+    - id: CM-2
+      rule: "no resolved address is persisted, cached, indexed or logged by this platform"   # A-3
+    - id: CM-3
+      rule: "an unresolvable address fails the delivery only; it never fails the emitting operation"   # EBR-1030
 
 platform/business:
   rank: 6
@@ -316,8 +346,71 @@ platform/identity:
   rank: 4
   imports:
     - { target: contracts, mode: import }
-  ports: [platform/tenancy:tenant_context, platform/integration:sso_provider]
+  ports:
+    - platform/tenancy:tenant_context
+    # The single sanctioned bypass of platform/communication, for possession
+    # challenge delivery only. Matrix cell IAM -> INT.
+    - platform/integration:sso_provider
   banned_imports: ["domain/**", "app/**"]
+
+  # Ports this platform PROVIDES to others. Both are deliberately narrower
+  # than a general identity API.
+  provides_ports:
+    - name: policy_decision
+      consumers: [domain/library, domain/social, platform/ai, platform/analytics, platform/workflow]
+    - name: auth
+      consumers: [app]
+    - name: account_directory            # A-2
+      consumers: [domain/library]
+      constraint: "single AccountId in, single resolution out; no listing, no lookup by number, no existence test"
+    - name: notification_address         # A-3
+      consumers: [platform/communication]
+      constraint: "one address, one queued delivery, resolved at delivery time, never retained by the caller"
+
+  # ═══════════════════════════════════════════════════════════════════
+  # AMENDMENT A-4 / A-5 / A-9 — emission classes and their consumers.
+  #
+  # The authoritative register is the closed 36-fact Authentication event
+  # register (EVT-1001..EVT-1036). It is NOT duplicated here: duplication is
+  # how two registers drift apart. What is declared here is the part a boundary
+  # check can enforce — the class of each emission and who may consume it.
+  # ═══════════════════════════════════════════════════════════════════
+  emission_classes:
+    - class: D                            # domain fact, Outbox, named consumers
+      transport: event
+      consumers_declared_per_event: true
+      named_consumers: [domain/library, platform/audit, platform/communication]
+    - class: A                            # audit-only fact
+      transport: event
+      consumers: [platform/audit]         # A-5 — sole consumer, no exceptions
+      constraint: "any consumer other than platform/audit is a boundary violation, not a subscription"
+    - class: T                            # telemetry
+      transport: none
+      consumers: []                       # A-9 — never leaves this platform
+      constraint: "no transport, no subscriber, no export; egress attempt is a blocker"
+
+  emits_events: ["iam.*"]
+  event_register_source: docs/prd/authentication   # EVT-1001..EVT-1036
+
+  assertions:
+    - id: ID-1
+      rule: "every emitted iam.* fact appears in the closed register EVT-1001..EVT-1036"   # A-4
+    - id: ID-2
+      rule: "every Class D fact declares its named consumers; a fact with no declared consumer is Class A or Class T"   # A-4
+    - id: ID-3
+      rule: "no Class A fact has a consumer other than platform/audit"                     # A-5
+    - id: ID-4
+      rule: "no Class T value is published, exported or subscribed to"                     # A-9
+    - id: ID-5
+      rule: "no event payload contains a mobile number, challenge value, session token or key material"   # A-3
+    - id: ID-6
+      rule: "the audit fact commits in the same transaction as the state change it describes"
+    - id: ID-7
+      rule: "every grant is tenant-scoped; no grant event is emitted without a TenantId"
+    - id: ID-8
+      rule: "no permission is granted without a scope from the closed register {self, guardianOf, tenantWide}"   # F-01
+    - id: ID-9
+      rule: "no challenge value is a function of its subject; RandomSource only"           # F-02
 
 # ─────────────────────────────────────────────────────────────
 # EDGE — rank 9
@@ -362,7 +455,65 @@ global:
   # X-13: the highest-severity failure class in the system
   tenant_key_violation_severity: blocker
 
+  # ═══════════════════════════════════════════════════════════════════
+  # AMENDMENT A-9 — the observability plane.
+  #
+  # Observability is a third data plane, subordinate to the data
+  # classification, never an exception to it. It may always be deleted;
+  # therefore nothing may live only there.
+  # ═══════════════════════════════════════════════════════════════════
+  observability_plane:
+    classification_ceiling: DC-2          # DC-3 only as an opaque reference
+    banned_content:                       # at every level, in every environment
+      - mobile number, in any form or transform
+      - challenge value, current, expired or hashed
+      - session token or any revalidating material
+      - device secret
+      - key material
+      - consent document content
+      - guardian relationship detail
+      - subject free text
+      - remaining attempt budget, lockout remainder or grace remainder
+    banned_metric_dimensions:
+      - AccountId
+      - PersonId
+      - StudentRecordId
+      - SessionId
+      - DeviceId
+      - mobile number
+      - any subject-derived value
+    allowed_metric_dimensions:
+      - function
+      - external outcome            # ERR-1130 projection only, never internal class
+      - TenantId
+      - plane                       # tenant | platform
+      - deployment locus
+    forbidden_inferences:
+      - whether a given number corresponds to an account
+      - whether a denial was a denial or a not-found
+      - which control is currently degraded
+    is_authoritative_for: []        # nothing. No rule may depend on this plane.
+    retention_days: 30
+    severity_on_violation: blocker
+
 # ─────────────────────────────────────────────────────────────
 # TIME-BOXED EXCEPTIONS — every entry MUST have an ADR and an expiry
 # ─────────────────────────────────────────────────────────────
 exceptions: []
+# Still empty, and deliberately so. None of the amendments below is an
+# exception to a law: each widens a declared allow-list or adds an assertion.
+# A law exception would require an ADR and an expiry; none was needed.
+
+# ─────────────────────────────────────────────────────────────
+# AMENDMENTS APPLIED — Authentication Specification v1.0 lock
+# ─────────────────────────────────────────────────────────────
+amendments_applied:
+  - { id: A-2, closes: CFL-22, change: "domain/library may consume iam.AccountVerified + iam.AccountStatusChanged; gains platform/identity:account_directory port" }
+  - { id: A-3, closes: CFL-26, change: "platform/communication gains platform/identity:notification_address port; assertions CM-1..CM-3" }
+  - { id: A-4, closes: CFL-24, change: "platform/identity declares emission classes and per-class consumers; assertions ID-1, ID-2" }
+  - { id: A-5, closes: CFL-21, change: "Class A confined to platform/audit; assertions ID-3, AU-2" }
+  - { id: A-6, closes: CFL-28, change: "platform/analytics excluded_events iam.*; assertion AN-3" }
+  - { id: A-9, closes: CFL-31, change: "global.observability_plane declared; assertion ID-4" }
+defects_closed:
+  - { id: F-01, change: "closed scope register enforced in PolicyDecisionPoint; assertion ID-8" }
+  - { id: F-02, change: "challenge from RandomSource, TTL, attempt budget, uniform request outcome; assertion ID-9" }

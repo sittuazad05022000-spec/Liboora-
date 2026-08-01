@@ -64,18 +64,18 @@ final class SessionController extends ChangeNotifier {
 
   // ── Auth ────────────────────────────────────────────────────────
 
-  bool requestOtp(String phone) {
+  /// Request a possession challenge.
+  ///
+  /// Deliberately returns nothing and sets no error (F-02): the UI must not be
+  /// able to tell a registered number from an unregistered one. The former
+  /// "No Liboora account is registered for this number." message was the
+  /// enumeration oracle, one layer up from the service.
+  void requestOtp(String phone) {
     _error = null;
-    final ok = container.auth.requestOtp(phone.trim());
-    if (!ok) {
-      _error = 'No Liboora account is registered for this number.';
-      _otpHint = null;
-    } else {
-      // Visible only because there is no SMS gateway wired in the scaffold.
-      _otpHint = container.auth.lastIssuedOtp;
-    }
+    container.auth.requestOtp(phone.trim());
+    // Null unless this is a debug wiring; null for unknown numbers regardless.
+    _otpHint = container.auth.debugPeekChallenge(phone.trim());
     notifyListeners();
-    return ok;
   }
 
   bool verifyOtp({required String phone, required String code}) {

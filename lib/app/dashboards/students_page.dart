@@ -281,11 +281,12 @@ class _StudentSheet extends StatelessWidget {
                   final msg = inside
                       ? await s.checkOut(student.id)
                       : await s.checkIn(student.id);
-                  if (context.mounted)
+                  if (context.mounted) {
                     _toast(
                       context,
                       msg ?? (inside ? 'Checked out' : 'Checked in'),
                     );
+                  }
                 },
                 icon: Icon(inside ? Icons.logout : Icons.login, size: 18),
                 label: Text(inside ? 'Check out' : 'Check in'),

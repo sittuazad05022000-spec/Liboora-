@@ -5,6 +5,8 @@
 /// Identity Triad, LIBOORA_BOUNDED_CONTEXT_MAP.md §4.
 library;
 
+import 'dart:math' as math;
+
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 /// Access roles. Distinct from `CommunityRole` (BC-15) — see the ubiquitous
@@ -45,6 +47,7 @@ final class Account {
 
 final class AuthSession {
   const AuthSession({
+    required this.id,
     required this.account,
     required this.tenantId,
     required this.branchId,
@@ -52,6 +55,8 @@ final class AuthSession {
     required this.startedAt,
   });
 
+  /// Opaque, non-guessable (amendment A-8). Never a log or metric dimension.
+  final SessionId id;
   final Account account;
   final TenantId tenantId;
   final BranchId branchId;
@@ -60,6 +65,9 @@ final class AuthSession {
 }
 
 /// Permissions, checked by the Policy Decision Point.
+///
+/// This catalogue is **closed**: it is not extensible by a tenant, by
+/// configuration, or at a call site.
 enum Permission {
   enrollStudent,
   viewStudent,
@@ -70,7 +78,28 @@ enum Permission {
   applyDiscount,
   viewRevenue,
   viewAllBranches,
-  managePolicy,
+  managePolicy;
+
+  /// Typed catalogue identity (amendment A-8).
+  PermissionId get id => PermissionId('perm.$name');
+}
+
+/// The **closed** scope register. Exactly three members; a scope qualifies
+/// *which* resources a permission reaches, never *whether* it is held.
+///
+/// Fix for defect F-01: a permission granted without a scope is a permission
+/// over every resource in the tenant, which is what `viewStudent` silently was
+/// for `student` and `parent`.
+enum AccessScope {
+  /// The actor's own subject record, and nothing else.
+  self,
+
+  /// Subject records the actor is guardian to, and nothing else.
+  guardianOf,
+
+  /// Every subject record in the tenant, subject to the branch qualifier
+  /// carried by [AuthSession.branchId] and `Permission.viewAllBranches`.
+  tenantWide,
 }
 
 /// Centralised authorisation. Domain contexts call this port; they never
@@ -78,86 +107,221 @@ enum Permission {
 final class PolicyDecisionPoint {
   const PolicyDecisionPoint();
 
-  static const Map<AccessRole, Set<Permission>> _grants = {
+  /// Every grant now carries the scope it is granted at. There is no way to
+  /// express an unscoped grant, which is what made F-01 possible.
+  static const Map<AccessRole, Map<Permission, AccessScope>> _grants = {
     AccessRole.owner: {
-      Permission.enrollStudent,
-      Permission.viewStudent,
-      Permission.createMembership,
-      Permission.recordAttendance,
-      Permission.assignSeat,
-      Permission.collectFee,
-      Permission.applyDiscount,
-      Permission.viewRevenue,
-      Permission.viewAllBranches,
-      Permission.managePolicy,
+      Permission.enrollStudent: AccessScope.tenantWide,
+      Permission.viewStudent: AccessScope.tenantWide,
+      Permission.createMembership: AccessScope.tenantWide,
+      Permission.recordAttendance: AccessScope.tenantWide,
+      Permission.assignSeat: AccessScope.tenantWide,
+      Permission.collectFee: AccessScope.tenantWide,
+      Permission.applyDiscount: AccessScope.tenantWide,
+      Permission.viewRevenue: AccessScope.tenantWide,
+      Permission.viewAllBranches: AccessScope.tenantWide,
+      Permission.managePolicy: AccessScope.tenantWide,
     },
     AccessRole.manager: {
-      Permission.enrollStudent,
-      Permission.viewStudent,
-      Permission.createMembership,
-      Permission.recordAttendance,
-      Permission.assignSeat,
-      Permission.collectFee,
-      Permission.viewRevenue,
-      Permission.managePolicy,
+      Permission.enrollStudent: AccessScope.tenantWide,
+      Permission.viewStudent: AccessScope.tenantWide,
+      Permission.createMembership: AccessScope.tenantWide,
+      Permission.recordAttendance: AccessScope.tenantWide,
+      Permission.assignSeat: AccessScope.tenantWide,
+      Permission.collectFee: AccessScope.tenantWide,
+      Permission.viewRevenue: AccessScope.tenantWide,
+      Permission.managePolicy: AccessScope.tenantWide,
     },
     AccessRole.reception: {
-      Permission.enrollStudent,
-      Permission.viewStudent,
-      Permission.createMembership,
-      Permission.recordAttendance,
-      Permission.assignSeat,
-      Permission.collectFee,
+      Permission.enrollStudent: AccessScope.tenantWide,
+      Permission.viewStudent: AccessScope.tenantWide,
+      Permission.createMembership: AccessScope.tenantWide,
+      Permission.recordAttendance: AccessScope.tenantWide,
+      Permission.assignSeat: AccessScope.tenantWide,
+      Permission.collectFee: AccessScope.tenantWide,
     },
-    AccessRole.student: {Permission.viewStudent},
-    AccessRole.parent: {Permission.viewStudent},
+    // F-01: these two were `tenantWide` by omission.
+    AccessRole.student: {Permission.viewStudent: AccessScope.self},
+    AccessRole.parent: {Permission.viewStudent: AccessScope.guardianOf},
   };
 
+  /// Capability only: is this permission held *at any scope*?
+  ///
+  /// Answering true here is necessary but never sufficient. Holding a
+  /// capability is not holding access to a resource.
   bool allows(AccessRole role, Permission permission) =>
-      _grants[role]?.contains(permission) ?? false;
+      _grants[role]?.containsKey(permission) ?? false;
 
+  /// The scope a role holds a permission at, or null if it does not hold it.
+  AccessScope? scopeOf(AccessRole role, Permission permission) =>
+      _grants[role]?[permission];
+
+  /// Resource-free check. Passes only for `tenantWide` grants.
+  ///
+  /// A `self` or `guardianOf` grant cannot be satisfied without naming a
+  /// resource, so this method now refuses it instead of waving it through —
+  /// and refuses it as `xNotFound`, never as `xDenied`, because a scoped
+  /// denial must be indistinguishable from a non-existent resource.
   void require(AccessRole role, Permission permission) {
-    if (!allows(role, permission)) {
+    final scope = scopeOf(role, permission);
+    if (scope == null) {
       throw DomainError(
-        DomainErrorCode.forbidden,
+        DomainErrorCode.authzNoRoleGrantsPermission,
         '${role.label} is not permitted to ${permission.name}.',
         context: {'role': role.name, 'permission': permission.name},
+      );
+    }
+    if (scope != AccessScope.tenantWide) {
+      throw DomainError(
+        DomainErrorCode.authzScopeOutsideSubject,
+        '${role.label} holds ${permission.name} only at scope '
+        '${scope.name}; a resource must be named.',
+        context: {
+          'role': role.name,
+          'permission': permission.name,
+          'scope': scope.name,
+        },
+      );
+    }
+  }
+
+  /// Resource-bearing check — the only way a scoped grant can ever pass.
+  ///
+  /// [actorSubject] is the actor's own subject record; [guardianOf] is the set
+  /// they are guardian to, resolved by the owning context at decision time and
+  /// never cached here.
+  void requireOn(
+    AccessRole role,
+    Permission permission, {
+    required StudentRecordId resource,
+    StudentRecordId? actorSubject,
+    Set<StudentRecordId> guardianOf = const {},
+  }) {
+    final scope = scopeOf(role, permission);
+    if (scope == null) {
+      throw DomainError(
+        DomainErrorCode.authzNoRoleGrantsPermission,
+        '${role.label} is not permitted to ${permission.name}.',
+        context: {'role': role.name, 'permission': permission.name},
+      );
+    }
+
+    final reaches = switch (scope) {
+      AccessScope.tenantWide => true,
+      AccessScope.self => actorSubject != null && actorSubject == resource,
+      AccessScope.guardianOf => guardianOf.contains(resource),
+    };
+
+    if (!reaches) {
+      // Indistinguishable from not-found, by design.
+      throw DomainError(
+        DomainErrorCode.authzScopeOutsideSubject,
+        'Resource not available.',
+        context: {
+          'role': role.name,
+          'permission': permission.name,
+          'scope': scope.name,
+        },
       );
     }
   }
 }
 
-/// OTP authentication.
+/// Cryptographically secure adapter for [RandomSource].
 ///
-/// This is a **stub adapter behind a port**, not a demo backdoor: the real
-/// SMS delivery arrives via the Integration Platform without any change to
-/// callers. `lastIssuedOtp` exists only so the scaffold is runnable offline.
+/// Lives here, in the adapter layer, because the shared kernel may not import
+/// `dart:math` (law L5). Never construct a challenge from anything else.
+final class SecureRandomSource implements RandomSource {
+  SecureRandomSource() : _random = math.Random.secure();
+
+  final math.Random _random;
+
+  @override
+  int nextInt(int max) => _random.nextInt(max);
+}
+
+/// A pending possession challenge. Single-use, time-bounded, attempt-bounded.
+final class _Challenge {
+  _Challenge({required this.code, required this.expiresAt});
+
+  final String code;
+  final DateTime expiresAt;
+  int attempts = 0;
+}
+
+/// Possession-of-number authentication.
+///
+/// This is a **stub adapter behind a port**, not a demo backdoor: real delivery
+/// arrives via the Integration Platform without any change to callers.
+///
+/// Fix for defect F-02, in four parts:
+///   1. the challenge is drawn from [RandomSource], never derived from the
+///      subject (`phone.hashCode` was a public function of a public input);
+///   2. it expires;
+///   3. it has an attempt budget;
+///   4. **requesting one is a uniform, non-informative act** — the caller
+///      learns nothing about whether the number is registered.
 final class AuthService {
-  AuthService(this._accounts, this._clock);
+  AuthService(
+    this._accounts, {
+    required Clock clock,
+    required RandomSource random,
+    required IdGenerator ids,
+    this.challengePeekEnabled = false,
+  }) : _clock = clock,
+       _random = random,
+       _ids = ids;
+
+  /// Adapter defaults. The normative bounds live in the locked challenge and
+  /// lockout registers; these are the scaffold's configuration of them.
+  static const Duration challengeTtl = Duration(minutes: 5);
+  static const int maxVerifyAttempts = 5;
+  static const int _codeDigits = 6; // TRAI DLT numeric template
 
   final List<Account> _accounts;
   final Clock _clock;
+  final RandomSource _random;
+  final IdGenerator _ids;
 
-  final Map<String, String> _issued = {};
-  String? lastIssuedOtp;
+  /// Debug affordance for a scaffold with no SMS gateway. Must be false in any
+  /// release wiring — a peek surface is a disclosure surface.
+  final bool challengePeekEnabled;
+
+  final Map<String, _Challenge> _issued = {};
 
   List<Account> get accounts => List.unmodifiable(_accounts);
 
-  Account? accountForPhone(String phone) {
+  /// Private on purpose: a public lookup by number is an enumeration oracle
+  /// regardless of who calls it.
+  Account? _accountForPhone(String phone) {
     for (final a in _accounts) {
       if (a.phone == phone) return a;
     }
     return null;
   }
 
-  /// Issue a single-use OTP with a TTL. Returns false for unknown numbers.
-  bool requestOtp(String phone) {
-    if (accountForPhone(phone) == null) return false;
-    final code = (100000 + phone.hashCode.abs() % 900000).toString();
-    _issued[phone] = code;
-    lastIssuedOtp = code;
-    return true;
+  /// Issue a possession challenge.
+  ///
+  /// Returns nothing, and behaves identically whether or not the number is
+  /// registered. There is deliberately no success/failure signal to read.
+  void requestOtp(String phone) {
+    final code = _generateCode();
+    final challenge = _Challenge(
+      code: code,
+      expiresAt: _clock.now().add(challengeTtl),
+    );
+
+    // The only branch is on *storage*, never on the response. An unregistered
+    // number consumes the same work and yields the same observable outcome.
+    if (_accountForPhone(phone) != null) {
+      _issued[phone] = challenge;
+    }
   }
+
+  /// Debug-only retrieval of the issued code. Returns null unless the wiring
+  /// explicitly enabled it, and null for an unissued number either way.
+  String? debugPeekChallenge(String phone) =>
+      challengePeekEnabled ? _issued[phone]?.code : null;
 
   AuthSession? verifyOtp({
     required String phone,
@@ -165,18 +329,44 @@ final class AuthService {
     required TenantId tenant,
     required BranchId branch,
   }) {
-    if (_issued[phone] != code) return null;
+    final challenge = _issued[phone];
+    if (challenge == null) return null;
+
+    if (!_clock.now().isBefore(challenge.expiresAt)) {
+      _issued.remove(phone);
+      return null;
+    }
+
+    challenge.attempts++;
+    if (challenge.attempts > maxVerifyAttempts) {
+      _issued.remove(phone);
+      return null;
+    }
+
+    if (challenge.code != code) return null;
+
     _issued.remove(phone); // single-use
-    final account = accountForPhone(phone);
+
+    final account = _accountForPhone(phone);
     if (account == null) return null;
     final roles = account.rolesIn(tenant);
     if (roles.isEmpty) return null;
+
     return AuthSession(
+      id: SessionId(_ids.next('sess')),
       account: account,
       tenantId: tenant,
       branchId: branch,
       activeRole: roles.first,
       startedAt: _clock.now(),
     );
+  }
+
+  String _generateCode() {
+    final buffer = StringBuffer();
+    for (var i = 0; i < _codeDigits; i++) {
+      buffer.write(_random.nextInt(10));
+    }
+    return buffer.toString();
   }
 }

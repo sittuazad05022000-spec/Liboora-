@@ -3,13 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-02 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1** |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1 and v1.2** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
-| **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
+| **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
 
 ---
 
@@ -547,6 +547,9 @@ A ruling settles ownership, classification and boundaries. It creates no require
 | **`AR-2`** | The Authentication architecture is the source of truth. **Account creation on first successful OTP verification is explicitly approved.** `BC-18` retains OTP, Registration, Account creation, Session management and Authorization handoff. Library Discovery must never implement registration logic. | §4 Identity Triad is **confirmed, not changed** — *"Created on first successful OTP"* stands as written. Implementation divergence documented in [`ACR-001`](../prd/authentication/ACR-001-OTP-Account-Creation.md); no production code altered. |
 | **`AR-3`** | Public Library Discovery is a **platform-wide public directory** indexing only explicitly public library metadata. It is not a tenant data index, and must not weaken tenant isolation. | §11.1 added — distinguishes the Platform Public Discovery Index from Tenant Operational Data. `MP-GBR-08`, `SE-1` and `X-13` remain in force, unmodified. |
 | **`AR-4`** | Invitation Links, Invitation QR Codes and Library Invitation Codes are owned by the **Library Management / Tenant Organization** module. Authentication, Membership and Student Identity do **not** own invitations. | Ownership assigned below. The invitation **security specification is deferred by ruling** and must not be invented. |
+| **`AR-5`** | The Registration flow collects the user's Display Name **before** OTP verification. `displayName` remains required and non-nullable. Empty string, mobile number, placeholder and auto-generated names are prohibited. Authentication is responsible for **OTP verification only**; Registration owns the collection of user profile information. | No context, aggregate or identity rule changes. `BC-18` continues to own credentials and OTP; the display name is **profile information**, collected by the Registration flow and supplied to `BC-18` only at the moment of account creation. §14.2 below. |
+| **`AR-6`** | **Authentication and Session Issuance are separate stages.** An `Account` may exist before any tenant role exists. Authentication owns identity verification and account creation; Authorization owns tenant roles; session issuance occurs only after the required authorization context exists. Authentication and Authorization must not be merged. | §11 `BC-18` tenancy model is **confirmed, not changed** — *"`Account` is global; role assignments are tenant-scoped"* stands as written. §14.2 records the stage sequence this makes explicit. |
+| **`AR-7`** | The security objective of `F-02` is anti-enumeration. Identical observable behaviour is preserved for registered and unregistered phone numbers until OTP verification succeeds. Conformance tests validate security behaviour rather than implementation details such as internal storage. `F-01` and `F-02` are not weakened. | No map change. Recorded here because it governs how `BC-18`'s conformance suite is written. |
 
 ### 14.1 Invitation ownership (`AR-4`)
 
@@ -557,12 +560,43 @@ A ruling settles ownership, classification and boundaries. It creates no require
 | **Rationale** | An invitation is the access mechanism for a **Private library** (Library PRD §14A.6) — a property of the organisation, not of a credential or a plan |
 | **Deferred — do not invent** | Expiry · revocation · single-use policy · entropy · validation rules · audit logging. To be documented separately. |
 
+### 14.2 Authentication stage sequence (`AR-5`, `AR-6`)
+
+The approved sequence. Each stage names its owning concern; **no new context, aggregate or invariant is created by
+recording it.**
+
+```
+Registration
+  → Collect Display Name                 (Registration — profile information)
+  → Collect Mobile Number                (Registration)
+  → OTP Verification                     (BC-18 — Authentication)
+  → Create Account                       (BC-18 — Authentication; §4 "Created on first successful OTP")
+  → Continue Original Action
+  → Membership Processing (if required)   (BC-02 Membership)
+  → Role Assignment                      (BC-18 — Authorization concern, tenant-scoped)
+  → Session Issuance                     (BC-18 — only after the authorization context exists)
+```
+
+| Property | Position |
+|---|---|
+| **An `Account` may exist with no tenant role** | Yes. This is a legitimate, representable state, not a failure. It follows directly from §11's Hybrid tenancy model for `BC-18` |
+| **`AccountId` lifecycle** | Unchanged — §4 stands: *"Created on first successful OTP"* |
+| **`PersonId`, `StudentRecordId`** | Unchanged. `ID-1`…`ID-6` unaffected |
+| **Session issuance precondition** | A role must exist in the tenant in scope. Consistent with §11: *"`AccessPolicy` is always evaluated with a tenant in scope"* |
+| **Where roles come from** | Membership Processing (`BC-02`), per Library PRD §14A.7 — *after* Authentication |
+| **Display name** | Profile information. Collected by Registration before OTP verification; never derived from the mobile number, never generated |
+
+**Boundary note.** Because Authentication and Authorization are both concerns of `BC-18`, `AR-6` is a **stage
+separation inside one bounded context**, not a context split. No integration edge is added; `E-01`…`E-26` are
+unchanged.
+
 ---
 
 ## Changelog
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-02 | Applied approved architecture rulings `AR-5`, `AR-6`, `AR-7`. §14 gains three rows; §14.2 added, recording the approved authentication stage sequence and confirming that an `Account` may exist before any tenant role. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed** — §4 and §11 are confirmed as written, not amended. `AR-6` is a stage separation *within* `BC-18`, not a context split. |
 | **v1.1** | 2026-08-02 | Applied approved architecture rulings `AR-1`…`AR-4`. §2 records Library Discovery as a non-context read composition. §11.1 added, distinguishing the Platform Public Discovery Index from Tenant Operational Data without relaxing `MP-GBR-08`, `SE-1` or `X-13`. §14 added as the in-document rulings summary, including invitation ownership. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed.** |
 | **v1.0** | 2026-07-30 | Initial bounded context map derived from Enterprise Architecture v2.0. 31 contexts registered, 26 integration edges specified, Identity Triad defined, 14 ubiquitous-language collisions resolved, 17 aggregates with invariants, 30 V1 events, extraction order set. |
 

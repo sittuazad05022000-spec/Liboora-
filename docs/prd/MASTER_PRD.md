@@ -3,13 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | Master PRD |
-| **Version** | v1.2 |
-| **Supersedes** | v1.1 (refined) · v1.0 (Foundation Document) |
+| **Version** | v1.3 |
+| **Supersedes** | v1.2 · v1.1 (refined) · v1.0 (Foundation Document) |
 | **Status** | Foundation Document — aligned to Enterprise Architecture v2.0 |
 | **Governance position** | `FOUNDATION → Master PRD (V1)` in the Enterprise Architecture tree |
-| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 · `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.0 · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 |
+| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 · `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.2** · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 |
 | **Identifier namespace** | `MP-*` — reserved exclusively for this document, collision-free against every other register |
-| **Rulings applied** | `AR-1` — see [`../architecture/ARCHITECTURE_RULINGS.md`](../architecture/ARCHITECTURE_RULINGS.md) |
+| **Rulings applied** | `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7` — see [`../architecture/ARCHITECTURE_RULINGS.md`](../architecture/ARCHITECTURE_RULINGS.md). (`AR-3`, `AR-4` affect the Bounded Context Map and Library PRD, not this document.) |
 
 ---
 
@@ -591,15 +591,16 @@ Every module must have its own independent PRD. The Master PRD never duplicates 
 | Document | Status |
 |---|---|
 | **Enterprise Architecture v2.0** | Approved — governing |
-| **Bounded Context Map v1.1** | Approved — governing |
-| **Module Dependency Matrix v1.0** | Approved — governing |
-| **Architecture Rulings Register v1.0** | **Added** — approved, authoritative. `AR-1`…`AR-4` |
+| **Bounded Context Map v1.2** | Approved — governing. `AR-1`…`AR-7` applied |
+| **Module Dependency Matrix v1.0** | Approved — governing. **Known defect:** declares `contracts: path: lib/contracts`, which does not exist; the shared kernel is `packages/liboora_contracts/`. Deferred as governance task `R-5` |
+| **Architecture Rulings Register v1.1** | **Approved, authoritative.** `AR-1`…`AR-7` |
 | ADR Summary | Listed in v1.0 — **no ADR files exist**; the Rulings Register is the interim register of record (governance task `R-3`) |
 | Architecture Handbook | Listed in v1.0 |
 | System Architecture | **Resolved by ruling `R-1`** — `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 **is** the authoritative System Architecture |
 | Database Design (ERD) | Listed in v1.0 |
 | API Specification | Listed in v1.0 |
-| Authentication PRD | Listed in v1.0 — **chapters not yet committed (defect `D-7`)** |
+| Authentication PRD | **Custody shell only.** All eleven chapters are transfer slots containing **0 body characters**; `docs/prd/authentication/README.md` states `STATUS = TRANSFER PENDING — NOT LOCKED`. Defect `D-7` **OPEN**. The approved chapter text is not held in the repository |
+| **Authentication implementation record** | **Added** — `ACR-001` (approved) · `ACR-002` (superseded by `AR-5`/`AR-6`/`AR-7`) · `ACN-001` (**open** — OTP request rate limiting unspecified) · `IVR-001` v1.1 (validated) · `CHANGE_REPORT-001` · `VERIFICATION_REPORT-001` |
 | **Library PRD** (Organization & Library Management) | **Added** — `docs/prd/library/`. §14A captured and reviewed; **§§1–25 not yet supplied** |
 | Student Management · Membership · Attendance · Seat · Revenue & Finance · Analytics · Notifications · Security & Automation · AI Super Assistant PRDs | Listed in v1.0 |
 | **Domain Model · Data Dictionary · Business Capability Map** | **Added** — present in EA tree, absent from v1.0 §25 |
@@ -703,6 +704,7 @@ Auditable proof that refinement did not become deletion.
 
 | Version | Change |
 |---|---|
+| **v1.3** | Cross-reference alignment only. Header records Bounded Context Map **v1.2** and rulings `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7`. §31 updated: Rulings Register v1.1, BC Map v1.2, the Module Dependency Matrix's known `lib/contracts` defect, the Authentication PRD's true state (custody shell, 0 body characters, `D-7` open), and the Authentication implementation record. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.2** | Applied approved rulings. `AR-1`: registered module 19, Library Discovery & Enrollment, as a read composition owning no aggregate — §5.1's 23-bounded-context V1 scope is unchanged. `R-1`: §31 records `LIBOORA_ENTERPRISE_ARCHITECTURE.md` as the authoritative System Architecture. §31 adds the Architecture Rulings Register and the Library PRD, and records that no ADR files exist. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.1** | Enterprise review and refinement against approved Enterprise Architecture v2.0. 8 conflicts resolved, 7 duplicates merged, 9 business rules recovered from the architecture, 9 sections added, roadmap vocabulary normalised to V1/V2/V3/Future, product name corrected to LIBOORA. No requirement removed. |
 | **v1.0** | Initial Foundation Document. |

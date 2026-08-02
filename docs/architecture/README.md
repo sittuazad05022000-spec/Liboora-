@@ -7,14 +7,16 @@ This directory is the **source of truth** for LIBOORA's enterprise architecture.
 | Document | Version | Purpose |
 |---|---|---|
 | [`LIBOORA_ENTERPRISE_ARCHITECTURE.md`](./LIBOORA_ENTERPRISE_ARCHITECTURE.md) | `v2.0` | Master architecture: full review, duplicate resolution matrix, principle validation, audit scores, and the complete 25-platform architecture tree |
-| [`LIBOORA_BOUNDED_CONTEXT_MAP.md`](./LIBOORA_BOUNDED_CONTEXT_MAP.md) | `v1.0` | DDD model boundaries: 31 bounded contexts, the Identity Triad, ubiquitous-language collisions, 26 integration edges, 17 aggregates with invariants, V1 event surface, extraction order |
+| [`LIBOORA_BOUNDED_CONTEXT_MAP.md`](./LIBOORA_BOUNDED_CONTEXT_MAP.md) | `v1.1` | DDD model boundaries: 31 bounded contexts, the Identity Triad, ubiquitous-language collisions, 26 integration edges, 17 aggregates with invariants, V1 event surface, extraction order |
 | [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](./LIBOORA_MODULE_DEPENDENCY_MATRIX.md) | `v1.0` | Enforceable code boundaries: 5 dependency laws, 10 ranks, the full dependency matrix, per-platform allow-lists, 14 forbidden edges, cycle-breaking patterns, 3-layer CI enforcement |
 | [`../../tool/module_dependencies.yaml`](../../tool/module_dependencies.yaml) | `v1` | **Machine-readable** normative rules consumed by `tool/check_module_boundaries.dart` in CI |
+| [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) | `v1.0` | **Approved architecture rulings** `AR-1`…`AR-4`. Authoritative; overrides any contradicting statement elsewhere. Interim register of record until a formal ADR set exists |
 
 ### Designations
 
 | Governance role | Designated document | Ruling |
 |---|---|---|
+| **Architecture decisions** | [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) | Interim register of record for approved decisions (`AR-*`) while a formal ADR set is deferred as governance task `R-3`. |
 | **System Architecture** | [`LIBOORA_ENTERPRISE_ARCHITECTURE.md`](./LIBOORA_ENTERPRISE_ARCHITECTURE.md) | **R-1**, ruled by the product owner. This document **is** the project's authoritative System Architecture for all architecture validation, traceability, implementation review and consistency checking. No separately-named "System Architecture" file exists, and none is required. The absence of one is **not** a blocker. |
 
 ### Reading order
@@ -28,7 +30,8 @@ This directory is the **source of truth** for LIBOORA's enterprise architecture.
 - **Before naming a class** → check *Ubiquitous Language Collisions* (Context Map §5). `Student`, `Member`, `Payment`, `Plan`, `Invoice`, `Attendance`, `Session`, `Role` and `Library` are all ambiguous and have binding resolutions.
 - **Before adding an import across modules** → check the matrix (§5) and the allow-lists (§6). Default is **deny**.
 - **Before modelling a person** → read the *Identity Triad* (Context Map §4). `AccountId` ≠ `PersonId` ≠ `StudentRecordId`. Getting this wrong makes multi-library membership unimplementable.
-- **Before changing structure** → follow the *Change Process* (§10.5): raise an ADR, verify ownership, bump the version header.
+- **Before changing structure** → follow the *Change Process* (§10.5): raise an ADR, verify ownership, bump the version header. While `docs/adr/` does not exist, record the decision in [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) instead.
+- **Before adding a product surface** → check whether it is a **context** or a **composition**. Dashboards, the Parent Portal and Library Discovery & Enrollment (`AR-1`) are compositions: they own no aggregate and no invariant.
 - **Multi-tenant work** → the six *Multi-Tenant Invariants* (§10.2) plus forbidden edge **X-13** (tenant-less cache/index keys) are non-negotiable.
 
 ## Open action items

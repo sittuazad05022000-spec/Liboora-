@@ -3,7 +3,32 @@
 **Reviewed document:** [`14A-Library-Discovery-And-Enrollment.md`](./14A-Library-Discovery-And-Enrollment.md) (captured verbatim)
 **Review date:** 2026-08-02
 **Reviewer roles:** Principal Software Architect · Staff Engineer · Enterprise PM · Domain Architect · Security Architect · Senior QA
-**Verdict:** **REQUIRES MAJOR REVISION** — 7 confirmed conflicts, 2 of them blocking.
+**Verdict at time of review:** **REQUIRES MAJOR REVISION** — 7 confirmed conflicts, 2 of them blocking.
+
+---
+
+## 0. Post-ruling status — updated 2026-08-02
+
+The product owner has issued rulings `AR-1`…`AR-4`
+([`ARCHITECTURE_RULINGS.md`](../../architecture/ARCHITECTURE_RULINGS.md)). The review body below is preserved
+**unedited** as the historical record. This section records the current disposition of each conflict.
+
+| Conflict | Ruling | Disposition |
+|---|---|---|
+| `CC-1` Capability unregistered | `AR-1` | ✅ **Resolved.** Registered as a read composition, `MASTER_PRD.md` §8 module 19, *not a context*. Context count unchanged at 31 |
+| `CC-2` Cross-tenant index vs `X-13` | `AR-3` | ✅ **Resolved at architecture level.** Platform Public Discovery Index distinguished from Tenant Operational Data, Context Map §11.1. `MP-GBR-08`, `SE-1`, `X-13` remain in force, unmodified |
+| `CC-3` Six owners in one profile | `AR-1` | ✅ **Resolved.** Discovery composes and references; owns nothing. ⚠ §14A.5 / §14A.7 / `LIB-DISC-007` wording corrections outstanding for the next PRD revision |
+| `CC-4` Flow unimplementable | `AR-2` | ⚠ **Architecture confirmed; implementation gap OPEN.** Account creation on first successful OTP explicitly approved. Divergence documented in [`ACR-001`](../authentication/ACR-001-OTP-Account-Creation.md). **No production code changed** pending approval |
+| `CC-5` Notifications contradiction | — | ⬜ **Outstanding.** Documentation wording, next PRD revision |
+| `CC-6` Maps vendor knowledge | — | ⬜ **Outstanding.** Documentation wording, next PRD revision |
+| `CC-7` Invitations unowned | `AR-4` | ◐ **Ownership resolved** — Library Management / Tenant Organization. **Security specification deferred by ruling; must not be invented** |
+| `R-A`…`R-G` | — | ⬜ **Outstanding.** Documentation only |
+| `U-1`…`U-6` | — | ⬜ **Still unverified.** `U-4` (§§1–25 not supplied) remains the largest gap |
+
+**Revised freeze readiness: REQUIRES MINOR CHANGES — blocked only by `U-4`.** All four structural blockers are
+ruled. What remains is documentation wording (`CC-3` residue, `CC-5`, `CC-6`, `R-A`…`R-G`), one approval gate
+(`ACR-001`), one deferred specification (`AR-4` security rules), and the unsupplied §§1–25 — which alone
+prevents a freeze, since §14A cannot be frozen in isolation from the document it belongs to.
 
 ---
 
@@ -361,16 +386,18 @@ Not *Ready to Freeze*, and not *Ready after Minor Changes*. The justification is
 
 ### Path to freeze
 
-| Step | Action | Owner |
-|---|---|---|
-| 1 | Rule on `CC-1` — register Library Discovery as a read composition (or assign a `BC-` number) | Product owner + Architect |
-| 2 | Rule on `CC-4` — authorise the `BC-18` self-registration reconciliation; write Authentication Chapter 3 | Product owner + Security |
-| 3 | Rule on `CC-2` — grant or refuse the narrow tenant-directory index exemption | Product owner + Security |
-| 4 | Rule on `CC-7` — assign invitation ownership and token invariants | Product owner + Security |
-| 5 | Apply `CC-3`, `CC-5`, `CC-6` wording corrections (mechanical once step 1 lands) | Documentation |
-| 6 | Apply `R-A`…`R-G` | Documentation |
-| 7 | Supply sections 1–25 and re-review for internal consistency | Product owner |
-| 8 | Re-assess freeze readiness | Reviewer |
+| Step | Action | Owner | Status |
+|---|---|---|---|
+| 1 | Rule on `CC-1` — register Library Discovery as a read composition | Product owner + Architect | ✅ **Done** — `AR-1` |
+| 2 | Rule on `CC-4` — authorise the `BC-18` self-registration reconciliation | Product owner + Security | ✅ **Ruled** — `AR-2`. Implementation awaits `ACR-001` approval |
+| 3 | Rule on `CC-2` — grant or refuse the tenant-directory index distinction | Product owner + Security | ✅ **Done** — `AR-3` |
+| 4 | Rule on `CC-7` — assign invitation ownership | Product owner + Security | ✅ **Done** — `AR-4`. Security spec deferred by ruling |
+| 5 | Approve `ACR-001`, then implement account creation on first OTP | Product owner + Security | ⬜ Pending |
+| 6 | Apply `CC-3` residue, `CC-5`, `CC-6` wording corrections | Documentation | ⬜ Pending next PRD revision |
+| 7 | Apply `R-A`…`R-G` | Documentation | ⬜ Pending next PRD revision |
+| 8 | Document the `AR-4` invitation security specification | Product owner + Security | ⬜ Deferred by ruling |
+| 9 | Supply sections 1–25 and re-review for internal consistency | Product owner | ⬜ **Outstanding — sole freeze blocker** |
+| 10 | Re-assess freeze readiness | Reviewer | ⬜ Pending |
 
 ### What is already sound and must not be changed
 

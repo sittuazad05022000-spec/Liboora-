@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
-| **Last Updated** | 2026-07-30 |
-| **Context Count** | 31 (23 in V1 scope) |
+| **Last Updated** | 2026-08-02 |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
+| **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
 
 ---
 
@@ -27,6 +28,7 @@
 11. [Multi-Tenancy in the Context Map](#11-multi-tenancy-in-the-context-map)
 12. [Microservice Extraction Order](#12-microservice-extraction-order)
 13. [Open Questions](#13-open-questions)
+14. [Architecture Rulings](#14-architecture-rulings)
 
 ---
 
@@ -78,6 +80,8 @@ A platform is an **ownership and deployment grouping**. A bounded context is a *
 | Everything else | 1 platform ≈ 1 context | These are already correctly scoped. |
 
 Dashboards (`Owner`, `Manager`, `Reception`, `Parent`) are **not contexts**. They are presentation compositions over read models. They own no aggregate and no invariant. This is already stated in the tree and is reaffirmed here.
+
+**Library Discovery & Enrollment is likewise not a context** (ruling `AR-1`). It is an application / read composition capability of the Library domain: it owns **no aggregate, no invariant and no business state**, it orchestrates **public read models only**, and it delegates every domain operation to the owning module — registration to `BC-18`, membership creation to `BC-02`, student records to `BC-01`. It composes `BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02` and `BC-04` through `BC-23`, and **references those contexts rather than duplicating them**. No `BC-` identifier is assigned; the context count remains 31.
 
 ---
 
@@ -473,6 +477,24 @@ Three places where the eventual-by-default rule is explicitly overridden, with t
 | BC-18 Identity | **Hybrid.** `Account` is global; role assignments are tenant-scoped. | `AccessPolicy` is always evaluated with a tenant in scope |
 | BC-19→31 Capability | **Tenant-aware.** Carry and propagate `tenantId`, own no tenant data of record. | Indices, caches, projections, prompts, embeddings and files are **all** tenant-partitioned. Vector search isolation is asserted per query, not by convention. |
 
+### 11.1 Platform Public Discovery Index vs Tenant Operational Data
+
+Ruling `AR-3` establishes two **categorically different** index classes. Conflating them is the failure mode described below.
+
+| | **Platform Public Discovery Index** | **Tenant Operational Data** |
+|---|---|---|
+| **Indexed unit** | The `TenantOrganisation` record itself (`BC-19`) | Rows belonging to one tenant |
+| **Contents** | Only explicitly public library metadata — the fields enumerated in Library PRD §14A.5 | Students, memberships, attendance, fees, analytics, configuration, staff |
+| **Tenant key in index name** | Not applicable — the tenant **is** the indexed record | **Mandatory** — `MP-GBR-08`, `SE-1`, forbidden edge `X-13` |
+| **Caller tenant context** | None; anonymous and pre-authentication | Always required (`E-18`) |
+| **Visibility gate** | `LIB-DISC-002` (verified + activated) and `LIB-DISC-004` (Private excluded) | Tenant-private, permission-scoped |
+| **Severity if violated** | Indexing tenant-private data here is a **blocker** | Serving a tenant-less query is a **blocker** |
+
+**This distinction does not relax any existing rule.** `MP-GBR-08`, `SE-1` and `X-13` remain in force,
+unmodified, at `blocker` severity for all tenant operational data. `AR-3` states only that a *directory of
+tenants* is not an *index of tenant data*. Operational, financial, administrative, member, attendance and
+analytics data must **never** appear in the public discovery index.
+
 **The single highest-severity failure mode in the entire architecture** is a cross-tenant data leak via a capability context — an unpartitioned search index, a shared embedding collection, or a cache key missing the tenant prefix. The Quality Platform's **Multi-Tenant Test Suite** exists specifically to make this class of bug fail in CI. Treat any change to a cache key, index name, or vector namespace as a security-reviewable change.
 
 ---
@@ -513,10 +535,35 @@ Items requiring a decision before V1 implementation freeze. Each should become a
 
 ---
 
+## 14. Architecture Rulings
+
+Approved project decisions issued by the product owner. The register of record is
+[`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md); this section states their effect on **this** document.
+A ruling settles ownership, classification and boundaries. It creates no requirement.
+
+| ID | Ruling | Effect on this map |
+|---|---|---|
+| **`AR-1`** | Library Discovery & Enrollment is **not** a bounded context. It is an application / read composition capability of the Library domain, owning no aggregate, no invariant and no business state. | §2 — recorded alongside Dashboards as a non-context composition. Context count unchanged at 31. No `BC-` identifier assigned. |
+| **`AR-2`** | The Authentication architecture is the source of truth. **Account creation on first successful OTP verification is explicitly approved.** `BC-18` retains OTP, Registration, Account creation, Session management and Authorization handoff. Library Discovery must never implement registration logic. | §4 Identity Triad is **confirmed, not changed** — *"Created on first successful OTP"* stands as written. Implementation divergence documented in [`ACR-001`](../prd/authentication/ACR-001-OTP-Account-Creation.md); no production code altered. |
+| **`AR-3`** | Public Library Discovery is a **platform-wide public directory** indexing only explicitly public library metadata. It is not a tenant data index, and must not weaken tenant isolation. | §11.1 added — distinguishes the Platform Public Discovery Index from Tenant Operational Data. `MP-GBR-08`, `SE-1` and `X-13` remain in force, unmodified. |
+| **`AR-4`** | Invitation Links, Invitation QR Codes and Library Invitation Codes are owned by the **Library Management / Tenant Organization** module. Authentication, Membership and Student Identity do **not** own invitations. | Ownership assigned below. The invitation **security specification is deferred by ruling** and must not be invented. |
+
+### 14.1 Invitation ownership (`AR-4`)
+
+| Aspect | Position |
+|---|---|
+| **Owner** | Library Management / Tenant Organization |
+| **Not owned by** | `BC-18` Identity & Access · `BC-02` Membership · `BC-01` Enrollment / Global Student Identity |
+| **Rationale** | An invitation is the access mechanism for a **Private library** (Library PRD §14A.6) — a property of the organisation, not of a credential or a plan |
+| **Deferred — do not invent** | Expiry · revocation · single-use policy · entropy · validation rules · audit logging. To be documented separately. |
+
+---
+
 ## Changelog
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-02 | Applied approved architecture rulings `AR-1`…`AR-4`. §2 records Library Discovery as a non-context read composition. §11.1 added, distinguishing the Platform Public Discovery Index from Tenant Operational Data without relaxing `MP-GBR-08`, `SE-1` or `X-13`. §14 added as the in-document rulings summary, including invitation ownership. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed.** |
 | **v1.0** | 2026-07-30 | Initial bounded context map derived from Enterprise Architecture v2.0. 31 contexts registered, 26 integration edges specified, Identity Triad defined, 14 ubiquitous-language collisions resolved, 17 aggregates with invariants, 30 V1 events, extraction order set. |
 
 

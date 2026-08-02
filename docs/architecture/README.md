@@ -11,6 +11,12 @@ This directory is the **source of truth** for LIBOORA's enterprise architecture.
 | [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](./LIBOORA_MODULE_DEPENDENCY_MATRIX.md) | `v1.0` | Enforceable code boundaries: 5 dependency laws, 10 ranks, the full dependency matrix, per-platform allow-lists, 14 forbidden edges, cycle-breaking patterns, 3-layer CI enforcement |
 | [`../../tool/module_dependencies.yaml`](../../tool/module_dependencies.yaml) | `v1` | **Machine-readable** normative rules consumed by `tool/check_module_boundaries.dart` in CI |
 
+### Designations
+
+| Governance role | Designated document | Ruling |
+|---|---|---|
+| **System Architecture** | [`LIBOORA_ENTERPRISE_ARCHITECTURE.md`](./LIBOORA_ENTERPRISE_ARCHITECTURE.md) | **R-1**, ruled by the product owner. This document **is** the project's authoritative System Architecture for all architecture validation, traceability, implementation review and consistency checking. No separately-named "System Architecture" file exists, and none is required. The absence of one is **not** a blocker. |
+
 ### Reading order
 
 **Tree** (what exists, who owns it) → **Context Map** (where the model boundaries are) → **Dependency Matrix** (what the compiler will refuse) → **YAML** (what CI checks).

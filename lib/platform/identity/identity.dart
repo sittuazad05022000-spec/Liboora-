@@ -311,11 +311,11 @@ final class AuthService {
       expiresAt: _clock.now().add(challengeTtl),
     );
 
-    // The only branch is on *storage*, never on the response. An unregistered
-    // number consumes the same work and yields the same observable outcome.
-    if (_accountForPhone(phone) != null) {
-      _issued[phone] = challenge;
-    }
+    // AR-7: there is no branch on registration status at all — not in the
+    // response, and not in storage either. A registered and an unregistered
+    // number consume the same work and leave the same internal state, so
+    // neither the response, the timing, nor the memory profile discriminates.
+    _issued[phone] = challenge;
   }
 
   /// Debug-only retrieval of the issued code. Returns null unless the wiring
@@ -323,11 +323,29 @@ final class AuthService {
   String? debugPeekChallenge(String phone) =>
       challengePeekEnabled ? _issued[phone]?.code : null;
 
-  AuthSession? verifyOtp({
+  /// **Stage 1 — Authentication only** (AR-6).
+  ///
+  /// Verifies possession of the number and, on the *first* successful
+  /// verification, creates the [Account] (AR-2, Bounded Context Map §4:
+  /// *"Created on first successful OTP"*).
+  ///
+  /// Deliberately takes **no tenant and no branch**: a tenant parameter on an
+  /// authentication call would merge Authentication with Authorization, which
+  /// AR-6 forbids. Roles, and therefore sessions, are a separate stage —
+  /// see [issueSession].
+  ///
+  /// [displayName] is the name the **Registration flow collected before OTP
+  /// verification** (AR-5). It is used only when an account must be created.
+  /// An existing account's display name is never rewritten here: profile
+  /// mutation is not an Authentication concern.
+  ///
+  /// Returns null when the challenge is absent, expired or exhausted, when the
+  /// code does not match, or when creation is required and no usable collected
+  /// name was supplied.
+  Account? verifyOtp({
     required String phone,
     required String code,
-    required TenantId tenant,
-    required BranchId branch,
+    String? displayName,
   }) {
     final challenge = _issued[phone];
     if (challenge == null) return null;
@@ -347,8 +365,43 @@ final class AuthService {
 
     _issued.remove(phone); // single-use
 
-    final account = _accountForPhone(phone);
-    if (account == null) return null;
+    final existing = _accountForPhone(phone);
+    if (existing != null) return existing;
+
+    // First successful verification for this number: create the Account.
+    //
+    // AR-5 prohibits an empty string, the mobile number, a placeholder and an
+    // auto-generated name. Nothing is generated or derived here — absent a
+    // usable collected name, no account is created.
+    final name = displayName?.trim() ?? '';
+    if (name.isEmpty || name == phone.trim()) return null;
+
+    final created = Account(
+      id: AccountId(_ids.next('acc')),
+      phone: phone,
+      displayName: name,
+      // AR-6: an Account may exist before any tenant role exists. Roles are
+      // assigned by Authorization after Membership Processing.
+      roles: const {},
+    );
+    _accounts.add(created);
+    return created;
+  }
+
+  /// **Stage 2 — Session issuance** (AR-6).
+  ///
+  /// Separate from authentication by ruling: *"Session issuance shall occur
+  /// only after the required authorization context exists."* Returns null while
+  /// the account holds no role in [tenant] — an authenticated account with no
+  /// tenant role is a legitimate state, not a failure.
+  ///
+  /// Takes an already-verified [Account], never a phone number, so it cannot be
+  /// used as an existence oracle.
+  AuthSession? issueSession({
+    required Account account,
+    required TenantId tenant,
+    required BranchId branch,
+  }) {
     final roles = account.rolesIn(tenant);
     if (roles.isEmpty) return null;
 

@@ -31,6 +31,7 @@ final class SessionController extends ChangeNotifier {
   final AppContainer container;
 
   AuthSession? _session;
+  Account? _verifiedAccount;
   BranchId _branch = kDemoBranch;
   String? _otpHint;
   String? _error;
@@ -39,6 +40,16 @@ final class SessionController extends ChangeNotifier {
   bool get isSignedIn => _session != null;
   String? get otpHint => _otpHint;
   String? get error => _error;
+
+  /// An account that passed OTP verification but holds no role in this tenant,
+  /// so no session could be issued (AR-6). This is a legitimate state, not a
+  /// failure: role assignment happens in Membership Processing, after
+  /// authentication. Null whenever a session exists or none was attempted.
+  Account? get verifiedAccount => _verifiedAccount;
+
+  /// True when the number is verified and the account exists, but the tenant
+  /// role required for session issuance does not exist yet.
+  bool get awaitingAuthorization => _session == null && _verifiedAccount != null;
 
   Account? get account => _session?.account;
   AccessRole get role => _session?.activeRole ?? AccessRole.student;
@@ -72,25 +83,64 @@ final class SessionController extends ChangeNotifier {
   /// enumeration oracle, one layer up from the service.
   void requestOtp(String phone) {
     _error = null;
+    _verifiedAccount = null;
     container.auth.requestOtp(phone.trim());
-    // Null unless this is a debug wiring; null for unknown numbers regardless.
+    // Null unless this is a debug wiring. Under AR-7 a challenge now exists for
+    // every requested number, so this hint is uniform too — it no longer
+    // discriminates registered from unregistered.
     _otpHint = container.auth.debugPeekChallenge(phone.trim());
     notifyListeners();
   }
 
-  bool verifyOtp({required String phone, required String code}) {
+  /// Verify the challenge and, if authorization allows, sign in.
+  ///
+  /// Two stages by ruling AR-6 — authentication first, session issuance second.
+  /// Returns true only when a session was actually issued.
+  ///
+  /// [displayName] is the name Registration collected **before** OTP
+  /// verification (AR-5). It is consumed only when the account does not exist
+  /// yet; for an existing account it is ignored, which is what keeps this call
+  /// uniform for registered and unregistered numbers.
+  bool verifyOtp({
+    required String phone,
+    required String code,
+    String? displayName,
+  }) {
     _error = null;
-    final s = container.auth.verifyOtp(
+    _verifiedAccount = null;
+
+    // Stage 1 — Authentication. Yields the verified account, creating it on a
+    // first successful verification.
+    final account = container.auth.verifyOtp(
       phone: phone.trim(),
       code: code.trim(),
-      tenant: kDemoTenant,
-      branch: _branch,
+      displayName: displayName?.trim(),
     );
-    if (s == null) {
+    if (account == null) {
       _error = 'That code did not match. Request a new one.';
       notifyListeners();
       return false;
     }
+
+    // Stage 2 — Session issuance. Only once the authorization context exists.
+    final s = container.auth.issueSession(
+      account: account,
+      tenant: kDemoTenant,
+      branch: _branch,
+    );
+    if (s == null) {
+      // Authenticated, account exists, no tenant role yet. Reported as the
+      // distinct state it is, never as an authentication failure — collapsing
+      // the two would breach the requirement that a successful verification be
+      // distinguishable from a failed one.
+      _verifiedAccount = account;
+      _otpHint = null;
+      _error =
+          'Number verified. This account is not a member of any library yet.';
+      notifyListeners();
+      return false;
+    }
+
     _session = s;
     _otpHint = null;
 
@@ -106,6 +156,7 @@ final class SessionController extends ChangeNotifier {
 
   void signOut() {
     _session = null;
+    _verifiedAccount = null;
     _otpHint = null;
     _error = null;
     container.leaveScope();

@@ -21,12 +21,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _name = TextEditingController();
   final _phone = TextEditingController();
   final _code = TextEditingController();
   bool _otpSent = false;
 
   @override
   void dispose() {
+    _name.dispose();
     _phone.dispose();
     _code.dispose();
     super.dispose();
@@ -42,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _verify() {
     final s = context.read<SessionController>();
-    s.verifyOtp(phone: _phone.text, code: _code.text);
+    // The name was collected before OTP verification (AR-5) and is consumed
+    // only if this number has no account yet.
+    s.verifyOtp(
+      phone: _phone.text,
+      code: _code.text,
+      displayName: _name.text,
+    );
   }
 
   void _useAccount(String phone) {
@@ -111,14 +119,29 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               _otpSent
                   ? 'Sent to +91 ${_phone.text}'
-                  : 'Use your registered mobile number',
+                  : 'Enter your name and mobile number',
               style: const TextStyle(
                 fontSize: 12.5,
                 color: LiblColors.textMuted,
               ),
             ),
             const SizedBox(height: LiblSpace.xl),
-            if (!_otpSent)
+            if (!_otpSent) ...[
+              // Shown for *every* number, unconditionally. Choosing the fields
+              // by whether the number is registered would rebuild the F-02
+              // enumeration oracle in the presentation layer, one level above
+              // the fix. Collected here because AR-5 requires the display name
+              // before OTP verification; ignored for an existing account.
+              TextField(
+                controller: _name,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  labelText: 'Your name',
+                  helperText: 'Used to create your account if you are new',
+                  prefixIcon: Icon(Icons.person_outline, size: 20),
+                ),
+              ),
+              const SizedBox(height: LiblSpace.md),
               TextField(
                 controller: _phone,
                 keyboardType: TextInputType.phone,
@@ -131,8 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   counterText: '',
                   prefixIcon: Icon(Icons.phone_outlined, size: 20),
                 ),
-              )
-            else
+              ),
+            ] else
               TextField(
                 controller: _code,
                 keyboardType: TextInputType.number,

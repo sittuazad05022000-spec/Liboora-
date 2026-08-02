@@ -183,23 +183,35 @@ void main() {
       svc.requestOtp(unknown);
     });
 
-    test('an unknown number yields no usable challenge and no signal', () {
+    // Re-expressed under ruling AR-7 (option C1): the security objective of
+    // F-02 is anti-enumeration, so this test asserts that no *observable*
+    // difference exists between a registered and an unregistered number. It
+    // previously asserted `_issued` membership, which is an implementation
+    // detail read through a debug surface that is disabled in release wiring.
+    test('a registered and an unregistered number are indistinguishable', () {
       final clock = FixedClock(_t0);
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
       );
+
+      svc.requestOtp(known);
       svc.requestOtp(unknown);
-      expect(svc.debugPeekChallenge(unknown), isNull);
-      expect(
-        svc.verifyOtp(
-          phone: unknown,
-          code: '123456',
-          tenant: tenant,
-          branch: branch,
-        ),
-        isNull,
-      );
+
+      // Identical treatment: a challenge of identical shape exists for both.
+      final forKnown = svc.debugPeekChallenge(known);
+      final forUnknown = svc.debugPeekChallenge(unknown);
+      expect(forKnown, isNotNull);
+      expect(forUnknown, isNotNull);
+      expect(forUnknown, hasLength(forKnown!.length));
+
+      // And a wrong code fails identically for both.
+      expect(svc.verifyOtp(phone: known, code: '000000'), isNull);
+      expect(svc.verifyOtp(phone: unknown, code: '000000'), isNull);
+
+      // No account was created for the unregistered number: verification did
+      // not succeed, so nothing exists to sign in with.
+      expect(svc.accounts, hasLength(1));
     });
 
     test('the challenge is not a function of the subject', () {
@@ -237,10 +249,7 @@ void main() {
       final code = svc.debugPeekChallenge(known)!;
 
       clock.advance(AuthService.challengeTtl + const Duration(seconds: 1));
-      expect(
-        svc.verifyOtp(phone: known, code: code, tenant: tenant, branch: branch),
-        isNull,
-      );
+      expect(svc.verifyOtp(phone: known, code: code), isNull);
     });
 
     test('the challenge has an attempt budget', () {
@@ -253,18 +262,10 @@ void main() {
       final code = svc.debugPeekChallenge(known)!;
 
       for (var i = 0; i < AuthService.maxVerifyAttempts + 1; i++) {
-        svc.verifyOtp(
-          phone: known,
-          code: '000000',
-          tenant: tenant,
-          branch: branch,
-        );
+        svc.verifyOtp(phone: known, code: '000000');
       }
       // Budget exhausted: the correct code no longer helps.
-      expect(
-        svc.verifyOtp(phone: known, code: code, tenant: tenant, branch: branch),
-        isNull,
-      );
+      expect(svc.verifyOtp(phone: known, code: code), isNull);
     });
 
     test('the challenge is single-use', () {
@@ -276,17 +277,9 @@ void main() {
       svc.requestOtp(known);
       final code = svc.debugPeekChallenge(known)!;
 
-      final first = svc.verifyOtp(
-        phone: known,
-        code: code,
-        tenant: tenant,
-        branch: branch,
-      );
+      final first = svc.verifyOtp(phone: known, code: code);
       expect(first, isNotNull);
-      expect(
-        svc.verifyOtp(phone: known, code: code, tenant: tenant, branch: branch),
-        isNull,
-      );
+      expect(svc.verifyOtp(phone: known, code: code), isNull);
     });
 
     test('the peek surface is off unless explicitly enabled', () {
@@ -307,14 +300,219 @@ void main() {
         clock: clock,
       );
       svc.requestOtp(known);
-      final session = svc.verifyOtp(
+      // Two stages under AR-6: authenticate, then issue a session.
+      final account = svc.verifyOtp(
         phone: known,
         code: svc.debugPeekChallenge(known)!,
+      );
+      final session = svc.issueSession(
+        account: account!,
         tenant: tenant,
         branch: branch,
       );
       expect(session!.id, isA<SessionId>());
       expect(session.id.value, isNot(contains(known)));
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RULINGS AR-2 / AR-5 / AR-6 — an Account is created on the first
+  // successful OTP verification, using a name Registration collected
+  // beforehand; authentication and session issuance are separate stages.
+  // These tests fail if a ruling is reversed in code.
+  // ═══════════════════════════════════════════════════════════════════
+  group('AR-2 / AR-5 / AR-6 · account creation and stage separation', () {
+    const newcomer = '9990000001';
+    const collectedName = 'Anjali Deshmukh';
+
+    AuthService seeded(FixedClock clock) => _service(
+      accounts: [_account(known, tenant, AccessRole.student)],
+      clock: clock,
+    );
+
+    test('a first successful verification creates the account (AR-2)', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock);
+
+      svc.requestOtp(newcomer);
+      final account = svc.verifyOtp(
+        phone: newcomer,
+        code: svc.debugPeekChallenge(newcomer)!,
+        displayName: collectedName,
+      );
+
+      expect(account, isNotNull);
+      expect(account!.phone, newcomer);
+      expect(account.displayName, collectedName);
+      expect(svc.accounts, hasLength(2));
+    });
+
+    test('creation is refused without a collected display name (AR-5)', () {
+      final clock = FixedClock(_t0);
+
+      // No name at all.
+      final a = seeded(clock)..requestOtp(newcomer);
+      expect(
+        a.verifyOtp(phone: newcomer, code: a.debugPeekChallenge(newcomer)!),
+        isNull,
+      );
+      expect(a.accounts, hasLength(1));
+
+      // Empty, and whitespace-only, are both the prohibited empty string.
+      for (final prohibited in ['', '   ']) {
+        final svc = seeded(clock)..requestOtp(newcomer);
+        expect(
+          svc.verifyOtp(
+            phone: newcomer,
+            code: svc.debugPeekChallenge(newcomer)!,
+            displayName: prohibited,
+          ),
+          isNull,
+          reason: 'AR-5 prohibits an empty display name',
+        );
+        expect(svc.accounts, hasLength(1));
+      }
+    });
+
+    test('the mobile number is not an acceptable display name (AR-5)', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock)..requestOtp(newcomer);
+
+      expect(
+        svc.verifyOtp(
+          phone: newcomer,
+          code: svc.debugPeekChallenge(newcomer)!,
+          displayName: newcomer,
+        ),
+        isNull,
+        reason: 'AR-5 prohibits the mobile number as a display name',
+      );
+      expect(svc.accounts, hasLength(1));
+    });
+
+    test('an existing display name is never rewritten (AR-5)', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock);
+
+      svc.requestOtp(known);
+      final account = svc.verifyOtp(
+        phone: known,
+        code: svc.debugPeekChallenge(known)!,
+        displayName: 'Someone Else',
+      );
+
+      expect(account, isNotNull);
+      expect(account!.displayName, 'Test $known');
+      expect(svc.accounts, hasLength(1), reason: 'no duplicate account');
+    });
+
+    test('no account is created unless verification actually succeeds', () {
+      final clock = FixedClock(_t0);
+
+      // Wrong code.
+      final wrong = seeded(clock)..requestOtp(newcomer);
+      expect(
+        wrong.verifyOtp(
+          phone: newcomer,
+          code: '000000',
+          displayName: collectedName,
+        ),
+        isNull,
+      );
+      expect(wrong.accounts, hasLength(1));
+
+      // Expired challenge.
+      final expiredClock = FixedClock(_t0);
+      final expired = seeded(expiredClock)..requestOtp(newcomer);
+      final code = expired.debugPeekChallenge(newcomer)!;
+      expiredClock.advance(
+        AuthService.challengeTtl + const Duration(seconds: 1),
+      );
+      expect(
+        expired.verifyOtp(
+          phone: newcomer,
+          code: code,
+          displayName: collectedName,
+        ),
+        isNull,
+      );
+      expect(expired.accounts, hasLength(1));
+
+      // Exhausted attempt budget.
+      final exhausted = seeded(clock)..requestOtp(newcomer);
+      final good = exhausted.debugPeekChallenge(newcomer)!;
+      for (var i = 0; i < AuthService.maxVerifyAttempts + 1; i++) {
+        exhausted.verifyOtp(phone: newcomer, code: '000000');
+      }
+      expect(
+        exhausted.verifyOtp(
+          phone: newcomer,
+          code: good,
+          displayName: collectedName,
+        ),
+        isNull,
+      );
+      expect(exhausted.accounts, hasLength(1));
+    });
+
+    test('a new account holds no tenant role, so no session is issued', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock);
+
+      svc.requestOtp(newcomer);
+      final account = svc.verifyOtp(
+        phone: newcomer,
+        code: svc.debugPeekChallenge(newcomer)!,
+        displayName: collectedName,
+      );
+
+      // AR-6: the Account exists before any tenant role exists.
+      expect(account, isNotNull);
+      expect(account!.rolesIn(tenant), isEmpty);
+
+      // And session issuance is refused until an authorization context exists.
+      expect(
+        svc.issueSession(account: account, tenant: tenant, branch: branch),
+        isNull,
+      );
+    });
+
+    test('a session is issued once a role exists in the tenant (AR-6)', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock);
+
+      svc.requestOtp(known);
+      final account = svc.verifyOtp(
+        phone: known,
+        code: svc.debugPeekChallenge(known)!,
+      );
+      final session = svc.issueSession(
+        account: account!,
+        tenant: tenant,
+        branch: branch,
+      );
+
+      expect(session, isNotNull);
+      expect(session!.account.phone, known);
+      expect(session.activeRole, AccessRole.student);
+      expect(session.tenantId, tenant);
+      expect(session.branchId, branch);
+    });
+
+    test('authentication never yields a session by itself (AR-6)', () {
+      final clock = FixedClock(_t0);
+      final svc = seeded(clock);
+
+      svc.requestOtp(known);
+      final result = svc.verifyOtp(
+        phone: known,
+        code: svc.debugPeekChallenge(known)!,
+      );
+
+      // The stages are distinct types: authentication cannot return a session,
+      // so it cannot imply an authorization outcome.
+      expect(result, isA<Account>());
+      expect(result, isNot(isA<AuthSession>()));
     });
   });
 
@@ -441,12 +639,7 @@ void main() {
       svc.requestOtp(known);
       // AuthService takes no entitlement dependency, by construction.
       expect(
-        svc.verifyOtp(
-          phone: known,
-          code: svc.debugPeekChallenge(known)!,
-          tenant: tenant,
-          branch: branch,
-        ),
+        svc.verifyOtp(phone: known, code: svc.debugPeekChallenge(known)!),
         isNotNull,
       );
     });

@@ -411,12 +411,14 @@ of the defect increases, because uniformity is now asserted across *both* number
 | `A-7 · error projection` | 6 | ✅ Unaffected | |
 | `A-8 · identity types` | 3 | ✅ Unaffected | |
 | `QA-13 · entitlement gate` | 2 | ✅ Unaffected | |
-| `widget_test.dart` | 8 | ✅ **Unaffected — verified** | Contains **no reference to `LoginScreen`** and exercises no authentication path. Supersedes the v1.0 "unknown" and its incorrect count of 9 |
+| `widget_test.dart` | 9 | ✅ **Unaffected — confirmed by execution** | Includes `testWidgets('app renders the login screen on first frame')` at line 26, which asserts `find.text('Liboora')` and `find.text('Send OTP')`. Both survive the `AR-5` name field, so the test passes unchanged |
 | **New coverage required** | ~6 | ⬜ To be written | One per ruling clause — see below |
 
-**Correction to v1.0 §6.2.** v1.0 stated `widget_test.dart` holds 9 tests including *"app renders the login screen
-on first frame."* **Both statements are wrong.** The file contains **8** tests and no `LoginScreen` reference at
-all. `RK-5` is therefore closed, not deferred.
+**Note on v1.1's own erratum.** An intermediate v1.1 draft asserted that `widget_test.dart` holds 8 tests and no
+login-screen coverage. **That assertion was wrong and has been withdrawn** — it came from grepping the class name
+`LoginScreen` (never referenced; the test pumps `LiboraaApp`) and counting `    test(` (which misses
+`testWidgets(`). **v1.0 was correct: 9 tests, including the login-screen frame test.** `RK-5` is closed on the
+evidence of that test passing, not on an absence of coverage.
 
 **New coverage, one test per ruling clause:**
 
@@ -504,7 +506,7 @@ already hold a verified account has nothing to pass it.
 | **RK-2** | **Role-less account receives no session**, so a successful verification is observably identical to a failure — a silent breach of requirement 1.3 | — | — | ✅ **CLOSED by `AR-6`.** Stage 1 succeeds by returning an `Account`, so the state is representable and success is distinguishable from failure |
 | **RK-3** | Amending an `F-02` conformance assertion weakens a closed security defect's guard | — | — | ✅ **CLOSED by `AR-7`.** The assertion is re-expressed onto the security property; the defect's guard is retained and broadened (§6.1a) |
 | **RK-4** | Unbounded `_issued` growth from unauthenticated callers (no rate limiting exists) | Medium | Medium | ⚠️ **ACCEPTED AND RECORDED — deferred by ruling.** Pre-existing, availability-only, capability not placed in V1. [`ACN-001`](./ACN-001-OTP-Request-Rate-Limiting.md). **Not a blocker** — §5 |
-| **RK-5** | `widget_test.dart` login-screen tests break if a session model changes | — | — | ✅ **CLOSED by inspection.** The file contains no `LoginScreen` reference and exercises no authentication path (§6.2) |
+| **RK-5** | `widget_test.dart` login-screen tests break if a session model changes | — | — | ✅ **CLOSED by passing test.** `widget_test.dart` holds 9 tests, one of which renders the login screen. It passes unchanged against the implemented change: no session model was introduced, and the `AR-5` field addition preserves the `'Liboora'` and `'Send OTP'` finders it asserts (§6.2) |
 | **RK-6** | Scope creep into session management, authorization or registration UI | Low | High | 🔒 **Controlled.** §4.1 enumerates a closed four-file set. `AuthSession`, revocation, `PolicyDecisionPoint`, `AccessRole`, `Permission` and `AccessScope` are explicitly untouched. Anything beyond the set stops and raises an ACR |
 | **RK-7** | `AuthService` mutating its injected `_accounts` list is a hidden side effect on a caller-owned collection (`di.dart:178` `final accounts = <Account>[]`) | Medium | Low | 🔧 **Open design note.** The list is growable, so this is mechanically viable. It is the minimum-change option: the alternative — introducing an account-repository port — would add a port and a module edge, exceeding *"minimum architecture-aligned changes."* To be stated explicitly in the Change Report |
 | **RK-8** | The registration UI could branch on whether a number is registered, rebuilding the `F-02` oracle one layer above the fix | Low | High | 🔒 **Controlled by design.** The name field is shown unconditionally for every number; the screen never queries registration status (§4.1) |
@@ -575,5 +577,5 @@ stops immediately and an Architecture Consistency Report is produced instead of 
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.1** | 2026-08-02 | Updated to reflect approved rulings `AR-5` (A1), `AR-6` (B3), `AR-7` (C1). Blocker A resolved (§4.2), Blocker B resolved (§4.3), `RK-3` resolved (§6.1a). Design derivation traced clause-by-clause to the rulings (§4.0); change set restated as four files (§4.1); `ACR-002` disposed of (§4.4). Rate limiting recorded as deferred via `ACN-001` and shown not to block (§5). Test impact restated, with two v1.0 errors about `widget_test.dart` corrected (§6.2). Risks re-dispositioned: `RK-1`, `RK-2`, `RK-3`, `RK-5` closed; `RK-4` accepted and recorded; `RK-8` added (§8). All seven validation gates now PASS; breaking change to `verifyOtp` declared (§9). **Status BLOCKED → VALIDATED. Still no code written.** |
+| **v1.1** | 2026-08-02 | Updated to reflect approved rulings `AR-5` (A1), `AR-6` (B3), `AR-7` (C1). Blocker A resolved (§4.2), Blocker B resolved (§4.3), `RK-3` resolved (§6.1a). Design derivation traced clause-by-clause to the rulings (§4.0); change set restated as four files (§4.1); `ACR-002` disposed of (§4.4). Rate limiting recorded as deferred via `ACN-001` and shown not to block (§5). Test impact restated (§6.2). Risks re-dispositioned: `RK-1`, `RK-2`, `RK-3`, `RK-5` closed; `RK-4` accepted and recorded; `RK-8` added (§8). All seven validation gates now PASS; breaking change to `verifyOtp` declared (§9). **Status BLOCKED → VALIDATED. Still no code written.** |
 | **v1.0** | 2026-08-02 | Report created. Validation halted at §4 on two unspecified states; `ACR-002` raised; no code written. |

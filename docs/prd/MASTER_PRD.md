@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Master PRD |
-| **Version** | v1.3 |
+| **Version** | v1.4 |
 | **Supersedes** | v1.2 · v1.1 (refined) · v1.0 (Foundation Document) |
 | **Status** | Foundation Document — aligned to Enterprise Architecture v2.0 |
 | **Governance position** | `FOUNDATION → Master PRD (V1)` in the Enterprise Architecture tree |
@@ -599,8 +599,8 @@ Every module must have its own independent PRD. The Master PRD never duplicates 
 | System Architecture | **Resolved by ruling `R-1`** — `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 **is** the authoritative System Architecture |
 | Database Design (ERD) | Listed in v1.0 |
 | API Specification | Listed in v1.0 |
-| Authentication PRD | **Custody shell only.** All eleven chapters are transfer slots containing **0 body characters**; `docs/prd/authentication/README.md` states `STATUS = TRANSFER PENDING — NOT LOCKED`. Defect `D-7` **OPEN**. The approved chapter text is not held in the repository |
-| **Authentication implementation record** | **Added** — `ACR-001` (approved) · `ACR-002` (superseded by `AR-5`/`AR-6`/`AR-7`) · `ACN-001` (**open** — OTP request rate limiting unspecified) · `IVR-001` v1.1 (validated) · `CHANGE_REPORT-001` · `VERIFICATION_REPORT-001` |
+| Authentication PRD | **v2.0 — present and authoritative.** `docs/prd/authentication/Authentication_PRD_v2.md` (single file) and `docs/prd/authentication/prd-v2/` (cover + eleven chapters). Defect `D-7` **CLOSED by authorship, not by transfer** — v2.0 was written from the rulings, this document's global rules, the Bounded Context Map and implemented behaviour; it does not reproduce the never-transferred v1.0 text. The eleven v1.0 transfer slots are marked superseded. Provenance and the twelve configurable parameters awaiting sign-off are recorded in `PRD-V2-GOVERNANCE-NOTE.md` |
+| **Authentication implementation record** | **Added** — `ACR-001` (approved) · `ACR-002` (superseded by `AR-5`/`AR-6`/`AR-7`) · `ACN-001` (**closed** — OTP request rate limiting specified by Authentication PRD v2.0 Chapter 8, parameters `CFG-1`–`CFG-4`) · `IVR-001` v1.1 (validated) · `CHANGE_REPORT-001` · `VERIFICATION_REPORT-001` |
 | **Library PRD** (Organization & Library Management) | **Added** — `docs/prd/library/`. §14A captured and reviewed; **§§1–25 not yet supplied** |
 | Student Management · Membership · Attendance · Seat · Revenue & Finance · Analytics · Notifications · Security & Automation · AI Super Assistant PRDs | Listed in v1.0 |
 | **Domain Model · Data Dictionary · Business Capability Map** | **Added** — present in EA tree, absent from v1.0 §25 |
@@ -704,6 +704,7 @@ Auditable proof that refinement did not become deletion.
 
 | Version | Change |
 |---|---|
+| **v1.4** | Cross-reference alignment only. §31 updated to record **Authentication PRD v2.0** as present and authoritative, `D-7` **closed by authorship rather than transfer**, and `ACN-001` **closed** by v2.0 Chapter 8 (`CFG-1`–`CFG-4`). **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.3** | Cross-reference alignment only. Header records Bounded Context Map **v1.2** and rulings `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7`. §31 updated: Rulings Register v1.1, BC Map v1.2, the Module Dependency Matrix's known `lib/contracts` defect, the Authentication PRD's true state (custody shell, 0 body characters, `D-7` open), and the Authentication implementation record. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.2** | Applied approved rulings. `AR-1`: registered module 19, Library Discovery & Enrollment, as a read composition owning no aggregate — §5.1's 23-bounded-context V1 scope is unchanged. `R-1`: §31 records `LIBOORA_ENTERPRISE_ARCHITECTURE.md` as the authoritative System Architecture. §31 adds the Architecture Rulings Register and the Library PRD, and records that no ADR files exist. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.1** | Enterprise review and refinement against approved Enterprise Architecture v2.0. 8 conflicts resolved, 7 duplicates merged, 9 business rules recovered from the architecture, 9 sections added, roadmap vocabulary normalised to V1/V2/V3/Future, product name corrected to LIBOORA. No requirement removed. |

@@ -6,12 +6,39 @@
 | **Note ID** | `ACN-001` |
 | **Type** | Architecture Consistency Note — a recorded specification gap, not a decision |
 | **Raised by** | Ruling issued alongside `AR-5`…`AR-7`: *"Do not invent any rate-limiting policy. Create an Architecture Consistency Note documenting that OTP request rate limiting must be specified in the Authentication Security PRD before implementation. No implementation assumptions are permitted."* |
-| **Status** | **OPEN — awaiting specification in the Authentication Security PRD (Chapter 7)** |
+| **Status** | **CLOSED — specified by Authentication PRD v2.0, Chapter 8 §8.3** |
 | **Owning bounded context** | `BC-18` Identity & Access |
 | **Owning module** | `platform/identity` (rank 4) |
-| **Owning document** | `docs/prd/authentication/07-Security.md` |
+| **Owning document** | `docs/prd/authentication/prd-v2/08-Security-and-Privacy.md` §8.3 |
 | **Date** | 2026-08-02 |
 | **Blocks** | Any implementation of an OTP request throttle. Does **not** block `IVR-001` |
+
+---
+
+## 0. Closure
+
+**This note is closed.** OTP request rate limiting is now specified normatively in **Authentication PRD v2.0,
+Chapter 8 §8.3 — Rate limiting** (`AUTH-8.16` through `AUTH-8.23`), with the numeric thresholds carried as
+configurable parameters:
+
+| Parameter | Value | Requirement |
+|---|---|---|
+| `CFG-1` | 5 OTP requests per mobile number per rolling hour | `AUTH-8.16` |
+| `CFG-2` | 30 seconds minimum interval between requests for one number | `AUTH-8.17` |
+| `CFG-3` | 30 OTP requests per source network origin per rolling hour | `AUTH-8.18` |
+| `CFG-4` | 60-minute temporary lock on per-number quota exhaustion | `AUTH-8.19` |
+
+The specification additionally requires that limits be evaluated server-side against server time (`AUTH-8.20`), apply
+identically to registered and unregistered numbers so that limiting never discloses registration status
+(`AUTH-8.21`), refuse without revealing which limit was reached (`AUTH-8.22`), and be unbypassable by any role
+including platform roles (`AUTH-8.23`).
+
+**Caveat carried forward.** The four numeric values were chosen when v2.0 was authored and are **not** derived from a
+prior approved decision. They are marked configurable precisely so they can be changed by decision rather than by
+amending the specification. See `PRD-V2-GOVERNANCE-NOTE.md` §4 for the reasoning behind each and the outstanding
+sign-off.
+
+The ten open questions recorded below are answered by §8.3 and are retained as the record of what was asked.
 
 ---
 

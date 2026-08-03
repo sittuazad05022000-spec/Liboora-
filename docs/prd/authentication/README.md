@@ -1,93 +1,114 @@
-# Liboora — Authentication Architecture Specification
+# Liboora — Authentication Specification
 
 ## Document purpose
 
-This directory is the version-controlled destination for the Liboora
-Authentication Architecture Specification, Chapters 1–11, together with its
-final validation report and its GATE-1 blocker closure record.
-
-Its purpose is custody, not authorship. No content in this directory may be
-originated here; every chapter body must arrive by verbatim transfer from the
-approved source.
+This directory holds the Liboora Authentication specification together with the
+engineering record supporting it.
 
 ## Version
 
 | Field | Value |
 | --- | --- |
-| Specification version | v1.0 (lock candidate) |
-| Directory created by | Task **D-7** — Documentation Lock |
+| Specification version | **v2.0** |
+| Authoritative file | `Authentication_PRD_v2.md` (single file) |
+| Per-chapter source | `prd-v2/` (cover + eleven chapters) |
 | Repository | `liboora` / `docs/prd/authentication/` |
-| Commit introducing this directory | `816f9b7` (closure record only) |
 
 ## Status
 
-**STATUS = TRANSFER PENDING — NOT LOCKED.**
+**STATUS = v2.0 AUTHORED — AUTHORITATIVE.**
 
-D-7 requested `Status = LOCKED`. That status has **not** been applied, because it
-would be false. A lock asserts that the version-controlled copy is the
-authoritative text. At the time of writing, eleven of the twelve documents in
-this directory contain no chapter text — only transfer slots. Declaring LOCKED
-over empty slots would create a source of truth that is authoritative and empty
-at the same time.
+The specification is complete. All eleven chapters contain their full text.
+`Authentication_PRD_v2.md` is the source of truth for Authentication.
 
-`Status` becomes `LOCKED` only when both conditions below hold:
+### How v2.0 came to exist
 
-1. All eleven chapter files contain their approved text between the
-   `BEGIN`/`END APPROVED CHAPTER CONTENT` markers.
-2. The identifier-preservation check in `FINAL_VALIDATION_REPORT.md` has been
-   run against the transferred text and passes.
+The previous status of this directory was `TRANSFER PENDING — NOT LOCKED`: an
+eleven-slot custody shell whose chapter files contained **zero body characters**,
+because the approved v1.0 text was never transferred into the repository. That
+gap was recorded as defect `D-7`.
 
-Until then this directory is a **custody shell**, and the authoring channel
-remains the only complete copy of the specification.
+**`D-7` is closed by authorship, not by transfer.** Version 2.0 was written from
+scratch against the approved architecture rulings, the Master PRD global rules,
+the Bounded Context Map and implemented behaviour. It does **not** reproduce the
+v1.0 text and makes no claim to. If the original approved text exists elsewhere
+and is still considered authoritative, it must be reconciled against v2.0
+explicitly — v2.0 will not silently agree with it.
+
+The eleven original slot files are retained, marked superseded, so the custody
+record stays intact.
+
+### Caveat
+
+v2.0 specifies substantially more than is currently implemented. It is the
+target, not a description of the running system. See
+`PRD-V2-GOVERNANCE-NOTE.md` for provenance, the twelve configurable parameters
+awaiting sign-off, and the items that remain open.
 
 ## Document index
 
+### The specification
+
 | File | Contains | State |
 | --- | --- | --- |
-| `README.md` | This document — purpose, version, status, index, history | Complete |
-| `01-Introduction.md` | Chapter 1 | Transfer slot — empty |
-| `02-Authentication-Foundation.md` | Chapter 2 | Transfer slot — empty |
-| `03-Registration.md` | Chapter 3 | Transfer slot — empty |
-| `04-Login.md` | Chapter 4 | Transfer slot — empty |
-| `05-Authorization.md` | Chapter 5 | Transfer slot — empty |
-| `06-Sessions.md` | Chapter 6 | Transfer slot — empty |
-| `07-Security.md` | Chapter 7 | Transfer slot — empty |
-| `08-Lifecycle.md` | Chapter 8 | Transfer slot — empty |
-| `09-Events-Audit-Notifications.md` | Chapter 9 | Transfer slot — empty |
-| `10-Amendments-And-Integration.md` | Chapter 10 — title unconfirmed | Transfer slot — empty |
-| `11-Non-Functional-Requirements.md` | Chapter 11 | Transfer slot — empty |
-| `FINAL_VALIDATION_REPORT.md` | Validation report custody + D-7 outcome | Complete, partial content |
-| `BLOCKER_CLOSURE_v1.0.md` | GATE-1 blocker closure decision record | Complete (pre-existing, `816f9b7`) |
+| `Authentication_PRD_v2.md` | **The complete specification, single file** | **Authoritative** |
+| `prd-v2/00-Cover-and-Control.md` | Identifier scheme, normative language, `CFG-1`–`CFG-12`, structural facts | Authoritative |
+| `prd-v2/01-Purpose-and-Goals.md` | Chapter 1 | Authoritative |
+| `prd-v2/02-User-Types-and-Roles.md` | Chapter 2 | Authoritative |
+| `prd-v2/03-Authentication-Methods.md` | Chapter 3 | Authoritative |
+| `prd-v2/04-Registration-and-Account-Claim.md` | Chapter 4 | Authoritative |
+| `prd-v2/05-Login-and-Library-Selection.md` | Chapter 5 | Authoritative |
+| `prd-v2/06-Session-and-Device-Management.md` | Chapter 6 | Authoritative |
+| `prd-v2/07-Roles-Permissions-and-Access-Policies.md` | Chapter 7 | Authoritative |
+| `prd-v2/08-Security-and-Privacy.md` | Chapter 8 | Authoritative |
+| `prd-v2/09-Account-Lifecycle.md` | Chapter 9 | Authoritative |
+| `prd-v2/10-Events-Audit-and-Notifications.md` | Chapter 10 | Authoritative |
+| `prd-v2/11-NFR-Compliance-and-Final-Acceptance.md` | Chapter 11 | Authoritative |
 
-## Chapter list
+### Engineering record — not part of the specification
 
-| # | Chapter | Filename | Title source |
-| --- | --- | --- | --- |
-| 1 | Introduction | `01-Introduction.md` | D-7 request (unconfirmed) |
-| 2 | Authentication Foundation | `02-Authentication-Foundation.md` | D-7 request (unconfirmed) |
-| 3 | Registration | `03-Registration.md` | D-7 request (unconfirmed) |
-| 4 | Login | `04-Login.md` | D-7 request (unconfirmed) |
-| 5 | Authorization | `05-Authorization.md` | D-7 request (unconfirmed) |
-| 6 | Sessions | `06-Sessions.md` | D-7 request (unconfirmed) |
-| 7 | Security | `07-Security.md` | D-7 request (unconfirmed) |
-| 8 | Lifecycle | `08-Lifecycle.md` | D-7 request (unconfirmed) |
-| 9 | Events, Audit & Notifications | `09-Events-Audit-Notifications.md` | D-7 request (unconfirmed) |
-| 10 | *(approved title unknown)* | `10-Amendments-And-Integration.md` | **Not supplied by D-7** |
-| 11 | NFRs, Compliance & Final Acceptance | `11-Non-Functional-Requirements.md` | Confirmed |
+| File | Contains |
+| --- | --- |
+| `PRD-V2-GOVERNANCE-NOTE.md` | Provenance, `D-7` disposition, parameters awaiting sign-off, open items |
+| `MODULE_COMPLETION_PACKAGE.md` | Module completion package index and change register |
+| `VERIFICATION_REPORT-001.md` | Implementation verification, forward and reverse traceability |
+| `CHANGE_REPORT-001.md` | Implementation change report |
+| `IVR-001-OTP-Account-Creation.md` | Implementation validation record |
+| `ACN-001-OTP-Request-Rate-Limiting.md` | Rate-limiting gap — **closed by v2.0 Chapter 8** |
+| `FINAL_VALIDATION_REPORT.md` | v1.0 validation custody record |
+| `BLOCKER_CLOSURE_v1.0.md` | GATE-1 blocker closure decision record |
 
-**Numbering note.** The D-7 request enumerated ten chapter files for eleven
-approved chapters, and filed the NFR chapter as `10-`. Chapter 11 is numbered
-11 here, and Chapter 10 has been given its own file, because merging chapters
-is forbidden (D-7 rule 9) and numbering must be preserved (D-7 rule 4). Two
-consequences require an owner's decision: the filename and approved title of
-Chapter 10, and whether the D-7 file list should be corrected to eleven slots.
+### Superseded
+
+| File | State |
+| --- | --- |
+| `01-Introduction.md` … `11-Non-Functional-Requirements.md` | Eleven v1.0 transfer slots. Never contained chapter text. Marked superseded; retained for custody continuity |
+| `Authentication_PRD.md` | Merged export of the empty v1.0 shell. Historical input only |
+
+## Chapter list — v2.0
+
+| # | Chapter |
+| --- | --- |
+| 1 | Purpose & Goals |
+| 2 | User Types & Roles |
+| 3 | Authentication Methods |
+| 4 | Registration & Account Claim |
+| 5 | Login & Library Selection |
+| 6 | Session & Device Management |
+| 7 | Roles, Permissions & Access Policies |
+| 8 | Security & Privacy |
+| 9 | Account Lifecycle |
+| 10 | Events, Audit & Notifications |
+| 11 | NFRs, Compliance & Final Acceptance |
 
 ## Change history
 
 | Date | Change | Commit |
 | --- | --- | --- |
 | Earlier | GATE-1 blocker closure record added; 14 blockers closed; 12 source files changed | `816f9b7` |
-| This change | D-7 custody shell created: `README.md`, eleven chapter transfer slots, `FINAL_VALIDATION_REPORT.md`. **No specification content transferred.** | *this commit* |
+| Earlier | D-7 custody shell created: `README.md`, eleven chapter transfer slots, `FINAL_VALIDATION_REPORT.md`. **No specification content transferred.** | `cbd59b3` |
+| Earlier | Module completion package: architecture, implementation and verification records | `9b9e1d5` |
+| This change | **Authentication PRD v2.0 authored.** Eleven complete chapters plus cover, assembled into `Authentication_PRD_v2.md`. `D-7` closed by authorship. `ACN-001` closed by Chapter 8. Eleven empty v1.0 slots marked superseded | *this commit* |
 
 ## Related documents
 

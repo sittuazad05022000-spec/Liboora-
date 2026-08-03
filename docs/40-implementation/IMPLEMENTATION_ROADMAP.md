@@ -2,10 +2,10 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Active |
-| **Date** | 2026-08-02 |
-| **Baseline** | BASELINE-2026-08-02 |
+| **Date** | 2026-08-02 · **revised 2026-08-03** |
+| **Baseline** | BASELINE-2026-08-03 |
 | **Scope** | `BC-18` Identity & Access to a releasable state, plus the platform work that blocks it |
 
 ---
@@ -34,9 +34,15 @@ the cost of reordering is visible rather than discovered.
 | **Phase 5** | Roles and policy | Chapter 7 implemented; tenant isolation enforced |
 | **Phase 6** | Lifecycle, events, audit | Chapters 9 and 10 implemented |
 | **Phase 7** | NFR and release readiness | Chapter 11 acceptance met |
+| **Phase 8** | **Library Management** | Library PRD v1.0 implemented; `IMPL-100`…`IMPL-127` closed |
 
 **Phases 0–2 are prerequisites for a releasable build of anything.** Phase 2 in particular cannot be skipped or
 deferred: the current code cannot lawfully ship.
+
+**Phase 8 is numbered last but does not run last.** Its first task, `IMPL-100` tenant foundation, is a *dependency
+of* the tenant-scoped authorization work in Phase 5 — `MP-GBR-08` cannot be enforced against a tenant key that no
+table carries. Read the dependency graph in §11, not the phase number, for ordering. The phase number records when
+the specification arrived; the graph records what blocks what.
 
 ---
 
@@ -391,6 +397,28 @@ during hardening is out of specification.
 
 ---
 
+## 10A. Phase 8 — Library Management
+
+Twenty-three tasks, specified in full in
+[`LIBRARY_IMPLEMENTATION_TASKS.md`](./LIBRARY_IMPLEMENTATION_TASKS.md). Not restated here — that document carries
+the acceptance criteria, developer checklists and the traps for each one. Summary only:
+
+| Group | Tasks | P0 | Theme |
+|---|---|---|---|
+| Library core | `IMPL-100` … `IMPL-109` | 4 | Tenancy, lifecycle, profile, structure, hours, facilities, settings, policies, branding |
+| Invitations | `IMPL-110` … `IMPL-114` | 4 | Artefact core, lifecycle, `IT-1` staff, `IT-2`/`IT-3` private, rate limiting |
+| Public surfaces | `IMPL-120` … `IMPL-127` | 4 | Projection, preview, search, protected-operation gate, intent, rate limiting, events, config validation |
+
+**Exit condition.** All twelve module-P0 tasks closed; `LAC-1`…`LAC-12`, `LAC-14B-1`…`LAC-14B-16` and
+`IAC-1`…`IAC-25` verified by automated tests; `LCFG-1`…`LCFG-13` and `ICFG-1`…`ICFG-10` validated at startup.
+
+**The one thing most likely to be got wrong.** `IMPL-123`, the protected-operation gate, is not an authentication
+check. Authentication proves *who is calling*; the gate additionally requires *authorisation for this library*
+(`LIB-14B.29`). A gate that admits any authenticated user has implemented half of it and will pass every test
+written by whoever implemented it.
+
+---
+
 ## 11. Dependency graph
 
 ```
@@ -409,11 +437,44 @@ IMPL-015 ──► IMPL-016 ──► IMPL-020 ──┬──► IMPL-021
                                                                                         IMPL-070..073
 ```
 
+### 11.1 Phase 8 — Library Management
+
+```
+IMPL-100 (tenant foundation) ──┬──► IMPL-101 ──► IMPL-102 ──┐
+   │                           │                            │
+   │                           ├──► IMPL-104 ──► IMPL-105 ───┤
+   │                           │        └──────► IMPL-106 ───┤
+   │                           │                            │
+   │                           ├──► IMPL-107, 108, 109       │
+   │                           │                            ▼
+   │                           └──► IMPL-126           IMPL-120 (public projection)
+   │                                                        │
+   └──► IMPL-103 (audit) ──► IMPL-110 ──► IMPL-111 ──┐      ├──► IMPL-121 preview
+                                │                     │      ├──► IMPL-122 search
+                                │                     ├──────┼──► IMPL-123 PO gate ──► IMPL-124 intent
+                                │                     │      │
+                                └──► IMPL-114         └──► IMPL-112 (IT-1) ◄── IMPL-020 (SMS)
+                                                           IMPL-113 (IT-2/IT-3)
+
+IMPL-125 ◄── IMPL-021        IMPL-127 ◄── IMPL-015
+```
+
+**Library critical path:** `IMPL-100` → `IMPL-101` → `IMPL-102` → `IMPL-120` → `IMPL-123` → `IMPL-124`.
+Everything public depends on the projection, and the projection depends on there being a library to project.
+
+**`IMPL-112` staff invitation additionally waits on `IMPL-020`.** An `IT-1` invitation is delivered by SMS, so it
+inherits the DLT registration dependency. **DLT approval is a multi-week external process and should be started
+first**, before any Library code — even though `IMPL-020` is not a Library task. It is the single longest lead time
+in the whole programme and nothing else on it is under our control.
+
 **Critical path:** `IMPL-015` → `IMPL-016` → `IMPL-020` → `TASK-D10`. Nothing releases until it completes.
 
 **Start `IMPL-014` immediately and in parallel.** It gates merges; every day without it accumulates violations.
 
 **Do `TASK-D10` step D10-4 today.** One line, no dependencies, closes a live authentication bypass.
+
+**Start `IMPL-100` early.** Tenant-key enforcement under `MP-GBR-08` is cheap to build into a schema and expensive
+to add to one. Every table created before it exists is a table that will need migrating.
 
 ---
 
@@ -421,18 +482,36 @@ IMPL-015 ──► IMPL-016 ──► IMPL-020 ──┬──► IMPL-021
 
 | Item | Blocked by | Priority |
 |---|---|---|
-| Library module beyond §14A | Library PRD §§1–25 never supplied | **P1** |
-| Private-library invitations | Invitation security spec (`AR-4`) never written — expiry, revocation, single-use, entropy, validation, audit all unspecified. **Do not invent** | **P1** |
+| ~~Library module beyond §14A~~ | ~~Library PRD §§1–25 never supplied~~ → ✅ **UNBLOCKED 2026-08-03.** Specification received; see Phase 8 | — |
+| ~~Private-library invitations~~ | ~~Invitation security spec (`AR-4`) never written~~ → ✅ **UNBLOCKED 2026-08-03.** All six properties specified in `INVITATION_SECURITY_SPECIFICATION.md`; `ADR-0009` accepted | — |
+| Public Live Occupancy | **V2.** Deferred pending a privacy review. V1 exposes a coarse indicator only (`LIB-14B.12`) | P3 |
+| Reviews & Ratings | **V2.** No bounded context assigned; assigning one is an architecture change requiring an ADR | P3 |
+| Multi-Branch operation | **V3** per Master PRD §32. `branchId` is nonetheless modelled in V1 (`IMPL-104`) — retrofitting it later is a migration across every core table | P3 |
 | Development Standards (`R-4`) | Deferred | P3 |
-| `D-8`, `D-9` | Carried forward | P2 |
+| `D-8`, `D-9`, `R-5` | Carried forward | P2 |
 
-**`AR-4` says explicitly: do not invent.** Six security properties are unspecified. Implementing invitations by
-guessing them would create exactly the kind of retrofit this roadmap exists to prevent.
+**Two long-standing blocks cleared on 2026-08-03.** `AR-4` said *"do not invent"*, and nothing was invented — the
+deferral was lifted only after §§1–25 arrived and confirmed which invitation forms actually exist. Anything the
+source did not describe is recorded as an explicit exclusion (`INV-XC-1`…`INV-XC-7`) rather than filled in.
+
+**What replaced them is not smaller.** Twenty-three Library tasks are now open, twelve at P0 within the module.
+A specification is not an implementation, and the roadmap says so in the same place it used to say the
+specification was missing.
 
 ---
 
 ## 13. References
 
-`DOCUMENTATION_BASELINE.md` · `ADR-0001`…`ADR-0008` · Authentication PRD v2.0 ·
+`DOCUMENTATION_BASELINE.md` · `ADR-0001`…`ADR-0010` · Authentication PRD v2.0 ·
 `CONFIGURATION_GUIDE.md` · `TASK-D10-remove-demo-surfaces.md` · `DEFINITION_OF_DONE.md` ·
-`DOCUMENTATION_AUDIT-001.md` findings `G-4`, `R-F`
+`DOCUMENTATION_AUDIT-001.md` findings `G-4`, `R-F` · Library PRD v1.0 · `LIBRARY_IMPLEMENTATION_TASKS.md` ·
+`ADR-0009`, `ADR-0010`
+
+---
+
+## 14. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-08-03 | Added **Phase 8 — Library Management** (§10A) and its dependency graph (§11.1). Cleared two long-standing blocks in §12 — Library §§1–25 and the `AR-4` invitation deferral — and replaced them with the V2/V3 deferrals that genuinely remain. Recorded that `IMPL-020` DLT registration is now also on the Library critical path via `IMPL-112`, and that it has the longest external lead time in the programme. Baseline reference raised to `BASELINE-2026-08-03`. No existing task was renumbered, reprioritised or removed. |
+| v1.0 | 2026-08-02 | Created. Phases 0–7, `IMPL-014`…`IMPL-073`, `TASK-D10`. Closes audit finding `G-4`. |

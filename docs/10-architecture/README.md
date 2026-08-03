@@ -18,14 +18,14 @@ This directory holds LIBOORA's architecture documentation.
 | [`LIBOORA_BOUNDED_CONTEXT_MAP.md`](./LIBOORA_BOUNDED_CONTEXT_MAP.md) | `v1.2` | DDD model boundaries: 31 bounded contexts, the Identity Triad, ubiquitous-language collisions, 26 integration edges, 17 aggregates with invariants, V1 event surface, extraction order |
 | [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](./LIBOORA_MODULE_DEPENDENCY_MATRIX.md) | `v1.0` | Enforceable code boundaries: 5 dependency laws, 10 ranks, the full dependency matrix, per-platform allow-lists, 14 forbidden edges, cycle-breaking patterns, 3-layer CI enforcement |
 | [`../../tool/module_dependencies.yaml`](../../tool/module_dependencies.yaml) | `v1` | **Machine-readable** normative rules. ⚠ Its consumer `tool/check_module_boundaries.dart` **does not exist** — see Open action items |
-| [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) | `v1.1` | Approved rulings `AR-1`…`AR-7`. **Four are promoted to ADRs** (`AR-2`→`ADR-0005`, `AR-5`→`ADR-0006`, `AR-6`→`ADR-0004`, `AR-7`→`ADR-0007`). `AR-1`, `AR-3`, `AR-4` remain here and are binding |
-| [`../00-governance/adr/ADR-INDEX.md`](../00-governance/adr/ADR-INDEX.md) | Active | **The register of record for architecture decisions.** `ADR-0001`…`ADR-0008` |
+| [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) | `v1.2` | Approved rulings `AR-1`…`AR-7`. **Four are promoted to ADRs** (`AR-2`→`ADR-0005`, `AR-5`→`ADR-0006`, `AR-6`→`ADR-0004`, `AR-7`→`ADR-0007`). `AR-1`, `AR-3`, `AR-4` remain here and are binding. The `AR-4` invitation-security deferral is **lifted** — see `ADR-0009` |
+| [`../00-governance/adr/ADR-INDEX.md`](../00-governance/adr/ADR-INDEX.md) | Active | **The register of record for architecture decisions.** `ADR-0001`…`ADR-0010` |
 
 ### Designations
 
 | Governance role | Designated document | Ruling |
 |---|---|---|
-| **Architecture decisions** | [`../00-governance/adr/`](../00-governance/adr/) | **The ADR set now exists.** Governance task `R-3` is closed. `ARCHITECTURE_RULINGS.md` is no longer the interim register; it is retained for `AR-1`, `AR-3`, `AR-4`, which stay binding. |
+| **Architecture decisions** | [`../00-governance/adr/`](../00-governance/adr/) | **The ADR set now exists.** Governance task `R-3` is closed. `ARCHITECTURE_RULINGS.md` is no longer the interim register; it is retained for `AR-1`, `AR-3`, `AR-4`, which stay binding. `AR-3` and `AR-4` each now have a companion ADR — `ADR-0010` and `ADR-0009` — recording the *mechanism* the ruling implied, without restating or re-scoping the ruling itself. |
 | **System Architecture** | [`LIBOORA_ENTERPRISE_ARCHITECTURE.md`](./LIBOORA_ENTERPRISE_ARCHITECTURE.md) | **R-1**, ruled by the product owner. This document **is** the project's authoritative System Architecture for all architecture validation, traceability, implementation review and consistency checking. No separately-named "System Architecture" file exists, and none is required. The absence of one is **not** a blocker. |
 
 ### Reading order
@@ -49,10 +49,11 @@ This directory holds LIBOORA's architecture documentation.
    `INTEGRATION PLATFORM` · `SECURITY PLATFORM` · `DEVOPS PLATFORM` · `QUALITY PLATFORM` · `INFRASTRUCTURE` · `PLATFORM SERVICES` (tail) · `DATA PLATFORM` (storage nodes) · `FUTURE ECOSYSTEM` (existing nodes)
 2. ~~Produce the Bounded Context Map~~ — **done**, `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.2
 3. ~~Produce the Module Dependency Matrix~~ — **done**, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 + `tool/module_dependencies.yaml`
-3b. ~~Produce a formal ADR set (governance task `R-3`)~~ — **done**, [`../00-governance/adr/`](../00-governance/adr/), `ADR-0001`…`ADR-0008`
+3b. ~~Produce a formal ADR set (governance task `R-3`)~~ — **done**, [`../00-governance/adr/`](../00-governance/adr/), `ADR-0001`…`ADR-0010`
+3c. ~~Write the invitation security specification deferred by `AR-4`~~ — **done 2026-08-03**, [`../30-product/library/INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) + `ADR-0009`. All six deferred properties — expiry, revocation, single use, entropy, validation, audit logging — are specified. The deferral said *"do not invent"*; it was lifted only after Library PRD §§1–25 arrived and confirmed which invitation forms actually exist.
 4. **Define the V1 Event Catalog** — Context Map §9 fixes the 30 V1 event *names, producers and consumers*. Still required: payload schemas, `schemaVersion` registry entries, and partition keys.
 5. **Implement `tool/check_module_boundaries.dart`** — the fitness function specified in Dependency Matrix §10.2. **It does not exist.** Until it does, the boundaries are documentation, not enforcement. Tracked as **`IMPL-014`, priority P1**, in [`../40-implementation/IMPLEMENTATION_ROADMAP.md`](../40-implementation/IMPLEMENTATION_ROADMAP.md) §3.
-6. **Resolve the 7 open questions** in Context Map §13 as ADRs before the V1 implementation freeze. **Q-02 (`branchId` in the V1 schema) is the most urgent** — retrofitting it is a migration across every tenant-scoped table.
+6. **Resolve the 7 open questions** in Context Map §13 as ADRs before the V1 implementation freeze. **Q-02 (`branchId` in the V1 schema) is the most urgent** — retrofitting it is a migration across every tenant-scoped table. `Q-02` is now **answered in the Library PRD** (`LIB-9.4`, task `IMPL-100`): model `branchId` from the first migration, default one branch, multi-branch ships in **V3**. It still needs promoting to an ADR.
 7. **Extract `liboora_contracts` as a real Dart package** on day one (Dependency Matrix §9.3) — cheapest now, most painful later.
 
 ## Conventions

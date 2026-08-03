@@ -2,11 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Baseline** | **BASELINE-2026-08-02** |
+| **Baseline** | **BASELINE-2026-08-03** |
+| **Supersedes** | `BASELINE-2026-08-02` |
 | **Status** | **Locked** |
-| **Date** | 2026-08-02 |
+| **Date** | 2026-08-03 |
 | **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`) |
-| **Authority** | `ADR-0008` |
+| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010` |
 
 ---
 
@@ -33,6 +34,25 @@ reasoning is recorded in [`ADR-0008`](./adr/ADR-0008-authentication-prd-v2-basel
 
 **If the original v1 ever resurfaces it has no standing.** Reinstating any part of it would require a new ADR.
 
+### 2.1 Second declaration — the Library PRD
+
+**Library PRD v1.0 is the official baseline specification for the Library Management domain**, together with its
+two normative extensions §14A and §14B and the Invitation Security Specification.
+
+Gap **`U-4`** — *"Library PRD §§1–25 never supplied"* — is **CLOSED by receipt.**
+
+Unlike `D-7`, this is not closed by authorship. The sections were **supplied by the product owner** on 2026-08-03
+and are preserved in `Library_PRD_v1.md`. Every requirement in the supplied text survives in the baseline. Fourteen
+conflicts against higher-ranked documents were found and corrected; three of those were blocking. The corrections
+are recorded, with the reasoning for each, in
+[`LIBRARY_PRD_ALIGNMENT.md`](../30-product/library/LIBRARY_PRD_ALIGNMENT.md) §2. **Nothing was removed.**
+
+Deferral **`AR-4` invitation security specification** is also **CLOSED**, by authorship, in
+[`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) and
+[`ADR-0009`](./adr/ADR-0009-invitation-security-model.md). The deferral instructed *"do not invent"*; its stated
+precondition — that §§1–25 had not been received — no longer holds, and the received text confirms the invitation
+feature exists in three distinct forms. It is lifted **on evidence, not by assumption.**
+
 ---
 
 ## 3. Baseline contents
@@ -41,9 +61,9 @@ reasoning is recorded in [`ADR-0008`](./adr/ADR-0008-authentication-prd-v2-basel
 
 | Document | Version | Status |
 |---|---|---|
-| `00-governance/DOCUMENTATION_BASELINE.md` | BASELINE-2026-08-02 | **This document** |
+| `00-governance/DOCUMENTATION_BASELINE.md` | BASELINE-2026-08-03 | **This document** |
 | `00-governance/adr/ADR-INDEX.md` | Active | Authoritative |
-| `00-governance/adr/ADR-0001` … `ADR-0008` | Accepted | Authoritative, binding |
+| `00-governance/adr/ADR-0001` … `ADR-0010` | Accepted | Authoritative, binding |
 | `00-governance/DOCUMENTATION_AUDIT-001.md` | 001 | Historical record of this review |
 
 ### 3.2 Architecture
@@ -52,18 +72,23 @@ reasoning is recorded in [`ADR-0008`](./adr/ADR-0008-authentication-prd-v2-basel
 |---|---|---|
 | `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | v1.2 | Authoritative — boundaries, ownership, edges |
 | `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | v1.0 | Authoritative — permitted and forbidden dependencies |
-| `10-architecture/ARCHITECTURE_RULINGS.md` | v1.1 | Authoritative for `AR-1`, `AR-3`, `AR-4`; `AR-2`, `AR-5`, `AR-6`, `AR-7` promoted to ADRs |
+| `10-architecture/ARCHITECTURE_RULINGS.md` | **v1.2** | Authoritative for `AR-1`, `AR-3`, `AR-4`; `AR-2`, `AR-5`, `AR-6`, `AR-7` promoted to ADRs. `AR-4` deferral lifted |
 | `10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` | **v2.1** | **Descriptive** — must follow the PRDs, never lead them |
 
 ### 3.3 Product
 
 | Document | Version | Status |
 |---|---|---|
-| `30-product/MASTER_PRD.md` | v1.4 | Authoritative — platform-wide global rules |
+| `30-product/MASTER_PRD.md` | **v1.6** | Authoritative — platform-wide global rules |
 | `30-product/authentication/Authentication_PRD_v2.md` | **v2.0** | **Authoritative — the baseline** |
 | `30-product/authentication/prd-v2/00` … `11` | v2.0 | Chapter sources of the above |
 | `30-product/authentication/PRD-V2-GOVERNANCE-NOTE.md` | v2.0 | Provenance record — **not part of the specification** |
-| `30-product/library/` | Incomplete | §14A only; §§1–25 never supplied |
+| `30-product/library/Library_PRD_v1.md` | **v1.0** | **Authoritative — the Library baseline**, §§1–25 |
+| `30-product/library/14A-Library-Discovery-And-Enrollment.md` | v1.0 | Authoritative — discovery, enrollment, public field list |
+| `30-product/library/14B-Public-Library-Preview.md` | **v1.0** | Authoritative — anonymous preview, the authentication boundary `PO-1`…`PO-12` |
+| `30-product/library/INVITATION_SECURITY_SPECIFICATION.md` | **v1.0** | Authoritative — `IT-1`…`IT-3`, entropy, expiry, revocation, single use, validation, audit, rate limiting |
+| `30-product/library/LIBRARY_PRD_ALIGNMENT.md` | v1.0 | Validation record — **not part of the specification** |
+| `30-product/library/REVIEW_14A.md` | v1.1 | Historical review record — **not part of the specification** |
 
 ### 3.4 Configuration and implementation
 
@@ -74,8 +99,9 @@ reasoning is recorded in [`ADR-0008`](./adr/ADR-0008-authentication-prd-v2-basel
 | `40-implementation/IMPLEMENTATION_ROADMAP.md` | v1.0 | Sequenced work |
 | `40-implementation/AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` | v1.0 | Per-requirement checklist |
 | `40-implementation/TASK-D10-remove-demo-surfaces.md` | v1.0 | Release-blocking task |
-| `40-implementation/DEFINITION_OF_DONE.md` | v1.0 | Merge and release gates |
-| `40-implementation/TRACEABILITY_MATRIX.md` | v1.0 | Requirement → artefact mapping |
+| `40-implementation/DEFINITION_OF_DONE.md` | v1.1 | Merge and release gates. Extended to Library Management; the stale `AR-4` *"do not invent"* row replaced |
+| `40-implementation/TRACEABILITY_MATRIX.md` | **v1.1** | Requirement → artefact mapping |
+| `40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md` | **v1.0** | `IMPL-100`…`IMPL-127` with acceptance criteria and checklists |
 
 ### 3.5 Archived — no authority
 
@@ -97,8 +123,9 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 | Rank | Source | Scope |
 |---|---|---|
 | **1** | `MASTER_PRD.md` global rules — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` | Platform-wide. Outranks every module PRD |
-| **2** | Accepted ADRs (`ADR-0001` … `ADR-0008`) | Structural decisions |
+| **2** | Accepted ADRs (`ADR-0001` … `ADR-0010`) | Structural decisions |
 | **3** | **Authentication PRD v2.0** | Everything inside `BC-18` |
+| **3** | **Library PRD v1.0** + §14A + §14B + Invitation Security Specification | Everything inside the Library Management domain |
 | **4** | Bounded Context Map · Module Dependency Matrix | Boundaries, ownership, permitted edges |
 | **5** | Architecture Rulings `AR-1`, `AR-3`, `AR-4` | Domain classifications not promoted to ADRs |
 | **6** | Enterprise Architecture v2.1 | **Descriptive only.** Update it to match 1–5; never the reverse |
@@ -106,6 +133,12 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 
 **A conflict is a defect.** If you find one, do not choose — raise it. The precedence order tells you which
 document is *wrong*, not which one to quietly ignore.
+
+**Rank 3 holds two module baselines and they do not overlap.** The Authentication PRD governs `BC-18`; the Library
+PRD governs Library Management. Where a Library requirement appears to constrain authentication — the preview's
+authentication boundary, the invitation acceptance sequence — the Library document states *what must be true* and
+`BC-18` remains the sole authority on *how it is decided*. A Library requirement can never grant, evaluate or cache
+an authorization decision. That is not a precedence question; it is `X-13` and it is forbidden.
 
 ---
 
@@ -115,7 +148,9 @@ document is *wrong*, not which one to quietly ignore.
 |---|---|
 | "The Authentication PRD" | Authentication PRD **v2.0**, and nothing else |
 | "The specification" (in an authentication context) | Authentication PRD v2.0 |
-| "The rulings" | `ARCHITECTURE_RULINGS.md` v1.1, noting four are promoted to ADRs |
+| "The rulings" | `ARCHITECTURE_RULINGS.md` **v1.2**, noting four are promoted to ADRs |
+| "The Library PRD" | `Library_PRD_v1.md` **v1.0** *together with* §14A, §14B and the Invitation Security Specification. All four, never one alone |
+| "Library" (unqualified) | **Ambiguous — do not use.** Say `TenantOrganisation` (the billing entity, `BC-19`) or `Branch` (the physical location with hours and seats, `BC-06`) |
 | "The BC Map" | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.2 |
 | "The EA" | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.1 |
 
@@ -128,12 +163,23 @@ elsewhere. Full detail and priority in `DEVELOPER_HANDOFF.md` §7.
 
 | Gap | Effect | Priority |
 |---|---|---|
-| Library PRD §§1–25 never supplied | Library module cannot be implemented beyond §14A | **P1** — blocks the Library module only |
-| Invitation security specification (`AR-4`) never written | Private-library invitations cannot be implemented | **P1** — blocks private libraries |
-| `tool/check_module_boundaries.dart` does not exist | Module boundaries are unenforced; `ADR-0001` is advisory in practice | **P1** — implementation task `IMPL-014` |
 | `D-10` demo surfaces present in code | **Release blocker** under `MP-CON-11` | **P0** — task `TASK-D10` |
-| `D-8`, `D-9`, `R-5` | Carried forward unchanged | P2 |
+| `IMPL-020` SMS provider / DLT registration not integrated | No OTP can be delivered. Blocks authentication **and** `IT-1` staff invitations | **P0** — on the critical path; DLT approval is multi-week and should be started first |
+| `tool/check_module_boundaries.dart` does not exist | Module boundaries are unenforced; `ADR-0001` is advisory in practice | **P1** — implementation task `IMPL-014` |
+| Library Management has **no** implementation code | Documentation is complete; `IMPL-100`…`IMPL-127` are unstarted | **P1** — 23 tasks, 12 at P0 within the module |
+| `R-5` — `lib/contracts/` referenced but absent | Import paths in prose do not resolve to a directory | P2 |
+| `D-8`, `D-9` | Carried forward unchanged | P2 |
+| Public Live Occupancy (V2) | Deferred pending a privacy review; V1 exposes only a coarse indicator (`LIB-14B.12`) | P3 — **V2**, no V1 effect |
+| Reviews & Ratings (V2) | No bounded context assigned; will require one | P3 — **V2**, no V1 effect |
 | Development Standards document (`R-4`) | Deferred | P3 |
+
+**Two gaps left this table on 2026-08-03**, and the distinction matters:
+
+- *"Library PRD §§1–25 never supplied"* — **closed.** The specification exists. See §2.1.
+- *"Invitation security specification never written"* — **closed.** The specification exists. See §2.1.
+
+Nothing else moved. In particular `D-10` and `IMPL-020` are **code** gaps, and a document cannot close a code gap
+however carefully it is written. They are restated here as tasks, not as findings awaiting a decision.
 
 ---
 
@@ -151,4 +197,5 @@ elsewhere. Full detail and priority in `DEVELOPER_HANDOFF.md` §7.
 
 | Baseline | Date | Change |
 |---|---|---|
+| **BASELINE-2026-08-03** | 2026-08-03 | **Library Management admitted to the baseline.** `Library_PRD_v1.md` v1.0 (§§1–25), `14B-Public-Library-Preview.md` v1.0 and `INVITATION_SECURITY_SPECIFICATION.md` v1.0 declared authoritative at Rank 3 alongside §14A. `U-4` closed by receipt; `AR-4` invitation-security deferral closed by authorship; `CC-5`, `CC-6`, `CC-7` closed. `ADR-0009` and `ADR-0010` accepted — Rank 2 extended to `ADR-0010`. Architecture Rulings raised to v1.2; Master PRD to v1.6; Traceability Matrix to v1.1. Thirteen Library configurables `LCFG-1`…`LCFG-13`, ten invitation configurables `ICFG-1`…`ICFG-10` and seven invariants `INV-10`…`INV-16` added to the Configuration Guide. No requirement was withdrawn and no earlier decision reversed. |
 | **BASELINE-2026-08-02** | 2026-08-02 | Initial declaration. Authentication PRD v2.0 declared official; `D-7` closed by authorship; EA raised to v2.1; `CFG-3`, `CFG-4`, `CFG-5`, `CFG-6`, `CFG-7`, `CFG-12` reset to standards-anchored defaults; `ADR-0001`…`ADR-0008` accepted; twelve stale documents corrected or archived. |

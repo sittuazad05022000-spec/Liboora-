@@ -5,7 +5,8 @@
 | **Status** | Active register of record |
 | **Supersedes** | `ARCHITECTURE_RULINGS.md` as the *interim* register (rulings `AR-1`…`AR-7` are preserved and promoted, not discarded) |
 | **Closes** | Governance task `R-3` — "a formal ADR set is deferred" |
-| **Date** | 2026-08-02 |
+| **Date** | 2026-08-02 · **last extended 2026-08-03** |
+| **Count** | **10 accepted** — `ADR-0001` … `ADR-0010` |
 
 ---
 
@@ -39,14 +40,16 @@ original identifier preserved as a cross-reference. **No ruling was reinterprete
 | [`ADR-0006`](./ADR-0006-display-name-before-verification.md) | Display name collected before verification, always present | Accepted | `AR-5` | `BC-18` |
 | [`ADR-0007`](./ADR-0007-behavioural-conformance.md) | Conformance validates observable behaviour, not storage | Accepted | `AR-7` | Test strategy |
 | [`ADR-0008`](./ADR-0008-authentication-prd-v2-baseline.md) | Authentication PRD v2.0 is the official baseline | Accepted | Closes `D-7` | Documentation |
+| [`ADR-0009`](./ADR-0009-invitation-security-model.md) | An invitation is a revocable claim, not a credential | Accepted | Completes `AR-4` | Library Management, `BC-18` |
+| [`ADR-0010`](./ADR-0010-public-preview-anonymous-access.md) | Public library information is served anonymously from a projection | Accepted | Extends `AR-3` | Library Discovery, `BC-23`, `BC-19` |
 
 ## Rulings preserved but not promoted
 
 | Ruling | Subject | Why not an ADR |
 |---|---|---|
 | `AR-1` | Library Discovery is a composition, not a bounded context | Domain-model classification, already binding in the Bounded Context Map §3. Recorded there, not duplicated here |
-| `AR-3` | Public Library Discovery index | Library-domain decision; belongs to the Library PRD when §§1–25 are supplied |
-| `AR-4` | Invitation ownership | **Incomplete** — the invitation security specification was never written. Recorded as a gap in the Implementation Roadmap, not as an accepted decision |
+| `AR-3` | Public Library Discovery index | Library-domain decision. Now **carried into the Library PRD v1.0** (§14A, §14B). The *anonymous access mechanism* it implies is promoted to [`ADR-0010`](./ADR-0010-public-preview-anonymous-access.md); the ruling itself stands unchanged |
+| `AR-4` | Invitation ownership | **Ownership** remains a Bounded Context Map §14 statement and is not duplicated here. The security specification the ruling deferred is now written, and the *governing principle* it required is promoted to [`ADR-0009`](./ADR-0009-invitation-security-model.md). The deferral is **lifted** |
 
 ## Process
 
@@ -54,3 +57,10 @@ original identifier preserved as a cross-reference. **No ruling was reinterprete
 2. Number sequentially. Never reuse a number. Never edit an Accepted ADR's decision text — supersede it with a new ADR.
 3. An ADR supersedes; it does not delete. The superseded record stays readable.
 4. Record the ADR number in the commit that implements it.
+
+## Change history
+
+| Date | Change |
+|---|---|
+| 2026-08-03 | Added `ADR-0009` (invitation security model) and `ADR-0010` (public preview anonymous access), both **Accepted**. Updated the two "preserved but not promoted" entries: `AR-3` and `AR-4` are unchanged as rulings, but the *gaps* they carried are closed. No existing ADR was edited, reinterpreted or superseded. |
+| 2026-08-02 | Register created. `ADR-0001`…`ADR-0008` accepted; rulings `AR-1`…`AR-7` preserved. Closes `R-3`. |

@@ -2,18 +2,19 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Normative for operations |
-| **Date** | 2026-08-02 |
-| **Governs** | `CFG-1` … `CFG-12` declared in Authentication PRD v2.0 §E |
-| **Authority** | Subordinate to Authentication PRD v2.0. This guide sets values **within** the envelope the PRD defines; it cannot change the envelope |
+| **Date** | 2026-08-02 · **extended 2026-08-03** |
+| **Governs** | `CFG-1` … `CFG-12` (Authentication PRD v2.0 §E) · **`LCFG-1` … `LCFG-13`** (Library PRD v1.0 §16.1, §14B.9) · **`ICFG-1` … `ICFG-10`** (Invitation Security Specification §11) |
+| **Authority** | Subordinate to the PRDs. This guide sets values **within** the envelope they define; it cannot change the envelope |
 
 ---
 
 ## 1. How to read this guide
 
-Authentication PRD v2.0 declares twelve **configurable parameters**. Configurable means: the value can change per
-environment or per deployment **without changing the specification, the architecture, or any interface**.
+The PRDs declare **thirty-five** configurable parameters — twelve authentication (`CFG-*`), thirteen library
+(`LCFG-*`) and ten invitation (`ICFG-*`). Configurable means: the value can change per environment or per deployment
+**without changing the specification, the architecture, or any interface**.
 
 This guide gives, for each parameter:
 
@@ -41,9 +42,20 @@ configuration. Changing one requires a change to the PRD.
 | Concurrent challenges per mobile number | 1 |
 | Authentication factors in V1 | Mobile OTP only |
 | Active libraries per session | Exactly 1 |
+| `IT-1` / `IT-2` invitation entropy | 128 bits |
+| `IT-3` access code entropy | ≥ 40 bits, 8 characters, unambiguous alphabet |
+| Invitation types | Exactly three — `IT-1`, `IT-2`, `IT-3` |
+| Protected operations requiring authentication | The closed list `PO-1` … `PO-12` |
+| Public profile fields | The allow-list in §14A.5 |
+| Invitation single-use policy | `IT-1`, `IT-2` single-use; `IT-3` multi-use bounded by `ICFG-6` |
 
 Exposing any of these as a tunable is a **defect**, because operators could then configure the system out of
 conformance with its own specification.
+
+**Two of these deserve emphasis, because they look configurable.** The `PO-1`…`PO-12` list is closed: adding a
+protected operation is a specification change, and *removing* one silently makes a member-only capability
+anonymous. Likewise the public field allow-list — a deployment that could add a field to it could publish a mobile
+number, which under `MP-GBR-25` is the sole authentication factor. Neither belongs in a configuration file.
 
 ---
 
@@ -312,6 +324,114 @@ action to revoke.
 
 ---
 
+## 2A. Library parameter register — `LCFG-1` … `LCFG-13`
+
+Declared by [`Library_PRD_v1.md`](../30-product/library/Library_PRD_v1.md) §16.1 and
+[`14B-Public-Library-Preview.md`](../30-product/library/14B-Public-Library-Preview.md) §14B.9.
+
+Presented in table form rather than one block per parameter. Most are locale or sanity bounds whose reasoning is one
+line; the four carrying security weight are expanded below the table.
+
+| # | Parameter | Default | Range | Owner | Rationale |
+|---|---|---|---|---|---|
+| `LCFG-1` | Time zone | `Asia/Kolkata` | Any IANA zone | Product | Every V1 library is in India (`MP-DEP-03` DLT registration) |
+| `LCFG-2` | Language | `en` | Supported set | Product | Only locale with complete strings at V1 |
+| `LCFG-3` | Currency | `INR` | ISO 4217 | Product | Follows `LCFG-1` |
+| `LCFG-4` | Date format | `dd/MM/yyyy` | Enumerated | Product | Indian convention. `MM/dd` is a data-entry hazard, not a preference |
+| `LCFG-5` | Member directory | **Disabled** | on / off | **Security** | **Deny by default** (`AP-3`). Exposes members to members; must be opted into |
+| `LCFG-6` | Discovery index propagation | **60 s** | 0 – 300 s | **Security** | Public index is eventually consistent. **Removal latency only** — see below |
+| `LCFG-7` | Gallery images per branch | **20** | 1 – 50 | Product | Storage and page-weight bound |
+| `LCFG-8` | Facilities in reference list | **50** | 10 – 200 | Product | Prevents unbounded growth of a public filter facet |
+| `LCFG-9` | Floors per branch | **10** | 1 – 50 | Product | Sanity bound |
+| `LCFG-10` | Zones per floor | **20** | 1 – 100 | Product | Sanity bound |
+| `LCFG-11` | Preserved intent TTL | **30 min** | 5 – 120 min | **Security** | Exceeds a full OTP round trip while bounding stale-intent resumption |
+| `LCFG-12` | Public search page size | **20** | 5 – 50 | **Security** | Bounds enumeration rate and page weight |
+| `LCFG-13` | Public preview cache TTL | **300 s** | 0 – 3600 s | **Security** | Absorbs anonymous load. **Never** applies to an authorization decision |
+
+### `LCFG-5` — why the default is off
+
+A member directory is a list of everyone who studies at a library, together with the fact that they study there. In
+a domain where the users are largely students and a meaningful share are minors, that is not a neutral feature.
+Deny by default (`AP-3`) is not caution here; it is the only defensible starting position. A library that wants a
+directory can enable one, having made that choice deliberately.
+
+### `LCFG-6` — the value most likely to be misused
+
+This is the propagation delay of the **public discovery search index**, and it exists for exactly one purpose:
+bounding how long a library just switched from Public to Private can still appear in search results.
+
+**It must never be consulted on an authorization path** (`LIB-16.9`). The reason is `MP-GBR-26`, which requires
+revocation to be immediate and global *"with no propagation window"*. A 60-second index delay **is** a propagation
+window. Wiring it into a permission, membership, suspension or revocation check would violate a Rank 1 global rule
+using a Rank 7 configuration value — precisely the inversion the precedence order exists to prevent.
+
+Its presence in a search index is safe because the index answers *"what might be worth showing?"*, never *"is this
+caller allowed?"*.
+
+### `LCFG-11` — bounded from both directions
+
+Two invariants, pulling in opposite directions:
+
+- `INV-11` — must be **greater** than `CFG-2` × `CFG-1`, the longest a legitimate OTP flow can take. Otherwise a
+  user who uses the retries the system explicitly grants them loses the thing they were trying to do.
+- `INV-10` — must be **no greater** than `CFG-6`, the absolute session lifetime. An intent outliving every session
+  capable of resuming it is unreachable.
+
+At the recommended defaults the permitted window is 2.5 minutes to 90 days, and 30 minutes sits comfortably inside
+it. If `CFG-1`, `CFG-2` or `CFG-6` is retuned this value must be re-checked — startup validation will catch it, but
+whoever changes `CFG-2` should know they are touching two subsystems.
+
+### `LCFG-13` — a cache is not a source of truth
+
+The public preview is served from a projection and may be cached for anonymous callers. That is safe because the
+projection contains only explicitly public fields (`LIB-7.1`).
+
+**It stops being safe the moment a cached value decides anything.** A cached *"this library is Public"* answer is
+not authority to serve its data 300 seconds after it went Private. The cache answers *what to render*; the
+projection's current contents answer *what exists*; `BC-18` answers *who may act*. Three different questions.
+
+---
+
+## 2B. Invitation parameter register — `ICFG-1` … `ICFG-10`
+
+Declared by
+[`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) §11.
+**Every parameter in this register is security-owned.** There is no locale or cosmetic value here.
+
+| # | Parameter | Default | Range | Rationale |
+|---|---|---|---|---|
+| `ICFG-1` | `IT-1` staff invitation TTL | **48 h** | 1 h – 7 d | Two working days covers a staff member invited Friday to start Monday. Past a week an unaccepted administrative grant is stale and its intent unverifiable |
+| `ICFG-2` | `IT-2` private library invitation TTL | **7 d** | 1 h – 30 d | A student may take a week to act. Grants only the *opportunity* to join, so the blast radius is far smaller than `IT-1` |
+| `ICFG-3` | `IT-3` access code TTL | **24 h** | 1 h – 7 d | Shortest of the three: lowest entropy, multi-use, shared aloud. Time is its primary compensating control |
+| `ICFG-4` | Acceptance window after first use | **15 min** | 5 – 60 min | The gap between presenting an invitation and completing OTP. Long enough for a delayed SMS, short enough that an abandoned half-flow does not linger |
+| `ICFG-5` | Outstanding invitations per library | **50** | 1 – 500 | Bounds the damage of a compromised Owner account, and the cost of enumeration |
+| `ICFG-6` | Max acceptances per `IT-3` code | **25** | 1 – 200 | A classroom-sized cohort. A library needing more than this should be Public |
+| `ICFG-7` | Invitations creatable per hour per library | **20** | 1 – 100 | Rate limit on the **issuing** side |
+| `ICFG-8` | Presentations per origin per hour | **20** | 5 – 100 | Well above legitimate use; far below what makes guessing viable |
+| `ICFG-9` | Failed presentations before progressive throttling | **10** | 3 – 50 | Tolerates typos in a transcribed `IT-3` code |
+| `ICFG-10` | Throttle duration after threshold | **30 min** | 5 – 120 min | Matches `CFG-4`. Long locks are themselves a DoS vector (OWASP) |
+
+### The three TTLs are ordered, and the order is the security argument
+
+`ICFG-3` (24 h) ≤ `ICFG-2` (7 d) is enforced as `INV-14`. This looks like an arbitrary tidiness rule and is not.
+
+`IT-3` access codes are deliberately the weakest artefact in the system: eight characters, ≥40 bits of entropy, an
+unambiguous alphabet, multi-use, designed to be read aloud to a room. That weakness is acceptable **only** while
+their exposure window stays short — a short-lived low-entropy code paired with `ICFG-8` presentation limits is
+sound; a long-lived one is a guessing target. Allowing `ICFG-3` to exceed `ICFG-2` would leave the weakest artefact
+in circulation the longest, inverting the entire reason a weak artefact is permitted at all.
+
+### `ICFG-8` is what makes 40 bits sufficient
+
+Forty bits is not, on its own, a comfortable secret. It becomes sufficient because presentations are capped at 20
+per origin per hour: the expected time to guess an eight-character code at that rate is far longer than the
+24-hour window `ICFG-3` allows it to exist.
+
+**Raising `ICFG-8` therefore weakens `IT-3` even though the entropy figure does not change.** These two values are a
+single control expressed in two places. Neither can be tuned by looking only at its own row.
+
+---
+
 ## 3. Cross-parameter invariants
 
 These must be **validated at application startup**. A violation is a fatal configuration error — fail fast and
@@ -328,9 +448,27 @@ loudly. A silently inconsistent security configuration is worse than a wrong one
 | **INV-7** | `CFG-5` (staff) ≤ 30 min | NIST SP 800-63B AAL2 ceiling — a compliance floor, not a preference |
 | **INV-8** | `CFG-6` (staff) ≤ 24 h | Session must not span more than one calendar day on a shared device |
 | **INV-9** | Every value within its declared range | Range violations indicate a bad deployment, not a considered choice |
+| **INV-10** | `LCFG-11` ≤ `CFG-6` (mobile) | A preserved intent must not outlive the longest session that could resume it |
+| **INV-11** | `LCFG-11` > `CFG-2` × `CFG-1` | A user who uses every OTP retry the system grants must not lose their intent |
+| **INV-12** | `LCFG-13` ≤ 3600 s | Preview cache staleness must be bounded |
+| **INV-13** | `ICFG-1` ≤ 7 d | A staff invitation must not outlive any plausible administrative window |
+| **INV-14** | `ICFG-3` ≤ `ICFG-2` | The weakest artefact (`IT-3`) must never live the longest |
+| **INV-15** | `ICFG-4` > `CFG-2` × `CFG-1` | An invitee must not time out part-way through authentication |
+| **INV-16** | `ICFG-6` ≥ 1 | An `IT-3` code that nobody can redeem is a configuration error, not a policy |
 
 Startup validation must report **all** violations, not just the first — an operator fixing a configuration should
 see the complete list once.
+
+**`INV-11` and `INV-15` are the same constraint applied to two different subsystems**, and both exist because the
+failure they prevent is invisible in development. Each bounds a timeout *below* the maximum legitimate duration of
+an authentication flow. A developer testing with an instant OTP will never reach it; a real user on a slow network,
+using the retries `CFG-1` explicitly permits, reaches it every time. This is why they are startup-validated rather
+than left to review: nobody reads two documents at once, and the constraint spans two.
+
+**Seven invariants now cross module boundaries** (`INV-10`…`INV-16` all reference a `CFG-*` value or another
+register's value). Changing an authentication parameter can therefore invalidate a library configuration. That is
+not a design flaw to be removed by decoupling them — the coupling is real, because the OTP flow really does sit in
+the middle of the invitation and preview journeys. It is a reason the validation must be mechanical.
 
 ---
 
@@ -352,8 +490,25 @@ see the complete list once.
 | `CFG-10` | 1 d | 30 d | **30 d** |
 | `CFG-11` | 20 | 5 | **5** |
 | `CFG-12` | 4 h | 1 h | **1 h** |
+| `LCFG-6` | 0 s | 60 s | **60 s** |
+| `LCFG-11` | 120 min | 30 min | **30 min** |
+| `LCFG-12` | 50 | 20 | **20** |
+| `LCFG-13` | 0 s | 300 s | **300 s** |
+| `ICFG-1` | 7 d | 48 h | **48 h** |
+| `ICFG-2` | 30 d | 7 d | **7 d** |
+| `ICFG-3` | 7 d | 24 h | **24 h** |
+| `ICFG-4` | 60 min | 15 min | **15 min** |
+| `ICFG-5` | 500 | 50 | **50** |
+| `ICFG-6` | 200 | 25 | **25** |
+| `ICFG-7` | 100 | 20 | **20** |
+| `ICFG-8` | 100 | 20 | **20** |
+| `ICFG-9` | 50 | 10 | **10** |
+| `ICFG-10` | 5 min | 30 min | **30 min** |
 
-**Rules.**
+`LCFG-1`…`LCFG-5` and `LCFG-7`…`LCFG-10` are **per-library settings, not per-environment**. They are set by each
+library through `BC-25` and do not appear in this table; the defaults in §2A apply on creation.
+
+**Rules.
 
 1. **Production uses the recommended defaults.** A production deviation requires a recorded decision and an owner.
 2. **Development relaxations are relaxations of `CFG-*` only.** They must never disable a control, never bypass OTP,
@@ -361,8 +516,12 @@ see the complete list once.
    override it.
 3. **Staging matches production** except where a shorter value is needed to test expiry. Staging exists to find
    configuration problems before production does; if it differs, it cannot.
-4. **`INV-1` … `INV-9` are validated in every environment, including development.** Relaxed values must still be
+4. **`INV-1` … `INV-16` are validated in every environment, including development.** Relaxed values must still be
    internally consistent.
+5. **Development relaxations of `ICFG-8` and `ICFG-9` are the most dangerous ones in this table.** They are the
+   controls that make `IT-3`'s deliberately low entropy safe. Relaxing them in development is acceptable; letting
+   the relaxed value reach production removes the compensating control while leaving the entropy figure — and
+   therefore every document that cites it — apparently unchanged.
 
 ---
 
@@ -393,6 +552,15 @@ Each parameter must be observable in production, or you are operating blind on t
 | `CFG-7` | Trust grants and expiries | Grants far exceeding sign-ins |
 | `CFG-8` | Device-limit refusals | Rising — either sharing or a device-identity bug |
 | `CFG-12` | **Every** elevation: actor, tenant, duration, consent reference | **Every** elevation is alertable. This is not sampled |
+| `LCFG-6` | Public→Private transitions, and index removal latency | Latency exceeding the configured value — the index is lagging its own bound |
+| `LCFG-12` | Public search request rate per origin | Sustained high-rate paging — enumeration of the public directory |
+| `ICFG-7` | Invitations created per library per hour | A library at its ceiling — either bulk onboarding or a compromised Owner account |
+| `ICFG-8`/`ICFG-9` | Failed invitation presentations, by origin | **Any** sustained failure rate. Legitimate users mistype once, not repeatedly |
+| `ICFG-6` | `IT-3` codes reaching their acceptance ceiling | Codes hitting the ceiling routinely — the library should probably be Public |
+
+**Invitation presentation failures are the highest-signal metric in this guide.** A valid invitation is delivered
+directly to one person, so a legitimate failure is a typo or an expiry. A *pattern* of failures against different
+identifiers from one origin is someone guessing, and there is no benign explanation for it.
 
 ---
 
@@ -401,4 +569,17 @@ Each parameter must be observable in production, or you are operating blind on t
 Authentication PRD v2.0 §E and §F · Chapters 4, 6, 7, 8, 9 ·
 `ACN-001-OTP-Request-Rate-Limiting.md` (closed) ·
 NIST SP 800-63B (AAL2 reauthentication) · OWASP Authentication Cheat Sheet (lockout as DoS) ·
-`DOCUMENTATION_BASELINE.md` · `ADR-0002`
+`DOCUMENTATION_BASELINE.md` · `ADR-0002` ·
+[`Library_PRD_v1.md`](../30-product/library/Library_PRD_v1.md) §16.1 ·
+[`14B-Public-Library-Preview.md`](../30-product/library/14B-Public-Library-Preview.md) §14B.9 ·
+[`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) §11 ·
+`ADR-0009`, `ADR-0010`
+
+---
+
+## 8. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-08-03 | Added the Library register `LCFG-1`…`LCFG-13` (§2A) and the invitation register `ICFG-1`…`ICFG-10` (§2B), with expanded reasoning for the seven that carry security weight. Added invariants `INV-10`…`INV-16`. Extended §1 "not configurable" with invitation entropy, the closed `IT-*` set, the closed `PO-1`…`PO-12` list and the public field allow-list. Added environment profiles and observability rules for the new parameters. **No `CFG-*` value changed.** |
+| v1.0 | 2026-08-02 | Created. `CFG-1`…`CFG-12` with ranges, rationale, invariants `INV-1`…`INV-9`, profiles and observability. Six values reset to standards-anchored defaults. Closes audit finding `G-3`. |

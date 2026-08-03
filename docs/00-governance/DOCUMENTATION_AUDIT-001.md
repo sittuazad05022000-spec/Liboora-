@@ -6,8 +6,8 @@
 | **Scope** | Every Markdown document under `docs/`, plus `tool/` and the authentication code surface |
 | **Corpus** | 46 documents, 1,181,511 characters |
 | **Trigger** | Make documentation 100% production-ready for developers |
-| **Date** | 2026-08-02 |
-| **Outcome** | **REMEDIATED** — see §6 for disposition of every finding |
+| **Date** | 2026-08-02 · **second pass 2026-08-03** |
+| **Outcome** | **REMEDIATED** — see §6 for disposition of every finding, §6B for the Library second pass |
 
 ---
 
@@ -152,7 +152,7 @@ specification is absent.
 | `R-E` | **`CFG-7` = 180-day device trust** exceeds industry norm | Major providers use ~90 days for "remember this device" | **Reduced to 90 days** |
 | `R-F` | `tool/check_module_boundaries.dart` does not exist | Dependency Matrix §10.2 specifies a CI fitness function. Until it exists, all 14 forbidden edges are documentation, not enforcement | **Recorded as `IMPL-014`** in the roadmap; not closable by documentation |
 | `R-G` | v2.0 specifies far more than is implemented | Chapters 6, 7, 9, 10, 11 are largely unimplemented. A conformance run fails today | **Explicitly stated** in Handoff and Governance Note. Not a defect — it is the point of a specification |
-| `R-H` | Library PRD §§1–25 never supplied | Auth v2.0 Chapter 2 defines tenant roles that the Library PRD must consume | **Recorded** as the top missing input |
+| `R-H` | Library PRD §§1–25 never supplied | Auth v2.0 Chapter 2 defines tenant roles that the Library PRD must consume | ~~**Recorded** as the top missing input~~ → ✅ **CLOSED 2026-08-03** — sections supplied and reviewed; see §6B |
 
 ---
 
@@ -163,14 +163,17 @@ specification is absent.
 | CONFLICT | 5 | 5 | 0 |
 | STALE | 12 | 11 | 1 (`S-12`, correctly immutable) |
 | GAP | 9 | 9 | 0 |
-| RISK | 8 | 6 | 2 (`R-F` code task, `R-H` external input) |
-| **Total** | **34** | **31** | **3** |
+| RISK | 8 | **7** | **1** (`R-F` code task) |
+| **Total** | **34** | **32** | **2** |
 
-The three deferred items are not closable by editing documentation:
+The two remaining deferred items are not closable by editing documentation:
 
 - **`R-F`** requires writing `tool/check_module_boundaries.dart` — an implementation task, scheduled as `IMPL-014`.
-- **`R-H`** requires the product owner to supply Library PRD §§1–25.
 - **`S-12`** is a historical changelog entry. Rewriting history to make a past state look correct is precisely the failure mode this audit exists to prevent.
+
+**`R-H` closed 2026-08-03.** It required an input from outside the audit's control — Library PRD §§1–25 — and that
+input arrived. The second pass is recorded in §6B. It is closed **by receipt**, not by authorship: the supplied
+sections are preserved, not reconstructed.
 
 ---
 
@@ -296,9 +299,108 @@ retroactively re-scopes every pre-existing statement about authority, and each o
 
 ---
 
+## 6B. Second review pass — Library PRD, 2026-08-03
+
+The product owner supplied **Library PRD §§1–25** on 2026-08-03. That is the input finding `R-H` was waiting for,
+and its arrival reopened the audit for a bounded second pass over the Library domain only. No authentication
+finding was revisited and no earlier disposition was reversed.
+
+### What was reviewed
+
+The supplied §§1–25 were validated against nine higher-ranked or adjacent authorities: the Master PRD global rules,
+Authentication PRD v2.0 chapters 7 and 9, the Bounded Context Map, the Module Dependency Matrix, Architecture
+Rulings `AR-1`/`AR-3`/`AR-4`, this baseline, the Configuration Guide, the existing §14A capture, and
+`tool/module_dependencies.yaml`.
+
+**The governing constraint was preservation.** The brief was explicit: *do not rewrite unless required.* Every
+requirement in the supplied text survives in `Library_PRD_v1.md`. Where the supplied text conflicted with a
+higher-ranked document, the conflict was recorded with its reasoning and resolved in favour of the higher rank —
+which is the precedence rule in §4 of the baseline operating exactly as intended, not an editorial preference.
+
+### Conflicts found — fourteen, three of them blocking
+
+Full analysis in [`LIBRARY_PRD_ALIGNMENT.md`](../30-product/library/LIBRARY_PRD_ALIGNMENT.md) §2. Summarised:
+
+| ID | Conflict | Class | Resolution |
+|---|---|---|---|
+| `LC-1` | Two competing public-visibility field lists — §7 named nine fields, §14A.5 named fourteen | CONFLICT | §14A.5 governs as the reviewed superset. `LIB-7.1`, `LIB-7.2` define the list **once** |
+| `LC-2` | The business contact number was not distinguished from the owner's authentication credential | **BLOCKING** | `LIB-6.4` separates them and forbids inference. Under `MP-GBR-25` the mobile number **is** the sole factor; publishing the profile would have published half the credential |
+| `LC-3` | Owner modelled as a single value on the library record | **BLOCKING** | `LIB-15.13` makes Owner a multi-holder role. A single-valued owner collides with `AP-5` separation of duties, `LIB-15.9` last-owner protection, and `AUTH-9.46` erasure rights *simultaneously* |
+| `LC-4` | Public seat information unbounded | **BLOCKING** | `LIB-7.3`, `LIB-14B.11`, `LIB-14B.12` permit a coarse aggregate only. Precise live occupancy in a domain where regulars hold the same desk daily is a public attendance feed |
+| `LC-5` | Notifications described as a direct integration | CONFLICT | `LIB-21.2` — emit facts, never call `platform/communication/**` (`X-04`). **Closes `CC-5`** |
+| `LC-6` | Maps described as a vendor integration | CONFLICT | `LIB-6.5`, `LIB-21.3` — a port, no vendor knowledge (`X-03`). **Closes `CC-6`** |
+| `LC-7` | `Staff` modelled as an independent entity | CONFLICT | `LIB-5.1`, `LIB-15.1` — an `Account` holding a role. Never a second credential store |
+| `LC-8` | Role vocabulary diverged from the closed set | CONFLICT | `LIB-4.1` adopts `TR-1`…`TR-3` and Platform Administrator per `AUTH-7.21` |
+| `LC-9` | "Premium Zone" invited pricing into the domain model | RISK | `LIB-11.3`, `LIB-11.4` — descriptive only; price lives on the `BC-02` plan |
+| `LC-10` | Multi-Branch tiered inconsistently | STALE | **V3** per Master PRD §32 |
+| `LC-11` | Public Library Discovery listed as both V1 and Future | STALE | §14A governs — V1 |
+| `LC-12` | Floor Capacity vs authoritative seat inventory | CONFLICT | `LIB-10.4`, `LIB-10.5` — planning figure; `BC-04` authoritative; discrepancy surfaced, never silently reconciled |
+| `LC-13` | "Silent Zone" used as both a facility and a zone | CONFLICT | `LIB-13.6` — distinct concepts, neither derives from the other |
+| `LC-14` | Facility list expansion unachievable as usually built | RISK | `LIB-13.1`, `LIB-13.2` — reference list plus association, not boolean columns |
+
+### Findings closed by this pass
+
+| Finding | Was | Now | Basis |
+|---|---|---|---|
+| `R-H` / `U-4` | Library PRD §§1–25 never supplied | **CLOSED** | **By receipt.** The sections were supplied and are preserved in `Library_PRD_v1.md` v1.0 |
+| `AR-4` deferral | Invitation security specification deferred — *"do not invent"* | **CLOSED** | **By authorship.** The deferral's stated precondition no longer holds; the received text confirms the feature exists in three forms. `INVITATION_SECURITY_SPECIFICATION.md`, `ADR-0009` |
+| `CC-5` | Library notifications might reach for the delivery channel directly | **CLOSED** | `LIB-21.2` |
+| `CC-6` | Maps might be modelled as a vendor integration | **CLOSED** | `LIB-6.5`, `LIB-21.3` |
+| `CC-7` | Invitation mechanism unspecified | **CLOSED** | The full specification, 71 requirements |
+| `U-1`, `U-5`, `U-6` | §14A open questions awaiting §§1–25 | **CLOSED** | Answered by the received text and the two new chapters |
+
+### Findings this pass deliberately did **not** close
+
+| Finding | Why it stays open |
+|---|---|
+| `D-10` demo surfaces | Code. Six call sites in four files. A document cannot delete a line of Dart |
+| `IMPL-020` SMS provider / DLT | Code plus a multi-week external registration. Now on the Library critical path too, because `IT-1` staff invitations cannot be delivered without it |
+| `R-F` / `IMPL-014` boundary checker | Code. Twenty-six edges and fourteen prohibitions remain unenforced at CI |
+| `CC-4` | Requires the checker above to be meaningful |
+| `U-3` | Requires a product decision that has not been taken |
+| `R-5` `lib/contracts/` | Code — a directory referenced in prose that does not exist |
+
+This is the same distinction §7 of this audit drew on 2026-08-02 and it has not softened. **Writing a task is not
+closing an issue.** Twenty-three Library tasks now exist with acceptance criteria and developer checklists in
+[`LIBRARY_IMPLEMENTATION_TASKS.md`](../40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md); every one of them is
+*open work*, and the backlog says so.
+
+### Documents produced by this pass (7)
+
+| Document | Purpose |
+|---|---|
+| `30-product/library/Library_PRD_v1.md` | The Library baseline, §§1–25, ~130 requirements |
+| `30-product/library/14B-Public-Library-Preview.md` | Anonymous preview; the authentication boundary as a closed register `PO-1`…`PO-12` |
+| `30-product/library/INVITATION_SECURITY_SPECIFICATION.md` | `INV-SEC-001`…`071`; three invitation types; entropy, expiry, revocation, single use, validation, audit, rate limiting |
+| `30-product/library/LIBRARY_PRD_ALIGNMENT.md` | The validation record — what conflicted, what changed, what did not, and why |
+| `40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md` | `IMPL-100`…`IMPL-127` |
+| `00-governance/adr/ADR-0009-invitation-security-model.md` | An invitation is a revocable claim, not a credential |
+| `00-governance/adr/ADR-0010-public-preview-anonymous-access.md` | Public information is served anonymously from a projection |
+
+### The one thing worth carrying forward from this pass
+
+Two of the three blocking conflicts had the same shape: **a field that looks like ordinary business data turns out
+to be load-bearing for security elsewhere.** The library's contact number is a phone number *and* the sole
+authentication factor. The seat count is inventory *and* an attendance signal. Neither is visible as a security
+question from inside the Library domain — you can only see it by reading the Master PRD's global rules at the same
+time.
+
+The generalisable lesson: **in a system with a single authentication factor, every field that could contain that
+factor is a credential field until proven otherwise.** A domain review conducted in isolation would have passed
+both requirements.
+
+---
+
 ## 7. What this audit deliberately did not do
 
 - **It did not reconcile v2.0 against the lost v1.0 text.** That text does not exist in the repository or in Git history. `D-7` is closed by authorship; see `DOCUMENTATION_BASELINE.md`.
 - **It did not change any requirement's meaning.** Six configurable values were changed, each with a recorded standards anchor. No `AUTH-`, `BR-`, `XC-` or `AC-` identifier changed meaning, and none was added or removed.
 - **It did not touch code.** `D-10` was reclassified and given a remediation task, but no `.dart` file was modified.
 - **It did not delete anything.** Superseded documents were archived with notices, not removed. The custody record remains intact.
+
+### Added by the second pass, 2026-08-03
+
+- **It did not rewrite the Library PRD.** Fourteen conflicts were corrected against higher-ranked documents. Every requirement in the supplied §§1–25 survives, and each correction carries its reasoning in `LIBRARY_PRD_ALIGNMENT.md` §2. Where the supplied text was merely *differently organised* from the rest of the corpus, it was left alone.
+- **It did not invent the invitation feature.** `AR-4` said *"do not invent."* The specification was written only after the received §§1–25 confirmed the feature exists, and in which three forms. Anything the source did not describe is listed as an explicit exclusion, `INV-XC-1`…`INV-XC-7`, rather than filled in.
+- **It did not relax any authentication rule to make the public preview work.** The preview reads a projection of explicitly public fields. `MP-GBR-08`, `X-13` and the deny-by-default rule `AP-3` are untouched; `LIB-14B.29` states that authorisation is required *in addition to* authentication, never instead of it.
+- **It still did not touch code.** Nine documents were created or amended in the second pass. `git diff` over `lib/`, `test/`, `packages/`, `tool/` is empty.

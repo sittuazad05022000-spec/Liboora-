@@ -136,22 +136,37 @@ is not an index *of tenant data*, and is therefore outside the scope those rules
 concern, consistent with Library PRD §14A.6, where an invitation is the access mechanism for a **Private
 library** — a property of the organisation, not of a credential or a plan.
 
-**Explicitly deferred by this ruling — DO NOT INVENT.** The invitation **security specification** will be
-documented separately. The following are **unspecified and must not be assumed**:
+**Deferral LIFTED 2026-08-03 — the security specification now exists.** This ruling originally deferred the
+invitation security specification with the instruction *"DO NOT INVENT"*, because the invitation feature's shape
+was unconfirmed: Library PRD §§1–25 had never been supplied. §§1–25 has since been **received in full** and
+confirms the feature exists in three forms — Staff Invite (§15), Private Library Invite via link or QR (§14A.6),
+and a transcribable Invitation Code (§14A.6). The deferral was therefore lifted **on evidence**, not by
+assumption.
 
-| Deferred | Status |
-|---|---|
-| Expiry / TTL | Not specified |
-| Revocation | Not specified |
-| Single-use policy | Not specified |
-| Entropy | Not specified |
-| Validation rules | Not specified |
-| Audit logging | Not specified |
+All six previously deferred items are specified in
+[`../30-product/library/INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md),
+and the governing decision is recorded in
+[`../00-governance/adr/ADR-0009-invitation-security-model.md`](../00-governance/adr/ADR-0009-invitation-security-model.md):
 
-**Resolves:** review conflict `CC-7` **partially** — ownership is settled; the security specification remains
-open by explicit instruction.
+| Previously deferred | Now specified in | Requirements |
+|---|---|---|
+| Expiry / TTL | §4 | `INV-SEC-016`…`022`, `ICFG-1`…`ICFG-4` |
+| Revocation | §5 | `INV-SEC-023`…`031` |
+| Single-use policy | §6 | `INV-SEC-032`…`041` |
+| Entropy | §3 | `INV-SEC-008`…`015` |
+| Validation rules | §7 | `INV-SEC-042`…`047` |
+| Audit logging | §8 | `INV-SEC-048`…`056` |
 
-**Documents updated:** `LIBOORA_BOUNDED_CONTEXT_MAP.md` §14 · `docs/30-product/library/REVIEW_14A.md`.
+**Governing principle** (`INV-SEC-002`, `ADR-0009`): an invitation is a **scoped, revocable, expiring claim to
+be offered a role or an enrollment opportunity — never a credential.** It confers nothing until the holder
+authenticates independently. The alternative reading, in which possession of a link authenticates its holder,
+would create a second authentication factor and silently defeat `MP-GBR-25`, `ADR-0002` and `ADR-0004`.
+
+**Resolves:** review conflict `CC-7` **in full** — ownership was settled by this ruling; the security
+specification is settled by `ADR-0009`.
+
+**Documents updated:** `LIBOORA_BOUNDED_CONTEXT_MAP.md` §14 · `docs/30-product/library/REVIEW_14A.md` ·
+`docs/30-product/library/LIBRARY_PRD_ALIGNMENT.md` · `ADR-0009` · `INVITATION_SECURITY_SPECIFICATION.md`.
 
 ---
 
@@ -265,13 +280,15 @@ property the defect was about.
 
 | Item | Source | Status |
 |---|---|---|
-| Invitation security specification (expiry, revocation, single-use, entropy, validation, audit logging) | `AR-4` | Deferred by ruling |
+| ~~Invitation security specification (expiry, revocation, single-use, entropy, validation, audit logging)~~ | `AR-4` | ✅ **CLOSED 2026-08-03.** Specified in [`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md); decision recorded in `ADR-0009`. Deferral lifted on evidence — Library PRD §§1–25 received and confirms the feature |
 | **OTP request rate-limiting policy** | Ruled alongside `AR-5`…`AR-7` | **Deferred by ruling. No rate-limiting policy may be invented. Must be specified in the Authentication Security PRD (Chapter 7) before implementation. No implementation assumptions are permitted.** Recorded in [`ACN-001`](../90-archive/authentication-v1/reports/ACN-001-OTP-Request-Rate-Limiting.md) |
-| Formal ADR set `docs/adr/` | Governance task `R-3` | Deferred |
+| ~~Formal ADR set `docs/adr/`~~ | Governance task `R-3` | ✅ **CLOSED.** `docs/00-governance/adr/`, `ADR-0001`…`ADR-0010` |
 | Development Standards document | Governance task `R-4` | Deferred |
 | `tool/check_module_boundaries.dart` + manifest defect fix | Governance task `R-5`, `MP-DEP-06` | Deferred |
-| Authentication PRD Chapters 1–11 content | Defect `D-7` | Deferred |
-| Library PRD sections 1–25 | Not supplied | Outstanding |
+| ~~Authentication PRD Chapters 1–11 content~~ | Defect `D-7` | ✅ **CLOSED.** Authentication PRD v2.0, eleven chapters, declared baseline by `ADR-0008` |
+| ~~Library PRD sections 1–25~~ | Not supplied | ✅ **CLOSED 2026-08-03.** Received in full; [`Library_PRD_v1.md`](../30-product/library/Library_PRD_v1.md) v1.0. Finding `U-4` closed |
+| **Public Live Occupancy** | Library PRD §24, `LIB-24.2` | **Deferred — V2.** Requires a completed privacy review before design. Live per-seat occupancy is a proxy for individual presence and **must not be invented** |
+| **Reviews & Ratings** | Library PRD §24 | **Deferred — V2.** No bounded context assigned; will require a new context and an ADR when tiered |
 
 ---
 
@@ -279,5 +296,6 @@ property the defect was about.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-03 | **`AR-4` deferral LIFTED.** The invitation security specification is now written: [`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md), governed by `ADR-0009`. All six deferred items specified. Review conflict `CC-7` **fully closed**. §6 updated: `R-3`, `D-7` and Library PRD §§1–25 marked closed; two genuinely new deferrals recorded (Public Live Occupancy, Reviews & Ratings). **No ruling was reversed, weakened or re-scoped. `AR-1`…`AR-7` stand exactly as written.** |
 | **v1.1** | 2026-08-02 | Rulings on `IVR-001` recorded: `AR-5` (option A1 — Registration collects the Display Name before OTP verification; `displayName` stays required and non-nullable; empty string, mobile number, placeholder and auto-generated names all prohibited), `AR-6` (option B3 — Authentication and Session Issuance are separate stages; an Account may exist before any tenant role; session issuance only after the authorization context exists; Authentication and Authorization must not be merged), `AR-7` (option C1 — `F-02` conformance validates anti-enumeration behaviour, not internal storage; `F-01` and `F-02` not weakened). OTP request rate limiting added to §6 as deferred by ruling, with `ACN-001` as its record. |
 | **v1.0** | 2026-08-02 | Register created. Rulings `AR-1` (Library Discovery is a read composition, not a context), `AR-2` (account creation on first successful OTP approved; Authentication owns registration), `AR-3` (Platform Public Discovery Index distinguished from Tenant Operational Data without weakening tenant isolation), `AR-4` (invitation ownership assigned to Library Management / Tenant Organization; security spec deferred) recorded as authoritative. |

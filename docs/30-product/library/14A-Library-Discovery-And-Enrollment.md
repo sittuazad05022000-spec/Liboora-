@@ -2,7 +2,12 @@
   PROVENANCE — do not edit this block by hand.
 
   Document      : Library PRD — Section 14A, Library Discovery & Enrollment
-  Status        : RECEIVED VERBATIM · UNDER ENTERPRISE REVIEW · NOT FROZEN
+  Status        : RECEIVED VERBATIM · REVIEW COMPLETE · FROZEN 2026-08-03
+                  Frozen as part of Library PRD v1.0 under BASELINE-2026-08-03.
+                  The verbatim body below is UNCHANGED and was never edited:
+                  every review outcome was recorded in a separate document so
+                  that the owner's original text remains auditable. Only this
+                  provenance status line has been advanced.
   Source        : Supplied by the product owner as the "latest enterprise version".
                   Declared to supersede every previous Library PRD draft.
   Capture rule  : Everything below the VERBATIM marker is the owner's text,

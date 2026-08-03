@@ -127,7 +127,7 @@ which is the operational source of truth for their values.
 | Module dependency manifest | `tool/module_dependencies.yaml` | Carries amendments `A-2`–`A-6`, `A-9`; declares `event_register_source` pointing into this directory |
 | Conformance suite | `test/authentication_conformance_test.dart` | 34 executable regressions for `F-01`, `F-02`, `A-7`, `A-8`, `QA-13`. **They predate v2.0 and do not evidence conformance to its 588 requirements** |
 | Baseline declaration | `docs/00-governance/DOCUMENTATION_BASELINE.md` | Declares v2.0 official; gives the precedence order |
-| Architecture decisions | `docs/00-governance/adr/ADR-INDEX.md` | `ADR-0001`…`ADR-0008`. `ADR-0004`…`ADR-0008` govern this module directly |
+| Architecture decisions | `docs/00-governance/adr/ADR-INDEX.md` | `ADR-0001`…`ADR-0010`. `ADR-0004`…`ADR-0008` govern this module directly. `ADR-0009` (invitation security) and `ADR-0010` (anonymous public preview) belong to Library Management but **depend on** this module: both route every identity assertion back to `BC-18` |
 | Configuration guide | `docs/20-configuration/CONFIGURATION_GUIDE.md` | `CFG-1`…`CFG-12` — defaults, ranges, invariants. **Normative for operations** |
 | Developer handoff | `docs/40-implementation/DEVELOPER_HANDOFF.md` | Entry point for implementers |
 | Implementation checklist | `docs/40-implementation/AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` | Working checklist for this module |

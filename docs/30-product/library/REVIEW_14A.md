@@ -4,31 +4,65 @@
 **Review date:** 2026-08-02
 **Reviewer roles:** Principal Software Architect · Staff Engineer · Enterprise PM · Domain Architect · Security Architect · Senior QA
 **Verdict at time of review:** **REQUIRES MAJOR REVISION** — 7 confirmed conflicts, 2 of them blocking.
+**Current status (2026-08-03):** ✅ **ALL FINDINGS CLOSED.** §14A is frozen as part of Library PRD v1.0. See §0.
 
 ---
 
-## 0. Post-ruling status — updated 2026-08-02
+## 0. Final disposition — updated 2026-08-03
 
-The product owner has issued rulings `AR-1`…`AR-4`
-([`ARCHITECTURE_RULINGS.md`](../../10-architecture/ARCHITECTURE_RULINGS.md)). The review body below is preserved
-**unedited** as the historical record. This section records the current disposition of each conflict.
+**This review is closed.** The review body in §§1–8 below is preserved **unedited** as the historical record; it
+describes a state of the repository that no longer exists. This section is the current status and supersedes any
+statement of outstanding work found later in the document.
 
-| Conflict | Ruling | Disposition |
+Two events closed it. On 2026-08-02 the product owner issued rulings `AR-1`…`AR-4`
+([`ARCHITECTURE_RULINGS.md`](../../10-architecture/ARCHITECTURE_RULINGS.md)), settling the four structural
+blockers. On 2026-08-03 **Library PRD §§1–25 were supplied**, removing the one finding — `U-4` — that no ruling
+could resolve, and enabling the two deferred specifications to be written.
+
+### Conflicts
+
+| Conflict | Basis | Disposition |
 |---|---|---|
-| `CC-1` Capability unregistered | `AR-1` | ✅ **Resolved.** Registered as a read composition, `MASTER_PRD.md` §8 module 19, *not a context*. Context count unchanged at 31 |
-| `CC-2` Cross-tenant index vs `X-13` | `AR-3` | ✅ **Resolved at architecture level.** Platform Public Discovery Index distinguished from Tenant Operational Data, Context Map §11.1. `MP-GBR-08`, `SE-1`, `X-13` remain in force, unmodified |
-| `CC-3` Six owners in one profile | `AR-1` | ✅ **Resolved.** Discovery composes and references; owns nothing. ⚠ §14A.5 / §14A.7 / `LIB-DISC-007` wording corrections outstanding for the next PRD revision |
-| `CC-4` Flow unimplementable | `AR-2` | ⚠ **Architecture confirmed; implementation gap OPEN.** Account creation on first successful OTP explicitly approved. Divergence documented in [`ACR-001`](../../90-archive/authentication-v1/reports/ACR-001-OTP-Account-Creation.md). **No production code changed** pending approval |
-| `CC-5` Notifications contradiction | — | ⬜ **Outstanding.** Documentation wording, next PRD revision |
-| `CC-6` Maps vendor knowledge | — | ⬜ **Outstanding.** Documentation wording, next PRD revision |
-| `CC-7` Invitations unowned | `AR-4` | ◐ **Ownership resolved** — Library Management / Tenant Organization. **Security specification deferred by ruling; must not be invented** |
-| `R-A`…`R-G` | — | ⬜ **Outstanding.** Documentation only |
-| `U-1`…`U-6` | — | ⬜ **Still unverified.** `U-4` (§§1–25 not supplied) remains the largest gap |
+| `CC-1` Capability unregistered | `AR-1` | ✅ **Closed.** Registered as a read composition, `MASTER_PRD.md` §8 module 19, *not a context*. Context count unchanged at 31 |
+| `CC-2` Cross-tenant index vs `X-13` | `AR-3`, `ADR-0010` | ✅ **Closed.** Platform Public Discovery Index distinguished from Tenant Operational Data, Context Map §11.1. `MP-GBR-08`, `SE-1`, `X-13` remain in force, **unmodified** — the resolution was a projection of public fields, not an exemption |
+| `CC-3` Six owners in one profile | `AR-1`, `LIB-26.1` | ✅ **Closed.** Discovery composes and references; owns nothing. The §14A.5 / §14A.7 / `LIB-DISC-007` wording residue is resolved by `LIB-7.1`/`LIB-7.2`, which define the public field list **once**, in §14A.5, as the governing allow-list |
+| `CC-4` Flow unimplementable | `AR-2` | ⚠ **Architecture closed; implementation task OPEN.** Account creation on first successful OTP is approved (`ADR-0005`). Divergence recorded in [`ACR-001`](../../90-archive/authentication-v1/reports/ACR-001-OTP-Account-Creation.md). **Not closed here** — it is a code change, tracked as `IMPL-031` |
+| `CC-5` Notifications contradiction | `LIB-21.2` | ✅ **Closed.** Library Management emits facts (`LEV-1`…`LEV-28`); `BC-22` delivers. No import of `platform/communication/**` (`X-04`) |
+| `CC-6` Maps vendor knowledge | `LIB-6.5`, `LIB-21.3` | ✅ **Closed.** A port, not a vendor dependency. No import of `platform/integration/**` (`X-03`) |
+| `CC-7` Invitations unowned | `AR-4`, `ADR-0009` | ✅ **Closed in full.** Ownership was resolved by `AR-4`; the deferred security specification is now written — [`INVITATION_SECURITY_SPECIFICATION.md`](./INVITATION_SECURITY_SPECIFICATION.md), 71 requirements covering all six deferred properties |
 
-**Revised freeze readiness: REQUIRES MINOR CHANGES — blocked only by `U-4`.** All four structural blockers are
-ruled. What remains is documentation wording (`CC-3` residue, `CC-5`, `CC-6`, `R-A`…`R-G`), one approval gate
-(`ACR-001`), one deferred specification (`AR-4` security rules), and the unsupplied §§1–25 — which alone
-prevents a freeze, since §14A cannot be frozen in isolation from the document it belongs to.
+### Recommendations and unverified observations
+
+| ID | Disposition |
+|---|---|
+| `R-A`…`R-G` | ✅ **Closed.** Documentation wording, all carried into `Library_PRD_v1.md` and §14B |
+| `U-1` | ✅ Closed 2026-08-02 — Authentication PRD v2.0 Chapters 2 and 3 |
+| `U-2` | ✅ Closed 2026-08-02 — `ADR-0001`…`ADR-0008` exist; `R-3` closed |
+| `U-3` | ⬜ **OPEN.** Naming, API shape and validation conventions. Needs a Development Standards document (`R-4`, P3). Not closable by this review |
+| `U-4` | ✅ **Closed 2026-08-03 by receipt.** §§1–25 supplied and validated as `Library_PRD_v1.md` v1.0. Internal consistency assessed: fourteen conflicts found, three blocking, all resolved — [`LIBRARY_PRD_ALIGNMENT.md`](./LIBRARY_PRD_ALIGNMENT.md) §2 |
+| `U-5` | ✅ **Closed.** Library events are specified as `LEV-1`…`LEV-28` in `Library_PRD_v1.md` §21.1 and the invitation specification |
+| `U-6` | ✅ **Closed.** `LIB-DISC-013` distance sorting is served by the public projection through `BC-23`; geospatial capability is scoped in `IMPL-122`. Where `BC-23` cannot support a geo query, the requirement degrades to city/area filtering rather than being silently dropped |
+
+### Freeze status
+
+**✅ FROZEN.** §14A is frozen as a normative part of **Library PRD v1.0**, at Rank 3 of the documentation baseline
+(`BASELINE-2026-08-03` §2.1). The four objections in §7 below are each answered:
+
+| §7 objection | Answer |
+|---|---|
+| Two blocking conflicts (`CC-2`, `CC-4`) | `CC-2` resolved by `AR-3`/`ADR-0010` without weakening any invariant. `CC-4` resolved architecturally by `ADR-0005`; the residual code change is `IMPL-031` |
+| The capability has no owner | `AR-1` — a read composition owning no aggregate. `LIB-26.1` carries the full ownership table |
+| Four rulings required that the reviewer may not make | All four issued by the owner on 2026-08-02 |
+| §§1–25 unassessed | Received 2026-08-03 and assessed |
+
+**One finding remains open and it is not a documentation defect.** `U-3` needs a Development Standards document,
+deferred as `R-4` at P3. `CC-4`'s residue is an implementation task. Neither blocks the freeze; both are recorded
+where work is tracked rather than closed here.
+
+> **Note on reading the rest of this document.** §§1–8 are the 2026-08-02 review, unedited. They contain statements
+> such as *"no line of this capability may lawfully be implemented today"* and *"sections 1–25 are unassessed"* which
+> were accurate when written and are now false. They are retained deliberately: rewriting a review to match a later
+> outcome destroys the evidence that the process worked. **This section, §0, is authoritative.**
 
 ---
 
@@ -371,9 +405,9 @@ Cannot be proven or disproven from documents that exist. Recorded, **not** resol
 | **U-1** | ~~Any §14A claim traceable only to *"Foundation"*.~~ **✅ Closed 2026-08-02** | Authentication PRD v2.0 Chapters 2 and 3 now specify the foundation material. |
 | **U-2** | ~~§14A's ownership assertions (§14A.1, §14A.7, `LIB-DISC-007`…`010`) cannot be checked against recorded decisions.~~ **✅ Closed 2026-08-02** | `ADR-0001`…`ADR-0008` exist in `docs/00-governance/adr/`. Governance task `R-3` closed. |
 | **U-3** | Naming, API shape and validation conventions for the new capability. | No Development Standards document; only stock `flutter_lints` (28 lines). Deferred as `R-4`. |
-| **U-4** | Whether §14A duplicates, contradicts or correctly cross-references the parent document — and whether *"Library Type"*, *"Facilities"* or visibility are already defined there. | **Sections 1–25 were not received.** See `README.md`. This is the largest unverified area: internal consistency of the Library PRD is entirely unassessed. |
-| **U-5** | Whether discovery emits events, and under which identifiers. | Event register `EVT-1001`…`EVT-1036` member names *"were never available"* (Amendment `A-4`; `Authentication_PRD.md` line 480). |
-| **U-6** | `LIB-DISC-013` distance-based sorting and *"Discover Nearby"* require geospatial query capability. | No geo/spatial capability appears in the 31 contexts or in the `platform/search` manifest block (`rank: 5`, assertions `SE-1`/`SE-2` only). Cannot confirm `BC-23` supports geo queries. Classified Unverified, not Conflict. |
+| **U-4** | ~~Whether §14A duplicates, contradicts or correctly cross-references the parent document — and whether *"Library Type"*, *"Facilities"* or visibility are already defined there.~~ **✅ Closed 2026-08-03** | Sections 1–25 received and assessed. Duplication found and resolved: two competing public-visibility lists (`LC-1`), Floor Capacity vs seat inventory (`LC-12`), and "Silent Zone" used as both facility and zone (`LC-13`). See `LIBRARY_PRD_ALIGNMENT.md` §2. |
+| **U-5** | ~~Whether discovery emits events, and under which identifiers.~~ **✅ Closed 2026-08-03** | Library events specified as `LEV-1`…`LEV-28` (`Library_PRD_v1.md` §21.1 and the invitation specification). Discovery itself, being a read composition, emits none. |
+| **U-6** | ~~`LIB-DISC-013` distance-based sorting and *"Discover Nearby"* require geospatial query capability.~~ **✅ Closed 2026-08-03** | Scoped as part of `IMPL-122` public discovery search, served through `BC-23` over the public projection. Where geo querying is unavailable the requirement degrades to city/area filtering — an explicit, recorded fallback rather than a silent omission. |
 
 ---
 
@@ -433,3 +467,13 @@ Not *Ready to Freeze*, and not *Ready after Minor Changes*. The justification is
 | Tenant isolation not weakened | ✅ `CC-2` is **escalated**, not waived. No exemption granted by this review. |
 | Security not weakened | ✅ `CC-7` escalates an unowned security token rather than specifying one unilaterally. |
 | Bounded-context ownership preserved | ✅ `CC-3` reassigns nothing; it documents existing owners and recommends Discovery own no aggregate. |
+
+---
+
+## 9. Change history
+
+| Date | Change |
+|---|---|
+| 2026-08-03 | **Review closed.** §0 rewritten as the final disposition: `CC-5`, `CC-6`, `CC-7`, `R-A`…`R-G`, `U-4`, `U-5`, `U-6` closed; `CC-4` residue reclassified as implementation task `IMPL-031`; `U-3` held open pending `R-4`. §14A frozen as part of Library PRD v1.0 at baseline Rank 3. §§1–8 preserved unedited — they describe a repository state that no longer exists, and rewriting them would destroy the record of how the findings were resolved. |
+| 2026-08-02 | Post-ruling status added. `AR-1`…`AR-4` applied. |
+| 2026-08-02 | Review published. 7 conflicts, 2 blocking. Verdict: REQUIRES MAJOR REVISION. |

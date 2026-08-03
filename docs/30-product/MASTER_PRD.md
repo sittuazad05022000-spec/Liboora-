@@ -3,13 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | Master PRD |
-| **Version** | v1.5 |
+| **Version** | v1.6 |
 | **Supersedes** | v1.2 · v1.1 (refined) · v1.0 (Foundation Document) |
 | **Status** | Foundation Document — aligned to Enterprise Architecture v2.1 |
 | **Governance position** | `FOUNDATION → Master PRD (V1)` in the Enterprise Architecture tree |
-| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 · `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.2** · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 |
+| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **v2.1** · `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.2** · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 |
 | **Identifier namespace** | `MP-*` — reserved exclusively for this document, collision-free against every other register |
-| **Rulings applied** | `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7` — see [`../architecture/ARCHITECTURE_RULINGS.md`](../10-architecture/ARCHITECTURE_RULINGS.md). (`AR-3`, `AR-4` affect the Bounded Context Map and Library PRD, not this document.) |
+| **Rulings applied** | `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7` — see [`../architecture/ARCHITECTURE_RULINGS.md`](../10-architecture/ARCHITECTURE_RULINGS.md). (`AR-3`, `AR-4` affect the Bounded Context Map and Library PRD, not this document. Both are now **fully discharged** — see §31.) |
 
 ---
 
@@ -593,21 +593,38 @@ Every module must have its own independent PRD. The Master PRD never duplicates 
 | **Enterprise Architecture v2.1** | Approved — governing, but **descriptive not prescriptive** (precedence rank 6). Where it disagrees with an approved PRD, the PRD wins. See `docs/00-governance/DOCUMENTATION_BASELINE.md` §4 |
 | **Bounded Context Map v1.2** | Approved — governing. `AR-1`…`AR-7` applied |
 | **Module Dependency Matrix v1.0** | Approved — governing. **Known defect:** declares `contracts: path: lib/contracts`, which does not exist; the shared kernel is `packages/liboora_contracts/`. Deferred as governance task `R-5` |
-| **Architecture Rulings Register v1.1** | **Approved, authoritative.** `AR-1`…`AR-7` |
-| **ADR set** | **Present and authoritative** — `docs/00-governance/adr/`, `ADR-0001`…`ADR-0008`, indexed by `ADR-INDEX.md`. `ADR-0001`–`ADR-0003` record foundational decisions; `ADR-0004`–`ADR-0007` promote rulings `AR-6`, `AR-2`, `AR-5`, `AR-7`; `ADR-0008` declares Authentication PRD v2.0 the official baseline. Governance task `R-3` **closed**. The Rulings Register remains authoritative for rulings not yet promoted to an ADR |
+| **Architecture Rulings Register v1.2** | **Approved, authoritative.** `AR-1`…`AR-7`. The `AR-4` invitation-security deferral is **lifted** — the specification it required now exists |
+| **ADR set** | **Present and authoritative** — `docs/00-governance/adr/`, `ADR-0001`…`ADR-0010`, indexed by `ADR-INDEX.md`. `ADR-0001`–`ADR-0003` record foundational decisions; `ADR-0004`–`ADR-0007` promote rulings `AR-6`, `AR-2`, `AR-5`, `AR-7`; `ADR-0008` declares Authentication PRD v2.0 the official baseline; **`ADR-0009`** establishes that an invitation is a revocable claim and never a credential, completing `AR-4`; **`ADR-0010`** establishes that public library information is served anonymously from a projection, extending `AR-3`. Governance task `R-3` **closed**. The Rulings Register remains authoritative for rulings not yet promoted to an ADR |
 | Architecture Handbook | Listed in v1.0 |
 | System Architecture | **Resolved by ruling `R-1`** — `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **v2.1** is the designated System Architecture. It is **descriptive**: it records the shape of the system, it does not override PRD requirements |
 | Database Design (ERD) | Listed in v1.0 |
 | API Specification | Listed in v1.0 |
 | Authentication PRD | **v2.0 — present and authoritative.** `docs/30-product/authentication/Authentication_PRD_v2.md` (single file) and `docs/30-product/authentication/prd-v2/` (cover + eleven chapters). Defect `D-7` **CLOSED by authorship, not by transfer** — v2.0 was written from the rulings, this document's global rules, the Bounded Context Map and implemented behaviour; it does not reproduce the never-transferred v1.0 text. The eleven v1.0 transfer slots are **archived** at `docs/90-archive/authentication-v1/empty-slots/`. v2.0 was **declared the official baseline by `ADR-0008`** and recorded in `DOCUMENTATION_BASELINE.md` (BASELINE-2026-08-02). The twelve configurable parameters are **no longer awaiting sign-off** — they are reviewed, anchored to named external standards and published in `docs/20-configuration/CONFIGURATION_GUIDE.md`; six defaults were reset (`CFG-3`, `CFG-4`, `CFG-5`, `CFG-6`, `CFG-7`, `CFG-12`) |
 | **Authentication implementation record** | **Added** — `ACR-001` (approved) · `ACR-002` (superseded by `AR-5`/`AR-6`/`AR-7`) · `ACN-001` (**closed** — OTP request rate limiting specified by Authentication PRD v2.0 Chapter 8, parameters `CFG-1`–`CFG-4`) · `IVR-001` v1.1 (validated) · `CHANGE_REPORT-001` · `VERIFICATION_REPORT-001`. **Archived** at `docs/90-archive/authentication-v1/reports/` — historical record, superseded by Authentication PRD v2.0 |
-| **Developer documentation set** | **Added** — `docs/40-implementation/`: `DEVELOPER_HANDOFF.md` · `IMPLEMENTATION_ROADMAP.md` · `AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` · `TASK-D10-remove-demo-surfaces.md` · `DEFINITION_OF_DONE.md` · `TRACEABILITY_MATRIX.md`. Entry point `docs/README.md` |
-| **Library PRD** (Organization & Library Management) | **Added** — `docs/30-product/library/`. §14A captured and reviewed; **§§1–25 not yet supplied** |
+| **Developer documentation set** | **Added** — `docs/40-implementation/`: `DEVELOPER_HANDOFF.md` **v1.1** · `IMPLEMENTATION_ROADMAP.md` **v1.1** · `AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` · **`LIBRARY_IMPLEMENTATION_TASKS.md` v1.0** · `TASK-D10-remove-demo-surfaces.md` · `DEFINITION_OF_DONE.md` · `TRACEABILITY_MATRIX.md` **v1.1**. Entry point `docs/README.md` |
+| **Library PRD** (Organization & Library Management) | **v1.0 — present and authoritative.** `docs/30-product/library/`. **§§1–25 received 2026-08-03**, validated and frozen as `Library_PRD_v1.md`, together with three normative companions: `14A-Library-Discovery-And-Enrollment.md` (discovery, enrollment, the public field allow-list), **`14B-Public-Library-Preview.md`** (anonymous preview, the closed protected-operation list `PO-1`…`PO-12`, intent preservation) and **`INVITATION_SECURITY_SPECIFICATION.md`** (`INV-SEC-001`…`071`, three invitation types, entropy, expiry, revocation, single use, validation, audit, rate limiting). "The Library PRD" means **all four**. Declared into the baseline at **Rank 3** — the rank the Authentication PRD holds for `BC-18` — by `DOCUMENTATION_BASELINE.md` (`BASELINE-2026-08-03` §2.1). Gap `U-4`/`R-H` **CLOSED by receipt, not by authorship**: the supplied sections are preserved, not reconstructed. Fourteen conflicts against higher-ranked documents were found and corrected, three of them blocking; every correction and its reasoning is recorded in `LIBRARY_PRD_ALIGNMENT.md` §2, and **nothing was removed**. Configuration additions `LCFG-1`…`LCFG-13`, `ICFG-1`…`ICFG-10` and invariants `INV-10`…`INV-16` are published in `docs/20-configuration/CONFIGURATION_GUIDE.md` §2A/§2B. Implementation is **entirely unstarted** — 23 open tasks, `IMPL-100`…`IMPL-127` |
 | Student Management · Membership · Attendance · Seat · Revenue & Finance · Analytics · Notifications · Security & Automation · AI Super Assistant PRDs | Listed in v1.0 |
 | **Domain Model · Data Dictionary · Business Capability Map** | **Added** — present in EA tree, absent from v1.0 §25 |
 | **Tenancy Model · Modularization Strategy · NFR Budgets** | **Added** — V1 in EA tree |
 | **Event Catalog · Service Catalog · Threat Model · Compliance Requirements · Cost Model** | **Added** — V2 in EA tree |
 | **Risk Register · Project Glossary · Versioning Strategy · Environment Strategy** | **Added** — V1 in EA tree |
+
+---
+
+## 31.1 Note on `MP-CON-08` and the two module baselines
+
+The documentation baseline now carries **two** module specifications at Rank 3: the Authentication PRD for `BC-18`
+and the Library PRD for Library Management. They do not overlap, and the rule that keeps them from overlapping is
+not a precedence rule.
+
+Where a Library requirement appears to constrain authentication — the public preview's authentication boundary, the
+invitation acceptance sequence — the Library document states *what must be true* and `BC-18` remains the sole
+authority on *how it is decided*. A Library module that evaluates, grants or caches an authorization decision has
+violated `X-13`, and no amount of precedence makes that lawful.
+
+This matters because the temptation runs the other way. `LIB-14B.29` requires authorisation *in addition to*
+authentication for every protected operation; the cheapest way to satisfy a reading of that sentence is to let the
+Library module decide. That would be wrong, and it would pass its own tests.
 
 ---
 
@@ -705,6 +722,7 @@ Auditable proof that refinement did not become deletion.
 
 | Version | Change |
 |---|---|
+| **v1.6** | 2026-08-03 | **Library PRD admitted as a Rank 3 baseline.** §31: Library PRD row rewritten — §§1–25 received, validated and frozen as v1.0 with three normative companions; `U-4`/`R-H` closed by receipt. ADR set extended to `ADR-0010` (`ADR-0009` invitation security model, `ADR-0010` public preview anonymous access). Architecture Rulings Register raised to v1.2 with the `AR-4` deferral lifted. Developer documentation set extended with `LIBRARY_IMPLEMENTATION_TASKS.md`; three documents raised to v1.1. Added §31.1 recording why two Rank 3 module baselines do not conflict. Stale `Aligned to` reference corrected from Enterprise Architecture v2.0 to v2.1. **No global rule — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` — was added, removed or changed.** |
 | **v1.5** | Cross-reference alignment only. §31 updated to record the **ADR set** `ADR-0001`…`ADR-0008` (governance task `R-3` **closed**), Enterprise Architecture **v2.1** and its **descriptive** standing, Authentication PRD v2.0 as the **declared baseline** (`ADR-0008`), the twelve configurable parameters as **reviewed and anchored** with six defaults reset, the v1.0 authentication material as **archived**, and the new **developer documentation set**. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.4** | Cross-reference alignment only. §31 updated to record **Authentication PRD v2.0** as present and authoritative, `D-7` **closed by authorship rather than transfer**, and `ACN-001` **closed** by v2.0 Chapter 8 (`CFG-1`–`CFG-4`). **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.3** | Cross-reference alignment only. Header records Bounded Context Map **v1.2** and rulings `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7`. §31 updated: Rulings Register v1.1, BC Map v1.2, the Module Dependency Matrix's known `lib/contracts` defect, the Authentication PRD's true state (custody shell, 0 body characters, `D-7` open), and the Authentication implementation record. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |

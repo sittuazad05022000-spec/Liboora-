@@ -99,7 +99,7 @@ by `TASK-D10`, a P0 release blocker. See [`ADR-0012`](../00-governance/adr/ADR-0
 | `X-13` tenant-key check | — | **Unmet**; should precede any persistent datastore |
 | `X-10` audit-mutation check | — | **Unmet** |
 | `IMPL-220` — `SID-INT-*` enforcement | P0 | Now unblocked |
-| GitHub backup | — | **Failing** — authentication (see `RSK-07`) |
+| GitHub backup | — | ✅ **Current** — `github/main` at `011db0c`, verified via the GitHub API (`RSK-07` closed). Blocked on a 401 at first attempt; authorization was restored |
 | `R-4` · `U-3` · `Q-02` `branchId` ADR | P3 | Standing deferrals |
 
 ---
@@ -114,6 +114,14 @@ flutter test test/architecture/                       # gate 4
 flutter test                                          # gate 5 — expect 71/71
 ```
 
+To confirm the GitHub backup claim — note this deliberately does **not** trust `git push`'s own exit code:
+
+```bash
+git fetch github
+git rev-list --count github/main..HEAD    # expect 0 — nothing unpushed
+git rev-list --count HEAD..github/main    # expect 0 — nothing unmerged
+```
+
 If a command disagrees with this document, **the command is right**. Update this document in the same commit as
 the change that made it stale.
 
@@ -124,3 +132,4 @@ the change that made it stale.
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created during Phase 6 after validation found 10 stale `IMPL-014` statements across 7 documents. Establishes a single authoritative status record and names the two Matrix §10.2 checks that remain unimplemented and therefore unmet. |
+| v1.1 | 2026-08-04 | GitHub backup row moved from **Failing** to **Current** (`011db0c`) after authorization was restored and the push verified against the GitHub API. Added the divergence commands to §6, since this document's own credibility rests on every claim in it being checkable — the same principle as `SID-4.56`. |

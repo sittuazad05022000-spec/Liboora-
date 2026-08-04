@@ -91,16 +91,17 @@ the lesson `SID-4.56` encodes and this report applies to itself.
 | **Residual** | **Medium** until a datastore exists |
 | **Recommendation** | The first persistence task must carry `NOT NULL` on both `personId` columns and a uniqueness constraint expressing `SID-INV-1`. Recorded here so the requirement is not rediscovered by incident |
 
-### `RSK-07` — GitHub backup is not current
+### `RSK-07` — GitHub backup is not current — ✅ **CLOSED 2026-08-04**
 
 | | |
 |---|---|
-| **Severity** | **Medium (4)** — L2 × I2 |
-| **Description** | `github/main` is at `38f6ab9`. The migration commit `a22fd7e` and the documentation pack exist **only in the sandbox**. Authentication fails: `remote: Invalid username or token`, `curl api.github.com/user` → **401**, `~/.git-credentials` is **0 bytes** |
-| **Consequence** | Loss of the sandbox loses the migration |
-| **Mitigation in place** | Work is committed locally, so it is recoverable within the sandbox lifetime. Reported rather than silently retried |
-| **Residual** | **Medium**, and **outside my control**: the credential store is empty, so no push can succeed until re-authorization |
-| **Closes when** | GitHub authorization is restored and `git push github main` completes. **Not claimed as done** |
+| **Severity when open** | **Medium (4)** — L2 × I2 |
+| **Description** | `github/main` was at `38f6ab9`. The migration commit `a22fd7e` and the documentation pack existed **only in the sandbox**. Authentication failed: `remote: Invalid username or token`, `curl api.github.com/user` → **401**, `~/.git-credentials` was **0 bytes** |
+| **Consequence** | Loss of the sandbox would have lost the migration |
+| **Mitigation while open** | Work was committed locally, so it was recoverable within the sandbox lifetime. Reported rather than silently retried |
+| **Resolution** | Authorization restored and verified (credential store 0 → 75 bytes; API 401 → **200**). Divergence measured first — local 3 ahead, remote 0 ahead — so a fast-forward `git push github main` was correct and **no history was rewritten**. Pushed `38f6ab9..011db0c` |
+| **Verified by** | GitHub API `git/ref/heads/main` returns `011db0c1b7b4aba6336f9b4b32e4f7b00fa65fa3`, identical to local `HEAD`; post-push divergence is **0 / 0**; four files including a frozen PRD return HTTP 200 by content API, confirming the tree and not merely the ref. Deliberately **not** verified by the push command's own exit code |
+| **Residual** | **None** for this migration. The general risk recurs for any future commit not yet pushed |
 
 ### `RSK-08` — Rank 7.5 invites further fractional ranks
 
@@ -142,19 +143,26 @@ Recording these prevents a future reader assuming they were missed.
 
 ## 4. Summary
 
-| Severity | Count | IDs |
-|---|---|---|
-| **High** | 2 | `RSK-01`, `RSK-02` |
-| **Medium** | 5 | `RSK-03`, `RSK-04`, `RSK-05`, `RSK-06`, `RSK-07` |
-| **Low** | 2 | `RSK-08`, `RSK-09` |
+| Severity | Open | Closed | IDs |
+|---|---|---|---|
+| **High** | 2 | — | `RSK-01`, `RSK-02` |
+| **Medium** | 4 | 1 | `RSK-03`, `RSK-04`, `RSK-05`, `RSK-06` · closed: `RSK-07` |
+| **Low** | 2 | — | `RSK-08`, `RSK-09` |
+
+**8 open, 1 closed.**
 
 **Both High risks are governance risks, not correctness risks.** No risk on this register threatens the
 correctness of the migrated identity model — that is guarded by the compiler (non-nullable, `final`, `required`),
 by 14 conformance tests, and by a boundary checker reporting zero findings against `domain/person`.
 
-Every High and Medium risk is either enforced by tooling (`RSK-01`, `RSK-02`), documented as explicitly unmet
-(`RSK-03`), fails closed (`RSK-04`), closed for known instances (`RSK-05`), guarded at the domain layer
-(`RSK-06`), or outside my control and reported rather than concealed (`RSK-07`).
+Every remaining High and Medium risk is either enforced by tooling (`RSK-01`, `RSK-02`), documented as explicitly
+unmet (`RSK-03`), fails closed (`RSK-04`), closed for known instances (`RSK-05`), or guarded at the domain layer
+(`RSK-06`). `RSK-07` was outside my control and reported rather than concealed; it has since been **closed** by
+restored authorization and a push verified against the remote API.
+
+The two High risks are unchanged by the push. Getting the work off the sandbox removes a *loss* risk; it does
+nothing about debt waves being extended rather than paid (`RSK-02`), which is the risk most likely to outlive
+this migration.
 
 ---
 
@@ -163,3 +171,4 @@ Every High and Medium risk is either enforced by tooling (`RSK-01`, `RSK-02`), d
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created alongside the `ADR-0011` code migration. Nine risks registered; five candidate risks explicitly excluded with reasons. `RSK-07` records the GitHub authentication failure as an open, unresolved blocker rather than a completed push. |
+| v1.1 | 2026-08-04 | `RSK-07` **closed** — authorization restored and verified, `main` fast-forwarded `38f6ab9..011db0c`, push confirmed via the GitHub API rather than the push command's exit code. The original failure is retained in the entry as history. Register now 8 open / 1 closed; both High risks unchanged. |

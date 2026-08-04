@@ -37,7 +37,7 @@ Six phases were required. All six are complete.
 | 6 | Validation Report | ✅ [`STUDENT_IDENTITY_VALIDATION_REPORT.md`](./STUDENT_IDENTITY_VALIDATION_REPORT.md) |
 | 7 | Risk Report | ✅ [`STUDENT_IDENTITY_RISK_REPORT.md`](./STUDENT_IDENTITY_RISK_REPORT.md) |
 | 8 | Git commit | ✅ `a22fd7e` (code) + documentation-pack commit |
-| 9 | Push to GitHub | ⛔ **BLOCKED — authentication failure.** Reported, not claimed. See §6 |
+| 9 | Push to GitHub | ✅ **Complete** — `38f6ab9..011db0c`, verified against the GitHub API. Blocked on a 401 at first attempt; see §6 for both states |
 
 ---
 
@@ -119,27 +119,58 @@ This is recorded in `ADR-0012` §3.4, Plan `MIG-15`, Checker Design §6, `DEPEND
 
 ---
 
-## 6. Deliverable 9 — GitHub push: **BLOCKED**
+## 6. Deliverable 9 — GitHub push: ✅ **COMPLETE (after a blocked first attempt)**
 
-**The push has not happened. I am not claiming otherwise.**
+The failure is retained here rather than erased, because "it worked in the end" and "it worked all along" are
+different facts, and only one of them is true.
+
+### 6.1 First attempt — blocked
 
 | Check | Result |
 |---|---|
 | `git push github main` | `remote: Invalid username or token` |
 | `setup_github_environment` | *"No Valid GitHub Authorization Found"* |
 | `curl https://api.github.com/user` | **HTTP 401** |
-| `~/.git-credentials` | **0 bytes** — the credential store is empty |
-| `github/main` | `38f6ab9` — **2 commits behind** |
+| `~/.git-credentials` | **0 bytes** — the credential store was empty |
 
-**Exact issue:** the sandbox holds no valid GitHub credential. The credential file exists but is empty, so every
-authenticated operation returns 401. This is an **authorization state problem, not a git configuration problem** —
-no remote URL, branch or merge strategy change can resolve it.
+**Exact issue as reported at the time:** the sandbox held no valid GitHub credential. The credential file existed
+but was empty, so every authenticated operation returned 401. This was an **authorization state problem, not a git
+configuration problem** — no remote URL, branch or merge strategy change could have resolved it. Per instruction I
+stopped and waited rather than attempting a workaround, since rewriting the remote or embedding a token would
+either have failed identically or fabricated the appearance of success.
 
-**Per instruction, I have stopped and am waiting for re-authorization.** No workaround was attempted: rewriting
-the remote or embedding a token would either fail identically or fabricate the appearance of success.
+### 6.2 Re-authorization and successful push
 
-**What is at risk:** commit `a22fd7e` and the documentation pack exist **only in this sandbox**. Tracked as
-`RSK-07`.
+Authorization was subsequently restored and **verified before being trusted**:
+
+| Check | Before | After |
+|---|---|---|
+| `~/.git-credentials` | 0 bytes | **75 bytes** |
+| `curl https://api.github.com/user` | HTTP 401 | **HTTP 200** |
+| `setup_github_environment` | No valid authorization | **Configured** — `sittuazad05022000-spec` / `Liboora-` |
+
+Divergence was measured **before** pushing, to honour the standing rule that unrelated remote history is merged
+and never force-overwritten: local was **3 ahead, remote 0 ahead** — a clean fast-forward, so a plain
+`git push github main` was correct and no history was rewritten.
+
+```
+git push github main
+To https://github.com/sittuazad05022000-spec/Liboora-.git
+   38f6ab9..011db0c  main -> main
+```
+
+### 6.3 Push verified independently of the push command
+
+A zero exit code from `git push` is the pushing side's own claim. It was confirmed against the remote:
+
+| Verification | Result |
+|---|---|
+| GitHub API `git/ref/heads/main` → `sha` | `011db0c1b7b4aba6336f9b4b32e4f7b00fa65fa3` |
+| Local `git rev-parse HEAD` | `011db0c1b7b4aba6336f9b4b32e4f7b00fa65fa3` — **identical** |
+| `git fetch github` then divergence | **local ahead 0 · remote ahead 0** |
+| Content spot-check, 4 files via API | **HTTP 200** each — including a frozen PRD, confirming the tree and not merely the ref |
+
+`RSK-07` (GitHub backup not current) is therefore **closed**.
 
 **To resolve:** re-authorize GitHub, then `git push github main`. Two commits will transfer; no force-push and no
 history rewrite is needed.
@@ -181,3 +212,4 @@ Recorded so that "complete" is not read as "nothing left".
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created. Records completion of Phases 1–6 and Deliverables 1–8, the intentionally red gate 3, the two unimplemented Matrix §10.2 checks, and **Deliverable 9 as blocked on GitHub authentication rather than complete**. |
+| v1.1 | 2026-08-04 | Deliverable 9 **closed**. Authorization was restored, verified (credential store 0 → 75 bytes; API 401 → 200), and `main` fast-forwarded `38f6ab9..011db0c` with divergence measured beforehand so no history was rewritten. Push confirmed against the GitHub API rather than trusting the push command's exit code. §6 retains the blocked first attempt as history. `RSK-07` closed. |

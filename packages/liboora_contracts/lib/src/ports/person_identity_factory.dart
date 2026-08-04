@@ -38,8 +38,5 @@ abstract interface class PersonIdentityFactory {
   ///     verified mobile number is deliberately **not** a parameter: the
   ///     identity module may never receive, store or index it (`SID-4.13`,
   ///     `SID-INV-5`, `SXC-1`).
-  PersonId createFor({
-    required AccountId account,
-    required String displayName,
-  });
+  PersonId createFor({required AccountId account, required String displayName});
 }

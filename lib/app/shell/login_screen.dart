@@ -46,11 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final s = context.read<SessionController>();
     // The name was collected before OTP verification (AR-5) and is consumed
     // only if this number has no account yet.
-    s.verifyOtp(
-      phone: _phone.text,
-      code: _code.text,
-      displayName: _name.text,
-    );
+    s.verifyOtp(phone: _phone.text, code: _code.text, displayName: _name.text);
   }
 
   void _useAccount(String phone) {

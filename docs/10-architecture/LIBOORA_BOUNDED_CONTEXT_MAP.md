@@ -3,13 +3,14 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.3 |
+| **Version** | v1.4 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-04 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2 and v1.3** |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2, v1.3 and v1.4** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
+| **Implementation status** | `ADR-0011` is **implemented in code** as of `a22fd7e` — see [`../40-implementation/IMPLEMENTATION_STATUS.md`](../40-implementation/IMPLEMENTATION_STATUS.md) |
 | **ADRs applied** | `ADR-0011` amends §3.2, §4, §5 and §8 — `BC-10` becomes **Global Person Identity**, `[CORE]`, rank 7.5, cardinality `1:1`. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are **preserved**. See [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) |
 
 ---
@@ -609,6 +610,8 @@ unchanged.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.4** | 2026-08-04 | **Implementation status only — no context, aggregate, invariant, edge, event, identity rule or tenancy model changed; count remains 31 (23 in V1).** Recorded because the `ADR-0011` amendments carried by v1.3 are now **implemented in code** (commit `a22fd7e`): `BC-10` exists as `lib/domain/person/` at rank 7.5, edge `E-12` is realised as a synchronous rank-0 port (`PersonIdentityFactory`) satisfying `SID-4.11` in the same unit of work, edge `E-13` is a non-nullable `personId` on `StudentRecord`, and `BC-11` holds `SocialPresence` with **no** identity fields (`SID-BR-11`). Cardinality `1:1` mandatory is enforced by the compiler and asserted against the booted container (`MP-GBR-02`). `ID-2` and `SID-4.19` are verified: the identity holds no `StudentRecordId` and no `TenantId`. Enforcement is mechanical as of `IMPL-014` — **0 findings name `domain/person`**. See [`../40-implementation/ARCHITECTURE_MIGRATION_REPORT.md`](../40-implementation/ARCHITECTURE_MIGRATION_REPORT.md). |
+| **v1.3** | 2026-08-04 | Applied [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md). §3.2, §4, §5 and §8 amended: `BC-10` renamed **Global Person Identity**, reclassified `[SUPPORTING]` → **`[CORE]`**, moved out of the Social cluster to **rank 7.5**, and its cardinality with `Account` changed from `0..1` opt-in to **`1:1` mandatory**. Edge `E-12` recorded as a *synchronous port, same transaction*; edge `E-13` as the sole ACL bridge with a **non-nullable** `personId`. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` **preserved unamended**. **No context added, removed or re-scoped; count remains 31 (23 in V1).** Retro-recorded: this row was omitted when the change was made. |
 | **v1.2** | 2026-08-02 | Applied approved architecture rulings `AR-5`, `AR-6`, `AR-7`. §14 gains three rows; §14.2 added, recording the approved authentication stage sequence and confirming that an `Account` may exist before any tenant role. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed** — §4 and §11 are confirmed as written, not amended. `AR-6` is a stage separation *within* `BC-18`, not a context split. |
 | **v1.1** | 2026-08-02 | Applied approved architecture rulings `AR-1`…`AR-4`. §2 records Library Discovery as a non-context read composition. §11.1 added, distinguishing the Platform Public Discovery Index from Tenant Operational Data without relaxing `MP-GBR-08`, `SE-1` or `X-13`. §14 added as the in-document rulings summary, including invitation ownership. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed.** |
 | **v1.0** | 2026-07-30 | Initial bounded context map derived from Enterprise Architecture v2.0. 31 contexts registered, 26 integration edges specified, Identity Triad defined, 14 ubiquitous-language collisions resolved, 17 aggregates with invariants, 30 V1 events, extraction order set. |

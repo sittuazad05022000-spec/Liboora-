@@ -9,6 +9,26 @@
 
 ## 0. Honest status
 
+> ### ⚠️ STATUS UPDATE — 2026-08-04 · the migration described below has been EXECUTED
+>
+> Commit **`a22fd7e`** migrated the code to the approved `ADR-0011` architecture. **§0 below is preserved as
+> the historical record of the pre-migration state** — it was accurate when written and is retained because
+> the task register is derived from it. It no longer describes the code.
+>
+> | Statement in §0 | Now |
+> |---|---|
+> | `Account.personId` **nullable** | ✅ **non-nullable, required** |
+> | `StudentRecord.personId` **nullable** | ✅ **non-nullable, `final`**; `linkToPerson` deleted |
+> | `GlobalStudentProfile` inside `domain/social` | ✅ **`PersonIdentity` in `lib/domain/person/`, rank 7.5** |
+> | *"1 of 5 accounts has a `personId`"* | ✅ **5 of 5** |
+> | *"What does not exist: `lib/domain/person/` … and `tool/check_module_boundaries.dart`"* | ✅ **Both now exist**; the checker runs as Matrix §10.4 gate 3 |
+> | *"The manifest and the code disagree"* | ✅ **They agree.** 0 checker findings name `domain/person` |
+>
+> `IMPL-207` and `IMPL-208` are **IMPLEMENTED**. `IMPL-014` is **IMPLEMENTED**, which unblocks `IMPL-220`.
+> Authoritative status: [`IMPLEMENTATION_STATUS.md`](./IMPLEMENTATION_STATUS.md) ·
+> narrative: [`ARCHITECTURE_MIGRATION_REPORT.md`](./ARCHITECTURE_MIGRATION_REPORT.md) ·
+> register: [`STUDENT_IDENTITY_MIGRATION_PLAN.md`](./STUDENT_IDENTITY_MIGRATION_PLAN.md).
+
 **This module is a migration, not a greenfield build**, and the distinction changes the shape of the
 work. Identity code already exists — committed in `a44ebb0`, the original scaffold — and **all of it
 implements the superseded pre-`ADR-0011` model**: a nullable, opt-in `PersonId` owned by the social
@@ -110,7 +130,7 @@ deliberately unallocated. Each group can grow without renumbering its successors
 
 | ID | Task | Priority | Blocks | Blocked by |
 |---|---|---|---|---|
-| `IMPL-220` | **Boundary enforcement.** Extend the module boundary checker to fail the build on any `SID-INT-1` … `SID-INT-12` violation. **Blocked — `IMPL-014` does not exist**; until it does, each rule is review-verified and counted as unmet, not satisfied (`SID-4.56`) | **P0** | `226` | `200`; `IMPL-014` |
+| `IMPL-220` | **Boundary enforcement.** Extend the module boundary checker to fail the build on any `SID-INT-1` … `SID-INT-12` violation. **UNBLOCKED 2026-08-04** — `IMPL-014` now exists (`tool/check_module_boundaries.dart`, 10 enforcement categories, wired as Matrix §10.4 gate 3) and reports **0 findings** against `domain/person`, so the rank-7.5 boundary itself is enforced. What remains is the `SID-INT-*` specific rules. Until they are checked, each is review-verified and counted as **unmet**, not satisfied (`SID-4.56`) | **P0** | `226` | `200` |
 | `IMPL-221` | **Authorisation.** `SPO-1` … `SPO-9` gated per request via `BC-18`; deny by default; never cached; organisation roles `TR-1`–`TR-3` cannot mutate global profile state; Platform Administrator limited to status; every denial audited | **P0** | `226` | `202`, `205` |
 | `IMPL-222` | **Event publication & consumption.** `SEV-1` … `SEV-16` via the outbox, at-least-once, idempotent consumers; consume `iam.AccountErased`, `iam.MobileNumberChanged`, `iam.AccountSuspended`, `safety.EnforcementActionTaken` — the last restricting the public projection only, never lifecycle | **P0** | `223`, `226` | `201`, `204` |
 | `IMPL-223` | **Search indexing.** Allow-list fields only via `BC-23` (`E-21`); never-public fields never indexed anywhere; Public → Private removes from public search in the same operation; no lookup by mobile number and no confirmation that one is registered | P1 | `226` | `211`, `213`, `222` |

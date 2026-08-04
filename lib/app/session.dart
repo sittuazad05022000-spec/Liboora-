@@ -49,7 +49,8 @@ final class SessionController extends ChangeNotifier {
 
   /// True when the number is verified and the account exists, but the tenant
   /// role required for session issuance does not exist yet.
-  bool get awaitingAuthorization => _session == null && _verifiedAccount != null;
+  bool get awaitingAuthorization =>
+      _session == null && _verifiedAccount != null;
 
   Account? get account => _session?.account;
   AccessRole get role => _session?.activeRole ?? AccessRole.student;

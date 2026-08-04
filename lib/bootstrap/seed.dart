@@ -172,11 +172,9 @@ void _seedAccounts(AppContainer c, List<Account> accounts) {
   // Mints the identity for a seeded account exactly as BC-18 does in
   // production. There is deliberately no path here that builds an Account
   // without one.
-  PersonId identityFor(String accountId, String displayName) =>
-      c.identityService.createFor(
-        account: AccountId(accountId),
-        displayName: displayName,
-      );
+  PersonId identityFor(String accountId, String displayName) => c
+      .identityService
+      .createFor(account: AccountId(accountId), displayName: displayName);
 
   accounts.addAll([
     Account(

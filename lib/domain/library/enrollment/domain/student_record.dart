@@ -123,5 +123,4 @@ final class StudentRecord {
     }
     status = EnrollmentStatus.archived;
   }
-
 }

@@ -3,12 +3,14 @@
 | Field | Value |
 |---|---|
 | **Document** | Module Dependency Matrix & Boundary Enforcement Rules |
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Companion doc** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.3 |
-| **ADRs applied** | `ADR-0011` — introduces **rank 7.5** for `BC-10` Global Person Identity and shrinks the Social cluster to `BC-11`…`BC-13`. **No dependency law gains an exception.** See [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) |
-| **Machine-readable source** | `module_dependencies.yaml` |
+| **ADRs applied** | [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) — introduces **rank 7.5** for `BC-10` Global Person Identity and shrinks the Social cluster to `BC-11`…`BC-13`. **No dependency law gains an exception.** · [`ADR-0012`](../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) — records 12 **dated** §11 exceptions for pre-existing §4 mode violations in the V1 scaffold. Adds no rule and relaxes none; `L1` is fixed in code, never waived |
+| **Machine-readable source** | `module_dependencies.yaml` — **now consumed by `tool/check_module_boundaries.dart` (`IMPL-014`)**; §10.2's rules are enforced, not merely declared |
+| **As-built graph** | [`DEPENDENCY_GRAPH.md`](./DEPENDENCY_GRAPH.md) — descriptive companion; this document remains normative |
+| **Enforcement coverage** | **10 of 12** categories implemented. `X-13` tenant-key and `X-10` audit-mutation are **NOT** implemented and remain **unmet** (`SID-4.56`) |
 | **Last Updated** | 2026-08-04 |
 
 ---
@@ -660,6 +662,8 @@ exceptions:
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-04 | **No rule in this document changed.** Recorded here because §10.2's fitness function was executed for the first time and this document's rules are now *enforced* rather than declared. `tool/check_module_boundaries.dart` (`IMPL-014`) implements **10 of the 12** specified enforcement categories; the **tenant-key (`X-13`)** and **audit-mutation (`X-10`)** checks are **NOT implemented** and, per `SID-4.56`, remain **unmet** — see [`BOUNDARY_CHECKER_DESIGN.md`](./BOUNDARY_CHECKER_DESIGN.md) §7. First run found 38 violations: one `L1` cycle (**fixed in code** via the §8.2 port-inversion pattern — `L1` is never waivable per §11 step 3) and 37 §4 mode violations, now governed by [`ADR-0012`](../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) under the §11 exception process with 12 dated exceptions. §10.4 gate 3 currently **exits 1 by design** because the `app → domain/library` edge is deliberately unwaived pending `TASK-D10`. Defect `R-5` closed: the manifest's `contracts.path` pointed at `lib/contracts`, a directory that never existed, so law `L5` had been certified against an empty directory. As-built graph now documented separately in [`DEPENDENCY_GRAPH.md`](./DEPENDENCY_GRAPH.md). |
+| **v1.1** | 2026-08-02 | Added rank **7.5** (`domain/person`) per [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md), reclassifying `BC-10` Global Person Identity from `[SUPPORTING]` in the Social cluster to `[CORE]` between `platform/analytics` (7) and `domain/library` (8). Retro-recorded: this row was omitted when the change was made. |
 | **v1.0** | 2026-07-30 | Initial dependency matrix. 5 laws, 10 ranks, 7 communication modes, full 20×20 matrix, per-platform allow-lists, 14 named forbidden edges, 4 cycle-breaking patterns, Flutter package layout, 3-layer CI enforcement with time-boxed exception process. |
 
 

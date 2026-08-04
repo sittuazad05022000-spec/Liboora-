@@ -218,7 +218,9 @@ final class BoundaryChecker {
     final files = _dartFiles();
 
     if (files.isEmpty) {
-      throw _CheckerError('No Dart source files found under lib/ or packages/.');
+      throw _CheckerError(
+        'No Dart source files found under lib/ or packages/.',
+      );
     }
 
     _log('Manifest: ${_ranks.length} ranks, ${_modules.length} modules');
@@ -780,7 +782,10 @@ final class BoundaryChecker {
       if (resolved == null) continue;
       final target = _moduleFor(resolved);
       if (target == null || target.name == module.name) continue;
-      if (target.name == 'contracts') continue; // package barrel, already public
+      // The contracts package is a public barrel by design (law L5).
+      if (target.name == 'contracts') {
+        continue;
+      }
 
       // Permitted: <path>/<leaf>.dart where leaf is the module's own barrel.
       final relative = resolved.substring(target.path.length + 1);
@@ -980,7 +985,9 @@ final class BoundaryChecker {
       stdout.writeln('PASS — no boundary violations found.');
       stdout.writeln('');
       stdout.writeln('Enforced: L1 acyclic · L2 downward-only · L3 ports ·');
-      stdout.writeln('          L4 capability-never-domain · L5 kernel-imports-nothing');
+      stdout.writeln(
+        '          L4 capability-never-domain · L5 kernel-imports-nothing',
+      );
       stdout.writeln('          + ownership, barrel, banned-symbol policies');
       return 0;
     }

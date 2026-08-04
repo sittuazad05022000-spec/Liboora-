@@ -149,7 +149,10 @@ void main() {
     );
 
     test('a valid PersonId is accepted', () {
-      expect(build(personId: const PersonId('per_ok')).personId.value, 'per_ok');
+      expect(
+        build(personId: const PersonId('per_ok')).personId.value,
+        'per_ok',
+      );
     });
 
     test('an empty PersonId is refused, not silently tolerated', () {

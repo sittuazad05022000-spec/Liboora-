@@ -73,7 +73,8 @@ void main() {
       expect(
         File(_checkerPath).existsSync(),
         isTrue,
-        reason: 'tool/check_module_boundaries.dart is a required CI gate '
+        reason:
+            'tool/check_module_boundaries.dart is a required CI gate '
             '(MODULE_DEPENDENCY_MATRIX §10.4 step 3).',
       );
       expect(File(_manifestPath).existsSync(), isTrue);
@@ -92,7 +93,8 @@ void main() {
       expect(
         run.exitCode,
         anyOf(0, 1),
-        reason: 'Exit 2 means the checker could not run. With the committed '
+        reason:
+            'Exit 2 means the checker could not run. With the committed '
             'manifest that is always a defect.\n${run.stderr}',
       );
     });
@@ -108,7 +110,8 @@ void main() {
         expect(
           run.stdout,
           contains('domain/library'),
-          reason: 'The only expected un-waived debt is app -> domain/library '
+          reason:
+              'The only expected un-waived debt is app -> domain/library '
               '(ADR-0012 §3.4 / TASK-D10).',
         );
       } else {
@@ -145,7 +148,8 @@ void main() {
       expect(
         expired.exitCode,
         1,
-        reason: 'An expired exception must fail the build. §11 step 5: "CI '
+        reason:
+            'An expired exception must fail the build. §11 step 5: "CI '
             'fails after the expiry date if the exception still exists."',
       );
       expect(
@@ -160,17 +164,16 @@ void main() {
       expect(
         blockingAfter,
         greaterThan(blockingBefore),
-        reason: 'Expiring the exceptions must move findings from waived to '
+        reason:
+            'Expiring the exceptions must move findings from waived to '
             'blocking, not merely relabel them.',
       );
     });
 
     test('an exception with no expiry date is treated as expired', () {
       final run = _runChecker(
-        mutateManifest: (m) => m.replaceFirst(
-          RegExp(r'\n    expires: \d{4}-\d{2}-\d{2}'),
-          '',
-        ),
+        mutateManifest: (m) =>
+            m.replaceFirst(RegExp(r'\n    expires: \d{4}-\d{2}-\d{2}'), ''),
       );
 
       // Absent required field => checker error. Either way it must not pass,
@@ -186,22 +189,22 @@ void main() {
   group('§11 step 2 · an exception must be auditable', () {
     test('an exception missing its ADR halts the checker (exit 2)', () {
       final run = _runChecker(
-        mutateManifest: (m) => m.replaceFirst(
-          RegExp(r'\n    adr: ADR-\d+'),
-          '',
-        ),
+        mutateManifest: (m) =>
+            m.replaceFirst(RegExp(r'\n    adr: ADR-\d+'), ''),
       );
 
       expect(
         run.exitCode,
         2,
-        reason: 'An un-attributable exception must stop the run, not be '
+        reason:
+            'An un-attributable exception must stop the run, not be '
             'skipped. Exit 2 = the checker could not run.',
       );
       expect(
         run.stderr,
         contains('adr'),
-        reason: 'The error must name the missing field so it can be fixed '
+        reason:
+            'The error must name the missing field so it can be fixed '
             'without re-reading §11.',
       );
     });
@@ -229,7 +232,8 @@ void main() {
       expect(
         run.exitCode,
         2,
-        reason: 'A typo in an exception must not silently waive nothing — or, '
+        reason:
+            'A typo in an exception must not silently waive nothing — or, '
             'worse, be assumed to waive something.',
       );
     });
@@ -264,7 +268,8 @@ void main() {
       expect(
         debtSection,
         isNot(contains('circular-dependency')),
-        reason: 'L1 is "the one law with zero exceptions" and §11 step 3 says '
+        reason:
+            'L1 is "the one law with zero exceptions" and §11 step 3 says '
             'it is never approved. It must not be waivable by manifest edit.',
       );
     });
@@ -274,7 +279,8 @@ void main() {
       expect(
         run.stdout,
         isNot(contains('circular-dependency')),
-        reason: 'ADR-0012 §3.1 removed the di -> seed -> di cycle via the §8.2 '
+        reason:
+            'ADR-0012 §3.1 removed the di -> seed -> di cycle via the §8.2 '
             'port-inversion pattern. A regression here fails L1 outright.',
       );
     });
@@ -288,8 +294,8 @@ void main() {
       final raw = doc['exceptions'];
       exceptions = raw is YamlList
           ? raw
-              .map((e) => Map<String, Object?>.from(e as YamlMap))
-              .toList(growable: false)
+                .map((e) => Map<String, Object?>.from(e as YamlMap))
+                .toList(growable: false)
           : const [];
     });
 
@@ -299,7 +305,8 @@ void main() {
           expect(
             e[key],
             isNotNull,
-            reason: '§11 step 4 requires `$key` on every exception. Offending '
+            reason:
+                '§11 step 4 requires `$key` on every exception. Offending '
                 'entry: ${e['from']} -> ${e['to']}',
           );
         }
@@ -317,7 +324,8 @@ void main() {
         expect(
           matches,
           isNotEmpty,
-          reason: 'Exception ${e['from']} -> ${e['to']} cites $adr, but no '
+          reason:
+              'Exception ${e['from']} -> ${e['to']} cites $adr, but no '
               'such ADR file exists. An exception whose ADR cannot be read is '
               'not a governance record.',
         );
@@ -331,7 +339,8 @@ void main() {
         expect(
           parsed!.isAfter(DateTime.now()),
           isTrue,
-          reason: 'Exception ${e['from']} -> ${e['to']} expires '
+          reason:
+              'Exception ${e['from']} -> ${e['to']} expires '
               '${e['expires']}, which has passed. Either do the work or '
               'reset the date through the ADR process — never leave a dead '
               'exception in place.',
@@ -348,7 +357,8 @@ void main() {
       expect(
         waived,
         isFalse,
-        reason: 'ADR-0012 §3.4 requires this edge to keep failing until '
+        reason:
+            'ADR-0012 §3.4 requires this edge to keep failing until '
             'TASK-D10 deletes the demo surfaces.',
       );
     });

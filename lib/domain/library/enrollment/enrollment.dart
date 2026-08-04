@@ -57,11 +57,20 @@ final class EnrollStudent {
   final TenantContext tenant;
   final PolicyDecisionPoint pdp;
 
+  /// [personId] is the enrolling person's Global Person Identity, resolved by
+  /// the caller before enrollment. It is **required**: every account has exactly
+  /// one identity (`MP-GBR-02`), every student has an account (`MP-GBR-01`), and
+  /// a Student Record's reference to it is non-nullable (`SID-4.17`).
+  ///
+  /// This context does **not** create identities — creation is `BC-18`'s, in the
+  /// same transaction as the account (`SPO-1`, `SID-4.11`). Enrollment only ever
+  /// *holds* a `PersonId` it was given.
   Future<StudentRecord> call({
     required AccessRole actorRole,
     required String fullName,
     required String phone,
     required DateTime dateOfBirth,
+    required PersonId personId,
     String? email,
     GuardianLink? guardian,
   }) async {
@@ -89,6 +98,7 @@ final class EnrollStudent {
       dateOfBirth: dateOfBirth,
       enrolledOn: clock.today(),
       guardian: guardian,
+      personId: personId,
     );
 
     repo.save(student);

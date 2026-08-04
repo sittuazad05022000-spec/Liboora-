@@ -15,7 +15,7 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 void main() {
   group('boot', () {
     test('container boots and seeds without violating an invariant', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       expect(c.tenants.length, 2);
       expect(c.plans, isNotEmpty);
       expect(c.events.log, isNotEmpty);
@@ -24,7 +24,7 @@ void main() {
     });
 
     testWidgets('app renders the login screen on first frame', (tester) async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       await tester.pumpWidget(LiboraaApp(container: c));
       await tester.pumpAndSettle();
       expect(find.text('Liboora'), findsWidgets);
@@ -34,13 +34,13 @@ void main() {
 
   group('tenant isolation', () {
     test('a store refuses to answer with no tenant in scope', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       c.leaveScope();
       expect(() => c.students.all(), throwsA(isA<TenantContextMissing>()));
     });
 
     test('each tenant sees only its own students', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
 
       c.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
       final demoCount = c.students.all().length;
@@ -56,7 +56,7 @@ void main() {
 
   group('domain invariants', () {
     test('check-in is idempotent under replay', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       c.enterScope(tenant: kDemoTenant, branch: kDemoBranch, actor: 'test');
 
       final student = c.students.all().first;
@@ -79,7 +79,7 @@ void main() {
     });
 
     test('a seat cannot be double-booked', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       c.enterScope(tenant: kDemoTenant, branch: kDemoBranch, actor: 'test');
 
       // Find a student holding a seat, and another with an active plan.
@@ -120,7 +120,7 @@ void main() {
     });
 
     test('a fee ledger balance always equals dues minus receipts', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       c.enterScope(tenant: kDemoTenant, branch: kDemoBranch, actor: 'test');
 
       for (final ledger in c.ledgers.all()) {
@@ -136,7 +136,7 @@ void main() {
 
   group('projections', () {
     test('rebuilding from the event log reproduces the same metrics', () async {
-      final c = await AppContainer.boot();
+      final c = await AppContainer.boot(seeder: seedDemoData);
       c.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
 
       final before = c.analytics.metricsFor(kDemoTenant);

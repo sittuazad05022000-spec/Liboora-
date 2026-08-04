@@ -1,8 +1,13 @@
 /// **BC-01 Enrollment** — aggregate `StudentRecord`.
 ///
 /// Owns the identity of a person *as a student of this library*. Tenant-scoped
-/// always. Distinct from `GlobalStudentProfile` (BC-10) and `Account` (BC-18) —
-/// see the Identity Triad.
+/// always. Distinct from `PersonIdentity` (BC-10, global and permanent) and
+/// `Account` (BC-18, credentials only) — see the Identity Triad.
+///
+/// One human enrolled at three libraries has **three** of these and **one**
+/// `PersonId`. That asymmetry is deliberate: it is what lets an erasure request
+/// anonymise the person while a library retains fee and attendance history
+/// under legal basis (`ID-5`).
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
@@ -32,7 +37,7 @@ final class StudentRecord {
     required this.enrolledOn,
     this.email,
     this.guardian,
-    this.personId,
+    required this.personId,
     this.status = EnrollmentStatus.active,
     this.photoRef,
   }) {
@@ -48,9 +53,13 @@ final class StudentRecord {
   final DateTime enrolledOn;
   GuardianLink? guardian;
 
-  /// Nullable by design. The consented social bridge (edge E-13) — most
-  /// students never link one, and every code path must degrade gracefully.
-  PersonId? personId;
+  /// The person this record is a library-scoped view of.
+  ///
+  /// **Non-nullable** (`ID-4`, `SID-4.17`): a Global Person Identity now always
+  /// exists, so there is no "unlinked student" state to degrade into. This is a
+  /// downward reference to rank 7.5 — the record points at the person, never the
+  /// reverse (`SID-INV-8`).
+  final PersonId personId;
 
   EnrollmentStatus status;
   FileRef? photoRef;
@@ -67,6 +76,15 @@ final class StudentRecord {
   bool isMinorOn(DateTime when) => ageOn(when) < 18;
 
   void _assertInvariants() {
+    // ID-4 / SID-4.17: the identity reference is mandatory. Checked rather than
+    // assumed, because "a rule that cannot be checked shall be treated as
+    // unmet, not as satisfied by intent" (SID-4.56).
+    if (!personId.isValid) {
+      throw const DomainError(
+        DomainErrorCode.validationFailed,
+        'A student record requires the PersonId of the person it represents.',
+      );
+    }
     if (fullName.trim().isEmpty) {
       throw const DomainError(
         DomainErrorCode.validationFailed,
@@ -106,7 +124,4 @@ final class StudentRecord {
     status = EnrollmentStatus.archived;
   }
 
-  /// Edge E-13: the ONLY bridge between the library world and the social
-  /// world, and it requires explicit student consent.
-  void linkToPerson(PersonId p) => personId = p;
 }

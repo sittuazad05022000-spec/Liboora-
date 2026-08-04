@@ -17,6 +17,7 @@ import '../domain/library/fee/fee.dart';
 import '../domain/library/membership/membership.dart';
 import '../domain/library/policy/policy.dart';
 import '../domain/library/seating/seating.dart';
+import '../domain/person/person.dart';
 import '../domain/social/social.dart';
 import '../platform/analytics/analytics.dart';
 import '../platform/audit/audit.dart';
@@ -28,7 +29,6 @@ import '../platform/observability/observability.dart';
 import '../platform/services/services.dart';
 import '../platform/tenancy/tenancy.dart';
 import 'clock.dart';
-import 'seed.dart';
 
 /// Everything the app needs, assembled once.
 final class AppContainer {
@@ -53,7 +53,9 @@ final class AppContainer {
     required this.seatMap,
     required this.ledgers,
     required this.outstanding,
-    required this.socialProfiles,
+    required this.identities,
+    required this.identityService,
+    required this.socialPresences,
     required this.auth,
     required this.enrollStudent,
     required this.createMembership,
@@ -90,7 +92,17 @@ final class AppContainer {
   final SeatMapService seatMap;
   final FeeLedgerRepository ledgers;
   final OutstandingBalanceService outstanding;
-  final InMemoryGlobalProfileRepository socialProfiles;
+
+  /// BC-10 Global Person Identity (rank 7.5). Not tenant-partitioned: identity
+  /// is global by construction and holds no tenant key (`SID-4.49`).
+  final InMemoryPersonIdentityRepository identities;
+
+  /// The `SPO-1` creation service, wired into `BC-18` through the rank-0
+  /// [PersonIdentityFactory] port.
+  final PersonIdentityService identityService;
+
+  /// BC-11 social graph presence. A consumer of identity, never its owner.
+  final InMemorySocialPresenceRepository socialPresences;
 
   // ── Identity ─────────────────────────────────────────────────────
   final AuthService auth;
@@ -121,6 +133,52 @@ final class AppContainer {
   Tenant tenantById(TenantId id) =>
       tenants.firstWhere((t) => t.id == id, orElse: () => tenants.first);
 
+  /// Resolve the Global Person Identity to record against a new enrollment,
+  /// provisioning the account if reception is enrolling a walk-in student who
+  /// has never signed in.
+  ///
+  /// **Why this lives at the composition root.** It spans `BC-18` (rank 4) and
+  /// `BC-10` (rank 7.5). No domain or platform module may know both, so the
+  /// orchestration belongs here — the one file already permitted to know a port
+  /// and its adapter. Enrollment itself receives only a finished [PersonId] and
+  /// is never given the means to create one (`SPO-1`, `SID-4.11`).
+  ///
+  /// The provisioned account is deliberately **role-less and unverified**:
+  /// possession of the mobile number is the sole authentication factor
+  /// (`MP-GBR-25`), and reception cannot prove it on the student's behalf. The
+  /// student claims it at their own first sign-in (`E-11`). Creating it grants
+  /// no access whatsoever — [AuthService.issueSession] refuses an account with
+  /// no role in the tenant.
+  PersonId provisionIdentityForEnrollment({
+    required String phone,
+    required String displayName,
+  }) {
+    for (final a in auth.accounts) {
+      // An identity already exists for this number; enrollment reuses it. A
+      // second library enrolling the same person yields a second
+      // StudentRecord and the SAME PersonId — the asymmetry ID-5 depends on.
+      if (a.phone == phone) return a.personId;
+    }
+
+    // MP-GBR-02: the account and its identity are created together. The
+    // identity is minted first so that a failure leaves neither behind.
+    final accountId = AccountId(ids.next('acc'));
+    final personId = identityService.createFor(
+      account: accountId,
+      displayName: displayName,
+    );
+    auth.registerProvisionedAccount(
+      Account(
+        id: accountId,
+        phone: phone,
+        displayName: displayName,
+        personId: personId,
+        roles: const {},
+      ),
+    );
+    return personId;
+  }
+
   /// Enter a tenant scope. The ONLY caller permitted by the dependency rules.
   void enterScope({
     required TenantId tenant,
@@ -137,8 +195,12 @@ final class AppContainer {
 
   void leaveScope() => tenantContext.exit();
 
-  /// Build and seed. Async because use cases publish events through the bus.
-  static Future<AppContainer> boot() async {
+  /// Build, and optionally seed. Async because use cases publish events
+  /// through the bus.
+  ///
+  /// [seeder] is injected rather than imported: see the note at the end of this
+  /// method for why law L1 requires it.
+  static Future<AppContainer> boot({ContainerSeeder? seeder}) async {
     final tenantContext = MutableTenantContext();
     final clock = MutableClock();
     final ids = SequentialIdGenerator();
@@ -177,6 +239,17 @@ final class AppContainer {
     const pdp = PolicyDecisionPoint();
     final accounts = <Account>[];
 
+    // BC-10 Global Person Identity. Constructed BEFORE AuthService, because
+    // account creation now depends on identity creation rather than the reverse
+    // (ADR-0011). The dependency is expressed as the rank-0
+    // PersonIdentityFactory port, so rank 4 never points upward at rank 7.5.
+    final identities = InMemoryPersonIdentityRepository();
+    final identityService = PersonIdentityService(
+      repository: identities,
+      clock: clock,
+      ids: ids,
+    );
+
     final container = AppContainer._(
       tenantContext: tenantContext,
       clock: clock,
@@ -203,13 +276,17 @@ final class AppContainer {
       ),
       ledgers: ledgers,
       outstanding: OutstandingBalanceService(ledgers),
-      socialProfiles: InMemoryGlobalProfileRepository(),
+      identities: identities,
+      identityService: identityService,
+      socialPresences: InMemorySocialPresenceRepository(),
       auth: AuthService(
         accounts,
         clock: clock,
         // Challenges are drawn from a secure source, never derived (F-02).
         random: SecureRandomSource(),
         ids: ids,
+        // SID-4.11: identity is created in the same unit of work as the account.
+        identities: identityService,
         // Debug-only peek. False in any release build.
         challengePeekEnabled: !const bool.fromEnvironment('dart.vm.product'),
       ),
@@ -290,7 +367,30 @@ final class AppContainer {
       ),
     );
 
-    await seedDemoData(container, accounts);
+    // Law L1 (acyclic) is the one law with zero exceptions, and it is never
+    // granted one by the Architecture Review Board. `di.dart` previously
+    // imported `seed.dart` to call the seeder, while `seed.dart` imports
+    // `di.dart` for `AppContainer` — a file-level cycle.
+    //
+    // Resolved by the documented pattern (MODULE_DEPENDENCY_MATRIX §8.2, port
+    // inversion): the wiring declares *what* it needs — a function that
+    // populates a built container — and the caller supplies it. `di.dart` now
+    // names no seeder, so the edge points one way only: seed -> di.
+    //
+    // The parameter is optional because a container is valid unseeded; tests
+    // that want an empty world simply pass nothing. `main.dart`, which is the
+    // composition root and already knows both files, supplies the demo seeder.
+    if (seeder != null) {
+      await seeder(container, accounts);
+    }
     return container;
   }
 }
+
+/// What [AppContainer.boot] needs from a seeder, expressed without naming one.
+///
+/// Declared here and implemented in `seed.dart`, so the dependency runs
+/// upward-to-caller rather than forming the `di -> seed -> di` cycle that
+/// law L1 forbids. See `MODULE_DEPENDENCY_MATRIX` §8.2.
+typedef ContainerSeeder =
+    Future<void> Function(AppContainer container, List<Account> accounts);

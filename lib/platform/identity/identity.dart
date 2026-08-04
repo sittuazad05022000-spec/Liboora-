@@ -29,7 +29,7 @@ final class Account {
     required this.phone,
     required this.displayName,
     required this.roles,
-    this.personId,
+    required this.personId,
   });
 
   final AccountId id;
@@ -39,8 +39,13 @@ final class Account {
   /// Tenant-scoped role assignments: tenantId -> roles held there.
   final Map<String, Set<AccessRole>> roles;
 
-  /// Nullable by design — an account may never opt into the social product.
-  final PersonId? personId;
+  /// The account's Global Person Identity (`BC-10`).
+  ///
+  /// **Non-nullable.** Exactly one exists per account, created in the same
+  /// transaction as the account itself, and neither may exist without the other
+  /// at any observable moment (`MP-GBR-02` as amended, `SID-INV-1`,
+  /// `SID-INV-2`). This is not an opt-in social link — see `ADR-0011`.
+  final PersonId personId;
 
   Set<AccessRole> rolesIn(TenantId tenant) => roles[tenant.value] ?? const {};
 }
@@ -267,10 +272,12 @@ final class AuthService {
     required Clock clock,
     required RandomSource random,
     required IdGenerator ids,
+    required PersonIdentityFactory identities,
     this.challengePeekEnabled = false,
   }) : _clock = clock,
        _random = random,
-       _ids = ids;
+       _ids = ids,
+       _identities = identities;
 
   /// Adapter defaults. The normative bounds live in the locked challenge and
   /// lockout registers; these are the scaffold's configuration of them.
@@ -283,6 +290,14 @@ final class AuthService {
   final RandomSource _random;
   final IdGenerator _ids;
 
+  /// Rank-0 port to `BC-10` Global Person Identity (`ADR-0011`).
+  ///
+  /// Held as an interface, never as a concrete type: this platform is rank 4
+  /// and the implementation is rank 7.5, so a direct dependency would be upward
+  /// (law **L2**) and a capability importing a domain module (law **L4**). The
+  /// port inverts both.
+  final PersonIdentityFactory _identities;
+
   /// Debug affordance for a scaffold with no SMS gateway. Must be false in any
   /// release wiring — a peek surface is a disclosure surface.
   final bool challengePeekEnabled;
@@ -290,6 +305,24 @@ final class AuthService {
   final Map<String, _Challenge> _issued = {};
 
   List<Account> get accounts => List.unmodifiable(_accounts);
+
+  /// Register an account provisioned by an operator flow (reception enrolling a
+  /// walk-in student), rather than by the account holder's own OTP.
+  ///
+  /// Deliberately **not** a lookup and deliberately **not** an upsert: it takes
+  /// a fully-formed [Account] — which the type system now guarantees carries a
+  /// [PersonId] — and adds it. It returns nothing, so it cannot be used to test
+  /// whether a number is registered (which is why [_accountForPhone] is
+  /// private). Callers must already hold the account, not merely a number.
+  ///
+  /// The account is unverified: it holds no role, so [issueSession] refuses it
+  /// until the holder proves possession of the number themselves (`MP-GBR-25`).
+  /// Re-registering an existing number is a no-op, keeping this idempotent
+  /// against a double-submitted enrollment form.
+  void registerProvisionedAccount(Account account) {
+    if (_accountForPhone(account.phone) != null) return;
+    _accounts.add(account);
+  }
 
   /// Private on purpose: a public lookup by number is an enumeration oracle
   /// regardless of who calls it.
@@ -376,10 +409,24 @@ final class AuthService {
     final name = displayName?.trim() ?? '';
     if (name.isEmpty || name == phone.trim()) return null;
 
+    final accountId = AccountId(_ids.next('acc'));
+
+    // ADR-0011 / SID-4.11 — the Global Person Identity is created here,
+    // SYNCHRONOUSLY, in the same unit of work as the account. It is
+    // deliberately NOT event-driven: an event would open a window in which an
+    // account exists without an identity, which the 1:1 invariant forbids
+    // (SID-INV-2). If identity creation throws, no account is added — the
+    // failure of either fails both (SID-AC-1).
+    final personId = _identities.createFor(
+      account: accountId,
+      displayName: name,
+    );
+
     final created = Account(
-      id: AccountId(_ids.next('acc')),
+      id: accountId,
       phone: phone,
       displayName: name,
+      personId: personId,
       // AR-6: an Account may exist before any tenant role exists. Roles are
       // assigned by Authorization after Membership Processing.
       roles: const {},

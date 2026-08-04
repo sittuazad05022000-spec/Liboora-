@@ -266,6 +266,18 @@ final class SessionController extends ChangeNotifier {
     await container.releaseSeat(actorRole: role, allocationId: allocationId);
   });
 
+  /// Enroll a walk-in student at the reception desk.
+  ///
+  /// **Where the `PersonId` comes from.** Every student has an Account
+  /// (`MP-GBR-01`) and every Account has exactly one Global Person Identity
+  /// created with it (`MP-GBR-02`), so enrollment never invents an identity —
+  /// it resolves the one that already exists, or provisions the account that
+  /// was missing and takes the identity minted alongside it.
+  ///
+  /// Reception cannot complete an OTP on the student's behalf (`MP-GBR-25` —
+  /// possession of the number is the sole factor), so the account created here
+  /// is **unverified and role-less**: it is a record awaiting the student's own
+  /// first sign-in, which is exactly the `E-11` claim flow. It grants nothing.
   Future<String?> enroll({
     required String fullName,
     required String phone,
@@ -277,6 +289,10 @@ final class SessionController extends ChangeNotifier {
       fullName: fullName,
       phone: phone,
       dateOfBirth: dob,
+      personId: container.provisionIdentityForEnrollment(
+        phone: phone.trim(),
+        displayName: fullName.trim(),
+      ),
       guardian: guardian,
     );
   });

@@ -7,29 +7,50 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liboora/domain/person/person.dart';
 import 'package:liboora/platform/identity/identity.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 /// A fixed instant so nothing here depends on a wall clock (X-09).
 final _t0 = DateTime.utc(2025, 1, 1, 9);
 
+/// The real identity service, not a stub.
+///
+/// ADR-0011 makes account creation depend on identity creation in the same unit
+/// of work (`SID-4.11`). Substituting a fake here would test a system that does
+/// not exist, so the tests wire the genuine rank-7.5 implementation through the
+/// rank-0 port exactly as the composition root does.
+PersonIdentityService _identityService(
+  FixedClock clock, {
+  PersonIdentityRepository? repository,
+}) => PersonIdentityService(
+  repository: repository ?? InMemoryPersonIdentityRepository(),
+  clock: clock,
+  ids: SequentialIdGenerator(),
+);
+
 AuthService _service({
   required List<Account> accounts,
   required FixedClock clock,
   List<int> random = const [1, 2, 3, 4, 5, 6],
   bool peek = true,
+  PersonIdentityFactory? identities,
 }) => AuthService(
   accounts,
   clock: clock,
   random: FixedRandomSource(random),
   ids: SequentialIdGenerator(),
+  identities: identities ?? _identityService(clock),
   challengePeekEnabled: peek,
 );
 
+/// Every account carries a `PersonId` — the field is non-nullable, so a
+/// fixture that omitted one would no longer compile (`MP-GBR-02`, `SID-INV-1`).
 Account _account(String phone, TenantId tenant, AccessRole role) => Account(
   id: AccountId('acc_$phone'),
   phone: phone,
   displayName: 'Test $phone',
+  personId: PersonId('per_$phone'),
   roles: {
     tenant.value: {role},
   },

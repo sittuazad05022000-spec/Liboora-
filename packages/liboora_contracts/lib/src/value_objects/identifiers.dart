@@ -54,10 +54,18 @@ final class AccountId extends Identifier {
   const AccountId(super.value);
 }
 
-/// The cross-library social persona. Owned by BC-10 Global Student Identity.
+/// The permanent global identity of a human on the platform.
+/// Owned by **BC-10 Global Person Identity** (`[CORE]`, rank 7.5).
 ///
-/// Global, cross-tenant. **May legitimately not exist** — a student who only
-/// ever uses the library never gets one.
+/// Global, cross-tenant, and **always present**: exactly one exists per
+/// [AccountId], created in the *same transaction* as the account, and neither
+/// may exist without the other at any observable moment (`SID-INV-1`,
+/// `SID-INV-2`, `MP-GBR-02` as amended by `ADR-0011`).
+///
+/// This is **not** a social persona and it is **not** opt-in. Deactivating or
+/// never launching the social product has no effect on it (`SID-4.31`). Every
+/// reference to it — including the one a `StudentRecord` holds — is therefore
+/// **non-nullable** (`ID-4`, `SID-4.17`).
 final class PersonId extends Identifier {
   const PersonId(super.value);
 }

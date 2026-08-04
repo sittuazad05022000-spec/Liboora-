@@ -1,68 +1,67 @@
-/// **Social domain (BC-10 Global Student Profile) — Separate Ways.**
+/// **Social domain (BC-11 graph · BC-12 messaging · BC-13 safety) — rank 8.**
 ///
 /// This is a *stub that exists to hold a boundary open*, not a half-built
 /// feature. The relationship between the Library domain and the Social domain
-/// is **Separate Ways**: they share no database, no aggregate and no model.
+/// is **Separate Ways** (`X-05`): they share no database, no aggregate and no
+/// model.
 ///
-/// The one permitted link is edge **E-13**, and it is deliberately narrow:
+/// **What changed, and why it matters.** This file previously *owned* the
+/// global identity as `GlobalStudentProfile`. `ADR-0011` rejected that model:
+/// identity is permanent platform infrastructure, not a social feature. The
+/// aggregate moved to `lib/domain/person/` (`BC-10`, rank 7.5) and this module
+/// became a **consumer** of it. The test of whether that move is real is
+/// `SID-4.31` — disabling or never launching the social product must not affect
+/// any Global Person Identity. That holds only because nothing in
+/// `domain/person` refers to anything here.
 ///
-///   * A `StudentRecord` (BC-01) may carry a nullable `PersonId`.
-///   * That link is created only by explicit student consent.
-///   * Nothing in `lib/domain/library/` may `import` this file.
-///   * Nothing here may import a library context.
+/// **How this module learns about people.** By keying on `PersonId` (`ID-3`)
+/// and consuming `identity.Person*` events. It may **not** import
+/// `domain/person`: rank 8 cannot import rank 7.5's internals, and the shared
+/// vocabulary it needs (`PersonId`) lives in the shared kernel instead.
+///
+/// Two prohibitions remain absolute:
+///
+///   * Nothing in `lib/domain/library/` may import this file, and nothing here
+///     may import a library context (`X-05`).
+///   * No `StudentRecordId` and no `TenantId` may ever enter this module
+///     (`ID-2`) — social data is not tenant-scoped.
 ///
 /// If a future feature needs library data on a social screen, it travels as a
-/// published event or through a BFF query — never as a Dart import. Losing
-/// this boundary is how a "study-hall app" turns into a monolith that cannot
-/// ship a social feature without a fee-module regression.
+/// published event or through a BFF query — never as a Dart import.
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-/// Cross-tenant by design — the exact inverse of everything in the library
-/// domain. A person's identity does not belong to whichever library they
-/// happened to join.
-final class GlobalStudentProfile {
-  GlobalStudentProfile({
-    required this.personId,
-    required this.displayName,
-    this.headline = '',
-    this.examTrack = '',
-    this.avatarRef,
-  });
+/// A person's presence in the social graph, keyed on `PersonId` (`ID-3`).
+///
+/// Deliberately holds **no** name, photo or headline: those belong to the
+/// identity (`BC-10`) and duplicating them here would reintroduce exactly the
+/// duplication `SID-BR-11` forbids. Social contexts render identity fields by
+/// resolving them, never by storing a copy (`SID-4.53`).
+final class SocialPresence {
+  SocialPresence({required this.personId});
 
   final PersonId personId;
-  String displayName;
 
-  /// "CSE 3rd year · targeting GATE 2027"
-  String headline;
-
-  /// The exam a student is preparing for. The Social product's primary
-  /// grouping dimension — and meaningless inside the library domain.
-  String examTrack;
-
-  FileRef? avatarRef;
-
-  /// Aggregated across every library the person has ever attended. Computed
-  /// from published attendance events, never by querying a tenant's tables.
+  /// Aggregated from published attendance events, never by querying a tenant's
+  /// tables. A projection, not a source of truth.
   int lifetimeStudyMinutes = 0;
 
   Duration get lifetimeStudyTime => Duration(minutes: lifetimeStudyMinutes);
 }
 
-/// Placeholder port. Deliberately unimplemented in V1 — the interface is here
-/// so the boundary is visible in code review long before the feature ships.
-abstract interface class GlobalProfileReader {
-  GlobalStudentProfile? byPersonId(PersonId id);
+/// Port declared BY this context (law L3).
+abstract interface class SocialPresenceReader {
+  SocialPresence? byPersonId(PersonId id);
 }
 
-final class InMemoryGlobalProfileRepository implements GlobalProfileReader {
-  final Map<String, GlobalStudentProfile> _profiles = {};
+final class InMemorySocialPresenceRepository implements SocialPresenceReader {
+  final Map<String, SocialPresence> _presences = {};
 
   @override
-  GlobalStudentProfile? byPersonId(PersonId id) => _profiles[id.value];
+  SocialPresence? byPersonId(PersonId id) => _presences[id.value];
 
-  void save(GlobalStudentProfile p) => _profiles[p.personId.value] = p;
+  void save(SocialPresence p) => _presences[p.personId.value] = p;
 
-  int get count => _profiles.length;
+  int get count => _presences.length;
 }

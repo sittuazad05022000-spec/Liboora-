@@ -19,6 +19,7 @@ import '../domain/library/fee/fee.dart';
 import '../domain/library/membership/membership.dart';
 import '../domain/library/policy/policy.dart';
 import '../domain/library/seating/seating.dart';
+import '../domain/person/person.dart';
 import '../domain/social/social.dart';
 import '../platform/identity/identity.dart';
 import '../platform/tenancy/tenancy.dart';
@@ -158,11 +159,29 @@ void _seedPlans(AppContainer c) {
   ]);
 }
 
+/// Seeds the demo accounts.
+///
+/// Every account is created WITH its Global Person Identity, minted through the
+/// real [PersonIdentityService] rather than hardcoded. That is deliberate: it
+/// exercises the `1:1` invariant (`SID-INV-1`) and the atomic-creation rule
+/// (`SID-4.11`) at boot, so a regression in either fails loudly here instead of
+/// silently in production.
 void _seedAccounts(AppContainer c, List<Account> accounts) {
   const demo = 'tnt_aspirants';
+
+  // Mints the identity for a seeded account exactly as BC-18 does in
+  // production. There is deliberately no path here that builds an Account
+  // without one.
+  PersonId identityFor(String accountId, String displayName) =>
+      c.identityService.createFor(
+        account: AccountId(accountId),
+        displayName: displayName,
+      );
+
   accounts.addAll([
     Account(
       id: const AccountId('acc_owner'),
+      personId: identityFor('acc_owner', 'Rajesh Sharma'),
       phone: '9810000001',
       displayName: 'Rajesh Sharma',
       roles: const {
@@ -171,6 +190,7 @@ void _seedAccounts(AppContainer c, List<Account> accounts) {
     ),
     Account(
       id: const AccountId('acc_manager'),
+      personId: identityFor('acc_manager', 'Priya Nair'),
       phone: '9810000002',
       displayName: 'Priya Nair',
       roles: const {
@@ -179,6 +199,7 @@ void _seedAccounts(AppContainer c, List<Account> accounts) {
     ),
     Account(
       id: const AccountId('acc_reception'),
+      personId: identityFor('acc_reception', 'Amit Kumar'),
       phone: '9810000003',
       displayName: 'Amit Kumar',
       roles: const {
@@ -189,13 +210,14 @@ void _seedAccounts(AppContainer c, List<Account> accounts) {
       id: const AccountId('acc_student'),
       phone: '9810000004',
       displayName: 'Sneha Verma',
-      personId: const PersonId('per_sneha'),
+      personId: identityFor('acc_student', 'Sneha Verma'),
       roles: const {
         demo: {AccessRole.student},
       },
     ),
     Account(
       id: const AccountId('acc_parent'),
+      personId: identityFor('acc_parent', 'Suresh Verma'),
       phone: '9810000005',
       displayName: 'Suresh Verma',
       roles: const {
@@ -204,15 +226,23 @@ void _seedAccounts(AppContainer c, List<Account> accounts) {
     ),
   ]);
 
-  // The social persona exists in a separate store, cross-tenant, linked only
-  // by PersonId. Nothing in the library domain reads this.
-  c.socialProfiles.save(
-    GlobalStudentProfile(
-      personId: const PersonId('per_sneha'),
-      displayName: 'Sneha Verma',
-      headline: 'B.Com final year · targeting CAT 2026',
-      examTrack: 'CAT',
-    )..lifetimeStudyMinutes = 41 * 60,
+  // Profile detail belongs to the identity (BC-10), which already exists for
+  // every account above. Enriching it is an update, never a second creation.
+  final sneha = c.identities.byAccountId(const AccountId('acc_student'));
+  if (sneha == null) {
+    // Unreachable: the account was just created with its identity. Asserted
+    // rather than assumed, per SID-4.56.
+    throw StateError('Seeded account has no Global Person Identity.');
+  }
+  sneha
+    ..headline = 'B.Com final year · targeting CAT 2026'
+    ..examTrack = 'CAT';
+
+  // BC-11 presence is a separate, cross-tenant projection keyed on PersonId.
+  // It stores no name and no headline — those are resolved from BC-10, never
+  // copied (SID-BR-11, SID-4.53). Nothing in the library domain reads this.
+  c.socialPresences.save(
+    SocialPresence(personId: sneha.personId)..lifetimeStudyMinutes = 41 * 60,
   );
 }
 
@@ -392,11 +422,20 @@ Future<void> _seedStudents(AppContainer c) async {
   for (final r in _roster) {
     c.clock.pin(c.clock.todayAt(9, 0));
 
+    // MP-GBR-01 / MP-GBR-02: every student has an account, and every account
+    // has exactly one identity. The seeder mints both through the real service
+    // so the enrollment below receives a PersonId it did not invent.
+    final personId = c.identityService.createFor(
+      account: AccountId('acc_${r.phone}'),
+      displayName: r.name,
+    );
+
     final student = await c.enrollStudent(
       actorRole: owner,
       fullName: r.name,
       phone: r.phone,
       dateOfBirth: DateTime(r.birthYear, 6, 15),
+      personId: personId,
       guardian: DateTime.now().year - r.birthYear < 18
           ? GuardianLink(
               name: 'Guardian of ${r.name}',
@@ -512,11 +551,16 @@ Future<void> _seedTodaysAttendance(
 Future<void> _seedOtherTenantStudents(AppContainer c) async {
   c.clock.pin(c.clock.todayAt(9, 0));
   for (final name in ['Aditya Nair', 'Pooja Sharma', 'Harsh Tiwari']) {
+    final phone = '9990000${c.students.all().length + 1}';
     final s = await c.enrollStudent(
       actorRole: AccessRole.owner,
       fullName: name,
-      phone: '9990000${c.students.all().length + 1}',
+      phone: phone,
       dateOfBirth: DateTime(2002, 3, 10),
+      personId: c.identityService.createFor(
+        account: AccountId('acc_$phone'),
+        displayName: name,
+      ),
     );
     await c.createMembership(
       actorRole: AccessRole.owner,

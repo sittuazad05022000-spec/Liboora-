@@ -57,7 +57,10 @@ non_runtime:
 # SHARED KERNEL (L5)
 # ─────────────────────────────────────────────────────────────
 contracts:
-  path: lib/contracts
+  # Defect R-5 closed: the shared kernel is a separate pure-Dart package, not a
+  # directory under lib/. `lib/contracts` never existed; law L5 is enforced by
+  # the package having an empty `dependencies:` rather than by a lint.
+  path: packages/liboora_contracts/lib
   rank: 0
   allowed_imports:
     - "dart:core"
@@ -167,6 +170,7 @@ domain/library:
 # Organisation-neutral: no tenantId, no StudentRecordId, no operational data.
 # ─────────────────────────────────────────────────────────────
 domain/person:
+  path: lib/domain/person
   rank: 7.5
   classification: core
   contexts: [identity]
@@ -183,6 +187,12 @@ domain/person:
     - platform/search:indexer          # allow-list fields only
   provides_ports:
     - identity_directory               # E-13, consumed by domain/library through an ACL
+    # SPO-1 / SID-4.11 — implements the rank-0 PersonIdentityFactory port so
+    # BC-18 (rank 4) can create an identity in the same unit of work as the
+    # account WITHOUT depending upward on rank 7.5. The interface lives in
+    # contracts; only the composition root binds the two. This is why neither
+    # L2 nor L4 needed an exception.
+    - person_identity_factory
   emits_events: ["identity.Person*"]   # SEV-1..SEV-16 — closed set
   consumes_events:
     - iam.AccountErased                # ID-5: anonymise here, BC-01 retains history
@@ -420,6 +430,11 @@ platform/identity:
     # The single sanctioned bypass of platform/communication, for possession
     # challenge delivery only. Matrix cell IAM -> INT.
     - platform/integration:sso_provider
+    # ADR-0011 — identity creation, atomic with account creation (SID-4.11).
+    # Declared as a PORT, never an import: the interface is rank 0 and the
+    # implementation is rank 7.5, so this platform never points upward.
+    # `banned_imports: ["domain/**"]` below still holds literally.
+    - contracts:person_identity_factory
   banned_imports: ["domain/**", "app/**"]
 
   # Ports this platform PROVIDES to others. Both are deliberately narrower
@@ -490,6 +505,7 @@ app:
     - { target: contracts, mode: import }
   ports:
     - domain/library
+    - domain/person
     - domain/social
     - platform/identity:auth
     - platform/tenancy:tenant_context
@@ -568,10 +584,118 @@ global:
 # ─────────────────────────────────────────────────────────────
 # TIME-BOXED EXCEPTIONS — every entry MUST have an ADR and an expiry
 # ─────────────────────────────────────────────────────────────
-exceptions: []
-# Still empty, and deliberately so. None of the amendments below is an
-# exception to a law: each widens a declared allow-list or adds an assertion.
-# A law exception would require an ADR and an expiry; none was needed.
+# ADR-0012 — V1 scaffold port-inversion debt, time-boxed under §11.
+#
+# These are NOT law exceptions. Every edge below is strictly downward in rank, so
+# L2 holds; none is a capability importing a domain, so L4 holds; none is banned.
+# What each one violates is the *mode*: §4 says a port must not be imported at
+# compile time, and §6/§12 permit exactly one direct import (liboora_contracts).
+# The scaffold injects concrete platform classes instead of declared interfaces.
+#
+# Nine of these edges are ALREADY declared as ports above — the manifest and the
+# documentation agree, and only the code is wrong. Recorded here with dates
+# rather than silenced, because §11 step 5 makes the tooling, not intent, the
+# thing that enforces removal. A waived finding is still printed by IMPL-014
+# under "ACKNOWLEDGED DEBT" on every run.
+#
+# Deliberately ABSENT: app -> domain/library. Those nine sites are scheduled for
+# deletion by TASK-D10 (P0), so waiving them would convert a tracked release
+# blocker into untracked debt. The checker stays red until TASK-D10 lands.
+#
+# L1 (acyclic) can never appear here: DependencyException.appliesTo refuses to
+# match a cycle regardless of what this list says (§11 step 3).
+exceptions:
+  # ── Wave 1 — smallest surface, establishes the pattern ────────────
+  - from: platform/business
+    to: platform/tenancy
+    mode: port
+    reason: "EntitlementService imports the tenancy barrel for the TenantTier enum. The TenantContext it also uses is already correctly taken from R0 contracts (§8.3). Fix: promote TenantTier to shared vocabulary, or declare a one-method TenantTierSource port."
+    adr: ADR-0012
+    expires: 2026-10-31
+
+  - from: platform/analytics
+    to: platform/event
+    mode: port
+    reason: "AnalyticsProjections needs subscribe-and-replay only. Fix: declare EventStream in liboora_contracts and have EventBus implement it. §6 grants no capability platform a direct import either."
+    adr: ADR-0012
+    expires: 2026-10-31
+
+  # ── Wave 2 — append-only interfaces, no read surface ──────────────
+  - from: domain/library
+    to: platform/event
+    mode: port
+    reason: "Five use cases take EventBus as a constructor type to enqueue and drain. Fix: declare EventPublisher in liboora_contracts. Not currently declared as a port at all, so this wave adds the declaration as well as the extraction."
+    adr: ADR-0012
+    expires: 2026-12-31
+
+  - from: domain/library
+    to: platform/audit
+    mode: port
+    reason: "CollectFee takes AuditTrail to append one entry. Fix: declare AuditSink in liboora_contracts. Append-only, so the port has no read surface to leak (X-10 keeps audit immutable)."
+    adr: ADR-0012
+    expires: 2026-12-31
+
+  # ── Wave 3 — largest surface: adapters move out of the domain ─────
+  - from: domain/library
+    to: platform/data
+    mode: port
+    reason: "Repository interfaces already exist per context; what leaks is TenantPartitionedStore appearing as a constructor type on the InMemory* implementations that sit inside the domain barrel. Fix: move each adapter outside the barrel. Declared port platform/data:repository is already correct."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/services
+    mode: port
+    reason: "IdempotencyService and OfflineSyncEngine injected as concrete classes. Five service ports are already declared (files, qr, idempotency, offline_sync, clock); only the interfaces are missing."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/identity
+    mode: port
+    reason: "PolicyDecisionPoint injected as a concrete class across five contexts. Declared ports platform/identity:policy_decision and :account_directory are already correct; extract the interfaces."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/business
+    mode: port
+    reason: "EntitlementService injected as a concrete class for pre-write limit checks. Declared ports platform/business:entitlement and :payment_intent are already correct."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  # ── Wave 4 — UI reads through the ports it already declares ───────
+  - from: app
+    to: platform/identity
+    mode: port
+    reason: "Shell and session import the identity barrel for AuthService and AuthSession. Declared port platform/identity:auth already exists."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/tenancy
+    mode: port
+    reason: "Shell and session import the tenancy barrel for Tenant/Branch display data. Declared port platform/tenancy:tenant_context already exists; a read model is needed for the display fields."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/analytics
+    mode: port
+    reason: "overview_page imports the analytics barrel directly. Declared port platform/analytics:read_model already exists and is the intended path."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/business
+    mode: port
+    reason: "ops_page imports the business barrel for entitlement display. Declared port platform/business:entitlement already exists."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+# Note on the amendments below: none of them is an exception to a law. Each
+# widens a declared allow-list or adds an assertion, which is why none carries
+# an ADR or an expiry.
 
 # ─────────────────────────────────────────────────────────────
 # AMENDMENTS APPLIED — Authentication Specification v1.0 lock

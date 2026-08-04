@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'app/liboora_app.dart';
 import 'bootstrap/di.dart';
+import 'bootstrap/seed.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,10 @@ Future<void> main() async {
   runApp(const BootScreen());
 
   try {
-    final container = await AppContainer.boot();
+    // The composition root is the one place allowed to know both the wiring and
+    // the demo seeder; injecting it here is what keeps `di.dart` free of a
+    // dependency back on `seed.dart` (law L1 — see AppContainer.boot).
+    final container = await AppContainer.boot(seeder: seedDemoData);
     runApp(LiboraaApp(container: container));
   } catch (error, stack) {
     debugPrint('Liboora boot failed: $error\n$stack');

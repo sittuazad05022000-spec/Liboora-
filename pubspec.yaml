@@ -51,6 +51,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # Required by tool/check_module_boundaries.dart (IMPL-014). The architecture
+  # boundary checker reads tool/module_dependencies.yaml, which is the machine
+  # readable form of the module dependency matrix. This is a dev dependency
+  # only: no shipped code parses YAML at runtime, so it adds nothing to the
+  # release bundle. Version pinned exactly to keep the governance tool
+  # reproducible across machines.
+  yaml: 3.1.3
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

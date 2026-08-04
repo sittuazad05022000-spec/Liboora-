@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | Module Dependency Matrix & Boundary Enforcement Rules |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
-| **Companion doc** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.0 |
+| **Companion doc** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.3 |
+| **ADRs applied** | `ADR-0011` — introduces **rank 7.5** for `BC-10` Global Person Identity and shrinks the Social cluster to `BC-11`…`BC-13`. **No dependency law gains an exception.** See [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) |
 | **Machine-readable source** | `module_dependencies.yaml` |
-| **Last Updated** | 2026-07-30 |
+| **Last Updated** | 2026-08-04 |
 
 ---
 
@@ -66,7 +67,8 @@ Lower rank = more stable, more depended-upon, fewer dependencies. A module at ra
 | **R5** | AUDIT · SEARCH · COMMUNICATION · INTEGRATION | Generic capabilities consumed broadly, event-fed. |
 | **R6** | BUSINESS *(Subscription + Entitlement)* · WORKFLOW · AI | Higher-order capabilities. Orchestrate and decide, own no domain aggregate. |
 | **R7** | ANALYTICS | Read models and metrics. Consumes events from everything below. |
-| **R8** | LIBRARY MANAGEMENT · GLOBAL STUDENT | **Domain.** Highest rank because it depends on the most. Nothing depends on it. |
+| **R7.5** | GLOBAL PERSON IDENTITY *(`BC-10`)* | **Platform identity.** Its own tier: below every domain module, above every capability platform. Owns `PersonId`, username, global profile, privacy. Organisation-neutral — no `tenantId`. Domain modules at R8 depend on it **downward**, which is what keeps `L2` intact (`ADR-0011`). |
+| **R8** | LIBRARY MANAGEMENT · STUDENT NETWORK | **Domain.** Highest rank because it depends on the most. Nothing depends on it. |
 | **R9** | API *(incl. BFF)* | Edge composition. Depends on domain + capabilities, is depended on by nobody. |
 | **RX** | FOUNDATION · ARCHITECTURE GOVERNANCE · DEVOPS · QUALITY · FUTURE ECOSYSTEM | **Not in the runtime graph.** Docs, pipelines, tests, future work. Quality may import everything (it tests everything); nothing may import Quality. |
 
@@ -83,9 +85,11 @@ Two exceptions to L2, both declared and bounded:
 | Cluster | Members | Allowed internal edges |
 |---|---|---|
 | **Core Library cluster** (within R8) | BC-01 Enrollment, BC-02 Membership, BC-03 Attendance, BC-04 Seating, BC-05 Fee, BC-06 Policy | Only the edges E-01…E-10 listed in the context map. Enforced as an explicit allow-list, not "anything within the cluster". |
-| **Social cluster** (within R8) | BC-10 Identity, BC-11 Graph, BC-12 Messaging, BC-13 Safety | Only edges E-14…E-16. |
+| **Social cluster** (within R8) | BC-11 Graph, BC-12 Messaging, BC-13 Safety | Only edges E-14…E-16. **`BC-10` was removed from this cluster by `ADR-0011`** and is now a rank-7.5 platform identity, consumed by these contexts rather than clustered with them. |
 
 **The two clusters may not reference each other** (Separate Ways). The single bridge is E-13 via ACL.
+
+**Why `ADR-0011` needed a new rank rather than a third cluster.** Every library module needs to resolve a person's identity. Had `BC-10` stayed at R8, that would have been a same-rank dependency **across** two clusters that may not reference each other — the precise shape `X-05` prohibits. The alternatives were to declare a third cluster spanning both (which dissolves the Separate Ways boundary), to add a `L2` exception (there are none, by design), or to move the identity to a lower rank. The third was chosen: at R7.5 a rank-8 domain module depends on it **strictly downward**, so `L2` is satisfied literally and no exception is created. `L1`…`L5` therefore remain exception-free.
 
 ---
 
@@ -202,7 +206,33 @@ library_management:            # R8 — CORE DOMAIN
     - "package:firebase_*"      # no SDK in domain
     - "dart:io"
 
-global_student:                # R8 — SUPPORTING
+person_identity:               # R7.5 — CORE (ADR-0011)
+  rank: 7.5
+  may_import: [ liboora_contracts ]
+  may_use_ports:
+    - data.repository
+    - security.crypto
+    - configuration.settings
+    - observability.telemetry
+    - platform_services.files       # FileRef only — E-22
+    - identity.policy_decision      # ask BC-18, never evaluate or cache
+    - search.indexer
+  may_emit_events: [ identity.Person* ]        # SEV-1…SEV-16, closed set
+  may_consume_events:
+    - iam.AccountErased
+    - iam.MobileNumberChanged
+    - iam.AccountSuspended
+    - safety.EnforcementActionTaken            # restricts the public projection ONLY
+  forbidden:
+    - library_management.*      # X-05 — rank 7.5 may not import rank 8
+    - student_network.*         # rank 7.5 may not import rank 8
+    - api.*
+    - shared_core.tenant_context   # NOT tenant-scoped by construction
+    - "*.StudentRecordId"       # rule ID-2
+    - "*.TenantId"              # rule ID-2 — nothing here is tenant-scoped
+    - "*.mobileNumber"          # rule ID-1 — the number is a credential, held by BC-18
+
+student_network:               # R8 — SUPPORTING (was `global_student`; BC-10 removed by ADR-0011)
   rank: 8
   may_import: [ liboora_contracts ]
   may_use_ports:
@@ -217,12 +247,13 @@ global_student:                # R8 — SUPPORTING
     - search.indexer
     - ai.assist
     - analytics.read_model
-  may_emit_events: [ identity.Person*, social.*, messaging.*, safety.* ]
-  may_consume_events: [ enrollment.StudentLinkedToPerson, safety.EnforcementActionTaken ]
+  may_emit_events: [ social.*, messaging.*, safety.* ]   # identity.Person* now belongs to person_identity
+  may_consume_events: [ identity.Person*, safety.EnforcementActionTaken ]
   internal_edges_allowed: [ E-14, E-15, E-16 ]
   forbidden:
     - library_management.*      # Separate Ways — the only bridge is the ACL on E-13
     - "*.StudentRecordId"       # rule ID-2: must never receive a tenant-scoped student id
+    - "*.TenantId"              # rule ID-2: social data is not tenant-scoped
 ```
 
 ### 6.2 Capability platforms (the L4 side)
@@ -318,7 +349,7 @@ Each row is a specific edge that a reasonable engineer might add under deadline 
 | **X-02** | `AI → domain model classes` | "The agent needs the Student entity" | Makes AI undeployable separately and lets model changes break AI silently | Consume the event payload from `liboora_contracts` |
 | **X-03** | `domain → INTEGRATION` | "Just call Razorpay from the payment service" | Vendor lock-in inside the core domain; untestable; breaks gateway abstraction | Call `business.payment_intent` port |
 | **X-04** | `domain → COMMUNICATION` (sync) | "Send the SMS right after saving" | Couples a domain transaction to a third-party's availability; SMS failure rolls back a paid enrollment | Emit a fact event; Communication decides channel |
-| **X-05** | `LIBRARY MANAGEMENT ↔ GLOBAL STUDENT` | "Show the student's friends on the reception screen" | Merges two tenancy models and two privacy regimes; a social outage takes down the paying product | The consented `PersonId` link via ACL (E-13) only |
+| **X-05** | `LIBRARY MANAGEMENT ↔ STUDENT NETWORK` *(`BC-11`…`BC-17`)* | "Show the student's friends on the reception screen" | Merges two tenancy models and two privacy regimes; a social outage takes down the paying product | The `PersonId` link via ACL (E-13) only. **`BC-10` is not the social side of this prohibition** — since `ADR-0011` it is a rank-7.5 platform identity that library modules may depend on downward. Depending on `BC-10` is legal; depending on `BC-11`…`BC-17` is not |
 | **X-06** | `capability → API PLATFORM` | "Reuse the DTO from the API layer" | Inverts the dependency; the edge must be replaceable without touching capabilities | Define the contract in `liboora_contracts` |
 | **X-07** | `any → any` bypassing EVENT for cross-context notification | "An event bus is overkill, I'll just call it" | Recreates the distributed monolith; loses replay, DLQ, audit and ordering guarantees | Use the outbox |
 | **X-08** | `SEARCH → domain repository` for indexing | "Reindex by scanning the table" | Index and source silently diverge; breaks permission-aware indexing | Event-driven index + explicit `Index Backfill Job` |
@@ -616,10 +647,10 @@ exceptions:
 | Allowed cross-platform edges | 26 (context map §7) |
 | Named forbidden edges | 14 (§7) |
 | Direct-import permissions | 1 (`liboora_contracts` only) |
-| Same-rank clusters | 2 (Core Library, Social) |
+| Same-rank clusters | 2 (Core Library `BC-01`…`BC-06`, Social `BC-11`…`BC-13`) |
 | Cycle-breaking patterns | 4 |
 | CI enforcement layers | 3 |
-| Laws with zero exceptions | 1 (L1 — acyclic) |
+| Laws with zero exceptions | 1 (L1 — acyclic). `L2` retains exactly its two declared cluster exceptions — **`ADR-0011` added none**, which is why rank 7.5 exists |
 
 **Ratio worth noting:** 26 allowed edges across 31 contexts, with exactly **one** permitted direct import. A dependency graph this sparse is what makes ten-year maintainability a structural property rather than a discipline problem.
 

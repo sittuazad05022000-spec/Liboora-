@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Baseline** | **BASELINE-2026-08-03** |
+| **Baseline** | **BASELINE-2026-08-04** |
 | **Supersedes** | `BASELINE-2026-08-02` |
 | **Status** | **Locked** |
 | **Date** | 2026-08-03 |
 | **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`) |
-| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010` |
+| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010`, `ADR-0011` |
 
 ---
 
@@ -53,6 +53,30 @@ Deferral **`AR-4` invitation security specification** is also **CLOSED**, by aut
 precondition — that §§1–25 had not been received — no longer holds, and the received text confirms the invitation
 feature exists in three distinct forms. It is lifted **on evidence, not by assumption.**
 
+### 2.2 Third declaration — the Student Identity & Profile PRD
+
+**Student Identity & Profile PRD v1.0 is the official baseline specification for `BC-10` Global Person
+Identity**, together with its alignment report.
+
+Like the Library PRD, this is closed **by receipt**: Chapters 1–5 were supplied by the product owner on
+2026-08-04. Thirteen conflicts against higher-ranked documents were found; four were blocking. Eleven were
+accepted and **two were rejected**, with the draft's original intent preserved in both cases. Every acceptance
+and both rejections are recorded in
+[`STUDENT_IDENTITY_ALIGNMENT.md`](../30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md).
+**No functionality was removed.**
+
+**This declaration carries a structural change that the previous two did not.** Resolving conflict `SC-1`
+required amending the Bounded Context Map's Identity Triad — the section the map itself flags as *"the
+highest-risk modelling decision in LIBOORA"* — and consequentially amending global business rule
+`MP-GBR-02`. That reasoning is recorded in
+[`ADR-0011`](./adr/ADR-0011-global-person-identity.md), and the amendment is deliberately narrow: **placement,
+name, classification and cardinality only.** Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are preserved
+unamended, and no dependency law gained an exception — rank 7.5 was introduced precisely so that none was
+needed.
+
+Open question **`Q-05`** — *"Is Global Student available to a person with no library enrollment?"* — is
+**CLOSED: yes, necessarily.**
+
 ---
 
 ## 3. Baseline contents
@@ -61,17 +85,17 @@ feature exists in three distinct forms. It is lifted **on evidence, not by assum
 
 | Document | Version | Status |
 |---|---|---|
-| `00-governance/DOCUMENTATION_BASELINE.md` | BASELINE-2026-08-03 | **This document** |
+| `00-governance/DOCUMENTATION_BASELINE.md` | BASELINE-2026-08-04 | **This document** |
 | `00-governance/adr/ADR-INDEX.md` | Active | Authoritative |
-| `00-governance/adr/ADR-0001` … `ADR-0010` | Accepted | Authoritative, binding |
+| `00-governance/adr/ADR-0001` … `ADR-0011` | Accepted | Authoritative, binding |
 | `00-governance/DOCUMENTATION_AUDIT-001.md` | 001 | Historical record of this review |
 
 ### 3.2 Architecture
 
 | Document | Version | Status |
 |---|---|---|
-| `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | v1.2 | Authoritative — boundaries, ownership, edges |
-| `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | v1.0 | Authoritative — permitted and forbidden dependencies |
+| `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | **v1.3** | Authoritative — boundaries, ownership, edges. Identity Triad §4 amended by `ADR-0011` |
+| `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **v1.1** | Authoritative — permitted and forbidden dependencies. Rank `R7.5` added by `ADR-0011` |
 | `10-architecture/ARCHITECTURE_RULINGS.md` | **v1.2** | Authoritative for `AR-1`, `AR-3`, `AR-4`; `AR-2`, `AR-5`, `AR-6`, `AR-7` promoted to ADRs. `AR-4` deferral lifted |
 | `10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` | **v2.1** | **Descriptive** — must follow the PRDs, never lead them |
 
@@ -79,7 +103,7 @@ feature exists in three distinct forms. It is lifted **on evidence, not by assum
 
 | Document | Version | Status |
 |---|---|---|
-| `30-product/MASTER_PRD.md` | **v1.6** | Authoritative — platform-wide global rules |
+| `30-product/MASTER_PRD.md` | **v1.7** | Authoritative — platform-wide global rules. `MP-GBR-02` amended by `ADR-0011` |
 | `30-product/authentication/Authentication_PRD_v2.md` | **v2.0** | **Authoritative — the baseline** |
 | `30-product/authentication/prd-v2/00` … `11` | v2.0 | Chapter sources of the above |
 | `30-product/authentication/PRD-V2-GOVERNANCE-NOTE.md` | v2.0 | Provenance record — **not part of the specification** |
@@ -89,6 +113,9 @@ feature exists in three distinct forms. It is lifted **on evidence, not by assum
 | `30-product/library/INVITATION_SECURITY_SPECIFICATION.md` | **v1.0** | Authoritative — `IT-1`…`IT-3`, entropy, expiry, revocation, single use, validation, audit, rate limiting |
 | `30-product/library/LIBRARY_PRD_ALIGNMENT.md` | v1.0 | Validation record — **not part of the specification** |
 | `30-product/library/REVIEW_14A.md` | v1.1 | Historical review record — **not part of the specification** |
+| `30-product/student-identity/Student_Identity_PRD_v1.md` | **v1.0** | **Authoritative — the Student Identity baseline**, Chapters 1–5 |
+| `30-product/student-identity/README.md` | v1.0 | Module index — navigational, **not part of the specification** |
+| `30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md` | v1.0 | Validation record, `SC-1`…`SC-13` — **not part of the specification** |
 
 ### 3.4 Configuration and implementation
 
@@ -102,6 +129,7 @@ feature exists in three distinct forms. It is lifted **on evidence, not by assum
 | `40-implementation/DEFINITION_OF_DONE.md` | v1.1 | Merge and release gates. Extended to Library Management; the stale `AR-4` *"do not invent"* row replaced |
 | `40-implementation/TRACEABILITY_MATRIX.md` | **v1.1** | Requirement → artefact mapping |
 | `40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md` | **v1.0** | `IMPL-100`…`IMPL-127` with acceptance criteria and checklists |
+| `40-implementation/STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md` | **v1.0** | `IMPL-200`…`IMPL-226` with acceptance criteria and checklists |
 
 ### 3.5 Archived — no authority
 
@@ -123,9 +151,10 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 | Rank | Source | Scope |
 |---|---|---|
 | **1** | `MASTER_PRD.md` global rules — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` | Platform-wide. Outranks every module PRD |
-| **2** | Accepted ADRs (`ADR-0001` … `ADR-0010`) | Structural decisions |
+| **2** | Accepted ADRs (`ADR-0001` … `ADR-0011`) | Structural decisions |
 | **3** | **Authentication PRD v2.0** | Everything inside `BC-18` |
 | **3** | **Library PRD v1.0** + §14A + §14B + Invitation Security Specification | Everything inside the Library Management domain |
+| **3** | **Student Identity & Profile PRD v1.0** + Alignment Report | Everything inside `BC-10` Global Person Identity |
 | **4** | Bounded Context Map · Module Dependency Matrix | Boundaries, ownership, permitted edges |
 | **5** | Architecture Rulings `AR-1`, `AR-3`, `AR-4` | Domain classifications not promoted to ADRs |
 | **6** | Enterprise Architecture v2.1 | **Descriptive only.** Update it to match 1–5; never the reverse |
@@ -134,7 +163,8 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 **A conflict is a defect.** If you find one, do not choose — raise it. The precedence order tells you which
 document is *wrong*, not which one to quietly ignore.
 
-**Rank 3 holds two module baselines and they do not overlap.** The Authentication PRD governs `BC-18`; the Library
+**Rank 3 holds three module baselines and they do not overlap.** The Authentication PRD governs `BC-18`; the Student
+Identity PRD governs `BC-10`; the Library
 PRD governs Library Management. Where a Library requirement appears to constrain authentication — the preview's
 authentication boundary, the invitation acceptance sequence — the Library document states *what must be true* and
 `BC-18` remains the sole authority on *how it is decided*. A Library requirement can never grant, evaluate or cache
@@ -197,5 +227,6 @@ however carefully it is written. They are restated here as tasks, not as finding
 
 | Baseline | Date | Change |
 |---|---|---|
+| **BASELINE-2026-08-04** | 2026-08-04 | **`BC-10` Global Person Identity admitted to the baseline, and the identity architecture finalised.** `Student_Identity_PRD_v1.md` v1.0 (Chapters 1–5) and `STUDENT_IDENTITY_ALIGNMENT.md` declared authoritative at Rank 3 — the **third** module baseline, alongside Authentication (`BC-18`) and Library Management. `ADR-0011` accepted — Rank 2 extended to `ADR-0011`. **`ADR-0011` amends the Bounded Context Map §4 Identity Triad**: `BC-10` renamed Global Person Identity, reclassified `[SUPPORTING]` → `[CORE]`, moved out of the Social cluster to **rank 7.5**, cardinality `0..1` opt-in → **`1:1` mandatory**. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` preserved unamended; `ID-4`'s `PersonId` becomes non-nullable. BC Map raised to v1.3; Module Dependency Matrix to v1.1; Master PRD to v1.7. `tool/module_dependencies.yaml` gains `domain/person: 7.5`. Nine registers declared: `SXC-1`…`11`, `SID-BR-1`…`18`, `SPO-1`…`9`, `SEV-1`…`16`, `SID-INT-1`…`12`, `SID-INV-1`…`14`, `SCFG-1`…`11`, `SID-AC-1`…`26`. `Q-05` closed. **One global business rule was changed — `MP-GBR-02`** — the first such change since the baseline was established; it is recorded in Master PRD §36. Two review findings were rejected and the supplied draft's intent preserved. No requirement was withdrawn and no earlier decision reversed. |
 | **BASELINE-2026-08-03** | 2026-08-03 | **Library Management admitted to the baseline.** `Library_PRD_v1.md` v1.0 (§§1–25), `14B-Public-Library-Preview.md` v1.0 and `INVITATION_SECURITY_SPECIFICATION.md` v1.0 declared authoritative at Rank 3 alongside §14A. `U-4` closed by receipt; `AR-4` invitation-security deferral closed by authorship; `CC-5`, `CC-6`, `CC-7` closed. `ADR-0009` and `ADR-0010` accepted — Rank 2 extended to `ADR-0010`. Architecture Rulings raised to v1.2; Master PRD to v1.6; Traceability Matrix to v1.1. Thirteen Library configurables `LCFG-1`…`LCFG-13`, ten invitation configurables `ICFG-1`…`ICFG-10` and seven invariants `INV-10`…`INV-16` added to the Configuration Guide. No requirement was withdrawn and no earlier decision reversed. |
 | **BASELINE-2026-08-02** | 2026-08-02 | Initial declaration. Authentication PRD v2.0 declared official; `D-7` closed by authorship; EA raised to v2.1; `CFG-3`, `CFG-4`, `CFG-5`, `CFG-6`, `CFG-7`, `CFG-12` reset to standards-anchored defaults; `ADR-0001`…`ADR-0008` accepted; twelve stale documents corrected or archived. |

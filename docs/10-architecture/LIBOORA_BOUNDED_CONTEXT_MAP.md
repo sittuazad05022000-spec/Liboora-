@@ -3,13 +3,14 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
-| **Last Updated** | 2026-08-02 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1 and v1.2** |
+| **Last Updated** | 2026-08-04 |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2 and v1.3** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
+| **ADRs applied** | `ADR-0011` amends §3.2, §4, §5 and §8 — `BC-10` becomes **Global Person Identity**, `[CORE]`, rank 7.5, cardinality `1:1`. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are **preserved**. See [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) |
 
 ---
 
@@ -103,11 +104,13 @@ Dashboards (`Owner`, `Manager`, `Reception`, `Parent`) are **not contexts**. The
 
 **Why six core contexts and not one:** consider the invariant *"a student may not be seated without a valid membership."* If Enrollment, Membership and Seating are one model, this is an `if` statement buried in a service and enforced inconsistently in four places. As three contexts, it becomes an explicit **policy at the Seating boundary** consuming a published `MembershipValidity` projection — testable, auditable, and impossible to bypass.
 
-### 3.2 Supporting Domain Contexts (Global Student)
+### 3.2 Global Person Identity & Student Network
+
+**Amended by `ADR-0011`.** `BC-10` is no longer part of the Global Student platform or the Social cluster. It is a **platform identity at rank 7.5** — its own tier, below every domain module and above every capability platform — and is classified `[CORE]`. `BC-11`…`BC-17` remain the Student Network. Social contexts are **consumers** of `BC-10`; they do not own it, and disabling the social product entirely must leave every identity fully usable.
 
 | ID | Context | Type | Owning Platform | V | Responsibility |
 |---|---|---|---|---|---|
-| **BC-10** | **Global Student Identity** | `[SUPPORTING]` | Global Student | V1 | Owns the person's cross-library public self: username, public profile, privacy settings, verification. |
+| **BC-10** | **Global Person Identity** | `[CORE]` | Platform Identity *(rank 7.5)* | V1 | Owns the person's **permanent platform-wide identity**: `PersonId`, username, global profile, profile photo, privacy. Created **atomically and mandatorily** with the authentication account (`1:1`). Organisation-neutral — holds no `tenantId`, no `StudentRecordId` and no operational data. **Not a social profile** — see `ADR-0011`. |
 | **BC-11** | **Social Graph** | `[SUPPORTING]` | Global Student | V1 | Owns relationships: friend requests, friendships, blocks, rate limits on graph mutation. |
 | **BC-12** | **Messaging** | `[SUPPORTING]` | Global Student | V1 | Owns conversations and messages, delivery guarantees, retention, presence. |
 | **BC-13** | **Trust & Safety** | `[CORE]` ⚠ | Global Student | V1 | Owns abuse reports, moderation decisions, strikes, bans, minor-safety enforcement. **Classified CORE despite living in a Supporting platform** — on a minor-heavy product this is existential legal risk, not a commodity. |
@@ -142,7 +145,7 @@ Dashboards (`Owner`, `Manager`, `Reception`, `Parent`) are **not contexts**. The
 | **V1** | 23 | BC-01→06, BC-10→13, BC-18→27, BC-29→31 |
 | **V2** | 6 | BC-07, BC-08, BC-09, BC-14, BC-15, BC-28 |
 | **V3** | 2 | BC-16, BC-17 |
-| **Core-classified** | 7 | BC-01→06 + BC-13 |
+| **Core-classified** | 8 | BC-01→06 + BC-10 + BC-13 |
 
 **Investment rule:** `[CORE]` contexts get hand-written rich domain models, exhaustive unit tests, and ADR-level scrutiny on every change. `[GENERIC]` contexts get the thinnest wrapper that satisfies the port — prefer configuration over code, and buy over build wherever a vendor exists.
 
@@ -157,15 +160,15 @@ This is the highest-risk modelling decision in LIBOORA and the one most likely t
 | Identity | ID type | Owner | Scope | Lifecycle |
 |---|---|---|---|---|
 | **Account** | `AccountId` | BC-18 Identity & Access | Global, cross-tenant | Created on first successful OTP. Destroyed on account deletion. Holds *credentials only*. |
-| **Person / Global Student** | `PersonId` | BC-10 Global Student Identity | Global, cross-tenant | Created when the human opts into the social product. Holds public profile, username, privacy. **May not exist** for a student who only ever uses the library. |
+| **Person / Global Student** | `PersonId` | BC-10 Global Person Identity | Global, cross-tenant | Created **atomically with the Account** and mandatory for every account (`ADR-0011`). Holds global profile, username, privacy. Permanent for the person's lifetime on the platform; reused unchanged by future School, College and Coaching products. **Always exists** for an authenticated person, with or without any enrollment. |
 | **Student Record** | `StudentRecordId` | BC-01 Enrollment | **Per-tenant** | Created when a library enrolls them. One human enrolled at three libraries has **three** `StudentRecordId`s. Survives account deletion (financial/audit record). |
 
 ### 4.1 The Linkage Rules
 
 ```
-AccountId  1 ──── 0..1  PersonId          (an account may never opt into social)
+AccountId  1 ──── 1     PersonId          (mandatory, atomic — ADR-0011)
 AccountId  1 ──── 0..*  StudentRecordId   (one login, many library enrollments)
-PersonId   1 ──── 0..*  StudentRecordId   (social profile spans libraries)
+PersonId   1 ──── 0..*  StudentRecordId   (identity spans organisations; reference points UPWARD only)
 StudentRecordId ── 1     TenantId          (ALWAYS tenant-scoped, no exceptions)
 ```
 
@@ -173,14 +176,16 @@ StudentRecordId ── 1     TenantId          (ALWAYS tenant-scoped, no excepti
 |---|---|---|
 | **ID-1** | No context outside BC-18 may store a password, OTP, session or credential. | Security review + schema scan in CI |
 | **ID-2** | `StudentRecordId` **never** leaves its tenant. It must not appear in any Global Student context, event or index. | Cross-tenant leak test suite (Quality Platform) |
-| **ID-3** | Social contexts (BC-10→17) key exclusively on `PersonId`. They must not be able to resolve which library a person attends unless the person explicitly published it. | ACL at Global Student boundary |
-| **ID-4** | Library contexts (BC-01→09) key exclusively on `StudentRecordId`. They may hold a nullable `PersonId` reference for social linkage, and must degrade gracefully when it is null. | Nullable by design; tests assert null path |
+| **ID-3** | Global and social contexts (BC-10→17) key exclusively on `PersonId`. They must not be able to resolve which library a person attends unless the person explicitly published it. | ACL at the BC-10 boundary |
+| **ID-4** | Library contexts (BC-01→09) key exclusively on `StudentRecordId`. They hold a **non-nullable** `PersonId` reference, because every account now has an identity (`ADR-0011`). | Non-nullable by design; FK to BC-10 via the E-13 ACL |
 | **ID-5** | Account deletion (DSR) deletes the `Account` and anonymises the `Person`. It **does not** delete `StudentRecord` financial and attendance history — that is retained under legal basis and pseudonymised. | Data Privacy runbook + retention policy |
 | **ID-6** | A minor's `Account` is linked to a guardian consent record before any social context is activated. | BC-18 Consent Management gate |
 
 ### 4.2 Why this matters commercially
 
 Multi-library membership (V2) and Cross-Product Identity (Future) are both listed in the tree. Neither is achievable if `StudentRecordId` and `PersonId` are the same column. This triad is what makes those roadmap items a schema-compatible extension rather than a rewrite.
+
+**Why the split survives `ADR-0011`.** Making `PersonId` mandatory removes the optionality, not the separation. `ID-5` is the load-bearing reason: erasure must delete the Account, anonymise the Person, and **retain** organisation financial and attendance history pseudonymised under legal basis. Merging `PersonId` and `StudentRecordId` makes that simultaneously-required outcome impossible to express. The identity is now permanent so that a person joining a Library, then a School, then a Coaching Institute never needs a second identity — the migration `ADR-0011` exists to prevent.
 
 ---
 
@@ -190,7 +195,7 @@ Each row is a word that means **different things in different contexts**. Every 
 
 | Ambiguous word | Context A meaning | Context B meaning | Resolution (binding) |
 |---|---|---|---|
-| **Student** | BC-01: an enrolled record in *this* library, with dues and a seat | BC-10: a public social persona across libraries | `StudentRecord` (BC-01) vs `GlobalStudentProfile` (BC-10). The bare word `Student` is **banned** in shared code. |
+| **Student** | BC-01: an enrolled record in *this* library, with dues and a seat | BC-10: the person's permanent platform-wide identity | `StudentRecord` (BC-01) vs `GlobalPersonIdentity` (BC-10). The bare word `Student` is **banned** in shared code. |
 | **Member** | BC-02: a holder of a paid library membership plan | BC-15: a participant in a community/study group | `MembershipHolder` (BC-02) vs `CommunityMember` (BC-15) |
 | **Attendance** | BC-03: a student's verified physical presence, drives occupancy & fee logic | BC-07: a staff member's shift presence, drives payroll | `StudentAttendance` vs `StaffAttendance`. Never a shared table. |
 | **Payment** | BC-05: cash/UPI collected from a student at reception | BC-20: a card charge from a library owner to LIBOORA | `FeePayment` (BC-05) vs `SubscriptionCharge` (BC-20) |
@@ -275,7 +280,7 @@ Each row is a word that means **different things in different contexts**. Every 
 
 **Two structural observations worth internalising:**
 
-1. **`Separate Ways` between Library Management and Global Student is deliberate.** The temptation is to link them tightly ("show a student's friends in the reception dashboard"). Resisting that is what keeps the social product's outages, moderation problems and privacy obligations from taking down the paying product. The only bridge is a nullable `PersonId` and an ACL.
+1. **`Separate Ways` between Library Management and Global Student is deliberate.** The temptation is to link them tightly ("show a student's friends in the reception dashboard"). Resisting that is what keeps the social product's outages, moderation problems and privacy obligations from taking down the paying product. The only bridge is a `PersonId` and an ACL (`E-13`). **`ADR-0011` does not weaken this.** Making the identity mandatory changes who owns it, not who may reach across the boundary: `BC-10` is now a rank-7.5 platform identity that library modules may depend on downward, while `BC-11`…`BC-17` remain `Separate Ways` from Library Management. A library module may resolve an identity; it still may not reach a social graph.
 
 2. **`BC-13 Trust & Safety` acts *on* other contexts, not beside them.** It needs the ability to hide content, suspend a `PersonId`, and freeze messaging — capabilities that would create cycles if modelled as normal peer calls. Resolution: T&S publishes `EnforcementActionTaken` events and other contexts subscribe and self-restrict. T&S never reaches into their models.
 
@@ -307,8 +312,8 @@ Every edge that crosses a context boundary in V1. If an edge is not in this tabl
 | # | Upstream | Downstream | Pattern | Mechanism | Contract |
 |---|---|---|---|---|---|
 | E-11 | BC-18 Identity | BC-01 Enrollment | `CF` | Sync port | `AccountId` resolution on login; Enrollment stores it, never mutates it |
-| E-12 | BC-18 Identity | BC-10 Global Identity | `CF` | Sync port | `AccountId` → `PersonId` creation on social opt-in |
-| E-13 | BC-01 Enrollment | BC-10 Global Identity | **`ACL`** | Explicit user-consented link | Student may link their enrollment to a `PersonId`. **The only bridge between the two worlds.** Enrollment stores nullable `personId`; Global Identity stores **no** `StudentRecordId` (rule ID-2) |
+| E-12 | BC-18 Identity | BC-10 Global Person Identity | `CF` | Sync port, **same transaction** | `AccountId` → `PersonId` created **atomically and mandatorily** with the account. Failure of either fails both (`ADR-0011`). Also carries mobile-number read-through and authorisation questions |
+| E-13 | BC-01 Enrollment | BC-10 Global Person Identity | **`ACL`** | Sync port through an ACL | Enrollment resolves identity core fields for the `PersonId` it holds. **The only bridge between the two worlds.** Enrollment stores a **non-nullable** `personId` (`ADR-0011`); Global Person Identity stores **no** `StudentRecordId` and **no** `tenantId` (rule `ID-2`). Reference direction is **upward only** — the identity holds no list of records |
 | E-14 | BC-13 Trust & Safety | BC-11, BC-12, BC-14, BC-15 | `PL` | Event | `EnforcementActionTaken{personId, action, scope, until}` → each context self-restricts. T&S never writes into them |
 | E-15 | BC-10 Global Identity | BC-11 Social Graph | `SK` | Shared kernel | `PersonId` + `PrivacyPolicy` value objects are jointly owned |
 | E-16 | BC-11 Social Graph | BC-12 Messaging | `C/S` | Sync port | `canMessage(a, b)` — Messaging must ask; block enforcement lives in the graph |
@@ -348,7 +353,7 @@ This single set of rules is what makes the "Future Microservice readiness" claim
 | Published Language (`PL`) | 7 | All event-based integration |
 | Anti-Corruption Layer (`ACL`) | 1 | E-13 Enrollment ↔ Global Identity — the only place translation is mandatory |
 | Shared Kernel (`SK`) | 2 | `liboora_contracts`, `PersonId`/privacy VOs |
-| Separate Ways | 1 | Library Management ⟷ Global Student (structural) |
+| Separate Ways | 1 | Library Management ⟷ Student Network `BC-11`…`BC-17` (structural). **`BC-10` is excluded** — it is a rank-7.5 platform identity that library modules depend on downward via `E-13` (`ADR-0011`) |
 | Open Host Service (`OHS`) | 1 | API Platform edge |
 
 A healthy map has **few ACLs and few Shared Kernels**. Two shared kernels and one ACL across 31 contexts is a good ratio — it means boundaries were drawn where the language actually changes, not arbitrarily.
@@ -415,7 +420,12 @@ The V1 event surface, by producing context. This is the **seed of the full Event
 | BC-05 | `fee.FeePaymentReceived` | BC-02, BC-26, BC-24, BC-22 | Activates membership, receipt |
 | BC-05 | `fee.RefundIssued` | BC-26, BC-24 | Revenue restatement |
 | BC-06 | `policy.BranchPolicyChanged` | BC-03, BC-04, BC-05, BC-24 | Effective-dated rule propagation |
-| BC-10 | `identity.PersonProfileUpdated` | BC-23, BC-11 | Social index |
+| BC-10 | `identity.PersonIdentityCreated` | BC-23, BC-24, BC-26 | Identity created atomically with the account (`SEV-1`) |
+| BC-10 | `identity.PersonProfileUpdated` | BC-23, BC-24, BC-26, BC-11 | Profile change (`SEV-3`) |
+| BC-10 | `identity.PersonUsernameChanged` | BC-23, BC-24, BC-11, BC-12 | Username change (`SEV-5`) |
+| BC-10 | `identity.PersonPrivacyModeChanged` | BC-23, BC-24, BC-11, BC-26 | Public ⇄ Private, no propagation window (`SEV-9`) |
+| BC-10 | `identity.PersonAnonymised` | BC-23, BC-24, BC-11, BC-12, BC-26 | Account erased; organisation history retained by BC-01 (`SEV-16`, `ID-5`) |
+| BC-10 | *(full register)* | — | `SEV-1`…`SEV-16` — closed set, see Student Identity PRD §4.14 |
 | BC-11 | `social.FriendshipEstablished` / `UserBlocked` | BC-12, BC-26 | Messaging permission |
 | BC-12 | `messaging.MessageSent` | BC-13 (sampling), BC-26 | Moderation + engagement metrics |
 | BC-13 | `safety.AbuseReportFiled` | BC-24, BC-22 | Moderator queue |
@@ -473,7 +483,8 @@ Three places where the eventual-by-default rule is explicitly overridden, with t
 | Context group | Tenancy model | Isolation enforcement |
 |---|---|---|
 | BC-01→09 Library Management | **Tenant-scoped.** Every row carries `tenantId`. | Row-level security + mandatory `TenantContext` in repository base class. A query without tenant predicate must fail at runtime, not silently return everything. |
-| BC-10→17 Global Student | **Global.** No `tenantId`. Keyed on `PersonId`. | Must never receive a `StudentRecordId` or `tenantId` (rule ID-2). Asserted by cross-tenant leak tests. |
+| BC-10 Global Person Identity | **Global.** No `tenantId`. Keyed on `PersonId`. Rank 7.5. | Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`). Holds no organisation collection. Asserted by cross-tenant leak tests + `banned_symbols`. |
+| BC-11→17 Student Network | **Global.** No `tenantId`. Keyed on `PersonId`. | Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`). Consumers of BC-10, never owners (`ADR-0011`). |
 | BC-18 Identity | **Hybrid.** `Account` is global; role assignments are tenant-scoped. | `AccessPolicy` is always evaluated with a tenant in scope |
 | BC-19→31 Capability | **Tenant-aware.** Carry and propagate `tenantId`, own no tenant data of record. | Indices, caches, projections, prompts, embeddings and files are **all** tenant-partitioned. Vector search isolation is asserted per query, not by convention. |
 
@@ -529,7 +540,7 @@ Items requiring a decision before V1 implementation freeze. Each should become a
 | Q-02 | Is `Branch` (BC-06) a first-class V1 entity or introduced at V3 Multi-Branch? | Schema shape of every tenant-scoped table | **Model `branchId` in V1 schema, default single branch.** Retrofitting it later is a migration across every core table |
 | Q-03 | Entitlement fail-open or fail-closed on timeout? | Revenue leakage vs availability | Per-gate policy; hard paid features fail-closed, soft limits fail-open |
 | Q-04 | Retention period for `StudentAttendance` after enrollment archival? | Legal + storage cost | Define with counsel; default 7 years financial, 2 years attendance |
-| Q-05 | Is Global Student available to a person with **no** library enrollment? | Growth strategy + moderation exposure | Yes (drives PLG), but with reduced trust tier until enrolled |
+| ~~Q-05~~ | ~~Is Global Student available to a person with **no** library enrollment?~~ | — | **CLOSED 2026-08-04 by `ADR-0011`: yes, necessarily.** Every account has an identity from creation, so the question can no longer arise. The "reduced trust tier" recommendation is **not** adopted — a trust tier is an authorisation concern owned by BC-18, and implementing it in BC-10 would mean a global context evaluating authorisation (`X-13`) |
 | Q-06 | Who owns proration arithmetic — BC-02 (rules) or BC-20/Business (execution)? | Currently split by design; needs explicit contract | BC-02 computes the *entitlement delta*, Business Platform executes the *money*. Contract in `liboora_contracts` |
 | Q-07 | Does Parent get an `Account` (BC-18) or a scoped view token? | Auth complexity, consent model | Full account with guardian role — required for consent audit trail |
 
@@ -556,7 +567,7 @@ A ruling settles ownership, classification and boundaries. It creates no require
 | Aspect | Position |
 |---|---|
 | **Owner** | Library Management / Tenant Organization |
-| **Not owned by** | `BC-18` Identity & Access · `BC-02` Membership · `BC-01` Enrollment / Global Student Identity |
+| **Not owned by** | `BC-18` Identity & Access · `BC-02` Membership · `BC-01` Enrollment · `BC-10` Global Person Identity |
 | **Rationale** | An invitation is the access mechanism for a **Private library** (Library PRD §14A.6) — a property of the organisation, not of a credential or a plan |
 | **Security specification** | ✅ **Specified** — [`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md). Three types `IT-1`…`IT-3`, 71 requirements, ten configurables `ICFG-1`…`ICFG-10`. Expiry §4 · revocation §5 · single-use §6 · entropy §3 · validation §7 · audit §8 |
 | **Governing principle** | `INV-SEC-002` — an invitation is a **revocable, expiring claim, never a credential**. It authenticates nobody (`ADR-0009`). This preserves `MP-GBR-25`, the mobile number as sole authentication factor |

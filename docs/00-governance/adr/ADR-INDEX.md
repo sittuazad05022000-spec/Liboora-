@@ -5,8 +5,8 @@
 | **Status** | Active register of record |
 | **Supersedes** | `ARCHITECTURE_RULINGS.md` as the *interim* register (rulings `AR-1`…`AR-7` are preserved and promoted, not discarded) |
 | **Closes** | Governance task `R-3` — "a formal ADR set is deferred" |
-| **Date** | 2026-08-02 · **last extended 2026-08-03** |
-| **Count** | **10 accepted** — `ADR-0001` … `ADR-0010` |
+| **Date** | 2026-08-02 · **last extended 2026-08-04** |
+| **Count** | **11 accepted** — `ADR-0001` … `ADR-0011` |
 
 ---
 
@@ -42,6 +42,7 @@ original identifier preserved as a cross-reference. **No ruling was reinterprete
 | [`ADR-0008`](./ADR-0008-authentication-prd-v2-baseline.md) | Authentication PRD v2.0 is the official baseline | Accepted | Closes `D-7` | Documentation |
 | [`ADR-0009`](./ADR-0009-invitation-security-model.md) | An invitation is a revocable claim, not a credential | Accepted | Completes `AR-4` | Library Management, `BC-18` |
 | [`ADR-0010`](./ADR-0010-public-preview-anonymous-access.md) | Public library information is served anonymously from a projection | Accepted | Extends `AR-3` | Library Discovery, `BC-23`, `BC-19` |
+| [`ADR-0011`](./ADR-0011-global-person-identity.md) | Global Person Identity is a platform identity, not a social profile | Accepted | Amends BC Map §4; closes `Q-05` | `BC-10`, `BC-01`, `BC-11`…`BC-13`, `BC-18` |
 
 ## Rulings preserved but not promoted
 
@@ -62,5 +63,6 @@ original identifier preserved as a cross-reference. **No ruling was reinterprete
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Added `ADR-0011` (Global Person Identity is a platform identity). **This is the first ADR to amend the Bounded Context Map's Identity Triad (§4)** — `BC-10` is renamed, reclassified `[SUPPORTING]` → `[CORE]`, moved from the Social cluster to **rank 7.5**, and its cardinality changed from `0..1` opt-in to **`1:1` mandatory**. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are **preserved unamended**; only placement, name, classification and cardinality change. Consequentially amends global business rule `MP-GBR-02` (Master PRD v1.7) and makes `ID-4`'s `PersonId` non-nullable. Closes `Q-05`. No existing ADR was edited or superseded. |
 | 2026-08-03 | Added `ADR-0009` (invitation security model) and `ADR-0010` (public preview anonymous access), both **Accepted**. Updated the two "preserved but not promoted" entries: `AR-3` and `AR-4` are unchanged as rulings, but the *gaps* they carried are closed. No existing ADR was edited, reinterpreted or superseded. |
 | 2026-08-02 | Register created. `ADR-0001`…`ADR-0008` accepted; rulings `AR-1`…`AR-7` preserved. Closes `R-3`. |

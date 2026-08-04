@@ -2,11 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · **extended 2026-08-03** |
-| **Baseline** | BASELINE-2026-08-03 |
-| **Sources** | Authentication PRD v2.0 · **Library PRD v1.0** + §14A + §14B + Invitation Security Specification |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-04** |
+| **Baseline** | BASELINE-2026-08-04 |
+| **Sources** | Authentication PRD v2.0 · Library PRD v1.0 + §14A + §14B + Invitation Security Specification · **Student Identity & Profile PRD v1.0** |
+| **ADRs applied** | `ADR-0001` … **`ADR-0011`** |
 
 ---
 
@@ -87,6 +88,55 @@ are unrelated.
 
 ---
 
+## 2B. Identifier inventory — Student Identity & Profile
+
+Verified mechanically against `Student_Identity_PRD_v1.md`. **Zero gaps and zero out-of-range identifiers in
+every register** — each range below is contiguous from 1 to its stated maximum, because §0 of that PRD publishes
+the ranges as a promise and a gap would make the promise false.
+
+| Prefix | Meaning | Count | Range | Source |
+|---|---|---|---|---|
+| `SID-c.n` | Functional requirement | **226** | `SID-1.1` … `SID-5.51` | Chapters 1–5 |
+| `SID-BR-n` | Business rule | 18 | `SID-BR-1` … `SID-BR-18` | §2.9 |
+| `SXC-n` | Exclusion — must be impossible | 11 | `SXC-1` … `SXC-11` | §1.8 |
+| `SPO-n` | Protected operation (**closed list**) | 9 | `SPO-1` … `SPO-9` | §5.1 |
+| `SEV-n` | Domain event (**closed set**) | 16 | `SEV-1` … `SEV-16` | §4.14 |
+| `SID-INT-n` | Forbidden integration | 12 | `SID-INT-1` … `SID-INT-12` | §4.16 |
+| `SID-INV-n` | Domain invariant | 14 | `SID-INV-1` … `SID-INV-14` | §5.4 |
+| `SCFG-n` | Configurable parameter | 11 | `SCFG-1` … `SCFG-11` | §5.5 |
+| `SID-AC-n` | Acceptance criterion — **the module's only acceptance register** | 26 | `SID-AC-1` … `SID-AC-26` | §5.6 |
+
+**Total Student Identity normative identifiers: 343.**
+
+Per-chapter requirement counts: Ch 1 = 38 · Ch 2 = 42 · Ch 3 = 39 · Ch 4 = 56 · Ch 5 = 51.
+
+### 2B.1 Prefix collisions checked, and the two that nearly happened
+
+Every Student Identity prefix is distinct from every authentication and Library prefix. Two were changed
+deliberately during authoring to keep them so:
+
+| Candidate | Rejected because | Used instead |
+|---|---|---|
+| `INV-n` for Student Identity invariants | Already means **platform invariant** (`CONFIGURATION_GUIDE.md` §3) and is already overloaded with `INV-SEC-n` and `INV-XC-n` — see §2A.1 | `SID-INV-n` |
+| `AC-n` for Student Identity acceptance | Already means **authentication acceptance criterion**, 321 of them | `SID-AC-n` |
+
+`SPO-n` and `PO-n` are the pair most likely to be confused in conversation, and they are **not** the same
+register:
+
+| Looks similar | Actually |
+|---|---|
+| `PO-1` … `PO-12` | **Protected operations behind the public Library preview** — the authentication boundary for anonymous visitors (`14B-Public-Library-Preview.md` §14B.6) |
+| `SPO-1` … `SPO-9` | **Protected operations on a Global Person Identity** — who may mutate global profile state (`Student_Identity_PRD_v1.md` §5.1) |
+
+One governs an anonymous read surface; the other governs authenticated writes to a person's own identity.
+Citing `PO-3` when `SPO-3` was meant would move a requirement from one bounded context to another.
+
+`SEV-n` versus `EV-n` versus `LEV-n` are three separate event registers — `BC-18`, Global Person Identity and
+Library Management respectively. They are numbered independently and overlap numerically on purpose; the prefix
+carries the producer.
+
+---
+
 ## 3. Chapter map
 
 | Ch | Title | `AUTH` | `BR` | `XC` | `AC` | Implementation task | Status |
@@ -144,6 +194,60 @@ look identical in this column and are not: one is unproven, the other is absent.
 
 ---
 
+## 3B. Chapter map — Student Identity & Profile
+
+| § | Subject | Requirements | Implementation task | Status |
+|---|---|---|---|---|
+| 0 | How to read; register index | — | *(framing)* | N/A |
+| 1.1–1.7 | Purpose, problem, responsibilities, objectives, scope, metrics | `SID-1.1`…`SID-1.24` | *(framing)* | N/A |
+| **1.8** | **Exclusion register** | `SXC-1`…`SXC-11` | `IMPL-220`, `IMPL-226` | ⬜ Not started |
+| 1.9–1.10 | Assumptions, constraints | `SID-1.25`…`SID-1.33` | *(framing)* | N/A |
+| **1.11** | **Identity architecture** *(authoritative, `ADR-0011`)* | `SID-1.34`…`SID-1.38` | `IMPL-200`, `IMPL-203` | ⬜ Not started |
+| 2.1 | Identity model — `1:1` Account ↔ Identity | `SID-2.1`…`SID-2.8` | `IMPL-202`, `IMPL-203` | ⬜ Not started |
+| 2.2 | Global Profile fields | `SID-2.9`…`SID-2.16` | `IMPL-210` | ⬜ Not started |
+| 2.3 | Internal identity — `PersonId`, Username | `SID-2.17`…`SID-2.26` | `IMPL-201`, `IMPL-211` | ⬜ Not started |
+| **2.4** | **Profile privacy — Private is the default** | `SID-2.27`…`SID-2.33` | `IMPL-213` | ⬜ Not started |
+| 2.5 | Identity lifecycle | `SID-2.34`…`SID-2.38` | `IMPL-204` | ⬜ Not started |
+| 2.6 | Duplicate prevention | `SID-2.39`, `SID-2.40` | `IMPL-211`, `IMPL-224` | ⬜ Not started |
+| 2.7 | Profile composition | `SID-2.41`, `SID-2.42` | `IMPL-216` | ⬜ Not started |
+| 2.8–2.9 | Ownership boundary; business rules | `SID-BR-1`…`SID-BR-18` | `IMPL-220` | ⬜ Not started |
+| 3.1–3.2 | Profile creation | `SID-3.1`…`SID-3.12` | `IMPL-203`, `IMPL-210` | ⬜ Not started |
+| 3.3 | View profile | `SID-3.13`…`SID-3.18` | `IMPL-216` | ⬜ Not started |
+| 3.4 | Update profile | `SID-3.19`…`SID-3.22` | `IMPL-210` | ⬜ Not started |
+| 3.5 | **Global Profile Photo** *(independent of the Library Identification Photo)* | `SID-3.23`…`SID-3.28` | `IMPL-212` | ⬜ Not started |
+| 3.6 | Profile privacy controls | `SID-3.29`, `SID-3.30` | `IMPL-213` | ⬜ Not started |
+| 3.7 | Profile timeline | `SID-3.31`, `SID-3.32` | `IMPL-215` | ⬜ Not started |
+| 3.8 | Permissions | `SID-3.33`, `SID-3.34` | `IMPL-221` | ⬜ Not started |
+| 3.9 | Audit events | `SID-3.35`…`SID-3.37` | `IMPL-205` | ⬜ Not started |
+| 3.10 | Edge cases | `SID-3.38`, `SID-3.39` | `IMPL-204`, `IMPL-211` | ⬜ Not started |
+| 4.1–4.2 | Integration principles; rank 7.5 | `SID-4.1`…`SID-4.10` | `IMPL-200` | ⬜ Not started |
+| 4.3 | `BC-18` upstream — `E-12`, atomic creation | `SID-4.11`…`SID-4.16` | `IMPL-203` | ⬜ Not started |
+| **4.4** | **`BC-01` downstream — `E-13` ACL, non-nullable `PersonId`** | `SID-4.17`…`SID-4.20` | `IMPL-214` | ⛔ Blocked — `BC-01` absent |
+| 4.5–4.6 | `BC-02`…`BC-05`, `BC-26` contributors | `SID-4.21`…`SID-4.30` | `IMPL-216` | ⛔ Blocked — contexts absent |
+| **4.7** | **`BC-11`…`BC-13` consumers only — the falsifiable test** | `SID-4.31`…`SID-4.35` | `IMPL-222` | ⬜ Not started |
+| 4.8–4.13 | `BC-29`, `BC-23`, `BC-22`, `BC-24`, `BC-25`; `BC-19` not integrated | `SID-4.36`…`SID-4.42` | `IMPL-212`, `223`, `205`, `206` | ⬜ Not started |
+| **4.14** | **Domain events** | `SEV-1`…`SEV-16`, `SID-4.43`…`SID-4.54` | `IMPL-201`, `IMPL-222` | ⬜ Not started |
+| 4.15 | Events consumed | `SID-4.55` | `IMPL-222` | ⬜ Not started |
+| **4.16** | **Forbidden integrations** | `SID-INT-1`…`SID-INT-12`, `SID-4.56` | `IMPL-220` | ⛔ Blocked — `IMPL-014` absent |
+| **5.1** | **Protected operations** | `SPO-1`…`SPO-9`, `SID-5.1`…`SID-5.7` | `IMPL-221` | ⬜ Not started |
+| 5.2 | Data protection and minimisation | `SID-5.8`…`SID-5.14` | `IMPL-202`, `IMPL-205` | ⬜ Not started |
+| **5.3** | **NFR — measurable targets** | `SID-5.15`…`SID-5.41` | `IMPL-225` | ⬜ Not started |
+| **5.4** | **Domain invariants** | `SID-INV-1`…`SID-INV-14`, `SID-5.42`, `SID-5.43` | `IMPL-224`, `IMPL-226` | ⬜ Not started |
+| 5.5 | Configurables | `SCFG-1`…`SCFG-11`, `SID-5.44`…`SID-5.46` | `IMPL-206` | ⬜ Not started |
+| **5.6** | **Acceptance criteria — the only register** | `SID-AC-1`…`SID-AC-26`, `SID-5.47`…`SID-5.49` | `IMPL-226` | ⬜ Not started |
+| 5.7 | Future scope | `SID-5.50`, `SID-5.51` | *(governance)* | N/A |
+
+**Status vocabulary is the same as §3.** Four rows are ⛔ rather than ⬜, and the distinction is load-bearing:
+those four are blocked on artefacts outside this module — `BC-01` Student Management does not exist, and
+`IMPL-014`, the module boundary checker, does not exist either. Marking them ⬜ would imply they are merely
+unstarted and could be picked up next.
+
+**Nothing in this module is `In progress`.** There is no `domain/person` directory, no `PersonId`, no `Person`
+aggregate and no rank-7.5 tier in `tool/module_dependencies.yaml`'s enforcement path beyond the declaration
+itself. The specification is complete; the implementation is empty.
+
+---
+
 ## 4. Decision traceability — ADR to specification
 
 | ADR | Promotes | Governs | Chapters | Task |
@@ -158,6 +262,26 @@ look identical in this column and are not: one is unproven, the other is absent.
 | `ADR-0008` | Closes `D-7` | v2.0 baseline | All | — |
 | `ADR-0009` | Completes `AR-4` | Invitation is a claim, not a credential | Invitation spec; Library §15 | `IMPL-110`…`IMPL-114` |
 | `ADR-0010` | Extends `AR-3` | Anonymous public access via projection | §14A, §14B | `IMPL-120`…`IMPL-125` |
+| **`ADR-0011`** | **Amends BC Map §4 (Identity Triad) and `MP-GBR-02`** | **Global Person Identity: `1:1` with the account, mandatory, `[CORE]`, rank 7.5** | Student Identity §§1.11, 2.1, 4.2–4.4 | `IMPL-200`, `IMPL-203`, `IMPL-214` |
+
+**`ADR-0011` is the only ADR so far that amends the Bounded Context Map's Identity Triad.** Three consequences
+are traced rather than left to the ADR text:
+
+| Change | Was | Is | Traced to |
+|---|---|---|---|
+| `BC-10` cardinality | `0..1`, opt-in, may never exist | **`1:1`, mandatory, created atomically with the account** | `SID-2.1`…`SID-2.8`, `IMPL-203`, `SID-INV-1` |
+| `ID-4` — `PersonId` on a Student Record | Nullable | **Non-nullable** | `SID-4.17`, `IMPL-214` |
+| `BC-10` rank | 8, inside the Social cluster | **7.5, its own tier below every domain** | `SID-4.1`…`SID-4.3`, `IMPL-200` |
+
+**`ID-1` … `ID-6` are otherwise preserved, and `ID-5` is why.** Account erasure anonymises the Person but does
+**not** delete Student Record financial or attendance history. That is the load-bearing reason the three-way
+split survives a change that made two of its three parts `1:1` — a `1:1` mapping between account and person does
+not imply a `1:1` mapping between person and organisation record, and collapsing the third part would make `ID-5`
+unsatisfiable. Traced at `SID-4.23`, `SID-4.54`.
+
+**`X-05` was rescoped, not weakened.** The prohibition now reads `BC-11`…`BC-17`, because `BC-10` is no longer
+the social side of it. The operational half is traced at `SID-4.21`: Global Person Identity is not on the critical
+path of check-in, seat allocation, fee collection or membership.
 
 ---
 
@@ -167,6 +291,7 @@ Master PRD rules constrain the whole platform and outrank the Authentication PRD
 
 | Rule | Line | Statement | Enforced by | Gate |
 |---|---|---|---|---|
+| **`MP-GBR-02`** | — | **`PersonId` is mandatory and `1:1` with the account** — amended by `ADR-0011`. Previously: *"opt-in and may never exist; Library operation must degrade gracefully when it is null"* | `IMPL-203`, `IMPL-214`, **`IMPL-224`** | **Merge + Release** |
 | `MP-GBR-08` | — | Tenant key mandatory on tenant data | `IMPL-052`, **`IMPL-100`** | Merge + Release |
 | `MP-GBR-25` | 378 | Mobile OTP sole V1 factor; no passwords | `ADR-0002`, `IMPL-020` | Merge |
 | `MP-GBR-26` | 379 | Revocation immediate and global; no propagation window | `IMPL-040` | Release |
@@ -174,6 +299,13 @@ Master PRD rules constrain the whole platform and outrank the Authentication PRD
 | `MP-CON-11` | 521 | **No demo or guest accounts in any release build** | **`TASK-D10`** | **Release — blocking** |
 | `MP-DEP-03` | 569 | SMS/DLT dependency | `IMPL-020`, **`IMPL-112`** | Release |
 | `MP-DEP-06` | — | Module boundary manifest | `IMPL-014` | Merge |
+
+**`MP-GBR-02` is the only global business rule amended since the baseline was established**, and it is traced
+here rather than only in the Master PRD changelog because its enforcement is not a code review matter. A rule
+stating that something *must always exist* is satisfiable only by a continuously running check: `IMPL-224`
+maintains counters for accounts-without-identity and identities-without-account, and both must read zero.
+A `1:1` invariant asserted in prose and tested once at merge is not enforced — a later migration can violate it
+without any test failing (`SID-5.43`).
 
 ---
 
@@ -233,6 +365,34 @@ is exactly the propagation window that rule forbids — if anyone wires it into 
 
 ---
 
+### 6B. Student Identity configurables
+
+| Group | Range | Governing requirements | Task |
+|---|---|---|---|
+| Username rules | `SCFG-1` … `SCFG-5` | `SID-2.17`…`SID-2.26`, `SID-3.38` | `IMPL-211` |
+| Profile content | `SCFG-6` … `SCFG-8` | `SID-2.9`…`SID-2.16`, `SID-3.23`…`SID-3.28` | `IMPL-210`, `IMPL-212` |
+| Composition timeout | `SCFG-9` | `SID-2.41`, `SID-5.24` | `IMPL-216` |
+| Rate limits | `SCFG-10`, `SCFG-11` | `SID-5.36`, anti-enumeration | `IMPL-223`, `IMPL-221` |
+
+**`SCFG-1` … `SCFG-11` are deliberately free of cross-register invariants**, unlike `LCFG-11` and `ICFG-4`,
+which are bounded against authentication timeouts by `INV-10`…`INV-16`. No Student Identity configurable sits in
+an authentication or session flow, so none can be set to a value that silently truncates one. This is a property
+of rank 7.5, not a coincidence: the module is not on the critical path of any timed flow (`SID-4.21`).
+
+Two bounds are nonetheless not free choices:
+
+| Configurable | Constraint | What breaks if it is violated |
+|---|---|---|
+| `SCFG-5` | Released-username hold period **SHALL NOT** be 0 in production | A username released by one person is claimable by another the same instant, enabling impersonation of a person whose old handle is still in circulation (`SID-2.24`) |
+| `SCFG-6` | Bio maximum of 0 **disables** the field | It does not make the field public. A length of 0 is a content decision, never a privacy decision (`SCFG-6` note) |
+
+**No configuration value can change the privacy default.** `SID-5.44` forbids configuration from altering the
+default privacy mode, changing the allow-list, disabling an audit event or zeroing `SCFG-5` in production.
+`IMPL-206` must reject such a configuration at startup rather than accept it and log a warning — a rejected
+configuration is a fixed deployment, an accepted one is a published minor's profile.
+
+---
+
 ## 7. Event traceability
 
 | Group | Events | Producer | Task |
@@ -260,6 +420,44 @@ SIM swap in a single-factor system (`ADR-0002`). It is traced separately in `AUT
 
 ---
 
+### 7B. Student Identity events
+
+| Group | Events | Producer | Task |
+|---|---|---|---|
+| Identity lifecycle | `SEV-1`, `SEV-2`, `SEV-12` … `SEV-16` | Global Person Identity (`BC-10`) | `IMPL-203`, `IMPL-204`, `IMPL-222` |
+| Profile mutation | `SEV-3`, `SEV-4`, `SEV-7`, `SEV-8` | Global Person Identity | `IMPL-210`, `IMPL-212`, `IMPL-222` |
+| Username | `SEV-5`, `SEV-6` | Global Person Identity | `IMPL-211`, `IMPL-222` |
+| Privacy and visibility | `SEV-9` … `SEV-11` | Global Person Identity | `IMPL-213`, `IMPL-222` |
+
+**Events consumed** — four, all inbound from higher-authority contexts:
+
+| Event | From | Effect | Task |
+|---|---|---|---|
+| `iam.AccountErased` | `BC-18` | Anonymise the identity, emit `SEV-16`. **Does not delete organisation history** (`ID-5`, `SID-4.54`) | `IMPL-222` |
+| `iam.MobileNumberChanged` | `BC-18` | **No effect on any stored field** — this module never stores a mobile number | `IMPL-222` |
+| `iam.AccountSuspended` | `BC-18` | Identity becomes unusable for authenticated action; existence is unaffected | `IMPL-222` |
+| `safety.EnforcementActionTaken` | `BC-13` | Restricts the **public projection only** — never lifecycle, never existence | `IMPL-222` |
+
+**The last row is the one a reviewer should check first.** `safety.EnforcementActionTaken` originates in the
+social product, and a Trust & Safety action that could suspend or archive a Global Person Identity would make the
+social product able to disable a person's identity for the paying library product. `SID-4.32` and `SID-4.33`
+restrict its effect to the public projection; `SID-4.31` states the falsifiable test that proves the restriction
+holds — **deactivating, disabling or never launching the social product must not affect the existence, validity
+or usability of any Global Person Identity.** `IMPL-226` requires a test for it, not an argument.
+
+**No `SEV-n` payload may carry a mobile number, email, parent contact, address, `StudentRecordId`, `tenantId`,
+credential or OTP** (`SID-4.52`). Two of those exclusions are structural rather than merely privacy-motivated:
+`StudentRecordId` would violate `ID-2` by letting a per-tenant identifier leave its tenant, and `tenantId` would
+give a rank-7.5 module knowledge of a tenancy model it is defined not to have (`SID-4.42`, `SID-INT-9`).
+
+**`SEV-1` is not the trigger for identity creation.** Creation is synchronous and transactional with account
+creation; `SEV-1` is *"a notification of a completed fact"* (`SID-4.11`, `SID-4.12`). Wiring creation to the event
+would open a window in which an account exists without an identity, which the amended `MP-GBR-02` forbids. This is
+the most likely way for an implementer to break the `1:1` invariant while believing they are following the
+event-driven architecture correctly.
+
+---
+
 ## 8. Existing code — conformance unknown
 
 The code predates the specification. These files touch `BC-18` and must be **verified against v2.0**, not assumed
@@ -275,6 +473,58 @@ conformant.
 
 **The 34 passing conformance tests do not evidence conformance to v2.0.** They were written against earlier
 rulings and cover a fraction of 588 requirements. Re-verification is part of Gate 2, per requirement.
+
+### 8A. Student Identity — existing code implements the *superseded* architecture
+
+**This is not a greenfield module, and treating it as one is the main risk.** Identity code already exists in
+`lib/` and `packages/liboora_contracts`, committed in `a44ebb0` (the original scaffold). All of it implements the
+**pre-`ADR-0011`** model: a nullable, opt-in, social-owned `PersonId`. Every row below was verified by search.
+
+| Artefact | Location | State | Conflicts with |
+|---|---|---|---|
+| `PersonId` value object | `packages/liboora_contracts/lib/src/value_objects/identifiers.dart:61` | Exists. Doc comment reads *"the cross-library **social persona**… **May legitimately not exist**"* | `ADR-0011`, `SID-2.1`, amended `MP-GBR-02` |
+| `Account.personId` | `lib/platform/identity/identity.dart:43` | **Nullable.** *"Nullable by design — an account may never opt into the social product"* | `SID-INV-1` (`1:1` mandatory) |
+| `StudentRecord.personId` | `lib/domain/library/enrollment/domain/student_record.dart:53` | **Nullable.** *"Nullable by design. The consented social bridge (edge E-13)"* | **amended `ID-4`** (non-nullable), `SID-4.17` |
+| `GlobalStudentProfile` aggregate | `lib/domain/social/social.dart` | Exists **inside `domain/social`** (rank 8) | `SID-4.1`–`SID-4.3` — identity must be rank 7.5, outside the Social cluster |
+| `GlobalProfileReader`, `InMemoryGlobalProfileRepository` | `lib/domain/social/social.dart`; wired at `lib/bootstrap/di.dart:93,206` | Exists, unimplemented port + in-memory store | Ownership: belongs to `domain/person` |
+| Seed data | `lib/bootstrap/seed.dart:192,210` | **1 of 5 seeded accounts has a `personId`** | `SID-INV-1` — 4 accounts exist with no identity |
+| Rank 7.5 tier declaration | `tool/module_dependencies.yaml` | ✅ **Declared** — `domain/person: 7.5`, ports, banned imports, banned symbols | — |
+| Boundary enforcement of that declaration | `tool/check_module_boundaries.dart` | ⛔ **File does not exist** | `IMPL-014` |
+| `domain/person` module | `lib/domain/person/` | ⬜ **Absent** — the directory does not exist | `IMPL-202` |
+| `SEV-1` … `SEV-16` schemas | `packages/liboora_contracts` | ⬜ Absent | `IMPL-201` |
+
+**The manifest and the code now disagree, and the manifest is the one that is right.**
+`tool/module_dependencies.yaml` declares `domain/social` contexts as `[graph, messaging, safety]` — `identity`
+was removed per `ADR-0011`. But `GlobalStudentProfile`, which *is* the identity context, still sits in
+`lib/domain/social/social.dart`. The manifest describes the decided architecture; the code describes the one it
+replaced. That divergence is recorded here rather than resolved by editing the manifest back, because the
+architecture decision outranks the scaffold.
+
+**Three consequences that a reader should not have to infer:**
+
+1. **`IMPL-202` is a migration, not a creation.** `GlobalStudentProfile` must move out of `domain/social` into
+   `domain/person`, and `domain/social` must be left consuming it rather than owning it. The task list treats
+   this explicitly at `IMPL-207` and `IMPL-208`.
+2. **The two nullable fields are the amended `ID-4` in reverse.** Both carry doc comments asserting that
+   nullability is *"by design"*, which was true when written and is now wrong. Changing the type is the small
+   part; every call site that branches on null encodes the old assumption that a library must
+   *"degrade gracefully"* when identity is absent — the exact wording of the superseded `MP-GBR-02`.
+3. **The seed data would fail `IMPL-224` today.** Four of five accounts have no identity, so the
+   accounts-without-identity counter would read 4, not 0. The seed file is separately release-blocking under
+   `TASK-D10` (`MP-CON-11`, no demo accounts), so this is not fixed by editing the seed — it is fixed by
+   deleting the demo surface and building identity creation into the real account path (`IMPL-203`).
+
+**No code was changed while reconciling the specification.** The conflicts above are recorded as tasks
+(`IMPL-207`, `IMPL-208`) rather than silently patched, because changing a domain aggregate's owning module is an
+implementation change with test consequences, and the specification review that produced `ADR-0011` was not
+authorised to make one.
+
+**The two boundary rows remain the standing risk.** The manifest declares that `domain/person` may not import
+`domain/library`, may not import `domain/social`, and may not reference `StudentRecordId`, `TenantId`,
+`TenantContext`, `mobileNumber` or `otp`. Nothing checks any of it. Until `IMPL-014` exists, every
+`SID-INT-1` … `SID-INT-12` rule is review-verified and **counted as unmet, not as satisfied by intent**
+(`SID-4.56`). A declared-but-unenforced boundary is more dangerous than an undeclared one, because it reads as
+protection.
 
 ---
 
@@ -296,7 +546,11 @@ rulings and cover a fraction of 588 requirements. Re-verification is part of Gat
 [`Library_PRD_v1.md`](../30-product/library/Library_PRD_v1.md) ·
 [`14B-Public-Library-Preview.md`](../30-product/library/14B-Public-Library-Preview.md) ·
 [`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) ·
-[`LIBRARY_IMPLEMENTATION_TASKS.md`](./LIBRARY_IMPLEMENTATION_TASKS.md)
+[`LIBRARY_IMPLEMENTATION_TASKS.md`](./LIBRARY_IMPLEMENTATION_TASKS.md) ·
+[`Student_Identity_PRD_v1.md`](../30-product/student-identity/Student_Identity_PRD_v1.md) ·
+[`STUDENT_IDENTITY_ALIGNMENT.md`](../30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md) ·
+[`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) ·
+[`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md)
 
 ---
 
@@ -304,5 +558,6 @@ rulings and cover a fraction of 588 requirements. Re-verification is part of Gat
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-04 | Added the Student Identity identifier inventory (§2B, 343 identifiers, all nine registers verified gap-free), the prefix-collision record (§2B.1, including the `PO-n` / `SPO-n` hazard), the Student Identity chapter map (§3B, 38 rows, four marked ⛔ rather than ⬜), configurable traceability (§6B) and event traceability (§7B). Added `ADR-0011` to §4 with its three amendments to the Identity Triad traced individually. **Added `MP-GBR-02` to §5 as an amended rule** — the first global business rule to appear in this matrix as changed rather than as baseline. Added §8A recording that **existing scaffold code implements the superseded pre-`ADR-0011` identity model** — nullable `Account.personId`, nullable `StudentRecord.personId`, `GlobalStudentProfile` owned by `domain/social`, and 4 of 5 seeded accounts with no identity — and that the rank-7.5 boundary is *declared but unenforced* pending `IMPL-014`. No authentication or Library row changed. No code changed. |
 | **v1.1** | 2026-08-03 | Added the Library identifier inventory (§2A, ~422 identifiers, zero collisions with the authentication register), the Library chapter map (§3A, 22 rows), Library configurable traceability (§6A) and Library event traceability (§7A). Added `ADR-0009` and `ADR-0010` to §4. Named `IMPL-100` as a second enforcer of `MP-GBR-08` and `IMPL-112` as a second consumer of `MP-DEP-03`. Recorded the `INV-n` / `INV-SEC-n` / `INV-XC-n` prefix hazard in §2A.1, and stated `INV-10`…`INV-16` in full with the failure each prevents. No authentication row changed. |
 | v1.0 | 2026-08-02 | Created. 1,517 authentication identifiers mapped. Closes audit finding `G-9`. |

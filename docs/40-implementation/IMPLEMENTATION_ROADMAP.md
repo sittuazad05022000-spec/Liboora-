@@ -2,11 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Active |
-| **Date** | 2026-08-02 · **revised 2026-08-03** |
-| **Baseline** | BASELINE-2026-08-03 |
+| **Date** | 2026-08-02 · revised 2026-08-03 · **revised 2026-08-04** |
+| **Baseline** | BASELINE-2026-08-04 |
 | **Scope** | `BC-18` Identity & Access to a releasable state, plus the platform work that blocks it |
+| **ADRs applied** | `ADR-0001` … **`ADR-0011`** |
 
 ---
 
@@ -35,6 +36,7 @@ the cost of reordering is visible rather than discovered.
 | **Phase 6** | Lifecycle, events, audit | Chapters 9 and 10 implemented |
 | **Phase 7** | NFR and release readiness | Chapter 11 acceptance met |
 | **Phase 8** | **Library Management** | Library PRD v1.0 implemented; `IMPL-100`…`IMPL-127` closed |
+| **Phase 9** | **Student Identity** | Student Identity PRD v1.0 implemented; `IMPL-200`…`IMPL-226` closed |
 
 **Phases 0–2 are prerequisites for a releasable build of anything.** Phase 2 in particular cannot be skipped or
 deferred: the current code cannot lawfully ship.
@@ -43,6 +45,13 @@ deferred: the current code cannot lawfully ship.
 of* the tenant-scoped authorization work in Phase 5 — `MP-GBR-08` cannot be enforced against a tenant key that no
 table carries. Read the dependency graph in §11, not the phase number, for ordering. The phase number records when
 the specification arrived; the graph records what blocks what.
+
+**Phase 9 is the clearest example of that, and the most dangerous to defer.** `ADR-0011` made a Global Person
+Identity **mandatory and `1:1` with every account, created in the same transaction**. That is not a Phase 9
+behaviour — it is a change to account creation, which is Phase 3 work (`IMPL-031`). Building account creation
+without identity creation and adding it in Phase 9 means back-filling an identity for every account that already
+exists, and the amended `MP-GBR-02` gives no lawful state in which an account is waiting for one. `IMPL-203` must
+land **with** account creation, not after it.
 
 ---
 
@@ -419,6 +428,44 @@ written by whoever implemented it.
 
 ---
 
+## 10B. Phase 9 — Student Identity
+
+Twenty-five tasks, specified in full in
+[`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md). Not restated here.
+Summary only:
+
+| Group | Tasks | P0 | Theme |
+|---|---|---|---|
+| Architecture & foundation | `IMPL-200` … `IMPL-208` | 8 | Rank 7.5 tier, contracts, `Person` aggregate, atomic creation, lifecycle, audit, configuration, **and two migrations of existing scaffold code** |
+| Profile & identity behaviour | `IMPL-210` … `IMPL-216` | 4 | Profile fields, username uniqueness, Global Profile Photo, privacy, timeline, `E-13` ACL, aggregated composition |
+| Boundary, security & verification | `IMPL-220` … `IMPL-226` | 5 | Boundary enforcement, authorisation, events, search indexing, integrity counters, NFR, acceptance |
+
+**Exit condition.** All seventeen module-P0 tasks closed; `SID-AC-1`…`SID-AC-26` verified by automated tests;
+one failing-on-violation test per `SID-INV-1`…`SID-INV-14`; `SCFG-1`…`SCFG-11` validated at startup; the three
+integrity counters reading zero.
+
+**This phase is a migration, not a greenfield build**, and that is its defining property. Identity code already
+exists — committed in `a44ebb0` — and all of it implements the **superseded** pre-`ADR-0011` model: a nullable,
+opt-in `PersonId` owned by `domain/social`. `IMPL-207` relocates `GlobalStudentProfile` out of `domain/social`;
+`IMPL-208` makes `Account.personId` and `StudentRecord.personId` non-nullable. Both are P0 and both come early,
+because building `domain/person` while `GlobalStudentProfile` still lives in `domain/social` would leave **two**
+global identity aggregates in the codebase — the exact outcome `SID-5.51` requires to be rejected. Full record in
+[`TRACEABILITY_MATRIX.md`](./TRACEABILITY_MATRIX.md) §8A and
+[`STUDENT_IDENTITY_ALIGNMENT.md`](../30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md) §8A.
+
+**The one thing most likely to be got wrong.** `SEV-1` `PersonIdentityCreated` looks like the trigger for identity
+creation and is not. Creation is **synchronous and transactional** with account creation; `SEV-1` is *"a
+notification of a completed fact"* (`SID-4.11`, `SID-4.12`). Wiring creation to the event opens a window in which
+an account exists without an identity — which the amended `MP-GBR-02` forbids — and it is the natural mistake for
+a developer correctly following the event-driven architecture everywhere else in the platform.
+
+**The second most likely.** Treating Global Person Identity as a social feature and gating it behind social opt-in.
+It is `[CORE]`, it is the permanent identity for the whole education ecosystem, and Student Network is only one of
+its consumers. `SID-4.31` states the falsifiable test: **deactivating, disabling or never launching the social
+product must not affect the existence, validity or usability of any identity.** `IMPL-226` requires a test for it.
+
+---
+
 ## 11. Dependency graph
 
 ```
@@ -476,6 +523,33 @@ in the whole programme and nothing else on it is under our control.
 **Start `IMPL-100` early.** Tenant-key enforcement under `MP-GBR-08` is cheap to build into a schema and expensive
 to add to one. Every table created before it exists is a table that will need migrating.
 
+### 11.2 Student Identity dependencies
+
+```
+IMPL-200 rank 7.5 tier ─┬─► IMPL-207 migrate GlobalStudentProfile out of domain/social
+                        └─► IMPL-201 contracts ─┬─► IMPL-208 personId non-nullable
+                                                └─► IMPL-202 Person aggregate ─► IMPL-203 atomic creation
+                                                                                      │
+IMPL-031 account creation (Phase 3) ══════════════════════════════════════════════════╡  same transaction
+                                                                                      │
+IMPL-014 boundary checker (Phase 0) ═════════════════► IMPL-220 boundary enforcement  │
+                                                                                      ▼
+                                                       IMPL-224 integrity counters ─► IMPL-226 acceptance
+```
+
+**Student Identity critical path:** `IMPL-200` → `IMPL-201` → `IMPL-202` → `IMPL-203` → `IMPL-224` → `IMPL-226`.
+
+**`IMPL-203` is coupled to `IMPL-031`, and this is the cross-phase dependency that will be missed.** Account
+creation and identity creation are a single transaction (`SID-4.11`). They cannot be built in different phases by
+different people and joined later, because there is no lawful intermediate state to join them in.
+
+**`IMPL-220` waits on `IMPL-014`**, which does not exist. Until it does, every `SID-INT-1`…`SID-INT-12` rule is
+review-verified and **counted as unmet, not satisfied by intent** (`SID-4.56`). The rank-7.5 boundary is currently
+*declared and unenforced*, which reads as protection and is not.
+
+**`IMPL-214` `E-13` is partly blocked.** A `StudentRecord` aggregate exists, so `IMPL-208` can tighten the field
+now; the full `BC-01` does not, so the ACL cannot be verified end to end.
+
 ---
 
 ## 12. Blocked — not on the critical path
@@ -489,6 +563,9 @@ to add to one. Every table created before it exists is a table that will need mi
 | Multi-Branch operation | **V3** per Master PRD §32. `branchId` is nonetheless modelled in V1 (`IMPL-104`) — retrofitting it later is a migration across every core table | P3 |
 | Development Standards (`R-4`) | Deferred | P3 |
 | `D-8`, `D-9`, `R-5` | Carried forward | P2 |
+| ~~Global Student Identity cardinality (`Q-05`)~~ | ~~Open question: is it available to a person with no enrollment?~~ → ✅ **CLOSED 2026-08-04.** `ADR-0011`: yes, necessarily — the identity exists from account creation, so the question cannot arise | — |
+| Student Network — `BC-11`…`BC-17` | **`MP-FUT-01`.** Deferred as a product, **not** as an identity. `BC-10` ships in V1 independently; the social product is only a consumer of it (`SID-4.31`) | P3 |
+| School / College / Coaching Student Records | **`MP-FUT-02`…`MP-FUT-04`.** Each adds a Student Record type under the same `PersonId`. No second identity is permitted — `SID-5.51` | P3 |
 
 **Two long-standing blocks cleared on 2026-08-03.** `AR-4` said *"do not invent"*, and nothing was invented — the
 deferral was lifted only after §§1–25 arrived and confirmed which invitation forms actually exist. Anything the
@@ -502,10 +579,13 @@ specification was missing.
 
 ## 13. References
 
-`DOCUMENTATION_BASELINE.md` · `ADR-0001`…`ADR-0010` · Authentication PRD v2.0 ·
-`CONFIGURATION_GUIDE.md` · `TASK-D10-remove-demo-surfaces.md` · `DEFINITION_OF_DONE.md` ·
+`DOCUMENTATION_BASELINE.md` · **`ADR-0001`…`ADR-0011`** · Authentication PRD v2.0 ·
+`CONFIGURATION_GUIDE.md` · `TASK-D10-remove-demo-surfaces.md` · `DEFINITION_OF_DONE.md` v1.2 ·
 `DOCUMENTATION_AUDIT-001.md` findings `G-4`, `R-F` · Library PRD v1.0 · `LIBRARY_IMPLEMENTATION_TASKS.md` ·
-`ADR-0009`, `ADR-0010`
+`ADR-0009`, `ADR-0010` ·
+[`Student_Identity_PRD_v1.md`](../30-product/student-identity/Student_Identity_PRD_v1.md) v1.0 ·
+[`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) ·
+[`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md)
 
 ---
 
@@ -513,5 +593,6 @@ specification was missing.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-04 | Added **Phase 9 — Student Identity** (§10B, 25 tasks) and its dependency graph (§11.2). Recorded the cross-phase coupling that matters most: **`IMPL-203` identity creation is in the same transaction as `IMPL-031` account creation** (Phase 3), so `ADR-0011` cannot be deferred to Phase 9 without leaving accounts that the amended `MP-GBR-02` gives no lawful state for. Recorded that Phase 9 is a **migration** — `IMPL-207` and `IMPL-208` change scaffold code that implements the superseded model. Closed `Q-05` in §12; added the Student Network and School/College/Coaching deferrals, noting the social product is deferred **as a product, not as an identity**. Baseline raised to `BASELINE-2026-08-04`; ADR range to `ADR-0011`. No existing task was renumbered, reprioritised or removed. |
 | **v1.1** | 2026-08-03 | Added **Phase 8 — Library Management** (§10A) and its dependency graph (§11.1). Cleared two long-standing blocks in §12 — Library §§1–25 and the `AR-4` invitation deferral — and replaced them with the V2/V3 deferrals that genuinely remain. Recorded that `IMPL-020` DLT registration is now also on the Library critical path via `IMPL-112`, and that it has the longest external lead time in the programme. Baseline reference raised to `BASELINE-2026-08-03`. No existing task was renumbered, reprioritised or removed. |
 | v1.0 | 2026-08-02 | Created. Phases 0–7, `IMPL-014`…`IMPL-073`, `TASK-D10`. Closes audit finding `G-4`. |

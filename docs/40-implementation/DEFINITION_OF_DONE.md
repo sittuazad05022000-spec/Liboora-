@@ -2,11 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Binding on all merges and releases |
-| **Date** | 2026-08-03 |
-| **Baseline** | BASELINE-2026-08-03 |
-| **Applies to** | All modules. Authentication **and** Library Management |
+| **Date** | 2026-08-04 |
+| **Baseline** | BASELINE-2026-08-04 |
+| **Applies to** | All modules. Authentication, Library Management **and** Student Identity |
+| **ADRs applied** | `ADR-0001` … **`ADR-0011`** |
 
 ---
 
@@ -38,12 +39,14 @@ Three gates. A change passes **every** item in a gate or it does not pass the ga
 
 ### Specification
 
-- [ ] Every behavioural change traces to a `AUTH-n.n`, `BR-n.n`, `LIB-n.n`, `LIB-14B.n`, `LIB-DISC-n`, `INV-SEC-n`, `LBR-n`, `LIB-PREV-n` or an ADR
+- [ ] Every behavioural change traces to a `AUTH-n.n`, `BR-n.n`, `LIB-n.n`, `LIB-14B.n`, `LIB-DISC-n`, `INV-SEC-n`, `LBR-n`, `LIB-PREV-n`, **`SID-n.n`, `SID-BR-n`** or an ADR
 - [ ] No requirement invented. If the specification is silent, **raise it — do not decide it**
-- [ ] The change is not in an **exclusion register** — `LXC-1`…`LXC-10`, `INV-XC-1`…`INV-XC-7`, and the authentication exclusions. A feature listed there is out of scope by decision, not by oversight; shipping it requires an ADR, not a ticket
-- [ ] No `CFG-*`, `LCFG-*` or `ICFG-*` value hardcoded outside the configuration module
+- [ ] The change is not in an **exclusion register** — `LXC-1`…`LXC-10`, `INV-XC-1`…`INV-XC-7`, **`SXC-1`…`SXC-11`**, and the authentication exclusions. A feature listed there is out of scope by decision, not by oversight; shipping it requires an ADR, not a ticket
+- [ ] No `CFG-*`, `LCFG-*`, `ICFG-*` **or `SCFG-*`** value hardcoded outside the configuration module
 - [ ] No PRD §F structural fact made configurable
-- [ ] No **closed register** extended in code: `TR-1`…`TR-5`, `PO-1`…`PO-12`, `IT-1`…`IT-3`, and the §14A.5 public field allow-list are closed. Adding a member is a specification change
+- [ ] No **closed register** extended in code: `TR-1`…`TR-5`, `PO-1`…`PO-12`, `IT-1`…`IT-3`, **`SPO-1`…`SPO-9`, `SEV-1`…`SEV-16`, `SID-AC-1`…`SID-AC-26`**, and the §14A.5 public field allow-list are closed. Adding a member is a specification change
+- [ ] **No new role name.** `TR-1`…`TR-5` and Platform Administrator are the whole set (`AUTH-7.21`, `SID-5.4`). A module needing a role that does not exist has found a specification defect, not a naming opportunity
+- [ ] **`PO-n` and `SPO-n` are not the same register.** `PO-*` governs anonymous reads of the public Library preview; `SPO-*` governs authenticated writes to a Global Person Identity. Citing one for the other moves a requirement between bounded contexts
 
 ### Security
 
@@ -59,6 +62,13 @@ Three gates. A change passes **every** item in a gate or it does not pass the ga
 - [ ] An invitation artefact is never accepted as proof of identity — `INV-SEC-002`. Validate the artefact, then authenticate the holder separately
 - [ ] The `INV-SEC-036` acceptance sequence is not reordered
 - [ ] Private, Draft, Pending, Suspended, Archived and non-existent libraries are indistinguishable to an anonymous caller, **including by response time** — `LIB-14B.24`, `AR-7`
+- [ ] **A Global Person Identity is Private by default.** A code path that publishes a profile without an explicit act of consent is a consent defect, not a usability improvement — `SID-2.27`, `SID-5.44`
+- [ ] **No never-public field is indexed anywhere** — `SID-4.39`. An index is a second read path, and it is not guarded by the projection that guards the first
+- [ ] **No `StudentRecordId` or `tenantId` appears in `domain/person`**, in any `SEV-*` payload, log, metric or index — `ID-2`, `SID-4.52`, `SID-INT-9`
+- [ ] **This module stores no mobile number, no OTP, no session and no credential** — `ID-1`, `SID-5.8`. A mobile number is the sole authentication factor; a copy of it in a profile table is a copy of the credential
+- [ ] **Date of birth is never public — including as an age, an age bracket or a birthday** — `SID-5.9`. It is stored for `ID-6` guardian-consent evaluation only
+- [ ] **A Trust & Safety action restricts the public projection only.** It never suspends, archives or invalidates an identity — `SID-4.32`, `SID-4.33`. The social product must not be able to disable a person's identity for the paying product
+- [ ] **No organisation role mutates global profile state.** `TR-1`, `TR-2` and `TR-3` appear in no mutating row of `SPO-1`…`SPO-9`; Platform Administrator is limited to status — `SID-5.2`
 
 ### Documentation
 
@@ -159,6 +169,15 @@ discussion.
 | A Library module evaluating or caching an authorization decision | `X-13`, `MP-GBR-26` |
 | A Library module importing `platform/communication/**` or `platform/integration/**` | `X-04`, `X-03`, `LIB-21.2`, `LIB-21.3` |
 | More than one active library per session | PRD §F |
+| An account existing without a Global Person Identity, or an identity without an account | **`MP-GBR-02` as amended by `ADR-0011`**, `SID-INV-1`. Note this row **inverts** the pre-`ADR-0011` rule, which required Library operation to *"degrade gracefully"* when `PersonId` was null. That wording is now itself the defect |
+| A nullable `personId` on an `Account` or a `StudentRecord` | amended `ID-4`, `SID-4.17`, `IMPL-208` |
+| More than one global identity aggregate in the codebase | `SID-5.51`, `IMPL-207` |
+| A `StudentRecordId` leaving its tenant, in any event, index, log or metric | `ID-2`, `SID-INT-9` |
+| Re-keying Membership, Attendance, Seating or Finance on `PersonId` | `SID-4.23`. It would make `ID-5` unsatisfiable — account erasure could no longer preserve organisation financial history |
+| A Global Person Identity owning a list of the organisations a person belongs to | `SID-4.19`, `SC-12`. The module must not be *capable* of answering *"which libraries does this person attend?"* |
+| Global Person Identity on the critical path of check-in, seat allocation, fee collection or membership | `SID-4.21`. This is the operational half of `X-05` |
+| A Student Identity configurable that is organisation-scoped | `SID-5.45`. The module is not organisation-scoped, so a per-organisation setting has no meaning here |
+| A public profile default, an allow-list change, or `SCFG-5 = 0`, set by configuration | `SID-5.44`. Configuration must be **rejected at startup**, not accepted with a warning |
 
 **"Temporarily" does not apply to this table.** Every one of these reaches production by being temporary first.
 
@@ -181,11 +200,14 @@ distinguish from a decision.
 
 ## 7. References
 
-`DOCUMENTATION_BASELINE.md` (BASELINE-2026-08-03) · `MASTER_PRD.md` v1.6 ·
+`DOCUMENTATION_BASELINE.md` (BASELINE-2026-08-04) · `MASTER_PRD.md` **v1.7** ·
 Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Library-Preview.md` ·
-`INVITATION_SECURITY_SPECIFICATION.md` · `ADR-0001`…`ADR-0010` · `CONFIGURATION_GUIDE.md` v1.1 ·
+`INVITATION_SECURITY_SPECIFICATION.md` · **`ADR-0001`…`ADR-0011`** · `CONFIGURATION_GUIDE.md` v1.1 ·
 `TASK-D10-remove-demo-surfaces.md` · `IMPLEMENTATION_ROADMAP.md` v1.1 ·
-`LIBRARY_IMPLEMENTATION_TASKS.md`
+`LIBRARY_IMPLEMENTATION_TASKS.md` ·
+[`Student_Identity_PRD_v1.md`](../30-product/student-identity/Student_Identity_PRD_v1.md) v1.0 ·
+[`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) ·
+[`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md)
 
 ---
 
@@ -193,5 +215,6 @@ Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Librar
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | **2026-08-04** | **Extended to cover Student Identity.** Gate 1 gains eight identity security checks — Private by default, never-public fields never indexed, no `StudentRecordId`/`tenantId`, no credential, date of birth never public *"including as an age"*, Trust & Safety restricted to the public projection, no organisation role mutating global state — and three specification checks: the `SXC-*` exclusion register, the four newly closed registers (`SPO-*`, `SEV-*`, `SID-AC-*`), and an explicit *"no new role name"* rule. The `PO-n` / `SPO-n` prefix hazard is recorded. *"Never done"* gains **nine** rows, one of which (**account without identity**) *inverts* a rule that held before `ADR-0011`; that inversion is stated in the row rather than left implicit. Baseline advanced to `BASELINE-2026-08-04`; ADR range to `ADR-0011`; Master PRD reference to v1.7. **No existing gate was weakened or removed.** |
 | v1.0 | 2026-08-02 | Created. Three gates, authored against the authentication baseline. |
 | **v1.1** | **2026-08-03** | **Extended to cover Library Management.** Gate 1 gains six Library security checks, the exclusion-register check and the closed-register check; the traceability prefix list is extended to the seven Library prefixes; the *"Never done"* table gains eight Library rows and the stale `AR-4` *"do not invent"* row is **replaced** — the deferral was lifted, so the rule is now *"do not deviate"*. Baseline reference advanced to `BASELINE-2026-08-03`; ADR range to `ADR-0010`. **No existing gate was weakened or removed.** |

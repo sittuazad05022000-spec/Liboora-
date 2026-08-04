@@ -1,7 +1,9 @@
 # LIBOORA — Machine-readable module boundary rules
 #
 # Normative source for tool/check_module_boundaries.dart
-# Human-readable rationale: docs/architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md
+# Human-readable rationale: docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md
+# ADR-0011: BC-10 Global Person Identity is a rank-7.5 platform identity, not a social
+#           profile. domain/library may depend on it downward; L2 gains no exception.
 #
 # LAWS
 #   L1 acyclic (no exceptions)     L2 downward only       L3 domain -> ports only
@@ -40,6 +42,7 @@ ranks:
   platform/workflow: 6
   platform/ai: 6
   platform/analytics: 7
+  domain/person: 7.5            # ADR-0011 — below every domain, above every capability
   domain/library: 8
   domain/social: 8
   app: 9
@@ -117,6 +120,10 @@ domain/library:
     # AMENDMENT A-2 — AccountId resolution for the account-claim flow (edge E-11).
     # Read-only, single-subject, no listing, no lookup by number.
     - platform/identity:account_directory
+    # ADR-0011 — edge E-13, through an ACL. Resolve identity core fields for the
+    # non-nullable PersonId a StudentRecord holds. Rank 8 -> 7.5 is downward, so L2
+    # is satisfied literally and no cluster exception is needed.
+    - domain/person:identity_directory
   emits_events: ["enrollment.*", "membership.*", "attendance.*", "seating.*", "fee.*", "policy.*"]
   consumes_events:
     - billing.EntitlementChanged
@@ -138,6 +145,7 @@ domain/library:
     - { id: E-10, from: fee,         to: membership,  mode: event }
   banned_imports:
     - "domain/social/**"          # X-05 Separate Ways
+    - "domain/person/**"          # ADR-0011: reach it by PORT (E-13 ACL), never by import
     - "platform/integration/**"   # X-03 no vendor knowledge
     - "platform/communication/**" # X-04 emit facts instead
     - "app/**"
@@ -153,10 +161,67 @@ domain/library:
     - { symbol: "Uuid()",         use_instead: "IdGenerator port (X-09)" }
     - { symbol: "Random()",       use_instead: "RandomSource port (X-09)" }
 
+# ─────────────────────────────────────────────────────────────
+# PLATFORM IDENTITY — rank 7.5 (ADR-0011)
+# BC-10 Global Person Identity. Mandatory 1:1 with the authentication account.
+# Organisation-neutral: no tenantId, no StudentRecordId, no operational data.
+# ─────────────────────────────────────────────────────────────
+domain/person:
+  rank: 7.5
+  classification: core
+  contexts: [identity]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files          # FileRef only (E-22) — never bytes or raw paths
+    - platform/services:clock          # X-09
+    - platform/identity:policy_decision  # ask BC-18 per request; never cache (MP-GBR-26)
+    - platform/search:indexer          # allow-list fields only
+  provides_ports:
+    - identity_directory               # E-13, consumed by domain/library through an ACL
+  emits_events: ["identity.Person*"]   # SEV-1..SEV-16 — closed set
+  consumes_events:
+    - iam.AccountErased                # ID-5: anonymise here, BC-01 retains history
+    - iam.MobileNumberChanged
+    - iam.AccountSuspended
+    - safety.EnforcementActionTaken    # restricts the PUBLIC PROJECTION only, never lifecycle
+  banned_imports:
+    - "domain/library/**"         # X-05; also rank 7.5 may not import rank 8
+    - "domain/social/**"          # rank 7.5 may not import rank 8
+    - "platform/tenancy/**"       # not tenant-scoped by construction
+    - "platform/communication/**" # X-04 emit facts instead
+    - "platform/integration/**"   # X-03
+    - "app/**"
+    - "package:http"
+    - "package:dio"
+    - "package:firebase_**"
+    - "package:hive**"
+    - "package:shared_preferences"
+    - "package:cloud_firestore"
+    - "dart:io"
+  banned_symbols:
+    # Rule ID-2 — a tenant identifier must never enter a global context
+    - { symbol: "StudentRecordId", use_instead: "PersonId (BOUNDED_CONTEXT_MAP section 4.1 rule ID-2)" }
+    - { symbol: "TenantId",        use_instead: "nothing — this module is not tenant-scoped (SID-4.49)" }
+    - { symbol: "TenantContext",   use_instead: "nothing — see SID-4.49" }
+    # Rule ID-1 — in a system whose sole factor is a mobile number, that field is a credential
+    - { symbol: "mobileNumber",    use_instead: "read-through port to BC-18 (SXC-1, SID-4.13)" }
+    - { symbol: "otp",             use_instead: "nothing — credentials live in BC-18 only (ID-1)" }
+  banned_symbols_in_domain_layer:
+    - { symbol: "DateTime.now()", use_instead: "Clock port (X-09)" }
+    - { symbol: "Uuid()",         use_instead: "IdGenerator port (X-09)" }
+    - { symbol: "Random()",       use_instead: "RandomSource port (X-09)" }
+
 domain/social:
   rank: 8
   classification: supporting
-  contexts: [identity, graph, messaging, safety]
+  # ADR-0011 — `identity` removed: BC-10 is now domain/person at rank 7.5.
+  # BC-11 graph, BC-12 messaging, BC-13 safety. Consumers of the identity, not owners.
+  contexts: [graph, messaging, safety]
   imports:
     - { target: contracts, mode: import }
   ports:
@@ -171,16 +236,20 @@ domain/social:
     - platform/search:indexer
     - platform/ai:assist
     - platform/analytics:read_model
-  emits_events: ["identity.Person*", "social.*", "messaging.*", "safety.*"]
+  # ADR-0011 — identity.Person* moved to domain/person; social consumes it now.
+  emits_events: ["social.*", "messaging.*", "safety.*"]
   consumes_events:
-    - enrollment.StudentLinkedToPerson
+    - "identity.Person*"
     - safety.EnforcementActionTaken
   internal_edges:
     - { id: E-14, from: safety,   to: [graph, messaging], mode: event }
-    - { id: E-15, from: identity, to: graph,              mode: import, note: "shared kernel VOs" }
+    # ADR-0011 — E-15 is no longer an intra-cluster import. PersonId and the privacy
+    # value objects live in contracts (L5), because rank 8 may not import rank 7.5's internals.
+    - { id: E-15, from: contracts, to: graph,             mode: import, note: "shared kernel VOs in contracts" }
     - { id: E-16, from: graph,    to: messaging,          mode: port  }
   banned_imports:
     - "domain/library/**"         # X-05 Separate Ways
+    - "domain/person/**"          # ADR-0011: consume identity.Person* events; never import
     - "app/**"
   banned_symbols:
     # Rule ID-2: tenant-scoped ids must never enter the social world

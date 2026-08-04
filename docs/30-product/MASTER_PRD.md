@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | **Document** | Master PRD |
-| **Version** | v1.6 |
+| **Version** | v1.7 |
 | **Supersedes** | v1.2 · v1.1 (refined) · v1.0 (Foundation Document) |
 | **Status** | Foundation Document — aligned to Enterprise Architecture v2.1 |
 | **Governance position** | `FOUNDATION → Master PRD (V1)` in the Enterprise Architecture tree |
-| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **v2.1** · `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.2** · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` v1.0 |
+| **Aligned to** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **v2.1** · `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.3** · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` **v1.1** |
 | **Identifier namespace** | `MP-*` — reserved exclusively for this document, collision-free against every other register |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7` — see [`../architecture/ARCHITECTURE_RULINGS.md`](../10-architecture/ARCHITECTURE_RULINGS.md). (`AR-3`, `AR-4` affect the Bounded Context Map and Library PRD, not this document. Both are now **fully discharged** — see §31.) |
 
@@ -151,7 +151,7 @@ Every module from v1.0 §7 is preserved. Two structural corrections were require
 | # | Product module (v1.0 name) | Owning bounded context | Type | V |
 |---|---|---|---|---|
 | 1 | Authentication | `BC-18` Identity & Access | `[GENERIC]` | V1 |
-| 2 | Global Identity | `BC-10` Global Student Identity | `[SUPPORTING]` | V1 |
+| 2 | Global Identity | `BC-10` Global **Person** Identity | `[CORE]` | V1 |
 | 3 | Library Member Directory | `BC-01` Enrollment *(read composition)* | `[CORE]` | V1 |
 | 4 | Student Management | `BC-01` Enrollment | `[CORE]` | V1 |
 | 5 | Parent Portal | Composition over `BC-01`, `BC-03`, `BC-05` | *not a context* | V1 |
@@ -202,7 +202,7 @@ The following V1 contexts carry product-visible obligations but had no module en
 
 | ID | Module | Tag |
 |---|---|---|
-| **MP-FUT-01** | Global Student Network | Future |
+| **MP-FUT-01** | Global Student Network *(a **consumer** of `BC-10`, not its owner — `ADR-0011`)* | Future |
 | **MP-FUT-02** | LIBOORA School | Future |
 | **MP-FUT-03** | LIBOORA College | Future |
 | **MP-FUT-04** | LIBOORA Coaching | Future |
@@ -307,13 +307,13 @@ A single human appears in **three contexts with three identities and three lifec
 | Identity | Owner | Scope | Lifecycle |
 |---|---|---|---|
 | `AccountId` | `BC-18` | Global | Created on first successful OTP. Credentials only. |
-| `PersonId` | `BC-10` | Global | Created **only if** the human opts into the social product. **May never exist.** |
+| `PersonId` | `BC-10` | Global | Created **atomically and mandatorily** with the Account. Permanent for the person's lifetime on the platform; reused unchanged by future School, College and Coaching products. **Always exists** for an authenticated person, with or without any enrollment. *(Amended by `ADR-0011` — previously opt-in.)* |
 | `StudentRecordId` | `BC-01` | **Per-tenant** | Created when a library enrolls them. Three libraries ⇒ three records. Survives account deletion. |
 
 | ID | Rule |
 |---|---|
 | **MP-GBR-01** | Every student has one **Account** (`AccountId`). *(Corrected from v1.0 — see Conflict `MP-CFL-02`.)* |
-| **MP-GBR-02** | A **Global Identity** (`PersonId`) is **opt-in and may never exist**. Library operation must degrade gracefully when it is null. |
+| **MP-GBR-02** | Every Account has exactly **one Global Identity** (`PersonId`), created atomically with it. Neither may exist without the other. A Student Record's `PersonId` is therefore **non-nullable**. *(**Amended by `ADR-0011`, 2026-08-04.** Previously: opt-in, may never exist, nullable. See §36 and the [Student Identity Alignment Report](./student-identity/STUDENT_IDENTITY_ALIGNMENT.md) `SC-1`.)* |
 | **MP-GBR-03** | `StudentRecordId` **never** leaves its tenant — not in any global context, event or index. |
 | **MP-GBR-04** | Account deletion deletes the Account and anonymises the Person. It does **not** delete StudentRecord financial and attendance history, which is retained under legal basis and pseudonymised. |
 | **MP-GBR-05** | A minor's Account is linked to a guardian consent record before any social context is activated. |
@@ -327,7 +327,8 @@ A single human appears in **three contexts with three identities and three lifec
 | Context group | Model | Enforcement |
 |---|---|---|
 | `BC-01`→`09` Library Management | **Tenant-scoped** — every row carries `tenantId` | Row-level security + mandatory tenant context. A query without a tenant predicate **fails at runtime rather than returning everything.** |
-| `BC-10`→`17` Global Student | **Global** — no `tenantId`, keyed on `PersonId` | Must never receive a `StudentRecordId` or `tenantId` |
+| `BC-10` Global Person Identity | **Global** — no `tenantId`, keyed on `PersonId`. Rank 7.5 | Must never receive a `StudentRecordId` or `tenantId`; holds no organisation collection |
+| `BC-11`→`17` Student Network | **Global** — no `tenantId`, keyed on `PersonId` | Must never receive a `StudentRecordId` or `tenantId`. Consumers of `BC-10`, never owners |
 | `BC-18` Identity | **Hybrid** — Account global, role grants tenant-scoped | Policy always evaluated with a tenant in scope |
 | `BC-19`→`31` Capability | **Tenant-aware** — carry and propagate, own no tenant data of record | Indices, caches, projections, prompts, embeddings and files are all tenant-partitioned |
 
@@ -673,7 +674,7 @@ Inherited from context map §13. Each should become an ADR before the V1 impleme
 | `Q-02` | Is `Branch` first-class in V1? | **Settled** — model `branchId` in V1, default single branch (`MP-CON-13`) |
 | `Q-03` | Entitlement fail-open or fail-closed on timeout? | Open — recommendation: per-gate; paid features fail-closed |
 | `Q-04` | Retention period for attendance after enrollment archival? | Open — needs counsel |
-| `Q-05` | Is Global Student available with no library enrollment? | Open — recommendation: yes, reduced trust tier |
+| `Q-05` | Is Global Student available with no library enrollment? | **Closed 2026-08-04 by `ADR-0011` — yes, necessarily.** The reduced-trust-tier recommendation is **not** adopted: a trust tier is an authorisation concern owned by `BC-18` |
 | `Q-06` | Who owns proration arithmetic? | Open — recommendation: `BC-02` computes entitlement delta, Business executes money |
 | `Q-07` | Does Parent get an Account or a scoped token? | **Settled** — full account with guardian role (§6) |
 
@@ -722,7 +723,8 @@ Auditable proof that refinement did not become deletion.
 
 | Version | Change |
 |---|---|
-| **v1.6** | 2026-08-03 | **Library PRD admitted as a Rank 3 baseline.** §31: Library PRD row rewritten — §§1–25 received, validated and frozen as v1.0 with three normative companions; `U-4`/`R-H` closed by receipt. ADR set extended to `ADR-0010` (`ADR-0009` invitation security model, `ADR-0010` public preview anonymous access). Architecture Rulings Register raised to v1.2 with the `AR-4` deferral lifted. Developer documentation set extended with `LIBRARY_IMPLEMENTATION_TASKS.md`; three documents raised to v1.1. Added §31.1 recording why two Rank 3 module baselines do not conflict. Stale `Aligned to` reference corrected from Enterprise Architecture v2.0 to v2.1. **No global rule — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` — was added, removed or changed.** |
+| **v1.7** | 2026-08-04. **Student Identity & Profile PRD admitted as a Rank 3 baseline, and the identity architecture finalised by `ADR-0011`.** `BC-10` becomes **Global Person Identity** — renamed, reclassified `[SUPPORTING]` → `[CORE]`, moved out of the Social cluster to **rank 7.5**, and its cardinality changed from `0..1` opt-in to **`1:1` mandatory**, created atomically with the Account. §12 module registry row 2, §15 identity table, §16 multi-tenancy rows and §9 `MP-FUT-01` updated accordingly; `Q-05` closed. Bounded Context Map raised to v1.3, Module Dependency Matrix to v1.1. **⚠️ Unlike every previous version, this one changes a global business rule: `MP-GBR-02`.** It previously stated that a Global Identity is opt-in and may never exist; it now states that every Account has exactly one, created atomically, making a Student Record's `PersonId` non-nullable. `MP-GBR-01`, `MP-GBR-03`, `MP-GBR-04` and `MP-GBR-05` are unchanged, as are all `MP-CON-*` and `MP-DEP-*` rules. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are preserved unamended, and no dependency law gained an exception — rank 7.5 exists precisely so that none was needed. |
+| **v1.6** | 2026-08-03. **Library PRD admitted as a Rank 3 baseline.** §31: Library PRD row rewritten — §§1–25 received, validated and frozen as v1.0 with three normative companions; `U-4`/`R-H` closed by receipt. ADR set extended to `ADR-0010` (`ADR-0009` invitation security model, `ADR-0010` public preview anonymous access). Architecture Rulings Register raised to v1.2 with the `AR-4` deferral lifted. Developer documentation set extended with `LIBRARY_IMPLEMENTATION_TASKS.md`; three documents raised to v1.1. Added §31.1 recording why two Rank 3 module baselines do not conflict. Stale `Aligned to` reference corrected from Enterprise Architecture v2.0 to v2.1. **No global rule — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` — was added, removed or changed.** |
 | **v1.5** | Cross-reference alignment only. §31 updated to record the **ADR set** `ADR-0001`…`ADR-0008` (governance task `R-3` **closed**), Enterprise Architecture **v2.1** and its **descriptive** standing, Authentication PRD v2.0 as the **declared baseline** (`ADR-0008`), the twelve configurable parameters as **reviewed and anchored** with six defaults reset, the v1.0 authentication material as **archived**, and the new **developer documentation set**. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.4** | Cross-reference alignment only. §31 updated to record **Authentication PRD v2.0** as present and authoritative, `D-7` **closed by authorship rather than transfer**, and `ACN-001` **closed** by v2.0 Chapter 8 (`CFG-1`–`CFG-4`). **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |
 | **v1.3** | Cross-reference alignment only. Header records Bounded Context Map **v1.2** and rulings `AR-1`, `AR-2`, `AR-5`, `AR-6`, `AR-7`. §31 updated: Rulings Register v1.1, BC Map v1.2, the Module Dependency Matrix's known `lib/contracts` defect, the Authentication PRD's true state (custody shell, 0 body characters, `D-7` open), and the Authentication implementation record. **No requirement added, removed or altered. No business rule, security principle, identity rule, multi-tenancy rule or module ownership changed.** |

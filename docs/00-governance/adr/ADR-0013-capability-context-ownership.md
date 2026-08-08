@@ -283,8 +283,18 @@ The single amended line, before and after:
 + | **Owning contexts** | **Owns** `BC-06` Library Policy. **Consumes through ports** (context owned by its platform per `ADR-0013`): `BC-19` Tenancy → `PRD-013` · `BC-25` Configuration → `PRD-023` · `BC-29` File & Media → `PRD-017`. Aggregates `TenantOrganisation`, `StaffAssignment` and `LibraryBranding` values remain owned by this PRD (`ADR-0013` §5) |
 ```
 
-`grep -c 'LIB-'` is unchanged across this diff. No `LIB-*`, `LCFG-*`, `LXC-*`, `LEV-*`, `PO-*` or `LAC-*`
-identifier was added, removed, renumbered or reworded.
+**Identifier-set proof.** The *set* of requirement identifiers is identical before and after:
+
+```
+grep -oE 'LIB-[0-9]+(\.[0-9]+)*' Library_PRD_v1.md | sort -u   →  129 ids; diff vs pre-M1: empty
+LCFG 10 = 10 · LXC 10 = 10 · LEV 22 = 22 · LAC 12 = 12
+```
+
+> ⚠ **Recorded discrepancy, not hidden.** A naive `grep -c 'LIB-'` reads **176** after the change and **175**
+> before. The extra occurrence is the bare prefix `LIB-*` appearing inside the new §27 changelog prose that
+> describes what did *not* change. It is **not** a requirement. §10 check 1 was drafted before that changelog
+> wording existed; it is superseded by the set-diff above, which is the stricter test. Noting this rather than
+> quoting only the count that flatters the outcome.
 
 **Explicitly NOT required:** no change to `module_dependencies.yaml` (already correct), the Bounded Context Map,
 any ADR, `Authentication_PRD_v2.md`, `Student_Identity_PRD_v1.md`, `MASTER_PRD.md`, or any `lib/` source file.
@@ -327,7 +337,7 @@ If accepted, compliance is verifiable by four mechanical checks:
 
 | # | Check | Result |
 |---|---|---|
-| 1 | `grep -c 'LIB-' docs/30-product/library/Library_PRD_v1.md` | **Unchanged** before and after M1 |
+| 1 | Requirement identifier **set** diff (stricter replacement for the raw `grep -c` in check 1 — see §8.1) | **Empty diff.** 129 `LIB`, 10 `LCFG`, 10 `LXC`, 22 `LEV`, 12 `LAC` — identical both sides. Raw `grep -c 'LIB-'` moved 175 → 176 for the documented, non-requirement reason in §8.1 |
 | 2 | `dart run tool/check_module_boundaries.dart` | No new violation category; manifest untouched. Output byte-identical to the pre-M1 baseline |
 | 3 | `PRD_REGISTRY.md` §6 / §7 | One context-owner per context; contested count **0** — `BC-25` closed by `ADR-0017` rather than left open |
 | 4 | `git diff` scope for M1/M2 | `Library_PRD_v1.md`: **line 5, line 10, one §27 row.** Nothing else |

@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Baseline** | **BASELINE-2026-08-04** |
-| **Supersedes** | `BASELINE-2026-08-02` |
+| **Baseline** | **BASELINE-2026-08-04-B** |
+| **Supersedes** | `BASELINE-2026-08-04` |
 | **Status** | **Locked** |
-| **Date** | 2026-08-03 |
-| **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`) |
-| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010`, `ADR-0011` |
+| **Date** | 2026-08-04 |
+| **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`); re-issued by the **Governance Closure Phase** |
+| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010`, `ADR-0011`, `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`, `ADR-0017` |
 
 ---
 
@@ -94,8 +94,8 @@ Open question **`Q-05`** — *"Is Global Student available to a person with no l
 
 | Document | Version | Status |
 |---|---|---|
-| `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | **v1.3** | Authoritative — boundaries, ownership, edges. Identity Triad §4 amended by `ADR-0011` |
-| `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **v1.1** | Authoritative — permitted and forbidden dependencies. Rank `R7.5` added by `ADR-0011` |
+| `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | **v1.5** | Authoritative — boundaries, ownership, edges. Identity Triad §4 amended by `ADR-0011`; edge `E-22` consumer list amended by `ADR-0016`. Context count **31, unchanged** |
+| `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **v1.3** | Authoritative — permitted and forbidden dependencies. Rank `R7.5` added by `ADR-0011`; enforcement coverage **12 of 12** per `ADR-0014` |
 | `10-architecture/ARCHITECTURE_RULINGS.md` | **v1.2** | Authoritative for `AR-1`, `AR-3`, `AR-4`; `AR-2`, `AR-5`, `AR-6`, `AR-7` promoted to ADRs. `AR-4` deferral lifted |
 | `10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` | **v2.1** | **Descriptive** — must follow the PRDs, never lead them |
 
@@ -107,7 +107,7 @@ Open question **`Q-05`** — *"Is Global Student available to a person with no l
 | `30-product/authentication/Authentication_PRD_v2.md` | **v2.0** | **Authoritative — the baseline** |
 | `30-product/authentication/prd-v2/00` … `11` | v2.0 | Chapter sources of the above |
 | `30-product/authentication/PRD-V2-GOVERNANCE-NOTE.md` | v2.0 | Provenance record — **not part of the specification** |
-| `30-product/library/Library_PRD_v1.md` | **v1.0** | **Authoritative — the Library baseline**, §§1–25 |
+| `30-product/library/Library_PRD_v1.md` | **v1.1** | **Authoritative — the Library baseline**, §§1–25. Ownership header amended by `ADR-0013`; three finance context identifiers corrected by `ADR-0015`. **No requirement identifier changed** |
 | `30-product/library/14A-Library-Discovery-And-Enrollment.md` | v1.0 | Authoritative — discovery, enrollment, public field list |
 | `30-product/library/14B-Public-Library-Preview.md` | **v1.0** | Authoritative — anonymous preview, the authentication boundary `PO-1`…`PO-12` |
 | `30-product/library/INVITATION_SECURITY_SPECIFICATION.md` | **v1.0** | Authoritative — `IT-1`…`IT-3`, entropy, expiry, revocation, single use, validation, audit, rate limiting |
@@ -151,9 +151,9 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 | Rank | Source | Scope |
 |---|---|---|
 | **1** | `MASTER_PRD.md` global rules — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` | Platform-wide. Outranks every module PRD |
-| **2** | Accepted ADRs (`ADR-0001` … `ADR-0011`) | Structural decisions |
+| **2** | Accepted ADRs (`ADR-0001` … `ADR-0017`) | Structural decisions |
 | **3** | **Authentication PRD v2.0** | Everything inside `BC-18` |
-| **3** | **Library PRD v1.0** + §14A + §14B + Invitation Security Specification | Everything inside the Library Management domain |
+| **3** | **Library PRD v1.1** + §14A + §14B + Invitation Security Specification | Everything inside the Library Management domain |
 | **3** | **Student Identity & Profile PRD v1.0** + Alignment Report | Everything inside `BC-10` Global Person Identity |
 | **4** | Bounded Context Map · Module Dependency Matrix | Boundaries, ownership, permitted edges |
 | **5** | Architecture Rulings `AR-1`, `AR-3`, `AR-4` | Domain classifications not promoted to ADRs |
@@ -195,13 +195,18 @@ elsewhere. Full detail and priority in `DEVELOPER_HANDOFF.md` §7.
 |---|---|---|
 | `D-10` demo surfaces present in code | **Release blocker** under `MP-CON-11` | **P0** — task `TASK-D10` |
 | `IMPL-020` SMS provider / DLT registration not integrated | No OTP can be delivered. Blocks authentication **and** `IT-1` staff invitations | **P0** — on the critical path; DLT approval is multi-week and should be started first |
-| `tool/check_module_boundaries.dart` does not exist | Module boundaries are unenforced; `ADR-0001` is advisory in practice | **P1** — implementation task `IMPL-014` |
+| ~~`tool/check_module_boundaries.dart` does not exist~~ | **CLOSED 2026-08-04.** Delivered as `IMPL-014`; **12 of 12** enforcement categories implemented per `ADR-0014`. `ADR-0001` is now mechanically enforced, not advisory | — |
+| `app → domain/library` boundary findings deliberately **unwaived** | Gate 3 (`check_module_boundaries.dart`) **exits 1 by design** — 9 findings in 1 category. Not a checker defect and **must not** be silenced; clears when `TASK-D10` removes the demo surfaces (`ADR-0012` §3.4) | **P0** — tracked with `TASK-D10` |
 | Library Management has **no** implementation code | Documentation is complete; `IMPL-100`…`IMPL-127` are unstarted | **P1** — 23 tasks, 12 at P0 within the module |
-| `R-5` — `lib/contracts/` referenced but absent | Import paths in prose do not resolve to a directory | P2 |
+| `IMPL-220` — `SID-INT-*` integration rules unenforced | The twelve integration rules are specified but have no mechanical check; **unmet under `SID-4.56`** | P1 |
+| ~~`R-5` — `lib/contracts/` referenced but absent~~ | **CLOSED.** Resolved as the pure-Dart package `packages/liboora_contracts`; law `L5` is now certified against real code rather than an empty directory | — |
 | `D-8`, `D-9` | Carried forward unchanged | P2 |
 | Public Live Occupancy (V2) | Deferred pending a privacy review; V1 exposes only a coarse indicator (`LIB-14B.12`) | P3 — **V2**, no V1 effect |
 | Reviews & Ratings (V2) | No bounded context assigned; will require one | P3 — **V2**, no V1 effect |
 | Development Standards document (`R-4`) | Deferred | P3 |
+| `Q-02` — `branchId` model undecided | Multi-Branch is **V3**; no V1 effect, but the decision needs an ADR before Multi-Branch work starts | P3 — **V3** |
+| `GCP-01` — this declaration drifted behind two Rank-4 documents | **CLOSED 2026-08-04 by correction.** §3.2 claimed BC Map v1.3 / Matrix v1.1 while the files read v1.4 / v1.2. Cause: both documents self-recorded a version bump without the §7 step 3 update here. **Prevention:** §7 step 3 already requires it — the rule was not weakened, it was not followed. A mechanical check comparing §3's versions against each file's header is recommended as a future gate | P2 — recurrence risk |
+| No `.github/` issue or pull-request templates | Contributors get no structured prompt to cite an ADR or a requirement id | P3 |
 
 **Two gaps left this table on 2026-08-03**, and the distinction matters:
 
@@ -227,6 +232,6 @@ however carefully it is written. They are restated here as tasks, not as finding
 
 | Baseline | Date | Change |
 |---|---|---|
-| **BASELINE-2026-08-04** | 2026-08-04 | **`BC-10` Global Person Identity admitted to the baseline, and the identity architecture finalised.** `Student_Identity_PRD_v1.md` v1.0 (Chapters 1–5) and `STUDENT_IDENTITY_ALIGNMENT.md` declared authoritative at Rank 3 — the **third** module baseline, alongside Authentication (`BC-18`) and Library Management. `ADR-0011` accepted — Rank 2 extended to `ADR-0011`. **`ADR-0011` amends the Bounded Context Map §4 Identity Triad**: `BC-10` renamed Global Person Identity, reclassified `[SUPPORTING]` → `[CORE]`, moved out of the Social cluster to **rank 7.5**, cardinality `0..1` opt-in → **`1:1` mandatory**. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` preserved unamended; `ID-4`'s `PersonId` becomes non-nullable. BC Map raised to v1.3; Module Dependency Matrix to v1.1; Master PRD to v1.7. `tool/module_dependencies.yaml` gains `domain/person: 7.5`. Nine registers declared: `SXC-1`…`11`, `SID-BR-1`…`18`, `SPO-1`…`9`, `SEV-1`…`16`, `SID-INT-1`…`12`, `SID-INV-1`…`14`, `SCFG-1`…`11`, `SID-AC-1`…`26`. `Q-05` closed. **One global business rule was changed — `MP-GBR-02`** — the first such change since the baseline was established; it is recorded in Master PRD §36. Two review findings were rejected and the supplied draft's intent preserved. No requirement was withdrawn and no earlier decision reversed. |
+| **BASELINE-2026-08-04-B** | 2026-08-04 | **Governance closure — five ADRs accepted, one Rank-3 and one Rank-4 document amended, zero requirements changed.** Issued because a **Rank 3** document changed version (§7 step 4): `Library_PRD_v1.md` v1.0 → **v1.1**. Rank 2 extended to `ADR-0017`. **`ADR-0013`** (capability contexts are platform-owned) amends the Library PRD's *Owning contexts* header row to separate the one context it owns (`BC-06`) from the three it consumes through ports (`BC-19`, `BC-25`, `BC-29`); the aggregates `TenantOrganisation`, `StaffAssignment` and `LibraryBranding` values remain owned there — **this is not a scope reduction.** **`ADR-0014`** (tenant-key and audit-mutation enforcement) raises the Dependency Matrix to **v1.3** and its enforcement coverage from *10 of 12* to **12 of 12** categories, making `X-10` and `X-13` mechanically checked and therefore *met* under `SID-4.56`. **`ADR-0015`** corrects three wrong finance context identifiers in the Library PRD (`BC-11`…`BC-13` → `BC-05` Fee & Collection and `BC-20` Subscription & Billing); the ownership boundary those rows assert was already correct, only the identifiers were wrong. **`ADR-0016`** adds `BC-10` to edge `E-22`'s consumer list in the BC Map (**v1.4**), an edge `SID-4.35` already depends on and which BC Map line 292 requires an ADR to add. **`ADR-0017`** resolves `BC-25` Configuration ownership: it is a named **V1 product module** (Master PRD §8 module 18) and receives a dedicated **`PRD-023`**, registered on the precedent `PRD_REGISTRY.md` §4.3 set for `PRD-022` — not invented to fill a gap. `PGA-01`, `PGA-02`, `PGA-06` and `PGA-11` closed; contested contexts **3 → 0**. **No requirement identifier was added, removed, renumbered or reworded in any PRD**, and no dependency law gained an exception. **Two pre-existing staleness defects in this declaration were also corrected**, and are recorded rather than quietly overwritten: §3.2 stated the Bounded Context Map at **v1.3** when the file was already at **v1.4**, and the Module Dependency Matrix at **v1.1** when the file was already at **v1.2**. Both drifted because v1.4 (BC Map, implementation-status row) and v1.2 (Matrix, fitness-function-executed row) were self-recorded in those documents without the §7 step 3 update to this declaration. Logged as **`GCP-01`** in §6. |\n| **BASELINE-2026-08-04** | 2026-08-04 | **`BC-10` Global Person Identity admitted to the baseline, and the identity architecture finalised.** `Student_Identity_PRD_v1.md` v1.0 (Chapters 1–5) and `STUDENT_IDENTITY_ALIGNMENT.md` declared authoritative at Rank 3 — the **third** module baseline, alongside Authentication (`BC-18`) and Library Management. `ADR-0011` accepted — Rank 2 extended to `ADR-0011`. **`ADR-0011` amends the Bounded Context Map §4 Identity Triad**: `BC-10` renamed Global Person Identity, reclassified `[SUPPORTING]` → `[CORE]`, moved out of the Social cluster to **rank 7.5**, cardinality `0..1` opt-in → **`1:1` mandatory**. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` preserved unamended; `ID-4`'s `PersonId` becomes non-nullable. BC Map raised to v1.3; Module Dependency Matrix to v1.1; Master PRD to v1.7. `tool/module_dependencies.yaml` gains `domain/person: 7.5`. Nine registers declared: `SXC-1`…`11`, `SID-BR-1`…`18`, `SPO-1`…`9`, `SEV-1`…`16`, `SID-INT-1`…`12`, `SID-INV-1`…`14`, `SCFG-1`…`11`, `SID-AC-1`…`26`. `Q-05` closed. **One global business rule was changed — `MP-GBR-02`** — the first such change since the baseline was established; it is recorded in Master PRD §36. Two review findings were rejected and the supplied draft's intent preserved. No requirement was withdrawn and no earlier decision reversed. |
 | **BASELINE-2026-08-03** | 2026-08-03 | **Library Management admitted to the baseline.** `Library_PRD_v1.md` v1.0 (§§1–25), `14B-Public-Library-Preview.md` v1.0 and `INVITATION_SECURITY_SPECIFICATION.md` v1.0 declared authoritative at Rank 3 alongside §14A. `U-4` closed by receipt; `AR-4` invitation-security deferral closed by authorship; `CC-5`, `CC-6`, `CC-7` closed. `ADR-0009` and `ADR-0010` accepted — Rank 2 extended to `ADR-0010`. Architecture Rulings raised to v1.2; Master PRD to v1.6; Traceability Matrix to v1.1. Thirteen Library configurables `LCFG-1`…`LCFG-13`, ten invitation configurables `ICFG-1`…`ICFG-10` and seven invariants `INV-10`…`INV-16` added to the Configuration Guide. No requirement was withdrawn and no earlier decision reversed. |
 | **BASELINE-2026-08-02** | 2026-08-02 | Initial declaration. Authentication PRD v2.0 declared official; `D-7` closed by authorship; EA raised to v2.1; `CFG-3`, `CFG-4`, `CFG-5`, `CFG-6`, `CFG-7`, `CFG-12` reset to standards-anchored defaults; `ADR-0001`…`ADR-0008` accepted; twelve stale documents corrected or archived. |

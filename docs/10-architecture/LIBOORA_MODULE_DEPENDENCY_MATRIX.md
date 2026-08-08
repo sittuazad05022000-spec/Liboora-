@@ -3,14 +3,14 @@
 | Field | Value |
 |---|---|
 | **Document** | Module Dependency Matrix & Boundary Enforcement Rules |
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Companion doc** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.3 |
 | **ADRs applied** | [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) — introduces **rank 7.5** for `BC-10` Global Person Identity and shrinks the Social cluster to `BC-11`…`BC-13`. **No dependency law gains an exception.** · [`ADR-0012`](../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) — records 12 **dated** §11 exceptions for pre-existing §4 mode violations in the V1 scaffold. Adds no rule and relaxes none; `L1` is fixed in code, never waived |
 | **Machine-readable source** | `module_dependencies.yaml` — **now consumed by `tool/check_module_boundaries.dart` (`IMPL-014`)**; §10.2's rules are enforced, not merely declared |
 | **As-built graph** | [`DEPENDENCY_GRAPH.md`](./DEPENDENCY_GRAPH.md) — descriptive companion; this document remains normative |
-| **Enforcement coverage** | **10 of 12** categories implemented. `X-13` tenant-key and `X-10` audit-mutation are **NOT** implemented and remain **unmet** (`SID-4.56`) |
+| **Enforcement coverage** | **12 of 12** categories implemented — every check specified in §10.2 is mechanically enforced. `X-13` tenant-key and `X-10` audit-mutation were the last two; they are implemented and passing per [`ADR-0014`](../00-governance/adr/ADR-0014-tenant-key-and-audit-mutation-enforcement.md), so under `SID-4.56` they are **met** rather than assumed |
 | **Last Updated** | 2026-08-04 |
 
 ---
@@ -576,8 +576,8 @@ A Dart script run in CI that parses every import in `lib/` and validates it agai
 | `contracts/` import allow-list | **L5** | `liboora_contracts must not import package:flutter (X-12).` |
 | Banned symbols in `domain/**` | **L3, X-09** | `DateTime.now() in domain code — use Clock port (X-09).` Also bans `http`, `firebase_*`, `dart:io`, `SharedPreferences`, `Hive`. |
 | Banned ubiquitous-language terms in `contracts/` | Context map §5 | `Bare type name 'Student' is banned in contracts. Use StudentRecord or GlobalStudentProfile.` |
-| Tenant key check | **X-13** | `Cache/index key built without tenantId — potential cross-tenant leak.` |
-| Audit mutation check | **X-10** | `audit module exposes an update/delete method.` |
+| Tenant key check — **implemented** (`ADR-0014`) | **X-13** | `Cache/index key built without tenantId — potential cross-tenant leak.` Surfaces read from `global.tenant_key_required_in`; severity `blocker` |
+| Audit mutation check — **implemented** (`ADR-0014`) | **X-10** | `audit module exposes an update/delete method.` Method names read from `platform/audit.banned_method_names`; remedy is to append a correcting entry |
 | AI write path check | **F-4** | `ai module invokes a domain command without an ApprovalRecord parameter.` |
 
 ```bash
@@ -662,6 +662,7 @@ exceptions:
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.3** | 2026-08-04 | **No rule in this document changed. No dependency law, no forbidden edge, no `X-*` identifier and no matrix cell was altered.** Applied [`ADR-0014`](../00-governance/adr/ADR-0014-tenant-key-and-audit-mutation-enforcement.md). Two edits only: the **Enforcement coverage** header row moves from *"**10 of 12** categories implemented"* to *"**12 of 12**"*, and §10.2's **tenant-key (`X-13`)** and **audit-mutation (`X-10`)** rows are marked implemented. Both checks now read the manifest keys that already declared them — `global.tenant_key_required_in` (5 surfaces, severity `blocker`) and `platform/audit.banned_method_names` — which is the root cause `ADR-0014` §1 identifies: the keys existed and were never read. Under `SID-4.56` these two rules move from **unmet** to **met**, by being *checked*, not by being weakened. **The checker's output on the existing codebase is byte-identical to the pre-`ADR-0014` baseline** — 9 `cross-context` findings, 28 acknowledged-debt findings across 12 edges — so the two new categories produced **zero** false positives, and §10.4 gate 3 still **exits 1 by design** for the unchanged `ADR-0012` §3.4 reason (`app → domain/library`, pending `TASK-D10`). Gate 3 was **not** made green. Baseline identifier advanced to `BASELINE-2026-08-04-B` by `ADR-0013`'s Rank-3 change, not by this Rank-4 amendment (§9). |
 | **v1.2** | 2026-08-04 | **No rule in this document changed.** Recorded here because §10.2's fitness function was executed for the first time and this document's rules are now *enforced* rather than declared. `tool/check_module_boundaries.dart` (`IMPL-014`) implements **10 of the 12** specified enforcement categories; the **tenant-key (`X-13`)** and **audit-mutation (`X-10`)** checks are **NOT implemented** and, per `SID-4.56`, remain **unmet** — see [`BOUNDARY_CHECKER_DESIGN.md`](./BOUNDARY_CHECKER_DESIGN.md) §7. First run found 38 violations: one `L1` cycle (**fixed in code** via the §8.2 port-inversion pattern — `L1` is never waivable per §11 step 3) and 37 §4 mode violations, now governed by [`ADR-0012`](../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) under the §11 exception process with 12 dated exceptions. §10.4 gate 3 currently **exits 1 by design** because the `app → domain/library` edge is deliberately unwaived pending `TASK-D10`. Defect `R-5` closed: the manifest's `contracts.path` pointed at `lib/contracts`, a directory that never existed, so law `L5` had been certified against an empty directory. As-built graph now documented separately in [`DEPENDENCY_GRAPH.md`](./DEPENDENCY_GRAPH.md). |
 | **v1.1** | 2026-08-02 | Added rank **7.5** (`domain/person`) per [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md), reclassifying `BC-10` Global Person Identity from `[SUPPORTING]` in the Social cluster to `[CORE]` between `platform/analytics` (7) and `domain/library` (8). Retro-recorded: this row was omitted when the change was made. |
 | **v1.0** | 2026-07-30 | Initial dependency matrix. 5 laws, 10 ranks, 7 communication modes, full 20×20 matrix, per-platform allow-lists, 14 named forbidden edges, 4 cycle-breaking patterns, Flutter package layout, 3-layer CI enforcement with time-boxed exception process. |

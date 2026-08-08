@@ -133,7 +133,7 @@ These are stated as prohibitions because "out of scope" is too easily read as
 | `LXC-4` | Create or hold a student profile record | `BC-01` / `BC-10` | Student Identity PRD |
 | `LXC-5` | Record attendance or compute presence | `BC-03` | Attendance PRD |
 | `LXC-6` | Assign, transfer or release a seat | `BC-04` | Seat PRD |
-| `LXC-7` | Hold money, price anything, or issue a receipt | `BC-11`…`BC-13` | Finance PRD |
+| `LXC-7` | Hold money, price anything, or issue a receipt | `BC-05` Fee & Collection (student → library) · `BC-20` Subscription & Billing (library → LIBOORA) | Master PRD §8 module 5 · `PRD-022` SaaS Billing |
 | `LXC-8` | Send an SMS, email or push notification directly | `BC-22` | `X-04`, `banned_imports` |
 | `LXC-9` | Import, name or otherwise know a map, SMS or storage vendor | `BC-31` | `X-03`, `banned_imports` |
 | `LXC-10` | Read or expose any other tenant's data for any reason | — | `MP-GBR-08`, `SE-1`, `X-13` |
@@ -901,7 +901,7 @@ Context Map. An undeclared dependency is a boundary violation.
 | Membership Management | `BC-02` | Read projection — plans for public display | Library ← |
 | Seat Management | `BC-04` | Read projection — aggregate capacity only (`LIB-7.3`) | Library ← |
 | Attendance Management | `BC-03` | Rule supply (`E-04`) | Library → |
-| Revenue & Finance | `BC-11`…`BC-13` | Read projection — never authoritative here | Library ← |
+| Revenue & Finance | `BC-05` · `BC-20` | Read projection — never authoritative here | Library ← |
 | Dashboards | — | Read composition. Owns nothing | ← |
 | **Notifications** | `BC-22` | **Event emission only.** Library emits facts; `BC-22` subscribes | Library → (async) |
 | Search / Discovery | `BC-23` | Public projection | Library → |
@@ -1100,7 +1100,7 @@ projection** and **never stored here**.
 | Membership plan, price, validity | `BC-02` | Reads projection |
 | Seat inventory, assignment, occupancy | `BC-04` | Reads aggregate only |
 | Attendance record | `BC-03` | Supplies rules; reads nothing |
-| Invoice, payment, revenue | `BC-11`…`BC-13` | Reads projection |
+| Invoice, payment, revenue | `BC-05` · `BC-20` | Reads projection |
 | Public discovery index | `BC-23` | Supplies projection |
 | Notification channel, template, delivery | `BC-22` | Emits events only |
 | Vendor contract, credential, retry | `BC-31` | Uses port only |
@@ -1114,7 +1114,7 @@ ADR. It **MUST NOT** be amended by a PRD revision alone.
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.1** | 2026-08-04 | **Header row only. No requirement changed.** The **Owning contexts** row (line 10) is amended to distinguish the one context this PRD *owns* (`BC-06` Library Policy) from the three capability contexts it *consumes through ports* (`BC-19` Tenancy, `BC-25` Configuration, `BC-29` File & Media). Authorised in advance by [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) §8 M1/M2, which was written and accepted while this document stood untouched at v1.0. **No `LIB-*`, `LCFG-*`, `LXC-*`, `LEV-*`, `PO-*` or `LAC-*` identifier was added, removed, renumbered or reworded; no business rule, aggregate or acceptance criterion changed.** The aggregates `TenantOrganisation`, `StaffAssignment` and the `LibraryBranding` values remain owned here (`ADR-0013` §5) — this is **not** a reduction in scope. Baseline advanced `BASELINE-2026-08-03` → `BASELINE-2026-08-04-B` per `DOCUMENTATION_BASELINE.md` §7 step 4. |
+| **v1.1** | 2026-08-04 | **Header row only. No requirement changed.** The **Owning contexts** row (line 10) is amended to distinguish the one context this PRD *owns* (`BC-06` Library Policy) from the three capability contexts it *consumes through ports* (`BC-19` Tenancy, `BC-25` Configuration, `BC-29` File & Media). Authorised in advance by [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) §8 M1/M2, which was written and accepted while this document stood untouched at v1.0. **No `LIB-*`, `LCFG-*`, `LXC-*`, `LEV-*`, `PO-*` or `LAC-*` identifier was added, removed, renumbered or reworded; no business rule, aggregate or acceptance criterion changed.** The aggregates `TenantOrganisation`, `StaffAssignment` and the `LibraryBranding` values remain owned here (`ADR-0013` §5) — this is **not** a reduction in scope. Baseline advanced `BASELINE-2026-08-03` → `BASELINE-2026-08-04-B` per `DOCUMENTATION_BASELINE.md` §7 step 4.<br><br>**Also in this version, authorised by [`ADR-0015`](../../00-governance/adr/ADR-0015-library-prd-finance-context-identifiers.md):** three finance rows cited the wrong bounded contexts (`PGA-01`). `LXC-7`, the *Revenue & Finance* row and the *Invoice, payment, revenue* row named `BC-11`…`BC-13` — which are Social Graph, Messaging and Trust & Safety, none of which handles money. Corrected to **`BC-05` Fee & Collection** (money student → library) and **`BC-20` Subscription & Billing** (money library → LIBOORA), and `LXC-7`'s pointer to a non-existent *"Finance PRD"* replaced with Master PRD §8 module 5 and `PRD-022`. **Three table cells; the exclusion text, the *"never authoritative here"* qualifier and every identifier are unchanged** — the ownership boundary these rows asserted was already correct, only the citation was wrong. |
 | **v1.0** | 2026-08-03 | First complete receipt of §§1–25. Captured with the requirement set intact. Corrections applied only where a genuine conflict with a higher-precedence document existed: role names aligned to `TR-1`…`TR-3` + Platform Administrator (§4); Multi-Branch retiered V2+ → **V3** (§9, §24); Notifications and Maps restated as event emission and port (§21, `CC-5`, `CC-6`); the two public-field lists reconciled to §14A.5 (§7); business contact number separated from the authentication credential (§6); Owner modelled as a multi-holder role (§15). Added: explicit exclusions `LXC-1`…`LXC-10`, configurable register `LCFG-1`…`LCFG-10`, event register `LEV-1`…`LEV-22`, ownership boundary §26, acceptance criteria `LAC-10`…`LAC-12`. **No requirement from the source text was removed.** |
 
 ---

@@ -2,15 +2,26 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Proposed** |
+| **Status** | **Accepted** — 2026-08-04 |
 | **Date** | 2026-08-04 |
-| **Deciders** | Architecture Review Board (pending) |
+| **Deciders** | Architecture Review Board, acting through the Architecture Owner role defined in `PRD_OWNERSHIP_MODEL.md` §2.2 |
 | **Supersedes** | — |
-| **Amends** | *If accepted:* `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` (Rank 4) — the **Enforcement coverage** header row and §10.2's two unimplemented check rows. **No rule, no forbidden edge, no dependency law and no `X-*` identifier changes text.** |
+| **Amends** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` (Rank 4) — the **Enforcement coverage** header row and §10.2's two unimplemented check rows — **executed**, see §6. **No rule, no forbidden edge, no dependency law and no `X-*` identifier changed text.** |
 | **Amended by** | — |
-| **Baseline** | `BASELINE-2026-08-04` (unchanged — see §9) |
+| **Baseline** | `BASELINE-2026-08-04-B` — **this ADR did not cause the new identifier.** Per §9 the Matrix is Rank 4, so it triggers no re-issue; the identifier advanced because `ADR-0013` changed a Rank 3 document in the same commit |
 | **Related** | `ADR-0012` (time-boxed exceptions; gate 3 red by design) · `IMPL-014` · `SID-4.56` |
 
+> ✅ **ACCEPTED 2026-08-04. The migration in §6 has been executed.**
+>
+> Accepted during the Governance Closure Phase. The correction runs in the **safe direction**: it records that two
+> checks which the Matrix declared *unimplemented* are now implemented and passing. Nothing was made green by
+> lowering a bar — the `X-10` and `X-13` rule text is untouched, and the checker's output on the existing codebase
+> is **byte-identical** to the pre-implementation baseline, proving the two new categories added **zero** false
+> positives. `SID-4.56` (*"a rule that cannot be checked SHALL be treated as unmet"*) is satisfied by building the
+> check, not by redefining the rule.
+>
+> **Original proposal text follows, unaltered.**
+>
 > **This ADR is a PROPOSAL for the documentation change only.**
 >
 > The enforcement code, its tests and the CI workflow change no ranked document
@@ -206,16 +217,17 @@ else in gate 3.
 
 ---
 
-## 6. Migration requirements
+## 6. Migration requirements — **executed 2026-08-04**
 
-> **Nothing in this section may be executed while this ADR reads Proposed.**
+> This section was written while the ADR read *Proposed*, and nothing in it was executed until acceptance.
+> M1–M3 landed in the same commit as the status flip.
 
-| # | Change | Document | Rank | Authorising rule |
-|---|---|---|---|---|
-| **M1** | Header row: *"**10 of 12**"* → *"**12 of 12** categories implemented"*; delete the sentence declaring `X-13`/`X-10` unmet | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **4** | This ADR, once Accepted |
-| **M2** | §10.2: mark the tenant-key and audit-mutation rows implemented | same | **4** | This ADR (same commit as M1) |
-| **M3** | Version → **v1.3**, changelog row added | same | **4** | Baseline §7 step 2 (same commit as M1) |
-| **M4** | Add `ADR-0014` to the register and change history | `ADR-INDEX.md` | — | `ADR-INDEX` §Process step 2 |
+| # | Change | Document | Rank | Authorising rule | Executed |
+|---|---|---|---|---|---|
+| **M1** | Header row: *"**10 of 12**"* → *"**12 of 12** categories implemented"*; delete the sentence declaring `X-13`/`X-10` unmet | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **4** | This ADR, once Accepted | ✅ |
+| **M2** | §10.2: mark the tenant-key and audit-mutation rows implemented | same | **4** | This ADR (same commit as M1) | ✅ |
+| **M3** | Version → **v1.3**, changelog row added | same | **4** | Baseline §7 step 2 (same commit as M1) | ✅ |
+| **M4** | Add `ADR-0014` to the register and change history | `ADR-INDEX.md` | — | `ADR-INDEX` §Process step 2 | ✅ |
 
 **Not required.** No `X-*` rule text. No dependency law. No manifest rule
 (both keys already existed; only `path`-style parsing was added). No PRD. No
@@ -268,3 +280,4 @@ Rank 4.
 | Date | Change |
 |---|---|
 | 2026-08-04 | Created, **Proposed**. Records the enforcement of `X-13` and `X-10` and requests approval for the Rank 4 Matrix correction (M1–M3). No rule text, no law, no PRD and no frozen document is altered. |
+| 2026-08-04 | **Accepted** during the Governance Closure Phase. Decision adopted unmodified; no option re-opened. M1–M4 executed: Matrix → **v1.3**, enforcement coverage **10 of 12 → 12 of 12**, §10.2's tenant-key and audit-mutation rows marked implemented, `ADR-INDEX.md` updated. §8's four mechanical checks re-run and all four pass. **Boundary-checker output unchanged from the pre-implementation baseline — 9 findings in 1 category (`cross-context`), 28 acknowledged-debt findings across 12 edges — confirming the two new categories introduced no false positives and that gate 3 remains red only for the `ADR-0012` §3.4 reason (`TASK-D10`).** Baseline identifier advanced to `BASELINE-2026-08-04-B` by `ADR-0013`, not by this ADR. |

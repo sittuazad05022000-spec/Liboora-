@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.4 |
+| **Version** | v1.5 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-04 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2, v1.3 and v1.4** |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2, v1.3, v1.4 and v1.5** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
 | **Implementation status** | `ADR-0011` is **implemented in code** as of `a22fd7e` — see [`../40-implementation/IMPLEMENTATION_STATUS.md`](../40-implementation/IMPLEMENTATION_STATUS.md) |
@@ -328,7 +328,7 @@ Every edge that crosses a context boundary in V1. If an edge is not in this tabl
 | E-19 | All contexts | BC-25 Configuration | `CF` | Sync port | Typed config accessors; no raw string lookups in domain code |
 | E-20 | All contexts | BC-24 Audit Trail | `PL` | Event (fire-and-forget, outbox-backed) | Domain never calls audit synchronously |
 | E-21 | BC-01, BC-10 | BC-23 Search Indexing | `PL` | Event | `*Created/Updated/Deleted` → index. Search never reads domain tables |
-| E-22 | BC-01, BC-14 | BC-29 File & Media | `CF` | Sync port | Domain holds a `FileRef`, never bytes or a raw storage path |
+| E-22 | BC-01, BC-10, BC-14 | BC-29 File & Media | `CF` | Sync port | Domain holds a `FileRef`, never bytes or a raw storage path. `BC-10` added by [`ADR-0016`](../00-governance/adr/ADR-0016-e22-consumer-list-includes-bc-10.md) — required by `SID-4.35` |
 | E-23 | All contexts | BC-22 Notification Delivery | `PL` | Event | Domain emits *facts* (`MembershipExpiringSoon`), never "send an SMS" |
 | E-24 | BC-03 Attendance | BC-30 Offline Sync | `CF` | Sync port | Attendance defines the conflict-resolution policy; Sync executes it |
 | E-25 | BC-20 Billing | BC-31 Integration | `CF` | Sync port | Gateway abstraction; Billing knows no vendor names |
@@ -610,6 +610,7 @@ unchanged.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.5** | 2026-08-04 | **One consumer cell. No context, aggregate, invariant, event, identity rule or tenancy model changed; no edge added or removed; count remains 31 (23 in V1).** Applied [`ADR-0016`](../00-governance/adr/ADR-0016-e22-consumer-list-includes-bc-10.md), closing `PGA-02`. §7.3 edge **`E-22`** (→ `BC-29` File & Media) had consumers `BC-01, BC-14`; **`BC-10` is added**. Root cause: `ADR-0011`'s migration extended `E-21`'s consumer list with `BC-10` but not `E-22`'s, leaving the Rank 3 requirement `SID-4.35` — *"The Global Profile Photo **SHALL** be held as a `FileRef` issued by `BC-29`"*, under a §4.8 heading that names `E-22` explicitly — dependent on an edge that §7's own rule (*"if an edge is not in this table, it **does not exist**"*) said did not exist. The mode `CF`, the *Sync port* mechanism and the note *"Domain holds a `FileRef`, never bytes or a raw storage path"* are **unchanged** — `BC-10` joins under a constraint `SID-4.35` already imposes on itself. Invisible to `tool/check_module_boundaries.dart` by design: `domain/person` (7.5) → `platform/services` (3) was always a legal downward port call, so no mechanical check was ever going to detect a missing row in a prose table. **No dependency law gained an exception; `X-05` untouched.** |
 | **v1.4** | 2026-08-04 | **Implementation status only — no context, aggregate, invariant, edge, event, identity rule or tenancy model changed; count remains 31 (23 in V1).** Recorded because the `ADR-0011` amendments carried by v1.3 are now **implemented in code** (commit `a22fd7e`): `BC-10` exists as `lib/domain/person/` at rank 7.5, edge `E-12` is realised as a synchronous rank-0 port (`PersonIdentityFactory`) satisfying `SID-4.11` in the same unit of work, edge `E-13` is a non-nullable `personId` on `StudentRecord`, and `BC-11` holds `SocialPresence` with **no** identity fields (`SID-BR-11`). Cardinality `1:1` mandatory is enforced by the compiler and asserted against the booted container (`MP-GBR-02`). `ID-2` and `SID-4.19` are verified: the identity holds no `StudentRecordId` and no `TenantId`. Enforcement is mechanical as of `IMPL-014` — **0 findings name `domain/person`**. See [`../40-implementation/ARCHITECTURE_MIGRATION_REPORT.md`](../40-implementation/ARCHITECTURE_MIGRATION_REPORT.md). |
 | **v1.3** | 2026-08-04 | Applied [`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md). §3.2, §4, §5 and §8 amended: `BC-10` renamed **Global Person Identity**, reclassified `[SUPPORTING]` → **`[CORE]`**, moved out of the Social cluster to **rank 7.5**, and its cardinality with `Account` changed from `0..1` opt-in to **`1:1` mandatory**. Edge `E-12` recorded as a *synchronous port, same transaction*; edge `E-13` as the sole ACL bridge with a **non-nullable** `personId`. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` **preserved unamended**. **No context added, removed or re-scoped; count remains 31 (23 in V1).** Retro-recorded: this row was omitted when the change was made. |
 | **v1.2** | 2026-08-02 | Applied approved architecture rulings `AR-5`, `AR-6`, `AR-7`. §14 gains three rows; §14.2 added, recording the approved authentication stage sequence and confirming that an `Account` may exist before any tenant role. **No context added, removed, renamed or re-scoped; count remains 31 (23 in V1). No aggregate, invariant, integration edge, event, identity rule or tenancy model changed** — §4 and §11 are confirmed as written, not amended. `AR-6` is a stage separation *within* `BC-18`, not a context split. |

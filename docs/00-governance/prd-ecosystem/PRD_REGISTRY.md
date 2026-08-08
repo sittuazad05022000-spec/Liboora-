@@ -1,0 +1,373 @@
+# LIBOORA — PRD Registry
+
+| Field | Value |
+|---|---|
+| **Document** | PRD Registry — the single source of truth for the PRD ecosystem |
+| **Version** | v1.0 |
+| **Status** | Active register of record |
+| **Date** | 2026-08-04 |
+| **Baseline** | `BASELINE-2026-08-04` |
+| **Authority** | **Navigational and administrative only.** This register records *where* specifications are and *what state they are in*. It does **not** create, modify, reinterpret or override a single requirement |
+| **Precedence** | Below every document it lists. Where this register disagrees with a PRD, **the PRD is right and this register is a defect** |
+
+---
+
+## 1. What this register is, and the one thing it must never become
+
+The PRD ecosystem grew to five specification documents across three bounded contexts, plus a Master PRD, nine
+named-but-unwritten PRDs, and eight bounded contexts carrying product obligations with no PRD at all. Answering
+*"which specifications exist, what state are they in, and what depends on them?"* required reading a dozen files
+and remembering the answer.
+
+This register answers it in one place.
+
+> **The failure mode this register must avoid.** A registry that restates requirements becomes a second source of
+> truth, and the second source is always the stale one. **Nothing here is normative.** Every row points at a
+> document; the document governs. If you need to know what a PRD *requires*, this register has failed you and you
+> should open the PRD.
+
+`DOCUMENTATION_BASELINE.md` §4 remains the precedence authority. This register does not rank documents; it
+records the rank that document assigns.
+
+---
+
+## 2. Status vocabulary — closed set
+
+A PRD is in **exactly one** of these states. No other value is permitted in the Status column.
+
+| Status | Meaning | Entry evidence required |
+|---|---|---|
+| `PLANNED` | Named as needed. No content, no owner assigned, no discovery started | Named in the Master PRD, a roadmap or this register |
+| `DISCOVERY` | Problem space under active investigation. No draft exists | A discovery note or open question register |
+| `DRAFT` | Content exists and is being written. Not yet submitted for review | A document on disk with a version header |
+| `IN_REVIEW` | Submitted for architecture and requirements review; findings open | A review or alignment document in progress |
+| `APPROVED` | Review complete, findings dispositioned, declared authoritative | An alignment/validation record with a verdict |
+| `FROZEN` | Approved **and** admitted to the documentation baseline. Change requires an ADR *before* the change | A row in `DOCUMENTATION_BASELINE.md` §3 |
+| `IMPLEMENTING` | Frozen and implementation tasks are open and in progress | ≥1 task in progress in an implementation-task document |
+| `IMPLEMENTED` | Every implementation task closed | All tasks closed |
+| `VERIFIED` | Every acceptance criterion proven by an automated test or a recorded repeatable procedure | Acceptance-verification task closed |
+
+### 2.1 How `FROZEN` is determined here — and why it is not read off the PRD
+
+**No PRD in this repository declares itself frozen in a status field.** Verified: `Authentication_PRD_v2.md`,
+`Library_PRD_v1.md`, `14B-Public-Library-Preview.md` and `INVITATION_SECURITY_SPECIFICATION.md` contain **zero**
+occurrences of the words *frozen* or *freeze*; `Student_Identity_PRD_v1.md` contains one, and it refers to the
+*architecture*, not to itself.
+
+Freeze is therefore **not self-declared**. It is conferred externally by admission to the baseline, and the
+operative rule is `DOCUMENTATION_BASELINE.md` §7:
+
+> *"A change to any Rank 1–5 document requires an ADR **before** the change."*
+
+That sentence *is* the freeze. Every document at Rank 1–5 in §3 of the baseline is frozen in the sense this
+register uses, whether or not the word appears in it.
+
+This distinction is recorded because the obvious implementation of a registry — grep each PRD for its own status —
+would have marked all five specifications **not** frozen and been wrong about every one of them.
+
+### 2.2 Statuses that look adjacent but are not
+
+| Not the same | Difference |
+|---|---|
+| `APPROVED` vs `FROZEN` | Approved is a review outcome. Frozen is a governance constraint. A document can be approved and still editable; a frozen one needs an ADR first |
+| `IMPLEMENTED` vs `VERIFIED` | Implemented means the tasks are closed. Verified means the acceptance criteria are *proven*. Per `SID-4.56`, *"a rule that cannot be checked SHALL be treated as unmet"* — so the gap between these two is not paperwork |
+| `PLANNED` vs `DISCOVERY` | Planned means someone wrote the name down. Discovery means someone is doing work |
+
+---
+
+## 3. The register — existing PRDs
+
+Six documents carry normative product requirements. **Four of them are one PRD.**
+
+### 3.1 `PRD-000` — Master PRD
+
+| Field | Value |
+|---|---|
+| **PRD ID** | `PRD-000` |
+| **Name** | Master PRD |
+| **Document** | [`../../30-product/MASTER_PRD.md`](../../30-product/MASTER_PRD.md) |
+| **Bounded context** | **None — platform-wide.** Owns no aggregate |
+| **Domain** | Platform governance |
+| **Current status** | **`FROZEN`** |
+| **Version** | v1.7 |
+| **Owner** | **Unassigned — no named owner exists in the repository** (see §5) |
+| **Dependencies** | None. It is the root |
+| **Dependents** | **All** — every PRD below, plus the Bounded Context Map and Enterprise Architecture |
+| **Related ADRs** | `ADR-0011` amends `MP-GBR-02` |
+| **Related implementation tasks** | None directly. `MP-DEP-06` is discharged by `IMPL-014` |
+| **Implementation status** | Not applicable — global rules are enforced *through* module implementations, not as a module |
+| **Freeze status** | **Frozen.** Rank 1, baseline §3.3. Changing `MP-GBR-*`, `MP-CON-*` or `MP-DEP-*` requires an ADR first |
+
+Identifier namespace: `MP-GBR-01`…`38` · `MP-CON-01`…`16` · `MP-DEP-01`…`08` · `MP-RSK-01`…`08` · `Q-01`…`Q-07`.
+
+**Precedence note.** Rank 1 applies to the Master PRD's *global rules*. §8's module table is a directory of
+modules, not a specification of them — §1.1 states the Master PRD *"does not contain detailed feature
+specifications for individual modules."* Reading §8 as a requirement source is a category error.
+
+### 3.2 `PRD-001` — Authentication
+
+| Field | Value |
+|---|---|
+| **PRD ID** | `PRD-001` |
+| **Name** | Authentication |
+| **Document** | [`../../30-product/authentication/Authentication_PRD_v2.md`](../../30-product/authentication/Authentication_PRD_v2.md) + `prd-v2/00`…`11` |
+| **Bounded context** | **`BC-18` Identity & Access** |
+| **Domain** | Identity & Access `[GENERIC]` |
+| **Current status** | **`FROZEN`** |
+| **Version** | **v2.0** — self-described *"PRODUCTION-READY — AUTHORITATIVE"* |
+| **Owner** | **Unassigned** (see §5) |
+| **Dependencies** | `PRD-000` global rules |
+| **Dependents** | `PRD-002` (authorisation for protected operations, invitation acceptance) · `PRD-003` (atomic account+identity creation, `E-12`) |
+| **Related ADRs** | `ADR-0002` · `ADR-0003` · `ADR-0004` · `ADR-0005` · `ADR-0006` · `ADR-0007` · **`ADR-0008`** (declares this the official baseline) |
+| **Related implementation tasks** | `IMPL-030`, `IMPL-031`, `IMPL-040`, `IMPL-041`, `IMPL-050`…`052`, `IMPL-060`…`062`, `IMPL-070`…`073`; checklist in `AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` |
+| **Implementation status** | **Partial.** Scaffold exists; `TASK-D10` demo surfaces are a **P0 release blocker**; `IMPL-020` SMS/DLT unstarted — no OTP can be delivered |
+| **Freeze status** | **Frozen.** Rank 3, baseline §3.3 (`BASELINE-2026-08-02`) |
+
+Registers: 1,517 normative identifiers — `AUTH-c.n` (588) · `BR-c.n` (297) · `XC-c.n` (212) · `AC-c.n` (321) ·
+`EV-n` (26) · `AERR-n` (13) · `CFG-n` (12) · plus `PR`, `TR`, `SO`, `PP`, `AU`, `EP`.
+
+Provenance: **authored, not recovered.** The v1.0 chapters were never transferred — all eleven files held headers
+and zero body text. Recorded in `PRD-V2-GOVERNANCE-NOTE.md`; the empty slots are archived at
+`docs/90-archive/authentication-v1/empty-slots/`. Defect `D-7` closed **by authorship**, not by transfer.
+
+### 3.3 `PRD-002` — Library Management
+
+> **This PRD is four documents.** The Master PRD §31 and `library/README.md` both state it: *"The Library PRD
+> means **all four**"*. A requirement read from one alone will be implemented wrongly, because most
+> security-relevant constraints are cross-references.
+
+| Field | Value |
+|---|---|
+| **PRD ID** | `PRD-002` |
+| **Name** | Library Management (Organization & Library Management) |
+| **Documents** | [`Library_PRD_v1.md`](../../30-product/library/Library_PRD_v1.md) §§1–25 · [`14A`](../../30-product/library/14A-Library-Discovery-And-Enrollment.md) · [`14B`](../../30-product/library/14B-Public-Library-Preview.md) · [`INVITATION_SECURITY_SPECIFICATION.md`](../../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) |
+| **Bounded contexts** | **`BC-19` Tenancy · `BC-06` Library Policy · `BC-25` Configuration · `BC-29` File & Media** |
+| **Domain** | Library Management `[CORE]` |
+| **Current status** | **`FROZEN`** |
+| **Version** | v1.0 (Startup MVP) |
+| **Owner** | **Unassigned** (see §5) |
+| **Dependencies** | `PRD-000` · `PRD-001` (all authorisation) · `PRD-003` (`E-13` identity resolution) |
+| **Dependents** | None among existing PRDs. **Nine unwritten PRDs depend on it** — see [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) |
+| **Related ADRs** | **`ADR-0009`** (invitation is a revocable claim, never a credential) · **`ADR-0010`** (public preview served anonymously from a projection) · rulings `AR-1`, `AR-3`, `AR-4` |
+| **Related implementation tasks** | **`IMPL-100`…`IMPL-127`** — 23 tasks, 12 at P0 |
+| **Implementation status** | **`FROZEN`, not `IMPLEMENTING`.** Implementation is *"entirely unstarted"* (Master PRD §31) — **0 of 23 tasks begun** |
+| **Freeze status** | **Frozen.** Rank 3, baseline §3.3 (`BASELINE-2026-08-03`) |
+
+Registers: ~422 identifiers — `LIB-n.m` (~130) · `LIB-14B.n` (51) · `LIB-DISC-n` (13) · `INV-SEC-n` (71) ·
+`LBR`, `LIB-PREV`, `LXC`, `INV-XC`, `LAC`, `LAC-14B`, `IAC`, `LCFG`, `ICFG`, `PO-1`…`PO-12`, `LEV-1`…`LEV-28`.
+
+**Note on §14A.** It carries a provenance block (*"RECEIVED VERBATIM · REVIEW COMPLETE · FROZEN 2026-08-03"*) but
+**no version/status header row** of the kind the other three carry. Its version is established externally by
+`DOCUMENTATION_BASELINE.md` §3.3, which lists it at v1.0. Recorded as a **cosmetic inconsistency, not a defect** —
+see [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §7.
+
+### 3.4 `PRD-003` — Student Identity & Profile
+
+| Field | Value |
+|---|---|
+| **PRD ID** | `PRD-003` |
+| **Name** | Student Identity & Profile |
+| **Document** | [`../../30-product/student-identity/Student_Identity_PRD_v1.md`](../../30-product/student-identity/Student_Identity_PRD_v1.md) |
+| **Bounded context** | **`BC-10` Global Person Identity** `[CORE]`, **rank 7.5** |
+| **Domain** | Platform Identity — *its own tier*, below every domain module and above every capability platform |
+| **Current status** | **`IMPLEMENTING`** |
+| **Version** | v1.0 (Startup MVP) |
+| **Owner** | **Unassigned** (see §5) |
+| **Dependencies** | `PRD-000` (amended `MP-GBR-02`) · `PRD-001` (`E-12` atomic creation) |
+| **Dependents** | `PRD-002` (`E-13` ACL) · future `MP-FUT-01`…`05` · `BC-11`…`BC-13` as **consumers** |
+| **Related ADRs** | **`ADR-0011`** (the governing decision) · `ADR-0012` (scaffold port-inversion debt) |
+| **Related implementation tasks** | **`IMPL-200`…`IMPL-208`, `IMPL-210`…`IMPL-216`, `IMPL-220`…`IMPL-226`** — 25 tasks, 17 at P0 |
+| **Implementation status** | **Partial.** `IMPL-200`, `IMPL-201`, `IMPL-207`, `IMPL-208` and `IMPL-014` **implemented** (`a22fd7e`). `IMPL-220` **unblocked but not done** — `SID-INT-1`…`12` are review-verified only and therefore **unmet** per `SID-4.56` |
+| **Freeze status** | **Frozen.** Rank 3, baseline §3.3 (`BASELINE-2026-08-04`) |
+
+Registers: 343 identifiers — `SID-c.n` (226) · `SID-BR-n` (18) · `SXC-n` (11) · `SPO-n` (9) · `SEV-n` (16) ·
+`SID-INT-n` (12) · `SID-INV-n` (14) · `SCFG-n` (11) · `SID-AC-n` (26). All nine ranges verified contiguous.
+
+**Why this is `IMPLEMENTING` while `PRD-002` — frozen a day earlier — is not.** Status here tracks *code*, not
+document maturity. Student Identity had scaffold code implementing the **superseded** pre-`ADR-0011` model, so its
+first tasks were a **migration**. Library Management has no code at all. A registry that ordered these by freeze
+date would imply Library was further along; it is not.
+
+### 3.5 Records that are not PRDs
+
+Listed so nobody mistakes a record for a specification. `DOCUMENTATION_BASELINE.md` §3.3 marks each *"not part of
+the specification"*.
+
+| Document | What it is |
+|---|---|
+| `library/LIBRARY_PRD_ALIGNMENT.md` | Validation record — the 14 conflicts found and their disposition |
+| `library/REVIEW_14A.md` | Historical review record |
+| `student-identity/STUDENT_IDENTITY_ALIGNMENT.md` | Validation record — `SC-1`…`SC-13`, 11 accepted, **2 rejected** |
+| `authentication/PRD-V2-GOVERNANCE-NOTE.md` | Provenance record — explicitly *"not part of the specification"* |
+| `library/README.md`, `student-identity/README.md`, `authentication/README.md` | Module indexes — navigational |
+| `docs/90-archive/**` | **No authority.** Retained for history |
+
+---
+
+## 4. The register — PRDs that do not exist
+
+**Nothing in this section is a new requirement.** Every row is a document the repository *already says should
+exist*. The evidence is cited per row; where the repository names no owning context, the row says so rather than
+inventing one.
+
+### 4.1 Named in Master PRD §31 and never written
+
+The §31 Linked Documents table carries this row verbatim:
+
+> *"Student Management · Membership · Attendance · Seat · Revenue & Finance · Analytics · Notifications ·
+> Security & Automation · AI Super Assistant PRDs | Listed in v1.0"*
+
+*"Listed in v1.0"* means the v1.0 Master PRD named them. **None was ever written.** All nine are `PLANNED`.
+
+| PRD ID | Name | Bounded context | Type | V | Status | Blocks |
+|---|---|---|---|---|---|---|
+| `PRD-004` | Student Management | **`BC-01` Enrollment** | `[CORE]` | V1 | `PLANNED` | `PRD-005`…`008`; `IMPL-214` `E-13` ACL |
+| `PRD-005` | Membership Management | **`BC-02` Membership** | `[CORE]` | V1 | `PLANNED` | `PRD-006`, `PRD-007`, `PRD-008` |
+| `PRD-006` | Attendance Management | **`BC-03` Attendance** | `[CORE]` | V1 | `PLANNED` | Occupancy in `PRD-007` |
+| `PRD-007` | Seat Management | **`BC-04` Seating** | `[CORE]` | V1 | `PLANNED` | — |
+| `PRD-008` | Revenue & Finance | **`BC-05` Fee & Collection** | `[CORE]` | V1 | `PLANNED` | — |
+| `PRD-009` | Analytics & Reports | **`BC-26` Analytics Read Model** | `[GENERIC]` | V1 | `PLANNED` | Dashboards (modules 10–12) |
+| `PRD-010` | Notifications & Communication | **`BC-22` Notification Delivery** | `[GENERIC]` | V1 | `PLANNED` | Every event-driven notice |
+| `PRD-011` | AI Super Assistant | **`BC-27` AI Assistance** | `[SUPPORTING]` | V1 | `PLANNED` | — |
+| `PRD-012` | Security & Automation | ⚠ **`SECURITY` platform + `BC-28` Workflow** | mixed | V1/V2 | `PLANNED` | — |
+
+> ⚠ **`PRD-012` must not be written as one PRD.** Master PRD §8 Correction 2 states: *"A single module name
+> spanning two owners at two ranks violates the Single Owner Rule (EA §10.1.1)."* Writing it as one document
+> would re-create the violation the correction removed. See [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §5.
+
+### 4.2 Bounded contexts with product obligations and no PRD
+
+Master PRD §8.1: these *"carry product-visible obligations but had no module entry. Listed here so they receive
+requirements, budgets and owners."* The obligation is the Master PRD's, not this register's.
+
+| PRD ID | Name | Bounded context | Type | V | Status | Why V1 |
+|---|---|---|---|---|---|---|
+| `PRD-013` | Tenancy | **`BC-19`** | `[GENERIC]` | V1 | `PLANNED` | *"Nothing multi-tenant works without it"* |
+| `PRD-014` | Entitlement | **`BC-21`** | `[GENERIC]` | V1 | `PLANNED` | *"Every paid gate depends on it"* |
+| `PRD-015` | Search Indexing | **`BC-23`** | `[GENERIC]` | V1 | `PLANNED` | Permission-aware, tenant-partitioned search |
+| `PRD-016` | Audit Trail | **`BC-24`** | `[GENERIC]` | V1 | `PLANNED` | Required by *"every critical action is auditable"* |
+| `PRD-017` | File & Media | **`BC-29`** | `[GENERIC]` | V1 | `PLANNED` | Documents, uploads, signed URLs, virus scan |
+| `PRD-018` | Offline Sync | **`BC-30`** | `[GENERIC]` | V1 | `PLANNED` | *"Attendance capture in a basement with no signal"* |
+| `PRD-019` | Integration | **`BC-31`** | `[GENERIC]` | V1 | `PLANNED` | Outbound contracts, retries, idempotent delivery |
+| `PRD-020` | Trust & Safety | **`BC-13`** ⚠ | **`[CORE]`** | V1 | `PLANNED` | *"On a minor-heavy product, is existential legal risk"* |
+| `PRD-021` | Social Graph & Messaging | **`BC-11`, `BC-12`** | `[SUPPORTING]` | V1 | `PLANNED` | Named in §8.1 with `BC-13` |
+
+> ⚠ **`PRD-020` carries the highest unmitigated product risk in the register.** `BC-13` is classified `[CORE]`
+> *despite living in a Supporting platform*, and `MP-RSK-02` — *"minor-safety incident on the social product"* —
+> is **Critical** with mitigation *"`BC-13` Trust & Safety at V1"*. That mitigation is a bounded context with no
+> specification, no tasks and no owner.
+
+### 4.3 Contexts and surfaces with no PRD and no §8.1 obligation
+
+Recorded for completeness. **These are not recommendations to write documents** — several should never be
+separate PRDs, and [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §6 explains which and why.
+
+| Context / surface | Type | V | Registry position |
+|---|---|---|---|
+| `BC-20` Subscription & Billing (SaaS Billing, module 17) | `[GENERIC]` | V1 | `PLANNED` — **not** in the §31 nine; a genuine V1 gap |
+| `BC-25` Configuration (Settings, module 18) | `[GENERIC]` | V1 | **Covered** — `PRD-002` owns `BC-25` |
+| Dashboards — Owner, Manager, Reception (modules 10–12) | *not contexts* | V1 | **No PRD.** Presentation compositions; own no aggregate |
+| Parent Portal (module 5) | *not a context* | V1 | **No PRD.** Composition over `BC-01`/`03`/`05` |
+| Library Member Directory (module 3) | read composition | V1 | **No PRD.** Belongs to `PRD-004` |
+| Library Discovery & Enrollment (module 19) | *not a context* | V1 | **Covered** — `PRD-002` §14A/§14B |
+| `BC-07`…`BC-09`, `BC-14`, `BC-15`, `BC-28` | `[SUPPORTING]`/`[GENERIC]` | V2 | `PLANNED` — correctly deferred |
+| `BC-16`, `BC-17` | `[SUPPORTING]` | V3 | `PLANNED` — correctly deferred |
+| `MP-FUT-01`…`MP-FUT-05` | Future | Future | **Not planned, by policy** — EA §10.3: *"do not design for it now, only avoid blocking it"* |
+
+---
+
+## 5. Ownership — the field the repository cannot fill
+
+**Every `Owner` field above reads *Unassigned*, and that is a finding, not an omission in this register.**
+
+Searched: no PRD carries a document owner, a team name or an accountable individual. The only `Owner` strings in
+`docs/30-product/` are `Owner Name` (a library's proprietor, `LIB-6.x`), *"Owner authentication credential"*, and
+the Invitation Security Specification's `Owner` field — which names a **bounded context**, `BC-19`, not a person.
+
+So the repository consistently records **context ownership** and never records **document ownership**. The
+architectural rule *"every bounded context must have explicit ownership"* is satisfied — every context has exactly
+one owning module, enforced by `tool/check_module_boundaries.dart`. The governance rule *"every PRD has an owner"*
+is **not** satisfied, because no such field exists anywhere.
+
+Filling these in would require inventing names. This register records the gap instead; disposition in
+[`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §8.
+
+---
+
+## 6. Bounded-context ownership — no duplicates
+
+Verified against the Bounded Context Map's 31 contexts. Each context has **exactly one** owning PRD or none.
+
+| Context | Owning PRD | Duplicate? |
+|---|---|---|
+| `BC-18` | `PRD-001` | No |
+| `BC-19`, `BC-06`, `BC-25`, `BC-29` | `PRD-002` | No |
+| `BC-10` | `PRD-003` | No |
+| `BC-01`…`BC-05`, `BC-11`…`BC-13`, `BC-20`…`BC-24`, `BC-26`, `BC-27`, `BC-30`, `BC-31` | *(unwritten `PRD-004`…`021`)* | No |
+| `BC-07`…`BC-09`, `BC-14`…`BC-17`, `BC-28` | None — V2/V3 | No |
+
+**No context is claimed by two PRDs.** The three frozen module PRDs are disjoint, exactly as
+`DOCUMENTATION_BASELINE.md` §4 requires: *"Rank 3 holds three module baselines and they do not overlap."*
+
+One row deserves its reasoning stated, because it looks like an overlap and is not. `PRD-002` owns **`BC-29` File
+& Media**, and `PRD-003` §4.8 requires the Global Profile Photo to be *"held as a `FileRef` issued by `BC-29`"*.
+That is **consumption, not ownership** — `SID-4.36` explicitly assigns upload, scanning, thumbnailing and
+signed-URL issuance to `BC-29` and forbids this module from re-implementing or bypassing them. A dependency edge,
+recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) §4.
+
+---
+
+## 7. Summary counts
+
+| Measure | Count |
+|---|---|
+| **PRDs registered** | **22** (`PRD-000`…`PRD-021`) |
+| **Documents that exist** | **6 files, 4 PRD identities** (`PRD-000`…`PRD-003`) |
+| `FROZEN` | **3** — `PRD-000`, `PRD-001`, `PRD-002` |
+| `IMPLEMENTING` | **1** — `PRD-003` |
+| `PLANNED` | **18** — `PRD-004`…`PRD-021` |
+| `DISCOVERY` · `DRAFT` · `IN_REVIEW` · `APPROVED` · `IMPLEMENTED` · `VERIFIED` | **0 each** |
+| Missing **V1** PRDs | **18** — 9 from §31 + 8 from §8.1 + `BC-20` |
+| Duplicate or overlapping PRDs | **0** |
+| PRDs with a named owner | **0 of 22** |
+
+**No PRD has reached `VERIFIED`, and none is close.** `PRD-001`, the most complete, cannot deliver an OTP
+(`IMPL-020`) and carries a P0 release blocker (`TASK-D10`).
+
+---
+
+## 8. Maintenance
+
+1. A new PRD gets the next free `PRD-nnn`. **Numbers are never reused or reassigned** — the same rule as ADRs and
+   `IMPL-*` tasks, for the same reason: cross-references outlive documents.
+2. A status change requires the entry evidence in §2. *"It feels done"* is not evidence.
+3. This register is updated **in the same commit** as the change it records.
+4. `FROZEN` is set **only** when the document appears in `DOCUMENTATION_BASELINE.md` §3 at Rank 1–5.
+5. If this register disagrees with a PRD, **fix this register**.
+6. Adding a bounded context to a PRD's ownership is an **architecture change requiring an ADR** — see
+   `LIB-26.2` and `ADR-INDEX.md` process step 1.
+
+---
+
+## 9. References
+
+[`DOCUMENTATION_BASELINE.md`](../DOCUMENTATION_BASELINE.md) ·
+[`ADR-INDEX.md`](../adr/ADR-INDEX.md) ·
+[`MASTER_PRD.md`](../../30-product/MASTER_PRD.md) ·
+[`LIBOORA_BOUNDED_CONTEXT_MAP.md`](../../10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md) ·
+[`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](../../10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md) ·
+[`ARCHITECTURE_RULINGS.md`](../../10-architecture/ARCHITECTURE_RULINGS.md) ·
+[`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) ·
+[`IMPLEMENTATION_STATUS.md`](../../40-implementation/IMPLEMENTATION_STATUS.md) ·
+[`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) ·
+[`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./PRODUCT_IMPLEMENTATION_ROADMAP.md) ·
+[`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) ·
+[`PRD_LIFECYCLE.md`](./PRD_LIFECYCLE.md)
+
+---
+
+## 10. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.0** | 2026-08-04 | Created. 22 PRDs registered — 4 existing (6 files), 18 planned. Freeze status derived from `DOCUMENTATION_BASELINE.md` §3/§7 rather than from PRD self-declaration, because **no PRD declares its own freeze state** (§2.1). Ownership recorded as **unassigned for all 22** because no document-owner field exists anywhere in the repository (§5). Bounded-context ownership verified free of duplicates across all 31 contexts (§6). **No requirement was created, modified, reinterpreted or withdrawn; no PRD was edited.** |

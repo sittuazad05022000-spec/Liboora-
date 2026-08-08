@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | **Document** | Traceability entries for [`Student_Management_PRD_v1.md`](Student_Management_PRD_v1.md) (`PRD-004`) |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Supporting record. **Not ranked**, therefore editable without an ADR |
-| **Date** | 2026-08-04 |
+| **Date** | 2026-08-04 *(corrected same day by the `PRD-004` correction pass — findings `RF-04`, `RF-07`)* |
 | **Baseline** | `BASELINE-2026-08-04-B` |
 | **Purpose** | Phase 20 deliverable 4. Maps every `PRD-004` identifier group to its authoritative source, and records the prefix inventory destined for [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) §2C |
 | **Precedence** | Below every document it cites. Where this file disagrees with `PRD-004`, **`PRD-004` is right and this file is a defect** |
@@ -15,23 +15,29 @@
 
 ## 1. Prefix inventory — the §2C payload
 
-Ten new registers, **242** identifiers, added to a repository that already carried **2,282** (`1,517`
+Ten new registers, **248** identifiers, added to a repository that already carried **2,282** (`1,517`
 authentication + `≈422` Library + `343` Student Identity).
 
 | Prefix | Meaning | Count | Range | Chapter |
 |---|---|---|---|---|
-| `SM-c.n` | Functional requirement | **105** | `SM-1.1` … `SM-10.10` | 1–4, 6–8, 10 |
+| `SM-c.n` | Functional requirement | **107** | `SM-1.1` … `SM-10.12` | 1–4, 6–8, 10 |
 | `SM-BR-n` | Business rule | **16** | `SM-BR-1` … `SM-BR-16` | §9.1 |
 | `SM-XC-n` | Exclusion — must be impossible | **14** | `SM-XC-1` … `SM-XC-14` | §1.5 |
 | `SM-INV-n` | Domain invariant | **11** | `SM-INV-1` … `SM-INV-11` | §2.6 |
-| `SM-EV-n` | Domain event (**closed set**) | **9** | `SM-EV-1` … `SM-EV-9` | §7.4 |
+| `SM-EV-n` | Domain event (**closed set**) | **10** | `SM-EV-1` … `SM-EV-10` | §7.4 |
 | `SM-PO-n` | Protected operation (**closed list**) | **12** | `SM-PO-1` … `SM-PO-12` | §8.2 |
-| `SM-AC-n` | Acceptance criterion | **28** | `SM-AC-1` … `SM-AC-28` | §10.4 |
+| `SM-AC-n` | Acceptance criterion | **30** | `SM-AC-1` … `SM-AC-30` | §10.4 |
 | `SMCFG-n` | Configurable parameter | **7** | `SMCFG-1` … `SMCFG-7` | §10.3 |
 | `LMD-n` | **Library Members Directory requirement** | **31** | `LMD-1` … `LMD-31` | 5 |
-| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **9** | `SM-GAP-1` … `SM-GAP-9` | §10.6 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **10** | `SM-GAP-1` … `SM-GAP-10` | §10.6 |
 
-**Total 242.** Verified mechanically, not counted by hand.
+**Total 248 base identifiers**, plus **15 sub-lettered clarifications** added by the 2026-08-04 correction pass
+(`PRD-004` §0.2), giving **263** normative identifiers in total. Verified mechanically, not counted by hand.
+
+> **Corrected 2026-08-04 (finding `RF-04`).** This table previously declared **242** over the pre-correction
+> ranges. The independent review found that this document and `PRD-004` §7.4 disagreed about the event register,
+> which made one of them wrong by construction. `PRD-004` is the specification and this document is derived from
+> it, so the derived document was corrected — never the reverse.
 
 > ⚠ **The declared count was wrong on first draft, and validation is what found it.** §0 of `PRD-004` originally
 > declared **118** `SM-c.n` over `SM-1.1` … `SM-10.6`. A regex count returned **105** over `SM-1.1` … `SM-10.10`,
@@ -90,8 +96,15 @@ Every group below cites a document of **higher rank** than `PRD-004` (a `DRAFT` 
 | §9 rules, edge cases | `MP-GBR-03`, `MP-GBR-14`, `MP-GBR-16`, `MP-GBR-18`, `MP-GBR-19` · BC Map line 209 | 1, 4 |
 | §10 data/API/config | `X-13` · `E-19`, **`ADR-0013`** · `LIB-16.2` pattern | 2, 3, 4 |
 
-**Coverage: 233 of 242 (96.3%).** The 9 uncovered identifiers are exactly the `SM-GAP-*` set, which carry **no**
-source **by definition** — that absence is what makes them gaps rather than requirements.
+**Coverage — see `PRD-004` §10.5.1, which is authoritative.** The table above shows that every *requirement
+group* names a higher-ranked source. It does **not** establish a per-identifier coverage percentage, and an
+earlier version of this document wrongly presented one (**"233 of 242, 96.3%"**) as if it did. That figure is
+**withdrawn**: it was inferred from a ten-row group table, so it could not have been measured.
+
+The replacement figure is computed per identifier by `tool/docs_check/prd004_traceability.py` and published in
+`PRD-004` §10.5.1. **The computed figure is lower than the withdrawn claim.** The `SM-GAP-*` set remains excluded
+from the denominator, because carrying no source **by definition** is what makes them gaps rather than
+requirements. Finding `RF-07`.
 
 ### 2.1 The Directory's traceability, stated precisely
 
@@ -129,22 +142,37 @@ and `PRD-004` changes none of them.
 
 ---
 
-## 4. Event traceability — closed set of nine
+## 4. Event traceability — closed set of ten
+
+Reproduced from `PRD-004` §7.4, which is authoritative. All names carry the `enrollment.` context prefix required
+by **BC Map §8** (`<Context>.<Aggregate><PastTenseVerb>`).
 
 | ID | Event | Consumer | Edge |
 |---|---|---|---|
-| `SM-EV-1` | `StudentEnrolled` | `BC-02`, `BC-23` | `E-01`, `E-21` |
-| `SM-EV-2` | `StudentProfileUpdated` | `BC-23` | `E-21` |
-| `SM-EV-3` | `StudentStatusChanged` | `BC-02`, `BC-05` | `E-01`, `E-09` |
-| `SM-EV-4` | `StudentLinkedToPerson` | `BC-10` (ACL) | `E-13` |
-| `SM-EV-5`…`SM-EV-9` | Guardian, document, archive, restore, contact events | as declared in §7.4 | pre-existing edges only |
+| `SM-EV-1` | `enrollment.StudentEnrolled` | `BC-02`, `BC-23` | `E-01`, `E-21` |
+| `SM-EV-2` | `enrollment.StudentStatusChanged` | `BC-02`, `BC-04`, `BC-23` | `E-01`, `E-21` |
+| `SM-EV-3` | `enrollment.StudentArchived` | `BC-05`, `BC-02`, `BC-23` | `E-09`, `E-21` |
+| `SM-EV-4` | `enrollment.StudentRestored` | `BC-02`, `BC-23` | `E-01`, `E-21` |
+| `SM-EV-5` | `enrollment.StudentProfileUpdated` | `BC-23` | `E-21` |
+| `SM-EV-6` | `enrollment.GuardianLinkChanged` | `BC-22` | `E-23` |
+| `SM-EV-7` | `enrollment.StudentDocumentAttached` | `BC-23` | `E-21` |
+| `SM-EV-8` | `enrollment.StudentDocumentRemoved` | `BC-23` | `E-21` |
+| `SM-EV-9` | `enrollment.EnrollmentNumberAssigned` | `BC-23` | `E-21` |
+| `SM-EV-10` | `enrollment.StudentLinkedToPerson` | `BC-10` **via ACL** | `E-13` |
+
+> **Corrected 2026-08-04 (findings `RF-04`, `RF-02`, `RF-03`).** The previous version of this table listed nine
+> events, placed `StudentLinkedToPerson` at `SM-EV-4`, and omitted the `enrollment.` prefix — all three disagreeing
+> with `PRD-004` §7.4. `StudentLinkedToPerson` is now `SM-EV-10` in the PRD, and the five events this table had
+> collapsed into a single `SM-EV-5`…`SM-EV-9` row are enumerated individually, because a summary row cannot be
+> traced.
 
 Cross-checked against `PRD_DEPENDENCY_GRAPH.md` line 154, which already lists `StudentEnrolled`,
 `StudentProfileUpdated`, `StudentStatusChanged` and `StudentLinkedToPerson` for `BC-01` (`PRD-004`). **The graph
-predicted these events before this PRD existed; the PRD did not invent them.**
+predicted these events before this PRD existed; the PRD did not invent them** — which is precisely why
+`SM-EV-10` had to be *added* to the PRD rather than treated as a new design (`RF-02`).
 
 **`SM-AC-28` guards the boundary:** no `StudentRecordId` in any global event or index — it is tenant-scoped
-(`ID-4`).
+(`ID-4`). `SM-7.12b` applies the same limit to `SM-EV-10`'s payload.
 
 ---
 
@@ -174,11 +202,11 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 | Audit append-only (`X-10`) | ✅ **yes** | checker `_checkAuditMutation` |
 | No `library_member` table (`SM-10.6`, `OWN-4`) | ❌ **not yet** | becomes executable at `IMPL-302` (schema scan) |
 | `personId` never exported (`SM-AC-28`, `OWN-6`) | ❌ **not yet** | becomes executable at `IMPL-316` |
-| 28 `SM-AC-*` criteria | ❌ **not yet** | zero tests written; `IMPL-300`…`IMPL-317` unstarted |
+| 30 `SM-AC-*` criteria | ❌ **not yet** | zero tests written; `IMPL-300`…`IMPL-323` unstarted |
 
-> **Stated plainly:** of the 28 acceptance criteria, **0 are currently executed by any test.** Three
+> **Stated plainly:** of the 30 acceptance criteria, **0 are currently executed by any test.** Three
 > architecture-level rules the PRD relies on *are* enforced today, and they were enforced before this PRD existed.
-> Per `SID-4.56`, the remaining 25 are **unmet**, not "satisfied by design."
+> Per `SID-4.56`, the remaining 27 are **unmet**, not "satisfied by design."
 
 ---
 
@@ -187,8 +215,9 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 | Not claimed | Actual state |
 |---|---|
 | That `TRACEABILITY_MATRIX.md` §2C already exists | **It does not.** §1 here is the payload prepared for it; the matrix edit is a separate, pending change |
-| That coverage means correctness | 96.3% means each identifier **names** a source. It does not prove the requirement is the right one |
-| That the 9 gaps will be filled | They are open. A source must appear **before** a requirement |
+| That coverage means correctness | A coverage figure means an identifier **names** a source. It does not prove the requirement is the right one |
+| That this document measures coverage | **It does not.** §2 is a group-level map. The per-identifier figure is computed in `PRD-004` §10.5.1 by `tool/docs_check/prd004_traceability.py` |
+| That the 10 gaps will be filled | They are open. A source must appear **before** a requirement |
 | That any `SM-AC-*` passes | **None is executed.** §6 |
 | That gate 3 is green | **Legitimately red** — 9 `cross-context` violations owned by `TASK-D10`/`BLK-01`, unrelated to `PRD-004`, **not waived** |
 
@@ -198,4 +227,5 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 
 | Version | Date | Change |
 |---|---|---|
+| v1.1 | 2026-08-04 | **Corrected by the `PRD-004` correction pass.** Three defects, all found by independent review, all resolved by correcting *this* file rather than the PRD — as the Precedence row above requires. (1) `RF-04`: §4 listed **nine** events, placed `StudentLinkedToPerson` at `SM-EV-4`, omitted the BC Map §8 `enrollment.` prefix, and collapsed five events into one untraceable summary row; it now reproduces `PRD-004` §7.4 exactly, with `SM-EV-10` and all ten names enumerated. (2) `RF-07`: the **"233 of 242, 96.3%"** coverage claim is **withdrawn** — it was inferred from a ten-row group table and therefore was never measured; §2 now states plainly that this document maps *groups*, and points to `PRD-004` §10.5.1 where the figure is computed per identifier by `tool/docs_check/prd004_traceability.py`. The computed figure is **lower** than the withdrawn claim. (3) Stale counts refreshed to the post-correction registers: **248** base identifiers (was 242) plus 15 sub-lettered clarifications, `SM-c.n` 105→107, `SM-EV-n` 9→10, `SM-AC-n` 28→30, `SM-GAP-n` 9→10, tasks `IMPL-300`…`IMPL-323`. **No requirement was invented and no count was padded**; every changed number is reproduced by the checker. |
 | v1.0 | 2026-08-04 | Created as Phase 20 deliverable 4. Records the ten new registers (**242** identifiers) as the payload for `TRACEABILITY_MATRIX.md` §2C, with a **zero-collision** result proved by quoted commands and three near-collisions documented — including `MP-SM-0n` in `MASTER_PRD.md`, confirmed a **true negative** by strict word-boundary grep rather than dismissed. Discloses that §0 of `PRD-004` first declared **118** `SM-c.n` (actual **105**, total **242** not 246) and that **the register was corrected rather than the chapters padded**. Maps all ten requirement groups, 3 ADRs, 9 events, 7 configurables to higher-ranked sources, and states that **0 of 28 acceptance criteria are currently executed**. |

@@ -45,18 +45,37 @@ promise false.
 
 | Prefix | Meaning | Count | Range | Chapter |
 |---|---|---|---|---|
-| `SM-c.n` | Functional requirement | **105** | `SM-1.1` … `SM-10.10` | 1–4, 6–8, 10 |
+| `SM-c.n` | Functional requirement | **107** | `SM-1.1` … `SM-10.12` | 1–4, 6–8, 10 |
 | `SM-BR-n` | Business rule | **16** | `SM-BR-1` … `SM-BR-16` | §9.1 |
 | `SM-XC-n` | Exclusion — must be impossible | **14** | `SM-XC-1` … `SM-XC-14` | §1.5 |
 | `SM-INV-n` | Domain invariant | **11** | `SM-INV-1` … `SM-INV-11` | §2.6 |
 | `SM-EV-n` | Domain event (**closed set**) | **10** | `SM-EV-1` … `SM-EV-10` | §7.4 |
 | `SM-PO-n` | Protected operation (**closed list**) | **12** | `SM-PO-1` … `SM-PO-12` | §8.2 |
-| `SM-AC-n` | Acceptance criterion | **28** | `SM-AC-1` … `SM-AC-28` | §10.4 |
+| `SM-AC-n` | Acceptance criterion | **30** | `SM-AC-1` … `SM-AC-30` | §10.4 |
 | `SMCFG-n` | Configurable parameter | **7** | `SMCFG-1` … `SMCFG-7` | §10.3 |
 | `LMD-n` | Library Members Directory requirement | **31** | `LMD-1` … `LMD-31` | 5 |
-| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **9** | `SM-GAP-1` … `SM-GAP-9` | §10.6 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **10** | `SM-GAP-1` … `SM-GAP-10` | §10.6 |
 
-**Total normative identifiers: 242** (of which **9** are proposed gaps carrying no authority).
+**Total base identifiers: 248** (of which **10** are proposed gaps carrying no authority).
+
+**Sub-lettered clarifications: 15.** The 2026-08-04 correction pass resolved review findings by *clarifying*
+existing requirements rather than renumbering the document. A clarification that narrows or completes an existing
+requirement takes that requirement's number with a letter suffix — `SM-7.1a` qualifies `SM-7.1`; `SM-4.5a`,
+`SM-4.5b` and `SM-4.5c` complete `SM-4.5`. This keeps every pre-existing identifier stable, which matters because
+`§10.7` tasks, `§10.4` criteria and three supporting documents cite them.
+
+| Suffixed identifier | Qualifies | Finding resolved |
+|---|---|---|
+| `SM-7.1a` | `SM-7.1` — scopes it to the domain layer | `RF-01` |
+| `LMD-24a`, `LMD-24b` | `LMD-24` — composition may not enter the domain layer or confer authority | `RF-01` |
+| `SM-7.12a`, `SM-7.12b` | `SM-7.12` — consent gate and payload limit for `SM-EV-10` | `RF-02` |
+| `SM-4.5a`, `SM-4.5b`, `SM-4.5c` | `SM-4.5` — behaviour when Date of Birth is absent | `RF-06` |
+| `SM-3.14a`, `SM-3.14b` | `SM-3.14` — which archived record restore targets | `RF-13` |
+| `LMD-15a`, `LMD-15b` | `LMD-15` — authoritative vs best-effort filters | `RF-11` |
+| `SM-7.7a`, `SM-7.7b` | `SM-7.7` — producer-side transactional outbox | `RF-19` |
+| `SM-8.4a` | `SM-8.4` — interim `TR-5` Parent denial, `SM-GAP-4` stays open | `RF-12` |
+
+**Total normative identifiers: 263** — 248 base + 15 sub-lettered. Every one is counted; none is hidden.
 
 **Per-chapter `SM-c.n` allocation**, published so that a gap is detectable rather than deniable:
 
@@ -71,7 +90,7 @@ promise false.
 | 7 Cross-Context Integrations | `SM-7.1` … `SM-7.17` | 17 |
 | 8 Security, Permissions & Audit | `SM-8.1` … `SM-8.17` | 17 |
 | **9 Business Rules & Edge Cases** | **numbered `SM-BR-1` … `SM-BR-16`** | 0 |
-| 10 Data, API, AC, Traceability, Tasks | `SM-10.1` … `SM-10.10` | 10 |
+| 10 Data, API, AC, Traceability, Tasks | `SM-10.1` … `SM-10.12` | 12 |
 
 > ⚠ **Chapters 5 and 9 deliberately contain no `SM-c.n` identifier.** Chapter 5 is the Directory capability and
 > numbers exclusively in `LMD-n` so that a read-composition requirement can never be mistaken for a domain
@@ -82,6 +101,12 @@ promise false.
 > `SM-c.n` over the range `SM-1.1` … `SM-10.6`. A mechanical count found **105** over `SM-1.1` … `SM-10.10`. The
 > register was wrong, not the chapters; the register was corrected. Per `SID-4.56`, a declared count that is not
 > checked is not a fact.
+>
+> **Corrected again on 2026-08-04** by the independent-review correction pass: `SM-c.n` **105 → 107**
+> (`SM-10.11`, `SM-10.12`), `SM-EV-n` **9 → 10** (`SM-EV-10`, finding `RF-02`), `SM-AC-n` **28 → 30**
+> (`SM-AC-29`, `SM-AC-30`), `SM-GAP-n` **9 → 10** (`SM-GAP-10`), plus 15 sub-lettered clarifications. Every count
+> in this section is reproduced by `tool/docs_check/prd004_traceability.py`, which is the only reason it may be
+> stated as fact.
 
 **Prefix collision check.** Verified mechanically against the authentication (`AUTH`/`BR`/`XC`/`AC`/`EV`/`CFG`/`PO`),
 Library (`LIB`/`LCFG`/`LXC`/`LEV`/`LAC`) and Student Identity (`SID`/`SID-BR`/`SXC`/`SPO`/`SEV`/`SID-INT`/`SID-INV`/
@@ -791,7 +816,7 @@ Parent, Platform Administrator (`LIB-4.1`, `AUTH-7.21`). **This module introduce
 | ID | Operation | `TR-1` | `TR-2` | `TR-3` | `TR-4` | `TR-5` |
 |---|---|---|---|---|---|---|
 | `SM-PO-1` | View member list (Directory) | ✅ | ✅ | ✅ | ❌ | ❌ |
-| `SM-PO-2` | View member detail | ✅ | ✅ | ✅ | own only | **GAP** `SM-GAP-4` |
+| `SM-PO-2` | View member detail | ✅ | ✅ | ✅ | own only | ❌ *(interim — `SM-8.4a`)* |
 | `SM-PO-3` | Register student | ✅ | ✅ | ✅ | self-enroll | ❌ |
 | `SM-PO-4` | Update profile | ✅ | ✅ | ✅ | own subset | ❌ |
 | `SM-PO-5` | Change status → `Inactive`/`Suspended` | ✅ | ✅ | ❌ | ❌ | ❌ |
@@ -799,9 +824,21 @@ Parent, Platform Administrator (`LIB-4.1`, `AUTH-7.21`). **This module introduce
 | `SM-PO-7` | Archive | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `SM-PO-8` | Restore from archive | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `SM-PO-9` | View/attach/remove documents | ✅ | ✅ | view | own only | ❌ |
-| `SM-PO-10` | View sensitive data (guardian contact, DOB) | ✅ | ✅ | ❌ | own only | **GAP** `SM-GAP-4` |
+| `SM-PO-10` | View sensitive data (guardian contact, DOB) | ✅ | ✅ | ❌ | own only | ❌ *(interim — `SM-8.4a`)* |
 | `SM-PO-11` | Directory export | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `SM-PO-12` | Bulk status change | ✅ | ✅ | ❌ | ❌ | ❌ |
+
+`SM-8.4a` — `TR-5` Parent is **denied** `SM-PO-2` and `SM-PO-10` in V1. This is an **interim decision, not a
+resolution**: the Parent Portal is Master PRD §8 module 5, a composition with no PRD, so no authoritative
+grant exists. Where no authorisation exists, `AP-3` requires deny, and `SID-4.56` forbids treating an
+uncheckable rule as satisfied. Proposed gap `SM-GAP-4` therefore **remains open**; when the Parent Portal
+authorisation model is defined, these two cells **MUST** be revisited, and widening them requires a document
+change under `SM-8.5`.
+
+> **Why the table no longer says "GAP".** A closed list (`SM-8.5`) cannot contain an undefined cell — an
+> undefined permission is not a permission, it is an unimplementable instruction, and an implementer facing it
+> would have to guess. Recording the safe interim value makes the list executable while the open question stays
+> visible in §10.6. The gap is not closed by this requirement; only the ambiguity is. Finding `RF-12`.
 
 `SM-8.5` — This list **MUST** be closed. A new protected operation requires a document change and an ADR if it
 alters a boundary.
@@ -958,36 +995,49 @@ fully operable (`LIB-16.2` pattern).
 
 ### 10.4 Acceptance criteria — `SM-AC-1` … `SM-AC-30`
 
-| ID | Criterion |
-|---|---|
-| `SM-AC-1` | Registering the same `(tenant, person)` twice yields one record and a typed rejection |
-| `SM-AC-2` | The same person registers at two tenants and receives two distinct `StudentRecordId`s |
-| `SM-AC-3` | `personId` cannot be null — schema rejects it |
-| `SM-AC-4` | No credential column exists on `student_record` (schema scan) |
-| `SM-AC-5` | Setting `EnrollmentStatus = Expired` is rejected — not in the closed set |
-| `SM-AC-6` | A student remains `Active` when their membership expires |
-| `SM-AC-7` | Archive with open dues is refused with a domain error |
-| `SM-AC-8` | Archive does not delete attendance or fee history |
-| `SM-AC-9` | `Archived → Suspended` is refused |
-| `SM-AC-10` | Every status change writes an audit entry with actor and reason |
-| `SM-AC-11` | Status history is append-only; an update attempt fails |
-| `SM-AC-12` | A tenant-less repository call is refused (`X-13`) |
-| `SM-AC-13` | A cross-tenant read returns nothing and is audited |
-| `SM-AC-14` | A client-supplied `tenant_id` cannot widen access |
-| `SM-AC-15` | `LCFG-5` disabled ⇒ Directory returns not-enabled; records remain intact |
-| `SM-AC-16` | Re-enabling `LCFG-5` restores the Directory with no data loss |
-| `SM-AC-17` | Directory list is paginated; page size above `SMCFG-2` is clamped |
-| `SM-AC-18` | No `library_member` table exists (schema scan) |
-| `SM-AC-19` | Directory shows enrollment and membership status as two fields |
-| `SM-AC-20` | An unavailable `BC-02` projection renders that section unavailable only |
-| `SM-AC-21` | Directory search results come from `BC-23`, not a domain table query |
-| `SM-AC-22` | A stale projection is never used in an authorisation decision |
-| `SM-AC-23` | `TR-3` Reception cannot archive; `TR-2` cannot archive; `TR-1` can |
-| `SM-AC-24` | Sensitive-data access is audited even with no state change |
-| `SM-AC-25` | Bulk partial failure reports per-record outcomes and is not success |
-| `SM-AC-26` | Repeating a mutating call with the same idempotency key changes nothing |
-| `SM-AC-27` | Documents are `FileRef`s; no byte or path is stored (schema scan) |
-| `SM-AC-28` | `StudentRecordId` appears in no global event or index |
+Every criterion **MUST** name the requirement it verifies. A criterion that verifies nothing is not an acceptance
+criterion, and a requirement that no criterion verifies is unenforced (`SID-4.56`). The `Verifies` column makes
+both conditions mechanically checkable.
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `SM-AC-1` | Registering the same `(tenant, person)` twice yields one record and a typed rejection | `SM-INV-6`, `SM-3.11`, `SM-3.13` |
+| `SM-AC-2` | The same person registers at two tenants and receives two distinct `StudentRecordId`s | `SM-3.15`, `MP-ASM-04` |
+| `SM-AC-3` | `personId` cannot be null — schema rejects it | `SM-INV-5`, `ADR-0011`, `ID-4` |
+| `SM-AC-4` | No credential column exists on `student_record` (schema scan) | `SM-XC-1`, `SM-4.2` |
+| `SM-AC-5` | Setting `EnrollmentStatus = Expired` is rejected — not in the closed set | `SM-2.2`, BC Map line 209 |
+| `SM-AC-6` | A student remains `Active` when their membership expires | `SM-2.4`, BC Map line 209 |
+| `SM-AC-7` | Archive with open dues is refused with a domain error | `SM-INV-4`, `E-09` |
+| `SM-AC-8` | Archive does not delete attendance or fee history | `SM-10.4`, `MP-GBR-14`, `ID-5` |
+| `SM-AC-9` | `Archived → Suspended` is refused | `SM-2.10`, `SM-2.13` |
+| `SM-AC-10` | Every status change writes an audit entry with actor and reason | `SM-8.10`, `SM-6.6` |
+| `SM-AC-11` | Status history is append-only; an update attempt fails | `SM-8.11`, `X-10` |
+| `SM-AC-12` | A tenant-less repository call is refused (`X-13`) | `SM-8.1`, `SM-10.3`, `X-13` |
+| `SM-AC-13` | A cross-tenant read returns nothing and is audited | `SM-8.1`, `MP-GBR-03` |
+| `SM-AC-14` | A client-supplied `tenant_id` cannot widen access | `SM-8.2`, `SM-10.9` |
+| `SM-AC-15` | `LCFG-5` disabled ⇒ Directory returns not-enabled; records remain intact | `LMD-3`, `LIB-16.6`, `LCFG-5` |
+| `SM-AC-16` | Re-enabling `LCFG-5` restores the Directory with no data loss | `LMD-3`, `LIB-16.6` |
+| `SM-AC-17` | Directory list is paginated; page size above `SMCFG-2` is clamped | `LMD-10`, `SMCFG-2` |
+| `SM-AC-18` | No `library_member` table exists (schema scan) | `SM-10.6`, `LMD-2`, `AR-1` |
+| `SM-AC-19` | Directory shows enrollment and membership status as two fields | `LMD-25`, BC Map line 209 |
+| `SM-AC-20` | An unavailable `BC-02` projection renders that section unavailable only | `LMD-21`, `SID-2.40` |
+| `SM-AC-21` | Directory search results come from `BC-23`, not a domain table query | `LMD-12`, `E-21` |
+| `SM-AC-22` | A stale projection is never used in an authorisation decision | `LMD-23`, `SID-2.38` |
+| `SM-AC-23` | `TR-3` Reception cannot archive; `TR-2` cannot archive; `TR-1` can | `SM-PO-7`, `LIB-4.1` |
+| `SM-AC-24` | Sensitive-data access is audited even with no state change | `SM-8.13`, `SM-7.17` |
+| `SM-AC-25` | Bulk partial failure reports per-record outcomes and is not success | `SM-8.17`, `SMCFG-4` |
+| `SM-AC-26` | Repeating a mutating call with the same idempotency key changes nothing | `SM-10.7`, `SM-7.7` |
+| `SM-AC-27` | Documents are `FileRef`s; no byte or path is stored (schema scan) | `SM-4.9`, `SM-4.10`, `SM-INV-10` |
+| `SM-AC-28` | `StudentRecordId` appears in no global event or index | `SM-7.15`, `ID-2`, `MP-GBR-03` |
+| `SM-AC-29` | With **no** `BC-10` Date of Birth, enrollment records minor-status `Unknown`, requires a guardian, keeps `ID-6`-gated capability closed, and cannot leave `Pending` until an age declaration is recorded and audited | `SM-INV-3`, `SM-4.5a`, `SM-4.5b`, `AP-3`, `SID-4.56` |
+| `SM-AC-30` | With two `Archived` records for one `(tenant, person)`, restore targets the most recently archived, leaves the other archived, and reports the count | `SM-3.14a`, `SM-3.14b`, `SM-10.2` |
+
+`SM-10.11` — Every requirement in this document **MUST** be verifiable by at least one criterion above, by a
+`§10.7` task, or be declared a proposed gap in §10.6. A requirement satisfying none of the three is **unmet** by
+`SID-4.56`, not merely untested.
+
+`SM-10.12` — A committed event **MUST** exist for `SM-EV-10` in the outbox whenever consent has been recorded and
+enrollment committed, and **MUST NOT** exist otherwise (`SM-7.7a`, `SM-7.12a`).
 
 ### 10.5 Traceability
 
@@ -1004,8 +1054,48 @@ fully operable (`LIB-16.2` pattern).
 | §9 rules, edge cases | `MP-GBR-03`, `MP-GBR-14`, `MP-GBR-16`, `MP-GBR-18`, `MP-GBR-19` · BC Map line 209 |
 | §10 data/API/config | `X-13` · `E-19`, `ADR-0013` · `LIB-16.2` pattern |
 
-**Traceability coverage: 233 of 242 identifiers (96.3%) carry an authoritative source. The remaining 9 are
-declared as proposed gaps below and carry none.**
+#### 10.5.1 Coverage — computed, not asserted
+
+The group table above shows *where* each chapter's authority comes from. It does **not** by itself prove
+per-identifier coverage, and an earlier version of this section claimed *"233 of 242 identifiers (96.3%)"* on the
+strength of it. That claim was **withdrawn**: the table has ten rows, so no per-identifier mapping existed, and
+`§0.2` itself says a declared count that is not checked is not a fact (finding `RF-07`).
+
+Coverage is now **computed** by [`tool/docs_check/prd004_traceability.py`](../../../tool/docs_check/prd004_traceability.py),
+which classifies every identifier at one of two tiers:
+
+- **DIRECT** — the defining line, or its section preamble, cites an external authority: a ranked document
+  identifier (`MP-*`, `SID-*`, `LIB-*`, `AUTH-*`), a BC Map rule/edge/prohibition, a ruling (`AR-n`) or an ADR.
+- **DERIVED** — it cites another identifier in this document that is itself traced. A requirement may legitimately
+  refine another requirement, and an acceptance criterion legitimately verifies a requirement rather than a ranked
+  document.
+
+An internal citation chain that never reaches an external source does **not** count: a document cannot be its own
+authority. `SM-GAP-*` are excluded from the denominator, because carrying no source is what makes a gap a gap.
+
+| Measure | Value |
+|---|---|
+| Base identifiers located | **248** |
+| Proposed gaps (excluded from denominator) | **10** |
+| Denominator — real requirements | **238** |
+| Traced **DIRECT** | **211** |
+| Traced **DERIVED** | **10** |
+| **Untraced** | **17** |
+| **Coverage** | **221 / 238 = 92.9%** |
+
+**The 17 untraced identifiers are named, not hidden:** `SM-2.8`, `SM-3.12`, `SM-3.13`, `SM-3.14`, `SM-3.16`,
+`SM-3.17`, `SM-4.1`, `SM-6.1`, `SM-6.3`, `SM-6.5`, `SM-6.6`, `SM-6.8`, `SM-8.11`, `SM-8.15`, `SM-10.1`,
+`SM-10.7`, `SM-10.8`.
+
+These are **not** proposed gaps. Each is a design decision this module is entitled to make within its own
+aggregate — how it de-duplicates, what its concurrency strategy is, what its table is called — and no ranked
+document legislates them. They are listed so that the 92.9% is falsifiable: re-run the script and it prints the
+same seventeen. Whether any deserves an external citation is a review question, not a defect this document can
+close by asserting a higher number.
+
+> **On the direction of the change.** The withdrawn figure was 96.3%; the computed figure is 92.9%, which is
+> **lower**. The correction pass did not tune the metric upward — it replaced an unverifiable claim with a
+> reproducible one and accepted the worse result.
 
 ### 10.6 PROPOSED GAPS — `SM-GAP-1` … `SM-GAP-10`
 
@@ -1017,7 +1107,7 @@ declared as proposed gaps below and carry none.**
 | `SM-GAP-1` | Retention period for student financial/attendance history | `ID-5` mandates retention "under legal basis" but names no duration. Inventing "7 years" would be fabricating a legal position |
 | `SM-GAP-2` | `enrollmentNumber` format and whether it is human-meaningful | `SM-INV-1` requires uniqueness only. `SMCFG-5`'s default is a placeholder pending a decision |
 | `SM-GAP-3` | Whether `Inactive` blocks seat allocation | `MP-GBR-16` covers membership validity and `SM-2.14` covers `Suspended`. `Inactive` is unspecified |
-| `SM-GAP-4` | `TR-5` Parent access to the Directory and to member detail | Parent Portal is Master PRD module 5, a composition with **no PRD**. Its authorisation model is undefined |
+| `SM-GAP-4` | `TR-5` Parent access to the Directory and to member detail | Parent Portal is Master PRD module 5, a composition with **no PRD**. Its authorisation model is undefined. **Still open.** `SM-8.4a` records an interim **deny** so that §8.2 remains an executable closed list; the interim value is a safe default under `AP-3`, not an answer to the question |
 | `SM-GAP-5` | Member tags and free-text member notes | Requested in the original brief; **no authoritative source anywhere in the repository**. Not specified |
 | `SM-GAP-6` | Emergency contact as a field distinct from guardian contact | `SID-2.8` names "parent/guardian contact" only |
 | `SM-GAP-7` | Directory visibility of members to other members | `LCFG-5` says the directory "exposes members to members" but no requirement defines the member-facing field set |
@@ -1029,9 +1119,15 @@ declared as proposed gaps below and carry none.**
 > the Master PRD, BC Map, Library PRD, Student Identity PRD or any ADR. Writing them as requirements would have
 > been the easiest way to appear thorough and the clearest violation of *"do not invent requirements."*
 
-### 10.7 Implementation tasks — `IMPL-300` … `IMPL-317`
+### 10.7 Implementation tasks — `IMPL-300` … `IMPL-323`
 
 Recorded for the backlog. **Nothing here is implemented by this document.**
+
+> **Six tasks were added by the 2026-08-04 correction pass** (finding `RF-09`). A set-difference of the
+> `Requirements` column against the register found 40 identifiers in no task at all — including `LMD-25`–`LMD-29`,
+> which fell into the gap between `IMPL-312` (`LMD-1`–`LMD-24`) and `IMPL-317` (`LMD-30`, `LMD-31`). That is the
+> signature of a hand-written range list that was never mechanically checked. `IMPL-318`–`IMPL-323` close the gap
+> and cover the corrections themselves.
 
 | Task | Scope | Module | Depends on | Requirements | Test requirement |
 |---|---|---|---|---|---|
@@ -1047,12 +1143,18 @@ Recorded for the backlog. **Nothing here is implemented by this document.**
 | `IMPL-309` | Document `FileRef` via `E-22` | `domain/library` | `IMPL-300` | `SM-4.9`–`SM-4.12` | No bytes/path stored |
 | `IMPL-310` | Status/archive/restore use cases | `domain/library` | `IMPL-301` | `SM-2.8`–`SM-2.16`, `SM-6.1` | Dues-block on archive |
 | `IMPL-311` | `SM-EV-1`…`9` publication | `domain/library` | `IMPL-301` | `SM-7.12`–`SM-7.17` | No `StudentRecordId` in global event |
-| `IMPL-312` | **Directory read composition (application layer)** | `app` | `IMPL-306`, `IMPL-310` | `LMD-1`–`LMD-24` | No domain-layer composition; no member table |
+| `IMPL-312` | **Directory read composition (application layer)** | `app` | `IMPL-306`, `IMPL-310` | `LMD-1`–`LMD-24`, `LMD-24a`, `LMD-24b`, `LMD-15a`, `LMD-15b` | No domain-layer composition; no member table; foreign filters labelled best-effort |
 | `IMPL-313` | **`LCFG-5` gating via `E-19`** | `app` | `IMPL-312` | `LMD-4`–`LMD-7` | Disabled ⇒ suppressed, data intact |
 | `IMPL-314` | Directory search via `BC-23` (`E-21`) | `app` | `IMPL-311` | `LMD-12`–`LMD-14` | No domain-table search query |
 | `IMPL-315` | `SM-PO-*` authorisation via `BC-18` | `app` | `IMPL-310` | `SM-8.5`–`SM-8.9` | Per-operation matrix test |
 | `IMPL-316` | Audit to `BC-24` incl. read auditing | `platform/audit` | `IMPL-310` | `SM-8.10`–`SM-8.14` | Append-only (`X-10`) |
 | `IMPL-317` | Bulk operations + export caps | `app` | `IMPL-312`, `IMPL-315` | `LMD-30`, `LMD-31`, `SM-10.7` | Partial failure reported as partial |
+| `IMPL-318` | **Status · expiry · archived-filter indicators** | `app` | `IMPL-312` | `LMD-25`–`LMD-29` | Two independent badges (`SM-AC-19`); archived hidden by default |
+| `IMPL-319` | **Field-level authz, history & operations surface** | `app` | `IMPL-306` | `SM-6.1`–`SM-6.8` | Unauthorised field edit refused; history read from `BC-24` |
+| `IMPL-320` | **`SM-EV-10` consent-gated person link** | `domain/library` | `IMPL-305`, `IMPL-311` | `SM-EV-10`, `SM-7.12a`, `SM-7.12b`, `SM-10.12` | Not emitted absent consent; carries no `StudentRecordId` |
+| `IMPL-321` | **Producer-side transactional outbox** | `platform/event` | `IMPL-302`, `IMPL-311` | `SM-7.7a`, `SM-7.7b` | Commit-without-publish impossible; tenant-partitioned |
+| `IMPL-322` | **Absent-DOB minor-status path** | `domain/library` | `IMPL-308` | `SM-4.5a`–`SM-4.5c`, `SM-INV-3` | `SM-AC-29` passes; fail-safe to minor |
+| `IMPL-323` | **Deterministic restore among archived records** | `domain/library` | `IMPL-307` | `SM-3.14a`, `SM-3.14b` | `SM-AC-30` passes |
 
 **18 tasks.** `IMPL-305` depends on `IMPL-214` (the `E-13` ACL task already registered against `PRD-004` in
 `PRD_REGISTRY.md` line 224).

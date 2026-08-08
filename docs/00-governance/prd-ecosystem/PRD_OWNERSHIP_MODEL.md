@@ -147,54 +147,76 @@ rule 2. Product Owner and Technical Owner are the roles as defined in §2.2.
 | `PRD-002` | Library Management v1.0 | Product Owner | Library Domain (`BC-01`…`BC-09`, `BC-06`) | ARB | Platform Engineering |
 | `PRD-003` | Student Identity & Profile v1.0 | Product Owner | Person Domain (`BC-10`) | ARB | Platform Engineering |
 
-`PRD-002`'s Domain Owner covers the contexts the Library PRD undisputedly owns.
-Its claim to `BC-19`, `BC-25` and `BC-29` is **Contested** — see §4.4.
+`PRD-002`'s Domain Owner covers the contexts the Library PRD undisputedly owns —
+including `BC-06`, which the BC Map assigns to Library Management. Its header's
+additional claim to `BC-19`, `BC-25` and `BC-29` is **Contested** — see §4.4.
 
-### 4.2 Planned PRDs — V1
+### 4.2 Planned PRDs — named in Master PRD §31
 
-| PRD | Subject | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
-|---|---|---|---|---|---|
-| `PRD-004` | Attendance & Seating | Product Owner | Library Domain | ARB | Platform Engineering |
-| `PRD-005` | Fee & Payments | Product Owner | Library Domain | ARB | Platform Engineering |
-| `PRD-006` | Notifications & Communication | Product Owner | Communication Platform | ARB | Platform Engineering |
-| `PRD-007` | Reporting & Analytics | Product Owner | Analytics Platform | ARB | Platform Engineering |
-| `PRD-008` | Subscription & Entitlement | Product Owner | Business Platform | ARB | Platform Engineering |
-| `PRD-009` | Search & Discovery | Product Owner | Search Platform | ARB | Platform Engineering |
-| `PRD-010` | Audit & Compliance | Product Owner | Audit Platform | ARB | Platform Engineering |
-| `PRD-011` | Integration & Connectors | Product Owner | Integration Platform | ARB | Platform Engineering |
-| `PRD-012` | Security & Access Control | Product Owner | Security Platform | ARB | Platform Engineering |
-| `PRD-012a` | Security Automation *(reserved)* | Product Owner | Security Platform | ARB | Platform Engineering |
-| `PRD-013` | Tenancy & Onboarding | Product Owner | **Contested** — see §4.4 | ARB | Platform Engineering |
-| `PRD-014` | Observability | Product Owner | Observability Platform | ARB | Platform Engineering |
-| `PRD-017` | File & Media Services | Product Owner | **Contested** — see §4.4 | ARB | Platform Engineering |
-| `PRD-022` | SaaS Billing (`BC-20`) | Product Owner | Business Platform | ARB | Platform Engineering |
+Names and contexts are taken **verbatim** from `PRD_REGISTRY.md` §4.1. Domain
+Owner is derived from the context's owning module (rule 3), not chosen.
 
-### 4.3 Planned PRDs — V2 and later
+| PRD | Subject | Context | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|---|
+| `PRD-004` | Student Management | `BC-01` Enrollment | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-005` | Membership Management | `BC-02` Membership | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-006` | Attendance Management | `BC-03` Attendance | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-007` | Seat Management | `BC-04` Seating | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-008` | Revenue & Finance | `BC-05` Fee & Collection | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-009` | Analytics & Reports | `BC-26` Analytics Read Model | Product Owner | Analytics Platform | ARB | Platform Engineering |
+| `PRD-010` | Notifications & Communication | `BC-22` Notification Delivery | Product Owner | Communication Platform | ARB | Platform Engineering |
+| `PRD-011` | AI Super Assistant | `BC-27` AI Assistance | Product Owner | AI Platform | ARB | Platform Engineering |
+| `PRD-012` | Security & Automation | ⚠ SECURITY platform + `BC-28` Workflow | Product Owner | ⚠ **Split** — see note | ARB | Platform Engineering |
+| `PRD-012a` | Security Automation *(reserved)* | SECURITY platform (rank 2) | Product Owner | Security Platform | ARB | Platform Engineering |
+| `PRD-012b` | Workflow Orchestration *(reserved)* | `BC-28` Workflow | Product Owner | Workflow Platform | ARB | Platform Engineering |
 
-| PRD | Subject | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
-|---|---|---|---|---|---|
-| `PRD-015` | Configuration Management | Product Owner | **Contested** (`BC-25`) — see §4.4 | ARB | Platform Engineering |
-| `PRD-016` | Workflow & Approvals | Product Owner | Workflow Platform | ARB | Platform Engineering |
-| `PRD-012b` | Workflow Orchestration *(reserved)* | Product Owner | Workflow Platform | ARB | Platform Engineering |
-| `PRD-018` | AI & Recommendations | Product Owner | AI Platform | ARB | Platform Engineering |
-| `PRD-019` | Social & Study Network | Product Owner | Social Domain (`BC-11`…`BC-13`) | ARB | Platform Engineering |
-| `PRD-020` | Marketplace | Product Owner | Business Platform | ARB | Platform Engineering |
-| `PRD-021` | Multi-branch Operations | Product Owner | Tenancy Platform | ARB | Platform Engineering |
-| `PRD-023` | *Unassigned — see §4.4* | — | — | — | — |
+**`PRD-012` cannot have a single Domain Owner as currently scoped.** It spans the
+SECURITY platform (rank 2) and `BC-28` Workflow (rank 6) — two owners at two
+ranks. `PRD_REGISTRY.md` §4.1 already records that this *"violates the Single
+Owner Rule (EA §10.1.1)"*, which is why `PRD-012a`/`PRD-012b` are reserved. This
+model does not resolve that split; it records that assignment rule 1 (one holder
+per role) **cannot be satisfied** until the document is divided. That is a finding
+about `PRD-012`'s scope, not a defect in this model.
 
-`PRD-023` is **not** allocated here. `ADR-0013` §7 leaves open whether `BC-25`
-Configuration needs its own PRD or folds into `PRD-015`; allocating a number now
-would pre-empt a decision that ADR explicitly declines to make.
+### 4.3 Planned PRDs — named in Master PRD §8.1 and §8
 
-### 4.4 Contested Domain Ownership — three contexts, one ADR
+| PRD | Subject | Context | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|---|
+| `PRD-013` | Tenancy | `BC-19` | Product Owner | ⚠ **Contested** — see §4.4 | ARB | Platform Engineering |
+| `PRD-014` | Entitlement | `BC-21` | Product Owner | Business Platform | ARB | Platform Engineering |
+| `PRD-015` | Search Indexing | `BC-23` | Product Owner | Search Platform | ARB | Platform Engineering |
+| `PRD-016` | Audit Trail | `BC-24` | Product Owner | Audit Platform | ARB | Platform Engineering |
+| `PRD-017` | File & Media | `BC-29` | Product Owner | ⚠ **Contested** — see §4.4 | ARB | Platform Engineering |
+| `PRD-018` | Offline Sync | `BC-30` | Product Owner | Services Platform | ARB | Platform Engineering |
+| `PRD-019` | Integration | `BC-31` | Product Owner | Integration Platform | ARB | Platform Engineering |
+| `PRD-020` | Trust & Safety | `BC-13` ⚠ `[CORE]` | Product Owner | Social Domain | ARB | Platform Engineering |
+| `PRD-021` | Social Graph & Messaging | `BC-11`, `BC-12` | Product Owner | Social Domain | ARB | Platform Engineering |
+| `PRD-022` | SaaS Billing | `BC-20` Subscription & Billing | Product Owner | Business Platform | ARB | Platform Engineering |
 
-Per rule 6, three PRDs carry **Contested** in the Domain Owner column:
+### 4.4 Contested Domain Ownership
+
+Per rule 6, two registered PRDs carry **Contested** in the Domain Owner column,
+and a third context has no registered claimant at all:
 
 | Context | Claimed by | BC Map *"Owning Platform"* | Resolving ADR |
 |---|---|---|---|
-| `BC-19` Shared Core / Tenancy | `PRD-002` header; `PRD-013` | Shared Core | [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) |
-| `BC-29` Platform Services / File & Media | `PRD-002` header; `PRD-017` | Platform Services | `ADR-0013` |
-| `BC-25` Configuration | `PRD-002` header; `PRD-015` | Configuration | `ADR-0013` §7 (open) |
+| `BC-19` Tenancy / Shared Core | `PRD-002` header; `PRD-013` | Shared Core | [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) |
+| `BC-29` File & Media | `PRD-002` header; `PRD-017` | Platform Services | `ADR-0013` |
+| `BC-25` Configuration | `PRD-002` header **only** | Configuration | `ADR-0013` §7 (open) |
+
+**`BC-25` is the asymmetric case, and assigning ownership systematically is what
+exposed it.** `PRD-015` is *Search Indexing* (`BC-23`), not configuration
+management — so unlike `BC-19` and `BC-29`, `BC-25` has **no** registered PRD
+contesting the Library PRD's header claim. There is nothing to assign it to.
+
+This is exactly why `ADR-0013` §7 declines to resolve `BC-25` by default:
+transferring it would require inventing a PRD, and *"do not invent requirements"*
+forbids that. `PRD-023` is therefore **not** allocated in this document either —
+allocating a number would pre-empt the decision `ADR-0013` §7 explicitly leaves
+open (own PRD, or fold into `PRD-013`).
+
+Until `ADR-0013` is Accepted, the other three roles remain assigned for every
+affected PRD, so each dispute has an accountable owner.
 
 **This is the finding worth carrying forward.** The three contested rows are not
 a defect in this model — they are the reason a document-ownership model was
@@ -228,12 +250,19 @@ process alone.
 
 Verifiable without judgement:
 
-1. Every PRD in `PRD_REGISTRY.md` §§3–4 appears exactly once in §4 above.
-   **23 of 23** (`PRD-023` deliberately withheld — §4.3).
-2. No row names a person. Every entry is a role or an organizational unit.
-3. Every role in §2.2 traces to prior repository usage (§2.3).
-4. Every **Contested** row names a resolving ADR.
-5. No PRD file was modified to produce this document.
+1. Every PRD in `PRD_REGISTRY.md` §§3–4 appears exactly once in §4 above —
+   **23 of 23**, plus the two reserved sub-numbers `PRD-012a`/`PRD-012b`.
+   `PRD-000` (Master PRD) is the register itself, not an owned deliverable.
+   `PRD-023` does not exist and is deliberately **not** allocated (§4.4).
+2. Every PRD name and context in §4 is quoted from `PRD_REGISTRY.md` §§3–4, not
+   paraphrased. Verified by comparing identifier-and-name pairs against the
+   register.
+3. No row names a person. Every entry is a role or an organizational unit.
+4. Every role in §2.2 traces to prior repository usage (§2.3).
+5. Every **Contested** row names a resolving ADR.
+6. One PRD (`PRD-012`) is recorded as **unassignable** under rule 1 rather than
+   given a fabricated single owner.
+7. No PRD file was modified to produce this document.
 
 ---
 
@@ -255,4 +284,5 @@ Verifiable without judgement:
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0** | 2026-08-04 | Created. Closes `PGA-08`. Four roles, derived from six existing governance rules rather than chosen (§2.1), with vocabulary reused from `ADR-0001`, `ADR-0011`, `ADR-0012` and Matrix §11 rather than invented (§2.3). All 23 registered PRDs assigned; `PRD-023` deliberately withheld pending `ADR-0013` §7. Three PRDs carry **Contested** Domain Ownership — `BC-19`, `BC-29`, `BC-25` — each naming `ADR-0013` as its resolution path. **No PRD was modified, no requirement created or reinterpreted, and no personal name recorded.** |
+| **v1.0** | 2026-08-04 | Created. Closes `PGA-08`. Four roles, derived from six existing governance rules rather than chosen (§2.1), with vocabulary reused from `ADR-0001`, `ADR-0011`, `ADR-0012` and Matrix §11 rather than invented (§2.3). All 23 registered PRDs assigned plus the two reserved sub-numbers. Two findings surfaced *by* the act of assigning ownership: (1) **`PRD-012` is unassignable** under rule 1 as currently scoped — it spans the SECURITY platform (rank 2) and `BC-28` Workflow (rank 6), which the register already flags as violating the Single Owner Rule; recorded as unassignable rather than given a fabricated owner. (2) **`BC-25` Configuration has no registered claimant** — `PRD-015` is *Search Indexing*, so unlike `BC-19` and `BC-29` there is no second PRD contesting the Library PRD's header, and nothing to transfer it to; `PRD-023` is therefore **not** allocated, since that would pre-empt `ADR-0013` §7. **No PRD was modified, no requirement created or reinterpreted, and no personal name recorded.** |
+| **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the model was relied on. **One defect found and corrected before commit:** §§4.2–4.3 had been drafted with *invented* PRD subjects (`PRD-004` as "Attendance & Seating", `PRD-015` as "Configuration Management") instead of the register's authoritative names (**Student Management**, **Search Indexing**). Every name and context is now quoted from `PRD_REGISTRY.md` §§4.1–4.2 and verified pair-by-pair; the tables are also re-sectioned to match the register's own §31 / §8.1 split. The error mattered beyond tidiness: mis-reading `PRD-015` as a configuration PRD had produced a false claim that `BC-25` was contested *between two PRDs*, when in fact it has **no** registered claimant — which is the stronger finding and the reason `ADR-0013` §7 must stay open. **Version remains v1.0: a defect in an unreleased document, not an amendment to a published one.** |

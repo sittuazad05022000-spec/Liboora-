@@ -317,7 +317,7 @@ requirements — the specific outcome prohibited.
 | ID | Finding | Severity | Note |
 |---|---|---|---|
 | `PGA-07` | **`14A` has no version/status header row.** Its three sibling documents each carry one; `14A` carries a provenance comment block instead | Cosmetic | Version established externally by `DOCUMENTATION_BASELINE.md` §3.3 (v1.0). Not a defect — it is a *verbatim capture* whose format was deliberately preserved. Recorded so a future registry pass does not read it as unversioned |
-| `PGA-08` | **No PRD has a named owner.** No document-owner field exists anywhere in `docs/30-product/` | Medium | See §8 |
+| ~~`PGA-08`~~ | **No PRD has a named owner.** No document-owner field exists anywhere in `docs/30-product/` | Medium | ✅ **CLOSED 2026-08-04** — resolved role-based, not by naming individuals. See §8, §8.1 |
 | `PGA-09` | **Master PRD §31 lists the ADR set as `ADR-0001`…`ADR-0010`**; twelve are accepted | Low | Staleness only. `ADR-INDEX.md` is the register of record and is current |
 | `PGA-10` | **`MP-DEP-06` says the boundary checker is *"not implemented"*** | Low | Superseded — `IMPL-014` exists and runs as gate 3. `IMPLEMENTATION_STATUS.md` §2 is the correction of record and already names this class of staleness |
 
@@ -334,12 +334,36 @@ Two different rules are involved, and the repository satisfies one and not the o
 | Rule | Status | Evidence |
 |---|---|---|
 | *"Every bounded context must have explicit ownership"* | ✅ **Satisfied** | Every context has exactly one owning module; enforced mechanically by `tool/check_module_boundaries.dart` |
-| *"No duplicate ownership between PRDs"* | ✅ **Satisfied** | Verified across all 31 contexts — `PRD_REGISTRY.md` §6 |
-| *"Every PRD has a named owner"* | ⛔ **Not satisfied** | **No document-owner field exists** in any PRD |
+| *"No duplicate ownership between PRDs"* | ⛔ **Not satisfied** — *corrected 2026-08-04* | **`PGA-11`**: `BC-19`, `BC-29` and `BC-25` are each claimed by the `Library_PRD_v1.md` header **and** by the BC Map's *"Owning Platform"* column. Resolution path: `ADR-0013` |
+| *"Every PRD has an explicit owner model"* | ✅ **Satisfied** — *closed 2026-08-04* | [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md): four roles for all 23 PRDs |
+| *"Every PRD has a **named** owner"* | ⛔ **Not satisfied, by design** | No personal name exists to record, and recording one would fabricate accountability. Ownership is role-based — model §1.1 |
 
-The only `Owner` fields found name a bounded context (`INVITATION_SECURITY_SPECIFICATION.md` → `BC-19`) or a
-library's proprietor (`LIB-6.x`). Filling in the registry's `Owner` column would require inventing names, so it
-records *Unassigned* for all 22 and raises this finding instead.
+**Row 2 was previously recorded as satisfied.** That reading came from `PRD_REGISTRY.md` §6, which listed ownership
+only for PRDs that already existed — so the three contexts claimed by a *planned* PRD never appeared alongside the
+Library PRD's header claim. The clean result was an artefact of the sample, not a property of the ecosystem. Corrected
+here rather than left standing, because a false "satisfied" is more damaging than an open finding.
+
+### 8.1 How `PGA-08` was closed
+
+The original disposition read: *"filling in the registry's `Owner` column would require inventing names."* That was
+correct about the constraint and wrong about the conclusion. **Document ownership never required names** — only
+accountable roles, and four such roles were already in use in `ADR-0001`, `ADR-0011`, `ADR-0012` and Dependency
+Matrix §11 (*"product owner"*, *"Architecture Review Board"*, *"Principal Enterprise Architect"*, *"DDD reviewer"*).
+
+[`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) derives the four roles from six existing governance rules rather
+than importing a framework, and records **roles only** — rule 7.4: *"never record a personal name."*
+
+Assigning ownership systematically surfaced two findings that an empty column had concealed:
+
+| # | Finding | Recorded as |
+|---|---|---|
+| 1 | **`PRD-012` is unassignable** under one-holder-per-role as scoped — it spans the SECURITY platform (rank 2) and `BC-28` Workflow (rank 6) | Model §4.2 note; already flagged by `PGA-06` and §4.1 as violating the Single Owner Rule |
+| 2 | **`BC-25` Configuration has no registered claimant** — `PRD-015` is *Search Indexing*, so unlike `BC-19`/`BC-29` no second PRD contests the Library PRD's header | Model §4.4; `ADR-0013` §7 left deliberately open |
+
+The second is the more consequential: it means `BC-25` cannot be resolved by transferring it, because there is nothing
+to transfer it to. Creating a PRD to receive it would be inventing a requirement.
+
+**An empty ownership field hides a conflict as effectively as a wrong one.**
 
 ---
 
@@ -357,7 +381,7 @@ authorised to make.
 | `PGA-05` | Write `PRD-004`…`012`, `PRD-022` | **Yes** |
 | `PGA-06` | Split into `PRD-012a` / `PRD-012b` when written | No |
 | `PGA-07` | Nothing. Recorded only | No |
-| `PGA-08` | A governance decision on document ownership | No |
+| ~~`PGA-08`~~ | **CLOSED 2026-08-04** — [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md), role-based, 23 of 23. Surfaced two further findings (§8.1) | No |
 | `PGA-09`, `PGA-10` | Nothing, or a Master PRD refresh at next version | No |
 | `PGA-11` | **ADR settling `BC-19` / `BC-29` ownership**, then a versioned amendment to the `Library_PRD_v1.md` header | Not yet — **blocks `PRD-013` and `PRD-017`** |
 
@@ -395,4 +419,5 @@ authorised to make.
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. 10 findings: 18 missing PRDs, **0 duplicates**, **0 genuine overlaps**, 2 architectural conflicts, 1 mandated split, 6 cases where splitting is explicitly rejected. **`PGA-01` and `PGA-02` are new** — neither appears in `LIBRARY_PRD_ALIGNMENT.md` or `STUDENT_IDENTITY_ALIGNMENT.md`, and both were found by cross-reading documents that are individually self-consistent. Neither was fixed: both live in frozen documents and `DOCUMENTATION_BASELINE.md` §7 requires an ADR first. No requirement was invented, modified or withdrawn; no PRD was edited. |
+| **v1.0** | 2026-08-04 | **`PGA-08` closed** by [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) — four organizational roles for all 23 registered PRDs, derived from six existing governance rules and using vocabulary already present in `ADR-0001`/`ADR-0011`/`ADR-0012`/Matrix §11 rather than a new framework. The original disposition (*"filling in the `Owner` column would require inventing names"*) was right about the constraint and wrong about the conclusion: document ownership needs accountable **roles**, not names. §8 also **corrects a stale row of its own**: *"No duplicate ownership between PRDs"* was recorded ✅ Satisfied, which `PGA-11` contradicts — the clean reading was an artefact of `PRD_REGISTRY.md` §6 sampling only PRDs that already existed. Assigning ownership systematically surfaced two further findings (§8.1): **`PRD-012` is unassignable** under one-holder-per-role as scoped, and **`BC-25` has no registered claimant** because `PRD-015` is *Search Indexing* — so `BC-25` cannot be resolved by transfer, and `ADR-0013` §7 must stay open. No requirement was invented, modified or withdrawn; no PRD was edited. |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the analysis was relied on. **`PGA-11` added** — the one genuine overlap in the repository: `Library_PRD_v1.md` declares `BC-19` and `BC-29` as owning contexts while `MASTER_PRD.md` §8.1 lists both as needing PRDs, which this register carries as `PRD-013` and `PRD-017`. Found while verifying `PRD_REGISTRY.md` §6's claim of zero duplicate ownership — a claim that was true only because §6 listed ownership for existing PRDs and ignored planned ones, so the register contradicted itself two sections apart. The *"0 genuine overlaps"* headline is corrected to **1**, missing PRDs to **19** (`PRD-022` was cited by two companion documents without ever being registered), and architectural conflicts to **3**. `PGA-11` was **not fixed**: `Library_PRD_v1.md` is frozen Rank 3. No requirement was invented, modified or withdrawn; no PRD was edited. |

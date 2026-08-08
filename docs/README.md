@@ -58,6 +58,7 @@ of these disagrees with a PRD, the PRD is right.
 | [`PRD_DEPENDENCY_GRAPH.md`](./00-governance/prd-ecosystem/PRD_DEPENDENCY_GRAPH.md) | Which PRD depends on which, and by what kind of dependency. 17 edges, no cycles |
 | [`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./00-governance/prd-ecosystem/PRODUCT_IMPLEMENTATION_ROADMAP.md) | The order PRDs should be **written and built**, Waves 0–5. Complements `40-implementation/IMPLEMENTATION_ROADMAP.md`, which sequences *tasks* |
 | [`PRD_GAP_ANALYSIS.md`](./00-governance/prd-ecosystem/PRD_GAP_ANALYSIS.md) | 11 findings. Missing PRDs, one genuine ownership overlap (`PGA-11`), and **six cases where a new PRD would be the wrong answer** |
+| [`PRD_OWNERSHIP_MODEL.md`](./00-governance/prd-ecosystem/PRD_OWNERSHIP_MODEL.md) | Who owns each PRD, as **four organizational roles** — never a personal name. All 23 assigned; closes `PGA-08` |
 | [`PRD_LIFECYCLE.md`](./00-governance/prd-ecosystem/PRD_LIFECYCLE.md) | Discovery → Draft → Architecture Review → Requirements Review → Traceability → Tasks → **Freeze** → Implementation → Verification, with the exit gate for each |
 
 ## 10-architecture

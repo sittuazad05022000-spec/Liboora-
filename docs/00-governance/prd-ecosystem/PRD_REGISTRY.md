@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | PRD Registry — the single source of truth for the PRD ecosystem |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Active register of record |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04` |
@@ -90,7 +90,7 @@ Six documents carry normative product requirements. **Four of them are one PRD.*
 | **Domain** | Platform governance |
 | **Current status** | **`FROZEN`** |
 | **Version** | v1.7 |
-| **Owner** | **Unassigned — no named owner exists in the repository** (see §5) |
+| **Owner** | Product Owner · Domain Owner: *n/a — this is the register itself* · Architecture Owner: ARB · Technical Owner: Platform Engineering — [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) |
 | **Dependencies** | None. It is the root |
 | **Dependents** | **All** — every PRD below, plus the Bounded Context Map and Enterprise Architecture |
 | **Related ADRs** | `ADR-0011` amends `MP-GBR-02` |
@@ -115,7 +115,7 @@ specifications for individual modules."* Reading §8 as a requirement source is 
 | **Domain** | Identity & Access `[GENERIC]` |
 | **Current status** | **`FROZEN`** |
 | **Version** | **v2.0** — self-described *"PRODUCTION-READY — AUTHORITATIVE"* |
-| **Owner** | **Unassigned** (see §5) |
+| **Owner** | Product Owner · Domain Owner: Identity Platform (`BC-18`) · Architecture Owner: ARB · Technical Owner: Platform Engineering — [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) §4.1 |
 | **Dependencies** | `PRD-000` global rules |
 | **Dependents** | `PRD-002` (authorisation for protected operations, invitation acceptance) · `PRD-003` (atomic account+identity creation, `E-12`) |
 | **Related ADRs** | `ADR-0002` · `ADR-0003` · `ADR-0004` · `ADR-0005` · `ADR-0006` · `ADR-0007` · **`ADR-0008`** (declares this the official baseline) |
@@ -145,7 +145,7 @@ and zero body text. Recorded in `PRD-V2-GOVERNANCE-NOTE.md`; the empty slots are
 | **Domain** | Library Management `[CORE]` |
 | **Current status** | **`FROZEN`** |
 | **Version** | v1.0 (Startup MVP) |
-| **Owner** | **Unassigned** (see §5) |
+| **Owner** | Product Owner · Domain Owner: Library Domain (undisputed contexts incl. `BC-06`); ⚠ **Contested** for `BC-19`, `BC-25`, `BC-29` · Architecture Owner: ARB · Technical Owner: Platform Engineering — [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) §4.1, §4.4 |
 | **Dependencies** | `PRD-000` · `PRD-001` (all authorisation) · `PRD-003` (`E-13` identity resolution) |
 | **Dependents** | None among existing PRDs. **Nine unwritten PRDs depend on it** — see [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) |
 | **Related ADRs** | **`ADR-0009`** (invitation is a revocable claim, never a credential) · **`ADR-0010`** (public preview served anonymously from a projection) · rulings `AR-1`, `AR-3`, `AR-4` |
@@ -172,7 +172,7 @@ see [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §7.
 | **Domain** | Platform Identity — *its own tier*, below every domain module and above every capability platform |
 | **Current status** | **`IMPLEMENTING`** |
 | **Version** | v1.0 (Startup MVP) |
-| **Owner** | **Unassigned** (see §5) |
+| **Owner** | Product Owner · Domain Owner: Person Domain (`BC-10`) · Architecture Owner: ARB · Technical Owner: Platform Engineering — [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) §4.1 |
 | **Dependencies** | `PRD-000` (amended `MP-GBR-02`) · `PRD-001` (`E-12` atomic creation) |
 | **Dependents** | `PRD-002` (`E-13` ACL) · future `MP-FUT-01`…`05` · `BC-11`…`BC-13` as **consumers** |
 | **Related ADRs** | **`ADR-0011`** (the governing decision) · `ADR-0012` (scaffold port-inversion debt) |
@@ -302,9 +302,32 @@ separate PRDs, and [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §6 explains w
 
 ---
 
-## 5. Ownership — the field the repository cannot fill
+## 5. Ownership — closed by a role-based model
 
-**Every `Owner` field above reads *Unassigned*, and that is a finding, not an omission in this register.**
+**Status: closed 2026-08-04 by [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md).** Every `Owner` field above now
+carries four organizational roles. The original finding is preserved below because it explains *why* the model is
+role-based, and the reasoning still governs: **no personal name may ever be recorded here.**
+
+The gap was resolved not by finding names but by establishing that names were the wrong thing to record. Four roles —
+**Product Owner · Domain Owner · Architecture Owner · Technical Owner** — were *derived* from six governance rules
+this repository already enforced, using vocabulary (*"product owner"*, *"Architecture Review Board"*, *"DDD
+reviewer"*) that `ADR-0001`, `ADR-0011`, `ADR-0012` and Dependency Matrix §11 already used.
+
+Two findings surfaced *because* ownership was assigned systematically, neither of which was visible while every field
+read *Unassigned*:
+
+* **`PRD-012` is unassignable** under the one-holder-per-role rule as currently scoped — it spans the SECURITY
+  platform (rank 2) and `BC-28` Workflow (rank 6). §4.1 already flagged this as violating the Single Owner Rule;
+  the ownership model records it as unassignable rather than inventing a single owner to fill the cell.
+* **`BC-25` Configuration has no registered claimant.** `PRD-015` is *Search Indexing*, so unlike `BC-19` and
+  `BC-29` there is no second PRD contesting the Library PRD's header claim — there is nothing to transfer it to.
+  This is why `ADR-0013` §7 leaves `BC-25` open and why no `PRD-023` is allocated.
+
+**Assigning ownership is what made these visible.** An empty field hides a conflict as effectively as a wrong one.
+
+### 5.1 The original finding (preserved)
+
+**Every `Owner` field above read *Unassigned*, and that was a finding, not an omission in this register.**
 
 Searched: no PRD carries a document owner, a team name or an accountable individual. The only `Owner` strings in
 `docs/30-product/` are `Owner Name` (a library's proprietor, `LIB-6.x`), *"Owner authentication credential"*, and
@@ -315,8 +338,14 @@ architectural rule *"every bounded context must have explicit ownership"* is sat
 one owning module, enforced by `tool/check_module_boundaries.dart`. The governance rule *"every PRD has an owner"*
 is **not** satisfied, because no such field exists anywhere.
 
-Filling these in would require inventing names. This register records the gap instead; disposition in
+Filling these in would require inventing names. This register recorded the gap instead; disposition in
 [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §8.
+
+**That last paragraph was right about the constraint and wrong about the conclusion.** Inventing names was indeed
+inadmissible — but *document ownership* never required names, only accountable roles, and the roles already existed
+in the repository's own decision records. The distinction this section drew between **context ownership** (an
+architectural fact, enforced in code) and **document ownership** (a governance fact) is preserved intact by the
+model; conflating the two is what produced `PGA-11`.
 
 ---
 
@@ -388,7 +417,9 @@ dependency edge, recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.
 | Missing **V1** PRDs | **19** — 9 from §31 (§4.1) + 9 from §8.1 (§4.2) + `PRD-022` (§4.3) |
 | Duplicate PRDs | **0** — no requirement is specified twice |
 | **Contested bounded contexts** | **2** — `BC-19`, `BC-29` (§6.1, `PGA-11`) |
-| PRDs with a named owner | **0 of 23** |
+| PRDs with an explicit owner model | **23 of 23** — role-based, [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) |
+| PRDs with a *named individual* owner | **0 of 23** — by design; §5 and model §1.1 forbid recording personal names |
+| PRDs unassignable under the one-holder-per-role rule | **1** — `PRD-012`, which spans two owners at two ranks (§5) |
 
 **Reserved, not counted above:** `PRD-012a` and `PRD-012b` (§4.1). They are the two documents `PRD-012` becomes
 and are not separately registered until `PRD-012` is retired, so counting them now would double-count one gap.
@@ -408,6 +439,9 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 5. If this register disagrees with a PRD, **fix this register**.
 6. Adding a bounded context to a PRD's ownership is an **architecture change requiring an ADR** — see
    `LIB-26.2` and `ADR-INDEX.md` process step 1.
+7. The `Owner` field records **roles only**. A personal name is never recorded here — see
+   [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) §1.1 and §7.4. If this register and the ownership model
+   disagree, **fix this register**: the model is the authority on ownership (model §7.5).
 
 ---
 
@@ -424,6 +458,7 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) ·
 [`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./PRODUCT_IMPLEMENTATION_ROADMAP.md) ·
 [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) ·
+[`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) ·
 [`PRD_LIFECYCLE.md`](./PRD_LIFECYCLE.md)
 
 ---
@@ -433,4 +468,5 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. 23 PRDs registered — 4 existing (6 files), 19 planned. Freeze status derived from `DOCUMENTATION_BASELINE.md` §3/§7 rather than from PRD self-declaration, because **no PRD declares its own freeze state** (§2.1). Ownership recorded as **unassigned for all 23** because no document-owner field exists anywhere in the repository (§5). Bounded-context ownership verified across all 31 contexts (§6). **No requirement was created, modified, reinterpreted or withdrawn; no PRD was edited.** |
+| **v1.1** | 2026-08-04 | **Ownership closed.** All four `Owner` fields (§§3.1–3.4) changed from *Unassigned* to four organizational roles, and §5 rewritten from *"the field the repository cannot fill"* to *"closed by a role-based model"*, with the original finding preserved verbatim as §5.1 because its reasoning still governs — **no personal name may ever be recorded here**. The gap was resolved by establishing that names were the wrong thing to record: document ownership needs accountable *roles*, and the roles already existed in `ADR-0001`, `ADR-0011`, `ADR-0012` and Dependency Matrix §11. Maintenance rule 7 added (roles only; this register yields to the ownership model). §7 counts now distinguish *explicit owner model* (**23 of 23**) from *named individual* (**0 of 23**, by design). Two findings surfaced **because** ownership was assigned systematically, neither visible while every field read *Unassigned*: `PRD-012` is **unassignable** under one-holder-per-role as scoped (two owners at two ranks — already flagged in §4.1 as violating the Single Owner Rule), and **`BC-25` has no registered claimant** because `PRD-015` is *Search Indexing*, not configuration — so nothing exists to transfer it to, which is why `ADR-0013` §7 stays open and no `PRD-023` is allocated. **No requirement was created, modified or withdrawn; no PRD file was edited; no bounded-context ownership changed.** |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the register was relied on. Three self-inconsistencies found and corrected: (1) `BC-20` Subscription & Billing was described as *"a genuine V1 gap"* while sitting in the table for contexts with **no** PRD obligation, and was cited as `PRD-022` by two companion documents without ever being registered — now registered as `PRD-022` in a new §4.3, and the old §4.3 renumbered §4.4; (2) `PRD-012a`/`PRD-012b` were cited by the roadmap and gap analysis but existed in no register — now reserved explicitly under §4.1; (3) the missing-V1 arithmetic read *"9 from §31 + 8 from §8.1 + `BC-20`"*, which summed to 18 while §8.1 yields **nine** PRDs — corrected to 19. (4) §6 asserted *"no context is claimed by two PRDs"* while §4.2 of the same register assigned `BC-19` to `PRD-013` and `BC-29` to `PRD-017` — contexts §3.3 gives to `PRD-002`. The clean result was an artefact of listing ownership only for PRDs that exist; the register contradicted itself two sections apart. §6 now records both as **contested**, states the three pieces of evidence, applies the precedence reading without claiming to settle it, and raises `PGA-11`. **Version remains v1.0: these were defects in an unreleased document, not amendments to a published one.** No requirement, PRD or architectural decision was touched. |

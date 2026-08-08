@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Baseline** | **BASELINE-2026-08-04** — locked |
+| **Baseline** | **BASELINE-2026-08-04-B** — locked. Supersedes `BASELINE-2026-08-04` |
 | **Product** | Multi-tenant SaaS for libraries and study halls in India |
 | **Stack** | Flutter 3.35.4 / Dart 3.9.2 (version-locked) · modular monolith |
 
@@ -44,7 +44,13 @@ constrains product, product constrains implementation.
 |---|---|
 | [`DOCUMENTATION_BASELINE.md`](./00-governance/DOCUMENTATION_BASELINE.md) | **Which documents are authoritative, at which versions, in what precedence order.** Read before resolving any disagreement |
 | [`adr/ADR-INDEX.md`](./00-governance/adr/ADR-INDEX.md) | Register of architecture decisions |
-| [`adr/ADR-0001`](./00-governance/adr/ADR-0001-modular-monolith.md) … [`ADR-0011`](./00-governance/adr/ADR-0011-global-person-identity.md) | The **eleven** accepted decisions. **Binding.** All are short — read all eleven. `ADR-0011` is the only one that **amends** the Bounded Context Map's Identity Triad and a Master PRD global rule |
+| [`adr/ADR-0001`](./00-governance/adr/ADR-0001-modular-monolith.md) … [`ADR-0012`](./00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) | The first twelve accepted decisions. **Binding.** `ADR-0011` amends the Bounded Context Map's Identity Triad and a Master PRD global rule. `ADR-0012` is the dated waiver register that keeps gate 3 honest |
+| [`adr/ADR-0013`](./00-governance/adr/ADR-0013-capability-context-ownership.md) | **Accepted 2026-08-04.** Capability-context ownership. Amended the Library PRD to v1.1 and re-issued the baseline |
+| [`adr/ADR-0014`](./00-governance/adr/ADR-0014-tenant-key-and-audit-mutation-enforcement.md) | **Accepted 2026-08-04.** `X-10` and `X-13` enforcement. Took Matrix §10.2 coverage from **10 of 12 to 12 of 12** |
+| [`adr/ADR-0015`](./00-governance/adr/ADR-0015-library-prd-finance-context-identifiers.md) | **Accepted 2026-08-04.** Corrects three Library PRD cells that named the wrong finance contexts (`PGA-01`) |
+| [`adr/ADR-0016`](./00-governance/adr/ADR-0016-e22-consumer-list-includes-bc-10.md) | **Accepted 2026-08-04.** Adds `BC-10` to integration edge `E-22`, required by `SID-4.35` (`PGA-02`) |
+| [`adr/ADR-0017`](./00-governance/adr/ADR-0017-bc-25-configuration-ownership.md) | **Accepted 2026-08-04.** `BC-25` Configuration is a named V1 product module (Master PRD §8 module 18) and needs a dedicated PRD. Registers `PRD-023` |
+| [`BRANCH_PROTECTION_STATUS.md`](./00-governance/BRANCH_PROTECTION_STATUS.md) | ⛔ **Branch protection is NOT enabled on `main`,** and cannot be on this GitHub plan. Six verification probes, and the exact manual configuration required |
 | [`DOCUMENTATION_AUDIT-001.md`](./00-governance/DOCUMENTATION_AUDIT-001.md) | The enterprise review that produced this baseline. 34 findings, plus the Library second pass (§6B) |
 
 ### 00-governance/prd-ecosystem
@@ -54,19 +60,19 @@ of these disagrees with a PRD, the PRD is right.
 
 | Document | Purpose |
 |---|---|
-| [`PRD_REGISTRY.md`](./00-governance/prd-ecosystem/PRD_REGISTRY.md) | **The register of record.** 23 PRDs — 4 exist, 19 planned. Status, version, contexts, dependencies, ADRs, tasks and freeze state for each |
+| [`PRD_REGISTRY.md`](./00-governance/prd-ecosystem/PRD_REGISTRY.md) | **The register of record.** **24** PRDs — 4 exist, 20 planned. Status, version, contexts, dependencies, ADRs, tasks and freeze state for each |
 | [`PRD_DEPENDENCY_GRAPH.md`](./00-governance/prd-ecosystem/PRD_DEPENDENCY_GRAPH.md) | Which PRD depends on which, and by what kind of dependency. 17 edges, no cycles |
 | [`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./00-governance/prd-ecosystem/PRODUCT_IMPLEMENTATION_ROADMAP.md) | The order PRDs should be **written and built**, Waves 0–5. Complements `40-implementation/IMPLEMENTATION_ROADMAP.md`, which sequences *tasks* |
-| [`PRD_GAP_ANALYSIS.md`](./00-governance/prd-ecosystem/PRD_GAP_ANALYSIS.md) | 11 findings. Missing PRDs, one genuine ownership overlap (`PGA-11`), and **six cases where a new PRD would be the wrong answer** |
-| [`PRD_OWNERSHIP_MODEL.md`](./00-governance/prd-ecosystem/PRD_OWNERSHIP_MODEL.md) | Who owns each PRD, as **four organizational roles** — never a personal name. All 23 assigned; closes `PGA-08` |
+| [`PRD_GAP_ANALYSIS.md`](./00-governance/prd-ecosystem/PRD_GAP_ANALYSIS.md) | 11 findings. `PGA-01`, `PGA-02` and `PGA-11` **closed** 2026-08-04 by `ADR-0015`/`ADR-0016`/`ADR-0013`. `PGA-06` is **confirmed but not executed** — the `PRD-012` split is authorized, not done |
+| [`PRD_OWNERSHIP_MODEL.md`](./00-governance/prd-ecosystem/PRD_OWNERSHIP_MODEL.md) | Who owns each PRD, as **four organizational roles** — never a personal name. All **24** assigned; closes `PGA-08`. §4.4 records where this document's own reasoning was wrong about `BC-25` |
 | [`PRD_LIFECYCLE.md`](./00-governance/prd-ecosystem/PRD_LIFECYCLE.md) | Discovery → Draft → Architecture Review → Requirements Review → Traceability → Tasks → **Freeze** → Implementation → Verification, with the exit gate for each |
 
 ## 10-architecture
 
 | Document | Version | Purpose |
 |---|---|---|
-| [`LIBOORA_BOUNDED_CONTEXT_MAP.md`](./10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md) | **v1.3** | 31 bounded contexts, the Identity Triad, 26 integration edges, aggregates and invariants. §4 amended by `ADR-0011` |
-| [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](./10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md) | **v1.1** | Dependency laws, ranks, allow-lists, 14 forbidden edges. Rank `R7.5` added by `ADR-0011` |
+| [`LIBOORA_BOUNDED_CONTEXT_MAP.md`](./10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md) | **v1.5** | 31 bounded contexts, the Identity Triad, 26 integration edges, aggregates and invariants. §4 amended by `ADR-0011`; edge `E-22` amended by `ADR-0016` |
+| [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](./10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md) | **v1.3** | Dependency laws, ranks, allow-lists, 14 forbidden edges. Rank `R7.5` added by `ADR-0011`; enforcement coverage **12 of 12** per `ADR-0014` |
 | [`ARCHITECTURE_RULINGS.md`](./10-architecture/ARCHITECTURE_RULINGS.md) | **v1.2** | `AR-1`…`AR-7`. Four promoted to ADRs; `AR-1`, `AR-3`, `AR-4` remain binding here. The `AR-4` invitation-security deferral is **lifted** |
 | [`LIBOORA_ENTERPRISE_ARCHITECTURE.md`](./10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md) | v2.1 | The architecture tree. **Descriptive** — follows the PRDs, never leads them |
 
@@ -84,7 +90,7 @@ of these disagrees with a PRD, the PRD is right.
 | [`authentication/Authentication_PRD_v2.md`](./30-product/authentication/Authentication_PRD_v2.md) | **v2.0** | **The authentication baseline.** 588 requirements, 11 chapters |
 | [`authentication/prd-v2/`](./30-product/authentication/prd-v2/) | v2.0 | Chapter sources of the above |
 | [`authentication/PRD-V2-GOVERNANCE-NOTE.md`](./30-product/authentication/PRD-V2-GOVERNANCE-NOTE.md) | v2.0 | Provenance. **Not part of the specification** |
-| [`library/Library_PRD_v1.md`](./30-product/library/Library_PRD_v1.md) | **v1.0** | **The Library baseline.** §§1–25, ~130 requirements |
+| [`library/Library_PRD_v1.md`](./30-product/library/Library_PRD_v1.md) | **v1.1** | **The Library baseline.** §§1–25, ~130 requirements. Amended by `ADR-0013` (capability-context ownership) and `ADR-0015` (finance contexts) — **no requirement changed** |
 | [`library/14A-Library-Discovery-And-Enrollment.md`](./30-product/library/14A-Library-Discovery-And-Enrollment.md) | v1.0 | Discovery, enrollment, **the public field allow-list** |
 | [`library/14B-Public-Library-Preview.md`](./30-product/library/14B-Public-Library-Preview.md) | **v1.0** | Anonymous preview, protected operations `PO-1`…`PO-12`, intent preservation |
 | [`library/INVITATION_SECURITY_SPECIFICATION.md`](./30-product/library/INVITATION_SECURITY_SPECIFICATION.md) | **v1.0** | 71 requirements. Entropy, expiry, revocation, single use, validation, audit, rate limiting |
@@ -109,7 +115,9 @@ touching anything in this module.
 | [`DEVELOPER_HANDOFF.md`](./40-implementation/DEVELOPER_HANDOFF.md) | **Start here.** Orientation, traps, honest state of the codebase |
 | [`IMPLEMENTATION_ROADMAP.md`](./40-implementation/IMPLEMENTATION_ROADMAP.md) | **Ten phases** (0–9), ordered by dependency. Critical path identified |
 | [`AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md`](./40-implementation/AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md) | Keep open while coding. Twelve blocks plus anti-patterns |
-| [`TASK-D10-remove-demo-surfaces.md`](./40-implementation/TASK-D10-remove-demo-surfaces.md) | **P0 release blocker.** Three demo surfaces across five files |
+| [`IMPLEMENTATION_BLOCKER_REGISTER.md`](./40-implementation/IMPLEMENTATION_BLOCKER_REGISTER.md) | ⛔ **Read before planning a release.** The five open blockers `BLK-01`…`BLK-05` in one place, two of them P0. **Records only — nothing in it is implemented** |
+| [`IMPLEMENTATION_STATUS.md`](./40-implementation/IMPLEMENTATION_STATUS.md) | **v1.2.** The authoritative record of what is built and what is enforced. Where another document disagrees, this one wins — and where a *command* disagrees with this one, the command wins |
+| [`TASK-D10-remove-demo-surfaces.md`](./40-implementation/TASK-D10-remove-demo-surfaces.md) | **P0 release blocker** (`BLK-01`). Three demo surfaces across five files. Its nine `app → domain/library` imports are why gate 3 is red |
 | [`DEFINITION_OF_DONE.md`](./40-implementation/DEFINITION_OF_DONE.md) | **v1.2.** Three gates: merge, requirement, release. Covers authentication, Library **and** Student Identity |
 | [`LIBRARY_IMPLEMENTATION_TASKS.md`](./40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md) | 23 open Library tasks, `IMPL-100`…`IMPL-127`, with acceptance criteria and per-task traps |
 | [`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./40-implementation/STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) | 25 open Student Identity tasks, `IMPL-200`…`IMPL-226`. **Two are migrations of existing code** |

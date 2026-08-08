@@ -94,14 +94,27 @@ Written first because **every** subsequent PRD references their identifiers and 
 **Why Tenancy precedes Audit.** An audit entry without a tenant key is a cross-tenant leak in the one store that
 must never leak — `MP-RSK-01`, *"highest-severity failure class in the system"* (`X-13`).
 
-> ⚠ **Wave 1 has an entry gate that Waves 2–5 do not.** `PRD-013` (`BC-19`) and `PRD-017` (`BC-29`) cannot state
-> their own scope until `PGA-11` is settled, because `Library_PRD_v1.md` — frozen, Rank 3 — declares both contexts
-> as **owning contexts** in its header. Writing either PRD first would either contradict a frozen document or
-> silently narrow it.
+> ✅ **Wave 1's entry gate is CLEARED as of 2026-08-04. All Wave 1 items may now start.**
 >
-> **Sequence: ADR settling `BC-19` / `BC-29` ownership → then 1.1 and 1.4.** The ADR is small; the evidence is
-> already assembled in [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-11`, and the Library PRD's own data
-> table already reads *"References by id"* for `BC-29`. Items 1.2 and 1.3 are unaffected and may start immediately.
+> The gate was: `PRD-013` (`BC-19`) and `PRD-017` (`BC-29`) could not state their own scope while
+> `Library_PRD_v1.md` — frozen, Rank 3 — declared both contexts as **owning contexts** in its header.
+> [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) settled it and its migration was executed: the
+> header now separates the one context the Library PRD **owns** (`BC-06`) from the three it **consumes through
+> ports**, and the PRD stands at **v1.1**. `PGA-11` is **closed** — `BC-19` → `PRD-013`, `BC-29` → `PRD-017`, and
+> `BC-25` → the newly registered **`PRD-023`** per
+> [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md).
+>
+> **Both PRDs can now be written without contradicting or silently narrowing a frozen document** — the outcome the
+> gate existed to protect. `PRD-013`'s scope is the tenancy *capability*; the `TenantOrganisation` and
+> `StaffAssignment` aggregates remain `PRD-002`'s (`ADR-0013` §5), so `PRD-013` must **not** claim them.
+>
+> **One item is added to Wave 1 by this resolution:** `PRD-023` Settings & Configuration
+> (`platform/configuration`, rank 3). It belongs in Wave 1 for the same reason as the rest — `E-19` makes every
+> context a consumer of `BC-25`, and the `LCFG-*` resolution semantics currently have no owning document.
+>
+> ⚠ **Wave 1 still carries a different, unrelated blocker.** `IMPL-020` (SMS provider / DLT registration) is P0
+> with a multi-week external approval lead time and gates any OTP delivery. It is **not** affected by this
+> resolution and should be started first regardless of PRD sequencing.
 
 ### Wave 2 — The core library product
 

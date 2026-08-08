@@ -35,13 +35,13 @@ each was found by cross-reading two documents that agree individually and disagr
 
 | Category | Count | Severity |
 |---|---|---|
-| **Missing PRDs** | **19** | 1 Critical · 5 High · 13 Medium |
+| **Missing PRDs** | **20** — `PRD-023` added 2026-08-04 by `ADR-0017` | 1 Critical · 5 High · 14 Medium |
 | **Duplicate PRDs** | **0** — no requirement is specified twice | — |
-| **Overlapping responsibilities** | **1 genuine finding** (`PGA-11`), spanning **3 contexts** — `BC-19`, `BC-25`, `BC-29` · 2 that look like overlaps and are not | High |
-| **Missing dependencies** | **1** (`PGA-02`) | Medium |
-| **Architectural conflicts** | **3** (`PGA-01`, `PGA-02`, `PGA-11`) | 1 High · 2 Medium |
+| **Overlapping responsibilities** | **0 open.** `PGA-11` spanned **3 contexts** — `BC-19`, `BC-25`, `BC-29` — and is **CLOSED 2026-08-04** by `ADR-0013` + `ADR-0017` · 2 that look like overlaps and are not | ~~High~~ **Closed** |
+| **Missing dependencies** | **0 open.** `PGA-02` **CLOSED 2026-08-04** by `ADR-0016` | ~~Medium~~ **Closed** |
+| **Architectural conflicts** | **0 open.** All three — `PGA-01`, `PGA-02`, `PGA-11` — **CLOSED 2026-08-04** by `ADR-0015`, `ADR-0016`, `ADR-0013`+`ADR-0017` | ~~1 High · 2 Medium~~ **Closed** |
 | **Requirements with no owning PRD** | **3 classes** (`PGA-03`…`PGA-05`) | 1 Critical · 2 High |
-| **PRDs that should be split** | **1** (`PGA-06`) | High |
+| **PRDs that should be split** | **1** (`PGA-06`) — **split CONFIRMED** 2026-08-04, **not yet executed**: `PRD-012a`/`PRD-012b` are reserved and authorised, but `PRD-012` is retired only when `PRD-012a` is *opened* | High — **remains open** |
 | **PRDs that should NOT be split** | **6 cases** | — |
 
 ---
@@ -50,7 +50,17 @@ each was found by cross-reading two documents that agree individually and disagr
 
 ### `PGA-01` — The Library PRD attributes finance to `BC-11`…`BC-13`, which are social contexts
 
-**Severity: Medium** · **Type: cross-document conflict in a frozen document** · **Status: raised, unresolved**
+**Severity: Medium** · **Type: cross-document conflict in a frozen document** · **Status: ✅ CLOSED 2026-08-04**
+
+> ✅ **CLOSED by [`ADR-0015`](../adr/ADR-0015-library-prd-finance-context-identifiers.md).** All three cells now name
+> **`BC-05` Fee & Collection** (money student → library) and **`BC-20` Subscription & Billing** (money library →
+> LIBOORA). `LXC-7`'s dangling pointer to a non-existent *"Finance PRD"* now resolves to Master PRD §8 module 5 and
+> `PRD-022`. `Library_PRD_v1.md` → **v1.1**.
+>
+> **Three table cells changed. Zero requirement identifiers changed** — proven by set-diff: 129 `LIB`, 10 `LCFG`,
+> 10 `LXC`, 22 `LEV`, 12 `LAC`, identical before and after. The analysis below correctly assessed this as **Medium**
+> rather than High: all three rows already said *"read projection — never authoritative here"*, so the **ownership
+> boundary was right and only the citation was wrong.**
 
 `Library_PRD_v1.md` names `BC-11`…`BC-13` as the owner of finance data in **three** places:
 
@@ -90,7 +100,16 @@ exact failure the freeze exists to prevent**, even when the correction is obviou
 
 ### `PGA-02` — `PRD-003` cites integration edge `E-22`, whose consumer list omits `BC-10`
 
-**Severity: Medium** · **Type: missing dependency / stale edge table** · **Status: raised, unresolved**
+**Severity: Medium** · **Type: missing dependency / stale edge table** · **Status: ✅ CLOSED 2026-08-04**
+
+> ✅ **CLOSED by [`ADR-0016`](../adr/ADR-0016-e22-consumer-list-includes-bc-10.md).** `E-22`'s consumer list is now
+> `BC-01, BC-10, BC-14`. BC Map → **v1.5**; context count **31, unchanged**; mode `CF`, *Sync port* mechanism and
+> the *"Domain holds a `FileRef`, never bytes or a raw storage path"* note all preserved verbatim.
+>
+> **This was the one finding in the closure phase where a frozen Rank 4 document was genuinely *incomplete* rather
+> than merely mis-citing.** BC Map line 292 states that an unlisted edge **does not exist**, so `SID-4.35` — a Rank 3
+> requirement — depended on an edge the register denied. Root cause: `ADR-0011`'s migration extended `E-21`'s
+> consumer list with `BC-10` but not `E-22`'s. `Student_Identity_PRD_v1.md` was **not** edited.
 
 Bounded Context Map §7.3, exactly:
 
@@ -118,7 +137,23 @@ otherwise be discovered by a developer implementing `IMPL-212` and finding no la
 
 ### `PGA-11` — `BC-19` and `BC-29` are claimed by a frozen PRD and by the Master PRD's own PRD backlog
 
-**Severity: High** · **Type: duplicate ownership** · **Status: raised, unresolved**
+**Severity: High** · **Type: duplicate ownership** · **Status: ✅ CLOSED 2026-08-04 — all three contexts**
+
+> ✅ **CLOSED.** `BC-19` → `PRD-013` and `BC-29` → `PRD-017` by
+> [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md); `BC-25` → **`PRD-023`** by
+> [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md). **Contested contexts: 3 → 0.**
+>
+> `ADR-0013` resolved it by separating **context ownership** from **aggregate ownership**: a capability context is
+> owned by its platform, while the aggregates a domain builds inside it stay with that domain. `Library_PRD_v1.md`
+> line 10 was amended (v1.0 → **v1.1**) to distinguish the one context it owns (`BC-06`) from the three it consumes
+> through ports — **written and accepted *before* the frozen document was touched**, per `ADR-INDEX.md` Process
+> step 1. `TenantOrganisation`, `StaffAssignment` and the `LibraryBranding` values remain owned by `PRD-002`:
+> **no requirement moved, and `PRD-002` did not lose scope.**
+>
+> `BC-25` needed a second ADR because it was the **asymmetric** case — no rival PRD existed to transfer it to. The
+> resolution was **not** to invent one: `MASTER_PRD.md` §8 **module 18** already names *Settings & Configuration* →
+> `BC-25`, `[GENERIC]`, **V1**, at Rank 1, and `PRD_REGISTRY.md` §4.3 had already registered `PRD-022` on identical
+> grounds from **module 17**, the preceding row of the same table.
 
 This is the one genuine overlap in the repository, and it is the finding this analysis most nearly missed —
 because both claims are individually reasonable and neither document is wrong on its own terms.
@@ -266,7 +301,21 @@ a library's revenue and LIBOORA's revenue in the same aggregate.
 
 ### `PGA-06` — `Security & Automation` must never be written as one PRD
 
-**Severity: High** · **Status: decided by the Master PRD; recorded here so it is not undone**
+**Severity: High** · **Status: ⚠ split **CONFIRMED** 2026-08-04 — **execution still pending**
+
+> ⚠ **Confirmed, not closed.** The Governance Closure Phase confirmed that the split into `PRD-012a` Security
+> Automation (SECURITY platform, rank 2, `[GENERIC]`, V1) and `PRD-012b` Workflow Orchestration (`BC-28`,
+> `[SUPPORTING]`, **V2**) is **already authorised** by Master PRD §8 *Correction 2* — a **Rank 1** instruction — and
+> needs no new decision or ADR. The reservations at `PRD_REGISTRY.md` §4.1 and `PRD_OWNERSHIP_MODEL.md` §4.2 are the
+> correct and complete expression of it.
+>
+> **It is deliberately NOT marked closed.** `PRD_REGISTRY.md` §8 rule 1 ties `PRD-012`'s retirement to the day
+> `PRD-012a` is *opened*. Neither document has been written, so `PRD-012` remains `PLANNED`, remains the one PRD
+> **unassignable** under the one-holder-per-role rule, and this finding stays **open**. Confirmation is not
+> execution — recording it as closed would be fabricating progress.
+>
+> **No requirement was changed:** `PRD-012` has never been written, so there is no requirement text to divide. The
+> split is of a *reservation*, not of a specification.
 
 Master PRD §8 Correction 2, verbatim:
 
@@ -385,11 +434,39 @@ Assigning ownership systematically surfaced two findings that an empty column ha
 The second is the more consequential: it means `BC-25` cannot be resolved by transferring it, because there is nothing
 to transfer it to. Creating a PRD to receive it would be inventing a requirement.
 
+> **✅ Correction, 2026-08-04 — the last sentence above was wrong, and the error is instructive.**
+>
+> *"Creating a PRD to receive it would be inventing a requirement"* assumed `BC-25` had no basis in a governing
+> document. It has one: `MASTER_PRD.md` §8 **module 18** names *Settings & Configuration* → `BC-25`, `[GENERIC]`,
+> **V1** — in the **Rank 1** document. So `PRD-023` records a module that already exists in the specification; it
+> invents nothing, and it carries **zero** requirements (`PLANNED`).
+>
+> The mistake was not the principle but the **search**: this analysis derived its PRD candidates from Master PRD
+> §31 and §8.1, and `BC-25` is in neither — it is absent from §8.1 *because it **does** have a module entry*, which
+> is the very fact that proves it is a module. `PRD_REGISTRY.md` §4.3 had already applied this reasoning to
+> `PRD-022` (§8 **module 17**). Resolved by [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md).
+>
+> **Finding 1 is NOT corrected and remains open** — `PRD-012` is still unassignable; see `PGA-06`.
+
 **An empty ownership field hides a conflict as effectively as a wrong one.**
 
 ---
 
 ## 9. Disposition
+
+> **⚠ This section is superseded as of 2026-08-04.** It was written when *"no finding has been acted on"* was true.
+> Four findings have since been acted on, each through the ADR process it demanded:
+>
+> | Finding | Resolved by | Ranked document amended |
+> |---|---|---|
+> | `PGA-01` | [`ADR-0015`](../adr/ADR-0015-library-prd-finance-context-identifiers.md) | `Library_PRD_v1.md` → v1.1 (3 cells) |
+> | `PGA-02` | [`ADR-0016`](../adr/ADR-0016-e22-consumer-list-includes-bc-10.md) | BC Map → v1.5 (1 cell) |
+> | `PGA-11` | [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) + [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md) | `Library_PRD_v1.md` → v1.1 (1 header row) |
+> | `PGA-06` | **Confirmed only, not executed** — remains open | none |
+>
+> **Still open:** `PGA-03`…`PGA-05` (requirement classes with no owning PRD), `PGA-06` (split confirmed, not
+> executed), `PGA-07`, `PGA-09`, `PGA-10`, and the **20 missing V1 PRDs**. The text below is preserved because its
+> reasoning about *why* each finding needed an ADR first is what governed how they were then resolved.
 
 **No finding in this document has been acted on.** Each requires either an ADR or a decision this analysis is not
 authorised to make.
@@ -444,3 +521,4 @@ authorised to make.
 | **v1.0** | 2026-08-04 | **`PGA-08` closed** by [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) — four organizational roles for all 23 registered PRDs, derived from six existing governance rules and using vocabulary already present in `ADR-0001`/`ADR-0011`/`ADR-0012`/Matrix §11 rather than a new framework. The original disposition (*"filling in the `Owner` column would require inventing names"*) was right about the constraint and wrong about the conclusion: document ownership needs accountable **roles**, not names. §8 also **corrects a stale row of its own**: *"No duplicate ownership between PRDs"* was recorded ✅ Satisfied, which `PGA-11` contradicts — the clean reading was an artefact of `PRD_REGISTRY.md` §6 sampling only PRDs that already existed. Assigning ownership systematically surfaced two further findings (§8.1): **`PRD-012` is unassignable** under one-holder-per-role as scoped, and **`BC-25` has no registered claimant** because `PRD-015` is *Search Indexing* — so `BC-25` cannot be resolved by transfer, and `ADR-0013` §7 must stay open. No requirement was invented, modified or withdrawn; no PRD was edited. |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the analysis was relied on. **`PGA-11` added** — the one genuine overlap in the repository: `Library_PRD_v1.md` declares `BC-19` and `BC-29` as owning contexts while `MASTER_PRD.md` §8.1 lists both as needing PRDs, which this register carries as `PRD-013` and `PRD-017`. Found while verifying `PRD_REGISTRY.md` §6's claim of zero duplicate ownership — a claim that was true only because §6 listed ownership for existing PRDs and ignored planned ones, so the register contradicted itself two sections apart. The *"0 genuine overlaps"* headline is corrected to **1**, missing PRDs to **19** (`PRD-022` was cited by two companion documents without ever being registered), and architectural conflicts to **3**. `PGA-11` was **not fixed**: `Library_PRD_v1.md` is frozen Rank 3. No requirement was invented, modified or withdrawn; no PRD was edited. |
 | **v1.0** | 2026-08-04 | Phase 4 validation consistency pass. **`PGA-11` extended from two contested contexts to three** — `BC-25` Configuration added, on grounds identical to `BC-19`/`BC-29`. The finding is recorded as a dated *scope extension* under `PGA-11` rather than folded into its heading, because the reason it was missed is itself the lesson: this analysis compared **PRD against PRD**, and `BC-25` appears in neither Master PRD §31 nor §8.1, so it had only one PRD claimant and read as uncontested. Its actual collision is with `LIBOORA_BOUNDED_CONTEXT_MAP.md` line 134 (*Owning Platform: Configuration*, rank 3) — a **document-to-architecture** conflict the method was not built to detect. §2's overlap row now reads *1 genuine finding spanning 3 contexts*, matching §8, `ADR-0013` §2 and `PRD_REGISTRY.md` §6/§7. **No finding was reclassified or closed, no requirement touched, no frozen document edited; `ADR-0013` §7 remains open and no `PRD-023` is allocated.** |
+| **v1.0** | 2026-08-04 | **Governance Closure Phase — four findings closed through the ADR process, one confirmed but deliberately left open.** `PGA-01` **closed** by `ADR-0015`: the three Library PRD finance cells now name `BC-05` Fee & Collection and `BC-20` Subscription & Billing, and `LXC-7`'s pointer to a non-existent *"Finance PRD"* resolves to Master PRD §8 module 5 and `PRD-022`. `PGA-02` **closed** by `ADR-0016`: `E-22`'s consumer list gains `BC-10` (BC Map → v1.5), the one case where a frozen Rank 4 document was genuinely *incomplete* rather than mis-citing — BC Map line 292 held that an unlisted edge does not exist, so the Rank 3 requirement `SID-4.35` depended on an edge the register denied. `PGA-11` **closed** for all **three** contexts: `BC-19` → `PRD-013` and `BC-29` → `PRD-017` by `ADR-0013`, `BC-25` → `PRD-023` by `ADR-0017`; contested contexts **3 → 0**. **`PGA-06` is CONFIRMED but NOT closed** — the split is already authorised by Master PRD §8 *Correction 2*, but `PRD_REGISTRY.md` §8 rule 1 retires `PRD-012` only when `PRD-012a` is *opened*, and neither document has been written; marking it closed would fabricate progress. **This document also corrects two of its own conclusions rather than quietly overwriting them:** §8's *"creating a PRD to receive `BC-25` would be inventing a requirement"* was wrong — Master PRD §8 **module 18** already names the module at Rank 1, so the error was in the *search* (candidates were derived from §31 and §8.1, and `BC-25` is absent from §8.1 *because* it has a module entry), not in the principle; and §9's *"no finding has been acted on"* is superseded with a table of what was acted on and what remains. Missing V1 PRDs **19 → 20**. **Still open:** `PGA-03`…`PGA-05`, `PGA-06`, `PGA-07`, `PGA-09`, `PGA-10`, and 20 unwritten V1 PRDs. **No requirement was invented, modified, moved or withdrawn.** |

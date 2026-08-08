@@ -60,7 +60,7 @@ of these disagrees with a PRD, the PRD is right.
 
 | Document | Purpose |
 |---|---|
-| [`PRD_REGISTRY.md`](./00-governance/prd-ecosystem/PRD_REGISTRY.md) | **The register of record.** **24** PRDs — 4 exist, 20 planned. Status, version, contexts, dependencies, ADRs, tasks and freeze state for each |
+| [`PRD_REGISTRY.md`](./00-governance/prd-ecosystem/PRD_REGISTRY.md) | **v1.4 — the register of record.** **24** PRDs — **5 exist** (`PRD-004` `DRAFT` since 2026-08-04), 19 planned. Status, version, contexts, dependencies, ADRs, tasks and freeze state for each |
 | [`PRD_DEPENDENCY_GRAPH.md`](./00-governance/prd-ecosystem/PRD_DEPENDENCY_GRAPH.md) | Which PRD depends on which, and by what kind of dependency. 17 edges, no cycles |
 | [`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./00-governance/prd-ecosystem/PRODUCT_IMPLEMENTATION_ROADMAP.md) | The order PRDs should be **written and built**, Waves 0–5. Complements `40-implementation/IMPLEMENTATION_ROADMAP.md`, which sequences *tasks* |
 | [`PRD_GAP_ANALYSIS.md`](./00-governance/prd-ecosystem/PRD_GAP_ANALYSIS.md) | 11 findings. `PGA-01`, `PGA-02` and `PGA-11` **closed** 2026-08-04 by `ADR-0015`/`ADR-0016`/`ADR-0013`. `PGA-06` is **confirmed but not executed** — the `PRD-012` split is authorized, not done |
@@ -98,6 +98,11 @@ of these disagrees with a PRD, the PRD is right.
 | [`student-identity/Student_Identity_PRD_v1.md`](./30-product/student-identity/Student_Identity_PRD_v1.md) | **v1.0** | **The Student Identity baseline.** Chapters 1–5, 226 requirements, nine registers |
 | [`student-identity/README.md`](./30-product/student-identity/README.md) | v1.0 | Module index. Navigational — **not part of the specification** |
 | [`student-identity/STUDENT_IDENTITY_ALIGNMENT.md`](./30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md) | v1.0 | Validation record, `SC-1`…`SC-14`. **Not part of the specification** |
+| [`student-management/Student_Management_PRD_v1.md`](./30-product/student-management/Student_Management_PRD_v1.md) | **v1.0 `DRAFT`** | **`PRD-004` Student Management (`BC-01` Enrollment).** 10 chapters, **242** identifiers, ten registers. **Chapter 5 is the Library Members Directory** (`LMD-1`…`LMD-31`) as a **read composition** — no `LibraryMember` aggregate, no second member store. **Not frozen, not baselined, not ranked** |
+| [`student-management/PRD-004_ALIGNMENT_REPORT.md`](./30-product/student-management/PRD-004_ALIGNMENT_REPORT.md) | v1.0 | Alignment record: 3 conflicts, 4 duplicates avoided, 9 proposed gaps. **Not part of the specification** |
+| [`student-management/PRD-004_OWNERSHIP_MATRIX.md`](./30-product/student-management/PRD-004_OWNERSHIP_MATRIX.md) | v1.0 | Field-level ownership for every Directory column; `OWN-1`…`OWN-6`. **Not part of the specification** |
+| [`student-management/PRD-004_TRACEABILITY.md`](./30-product/student-management/PRD-004_TRACEABILITY.md) | v1.0 | Ten new registers, zero collisions, 96.3% coverage. **Not part of the specification** |
+| [`student-management/PRD-004_IMPLEMENTATION_TASKS.md`](./30-product/student-management/PRD-004_IMPLEMENTATION_TASKS.md) | v1.0 | `IMPL-300`…`IMPL-317`, five waves. ⛔ **Nothing implemented** |
 
 **"The Library PRD" means the four `library/` specification rows together**, never one alone. Most of its
 security-relevant constraints are cross-references between them.
@@ -121,7 +126,7 @@ touching anything in this module.
 | [`DEFINITION_OF_DONE.md`](./40-implementation/DEFINITION_OF_DONE.md) | **v1.2.** Three gates: merge, requirement, release. Covers authentication, Library **and** Student Identity |
 | [`LIBRARY_IMPLEMENTATION_TASKS.md`](./40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md) | 23 open Library tasks, `IMPL-100`…`IMPL-127`, with acceptance criteria and per-task traps |
 | [`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./40-implementation/STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) | 25 open Student Identity tasks, `IMPL-200`…`IMPL-226`. **Two are migrations of existing code** |
-| [`TRACEABILITY_MATRIX.md`](./40-implementation/TRACEABILITY_MATRIX.md) | **v1.2.** ~2,282 identifiers mapped to tasks and status — 1,517 authentication, ~422 Library, **343 Student Identity** |
+| [`TRACEABILITY_MATRIX.md`](./40-implementation/TRACEABILITY_MATRIX.md) | **v1.3.** ~2,524 identifiers mapped to tasks and status — 1,517 authentication, ~422 Library, 343 Student Identity, **242 Student Management (§2C)** |
 
 ## 90-archive
 
@@ -140,6 +145,8 @@ worth being able to read. Several archived documents assert that the Authenticat
 | **Authentication specification** | ✅ Complete — 588 requirements, ready to implement |
 | **Library specification** | ✅ Complete — §§1–25 + §14A + §14B + invitation security, ~422 identifiers |
 | **Student Identity specification** | ✅ Complete — Chapters 1–5, 343 identifiers, nine registers verified gap-free |
+| **Student Management specification** | 🟡 **`DRAFT`** — 10 chapters, 242 identifiers, ten registers. Includes the **Library Members Directory** as chapter 5. **Not reviewed, not frozen, 9 open `SM-GAP-*` decisions, 0 of 28 acceptance criteria tested** |
+| **Student Management code** | ❌ **None.** 18 open tasks, `IMPL-300`…`IMPL-317`, **none started** |
 | **Authentication code** | ⚠️ Exists but **unverified** against v2.0 |
 | **Library code** | ❌ **None.** 23 open tasks, `IMPL-100`…`IMPL-127` |
 | **Student Identity code** | ⚠️ Exists and implements the **superseded** pre-`ADR-0011` model — nullable `personId`, identity owned by `domain/social`. 25 open tasks, `IMPL-200`…`IMPL-226`, two of them migrations |

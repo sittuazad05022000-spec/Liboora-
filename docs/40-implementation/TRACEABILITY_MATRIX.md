@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Active — updated with every requirement implemented |
 | **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-04** |
-| **Baseline** | BASELINE-2026-08-04 |
-| **Sources** | Authentication PRD v2.0 · Library PRD v1.0 + §14A + §14B + Invitation Security Specification · **Student Identity & Profile PRD v1.0** |
-| **ADRs applied** | `ADR-0001` … **`ADR-0011`** |
+| **Baseline** | **BASELINE-2026-08-04-B** |
+| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.0 (`PRD-004`, `DRAFT`)** |
+| **ADRs applied** | `ADR-0001` … **`ADR-0017`** |
 
 ---
 
@@ -134,6 +134,68 @@ Citing `PO-3` when `SPO-3` was meant would move a requirement from one bounded c
 `SEV-n` versus `EV-n` versus `LEV-n` are three separate event registers — `BC-18`, Global Person Identity and
 Library Management respectively. They are numbered independently and overlap numerically on purpose; the prefix
 carries the producer.
+
+---
+
+## 2C. Identifier inventory — Student Management & Library Members Directory
+
+Verified mechanically against `Student_Management_PRD_v1.md` (`PRD-004`, **`DRAFT`**). Every range below is
+contiguous from 1 to its stated maximum.
+
+| Prefix | Meaning | Count | Range | Source |
+|---|---|---|---|---|
+| `SM-c.n` | Functional requirement | **105** | `SM-1.1` … `SM-10.10` | Chapters 1–4, 6–8, 10 |
+| `SM-BR-n` | Business rule | 16 | `SM-BR-1` … `SM-BR-16` | §9.1 |
+| `SM-XC-n` | Exclusion — must be impossible | 14 | `SM-XC-1` … `SM-XC-14` | §1.5 |
+| `SM-INV-n` | Domain invariant | 11 | `SM-INV-1` … `SM-INV-11` | §2.6 |
+| `SM-EV-n` | Domain event (**closed set**) | 9 | `SM-EV-1` … `SM-EV-9` | §7.4 |
+| `SM-PO-n` | Protected operation (**closed list**) | 12 | `SM-PO-1` … `SM-PO-12` | §8.2 |
+| `SM-AC-n` | Acceptance criterion | 28 | `SM-AC-1` … `SM-AC-28` | §10.4 |
+| `SMCFG-n` | Configurable parameter | 7 | `SMCFG-1` … `SMCFG-7` | §10.3 |
+| `LMD-n` | **Library Members Directory requirement** | 31 | `LMD-1` … `LMD-31` | Chapter 5 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | 9 | `SM-GAP-1` … `SM-GAP-9` | §10.6 |
+
+**Total Student Management normative identifiers: 242**, of which **9 are proposed gaps carrying no authority**.
+
+Per-chapter `SM-c.n` counts: Ch 1 = 8 · Ch 2 = 16 · Ch 3 = 17 · Ch 4 = 12 · **Ch 5 = 0** · Ch 6 = 8 · Ch 7 = 17 ·
+Ch 8 = 17 · **Ch 9 = 0** · Ch 10 = 10.
+
+**Chapters 5 and 9 hold no `SM-c.n`, by design.** Chapter 5 numbers exclusively in `LMD-n` so that a
+read-composition requirement can never be mistaken for a `BC-01` domain requirement; chapter 9 numbers
+exclusively in `SM-BR-n`. Both are intentional, which is why the per-chapter table above exists instead of a
+single unchecked range.
+
+> ⚠ **This register was corrected by validation before first use.** §0 of `PRD-004` initially declared **118**
+> `SM-c.n` over `SM-1.1` … `SM-10.6`, giving a total of 246. A mechanical count returned **105** over
+> `SM-1.1` … `SM-10.10`, total **242**. **The register was corrected to match the chapters; no filler requirement
+> was added to reach 118.** Padding would have satisfied the declared number while corrupting the specification —
+> the precise failure `SID-4.56` describes.
+
+### 2C.1 Prefix collisions checked — and the substring that is *not* one
+
+**Zero collisions** against all three existing registers (authentication `AUTH`/`BR`/`XC`/`AC`/`PO`/`EV`/`CFG`,
+Library `LIB`/`LCFG`/`LXC`/`LEV`/`LAC`, Student Identity `SID`/`SID-BR`/`SXC`/`SPO`/`SEV`/`SID-INT`/`SID-INV`/
+`SCFG`/`SID-AC`). Three near-collisions were avoided deliberately:
+
+| Candidate | Rejected because | Used instead |
+|---|---|---|
+| `BR-n` for business rules | Already means **authentication business rule**, 297 of them | `SM-BR-n` |
+| `PO-n` for protected operations | Already the public-preview register (§2B.1), and `SPO-n` had already been added to disambiguate | `SM-PO-n` |
+| A broad `SM-` match | Matches **`MP-SM-01`…`MP-SM-09`** in `MASTER_PRD.md` lines 653–661 | see below |
+
+**`MP-SM-0n` is a true negative, not a suppressed hit.** Those nine identifiers are **Certified Metric** IDs
+under the prefix `MP-SM-`, not requirements. A strict word-boundary search returns empty:
+
+```
+grep -rIno "\(^\|[^-A-Za-z]\)SM-[0-9]\+\.[0-9]\+" docs --include=*.md | grep -v student-management/   → (empty)
+```
+
+The loose match was **inspected rather than accepted as a failure**, because a checker that cannot distinguish a
+real collision from a substring is a checker that gets switched off.
+
+`LMD-n` and `LIB-n.m` are also distinct registers despite both concerning library surfaces: `LMD-n` is the
+Directory read composition inside `BC-01`; `LIB-n.m` is Library Management (`BC-06`/`BC-19`). `LCFG-5` is cited by
+`SMCFG-1` rather than duplicated — `SMCFG-1` **is** `LCFG-5`, consumed through `E-19`.
 
 ---
 
@@ -558,6 +620,7 @@ protection.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.3** | 2026-08-04 | Added the **Student Management** identifier inventory (**§2C**, `PRD-004` `DRAFT`, **242** identifiers across ten registers, every range verified contiguous) and the collision record **§2C.1**. Records that the register **was corrected by validation before first use**: §0 of `PRD-004` declared **118** `SM-c.n` (total 246); a mechanical count found **105** (total **242**), and **the register was corrected rather than the chapters padded with filler requirements**. Documents that chapters 5 and 9 deliberately hold **no** `SM-c.n` — chapter 5 numbers in `LMD-n` so a read-composition requirement can never be mistaken for a `BC-01` domain requirement. §2C.1 records `MP-SM-01`…`MP-SM-09` in `MASTER_PRD.md` as a **true negative** — Certified Metric IDs, not requirements — **inspected rather than accepted as a collision**, since a checker that cannot tell a substring from a real hit is one that gets switched off. Header updated to baseline **`-B`**, Library PRD **v1.1**, ADRs **`ADR-0001`…`ADR-0017`**. **No authentication, Library or Student Identity row changed. No code changed.** |
 | **v1.2** | 2026-08-04 | Added the Student Identity identifier inventory (§2B, 343 identifiers, all nine registers verified gap-free), the prefix-collision record (§2B.1, including the `PO-n` / `SPO-n` hazard), the Student Identity chapter map (§3B, 38 rows, four marked ⛔ rather than ⬜), configurable traceability (§6B) and event traceability (§7B). Added `ADR-0011` to §4 with its three amendments to the Identity Triad traced individually. **Added `MP-GBR-02` to §5 as an amended rule** — the first global business rule to appear in this matrix as changed rather than as baseline. Added §8A recording that **existing scaffold code implements the superseded pre-`ADR-0011` identity model** — nullable `Account.personId`, nullable `StudentRecord.personId`, `GlobalStudentProfile` owned by `domain/social`, and 4 of 5 seeded accounts with no identity — and that the rank-7.5 boundary is *declared but unenforced* pending `IMPL-014`. No authentication or Library row changed. No code changed. |
 | **v1.1** | 2026-08-03 | Added the Library identifier inventory (§2A, ~422 identifiers, zero collisions with the authentication register), the Library chapter map (§3A, 22 rows), Library configurable traceability (§6A) and Library event traceability (§7A). Added `ADR-0009` and `ADR-0010` to §4. Named `IMPL-100` as a second enforcer of `MP-GBR-08` and `IMPL-112` as a second consumer of `MP-DEP-03`. Recorded the `INV-n` / `INV-SEC-n` / `INV-XC-n` prefix hazard in §2A.1, and stated `INV-10`…`INV-16` in full with the failure each prevents. No authentication row changed. |
 | v1.0 | 2026-08-02 | Created. 1,517 authentication identifiers mapped. Closes audit finding `G-9`. |

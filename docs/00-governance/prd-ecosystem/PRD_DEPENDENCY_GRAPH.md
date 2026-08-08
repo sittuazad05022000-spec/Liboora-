@@ -160,6 +160,15 @@ a distinction `SID-4.11`/`4.12` make load-bearing.
 | `BC-13` T&S (`PRD-020`) | `EnforcementActionTaken` | `BC-11`, `BC-12`, `BC-14`, `BC-15` self-restrict (`E-14`) |
 | `BC-18` (`PRD-001`) | `iam.AccountErased` · `iam.MobileNumberChanged` · `iam.AccountSuspended` | `BC-10` (`IMPL-222`) |
 
+> **`PRD-004` was drafted on 2026-08-04 and added no edge to this graph.** Verified by comparing its declared
+> integrations against this table: `E-01`, `E-09`, `E-11`, `E-13`, `E-21`, `E-22` were **all already present**,
+> and the four `BC-01` events above were already listed here **before** `PRD-004` existed. `SM-EV-1`…`SM-EV-9`
+> name the same facts plus guardian, document, archive, restore and contact events on existing edges. This matters
+> because BC Map line 292 states: *"If an edge is not in this table, it does not exist and adding it requires an
+> ADR."* Drafting a PRD is the moment an unauthorised edge would normally appear; none did, so **no ADR was
+> required and no row here changed**. `D-10` and `D-11` remain **Unsatisfied** — `PRD-004` consumes `BC-23` and
+> `BC-29`, whose specifications are still unwritten.
+
 **`SEV-1` is the trap.** It looks like the trigger for identity creation and is not — creation is *synchronous
 and transactional*; `SEV-1` is *"a notification of a completed fact"*. Wiring creation to the event opens a
 window in which an account has no identity, which the amended `MP-GBR-02` forbids. The Implementation Roadmap

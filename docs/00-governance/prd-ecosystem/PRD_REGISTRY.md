@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | PRD Registry — the single source of truth for the PRD ecosystem |
-| **Version** | v1.3 |
+| **Version** | v1.4 |
 | **Status** | Active register of record |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04-B` |
@@ -221,7 +221,7 @@ The §31 Linked Documents table carries this row verbatim:
 
 | PRD ID | Name | Bounded context | Type | V | Status | Blocks |
 |---|---|---|---|---|---|---|
-| `PRD-004` | Student Management | **`BC-01` Enrollment** | `[CORE]` | V1 | `PLANNED` | `PRD-005`…`008`; `IMPL-214` `E-13` ACL |
+| `PRD-004` | Student Management | **`BC-01` Enrollment** | `[CORE]` | V1 | **`DRAFT`** — [`student-management/Student_Management_PRD_v1.md`](../../30-product/student-management/Student_Management_PRD_v1.md) | `PRD-005`…`008`; `IMPL-214` `E-13` ACL |
 | `PRD-005` | Membership Management | **`BC-02` Membership** | `[CORE]` | V1 | `PLANNED` | `PRD-006`, `PRD-007`, `PRD-008` |
 | `PRD-006` | Attendance Management | **`BC-03` Attendance** | `[CORE]` | V1 | `PLANNED` | Occupancy in `PRD-007` |
 | `PRD-007` | Seat Management | **`BC-04` Seating** | `[CORE]` | V1 | `PLANNED` | — |
@@ -335,7 +335,7 @@ separate PRDs, and [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §6 explains w
 | ~~`BC-25` Configuration (Settings, module 18)~~ | `[GENERIC]` | V1 | **Moved to §4.3 on 2026-08-04.** This row previously read *"**Covered** — `PRD-002` owns `BC-25`"*, which [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) made **false** (a capability context is owned by its platform, not by the domain consuming it) and [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md) replaced: **`BC-25` → `PRD-023`** |
 | Dashboards — Owner, Manager, Reception (modules 10–12) | *not contexts* | V1 | **No PRD.** Presentation compositions; own no aggregate |
 | Parent Portal (module 5) | *not a context* | V1 | **No PRD.** Composition over `BC-01`/`03`/`05` |
-| Library Member Directory (module 3) | read composition | V1 | **No PRD.** Belongs to `PRD-004` |
+| Library Member Directory (module 3) | read composition | V1 | **No PRD.** Belongs to `PRD-004` — **placement executed 2026-08-04**: delivered as [`PRD-004` chapter 5](../../30-product/student-management/Student_Management_PRD_v1.md), requirements `LMD-1`…`LMD-31`. Owns no aggregate and no invariant (`AR-1`); **no `BC-32` was created** and the context count remains **31** |
 | Library Discovery & Enrollment (module 19) | *not a context* | V1 | **Covered** — `PRD-002` §14A/§14B |
 | `BC-07`…`BC-09`, `BC-14`, `BC-15`, `BC-28` | `[SUPPORTING]`/`[GENERIC]` | V2 | `PLANNED` — correctly deferred |
 | `BC-16`, `BC-17` | `[SUPPORTING]` | V3 | `PLANNED` — correctly deferred |
@@ -488,12 +488,13 @@ dependency edge, recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.
 | Measure | Count |
 |---|---|
 | **PRDs registered** | **24** — `PRD-000`…`PRD-023`. *Was 23; `PRD-023` added 2026-08-04 by `ADR-0017`* |
-| **Documents that exist** | **6 files, 4 PRD identities** (`PRD-000`…`PRD-003`) |
+| **Documents that exist** | **7 files, 5 PRD identities** (`PRD-000`…`PRD-004`). *Was 6 files / 4 identities; `PRD-004` drafted 2026-08-04* |
 | `FROZEN` | **3** — `PRD-000`, `PRD-001`, `PRD-002` |
 | `IMPLEMENTING` | **1** — `PRD-003` |
-| `PLANNED` | **20** — `PRD-004`…`PRD-023` |
-| `DISCOVERY` · `DRAFT` · `IN_REVIEW` · `APPROVED` · `IMPLEMENTED` · `VERIFIED` | **0 each** |
-| Missing **V1** PRDs | **20** — 9 from §31 (§4.1) + 9 from §8.1 (§4.2) + `PRD-022` **and `PRD-023`** (§4.3). *Was 19. The count rose because a module that was always missing had been mis-recorded as covered — this is a truer number, not a worse position* |
+| **`DRAFT`** | **1** — **`PRD-004`** Student Management. *Was 0* |
+| `PLANNED` | **19** — `PRD-005`…`PRD-023`. *Was 20; `PRD-004` moved to `DRAFT`* |
+| `DISCOVERY` · `IN_REVIEW` · `APPROVED` · `IMPLEMENTED` · `VERIFIED` | **0 each** |
+| Missing **V1** PRDs | **19** — *was 20.* `PRD-004` now exists as a `DRAFT`, so it is no longer missing. **This is the first decrease in this row's history**; every prior movement was upward |
 | Duplicate PRDs | **0** — no requirement is specified twice |
 | **Contested bounded contexts** | **0** — *was 2, corrected to 3 on 2026-08-04, then resolved to 0 the same day.* `BC-19` → `PRD-013` and `BC-29` → `PRD-017` by `ADR-0013`; `BC-25` → `PRD-023` by `ADR-0017`. `PGA-11` **closed** |
 | &nbsp;&nbsp;resolved by transfer to an existing PRD | **2** — `BC-19` → `PRD-013`, `BC-29` → `PRD-017` |
@@ -507,6 +508,11 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 
 **No PRD has reached `VERIFIED`, and none is close.** `PRD-001`, the most complete, cannot deliver an OTP
 (`IMPL-020`) and carries a P0 release blocker (`TASK-D10`).
+
+> **`PRD-004` is `DRAFT`, which is the weakest status that implies a file exists.** Per §2 it means *"content
+> exists and is being written. Not yet submitted for review."* It is **not** frozen, **not** baselined, **not**
+> ranked, and its 28 acceptance criteria are asserted by **zero** tests. It also carries **9 `SM-GAP-*` open
+> decisions**. Recording it as `DRAFT` rather than `IN_REVIEW` is deliberate: no review has occurred.
 
 ---
 
@@ -553,3 +559,4 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the register was relied on. Three self-inconsistencies found and corrected: (1) `BC-20` Subscription & Billing was described as *"a genuine V1 gap"* while sitting in the table for contexts with **no** PRD obligation, and was cited as `PRD-022` by two companion documents without ever being registered — now registered as `PRD-022` in a new §4.3, and the old §4.3 renumbered §4.4; (2) `PRD-012a`/`PRD-012b` were cited by the roadmap and gap analysis but existed in no register — now reserved explicitly under §4.1; (3) the missing-V1 arithmetic read *"9 from §31 + 8 from §8.1 + `BC-20`"*, which summed to 18 while §8.1 yields **nine** PRDs — corrected to 19. (4) §6 asserted *"no context is claimed by two PRDs"* while §4.2 of the same register assigned `BC-19` to `PRD-013` and `BC-29` to `PRD-017` — contexts §3.3 gives to `PRD-002`. The clean result was an artefact of listing ownership only for PRDs that exist; the register contradicted itself two sections apart. §6 now records both as **contested**, states the three pieces of evidence, applies the precedence reading without claiming to settle it, and raises `PGA-11`. **Version remains v1.0: these were defects in an unreleased document, not amendments to a published one.** No requirement, PRD or architectural decision was touched. |
 | **v1.2** | 2026-08-04 | **Contested-context count corrected from 2 to 3 during Phase 4 validation.** §6's table recorded `BC-25` Configuration as *uncontested* (`"BC-06, BC-25 | PRD-002 | No"`) while `ADR-0013` §2, `PRD_OWNERSHIP_MODEL.md` §4.4 and `PRD_GAP_ANALYSIS.md` §8 all recorded it as contested — this register was the only document still carrying the pre-`ADR-0013` reading, and its §7 count of **2** propagated that error into the summary a reader is most likely to quote. `BC-25` now has its own row, §6.1 is retitled *"The three contested contexts"* and explains **why the conflict was invisible**: `BC-25` is in neither Master PRD §31 nor §8.1, so no registered PRD contests the `Library_PRD_v1.md` header — the collision is with the **BC Map's** *"Owning Platform"* column (`platform/configuration`, rank 3), not with another PRD, and a PRD-to-PRD comparison could not see it. §7 now reports **3**, split into the 2 resolvable by transfer and the **1 with no registered claimant**. This is a *reporting* correction: no ownership was reassigned, `ADR-0013` §7 remains open, no `PRD-023` is allocated, and no frozen document was touched. **Version incremented because v1.1 was already committed — unlike the v1.0 defect rows above, this amends a published state.** |
 | **v1.3** | 2026-08-04 | **Contested contexts 3 → 0, and `PRD-023` registered. Governance Closure Phase.** `ADR-0013` was **accepted** and its amendment to `Library_PRD_v1.md` line 10 executed (v1.0 → **v1.1**), so §6 now records `BC-19` → `PRD-013`, `BC-29` → `PRD-017` and `BC-25` → **`PRD-023`**, each undisputed. §6.1 carries the resolution banner `ADR-0013` §6.2 required — **`PRD-002` now lists one owned context where it listed four, and this is not a scope reduction**; the `TenantOrganisation`, `StaffAssignment` and `LibraryBranding` aggregates remain owned there. **`PRD-023` Settings & Configuration added to §4.3** by [`ADR-0017`](../adr/ADR-0017-bc-25-configuration-ownership.md): `BC-25` is Master PRD §8 **module 18**, a `[GENERIC]` **V1** product module at Rank 1, registered on the identical grounds §4.3 already used for `PRD-022` (**module 17**, the preceding row of the same table). §4.4's *"Covered — `PRD-002` owns `BC-25`"* row — false once `ADR-0013` was accepted — is struck and cross-referenced rather than deleted. §5's *"no registered claimant"* finding is marked **RESOLVED** with its reasoning preserved, because that reasoning is what surfaced the question. **The `PRD-012` split is CONFIRMED** in §4.1 as already authorised by Master PRD §8 *Correction 2* (Rank 1) — a confirmation, not a new decision: no requirement exists to divide, `PRD-012` is **not** retired (§8 rule 1 ties retirement to `PRD-012a` being *opened*), and it remains the one PRD unassignable under one-holder-per-role. §7 counts: registered **23 → 24**, `PLANNED` **19 → 20**, missing V1 **19 → 20** (*a truer number — a module that was always missing had been mis-recorded as covered*), contested **3 → 0**, owner-model **24 of 24**, named individuals **0 of 24**. **No requirement was created, modified, moved or withdrawn.** |
+| **v1.4** | 2026-08-04 | **`PRD-004` Student Management drafted; Library Member Directory placement executed.** §4.1 `PRD-004` moves `PLANNED` → **`DRAFT`** with its file path, the first PRD to leave `PLANNED` since this register was created. §6's *"Library Member Directory (module 3) — **No PRD.** Belongs to `PRD-004`"* row is annotated **placement executed**: the Directory is delivered as **`PRD-004` chapter 5**, requirements `LMD-1`…`LMD-31`, as a **read composition** owning no aggregate and no invariant (`AR-1`). **No standalone Directory PRD was created, no `BC-32` was created, and the bounded-context count remains 31** — the register's own adjudication was executed, not revisited. §7 counts: documents **6 files/4 identities → 7 files/5 identities**, `DRAFT` **0 → 1**, `PLANNED` **20 → 19**, missing V1 **20 → 19** — **the first decrease in the missing-V1 row's history**, every prior movement having been upward. Registered PRDs remain **24**: `PRD-004` was already registered and changed status only. A note records that `DRAFT` is the *weakest* status implying a file exists — **not frozen, not baselined, not ranked, 0 of 28 acceptance criteria tested, 9 `SM-GAP-*` decisions open**. **No requirement was created, modified, moved or withdrawn; no frozen document was touched; no integration edge was added.** |

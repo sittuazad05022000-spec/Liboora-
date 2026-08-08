@@ -163,6 +163,16 @@ Owner is derived from the context's owning module (rule 3), not chosen.
 | `PRD-006` | Attendance Management | `BC-03` Attendance | Product Owner | Library Domain | ARB | Platform Engineering |
 | `PRD-007` | Seat Management | `BC-04` Seating | Product Owner | Library Domain | ARB | Platform Engineering |
 | `PRD-008` | Revenue & Finance | `BC-05` Fee & Collection | Product Owner | Library Domain | ARB | Platform Engineering |
+
+> **`PRD-004` left `PLANNED` on 2026-08-04 and is now `DRAFT`.** Its four role assignments above are **unchanged**
+> by that transition, which is the model working as intended: rule 3 derives Domain Owner from the context's
+> owning module, so the owner of `BC-01` was determined before the document existed and did not need renegotiating
+> when it appeared. This section's heading still reads *"Planned PRDs"* because it groups PRDs by **where the
+> Master PRD names them** (§31), not by their current status — status lives in `PRD_REGISTRY.md` §4.1, which is
+> authoritative for it. **No role was reassigned and no personal name was recorded.**
+>
+> `PRD-004` also introduces **no new owner**: chapter 5's Library Members Directory is a read composition inside
+> `BC-01`, so it falls under the same Domain Owner rather than creating a fifth role or a separate claimant.
 | `PRD-009` | Analytics & Reports | `BC-26` Analytics Read Model | Product Owner | Analytics Platform | ARB | Platform Engineering |
 | `PRD-010` | Notifications & Communication | `BC-22` Notification Delivery | Product Owner | Communication Platform | ARB | Platform Engineering |
 | `PRD-011` | AI Super Assistant | `BC-27` AI Assistance | Product Owner | AI Platform | ARB | Platform Engineering |

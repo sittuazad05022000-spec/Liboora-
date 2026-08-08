@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Architecture Boundary Checker — design and operating rules |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | **Implemented** — `tool/check_module_boundaries.dart`, commit `a22fd7e` |
 | **Implements** | `IMPL-014` · `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` §10.2 (Layer 2) and §10.3 (Layer 3) |
 | **Governed by** | `ADR-0011` (rank 7.5) · `ADR-0012` (time-boxed exceptions) |
@@ -81,9 +81,9 @@ prose would mean a reworded error message silently widens or breaks a waiver.
 
 ---
 
-## 3. The ten checks
+## 3. The twelve checks
 
-Each maps to a law or a named rule. All ten run on every file; none short-circuits, so one
+Each maps to a law or a named rule. All twelve run on every file; none short-circuits, so one
 finding never masks another.
 
 ### 3.1 Illegal imports — `L5`
@@ -166,6 +166,39 @@ approved. This is enforced structurally, not by convention — see §4.3.
 
 Folded into §3.3, since a same-rank import is an `L2` question. Reported with its own message so
 the fix (declare an `internal_edge`, or invert the dependency) is unambiguous.
+
+### 3.11 Audit mutation — `X-10`, assertions `AU-1` and `AU-4`
+
+Fails when a module declares a method matching one of its `banned_method_names` globs —
+`["update*", "delete*", "purge*", "modify*"]` on `platform/audit`.
+
+Checked at the **declaration**, not the call site: `X-10` governs the audit store's public
+surface, so if no mutator exists, no caller can invoke one. This needs no call graph and cannot
+be defeated by an indirect call. **Private members count too** — a `_deleteEntry` helper is one
+refactor from being public, and `AU-4` forbids removal outright rather than merely forbidding its
+exposure. Getters are excluded: a getter cannot mutate.
+
+The reported remedy is the one `X-10` itself prescribes — *"append a correcting entry"*.
+
+### 3.12 Tenant-scoped keys — `X-13`
+
+Fails when one of the five surfaces named by `global.tenant_key_required_in` — cache keys, search
+index names, vector namespaces, storage prefixes, projection table names — is built without a
+tenant scope. Severity is read from `tenant_key_violation_severity` (`blocker`), so the report
+cannot understate what the Matrix calls *"the highest-severity failure class in the system"*.
+
+A key expression is compliant if it **names a tenant** (`tenantId`, `TenantContext`, …) **or** is
+built through **`TenantPartitionedStore`**, which is the *"tenant-prefixed key factory"* `X-13`
+prescribes as its remedy and whose contract is that *"every key is namespaced by tenant inside the
+store, not by convention at the call site"*.
+
+That second clause is the one judgement call in the check, so it is recorded here rather than left
+implicit. It is not a loophole. `InMemoryAttendanceRepository._key()` builds `'${id.value}#$date'`
+with no tenant term and hands it to a `TenantPartitionedStore`; a purely lexical check would flag
+it, and "fixing" it would mean re-prefixing keys the store already partitions — duplicated tenant
+logic in two places, which is *more* leak-prone than one authoritative partition, not less. The
+check is therefore scoped to the five declared surfaces rather than to every method named `_key`:
+a row id handed to an already-partitioned store is not a surface `X-13` governs.
 
 ---
 
@@ -279,13 +312,44 @@ Recorded because an undocumented limitation is indistinguishable from a bug.
 | Line-based parsing does not follow `export` chains | A module could re-export a forbidden type through its barrel | `barrel_only_cross_module` plus §3.8 ownership checks. Promoting to an AST pass is future work |
 | Conditional imports (`if (dart.library.io)`) are read as unconditional | Would over-report on a platform-split file | None exist in this repository today |
 | `_symbolOwners` lives in Dart, not YAML | Adding an aggregate needs a code edit, not a manifest edit | Short and ADR-traceable; promotion to the manifest is future work |
-| Tenant-key and audit-mutation checks (§10.2) are **not** implemented | Two matrix-listed checks remain unenforced | Recorded honestly here rather than claimed. `X-13` and `X-10` are currently covered by the tenant-isolation tests in `widget_test.dart` |
+| ~~Tenant-key and audit-mutation checks (§10.2) are **not** implemented~~ | — | **Closed 2026-08-04.** Both are implemented as categories 11 (`X-10`) and 12 (`X-13`). See §7.1 |
+| Tenant-key and audit-mutation checks are line-based heuristics | Could under-match an unusual key-building or method-declaration form | Deliberate: both are written to under-match rather than over-match, because a false positive creates pressure to weaken the rule. Each is verified by a test that proves it fires on a synthetic violation |
+| `_tenantKeySurfacePatterns` lives in Dart, not YAML | New identifier vocabulary for an existing `X-13` surface needs a code edit | The *surfaces* remain manifest-driven (`global.tenant_key_required_in`); only their Dart spelling is in code. Same trade-off as `_symbolOwners` above |
 | File-level, not symbol-level, cycle detection | A cycle between two symbols in one file is invisible | Acceptable: `L1` is defined at module and file granularity in §2 |
 
-The fourth row is the most important. Matrix §10.2 lists nine checks; this implementation covers
-the ten categories the migration brief required, which includes seven of those nine. The tenant-key
-and audit-mutation checks are **not** implemented and must not be presumed enforced — by `SID-4.56`
-they remain **unmet**.
+### 7.1 The two closed rows — how the gap was actually caused
+
+The first row was, until 2026-08-04, *"the most important"* row in this table:
+two Matrix-listed checks were unenforced, and by `SID-4.56` therefore **unmet**.
+Both are now implemented, taking coverage from **10 of 12** to **12 of 12**.
+
+The cause is worth recording, because it was not the obvious one. Neither rule
+was missing a machine-readable definition. Both were **already declared** in
+`tool/module_dependencies.yaml` from the beginning — `banned_method_names` on
+`platform/audit` (`X-10`), and `global.tenant_key_required_in` plus
+`tenant_key_violation_severity: blocker` (`X-13`). The checker simply never read
+either key. The fix was to read the manifest that already existed; no rule was
+added, and none was weakened.
+
+**A manifest key that nothing reads is `SID-4.56`'s failure mode with a
+configuration file standing in for the good intention.** It is
+indistinguishable, at every point of inspection short of reading the checker
+source, from a rule that is enforced. Two tests now assert that the checker reads
+these specific keys, guarding against precisely that regression.
+
+Note what the checks find today: **nothing.** `lib/platform/audit/audit.dart`
+exposes only `append()` plus reads, and `platform/search` does not exist yet. The
+codebase was compliant *by authorship* — and nothing prevented the next commit
+from silently ending that. Installing the guard while the tree is clean is the
+cheapest moment to do it, not a redundant one.
+
+Governance note: correcting the **Rank 4** Dependency Matrix header
+(*"10 of 12"* → *"12 of 12"*) requires an ADR **before** the change, per
+`DOCUMENTATION_BASELINE.md` §7 step 1 — which admits no exception for a
+correction that happens to be favourable. That change is therefore **not** made
+here; it is requested by `ADR-0014` and is pending approval. This document is
+descriptive and unranked in the §4 precedence table, so it tracks the code
+directly.
 
 ---
 
@@ -293,4 +357,5 @@ they remain **unmet**.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-04 | **Enforcement coverage reaches 12 of 12.** Adds §3.11 audit mutation (`X-10`) and §3.12 tenant-scoped keys (`X-13`) — the two checks v1.0 recorded as not implemented and therefore, per `SID-4.56`, **unmet**. Root cause recorded in §7.1: both rules were **already declared** in `module_dependencies.yaml` (`banned_method_names`; `global.tenant_key_required_in` + `tenant_key_violation_severity`) and the checker never read either key — the fix was to read the manifest that already existed. **No rule was added and none weakened.** Self-verification tests 14 → 20; the four new behavioural tests each prove a check *fires* on a synthetic violation, since both checks find nothing on the current tree and an "all clear" assertion could not distinguish a working check from an absent one. Two `§7` limitation rows closed, three added. The corresponding **Rank 4** Dependency Matrix correction is **not** made here — it requires an ADR first (Baseline §7 step 1) and is requested by `ADR-0014`. |
 | **v1.0** | 2026-08-04 | Initial design. Ten checks, three exit codes, manifest-driven, `ADR-0012` time-boxed exception mechanism with `L1` structurally unwaivable, 14 self-verification tests. Records two matrix-listed checks as not yet implemented. |

@@ -11,7 +11,7 @@
 /// is to keep law L2 literally true, and a half rank that nothing verifies is
 /// just a comment.
 ///
-/// **What it enforces** (ten categories, each mapped to a law or rule):
+/// **What it enforces** (twelve categories, each mapped to a law or rule):
 ///   1. Rank ordering — a module may import only strictly lower ranks (L2).
 ///   2. Cross-context rules — declared `imports`/`ports` only.
 ///   3. Forbidden dependencies — per-module `banned_imports` globs.
@@ -22,6 +22,15 @@
 ///   8. Ownership violations — a symbol declared outside its owning module.
 ///   9. Boundary violations — cross-module imports must target the barrel.
 ///  10. Architecture policies — banned symbols, globally and per layer.
+///  11. Audit mutation — a banned method name is declared (`X-10`, `AU-1`).
+///  12. Tenant keys — an `X-13` surface built without a tenant scope.
+///
+/// **Categories 11 and 12 were the last two gaps.** Both rules were declared in
+/// the manifest from the beginning — `banned_method_names` on `platform/audit`
+/// and `global.tenant_key_required_in` — but this checker never read either key,
+/// so the matrix recorded enforcement as *"10 of 12"* and both rules as
+/// **unmet** under `SID-4.56`. The fix was to read the manifest that already
+/// existed, not to add a rule or to soften one.
 ///
 /// **Exit codes.** `0` clean, `1` violations found, `2` the checker itself could
 /// not run (missing manifest, unparseable YAML). A checker that cannot run must
@@ -148,6 +157,7 @@ final class Module {
     required this.declaredImports,
     required this.contexts,
     required this.classification,
+    required this.bannedMethodNames,
   });
 
   final String name;
@@ -157,6 +167,14 @@ final class Module {
   final List<({String symbol, String useInstead})> bannedSymbols;
   final List<({String symbol, String useInstead})> bannedSymbolsInDomainLayer;
   final List<String> allowedImports;
+
+  /// Method-name globs this module may not *declare* (`banned_method_names`).
+  ///
+  /// Declared on `platform/audit` as `["update*", "delete*", "purge*",
+  /// "modify*"]` to enforce forbidden edge `X-10`. This key existed in the
+  /// manifest from the start but was never read, which is precisely why the
+  /// rule counted as unmet under `SID-4.56`.
+  final List<String> bannedMethodNames;
 
   /// Module names this module may import at compile time (`mode: import`).
   final List<String> declaredImports;
@@ -206,6 +224,15 @@ final class BoundaryChecker {
   late final YamlMap _manifest;
   late final bool _barrelOnly;
 
+  /// `global.tenant_key_required_in` — the surfaces `X-13` governs. Non-empty
+  /// is what switches the tenant-key check on; the checker never hard-codes
+  /// this list, so widening `X-13` is a manifest edit, not a code edit.
+  late final List<String> _tenantKeySurfaces;
+
+  /// `global.tenant_key_violation_severity`. Declared `blocker`; carried into
+  /// the violation so the report cannot understate a cross-tenant leak.
+  late final String _tenantKeySeverity;
+
   /// Time-boxed §11 exceptions. Empty is the healthy state.
   late final List<DependencyException> _exceptions;
 
@@ -246,6 +273,8 @@ final class BoundaryChecker {
       _checkBarrelOnly(file, module, imports); // category 9
       _checkArchitecturePolicies(file, module, content); // category 10
       _checkOwnership(file, module, content); // category 8
+      _checkAuditMutation(file, module, content); // X-10 + category 11
+      _checkTenantKey(file, module, content); // X-13 + category 12
     }
 
     _checkCircularDependencies(graph); // L1 + category 4
@@ -354,6 +383,17 @@ final class BoundaryChecker {
     _barrelOnly =
         global is YamlMap && global['barrel_only_cross_module'] == true;
 
+    // X-13 configuration. Read from the manifest rather than hard-coded so the
+    // rule stays defined in one normative place.
+    _tenantKeySurfaces = global is YamlMap
+        ? _stringList(global['tenant_key_required_in'])
+        : const [];
+    _tenantKeySeverity =
+        (global is YamlMap
+            ? global['tenant_key_violation_severity']?.toString()
+            : null) ??
+        'blocker';
+
     _exceptions = _parseExceptions(doc['exceptions']);
 
     _modules = {};
@@ -373,6 +413,7 @@ final class BoundaryChecker {
         declaredImports: _declaredImports(blockMap?['imports']),
         contexts: _stringList(blockMap?['contexts']),
         classification: blockMap?['classification']?.toString(),
+        bannedMethodNames: _stringList(blockMap?['banned_method_names']),
       );
 
       // Record declared intra-cluster edges for the same-rank check.
@@ -858,6 +899,257 @@ final class BoundaryChecker {
   }
 
   // ────────────────────────────────────────────────────────────────
+  // 11 + X-10 — audit append-only (banned_method_names)
+  // ────────────────────────────────────────────────────────────────
+
+  /// Fails when a module declares a method whose name matches one of its
+  /// `banned_method_names` globs.
+  ///
+  /// **The rule.** Forbidden edge `X-10` is *"`AUDIT` with an update or delete
+  /// method"*; its stated remedy is *"append a correcting entry"*. Assertion
+  /// `AU-1` puts it as *"no public mutation method exists on the audit store"*,
+  /// and `AU-4` explains why: *"erasure makes a record non-identifying by key
+  /// destruction; no record is ever removed."* An audit trail that can be edited
+  /// cannot serve as evidence of anything.
+  ///
+  /// **Why declaration, not call site.** The manifest bans method *names* on the
+  /// module that would own them. `X-10` is a rule about the audit store's public
+  /// surface: if no mutator exists, no caller can invoke one. Checking
+  /// declarations is therefore both the faithful reading and the cheaper one —
+  /// it needs no call-graph and cannot be defeated by an indirect call.
+  ///
+  /// **Private members are still violations.** A `_deleteEntry` helper is one
+  /// refactor away from being public, and `AU-4` forbids removal outright rather
+  /// than merely forbidding its exposure. Narrowing this to public names would
+  /// be reinterpreting the rule to make the checker quieter.
+  void _checkAuditMutation(File file, Module? module, String content) {
+    if (module == null) return;
+    if (module.bannedMethodNames.isEmpty) return;
+
+    final lines = content.split('\n');
+
+    for (var i = 0; i < lines.length; i++) {
+      final code = _stripComment(lines[i]);
+      if (code.trim().isEmpty) continue;
+
+      for (final name in _methodNamesDeclaredIn(code)) {
+        for (final pattern in module.bannedMethodNames) {
+          if (!_globMatch(pattern.toLowerCase(), name.toLowerCase())) continue;
+
+          violations.add(
+            Violation(
+              category: 'audit-mutation',
+              rule: 'X-10',
+              file: file.path,
+              line: i + 1,
+              severity: 'blocker',
+              consumer: module.name,
+              provider: module.name,
+              detail:
+                  'Method "$name" is declared in "${module.name}", which bans '
+                  'the pattern "$pattern" (banned_method_names). Forbidden edge '
+                  'X-10: the audit store is append-only — no update, delete, '
+                  'purge or modify method may exist on it.\n'
+                  'Remedy (X-10, as written): append a correcting entry. '
+                  'Assertion AU-4: erasure destroys the key, never the record.',
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  /// Method names declared on [code], as a single-line heuristic.
+  ///
+  /// Matches the three Dart declaration shapes that can carry a mutator name —
+  /// `void delete(...)`, `Future<void> purgeAll(...) async`, and `T get x` is
+  /// deliberately excluded because a getter cannot mutate. Consistent with
+  /// [_parseImports], this is line-based rather than an AST parse so the checker
+  /// keeps running when the project does not compile, which is exactly when a
+  /// regression is most likely to be introduced.
+  ///
+  /// Written to under-match rather than over-match: a false positive here would
+  /// pressure someone into weakening the rule to get a green build, which is the
+  /// outcome the request explicitly forbids.
+  Iterable<String> _methodNamesDeclaredIn(String code) {
+    // <optional modifiers> <return type> name( ... )
+    // The trailing '(' is what distinguishes a method from a field.
+    final pattern = RegExp(
+      r'^\s*(?:@\w+\s+)*'
+      r'(?:external\s+|static\s+|abstract\s+)*'
+      r'(?:[\w<>,\s\?\[\]\.]+\s+)?' // return type (optional: constructors)
+      r'([a-zA-Z_]\w*)\s*'
+      r'(?:<[^>]*>\s*)?' // generic method params
+      r'\(',
+    );
+    final match = pattern.firstMatch(code);
+    if (match == null) return const [];
+
+    final name = match.group(1);
+    if (name == null) return const [];
+
+    // Keywords and control flow that can precede a '(' — never method names.
+    const notMethods = {
+      'if',
+      'for',
+      'while',
+      'switch',
+      'catch',
+      'return',
+      'assert',
+      'super',
+      'this',
+      'new',
+      'await',
+      'yield',
+      'throw',
+      'else',
+      'do',
+      'when',
+      'print',
+      'expect',
+      'test',
+      'group',
+      'setUp',
+      'tearDown',
+    };
+    if (notMethods.contains(name)) return const [];
+
+    return [name];
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // 12 + X-13 — tenant-scoped keys
+  // ────────────────────────────────────────────────────────────────
+
+  /// The five surfaces `global.tenant_key_required_in` names, mapped to the
+  /// identifier vocabulary that builds them in Dart.
+  ///
+  /// The manifest decides *which* surfaces `X-13` governs; this table only says
+  /// what each surface looks like in code. A surface absent from the manifest is
+  /// not checked, so widening `X-13` remains a manifest edit.
+  static const Map<String, List<String>> _tenantKeySurfacePatterns = {
+    'cache keys': ['cachekey', 'cacheentry', 'cachefor', 'cachedunder'],
+    'search index names': ['indexname', 'indexfor', 'searchindex', 'indexid'],
+    'vector namespaces': ['vectornamespace', 'namespace', 'vectorindex'],
+    'storage prefixes': [
+      'storageprefix',
+      'blobprefix',
+      'bucketpath',
+      'storagepath',
+      'objectkey',
+    ],
+    'projection table names': [
+      'projectiontable',
+      'tablename',
+      'collectionname',
+      'projectionname',
+    ],
+  };
+
+  /// Fails when one of the `X-13` surfaces is built without a tenant scope.
+  ///
+  /// **Why this is the highest-severity check in the file.** The matrix calls
+  /// `X-13` *"a cross-tenant data leak — the highest-severity failure class in
+  /// the system"*, and the manifest sets `tenant_key_violation_severity:
+  /// blocker`. In a multi-tenant SaaS a tenant-less cache key does not throw; it
+  /// silently serves one library's data to another. There is no user-visible
+  /// symptom until it is a breach.
+  ///
+  /// **What counts as compliant.** `X-13`'s stated remedy is a *"tenant-prefixed
+  /// key factory"*, so this check accepts either:
+  ///
+  ///  * an explicit tenant term in the key expression (`tenantId`, `tenantKey`,
+  ///    `TenantContext`); or
+  ///  * construction through an abstraction that partitions by tenant *inside*
+  ///    the store — `TenantPartitionedStore` is precisely the sanctioned factory,
+  ///    and its own doc comment states it makes `X-13` "structurally
+  ///    impossible for anything built on top of it".
+  ///
+  /// The second clause is not a loophole, it is the remedy the rule prescribes.
+  /// Rejecting it would force call sites to re-prefix keys that are already
+  /// partitioned — duplicated tenant logic, which is *more* leak-prone, not less.
+  /// This is why the check keys off the five declared surfaces rather than every
+  /// method named `_key`: a row id handed to an already-partitioned store is not
+  /// one of the surfaces `X-13` governs.
+  void _checkTenantKey(File file, Module? module, String content) {
+    if (module == null) return;
+    if (_tenantKeySurfaces.isEmpty) return; // X-13 not declared.
+    if (module.name == 'contracts') return; // L5: no tenant runtime here.
+
+    // Active identifier vocabulary, from the surfaces the manifest declares.
+    final active = <String, String>{}; // pattern -> surface
+    for (final surface in _tenantKeySurfaces) {
+      for (final p
+          in _tenantKeySurfacePatterns[surface.toLowerCase()] ??
+              const <String>[]) {
+        active[p] = surface;
+      }
+    }
+    if (active.isEmpty) return;
+
+    // A file that routes through the sanctioned factory is compliant by
+    // construction for the whole file — the store applies the prefix itself.
+    final usesPartitionedStore = content.contains('TenantPartitionedStore');
+
+    final lines = content.split('\n');
+
+    for (var i = 0; i < lines.length; i++) {
+      final code = _stripComment(lines[i]);
+      if (code.trim().isEmpty) continue;
+
+      // Only lines that actually *build* a value: an assignment, a return, an
+      // arrow body or a string. A declaration with no expression cannot leak.
+      final buildsValue =
+          code.contains('=') || code.contains('return') || code.contains('=>');
+      if (!buildsValue) continue;
+
+      final lower = code.toLowerCase();
+
+      for (final entry in active.entries) {
+        if (!lower.contains(entry.key)) continue;
+
+        // Compliant if the expression names a tenant, or the file builds its
+        // keys through the tenant-partitioned store.
+        if (_mentionsTenant(lower) || usesPartitionedStore) continue;
+
+        violations.add(
+          Violation(
+            category: 'tenant-key',
+            rule: 'X-13',
+            file: file.path,
+            line: i + 1,
+            severity: _tenantKeySeverity,
+            consumer: module.name,
+            provider: module.name,
+            detail:
+                'A ${entry.value.replaceAll(RegExp(r's$'), '')} is built in '
+                '"${module.name}" without a tenant scope '
+                '(matched "${entry.key}"). Forbidden edge X-13 requires every '
+                'one of ${_tenantKeySurfaces.join(", ")} to carry tenantId.\n'
+                'Severity: $_tenantKeySeverity — a cross-tenant data leak is '
+                'the highest-severity failure class in the system.\n'
+                'Remedy (X-13, as written): use a tenant-prefixed key factory, '
+                'or route through TenantPartitionedStore, which prefixes inside '
+                'the store rather than by convention at the call site.',
+          ),
+        );
+        break; // One violation per line is enough to fix it.
+      }
+    }
+  }
+
+  /// Whether a lower-cased expression scopes itself to a tenant.
+  bool _mentionsTenant(String lowerCode) =>
+      lowerCode.contains('tenantid') ||
+      lowerCode.contains('tenant_id') ||
+      lowerCode.contains('tenantkey') ||
+      lowerCode.contains('tenantcontext') ||
+      lowerCode.contains('tenantscope') ||
+      lowerCode.contains('pertenant') ||
+      lowerCode.contains('fortenant');
+
+  // ────────────────────────────────────────────────────────────────
   // 8 — ownership violations
   // ────────────────────────────────────────────────────────────────
 
@@ -989,6 +1281,7 @@ final class BoundaryChecker {
         '          L4 capability-never-domain · L5 kernel-imports-nothing',
       );
       stdout.writeln('          + ownership, barrel, banned-symbol policies');
+      stdout.writeln('          + X-10 audit append-only · X-13 tenant keys');
       return 0;
     }
 

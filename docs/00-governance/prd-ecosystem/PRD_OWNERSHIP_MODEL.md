@@ -1,0 +1,258 @@
+# LIBOORA — PRD Ownership Model
+
+| Field | Value |
+|---|---|
+| **Document** | Role-based ownership model for every registered PRD |
+| **Version** | v1.0 |
+| **Status** | Active |
+| **Scope** | All 23 PRDs in [`PRD_REGISTRY.md`](./PRD_REGISTRY.md) |
+| **Closes** | `PGA-08` — *"0 of 23 registered PRDs have an explicit owner model"* |
+| **Precedence** | **Unranked.** Governance process, not a requirement source. Never outranks a PRD |
+| **Last Updated** | 2026-08-04 |
+
+---
+
+## 1. Why this document exists
+
+[`PRD_REGISTRY.md`](./PRD_REGISTRY.md) §5 records the finding this document closes:
+
+> *"Every `Owner` field above reads **Unassigned**, and that is a finding, not an
+> omission in this register. Searched: no PRD carries a document owner, a team
+> name or an accountable individual. … So the repository consistently records
+> **context ownership** and never records **document ownership**."*
+
+The register declined to fill those fields because *"filling these in would
+require inventing names."* That reasoning was correct and this document does not
+overturn it. It resolves the gap the other way: **ownership is assigned to
+organizational roles, never to people.**
+
+### 1.1 Why roles, and not names
+
+Three reasons, in order of weight:
+
+1. **No name exists to record.** The repository names no individual anywhere. A
+   name written here would be fabricated, and a fabricated owner is worse than an
+   absent one — it terminates the search for a real one.
+2. **A PRD outlives a post-holder.** `PRD-001` is frozen at Rank 3 and will be
+   read for years. An identifier that changes when someone changes job is not an
+   identifier.
+3. **Accountability here is decisional, not personal.** What the governance rules
+   actually require of an owner is the authority to *approve a change*. That
+   authority already attaches to roles the repository names — see §2.
+
+### 1.2 What this document does not do
+
+* It does **not** modify any PRD. No PRD gains an `Owner` field; a frozen
+  document cannot, and an unwritten one has no header to edit.
+* It does **not** create requirements, and carries no `MP-*`, `LIB-*` or `SID-*`
+  identifier.
+* It does **not** change bounded-context ownership. Context ownership is an
+  architectural fact enforced by `tool/check_module_boundaries.dart`; document
+  ownership is a governance fact. **These are different things**, and conflating
+  them is what produced `PGA-11`.
+* It does **not** settle `PGA-11`. `BC-19`/`BC-29`/`BC-25` remain contested
+  pending [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md).
+
+---
+
+## 2. The minimum model
+
+The brief asked for *"the minimum ownership model actually required."* Minimum
+was determined by working backwards from what the governance rules already
+demand, not from what an ownership framework usually contains.
+
+### 2.1 Derivation — what the rules actually require
+
+| Existing rule | Question it forces | Role that answers it |
+|---|---|---|
+| `ADR-INDEX` Process step 1 — *"a decision that changes structure, ownership, a boundary, or a platform-wide rule requires an ADR"* | Who approves a structural change? | **Architecture Owner** |
+| Baseline §7 step 1 — *"a change to any Rank 1–5 document requires an ADR before the change"* | Who authorises the document change? | **Architecture Owner** |
+| `PRD_REGISTRY.md` §8.2 — *"a status change requires the entry evidence in §2"* | Who attests the evidence? | **Product Owner** |
+| `PRD_REGISTRY.md` §8.6 — *"adding a bounded context to a PRD's ownership … requires an ADR"* | Who holds the context? | **Domain Owner** |
+| Matrix §11 step 3 — *"the Architecture Review Board approves or rejects"* | Who waives an edge? | **Architecture Owner** (as ARB) |
+| Matrix §10.4 — gates 3 and 4 *"block merge"* | Who keeps the gates green? | **Technical Owner** |
+
+Four distinct answers. **Four roles is therefore the minimum** — not a choice of
+granularity, but the number the existing rules already imply. A fifth would have
+no rule to serve; a third would leave one of the six rows above unanswerable.
+
+### 2.2 The four roles
+
+| Role | Accountable for | Decides | Does **not** decide |
+|---|---|---|---|
+| **Product Owner** | Business intent: scope, priority, acceptance. Attests §2 entry evidence at each lifecycle stage | Whether a requirement is correct and in scope | How it is structured or built |
+| **Domain Owner** | Correctness of the PRD **within its bounded contexts**; ubiquitous language; invariants | Whether a rule is consistent with the domain model | Which contexts the PRD owns (that is an ADR) |
+| **Architecture Owner** | Boundaries, ranks, permitted edges, precedence. Convenes as the **Architecture Review Board** | ADR approval; any Rank 1–5 document change; every §11 exception | Business scope or priority |
+| **Technical Owner** | Implementation, `IMPL-*` tasks, traceability from requirement to test, §10.4 gate health | Sequencing and technical approach | Whether a requirement is right |
+
+**The Product Owner is not the default answer.** `ADR-0011`'s header records
+*"Deciders: Product owner (authoritative ruling); Principal Enterprise Architect;
+DDD reviewer"* — three roles for one decision, precisely because scope,
+structure and domain correctness are separable judgements. This model preserves
+that separation.
+
+### 2.3 Role vocabulary is reused, not invented
+
+Every role name below already appears in the repository. This document adopts the
+existing vocabulary rather than introducing a parallel one:
+
+| Role | Prior use in the repository |
+|---|---|
+| **Product Owner** | `ADR-0001`, `ADR-0011` (*"Deciders"*); `DOCUMENTATION_BASELINE.md` §§ on receipt of Library and Student Identity chapters; `PRD_LIFECYCLE.md` |
+| **Architecture Owner** | `ADR-0012`, Matrix §11 step 3, BC Map §7 header — as **Architecture Review Board**; *"Principal Enterprise Architect"* in `ADR-0001`/`ADR-0011` |
+| **Domain Owner** | *"DDD reviewer"* (`ADR-0011`); the BC Map's **"Owning Platform"** column is the same concept applied to contexts |
+| **Technical Owner** | `IMPL-*` task ownership; `DEVELOPER_HANDOFF.md` |
+
+**`ADR-INDEX` and Matrix §11 both name the Architecture Review Board as the
+approving body.** *Architecture Owner* is the role; *ARB* is that role sitting as
+a board. They are not two authorities.
+
+---
+
+## 3. Assignment rules
+
+1. **Every registered PRD has exactly one Product Owner, one Domain Owner, one
+   Architecture Owner and one Technical Owner.** Four roles, one holder each, no
+   co-ownership. Two holders of one role is the ambiguity this model exists to
+   remove.
+2. **One role may be held by one party across many PRDs.** The Architecture Owner
+   is platform-wide by construction — boundaries cannot be owned per-document
+   without reintroducing the conflict of `PGA-11`.
+3. **The Domain Owner is derived, never chosen.** It follows from the PRD's
+   bounded contexts as recorded in `PRD_REGISTRY.md` §4 and the BC Map's *"Owning
+   Platform"* column. Changing it means changing context ownership, which
+   §8.6 makes an ADR matter.
+4. **A `PLANNED` PRD has roles assigned; it does not have content.** Ownership is
+   what makes the gap actionable — an unowned gap has nobody to close it.
+5. **Ownership never overrides precedence.** An owner cannot approve a change that
+   Baseline §4 gives to a higher-ranked document. Ownership says *who decides*;
+   precedence says *which document wins*. Only the first is assignable.
+6. **A contested context suspends the Domain Owner, not the other three.** Where
+   ownership is disputed (`PGA-11`), the Domain Owner reads **Contested** and
+   names the resolving ADR. The other three roles remain assigned, so the dispute
+   has an owner too.
+
+---
+
+## 4. Assignment for all 23 registered PRDs
+
+Domain Owner is derived per rule 3. Architecture Owner is platform-wide per
+rule 2. Product Owner and Technical Owner are the roles as defined in §2.2.
+
+### 4.1 Existing PRDs (Rank 3, frozen)
+
+| PRD | Name | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|
+| `PRD-001` | Authentication v2.0 | Product Owner | Identity Platform (`BC-18`) | ARB | Platform Engineering |
+| `PRD-002` | Library Management v1.0 | Product Owner | Library Domain (`BC-01`…`BC-09`, `BC-06`) | ARB | Platform Engineering |
+| `PRD-003` | Student Identity & Profile v1.0 | Product Owner | Person Domain (`BC-10`) | ARB | Platform Engineering |
+
+`PRD-002`'s Domain Owner covers the contexts the Library PRD undisputedly owns.
+Its claim to `BC-19`, `BC-25` and `BC-29` is **Contested** — see §4.4.
+
+### 4.2 Planned PRDs — V1
+
+| PRD | Subject | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|
+| `PRD-004` | Attendance & Seating | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-005` | Fee & Payments | Product Owner | Library Domain | ARB | Platform Engineering |
+| `PRD-006` | Notifications & Communication | Product Owner | Communication Platform | ARB | Platform Engineering |
+| `PRD-007` | Reporting & Analytics | Product Owner | Analytics Platform | ARB | Platform Engineering |
+| `PRD-008` | Subscription & Entitlement | Product Owner | Business Platform | ARB | Platform Engineering |
+| `PRD-009` | Search & Discovery | Product Owner | Search Platform | ARB | Platform Engineering |
+| `PRD-010` | Audit & Compliance | Product Owner | Audit Platform | ARB | Platform Engineering |
+| `PRD-011` | Integration & Connectors | Product Owner | Integration Platform | ARB | Platform Engineering |
+| `PRD-012` | Security & Access Control | Product Owner | Security Platform | ARB | Platform Engineering |
+| `PRD-012a` | Security Automation *(reserved)* | Product Owner | Security Platform | ARB | Platform Engineering |
+| `PRD-013` | Tenancy & Onboarding | Product Owner | **Contested** — see §4.4 | ARB | Platform Engineering |
+| `PRD-014` | Observability | Product Owner | Observability Platform | ARB | Platform Engineering |
+| `PRD-017` | File & Media Services | Product Owner | **Contested** — see §4.4 | ARB | Platform Engineering |
+| `PRD-022` | SaaS Billing (`BC-20`) | Product Owner | Business Platform | ARB | Platform Engineering |
+
+### 4.3 Planned PRDs — V2 and later
+
+| PRD | Subject | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|
+| `PRD-015` | Configuration Management | Product Owner | **Contested** (`BC-25`) — see §4.4 | ARB | Platform Engineering |
+| `PRD-016` | Workflow & Approvals | Product Owner | Workflow Platform | ARB | Platform Engineering |
+| `PRD-012b` | Workflow Orchestration *(reserved)* | Product Owner | Workflow Platform | ARB | Platform Engineering |
+| `PRD-018` | AI & Recommendations | Product Owner | AI Platform | ARB | Platform Engineering |
+| `PRD-019` | Social & Study Network | Product Owner | Social Domain (`BC-11`…`BC-13`) | ARB | Platform Engineering |
+| `PRD-020` | Marketplace | Product Owner | Business Platform | ARB | Platform Engineering |
+| `PRD-021` | Multi-branch Operations | Product Owner | Tenancy Platform | ARB | Platform Engineering |
+| `PRD-023` | *Unassigned — see §4.4* | — | — | — | — |
+
+`PRD-023` is **not** allocated here. `ADR-0013` §7 leaves open whether `BC-25`
+Configuration needs its own PRD or folds into `PRD-015`; allocating a number now
+would pre-empt a decision that ADR explicitly declines to make.
+
+### 4.4 Contested Domain Ownership — three contexts, one ADR
+
+Per rule 6, three PRDs carry **Contested** in the Domain Owner column:
+
+| Context | Claimed by | BC Map *"Owning Platform"* | Resolving ADR |
+|---|---|---|---|
+| `BC-19` Shared Core / Tenancy | `PRD-002` header; `PRD-013` | Shared Core | [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) |
+| `BC-29` Platform Services / File & Media | `PRD-002` header; `PRD-017` | Platform Services | `ADR-0013` |
+| `BC-25` Configuration | `PRD-002` header; `PRD-015` | Configuration | `ADR-0013` §7 (open) |
+
+**This is the finding worth carrying forward.** The three contested rows are not
+a defect in this model — they are the reason a document-ownership model was
+needed. `PRD_REGISTRY.md` §6 originally asserted *"no context is claimed by two
+PRDs"*, which was true only because ownership had been listed for existing PRDs
+alone. Assigning ownership systematically is what made the conflict visible.
+
+Until `ADR-0013` is Accepted, the other three roles remain assigned for all three
+PRDs, so each dispute has an accountable owner.
+
+---
+
+## 5. What ownership obliges
+
+| Stage (`PRD_LIFECYCLE.md`) | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|
+| Named → Drafting | Confirms scope | — | Confirms contexts | — |
+| Drafting → Review | Attests content complete | Reviews language, invariants | Reviews boundaries | Reviews feasibility |
+| Review → Baseline | Attests §2 evidence | Confirms no context conflict | **Approves** — ADR + Baseline §7 | Confirms traceability |
+| Baselined → Frozen | — | — | **Approves** version + changelog | — |
+| Frozen → Amended | Requests | Reviews | **Approves** — ADR before the change | Implements |
+
+**Only the Architecture Owner approves.** The others attest, review or confirm.
+That asymmetry is not a hierarchy of importance: it follows from Baseline §7
+step 1 and `ADR-INDEX` step 1, which vest document-change authority in the ADR
+process alone.
+
+---
+
+## 6. Compliance
+
+Verifiable without judgement:
+
+1. Every PRD in `PRD_REGISTRY.md` §§3–4 appears exactly once in §4 above.
+   **23 of 23** (`PRD-023` deliberately withheld — §4.3).
+2. No row names a person. Every entry is a role or an organizational unit.
+3. Every role in §2.2 traces to prior repository usage (§2.3).
+4. Every **Contested** row names a resolving ADR.
+5. No PRD file was modified to produce this document.
+
+---
+
+## 7. Maintenance
+
+1. A new PRD gets all four roles when it is registered, before it has content.
+2. A Domain Owner change is a **context-ownership change** — ADR required
+   (`PRD_REGISTRY.md` §8.6).
+3. Product and Technical Owner changes need no ADR; update this document in the
+   same commit (§8.3).
+4. **Never** record a personal name. If a name is needed operationally, it belongs
+   in a team directory outside the repository.
+5. If this document disagrees with `PRD_REGISTRY.md`, **fix the register's Owner
+   field**; this document is the authority on ownership.
+
+---
+
+## 8. Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.0** | 2026-08-04 | Created. Closes `PGA-08`. Four roles, derived from six existing governance rules rather than chosen (§2.1), with vocabulary reused from `ADR-0001`, `ADR-0011`, `ADR-0012` and Matrix §11 rather than invented (§2.3). All 23 registered PRDs assigned; `PRD-023` deliberately withheld pending `ADR-0013` §7. Three PRDs carry **Contested** Domain Ownership — `BC-19`, `BC-29`, `BC-25` — each naming `ADR-0013` as its resolution path. **No PRD was modified, no requirement created or reinterpreted, and no personal name recorded.** |

@@ -1,0 +1,112 @@
+# LIBOORA — architecture and quality gates.
+#
+# Implements MODULE_DEPENDENCY_MATRIX §10.4 "Pipeline gate ordering" verbatim,
+# in the order given, cheapest gate first:
+#
+#   1. dart format --set-exit-if-changed .        ← fastest, fail first
+#   2. flutter analyze                            ← Layer 1
+#   3. dart run tool/check_module_boundaries.dart ← Layer 2  ◄── blocks merge
+#   4. flutter test test/architecture/            ← Layer 3  ◄── blocks merge
+#   5. flutter test                               ← unit + widget
+#   6. flutter build web --release                ← build verification
+#
+# ─────────────────────────────────────────────────────────────────────────
+# WHY THIS FILE EXISTS
+#
+# §10.4 declares gates 3 and 4 to be "required status checks on the protected
+# branch", and §10.2 gives the CI invocation. Until now no workflow file
+# existed, so all six gates were automated by convention only — they ran when
+# someone remembered to run them. `SID-4.56` is explicit about what that means:
+# "A rule that cannot be checked SHALL be treated as unmet, not as satisfied by
+# intent." A gate that depends on human memory is not automated.
+#
+# ─────────────────────────────────────────────────────────────────────────
+# EXPECTED STATE: GATE 3 IS CURRENTLY RED, AND THAT IS CORRECT
+#
+# `check_module_boundaries` exits 1 today on nine `app -> domain/library`
+# violations. Those are NOT waived, deliberately: `ADR-0012` §3.4 records that
+# waiving them would convert `TASK-D10` — a tracked P0 release blocker — into
+# untracked debt with a distant expiry. The demo surfaces are scheduled for
+# deletion; the gate stays red until they are gone.
+#
+# Do NOT add `continue-on-error` to gate 3 to turn this branch green. That would
+# reinterpret the architecture instead of enforcing it, and would silently
+# disable the tenant-key and audit-mutation checks (X-13, X-10) along with it —
+# X-13 being, per the matrix, "the highest-severity failure class in the system".
+# The honest remedy is to land TASK-D10.
+# ─────────────────────────────────────────────────────────────────────────
+
+name: architecture
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push supersedes an in-flight run on the same ref.
+concurrency:
+  group: architecture-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: §10.4 pipeline gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Version-locked to match the sandbox exactly. Do not float this: the
+      # repository is pinned to Flutter 3.35.4 / Dart 3.9.2.
+      - name: Set up Flutter 3.35.4
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.4
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # ── Gate 1 ────────────────────────────────────────────────────────
+      - name: 1 · dart format
+        run: dart format --output=none --set-exit-if-changed .
+
+      # ── Gate 2 ── Layer 1 ─────────────────────────────────────────────
+      - name: 2 · flutter analyze
+        run: flutter analyze
+
+      # ── Gate 3 ── Layer 2 · BLOCKS MERGE ──────────────────────────────
+      #
+      # Exit codes: 0 clean · 1 violations found · 2 the checker could not run
+      # (missing manifest, unparseable YAML). Exit 2 must never be mistaken for
+      # a clean build, which is why this step is a plain invocation with no
+      # tolerance of any non-zero status.
+      #
+      # This gate is what makes X-10 (audit append-only) and X-13 (tenant-scoped
+      # keys) enforced rather than merely documented.
+      - name: 3 · boundary checker (L1–L5, X-10, X-13) — blocks merge
+        run: dart run tool/check_module_boundaries.dart --verbose
+
+      # ── Gate 4 ── Layer 3 · BLOCKS MERGE ──────────────────────────────
+      #
+      # Includes the tests that prove the boundary checker's own checks fire on
+      # a synthetic violation. An unverified checker is an unmet rule wearing a
+      # green tick.
+      - name: 4 · architecture tests — blocks merge
+        run: flutter test test/architecture/
+
+      # ── Gate 5 ────────────────────────────────────────────────────────
+      - name: 5 · full test suite
+        run: flutter test
+
+      # ── Gate 6 ────────────────────────────────────────────────────────
+      - name: 6 · build verification
+        run: flutter build web --release

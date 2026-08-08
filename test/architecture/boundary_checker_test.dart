@@ -363,6 +363,191 @@ void main() {
       );
     });
   });
+
+  // ══════════════════════════════════════════════════════════════════
+  // X-10 and X-13 — the two rules that were declared but unenforced
+  // ══════════════════════════════════════════════════════════════════
+
+  /// These tests exist because of a specific failure mode. Both rules were
+  /// present in `module_dependencies.yaml` from the start — `banned_method_names`
+  /// on `platform/audit` (`X-10`) and `global.tenant_key_required_in` (`X-13`) —
+  /// but the checker never read either key. The manifest looked complete, the
+  /// build was green, and the matrix had to record enforcement as *"10 of 12"*
+  /// with both rules **unmet** under `SID-4.56`.
+  ///
+  /// The audit module happens to be compliant today and `platform/search` does
+  /// not exist yet, so a test asserting "no violations found" would pass whether
+  /// or not the checks were wired in at all — the exact ambiguity that let this
+  /// gap persist. Each test below therefore introduces a **synthetic violation**
+  /// and asserts the checker *catches* it, which is the only assertion that can
+  /// distinguish a working check from an absent one.
+  group('X-10 / X-13 enforcement (categories 11 and 12)', () {
+    test('X-10 fires on every banned audit method name', () {
+      final report = _runWithProbe('lib/platform/audit/_probe_x10.dart', '''
+library;
+
+final class ProbeAuditStore {
+  void deleteEntry(String id) {}
+  void updateAll() {}
+  Future<void> purgeOlderThan(DateTime d) async {}
+  void modifyRecord(String id) {}
+}
+''');
+
+      expect(
+        report.exitCode,
+        1,
+        reason: 'A forbidden dependency must return a non-zero exit code.',
+      );
+      expect(report.stdout, contains('audit-mutation'));
+      expect(report.stdout, contains('X-10'));
+
+      // All four manifest globs must match, not merely the first.
+      for (final name in const [
+        'deleteEntry',
+        'updateAll',
+        'purgeOlderThan',
+        'modifyRecord',
+      ]) {
+        expect(
+          report.stdout,
+          contains(name),
+          reason:
+              '"$name" matches a banned_method_names glob but was not '
+              'reported. X-10 forbids update, delete, purge and modify '
+              'equally; AU-4 forbids removal outright.',
+        );
+      }
+    });
+
+    test('X-10 does not flag append or read methods', () {
+      // The real audit store must stay legal. If this fails, the check is
+      // over-matching, and over-matching is what creates pressure to weaken a
+      // rule in order to get a green build.
+      final report = _runWithProbe('lib/platform/audit/_probe_x10_ok.dart', '''
+library;
+
+final class ProbeAppendOnly {
+  void append(String id) {}
+  List<String> recent([int n = 25]) => const [];
+  int get count => 0;
+}
+''');
+
+      expect(
+        report.stdout.contains('audit-mutation'),
+        isFalse,
+        reason:
+            'append/recent/count are the sanctioned surface (AU-1 bans '
+            'mutation, not reads). Flagging them would misread X-10.',
+      );
+    });
+
+    test('X-13 fires on a tenant-less key on each declared surface', () {
+      final report = _runWithProbe('lib/platform/analytics/_probe_x13.dart', '''
+library;
+
+final class ProbeKeys {
+  String cacheKey(String id) => 'seat:\$id';
+  String indexName(String ctx) => 'students_\$ctx';
+  String projectionTable(String n) => 'proj_\$n';
+}
+''');
+
+      expect(report.exitCode, 1);
+      expect(report.stdout, contains('tenant-key'));
+      expect(report.stdout, contains('X-13'));
+      expect(
+        report.stdout,
+        contains('blocker'),
+        reason:
+            'global.tenant_key_violation_severity is declared `blocker`. The '
+            'report must not understate a cross-tenant leak.',
+      );
+      expect(
+        report.stdout,
+        contains('_probe_x13.dart'),
+        reason: 'The violation must identify the exact file.',
+      );
+      expect(
+        report.stdout,
+        contains('platform/analytics'),
+        reason: 'The violation must identify the source module.',
+      );
+    });
+
+    test('X-13 accepts an explicitly tenant-scoped key', () {
+      final report = _runWithProbe(
+        'lib/platform/analytics/_probe_x13_ok.dart',
+        '''
+library;
+
+final class ProbeScopedKeys {
+  String cacheKey(String tenantId, String id) => '\$tenantId::seat:\$id';
+  String indexName(String tenantId) => '\$tenantId-students';
+}
+''',
+      );
+
+      expect(
+        report.stdout.contains('tenant-key'),
+        isFalse,
+        reason:
+            'X-13\'s stated remedy is a tenant-prefixed key factory. A key '
+            'that names tenantId already satisfies the rule.',
+      );
+    });
+
+    test('both rules are declared in the manifest, not hard-coded', () {
+      // The checker must derive these rules from the manifest so that widening
+      // X-13 or X-10 stays a governed manifest edit rather than a code change.
+      final manifest = File(_manifestPath).readAsStringSync();
+      expect(manifest, contains('banned_method_names'));
+      expect(manifest, contains('tenant_key_required_in'));
+      expect(manifest, contains('tenant_key_violation_severity'));
+
+      final checker = File(_checkerPath).readAsStringSync();
+      expect(
+        checker,
+        contains("blockMap?['banned_method_names']"),
+        reason:
+            'X-10 must be read from the manifest. It was the *absence* of this '
+            'read, not the absence of the rule, that left X-10 unmet.',
+      );
+      expect(
+        checker,
+        contains("global['tenant_key_required_in']"),
+        reason: 'X-13 must be read from the manifest for the same reason.',
+      );
+    });
+
+    test('the real repository has no X-10 or X-13 violation', () {
+      // Asserted *after* the tests above prove the checks can fire, so a clean
+      // result here means "verified compliant", not "not looked at".
+      final report = _runChecker();
+      expect(report.stdout.contains('audit-mutation'), isFalse);
+      expect(report.stdout.contains('■ tenant-key'), isFalse);
+    });
+  });
+}
+
+/// Runs the checker with one extra source file present, then deletes it.
+///
+/// The probe is removed in a `finally` block and its directory is left exactly
+/// as found, so a failing expectation can never leave a synthetic violation
+/// behind to poison later runs.
+({int exitCode, String stdout, String stderr}) _runWithProbe(
+  String relativePath,
+  String contents,
+) {
+  final probe = File('$_repoRoot/$relativePath');
+  probe.parent.createSync(recursive: true);
+  try {
+    probe.writeAsStringSync(contents);
+    return _runChecker();
+  } finally {
+    if (probe.existsSync()) probe.deleteSync();
+  }
 }
 
 /// Extracts the blocking-violation count from a checker report.

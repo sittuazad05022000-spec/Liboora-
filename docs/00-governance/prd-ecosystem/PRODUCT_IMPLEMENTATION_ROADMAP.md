@@ -57,7 +57,7 @@ place to put it.
 | `PRD-001` Authentication | ✅ Frozen v2.0 | ⚠ **Partial** | `TASK-D10` **P0 release blocker**; `IMPL-020` SMS/DLT unstarted |
 | `PRD-002` Library | ✅ Frozen v1.0 | ⛔ **0 of 23 tasks** | Nothing started |
 | `PRD-003` Student Identity | ✅ Frozen v1.0 | ⚠ **Partial** | `IMPL-220` `SID-INT-*` unenforced → **unmet** per `SID-4.56` |
-| `PRD-004` … `PRD-021` | ⛔ **Do not exist** | ⛔ | 18 missing, all V1 |
+| `PRD-004` … `PRD-022` | ⛔ **Do not exist** | ⛔ | 19 missing, all V1 |
 
 Quality gates at HEAD: format ✅ · analyze ✅ · tests ✅ 71 passing · **boundary checker exits 1 by design**
 (9 `app → domain/library` findings, deliberately unwaived pending `TASK-D10`, per `ADR-0012` §3.4).
@@ -93,6 +93,15 @@ Written first because **every** subsequent PRD references their identifiers and 
 
 **Why Tenancy precedes Audit.** An audit entry without a tenant key is a cross-tenant leak in the one store that
 must never leak — `MP-RSK-01`, *"highest-severity failure class in the system"* (`X-13`).
+
+> ⚠ **Wave 1 has an entry gate that Waves 2–5 do not.** `PRD-013` (`BC-19`) and `PRD-017` (`BC-29`) cannot state
+> their own scope until `PGA-11` is settled, because `Library_PRD_v1.md` — frozen, Rank 3 — declares both contexts
+> as **owning contexts** in its header. Writing either PRD first would either contradict a frozen document or
+> silently narrow it.
+>
+> **Sequence: ADR settling `BC-19` / `BC-29` ownership → then 1.1 and 1.4.** The ADR is small; the evidence is
+> already assembled in [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-11`, and the Library PRD's own data
+> table already reads *"References by id"* for `BC-29`. Items 1.2 and 1.3 are unaffected and may start immediately.
 
 ### Wave 2 — The core library product
 

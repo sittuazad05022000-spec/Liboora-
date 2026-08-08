@@ -234,6 +234,17 @@ The §31 Linked Documents table carries this row verbatim:
 > ⚠ **`PRD-012` must not be written as one PRD.** Master PRD §8 Correction 2 states: *"A single module name
 > spanning two owners at two ranks violates the Single Owner Rule (EA §10.1.1)."* Writing it as one document
 > would re-create the violation the correction removed. See [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §5.
+>
+> **`PRD-012` is therefore a placeholder that will never be authored.** When the work is specified it becomes two
+> registered documents, and the suffixed identifiers below are reserved now so that nothing else claims them:
+>
+> | PRD ID | Name | Owner | Type | V | Status |
+> |---|---|---|---|---|---|
+> | `PRD-012a` | Security Automation | **SECURITY platform (rank 2)** | `[GENERIC]` | V1 | `PLANNED` |
+> | `PRD-012b` | Workflow Orchestration | **`BC-28` Workflow Orchestration** | `[SUPPORTING]` | V2 | `PLANNED` |
+>
+> The two differ in owner, rank **and** release version — which is precisely why one document cannot hold them.
+> `PRD-012` itself is retired on the day `PRD-012a` is opened; its number is **not** reused (§8 rule 1).
 
 ### 4.2 Bounded contexts with product obligations and no PRD
 
@@ -257,14 +268,29 @@ requirements, budgets and owners."* The obligation is the Master PRD's, not this
 > is **Critical** with mitigation *"`BC-13` Trust & Safety at V1"*. That mitigation is a bounded context with no
 > specification, no tasks and no owner.
 
-### 4.3 Contexts and surfaces with no PRD and no §8.1 obligation
+### 4.3 Registered outside both Master PRD lists
+
+One V1 bounded context is named in neither §31's nine nor §8.1's eight, yet owns aggregates and V1 obligations.
+It is registered here rather than left in §4.4, because §4.4 is *"not a recommendation to write documents"* and
+this one **is**.
+
+| PRD ID | Name | Bounded context | Type | V | Status | Why registered |
+|---|---|---|---|---|---|---|
+| `PRD-022` | SaaS Billing | **`BC-20` Subscription & Billing** | `[GENERIC]` | V1 | `PLANNED` | Master PRD §8 module 17; owns `Subscription` · `SubscriptionInvoice`; sole writer of entitlement inputs |
+
+> **Why this is a distinct PRD and not part of `PRD-008` Revenue & Finance.** The Bounded Context Map's
+> terminology table separates the two at three points: `Payment`, `Plan` and `Invoice` each mean different things
+> in `BC-05` and `BC-20`. `BC-05` is money **student → library**; `BC-20` is money **library → LIBOORA**. Merging
+> them would collapse `FeePayment` into `SubscriptionCharge` and put a library's revenue in the same aggregate as
+> LIBOORA's. Disposition in [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-05`.
+
+### 4.4 Contexts and surfaces with no PRD and no §8.1 obligation
 
 Recorded for completeness. **These are not recommendations to write documents** — several should never be
 separate PRDs, and [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §6 explains which and why.
 
 | Context / surface | Type | V | Registry position |
 |---|---|---|---|
-| `BC-20` Subscription & Billing (SaaS Billing, module 17) | `[GENERIC]` | V1 | `PLANNED` — **not** in the §31 nine; a genuine V1 gap |
 | `BC-25` Configuration (Settings, module 18) | `[GENERIC]` | V1 | **Covered** — `PRD-002` owns `BC-25` |
 | Dashboards — Owner, Manager, Reception (modules 10–12) | *not contexts* | V1 | **No PRD.** Presentation compositions; own no aggregate |
 | Parent Portal (module 5) | *not a context* | V1 | **No PRD.** Composition over `BC-01`/`03`/`05` |
@@ -294,26 +320,58 @@ Filling these in would require inventing names. This register records the gap in
 
 ---
 
-## 6. Bounded-context ownership — no duplicates
+## 6. Bounded-context ownership
 
-Verified against the Bounded Context Map's 31 contexts. Each context has **exactly one** owning PRD or none.
+Verified against the Bounded Context Map's 31 contexts.
 
-| Context | Owning PRD | Duplicate? |
+| Context | Owning PRD | Contested? |
 |---|---|---|
 | `BC-18` | `PRD-001` | No |
-| `BC-19`, `BC-06`, `BC-25`, `BC-29` | `PRD-002` | No |
+| `BC-06`, `BC-25` | `PRD-002` | No |
+| `BC-19` | `PRD-002` **and** `PRD-013` | ⚠ **Yes** |
+| `BC-29` | `PRD-002` **and** `PRD-017` | ⚠ **Yes** |
 | `BC-10` | `PRD-003` | No |
-| `BC-01`…`BC-05`, `BC-11`…`BC-13`, `BC-20`…`BC-24`, `BC-26`, `BC-27`, `BC-30`, `BC-31` | *(unwritten `PRD-004`…`021`)* | No |
+| `BC-20` | `PRD-022` | No |
+| `BC-01`…`BC-05`, `BC-11`…`BC-13`, `BC-21`…`BC-24`, `BC-26`, `BC-27`, `BC-30`, `BC-31` | *(unwritten `PRD-004`…`021`)* | No |
 | `BC-07`…`BC-09`, `BC-14`…`BC-17`, `BC-28` | None — V2/V3 | No |
 
-**No context is claimed by two PRDs.** The three frozen module PRDs are disjoint, exactly as
-`DOCUMENTATION_BASELINE.md` §4 requires: *"Rank 3 holds three module baselines and they do not overlap."*
+**Among the three frozen module PRDs there is no overlap**, exactly as `DOCUMENTATION_BASELINE.md` §4 requires:
+*"Rank 3 holds three module baselines and they do not overlap."* `PRD-001`, `PRD-002` and `PRD-003` are disjoint.
 
-One row deserves its reasoning stated, because it looks like an overlap and is not. `PRD-002` owns **`BC-29` File
-& Media**, and `PRD-003` §4.8 requires the Global Profile Photo to be *"held as a `FileRef` issued by `BC-29`"*.
-That is **consumption, not ownership** — `SID-4.36` explicitly assigns upload, scanning, thumbnailing and
-signed-URL issuance to `BC-29` and forbids this module from re-implementing or bypassing them. A dependency edge,
-recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) §4.
+### 6.1 The two contested contexts — `BC-19` and `BC-29`
+
+The collision is **not** between two written PRDs. It is between a written one and the Master PRD's own list of
+contexts that still need PRDs.
+
+- `Library_PRD_v1.md` line 10 declares its **owning contexts** as *"`BC-19` Tenancy · `BC-06` Library Policy ·
+  `BC-25` Configuration · `BC-29` File & Media."*
+- Master PRD §8.1 lists `BC-19` and `BC-29` among contexts that *"carry product-visible obligations but had no
+  module entry. Listed here so they receive requirements, budgets and owners"* — which is why this register
+  carries `PRD-013` Tenancy and `PRD-017` File & Media at all.
+
+Both statements cannot be true as written. Three pieces of evidence indicate the **Library PRD's header
+over-claims**, and that the capability contexts are platform-owned:
+
+| Evidence | What it shows |
+|---|---|
+| `Library_PRD_v1.md` line 1094 | Its own data table gives `BC-29` as **"References by id"** — *not* "Owns", unlike the `BC-19`/`BC-06`/`BC-25` rows. The header contradicts the body. |
+| `SID-4.36` | Assigns upload, scanning, thumbnailing and signed-URL issuance to `BC-29` and forbids other modules re-implementing them — a shared capability, not library-owned. |
+| `tool/module_dependencies.yaml` | `domain/library` (rank **8**) reaches `platform/tenancy:tenant_context` (rank 4) and `platform/services:files` (rank 3) as **ports**. A rank-8 consumer cannot own a rank-3/4 capability without inverting `L2`. |
+
+**Precedence resolves the reading, not the conflict.** `DOCUMENTATION_BASELINE.md` §4 puts Master PRD global
+structure at Rank 1 and module PRDs at Rank 3, so `PRD-013`/`PRD-017` are the provisional owners of the
+capabilities and `PRD-002` owns the tenant-facing library data that *uses* them. This register applies that
+reading and flags it — **it does not settle it.** Settling it means amending a frozen Rank-3 document, which
+`DOCUMENTATION_BASELINE.md` §7 requires an ADR to do first.
+
+Recorded as [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-11`. Until that ADR exists, **`BC-19` and `BC-29`
+are the only two contexts in the product without a single undisputed owner.**
+
+### 6.2 One case that looks like an overlap and is not
+
+`PRD-003` §4.8 requires the Global Profile Photo to be *"held as a `FileRef` issued by `BC-29`"*. That is
+**consumption, not ownership** — `SID-4.36` forbids `BC-10` from re-implementing or bypassing file handling. A
+dependency edge, recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) §4.
 
 ---
 
@@ -321,15 +379,19 @@ recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) §4.
 
 | Measure | Count |
 |---|---|
-| **PRDs registered** | **22** (`PRD-000`…`PRD-021`) |
+| **PRDs registered** | **23** — `PRD-000`…`PRD-022` |
 | **Documents that exist** | **6 files, 4 PRD identities** (`PRD-000`…`PRD-003`) |
 | `FROZEN` | **3** — `PRD-000`, `PRD-001`, `PRD-002` |
 | `IMPLEMENTING` | **1** — `PRD-003` |
-| `PLANNED` | **18** — `PRD-004`…`PRD-021` |
+| `PLANNED` | **19** — `PRD-004`…`PRD-022` |
 | `DISCOVERY` · `DRAFT` · `IN_REVIEW` · `APPROVED` · `IMPLEMENTED` · `VERIFIED` | **0 each** |
-| Missing **V1** PRDs | **18** — 9 from §31 + 8 from §8.1 + `BC-20` |
-| Duplicate or overlapping PRDs | **0** |
-| PRDs with a named owner | **0 of 22** |
+| Missing **V1** PRDs | **19** — 9 from §31 (§4.1) + 9 from §8.1 (§4.2) + `PRD-022` (§4.3) |
+| Duplicate PRDs | **0** — no requirement is specified twice |
+| **Contested bounded contexts** | **2** — `BC-19`, `BC-29` (§6.1, `PGA-11`) |
+| PRDs with a named owner | **0 of 23** |
+
+**Reserved, not counted above:** `PRD-012a` and `PRD-012b` (§4.1). They are the two documents `PRD-012` becomes
+and are not separately registered until `PRD-012` is retired, so counting them now would double-count one gap.
 
 **No PRD has reached `VERIFIED`, and none is close.** `PRD-001`, the most complete, cannot deliver an OTP
 (`IMPL-020`) and carries a P0 release blocker (`TASK-D10`).
@@ -370,4 +432,5 @@ recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.md) §4.
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0** | 2026-08-04 | Created. 22 PRDs registered — 4 existing (6 files), 18 planned. Freeze status derived from `DOCUMENTATION_BASELINE.md` §3/§7 rather than from PRD self-declaration, because **no PRD declares its own freeze state** (§2.1). Ownership recorded as **unassigned for all 22** because no document-owner field exists anywhere in the repository (§5). Bounded-context ownership verified free of duplicates across all 31 contexts (§6). **No requirement was created, modified, reinterpreted or withdrawn; no PRD was edited.** |
+| **v1.0** | 2026-08-04 | Created. 23 PRDs registered — 4 existing (6 files), 19 planned. Freeze status derived from `DOCUMENTATION_BASELINE.md` §3/§7 rather than from PRD self-declaration, because **no PRD declares its own freeze state** (§2.1). Ownership recorded as **unassigned for all 23** because no document-owner field exists anywhere in the repository (§5). Bounded-context ownership verified across all 31 contexts (§6). **No requirement was created, modified, reinterpreted or withdrawn; no PRD was edited.** |
+| **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the register was relied on. Three self-inconsistencies found and corrected: (1) `BC-20` Subscription & Billing was described as *"a genuine V1 gap"* while sitting in the table for contexts with **no** PRD obligation, and was cited as `PRD-022` by two companion documents without ever being registered — now registered as `PRD-022` in a new §4.3, and the old §4.3 renumbered §4.4; (2) `PRD-012a`/`PRD-012b` were cited by the roadmap and gap analysis but existed in no register — now reserved explicitly under §4.1; (3) the missing-V1 arithmetic read *"9 from §31 + 8 from §8.1 + `BC-20`"*, which summed to 18 while §8.1 yields **nine** PRDs — corrected to 19. (4) §6 asserted *"no context is claimed by two PRDs"* while §4.2 of the same register assigned `BC-19` to `PRD-013` and `BC-29` to `PRD-017` — contexts §3.3 gives to `PRD-002`. The clean result was an artefact of listing ownership only for PRDs that exist; the register contradicted itself two sections apart. §6 now records both as **contested**, states the three pieces of evidence, applies the precedence reading without claiming to settle it, and raises `PGA-11`. **Version remains v1.0: these were defects in an unreleased document, not amendments to a published one.** No requirement, PRD or architectural decision was touched. |

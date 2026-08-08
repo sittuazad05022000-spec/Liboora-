@@ -35,11 +35,11 @@ each was found by cross-reading two documents that agree individually and disagr
 
 | Category | Count | Severity |
 |---|---|---|
-| **Missing PRDs** | **18** | 1 Critical · 5 High · 12 Medium |
-| **Duplicate PRDs** | **0** | — |
-| **Overlapping responsibilities** | **0 genuine** · 2 that look like overlaps and are not | — |
+| **Missing PRDs** | **19** | 1 Critical · 5 High · 13 Medium |
+| **Duplicate PRDs** | **0** — no requirement is specified twice | — |
+| **Overlapping responsibilities** | **1 genuine** (`PGA-11`) · 2 that look like overlaps and are not | High |
 | **Missing dependencies** | **1** (`PGA-02`) | Medium |
-| **Architectural conflicts** | **2** (`PGA-01`, `PGA-02`) | 1 Medium · 1 Medium |
+| **Architectural conflicts** | **3** (`PGA-01`, `PGA-02`, `PGA-11`) | 1 High · 2 Medium |
 | **Requirements with no owning PRD** | **3 classes** (`PGA-03`…`PGA-05`) | 1 Critical · 2 High |
 | **PRDs that should be split** | **1** (`PGA-06`) | High |
 | **PRDs that should NOT be split** | **6 cases** | — |
@@ -116,6 +116,52 @@ benign reading is almost certainly correct — and *"almost certainly"* is the s
 **Recommended disposition:** a one-line ADR adding `BC-10` to `E-22`. Low cost, and it closes a gap that would
 otherwise be discovered by a developer implementing `IMPL-212` and finding no lawful edge.
 
+### `PGA-11` — `BC-19` and `BC-29` are claimed by a frozen PRD and by the Master PRD's own PRD backlog
+
+**Severity: High** · **Type: duplicate ownership** · **Status: raised, unresolved**
+
+This is the one genuine overlap in the repository, and it is the finding this analysis most nearly missed —
+because both claims are individually reasonable and neither document is wrong on its own terms.
+
+| Claimant | Statement |
+|---|---|
+| `Library_PRD_v1.md` line 10 | **Owning contexts:** *"`BC-19` Tenancy · `BC-06` Library Policy · `BC-25` Configuration · `BC-29` File & Media"* |
+| `MASTER_PRD.md` §8.1 | Lists `BC-19` and `BC-29` among contexts that *"carry product-visible obligations but had no module entry. Listed here so they receive requirements, budgets and owners."* |
+
+The Master PRD is asking for PRDs covering two contexts a frozen Rank-3 PRD already declares it owns. That
+directly engages the rule *"no duplicate ownership between PRDs"*.
+
+**Three pieces of evidence indicate the Library PRD's header over-claims:**
+
+1. **The Library PRD contradicts itself.** Its data-ownership table at line 1094 marks `BC-29` as
+   **"References by id"** — while `BC-19`, `BC-06` and `BC-25` are each marked **"Owns"**. The body treats
+   `BC-29` as a dependency; only the header calls it owned.
+2. **`SID-4.36`** assigns upload, virus scanning, thumbnailing and signed-URL issuance to `BC-29` and forbids
+   other modules re-implementing or bypassing them — the signature of a shared platform capability.
+3. **The dependency ranks make library ownership impossible.** In `tool/module_dependencies.yaml`,
+   `domain/library` is rank **8** and reaches `platform/tenancy:tenant_context` (rank 4) and
+   `platform/services:files` (rank 3) through **ports**. A rank-8 module owning a rank-3 capability would
+   invert `L2` (downward-only) and make the boundary checker's own configuration incoherent.
+
+**Why `BC-19` is the harder half.** `BC-29` is nearly clean — the Library PRD only over-claims in its header.
+`BC-19` is genuinely shared: the Library PRD's `TenantOrganisation` and `StaffAssignment` aggregates are real,
+tenant-facing, and specified in detail across `LIB-6.x`. The likely correct resolution is not "`PRD-013` takes
+`BC-19`" but a **split**: tenant *lifecycle, context propagation, tiers and residency* to `PRD-013`; the
+library-facing organisation record to `PRD-002`. That is a boundary change and needs an ADR, not an edit.
+
+**Why this was not caught earlier.** `LIBRARY_PRD_ALIGNMENT.md` dispositioned 14 conflicts and contains **zero**
+occurrences of `BC-19`, `BC-29`, *Tenancy* or *File & Media*. The review compared the Library PRD against the
+architecture; it did not compare the Library PRD's ownership header against the Master PRD's PRD backlog.
+
+**Recommended disposition:** one ADR settling both contexts — most economically by correcting the Library PRD
+header to distinguish *owns* from *consumes*, which its own body already does. **Not actionable here:**
+`Library_PRD_v1.md` is frozen Rank 3, and `DOCUMENTATION_BASELINE.md` §7 requires the ADR **before** the change.
+
+**Not blocking V1** in the sense that no code is wrong today — the boundary checker already enforces the port
+relationship, so the implementation follows the correct reading regardless of what the header says. It becomes
+blocking the moment someone writes `PRD-013` or `PRD-017`, because they cannot state their scope without
+contradicting a frozen document.
+
 ---
 
 ## 4. Requirements with no owning PRD
@@ -184,7 +230,13 @@ under real concurrency. `MP-RSK-04` rates it High.
 aggregate exists, the full `BC-01` does not"*, so the ACL *"cannot be verified end to end."*
 
 **One further V1 gap outside the nine:** `BC-20` Subscription & Billing — SaaS Billing, Master PRD §8 module 17,
-V1, `Subscription` and `SubscriptionInvoice` aggregates. Registered as `PRD-022`.
+V1, `Subscription` and `SubscriptionInvoice` aggregates. Named in neither §31's nine nor §8.1's eight, which is
+why it is easy to miss entirely. Registered as `PRD-022` in [`PRD_REGISTRY.md`](./PRD_REGISTRY.md) §4.3.
+
+It must not be folded into `PRD-008` Revenue & Finance. The Bounded Context Map's terminology table separates the
+two at three points — `Payment`, `Plan` and `Invoice` each mean different things in `BC-05` and `BC-20` — because
+`BC-05` is money **student → library** and `BC-20` is money **library → LIBOORA**. One PRD covering both would put
+a library's revenue and LIBOORA's revenue in the same aggregate.
 
 ---
 
@@ -307,6 +359,7 @@ authorised to make.
 | `PGA-07` | Nothing. Recorded only | No |
 | `PGA-08` | A governance decision on document ownership | No |
 | `PGA-09`, `PGA-10` | Nothing, or a Master PRD refresh at next version | No |
+| `PGA-11` | **ADR settling `BC-19` / `BC-29` ownership**, then a versioned amendment to the `Library_PRD_v1.md` header | Not yet — **blocks `PRD-013` and `PRD-017`** |
 
 ---
 
@@ -342,3 +395,4 @@ authorised to make.
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. 10 findings: 18 missing PRDs, **0 duplicates**, **0 genuine overlaps**, 2 architectural conflicts, 1 mandated split, 6 cases where splitting is explicitly rejected. **`PGA-01` and `PGA-02` are new** — neither appears in `LIBRARY_PRD_ALIGNMENT.md` or `STUDENT_IDENTITY_ALIGNMENT.md`, and both were found by cross-reading documents that are individually self-consistent. Neither was fixed: both live in frozen documents and `DOCUMENTATION_BASELINE.md` §7 requires an ADR first. No requirement was invented, modified or withdrawn; no PRD was edited. |
+| **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the analysis was relied on. **`PGA-11` added** — the one genuine overlap in the repository: `Library_PRD_v1.md` declares `BC-19` and `BC-29` as owning contexts while `MASTER_PRD.md` §8.1 lists both as needing PRDs, which this register carries as `PRD-013` and `PRD-017`. Found while verifying `PRD_REGISTRY.md` §6's claim of zero duplicate ownership — a claim that was true only because §6 listed ownership for existing PRDs and ignored planned ones, so the register contradicted itself two sections apart. The *"0 genuine overlaps"* headline is corrected to **1**, missing PRDs to **19** (`PRD-022` was cited by two companion documents without ever being registered), and architectural conflicts to **3**. `PGA-11` was **not fixed**: `Library_PRD_v1.md` is frozen Rank 3. No requirement was invented, modified or withdrawn; no PRD was edited. |

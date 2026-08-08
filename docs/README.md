@@ -47,6 +47,19 @@ constrains product, product constrains implementation.
 | [`adr/ADR-0001`](./00-governance/adr/ADR-0001-modular-monolith.md) … [`ADR-0011`](./00-governance/adr/ADR-0011-global-person-identity.md) | The **eleven** accepted decisions. **Binding.** All are short — read all eleven. `ADR-0011` is the only one that **amends** the Bounded Context Map's Identity Triad and a Master PRD global rule |
 | [`DOCUMENTATION_AUDIT-001.md`](./00-governance/DOCUMENTATION_AUDIT-001.md) | The enterprise review that produced this baseline. 34 findings, plus the Library second pass (§6B) |
 
+### 00-governance/prd-ecosystem
+
+Management of the PRD set as a whole. **Navigational and administrative — no requirements live here.** Where any
+of these disagrees with a PRD, the PRD is right.
+
+| Document | Purpose |
+|---|---|
+| [`PRD_REGISTRY.md`](./00-governance/prd-ecosystem/PRD_REGISTRY.md) | **The register of record.** 23 PRDs — 4 exist, 19 planned. Status, version, contexts, dependencies, ADRs, tasks and freeze state for each |
+| [`PRD_DEPENDENCY_GRAPH.md`](./00-governance/prd-ecosystem/PRD_DEPENDENCY_GRAPH.md) | Which PRD depends on which, and by what kind of dependency. 17 edges, no cycles |
+| [`PRODUCT_IMPLEMENTATION_ROADMAP.md`](./00-governance/prd-ecosystem/PRODUCT_IMPLEMENTATION_ROADMAP.md) | The order PRDs should be **written and built**, Waves 0–5. Complements `40-implementation/IMPLEMENTATION_ROADMAP.md`, which sequences *tasks* |
+| [`PRD_GAP_ANALYSIS.md`](./00-governance/prd-ecosystem/PRD_GAP_ANALYSIS.md) | 11 findings. Missing PRDs, one genuine ownership overlap (`PGA-11`), and **six cases where a new PRD would be the wrong answer** |
+| [`PRD_LIFECYCLE.md`](./00-governance/prd-ecosystem/PRD_LIFECYCLE.md) | Discovery → Draft → Architecture Review → Requirements Review → Traceability → Tasks → **Freeze** → Implementation → Verification, with the exit gate for each |
+
 ## 10-architecture
 
 | Document | Version | Purpose |

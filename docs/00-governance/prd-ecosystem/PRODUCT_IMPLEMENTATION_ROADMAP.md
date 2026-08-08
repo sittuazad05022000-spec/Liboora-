@@ -57,7 +57,8 @@ place to put it.
 | `PRD-001` Authentication | ✅ Frozen v2.0 | ⚠ **Partial** | `TASK-D10` **P0 release blocker**; `IMPL-020` SMS/DLT unstarted |
 | `PRD-002` Library | ✅ Frozen v1.0 | ⛔ **0 of 23 tasks** | Nothing started |
 | `PRD-003` Student Identity | ✅ Frozen v1.0 | ⚠ **Partial** | `IMPL-220` `SID-INT-*` unenforced → **unmet** per `SID-4.56` |
-| `PRD-004` … `PRD-022` | ⛔ **Do not exist** | ⛔ | 19 missing, all V1 |
+| `PRD-004` Student Management | 🟡 **`DRAFT` v1.0** — not frozen, not ranked | ⛔ **0 of 18 tasks** | Written 2026-08-04 (`11aae01`). Includes the Library Members Directory as chapter 5 (read composition). **Reviewed 2026-08-04 — verdict C, requires major corrections**; 3 blocking findings, 0 of 28 acceptance criteria executed. See [`PRD-004_INDEPENDENT_REVIEW_REPORT.md`](../../30-product/student-management/PRD-004_INDEPENDENT_REVIEW_REPORT.md) |
+| `PRD-005` … `PRD-022` | ⛔ **Do not exist** | ⛔ | 18 missing, all V1 |
 
 Quality gates at HEAD: format ✅ · analyze ✅ · tests ✅ 71 passing · **boundary checker exits 1 by design**
 (9 `app → domain/library` findings, deliberately unwaived pending `TASK-D10`, per `ADR-0012` §3.4).

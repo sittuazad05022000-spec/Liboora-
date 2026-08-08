@@ -3,7 +3,8 @@
 **Owning context:** `BC-01` Enrollment & Student Records, rank 8, tenant-scoped
 **Specification:** `PRD-004` Student Management
 **Status:** 🟡 **`DRAFT` v1.0 — Stage 2.** Not frozen, not baselined, not ranked
-**Reviewed:** 2026-08-04 — independent review verdict **C, requires major corrections**
+**Reviewed:** 2026-08-04 — independent review verdict **C**; **corrected** 2026-08-04 — decision **B, needs
+another review before freeze**
 
 > **This is a navigation index only. It carries no requirement and no authority.**
 > Where this page and `PRD-004` disagree, `PRD-004` governs. Where `PRD-004` and a ranked
@@ -51,12 +52,13 @@ declared edge. See `PRD-004_OWNERSHIP_MATRIX.md` for the field-by-field attribut
 
 | Document | Purpose |
 |---|---|
-| [`Student_Management_PRD_v1.md`](./Student_Management_PRD_v1.md) | **The specification.** 10 chapters, 242 identifiers, ten registers. `DRAFT` |
+| [`Student_Management_PRD_v1.md`](./Student_Management_PRD_v1.md) | **The specification.** 10 chapters, **248** base identifiers + 15 sub-lettered clarifications, ten registers. `DRAFT`, corrected 2026-08-04 |
 | [`PRD-004_INDEPENDENT_REVIEW_REPORT.md`](./PRD-004_INDEPENDENT_REVIEW_REPORT.md) | **Independent 6-persona review, 2026-08-04.** Verdict **C**; 21 findings (0 critical, 3 high, 11 medium, 2 low, 5 observation). Review record — not normative |
+| [`PRD-004_CORRECTION_REPORT.md`](./PRD-004_CORRECTION_REPORT.md) | **Correction record, 2026-08-04.** All 3 HIGH findings resolved with **no ADR and no ranked-document change**; 15 accepted, 3 rejected with evidence. Traceability recomputed **96.3% → 92.9%**. Decision **`B` — needs another review**; **not frozen**. Review record — not normative |
 | [`PRD-004_ALIGNMENT_REPORT.md`](./PRD-004_ALIGNMENT_REPORT.md) | Alignment record: 3 conflicts, 4 duplicates avoided, 9 proposed gaps |
 | [`PRD-004_OWNERSHIP_MATRIX.md`](./PRD-004_OWNERSHIP_MATRIX.md) | Field-level ownership for every Directory column; `OWN-1`…`OWN-6` |
-| [`PRD-004_TRACEABILITY.md`](./PRD-004_TRACEABILITY.md) | Register collision check. ⚠ Its §4 event numbering **contradicts** PRD §7.4 — see finding `RF-04`. The PRD governs |
-| [`PRD-004_IMPLEMENTATION_TASKS.md`](./PRD-004_IMPLEMENTATION_TASKS.md) | `IMPL-300`…`IMPL-317`, five waves. ⛔ **Nothing started** |
+| [`PRD-004_TRACEABILITY.md`](./PRD-004_TRACEABILITY.md) | Register collision check. **v1.1** — §4 event register now matches PRD §7.4 (`RF-04`) and its coverage claim is withdrawn in favour of PRD §10.5.1 (`RF-07`). The PRD governs |
+| [`PRD-004_IMPLEMENTATION_TASKS.md`](./PRD-004_IMPLEMENTATION_TASKS.md) | `IMPL-300`…`IMPL-317`, five waves. ⛔ **Nothing started.** ⚠ The PRD §10.7 now runs to `IMPL-323`; this file still stops at `IMPL-317` |
 
 ## Chapter map
 
@@ -78,18 +80,19 @@ declared edge. See `PRD-004_OWNERSHIP_MATRIX.md` for the field-by-field attribut
 
 | Register | Range | Meaning | Closed? |
 |---|---|---|---|
-| `SM-c.n` | Ch 1–10 | Requirements (105) | — |
+| `SM-c.n` | Ch 1–10 | Requirements (107) | — |
 | `SM-BR-*` | 1–16 | Business rules | — |
 | `SM-XC-*` | 1–14 | Exclusions — out of scope by decision | — |
 | `SM-INV-*` | 1–11 | Domain invariants | — |
-| `SM-EV-*` | 1–9 | Domain events | **Yes** (`SM-7.12`) |
+| `SM-EV-*` | 1–10 | Domain events | **Yes** (`SM-7.12`) |
 | `SM-PO-*` | 1–12 | Protected operations | **Yes** |
-| `SM-AC-*` | 1–28 | Acceptance criteria | **Yes** |
+| `SM-AC-*` | 1–30 | Acceptance criteria | **Yes** |
 | `SMCFG-*` | 1–7 | Configurable parameters | — |
 | `LMD-*` | 1–31 | Library Members Directory | — |
-| `SM-GAP-*` | 1–9 | **Proposed** gaps — not requirements | — |
+| `SM-GAP-*` | 1–10 | **Proposed** gaps — not requirements | — |
 
-**Total: 242 identifiers.** This module introduces no new role name.
+**Total: 248 base identifiers**, plus **15 sub-lettered clarifications** added by the 2026-08-04 correction pass
+(`PRD-004` §0.2) — **263** in total. This module introduces no new role name.
 
 ## Declared edges this module uses
 
@@ -105,19 +108,29 @@ declared edge. See `PRD-004_OWNERSHIP_MATRIX.md` for the field-by-field attribut
 | `E-22` | `BC-01`, `BC-10`, `BC-14` → `BC-29` | Consent (`BC-10` added by `ADR-0016`) |
 
 **If an edge is not in the Map's §7 table, it does not exist, and adding it requires an ADR**
-(BC Map, line 292). The review's finding `RF-01` concerns chapter 5 reading contexts across
-edges that are not declared.
+(BC Map, line 292).
+
+Finding `RF-01` concerned chapter 5 appearing to read `BC-02`/`BC-03`/`BC-04`/`BC-05` across edges that are not
+declared. **Resolved 2026-08-04 without adding an edge:** the Directory is an **application-layer read
+composition** under `AR-1`, which already composes `BC-02` Membership Plans and `BC-04` Seat Capacity with no
+declared edge and no `BC-` identifier assigned. `SM-7.1` now binds the **domain layer** only; `SM-7.1a`,
+`LMD-24a` and `LMD-24b` bound the permission. The context count remains **31**. See
+[`PRD-004_CORRECTION_REPORT.md`](./PRD-004_CORRECTION_REPORT.md) §1.1.
 
 ## Current state, honestly
 
 - **Nothing is implemented.** No `domain/enrollment` module, no `StudentRecordId` type, no rank 8 tier.
-- **0 of 28** acceptance criteria have been executed. None can be — there is no code to execute them against.
-- **0 of 18** implementation tasks started.
-- **9 proposed gaps** remain open. They are *proposals*, not approved requirements.
+- **0 of 30** acceptance criteria have been executed. None can be — there is no code to execute them against.
+- **0 of 24** implementation tasks started (`IMPL-300`…`IMPL-323`).
+- **10 proposed gaps** remain open. They are *proposals*, not approved requirements.
+- **Traceability is 221/238 = 92.9%**, computed by `tool/docs_check/prd004_traceability.py`. 17 requirements have
+  no external source; all 17 are named in `PRD-004` §10.5.1 rather than hidden.
 - **Upstream blockers:** `BLK-01`/`TASK-D10` (P0, boundary checker exits 1) and `IMPL-220`
   (`SID-INT-*` unenforced) both sit above this module.
-- **May implementation begin? No.** The specification is `DRAFT`, has an open verdict **C**, and
-  three high-severity findings must be resolved first.
+- **May implementation begin? No.** The three high-severity findings are now resolved, but the specification is
+  still `DRAFT` and the correction pass changed an architectural interpretation (`RF-01`) and the closed event set
+  (`SM-EV-10`). Decision **B** requires a **second independent review before freeze**, and implementation may not
+  begin against an unfrozen PRD.
 
 ## Related
 

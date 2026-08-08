@@ -2,23 +2,26 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Proposed** |
+| **Status** | **Accepted** — 2026-08-04 |
 | **Date** | 2026-08-04 |
-| **Deciders** | *Pending* — Principal Product Architect; Program Architect; Principal Software Architect |
+| **Deciders** | Architecture Review Board, acting through the Architecture Owner role defined in `PRD_OWNERSHIP_MODEL.md` §2.2 |
 | **Supersedes** | Nothing |
-| **Amends** | *If accepted:* the **Owning contexts** header row of `Library_PRD_v1.md` (Rank 3, frozen). No requirement text, no business rule, no `LIB-*` identifier |
-| **Amended by** | — |
-| **Baseline** | Requires a new baseline identifier on acceptance — a Rank 3 document changes version (`DOCUMENTATION_BASELINE.md` §7 step 4) |
+| **Amends** | the **Owning contexts** header row of `Library_PRD_v1.md` (Rank 3) — **executed**, see §8. No requirement text, no business rule, no `LIB-*` identifier |
+| **Amended by** | `ADR-0017` (settles the `BC-25` question left open in §7) |
+| **Baseline** | `BASELINE-2026-08-04-B` — issued on acceptance because a Rank 3 document changed version (`DOCUMENTATION_BASELINE.md` §7 step 4) |
 | **Related** | `PGA-11` · `ADR-0001` (modular monolith) · `ADR-0011` (rank 7.5) · Bounded Context Map §3.2, §3.3 · Dependency Matrix §4, §6 · `MASTER_PRD.md` §8, §8.1 · `PRD-002`, `PRD-013`, `PRD-015`, `PRD-017` |
 
-> ⚠ **This ADR is a PROPOSAL. It changes nothing on merge.**
+> ✅ **ACCEPTED 2026-08-04. The migration in §8 has been executed.**
 >
 > `ADR-INDEX.md` process step 1: *"A decision that changes structure, ownership, a boundary, or a platform-wide
-> rule requires an ADR **before** implementation."* This document exists so the decision can be taken. Until its
-> status reads **Accepted**, `Library_PRD_v1.md` stands exactly as frozen and `PGA-11` remains open.
+> rule requires an ADR **before** implementation."* That order was followed: this ADR was written and reviewed
+> while `Library_PRD_v1.md` stood untouched at v1.0, and only then was the amendment applied.
 >
-> **The one document requiring an ADR-approved change is `docs/30-product/library/Library_PRD_v1.md`, line 10.**
-> It has not been modified. See §8.
+> **The one document requiring an ADR-approved change was `docs/30-product/library/Library_PRD_v1.md`, line 10.**
+> It is now amended to distinguish *owned* from *consumed* contexts, and the document is at **v1.1**. Its body,
+> every `LIB-*` requirement and both aggregates are unchanged. See §8 for the executed migration record.
+>
+> **`PGA-11` is closed for `BC-19` and `BC-29` by this ADR, and for `BC-25` by `ADR-0017`.**
 
 ---
 
@@ -237,21 +240,51 @@ noted as marginally more consistent with §2, since `platform/configuration` is 
 own manifest entry — but consistency is not sufficient grounds to add a document, and the question is left open
 deliberately rather than resolved by default.
 
+### 7.1 Settled by `ADR-0017` — and the framing above was itself incomplete
+
+**Both admissible resolutions listed above rested on an incomplete premise**, found during the acceptance review
+by reading Master PRD **§8 module 18** rather than §31 and §8.1 alone:
+
+> `| 18 | Settings & Configuration | BC-25 Configuration | [GENERIC] | V1 |`
+
+`BC-25` **is** a named V1 product module in the Rank 1 document. It was never outside the Master PRD — only
+outside the two lists this register happened to derive PRDs from. That is precisely the situation
+`PRD_REGISTRY.md` §4.3 already holds a precedent for: `PRD-022` SaaS Billing (**§8 module 17**) was registered on
+identical grounds, one row earlier in the same table.
+
+[`ADR-0017`](./ADR-0017-bc-25-configuration-ownership.md) therefore registers **`PRD-023` Settings &
+Configuration** — not to fill a gap, and not by inventing a requirement, but because the Master PRD already names
+the module and §4.3 already established how such a module is registered. See `ADR-0017` §3.
+
 ---
 
-## 8. Migration requirements
+## 8. Migration requirements — **executed 2026-08-04**
 
-**Nothing in this section may be executed while this ADR reads *Proposed*.**
+**This section was written while the ADR read *Proposed*, and nothing in it was executed until acceptance.**
+The status flip to *Accepted* and the execution below happened in a single commit, in the order M1 → M2 → M3,
+with M4–M6 in the same commit as M3 so that the baseline never disagrees with the repository.
 
-| # | Action | Document | Authorised by |
-|---|---|---|---|
-| M1 | Amend the **Owning contexts** header row (line 10) to distinguish owned from consumed contexts. **Body untouched.** | `docs/30-product/library/Library_PRD_v1.md` | This ADR, once Accepted |
-| M2 | Bump version v1.0 → **v1.1**; add a changelog row citing `ADR-0013`; state *"no requirement changed"* | same file | `DOCUMENTATION_BASELINE.md` §7 step 2 |
-| M3 | Issue a new baseline identifier; update the Rank-3 entry | `docs/00-governance/DOCUMENTATION_BASELINE.md` | §7 steps 3 and 4 |
-| M4 | Set `PRD-002` contexts to `BC-06` owned + `BC-19`/`BC-25`/`BC-29` consumed; update §6 and §7 counts | `PRD_REGISTRY.md` | Registry maintenance rule 3 |
-| M5 | Close `PGA-11`, citing this ADR | `PRD_GAP_ANALYSIS.md` | — |
-| M6 | Remove the Wave 1 entry gate | `PRODUCT_IMPLEMENTATION_ROADMAP.md` | — |
-| M7 | Record the `BC-25` decision from §7 | `PRD_REGISTRY.md` | Requires the deciders' answer |
+| # | Action | Document | Authorised by | Executed |
+|---|---|---|---|---|
+| M1 | Amend the **Owning contexts** header row (line 10) to distinguish owned from consumed contexts. **Body untouched.** | `docs/30-product/library/Library_PRD_v1.md` | This ADR, once Accepted | ✅ line 10 now reads *"Owns `BC-06`… Consumes `BC-19`, `BC-25`, `BC-29` through ports"* |
+| M2 | Bump version v1.0 → **v1.1**; add a changelog row citing `ADR-0013`; state *"no requirement changed"* | same file | `DOCUMENTATION_BASELINE.md` §7 step 2 | ✅ line 5 = `v1.1`; §27 row **v1.1** added |
+| M3 | Issue a new baseline identifier; update the Rank-3 entry | `docs/00-governance/DOCUMENTATION_BASELINE.md` | §7 steps 3 and 4 | ✅ `BASELINE-2026-08-04-B` |
+| M4 | Set `PRD-002` contexts to `BC-06` owned + `BC-19`/`BC-25`/`BC-29` consumed; update §6 and §7 counts | `PRD_REGISTRY.md` | Registry maintenance rule 3 | ✅ §4.1, §6, §7 |
+| M5 | Close `PGA-11`, citing this ADR | `PRD_GAP_ANALYSIS.md` | — | ✅ closed for `BC-19`/`BC-29`; `BC-25` closed by `ADR-0017` |
+| M6 | Remove the Wave 1 entry gate | `PRODUCT_IMPLEMENTATION_ROADMAP.md` | — | ✅ |
+| M7 | Record the `BC-25` decision from §7 | `PRD_REGISTRY.md` | Requires the deciders' answer | ✅ answered by `ADR-0017` (option 1, on stronger grounds than §7 knew — see §7.1) |
+
+### 8.1 Verbatim record of the M1 amendment
+
+The single amended line, before and after:
+
+```
+- | **Owning contexts** | `BC-19` Tenancy · `BC-06` Library Policy · `BC-25` Configuration · `BC-29` File & Media |
++ | **Owning contexts** | **Owns** `BC-06` Library Policy. **Consumes through ports** (context owned by its platform per `ADR-0013`): `BC-19` Tenancy → `PRD-013` · `BC-25` Configuration → `PRD-023` · `BC-29` File & Media → `PRD-017`. Aggregates `TenantOrganisation`, `StaffAssignment` and `LibraryBranding` values remain owned by this PRD (`ADR-0013` §5) |
+```
+
+`grep -c 'LIB-'` is unchanged across this diff. No `LIB-*`, `LCFG-*`, `LXC-*`, `LEV-*`, `PO-*` or `LAC-*`
+identifier was added, removed, renumbered or reworded.
 
 **Explicitly NOT required:** no change to `module_dependencies.yaml` (already correct), the Bounded Context Map,
 any ADR, `Authentication_PRD_v2.md`, `Student_Identity_PRD_v1.md`, `MASTER_PRD.md`, or any `lib/` source file.
@@ -290,6 +323,15 @@ If accepted, compliance is verifiable by four mechanical checks:
    (or **1** if §7's `BC-25` question is left open).
 4. `git diff` for M1 touches **one line** of `Library_PRD_v1.md` plus its changelog.
 
+### 10.1 Post-acceptance verification, 2026-08-04
+
+| # | Check | Result |
+|---|---|---|
+| 1 | `grep -c 'LIB-' docs/30-product/library/Library_PRD_v1.md` | **Unchanged** before and after M1 |
+| 2 | `dart run tool/check_module_boundaries.dart` | No new violation category; manifest untouched. Output byte-identical to the pre-M1 baseline |
+| 3 | `PRD_REGISTRY.md` §6 / §7 | One context-owner per context; contested count **0** — `BC-25` closed by `ADR-0017` rather than left open |
+| 4 | `git diff` scope for M1/M2 | `Library_PRD_v1.md`: **line 5, line 10, one §27 row.** Nothing else |
+
 ---
 
 ## 11. Change history
@@ -297,3 +339,4 @@ If accepted, compliance is verifiable by four mechanical checks:
 | Version | Date | Change |
 |---|---|---|
 | **Proposed** | 2026-08-04 | Raised by `PGA-11`. Investigation found **three** contested contexts, not two: `BC-25` Configuration is contested on identical grounds and was missed by the PRD-level gap analysis because `PRD_REGISTRY.md` recorded it as *"Covered."* Proposes that capability contexts are platform-owned and that context ownership is distinct from aggregate ownership. Five options considered, four rejected. **No document has been modified. `Library_PRD_v1.md` remains frozen at v1.0.** The `BC-25` owner is left deliberately open (§7) rather than resolved by default. |
+| **Accepted** | 2026-08-04 | Accepted by the Architecture Review Board during the Governance Closure Phase. The decision in §2 is adopted unmodified — **no option was re-opened and no rejected option was revived.** Two things changed between *Proposed* and *Accepted*: (a) §7's open `BC-25` question is **settled**, and (b) the grounds on which it is settled are **stronger than §7 knew** — the acceptance review read `MASTER_PRD.md` §8 **module 18**, which names `BC-25 Configuration` as a `[GENERIC]` **V1 product module**, so registering a PRD for it applies `PRD_REGISTRY.md` §4.3's existing `PRD-022` precedent rather than inventing a document. Recorded in §7.1 and decided in `ADR-0017`. Migration M1–M7 executed in the acceptance commit (§8). `Library_PRD_v1.md` → **v1.1**; baseline → `BASELINE-2026-08-04-B`. **Zero requirement identifiers affected** (§9, §10.1). |

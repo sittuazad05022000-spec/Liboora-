@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.0 (Startup MVP) |
+| **Version** | v1.1 (Startup MVP) |
 | **Module** | Library Management |
 | **Status** | **Approved — authoritative** |
-| **Baseline** | `BASELINE-2026-08-03` |
+| **Baseline** | `BASELINE-2026-08-04-B` |
 | **Precedence** | Rank 3 — a module PRD. Outranked by `MASTER_PRD.md` global rules and accepted ADRs |
-| **Owning contexts** | `BC-19` Tenancy · `BC-06` Library Policy · `BC-25` Configuration · `BC-29` File & Media |
+| **Owning contexts** | **Owns** `BC-06` Library Policy. **Consumes through ports** (context owned by its platform per [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md)): `BC-19` Tenancy → `PRD-013` · `BC-25` Configuration → `PRD-023` · `BC-29` File & Media → `PRD-017`. The aggregates `TenantOrganisation`, `StaffAssignment` and the `LibraryBranding` values remain **owned by this PRD** (`ADR-0013` §5) |
 | **Supersedes** | Nothing. This is the first complete receipt of §§1–25 |
 
 ---
@@ -1114,6 +1114,7 @@ ADR. It **MUST NOT** be amended by a PRD revision alone.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-04 | **Header row only. No requirement changed.** The **Owning contexts** row (line 10) is amended to distinguish the one context this PRD *owns* (`BC-06` Library Policy) from the three capability contexts it *consumes through ports* (`BC-19` Tenancy, `BC-25` Configuration, `BC-29` File & Media). Authorised in advance by [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) §8 M1/M2, which was written and accepted while this document stood untouched at v1.0. **No `LIB-*`, `LCFG-*`, `LXC-*`, `LEV-*`, `PO-*` or `LAC-*` identifier was added, removed, renumbered or reworded; no business rule, aggregate or acceptance criterion changed.** The aggregates `TenantOrganisation`, `StaffAssignment` and the `LibraryBranding` values remain owned here (`ADR-0013` §5) — this is **not** a reduction in scope. Baseline advanced `BASELINE-2026-08-03` → `BASELINE-2026-08-04-B` per `DOCUMENTATION_BASELINE.md` §7 step 4. |
 | **v1.0** | 2026-08-03 | First complete receipt of §§1–25. Captured with the requirement set intact. Corrections applied only where a genuine conflict with a higher-precedence document existed: role names aligned to `TR-1`…`TR-3` + Platform Administrator (§4); Multi-Branch retiered V2+ → **V3** (§9, §24); Notifications and Maps restated as event emission and port (§21, `CC-5`, `CC-6`); the two public-field lists reconciled to §14A.5 (§7); business contact number separated from the authentication credential (§6); Owner modelled as a multi-holder role (§15). Added: explicit exclusions `LXC-1`…`LXC-10`, configurable register `LCFG-1`…`LCFG-10`, event register `LEV-1`…`LEV-22`, ownership boundary §26, acceptance criteria `LAC-10`…`LAC-12`. **No requirement from the source text was removed.** |
 
 ---

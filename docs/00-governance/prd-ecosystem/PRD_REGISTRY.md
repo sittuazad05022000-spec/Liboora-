@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | PRD Registry — the single source of truth for the PRD ecosystem |
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Active register of record |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04` |
@@ -356,8 +356,9 @@ Verified against the Bounded Context Map's 31 contexts.
 | Context | Owning PRD | Contested? |
 |---|---|---|
 | `BC-18` | `PRD-001` | No |
-| `BC-06`, `BC-25` | `PRD-002` | No |
+| `BC-06` | `PRD-002` | No |
 | `BC-19` | `PRD-002` **and** `PRD-013` | ⚠ **Yes** |
+| `BC-25` | `PRD-002` header — **no second claimant** | ⚠ **Yes** (§6.1) |
 | `BC-29` | `PRD-002` **and** `PRD-017` | ⚠ **Yes** |
 | `BC-10` | `PRD-003` | No |
 | `BC-20` | `PRD-022` | No |
@@ -367,7 +368,7 @@ Verified against the Bounded Context Map's 31 contexts.
 **Among the three frozen module PRDs there is no overlap**, exactly as `DOCUMENTATION_BASELINE.md` §4 requires:
 *"Rank 3 holds three module baselines and they do not overlap."* `PRD-001`, `PRD-002` and `PRD-003` are disjoint.
 
-### 6.1 The two contested contexts — `BC-19` and `BC-29`
+### 6.1 The three contested contexts — `BC-19`, `BC-25` and `BC-29`
 
 The collision is **not** between two written PRDs. It is between a written one and the Master PRD's own list of
 contexts that still need PRDs.
@@ -377,6 +378,19 @@ contexts that still need PRDs.
 - Master PRD §8.1 lists `BC-19` and `BC-29` among contexts that *"carry product-visible obligations but had no
   module entry. Listed here so they receive requirements, budgets and owners"* — which is why this register
   carries `PRD-013` Tenancy and `PRD-017` File & Media at all.
+
+**`BC-25` Configuration is contested on identical grounds, and this register recorded it as uncontested until
+2026-08-04.** The correction is noted here rather than quietly applied: the row above previously read
+*"`BC-06`, `BC-25` | `PRD-002` | No"*. The reason the conflict was invisible is that `BC-25` appears in neither
+Master PRD §31's nine nor §8.1's eight, so **no registered PRD contests the header claim** — there was no second
+claimant to collide with in a PRD-to-PRD comparison. But `LIBOORA_BOUNDED_CONTEXT_MAP.md` gives its
+*"Owning Platform"* as **Configuration** (`platform/configuration`, rank 3), which contradicts a rank-8 domain PRD
+owning it for exactly the `L2` reason given in the evidence table below.
+
+`BC-25` is therefore the **asymmetric** case: contested, but not resolvable by transferring it to another PRD,
+because there is no PRD to transfer it to. [`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) §7 leaves
+its owner **deliberately open** — allocating a `PRD-023` here would pre-empt that decision, and inventing a
+requirement is forbidden.
 
 Both statements cannot be true as written. Three pieces of evidence indicate the **Library PRD's header
 over-claims**, and that the capability contexts are platform-owned:
@@ -393,8 +407,8 @@ capabilities and `PRD-002` owns the tenant-facing library data that *uses* them.
 reading and flags it — **it does not settle it.** Settling it means amending a frozen Rank-3 document, which
 `DOCUMENTATION_BASELINE.md` §7 requires an ADR to do first.
 
-Recorded as [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-11`. Until that ADR exists, **`BC-19` and `BC-29`
-are the only two contexts in the product without a single undisputed owner.**
+Recorded as [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) `PGA-11`. Until that ADR exists, **`BC-19`, `BC-25` and `BC-29`
+are the only three contexts in the product without a single undisputed owner.**
 
 ### 6.2 One case that looks like an overlap and is not
 
@@ -416,7 +430,9 @@ dependency edge, recorded in [`PRD_DEPENDENCY_GRAPH.md`](./PRD_DEPENDENCY_GRAPH.
 | `DISCOVERY` · `DRAFT` · `IN_REVIEW` · `APPROVED` · `IMPLEMENTED` · `VERIFIED` | **0 each** |
 | Missing **V1** PRDs | **19** — 9 from §31 (§4.1) + 9 from §8.1 (§4.2) + `PRD-022` (§4.3) |
 | Duplicate PRDs | **0** — no requirement is specified twice |
-| **Contested bounded contexts** | **2** — `BC-19`, `BC-29` (§6.1, `PGA-11`) |
+| **Contested bounded contexts** | **3** — `BC-19`, `BC-25`, `BC-29` (§6.1, `PGA-11`). *Corrected from 2 on 2026-08-04* |
+| &nbsp;&nbsp;of which resolvable by transfer | **2** — `BC-19` → `PRD-013`, `BC-29` → `PRD-017`, if `ADR-0013` is accepted |
+| &nbsp;&nbsp;of which have **no** registered claimant | **1** — `BC-25`; `ADR-0013` §7 open, no `PRD-023` allocated |
 | PRDs with an explicit owner model | **23 of 23** — role-based, [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) |
 | PRDs with a *named individual* owner | **0 of 23** — by design; §5 and model §1.1 forbid recording personal names |
 | PRDs unassignable under the one-holder-per-role rule | **1** — `PRD-012`, which spans two owners at two ranks (§5) |
@@ -470,3 +486,4 @@ and are not separately registered until `PRD-012` is retired, so counting them n
 | **v1.0** | 2026-08-04 | Created. 23 PRDs registered — 4 existing (6 files), 19 planned. Freeze status derived from `DOCUMENTATION_BASELINE.md` §3/§7 rather than from PRD self-declaration, because **no PRD declares its own freeze state** (§2.1). Ownership recorded as **unassigned for all 23** because no document-owner field exists anywhere in the repository (§5). Bounded-context ownership verified across all 31 contexts (§6). **No requirement was created, modified, reinterpreted or withdrawn; no PRD was edited.** |
 | **v1.1** | 2026-08-04 | **Ownership closed.** All four `Owner` fields (§§3.1–3.4) changed from *Unassigned* to four organizational roles, and §5 rewritten from *"the field the repository cannot fill"* to *"closed by a role-based model"*, with the original finding preserved verbatim as §5.1 because its reasoning still governs — **no personal name may ever be recorded here**. The gap was resolved by establishing that names were the wrong thing to record: document ownership needs accountable *roles*, and the roles already existed in `ADR-0001`, `ADR-0011`, `ADR-0012` and Dependency Matrix §11. Maintenance rule 7 added (roles only; this register yields to the ownership model). §7 counts now distinguish *explicit owner model* (**23 of 23**) from *named individual* (**0 of 23**, by design). Two findings surfaced **because** ownership was assigned systematically, neither visible while every field read *Unassigned*: `PRD-012` is **unassignable** under one-holder-per-role as scoped (two owners at two ranks — already flagged in §4.1 as violating the Single Owner Rule), and **`BC-25` has no registered claimant** because `PRD-015` is *Search Indexing*, not configuration — so nothing exists to transfer it to, which is why `ADR-0013` §7 stays open and no `PRD-023` is allocated. **No requirement was created, modified or withdrawn; no PRD file was edited; no bounded-context ownership changed.** |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the register was relied on. Three self-inconsistencies found and corrected: (1) `BC-20` Subscription & Billing was described as *"a genuine V1 gap"* while sitting in the table for contexts with **no** PRD obligation, and was cited as `PRD-022` by two companion documents without ever being registered — now registered as `PRD-022` in a new §4.3, and the old §4.3 renumbered §4.4; (2) `PRD-012a`/`PRD-012b` were cited by the roadmap and gap analysis but existed in no register — now reserved explicitly under §4.1; (3) the missing-V1 arithmetic read *"9 from §31 + 8 from §8.1 + `BC-20`"*, which summed to 18 while §8.1 yields **nine** PRDs — corrected to 19. (4) §6 asserted *"no context is claimed by two PRDs"* while §4.2 of the same register assigned `BC-19` to `PRD-013` and `BC-29` to `PRD-017` — contexts §3.3 gives to `PRD-002`. The clean result was an artefact of listing ownership only for PRDs that exist; the register contradicted itself two sections apart. §6 now records both as **contested**, states the three pieces of evidence, applies the precedence reading without claiming to settle it, and raises `PGA-11`. **Version remains v1.0: these were defects in an unreleased document, not amendments to a published one.** No requirement, PRD or architectural decision was touched. |
+| **v1.2** | 2026-08-04 | **Contested-context count corrected from 2 to 3 during Phase 4 validation.** §6's table recorded `BC-25` Configuration as *uncontested* (`"BC-06, BC-25 | PRD-002 | No"`) while `ADR-0013` §2, `PRD_OWNERSHIP_MODEL.md` §4.4 and `PRD_GAP_ANALYSIS.md` §8 all recorded it as contested — this register was the only document still carrying the pre-`ADR-0013` reading, and its §7 count of **2** propagated that error into the summary a reader is most likely to quote. `BC-25` now has its own row, §6.1 is retitled *"The three contested contexts"* and explains **why the conflict was invisible**: `BC-25` is in neither Master PRD §31 nor §8.1, so no registered PRD contests the `Library_PRD_v1.md` header — the collision is with the **BC Map's** *"Owning Platform"* column (`platform/configuration`, rank 3), not with another PRD, and a PRD-to-PRD comparison could not see it. §7 now reports **3**, split into the 2 resolvable by transfer and the **1 with no registered claimant**. This is a *reporting* correction: no ownership was reassigned, `ADR-0013` §7 remains open, no `PRD-023` is allocated, and no frozen document was touched. **Version incremented because v1.1 was already committed — unlike the v1.0 defect rows above, this amends a published state.** |

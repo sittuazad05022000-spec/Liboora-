@@ -37,7 +37,7 @@ each was found by cross-reading two documents that agree individually and disagr
 |---|---|---|
 | **Missing PRDs** | **19** | 1 Critical · 5 High · 13 Medium |
 | **Duplicate PRDs** | **0** — no requirement is specified twice | — |
-| **Overlapping responsibilities** | **1 genuine** (`PGA-11`) · 2 that look like overlaps and are not | High |
+| **Overlapping responsibilities** | **1 genuine finding** (`PGA-11`), spanning **3 contexts** — `BC-19`, `BC-25`, `BC-29` · 2 that look like overlaps and are not | High |
 | **Missing dependencies** | **1** (`PGA-02`) | Medium |
 | **Architectural conflicts** | **3** (`PGA-01`, `PGA-02`, `PGA-11`) | 1 High · 2 Medium |
 | **Requirements with no owning PRD** | **3 classes** (`PGA-03`…`PGA-05`) | 1 Critical · 2 High |
@@ -161,6 +161,28 @@ header to distinguish *owns* from *consumes*, which its own body already does. *
 relationship, so the implementation follows the correct reading regardless of what the header says. It becomes
 blocking the moment someone writes `PRD-013` or `PRD-017`, because they cannot state their scope without
 contradicting a frozen document.
+
+#### Scope extension, 2026-08-04 — a **third** context, `BC-25`
+
+The heading above names two contexts because two were all this analysis found. Investigating `PGA-11` for
+[`ADR-0013`](../adr/ADR-0013-capability-context-ownership.md) found a **third on identical grounds: `BC-25`
+Configuration.** The finding is recorded here rather than rewritten into the heading, because *how* it was missed
+is the more useful part.
+
+`BC-25` was invisible to this analysis because the method was **PRD-to-PRD comparison**. `BC-19` and `BC-29` are
+both named in Master PRD §8.1, so each acquired a second claimant (`PRD-013`, `PRD-017`) that could be set against
+the Library PRD's header. `BC-25` appears in **neither** §31's nine nor §8.1's eight, so it had exactly one PRD
+claimant and looked uncontested — `PRD_REGISTRY.md` recorded it as *"Covered."* Its true collision is with
+`LIBOORA_BOUNDED_CONTEXT_MAP.md` line 134, which gives its **Owning Platform** as *Configuration*
+(`platform/configuration`, rank 3) — a document-to-**architecture** conflict, which this analysis was not looking
+for. The same rank-8-cannot-own-rank-3 argument in evidence item 3 above applies to it unchanged.
+
+**This makes `BC-25` the asymmetric case and the reason `ADR-0013` §7 stays open.** `BC-19` and `BC-29` can be
+resolved by transfer to an already-registered PRD. `BC-25` cannot — there is no PRD to transfer it to, and
+inventing one would breach *"do not invent requirements."* No `PRD-023` has been allocated.
+
+**Revised count: 3 contested contexts** — `BC-19`, `BC-25`, `BC-29`. §8 and `PRD_REGISTRY.md` §6/§7 both carry
+the revised figure.
 
 ---
 
@@ -421,3 +443,4 @@ authorised to make.
 | **v1.0** | 2026-08-04 | Created. 10 findings: 18 missing PRDs, **0 duplicates**, **0 genuine overlaps**, 2 architectural conflicts, 1 mandated split, 6 cases where splitting is explicitly rejected. **`PGA-01` and `PGA-02` are new** — neither appears in `LIBRARY_PRD_ALIGNMENT.md` or `STUDENT_IDENTITY_ALIGNMENT.md`, and both were found by cross-reading documents that are individually self-consistent. Neither was fixed: both live in frozen documents and `DOCUMENTATION_BASELINE.md` §7 requires an ADR first. No requirement was invented, modified or withdrawn; no PRD was edited. |
 | **v1.0** | 2026-08-04 | **`PGA-08` closed** by [`PRD_OWNERSHIP_MODEL.md`](./PRD_OWNERSHIP_MODEL.md) — four organizational roles for all 23 registered PRDs, derived from six existing governance rules and using vocabulary already present in `ADR-0001`/`ADR-0011`/`ADR-0012`/Matrix §11 rather than a new framework. The original disposition (*"filling in the `Owner` column would require inventing names"*) was right about the constraint and wrong about the conclusion: document ownership needs accountable **roles**, not names. §8 also **corrects a stale row of its own**: *"No duplicate ownership between PRDs"* was recorded ✅ Satisfied, which `PGA-11` contradicts — the clean reading was an artefact of `PRD_REGISTRY.md` §6 sampling only PRDs that already existed. Assigning ownership systematically surfaced two further findings (§8.1): **`PRD-012` is unassignable** under one-holder-per-role as scoped, and **`BC-25` has no registered claimant** because `PRD-015` is *Search Indexing* — so `BC-25` cannot be resolved by transfer, and `ADR-0013` §7 must stay open. No requirement was invented, modified or withdrawn; no PRD was edited. |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the analysis was relied on. **`PGA-11` added** — the one genuine overlap in the repository: `Library_PRD_v1.md` declares `BC-19` and `BC-29` as owning contexts while `MASTER_PRD.md` §8.1 lists both as needing PRDs, which this register carries as `PRD-013` and `PRD-017`. Found while verifying `PRD_REGISTRY.md` §6's claim of zero duplicate ownership — a claim that was true only because §6 listed ownership for existing PRDs and ignored planned ones, so the register contradicted itself two sections apart. The *"0 genuine overlaps"* headline is corrected to **1**, missing PRDs to **19** (`PRD-022` was cited by two companion documents without ever being registered), and architectural conflicts to **3**. `PGA-11` was **not fixed**: `Library_PRD_v1.md` is frozen Rank 3. No requirement was invented, modified or withdrawn; no PRD was edited. |
+| **v1.0** | 2026-08-04 | Phase 4 validation consistency pass. **`PGA-11` extended from two contested contexts to three** — `BC-25` Configuration added, on grounds identical to `BC-19`/`BC-29`. The finding is recorded as a dated *scope extension* under `PGA-11` rather than folded into its heading, because the reason it was missed is itself the lesson: this analysis compared **PRD against PRD**, and `BC-25` appears in neither Master PRD §31 nor §8.1, so it had only one PRD claimant and read as uncontested. Its actual collision is with `LIBOORA_BOUNDED_CONTEXT_MAP.md` line 134 (*Owning Platform: Configuration*, rank 3) — a **document-to-architecture** conflict the method was not built to detect. §2's overlap row now reads *1 genuine finding spanning 3 contexts*, matching §8, `ADR-0013` §2 and `PRD_REGISTRY.md` §6/§7. **No finding was reclassified or closed, no requirement touched, no frozen document edited; `ADR-0013` §7 remains open and no `PRD-023` is allocated.** |

@@ -51,12 +51,12 @@ promise false.
 | `SM-INV-n` | Domain invariant | **11** | `SM-INV-1` … `SM-INV-11` | §2.6 |
 | `SM-EV-n` | Domain event (**closed set**) | **10** | `SM-EV-1` … `SM-EV-10` | §7.4 |
 | `SM-PO-n` | Protected operation (**closed list**) | **12** | `SM-PO-1` … `SM-PO-12` | §8.2 |
-| `SM-AC-n` | Acceptance criterion | **30** | `SM-AC-1` … `SM-AC-30` | §10.4 |
+| `SM-AC-n` | Acceptance criterion | **32** | `SM-AC-1` … `SM-AC-32` | §10.4 |
 | `SMCFG-n` | Configurable parameter | **7** | `SMCFG-1` … `SMCFG-7` | §10.3 |
 | `LMD-n` | Library Members Directory requirement | **31** | `LMD-1` … `LMD-31` | 5 |
-| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **10** | `SM-GAP-1` … `SM-GAP-10` | §10.6 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **11** | `SM-GAP-1` … `SM-GAP-11` | §10.6 |
 
-**Total base identifiers: 248** (of which **10** are proposed gaps carrying no authority).
+**Total base identifiers: 251** (of which **11** are proposed gaps carrying no authority).
 
 **Sub-lettered clarifications: 15.** The 2026-08-04 correction pass resolved review findings by *clarifying*
 existing requirements rather than renumbering the document. A clarification that narrows or completes an existing
@@ -75,7 +75,7 @@ requirement takes that requirement's number with a letter suffix — `SM-7.1a` q
 | `SM-7.7a`, `SM-7.7b` | `SM-7.7` — producer-side transactional outbox | `RF-19` |
 | `SM-8.4a` | `SM-8.4` — interim `TR-5` Parent denial, `SM-GAP-4` stays open | `RF-12` |
 
-**Total normative identifiers: 263** — 248 base + 15 sub-lettered. Every one is counted; none is hidden.
+**Total normative identifiers: 266** — 251 base + 15 sub-lettered. Every one is counted; none is hidden.
 
 **Per-chapter `SM-c.n` allocation**, published so that a gap is detectable rather than deniable:
 
@@ -423,8 +423,8 @@ Photo owned by `BC-10` (`Student_Identity_PRD_v1.md` line 122).
 
 #### 4.2.1 Date of Birth is optional at `BC-10` — the three cases
 
-Date of Birth is an **optional** field of the Global Person Identity (`PRD-003` §2.4 *Optional* list; `SID-2.5`
-*"Only the minimum information required for identity **SHALL** be mandatory"*). This module therefore **MUST NOT**
+Date of Birth is an **optional** field of the Global Person Identity (`PRD-003` §2.2 *Global Profile*, **Optional**
+list; `SID-2.5` *"Only the minimum information required for identity **SHALL** be mandatory"*). This module therefore **MUST NOT**
 assume a Date of Birth is present, and **MUST** define deterministic behaviour for all three cases. An earlier
 draft defined only the first two, which left `SM-INV-3` unevaluable (finding `RF-06`).
 
@@ -442,8 +442,16 @@ actor and timestamp (`SM-8.13`).
 
 `SM-4.5b` — Until minor-status is either derived from a Date of Birth or declared under `SM-4.5a`, the record
 **MUST** be treated as **minor** for safeguarding purposes: `GuardianLink` is required, and any capability gated
-on `ID-6` minor consent **MUST** remain closed. This is a **fail-safe**, not a legal determination — it is the
-deny-by-default posture required by `AP-3`, applied to the case where the input is missing.
+on `ID-6` minor consent **MUST** remain closed. This is a **fail-safe**, not a legal determination.
+
+Its authority is cited in order of directness. **`SID-4.56`** — *"A rule that cannot be checked SHALL be treated as
+unmet, not as satisfied by intent"* — is the **direct** authority for requiring the guardian: `SM-INV-3` cannot be
+checked without an age, so it is unmet, and the protective branch is the only one consistent with treating it as
+unmet. **`SID-5.14`** (*"where Date of Birth indicates a minor, minor-safety obligations **SHALL** be honoured"*)
+supplies the safeguarding obligation itself. **`AP-3`** — *"Deny by default … absence of an explicit grant is
+refusal"* — is the direct authority for the **second** half: keeping the `ID-6`-gated capability **closed**. `AP-3`
+is an authorisation policy, so it governs the capability closure directly and the affirmative data-collection
+obligation only by analogy; the citation order is corrected accordingly (finding `SR-09`).
 
 > **Why fail-safe and not fail-open.** `SID-4.56` requires that a rule which cannot be checked be treated as
 > **unmet**, not as satisfied by intent. `SM-INV-3` exists to protect minors; if the input it depends on is
@@ -577,33 +585,48 @@ The `Mechanism` column states **how** each field group reaches the screen. Two m
 distinction is normative:
 
 - **Declared edge** — a BC Map §7 integration edge traversed by this module. Available to the domain layer.
-- **`AR-1` composition** — an application-layer read composition of another context's public read model. It is
+- **`SID-2.7` composition** — an application-layer read composition of another context's public read model. It is
   **not** an integration edge, it creates no dependency for the domain layer, and it requires no entry in
-  BC Map §7 (`SM-7.1a`, `LMD-22`, `SID-2.41`). The contributing context remains the sole authority.
+  BC Map §7 (`SID-2.38`–`SID-2.41`, `SM-7.1a`, `LMD-22`). The contributing context remains the sole authority.
+  `AR-1` classifies this mechanism; `SID-2.7` authorises these specific contributors. See the note below.
 
 | Field group | Owner | Edge | Mechanism | Consistency |
 |---|---|---|---|---|
 | Full Name, Global Profile Photo, DOB, gender | `BC-10` | `E-13` | **Declared edge** — sync port through ACL | Strong, read-time |
 | Enrollment number, `EnrollmentStatus`, contact, guardian, documents | **This module** | — | Owned | Strong |
-| Plan, membership status, `validUntil`, seat quota | `BC-02` | **none — none required** | **`AR-1` composition** of the `BC-02` public read model | Eventual |
-| Attendance percentage, present days | `BC-03` | **none — none required** | **`AR-1` composition** of the `BC-03` public read model | Eventual |
-| Current seat, shift, zone | `BC-04` | **none — none required** | **`AR-1` composition** of the `BC-04` public read model | Eventual |
-| Fee status, outstanding balance | `BC-05` | **none — none required** | **`AR-1` composition** of the `BC-05` public read model | Eventual |
+| Plan, membership status, `validUntil`, seat quota | `BC-02` | **none — none required** | **`SID-2.7` composition** of the `BC-02` public read model | Eventual |
+| Attendance percentage, present days | `BC-03` | **none — none required** | **`SID-2.7` composition** of the `BC-03` public read model | Eventual |
+| Current seat, shift, zone | `BC-04` | **none — none required** | **`SID-2.7` composition** of the `BC-04` public read model | Eventual |
+| Fee status, outstanding balance | `BC-05` | **none — none required** | **`SID-2.7` composition** of the `BC-05` public read model | Eventual |
 | Document `FileRef` resolution | `BC-29` | `E-22` | **Declared edge** — sync port | Strong, read-time |
 
-> **On the four *"none required"* rows.** BC Map §7 declares no `BC-01`→`BC-03` and no `BC-01`→`BC-04` edge, and
-> its `BC-01`→`BC-02` (`E-01`) and `BC-01`→`BC-05` (`E-09`) edges are **event** edges for enrollment and dues
-> assertion — not read edges. That is correct and **MUST NOT** be changed to suit this screen. Composition at the
-> application layer is the authorised mechanism, exactly as `AR-1` ruled for Library Discovery. An earlier draft
-> cited an *"`E-02` pattern"* here; `E-02` is `BC-02`→`BC-04`, an edge between two **other** contexts, and that
-> citation was wrong. It has been removed rather than reinterpreted.
+> **On the four *"none required"* rows — and which authority actually permits them.** BC Map §7 declares no
+> `BC-01`→`BC-03` and no `BC-01`→`BC-04` edge, and its `BC-01`→`BC-02` (`E-01`) and `BC-01`→`BC-05` (`E-09`) edges
+> are **event** edges for enrollment and dues assertion — not read edges. That is correct and **MUST NOT** be
+> changed to suit this screen.
+>
+> The **operative authority for these four rows is `SID-2.7`** (`PRD-003` §2.7 *Profile composition*, **Rank 3**,
+> frozen), whose contributor table composes **`BC-02` plan/status/expiry, `BC-03` attendance, `BC-04` seat/shift/
+> zone and `BC-05` payment/balance** — the same four contexts, read-only, under `SID-2.38`–`SID-2.41`. `BC-10`
+> performs that composition with **no BC Map §7 edge to any of them**, so composition-without-an-edge is
+> established doctrine at a **higher rank** than a ruling, not an inference drawn here.
+>
+> **`AR-1` classifies the mechanism; it does not enumerate these contexts.** `AR-1` (Rank 5) ruled that a read
+> composition owning no aggregate, no invariant and no business state is an application capability rather than a
+> bounded context, and its worked example composes `BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02`, `BC-04` and
+> `BC-23`. **`BC-03` and `BC-05` do not appear in `AR-1` at all**, so this document does **not** claim `AR-1` as
+> precedent for them; `SID-2.7` covers all four. An earlier draft called the precedent *"identical"*, which was
+> true for `BC-02`/`BC-04` and false for `BC-03`/`BC-05` (finding `SR-03`); the citation is corrected rather than
+> restated. An earlier draft also cited an *"`E-02` pattern"* here; `E-02` is `BC-02`→`BC-04`, an edge between two
+> **other** contexts, and that citation was wrong. It has been removed rather than reinterpreted.
 
 `LMD-24` — This table is **normative**. The Directory **MUST NOT** become authoritative for any row it does not
 own (`SM-XC-8`, `SID-2.38`).
 
-`LMD-24a` — No row in this table **MUST** be read from this module's **domain layer** (`SM-7.1`, `SM-7.1a`,
-`LMD-22`). A composed value **MUST NOT** be persisted by this module, cached beyond the display request, or used
-to evaluate any invariant this module owns (`SID-2.38`–`SID-2.41`).
+`LMD-24a` — A composed row in this table **MUST NOT** be read from this module's **domain layer**; every row above
+is available to the **application layer only** (`SM-7.1`, `SM-7.1a`, `LMD-22`). A composed value **MUST NOT** be
+persisted by this module, cached beyond the display request, or used to evaluate any invariant this module owns
+(`SID-2.38`–`SID-2.41`).
 
 `LMD-24b` — Composition **MUST NOT** make `BC-01` authoritative over `MembershipStatus`, seat assignment,
 attendance or fee balance. Each remains owned by `BC-02`, `BC-04`, `BC-03` and `BC-05` respectively, and every
@@ -656,12 +679,13 @@ ignored (`SM-4.2`).
 timestamp and reason.
 
 `SM-6.6` — History **MUST** be read from `BC-24` Audit Trail where the entry is an audit fact; this module **MUST
-NOT** maintain a parallel audit store.
+NOT** maintain a parallel audit store (`E-20`, `X-10`, `SM-8.10`).
 
 `SM-6.7` — **Library transfer MUST NOT be implemented as a record move.** It is an archive at the source tenant
 and an independent registration at the destination, because `StudentRecordId` never crosses a tenant (`ID-2`).
 
-`SM-6.8` — Membership renewal **MUST** be delegated to `BC-02`. This module **MUST NOT** extend a membership term.
+`SM-6.8` — Membership renewal **MUST** be delegated to `BC-02`. This module **MUST NOT** extend a membership term
+(`SM-2.4`, `SM-XC-2`; `BC-02` owns `MembershipStatus` per BC Map line 209).
 
 ---
 
@@ -765,6 +789,24 @@ events in that form.
 document omitted. It is recorded here so that the register matches the Bounded Context Map; the BC Map is
 **not** modified, and no ADR is required (finding `RF-02`).
 
+> **On the `Consumers` column — what it lists, and the three contexts it deliberately does not.** The column names
+> **domain consumers that react to the fact**. Three further consumers exist and are covered generically rather
+> than repeated on every row:
+>
+> - **`BC-24` Audit Trail** — every event is audited under the generic `E-20` edge (*"fire-and-forget,
+>   outbox-backed"*) and `SM-8.10`, which already enumerates the audited operations. Listing `BC-24` on all ten
+>   rows would restate `SM-8.10` ten times.
+> - **`BC-22` Notifications** — reached through the generic `E-23` edge; `SM-EV-6` is the only row where a
+>   notification is the event's *purpose*, so it is the only row that names it.
+> - **`BC-26` Study Analytics** — **BC Map §8 names `BC-26` a primary consumer of `enrollment.StudentEnrolled` and
+>   `enrollment.StudentProfileUpdated`, while BC Map §7 declares no `BC-01`→`BC-26` edge** (`BC-26`'s only inbound
+>   edge is `E-26` from `BC-27`). BC Map line 292 states that an edge absent from §7 *"does not exist"* and that
+>   adding one requires an ADR. That is a **tension internal to the Bounded Context Map (Rank 4)**, not a decision
+>   this document may take: `BC-26` is therefore **not listed as a consumer here**, and this module emits nothing
+>   additional for it. Recorded as **`SM-GAP-11`** for the architecture owner. This module's behaviour is
+>   unaffected either way — it publishes facts to the bus and does not enumerate subscribers at runtime
+>   (`SM-7.9`).
+
 `SM-7.12` — This set **MUST** be closed at **ten** events. A new event requires an ADR.
 
 `SM-7.12a` — `SM-EV-10` **MUST** be emitted **only** after `BC-18` Consent Management has recorded consent
@@ -777,8 +819,8 @@ the `BC-18` decision (`SM-4.8`).
 
 `SM-7.13` — Every event **MUST** carry `eventId`, `occurredAt`, `correlationId`, `tenantId`, `actor`.
 
-`SM-7.14` — No event payload **MUST** contain a credential, an OTP, a raw document byte, a `FileRef` resolvable
-without authorisation, or a `BC-10`-owned personal field.
+`SM-7.14` — An event payload **MUST NOT** contain a credential, an OTP, a raw document byte, a `FileRef`
+resolvable without authorisation, or a `BC-10`-owned personal field (`ID-1`, `SM-7.13`).
 
 `SM-7.15` — `StudentRecordId` **MUST NOT** appear in any event consumed by a global context (`ID-2`,
 `MP-GBR-03`). `BC-23` indexes are tenant-partitioned, which is why `E-21` is permitted.
@@ -861,7 +903,7 @@ suspension, archive, restore, guardian change, document attach/remove, **sensiti
 export, every bulk operation, and every authorisation denial.
 
 `SM-8.11` — Every audit entry **MUST** carry actor, role, tenant, target `studentRecordId`, action, timestamp,
-correlation ID, and reason where required.
+correlation ID, and reason where required (`SM-8.10`, `X-10`).
 
 `SM-8.12` — Audit entries **MUST** be append-only. This module **MUST NOT** update or delete an audit entry
 (`X-10`, `AU-1`).
@@ -873,7 +915,8 @@ correlation ID, and reason where required.
 ### 8.4 Privacy and retention
 
 `SM-8.15` — Data minimisation: this module **MUST NOT** collect a field it does not use in a specified
-requirement.
+requirement (`SID-5.7` — *"A field not needed for that purpose **SHALL NOT** be added here merely because there is
+nowhere else convenient"* — applied to this module's own record; `ID-1`).
 
 `SM-8.16` — Retention of financial and attendance history **MUST** follow `ID-5` and the Data Privacy runbook.
 This module **MUST NOT** define its own retention period — **`SM-GAP-1`**.
@@ -974,7 +1017,10 @@ repeat.
 
 `SM-10.8` — Every error **MUST** be a typed domain error; a validation failure **MUST NOT** be a generic 500.
 
-`SM-10.9` — No endpoint **MUST** accept `tenant_id` as an authorisation input (`SM-8.2`).
+`SM-10.9` — An endpoint **MUST NOT** accept `tenant_id`, or any client-supplied tenant parameter, as an
+authorisation input. Tenant scope **MUST** derive from the session's authorisation context (`SM-8.2`, `SM-8.3`,
+`X-13`). An endpoint that accepts a tenant identifier from the caller and uses it to decide access is a defect
+even if every test passes.
 
 ### 10.3 Configurables — `SMCFG-1` … `SMCFG-7`
 
@@ -993,7 +1039,7 @@ All resolved through `BC-25` (`E-19`, typed accessors, no raw lookups).
 `SM-10.10` — Every configurable **MUST** have a documented default; a library that changed nothing **MUST** be
 fully operable (`LIB-16.2` pattern).
 
-### 10.4 Acceptance criteria — `SM-AC-1` … `SM-AC-30`
+### 10.4 Acceptance criteria — `SM-AC-1` … `SM-AC-32`
 
 Every criterion **MUST** name the requirement it verifies. A criterion that verifies nothing is not an acceptance
 criterion, and a requirement that no criterion verifies is unenforced (`SID-4.56`). The `Verifies` column makes
@@ -1005,8 +1051,8 @@ both conditions mechanically checkable.
 | `SM-AC-2` | The same person registers at two tenants and receives two distinct `StudentRecordId`s | `SM-3.15`, `MP-ASM-04` |
 | `SM-AC-3` | `personId` cannot be null — schema rejects it | `SM-INV-5`, `ADR-0011`, `ID-4` |
 | `SM-AC-4` | No credential column exists on `student_record` (schema scan) | `SM-XC-1`, `SM-4.2` |
-| `SM-AC-5` | Setting `EnrollmentStatus = Expired` is rejected — not in the closed set | `SM-2.2`, BC Map line 209 |
-| `SM-AC-6` | A student remains `Active` when their membership expires | `SM-2.4`, BC Map line 209 |
+| `SM-AC-5` | Setting `EnrollmentStatus = Expired` is rejected — not in the closed set | `SM-2.7`, `SM-2.5`, BC Map line 209 |
+| `SM-AC-6` | A student remains `Active` when their membership expires | `SM-2.7`, `SM-BR-3`, BC Map line 209 |
 | `SM-AC-7` | Archive with open dues is refused with a domain error | `SM-INV-4`, `E-09` |
 | `SM-AC-8` | Archive does not delete attendance or fee history | `SM-10.4`, `MP-GBR-14`, `ID-5` |
 | `SM-AC-9` | `Archived → Suspended` is refused | `SM-2.10`, `SM-2.13` |
@@ -1025,12 +1071,14 @@ both conditions mechanically checkable.
 | `SM-AC-22` | A stale projection is never used in an authorisation decision | `LMD-23`, `SID-2.38` |
 | `SM-AC-23` | `TR-3` Reception cannot archive; `TR-2` cannot archive; `TR-1` can | `SM-PO-7`, `LIB-4.1` |
 | `SM-AC-24` | Sensitive-data access is audited even with no state change | `SM-8.13`, `SM-7.17` |
-| `SM-AC-25` | Bulk partial failure reports per-record outcomes and is not success | `SM-8.17`, `SMCFG-4` |
+| `SM-AC-25` | Bulk partial failure reports per-record outcomes and is not success | `LMD-30`, `SM-BR-14`, `SMCFG-4` |
 | `SM-AC-26` | Repeating a mutating call with the same idempotency key changes nothing | `SM-10.7`, `SM-7.7` |
 | `SM-AC-27` | Documents are `FileRef`s; no byte or path is stored (schema scan) | `SM-4.9`, `SM-4.10`, `SM-INV-10` |
 | `SM-AC-28` | `StudentRecordId` appears in no global event or index | `SM-7.15`, `ID-2`, `MP-GBR-03` |
 | `SM-AC-29` | With **no** `BC-10` Date of Birth, enrollment records minor-status `Unknown`, requires a guardian, keeps `ID-6`-gated capability closed, and cannot leave `Pending` until an age declaration is recorded and audited | `SM-INV-3`, `SM-4.5a`, `SM-4.5b`, `AP-3`, `SID-4.56` |
 | `SM-AC-30` | With two `Archived` records for one `(tenant, person)`, restore targets the most recently archived, leaves the other archived, and reports the count | `SM-3.14a`, `SM-3.14b`, `SM-10.2` |
+| `SM-AC-31` | With a `BC-10` Date of Birth giving age **under 18** and **no** `GuardianLink` supplied, enrollment is **rejected with a typed domain error**; no `StudentRecord` is committed, and the rejection is not a generic 500 | `SM-4.4`, `SM-INV-3`, `SM-10.8`, §4.2.1 case 1 |
+| `SM-AC-32` | With a `BC-10` Date of Birth giving age **18 or over** and **no** `GuardianLink` supplied, enrollment **succeeds**; supplying a `GuardianLink` for the same record is also accepted and neither path blocks enrollment | `SM-4.4`, `SM-INV-3`, §4.2.1 case 2 |
 
 `SM-10.11` — Every requirement in this document **MUST** be verifiable by at least one criterion above, by a
 `§10.7` task, or be declared a proposed gap in §10.6. A requirement satisfying none of the three is **unmet** by
@@ -1097,7 +1145,7 @@ close by asserting a higher number.
 > **lower**. The correction pass did not tune the metric upward — it replaced an unverifiable claim with a
 > reproducible one and accepted the worse result.
 
-### 10.6 PROPOSED GAPS — `SM-GAP-1` … `SM-GAP-10`
+### 10.6 PROPOSED GAPS — `SM-GAP-1` … `SM-GAP-11`
 
 > **These are not requirements.** Each is a decision the repository does not currently make. They are recorded so
 > that nobody implements an invented answer, and **must not** be converted to requirements without a source.
@@ -1113,7 +1161,8 @@ close by asserting a higher number.
 | `SM-GAP-7` | Directory visibility of members to other members | `LCFG-5` says the directory "exposes members to members" but no requirement defines the member-facing field set |
 | `SM-GAP-8` | Bulk import / `registrationSource = Import` validation rules | `SM-3.8` names the source; no import specification exists |
 | `SM-GAP-9` | Attendance-percentage definition used by the Directory indicator | Owned by `BC-03`; `PRD-006` is unwritten, so the formula has no owner yet |
-| `SM-GAP-10` | Whether Date of Birth should become **mandatory** at `BC-10` | `PRD-003` lists it as **Optional** (§2.4, `SID-2.5`) while `SID-5.9` says it *"**SHALL** be stored, because minor-safety obligations (`ID-6`) depend on it."* That tension is internal to `PRD-003` and is **not** this module's to resolve. `SM-4.5a`/`SM-4.5b` make this module safe either way. Resolving it requires the `BC-10` owner and an ADR (finding `RF-17`) |
+| `SM-GAP-10` | Whether Date of Birth should become **mandatory** at `BC-10` | `PRD-003` lists it as **Optional** (§2.2, `SID-2.5`) while `SID-5.9` (§5.2) says it *"**SHALL** be stored, because minor-safety obligations (`ID-6`) depend on it."* That tension is internal to `PRD-003` and is **not** this module's to resolve. `SM-4.5a`/`SM-4.5b` make this module safe either way. Resolving it requires the `BC-10` owner and an ADR (finding `RF-17`) |
+| `SM-GAP-11` | Whether `BC-26` Study Analytics is a consumer of `SM-EV-1` and `SM-EV-5` | **BC Map §8 names `BC-26` a primary consumer of both events; BC Map §7 declares no `BC-01`→`BC-26` edge**, and line 292 states an edge absent from §7 *"does not exist"*. The tension is internal to the **Bounded Context Map (Rank 4)** and is **not** this module's to resolve — resolving it requires the architecture owner and an ADR. §7.4 therefore does **not** list `BC-26`, and this module's behaviour is identical either way (`SM-7.9`: it publishes facts and does not enumerate subscribers). Finding `SR-04`/`SR-05` |
 
 > **`SM-GAP-5` deserves naming explicitly.** Member tags and notes were requested twice. They appear nowhere in
 > the Master PRD, BC Map, Library PRD, Student Identity PRD or any ADR. Writing them as requirements would have
@@ -1156,7 +1205,7 @@ Recorded for the backlog. **Nothing here is implemented by this document.**
 | `IMPL-322` | **Absent-DOB minor-status path** | `domain/library` | `IMPL-308` | `SM-4.5a`–`SM-4.5c`, `SM-INV-3` | `SM-AC-29` passes; fail-safe to minor |
 | `IMPL-323` | **Deterministic restore among archived records** | `domain/library` | `IMPL-307` | `SM-3.14a`, `SM-3.14b` | `SM-AC-30` passes |
 
-**18 tasks.** `IMPL-305` depends on `IMPL-214` (the `E-13` ACL task already registered against `PRD-004` in
+**24 tasks.** `IMPL-305` depends on `IMPL-214` (the `E-13` ACL task already registered against `PRD-004` in
 `PRD_REGISTRY.md` line 224).
 
 ---

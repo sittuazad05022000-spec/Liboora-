@@ -4,8 +4,8 @@
 |---|---|
 | **PRD ID** | `PRD-005` |
 | **Document** | Membership Management — `BC-02` Membership |
-| **Version** | v1.0 (Startup MVP) |
-| **Status** | **DRAFT** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 2. Not frozen, not baselined, not approved |
+| **Version** | v1.1 (Startup MVP) |
+| **Status** | **DRAFT** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 2. Not frozen, not baselined, not approved. **`C-2` and `C-3` ratified as compliant; no freeze-blocking gap remains open in this document** |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04-C` |
 | **Rank if approved** | Rank 3 (module PRD) — **not yet ranked** |
@@ -16,6 +16,7 @@
 | **ADRs applied** | [`ADR-0001`](../../00-governance/adr/ADR-0001-modular-monolith.md) · [`ADR-0003`](../../00-governance/adr/ADR-0003-hybrid-tenancy-global-account.md) · [`ADR-0012`](../../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) · [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) · [`ADR-0014`](../../00-governance/adr/ADR-0014-tenant-key-and-audit-mutation-enforcement.md) · [`ADR-0018`](../../00-governance/adr/ADR-0018-student-management-prd-v1.2-baseline.md) |
 | **Rulings applied** | `AR-1` (Discovery delegates membership creation to `BC-02`) · `AR-2` (Authentication owns registration) |
 | **Depends on** | [`PRD-004`](../student-management/Student_Management_PRD_v1.md) **v1.2, FROZEN** — `E-01`, *"Membership may not exist without an active enrollment"* |
+| **Supporting documents** | [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) (`C-2`/`C-3` investigation) · [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md) (ratification + correction pass) |
 
 ---
 
@@ -173,7 +174,7 @@ sold to library owners: `MembershipPlan` (`BC-02`) vs `SubscriptionPlan` (`BC-20
 `MM-FR-006` — `MembershipPlan` **MUST** be a separate aggregate root from `Membership`. Editing a plan **MUST NOT**
 occur in the same transaction as creating or renewing a membership.
 
-> **Why.** BC Map §6 states *"The aggregate is the transaction boundary — one aggregate, one database transaction, no
+> **Why.** BC Map §8 states *"The aggregate is the transaction boundary — one aggregate, one database transaction, no
 > exceptions."* A plan is edited by an owner at leisure; a membership is created at a reception desk under time
 > pressure. They have different lifecycles, different actors and different contention profiles.
 
@@ -285,7 +286,7 @@ displays the amount applicable to a past membership **MUST** use the snapshot.
 
 > **Why this matters beyond tidiness.** `BC-05` Fee & Collection raises a `FeeDue` from `MM-EVT-001`. If the amount
 > were resolved by re-reading the plan, a price edit would silently restate money already owed or collected — which
-> BC Map §6 forbids for `FeeLedger` (*"receipt is immutable once issued"*) and which would make the ledger and the
+> BC Map §8 forbids for `FeeLedger` (*"receipt is immutable once issued"*) and which would make the ledger and the
 > membership disagree about history.
 
 ### 2.7 Plan listing and search
@@ -372,7 +373,7 @@ consumes the **outcome** only (§10).
 
 ### 3.4 Duplicate prevention and idempotency
 
-`MM-FR-045` — The aggregate **MUST** enforce **no overlapping active terms for one `StudentRecordId`** — BC Map §6's
+`MM-FR-045` — The aggregate **MUST** enforce **no overlapping active terms for one `StudentRecordId`** — BC Map §8's
 stated `BC-02` invariant, restated as `MM-INV-001`.
 
 `MM-FR-046` — Overlap **MUST** be enforced by a database-level constraint or an equivalent serialising lock, not by a
@@ -426,9 +427,9 @@ not in the BC Map's list).
 `[startDate, endDate]`. Both endpoints are dates, not timestamps.
 
 `MM-FR-056` — `endDate` **MUST** be strictly greater than or equal to `startDate`. `endDate < startDate` **MUST** be
-impossible (`MM-INV-002`, BC Map §6: *"`validUntil > validFrom`"*).
+impossible (`MM-INV-002`, BC Map §8: *"`validUntil > validFrom`"*).
 
-> **A disclosed narrowing.** BC Map §6 writes the invariant as strictly `validUntil > validFrom`. A single-day plan
+> **A disclosed narrowing.** BC Map §8 writes the invariant as strictly `validUntil > validFrom`. A single-day plan
 > (`durationDays: 1`) yields `endDate == startDate` under §4.3, which satisfies `>=` but not `>`. Rather than silently
 > pick one, this is recorded as `MM-GAP-008`: either single-day plans are disallowed, or the Map's `>` is read as
 > applying to an exclusive-end formulation. **This document does not decide it**; `MM-FR-011` permits `durationDays:
@@ -529,19 +530,43 @@ context. It emits `MM-EVT-005` and downstream contexts apply their own policy.
 `MM-FR-073` — `Frozen` **MUST NOT** be a reachable V1 status (`MM-XC-009`). The field **MAY** be modelled to admit it
 later, but no V1 command **MUST** be able to produce it.
 
-> **A disclosed divergence from BC Map line 209, recorded not resolved.** Line 209 describes `MembershipStatus` as
-> *"Valid/Expired/Frozen"*. This document specifies six values, none named `Valid`, and excludes `Frozen`.
-> Three reasons, and one honest admission:
-> 1. `Frozen` is unreachable because Membership Freeze is **V2** in EA line 728 — so line 209 is describing the
->    eventual set, across versions, not the V1 set.
-> 2. `PendingPayment` is **required** by `E-10`'s own wording, *"may activate a **pending** membership"*. A status set
->    without it cannot express the state `E-10` acts upon.
-> 3. `Valid` is not a status but the *answer* to `MM-FR-065`, which is computed from status **and** dates. Treating it
->    as a stored status is precisely the conflation that makes `MM-FR-066` unenforceable.
+> **Relationship to BC Map line 209 — ratified, not a divergence.** Line 209 sits in BC Map **§5 Ubiquitous
+> Language Collisions**, whose preamble states its own authority verbatim: *"The resolution column is binding: these
+> are the names that must appear in code, APIs, events and UI copy."* The row has four columns. `Valid/Expired/Frozen`
+> sits in column 3, headed **`Context B meaning`** — a gloss explaining why the bare word `Status` is ambiguous.
+> Column 4, headed **`Resolution (binding)`**, reads: *"`EnrollmentStatus` vs `MembershipStatus`. **Two independent
+> state machines** — a student can be Active with an Expired membership."*
 >
-> **The admission:** this is still a difference between a Rank 4 document and this Rank 3 draft, and §0.1 says the
-> ranked document governs. It is therefore raised as **`MM-GAP-006`** and **must be settled by an ADR before this
-> document can be frozen**. It is not presented as settled.
+> **This document complies with the binding column in full:** it names the type `MembershipStatus` (`MM-FR-072`),
+> keeps it independent of `EnrollmentStatus` (§1.3, `MM-XC-002`), and preserves the documented case — a student
+> `Active` in `BC-01` with an `Expired` membership here (`MM-FR-065`).
+>
+> Four corroborating findings, each verified against a primary source:
+> 1. **Columns 2 and 3 are demonstrably not exhaustive enumerations.** The same table's `Role` row (line 212) glosses
+>    `AccessRole` as *"a permission bundle (Owner/Manager/Reception)"* — three values — while the Rank 3
+>    Authentication PRD defines **five**, adding Platform Support (§2.2.6) and Platform Administrator (§2.2.7), and
+>    `BR-2.9` speaks of *"Owner, Manager, Reception, and both platform roles"*. If column 2 were an exhaustive
+>    enumeration, that Rank 3 PRD would be in breach. It is not. Therefore these columns illustrate meaning; they do
+>    not close a value set.
+> 2. **`Frozen` cannot be a V1 `MembershipStatus`.** Membership Freeze is **V2** (EA line 728) and its stated purpose
+>    in the event surface is *"Proration + seat hold"*, with Proration also **V2** (EA line 731). Reading column 3 as
+>    the V1 set would mandate a V1 status reachable only by a V2 feature.
+> 3. **A pre-activation state is required by Rank 4 itself.** `E-10` (line 307) reads *"`FeePaymentReceived` → may
+>    activate a **pending** membership (saga in V2, direct handler in V1)"*, and the event surface (line 421) gives
+>    that event the purpose *"**Activates membership**, receipt"*. `Valid/Expired/Frozen` cannot represent *"a pending
+>    membership"*. `PendingPayment` is recovered from the Map, not asserted against it.
+> 4. **`Valid` is derived, not stored.** `E-02` (line 299) publishes `MembershipValidity{studentRecordId, validUntil,
+>    seatQuota}` and the §8 aggregate invariant is `validUntil > validFrom` — both treat validity as computed from
+>    dates. `MM-FR-065` defines it as status **and** date range **and** tenant. Storing `Valid` as a status would make
+>    one fact representable two ways, which is the conflation `MM-FR-066` exists to prevent.
+>
+> **Status of `MM-GAP-006`: closed.** Ratified 2026-08-04 on the evidence above — see
+> [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) §2 and
+> [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md) §2. **No ADR is required and the BC Map is not
+> modified**, because the binding column is satisfied and no ranked statement is contradicted. One residual
+> observation is carried forward, against the BC Map rather than against this document: §5's per-context columns
+> would be clearer if annotated *"illustrative, not exhaustive"*, and the event surface has no `BC-02` pre-activation
+> state despite `E-10` (`MM-GAP-006a`, §25.2 — an editorial observation, not a blocker).
 
 ### 5.2 Transitions — normative and closed
 
@@ -936,7 +961,7 @@ fail-closed. Membership creation is a paid gate and therefore **MUST** fail clos
 
 ## 12. Domain Events — `MM-EVT-001` … `MM-EVT-007`, closed set
 
-`MM-BR-014` — Event names **MUST** follow the binding convention of BC Map §8:
+`MM-BR-014` — Event names **MUST** follow the binding convention of BC Map §9 (*Published Language — Event Surface*):
 `<Context>.<Aggregate><PastTenseVerb>`. An imperative name is a command and **MUST NOT** enter the event bus.
 
 `MM-BR-015` — No event **MUST** carry a mobile number (`MP-GBR-34`), and no event **MUST** carry a name, email,
@@ -964,21 +989,51 @@ transactional outbox with retry.
 `MM-BR-019` — Notification and Analytics **MUST NOT** be part of this domain. They are consumers of facts (`E-23`,
 `MP-GBR-33`; `MP-GBR-37`).
 
-> **Two events here are not in the BC Map's `BC-02` list, and one in the Map's list is excluded. Recorded, not
-> resolved.** BC Map §8 lists for `BC-02`: `MembershipCreated`, `MembershipRenewed`, `MembershipExpiringSoon`,
-> `MembershipExpired`, and `MembershipFrozen`/`Unfrozen`. This document **adds** `MembershipActivated`,
-> `MembershipUpgraded` and `MembershipVoided`, and **excludes** `Frozen`/`Unfrozen` as V2 (`MM-XC-009`).
+> **Why this register is complete at seven, and why that follows established practice rather than departing from it.**
+> BC Map **§9** (*Published Language — Event Surface*, line 397) lists five rows for `BC-02`: `MembershipCreated`,
+> `MembershipRenewed`, `MembershipExpiringSoon`, `MembershipExpired`, and `MembershipFrozen`/`Unfrozen`. This document
+> registers seven, **adding** `MembershipActivated`, `MembershipUpgraded` and `MembershipVoided`, and **excluding**
+> `Frozen`/`Unfrozen`.
 >
-> `MembershipUpgraded` is the least contentious — BC Map `E-07`'s own contract text names
-> *"`MembershipCreated/Renewed/**Upgraded**/Frozen`"*, so the Map already expects it; its absence from the §8 table
-> looks like an omission. `MembershipActivated` is required because `E-10` describes activation as a distinct
-> transition and `BC-04`/`BC-03` must learn when entitlement **begins**, which `MembershipCreated` cannot tell them
-> when status is `PendingPayment`. `MembershipVoided` is required by §5.4.
+> **The precedent is a frozen Rank 3 PRD, ratified at Rank 2.** BC Map §9 lists **four** `BC-01` events. The frozen
+> [Student Management PRD v1.2](../student-management/Student_Management_PRD_v1.md) §7.4 declares a **closed set of
+> ten**, adding six (`StudentArchived`, `StudentRestored`, `GuardianLinkChanged`, `StudentDocumentAttached`,
+> `StudentDocumentRemoved`, `EnrollmentNumberAssigned`). Its §7.4 preamble cites §9 for the **naming convention**, not
+> as an enumeration. Its independent review examined every event individually and questioned one as *redundant* — on
+> design merit, never on the ground that adding an event required an ADR — and `ADR-0018` then froze the document with
+> all six additions intact, without amending the BC Map. **A Rank 3 module PRD declaring its own complete event
+> register is therefore established, ratified practice.** Three additions here is a smaller departure than the six
+> already blessed.
 >
-> Nonetheless BC Map §8 is Rank 4 and this is Rank 3. Adding a `BC-02` event is not adding an *edge* — the consumers
-> are all reachable on existing edges `E-07`, `E-02`, `E-03`, `E-20`, `E-23` — but the event surface is described in
-> §8 as *"the seed of the full Event Catalog… names, producers and consumers are fixed here."* **Fixed** is the
-> operative word. Recorded as **`MM-GAP-007`**, requiring an ADR before freeze.
+> **§9 marks closure explicitly when it means it, and `BC-02` carries no such marker.** The only *"closed set"* in the
+> entire BC Map is line 429, for `BC-10`, and it closes the register by **delegating it to that context's Rank 3
+> PRD** — *"`SEV-1`…`SEV-16` — closed set, see Student Identity PRD §4.14"*. §9 also describes itself as the
+> *"**seed** of the full Event Catalog"*, an artefact that does not yet exist (architecture README open action item
+> #4). *"Names… are fixed here"* binds the **spelling** of the events it lists — `MembershipRenewed` may not be
+> renamed — not the size of the set.
+>
+> **No ADR trigger applies.** The BC Map states exactly one, at line 292, and it is scoped to **edges**: *"If an edge
+> is not in this table, it **does not exist** and adding it requires an ADR."* That is §7, not §9, and it is why
+> `ADR-0016` was needed for a missing edge consumer. These three events introduce **no new edge**: `BC-05`, `BC-04`,
+> `BC-03`, `BC-26`, `BC-22` and `BC-24` are all reachable on existing `E-07`, `E-02`, `E-03`, `E-20` and `E-23`.
+>
+> **Each addition is sourced, not invented.** `MembershipUpgraded` is **already in the Map** — `E-07` (line 304) reads
+> *"`MembershipCreated/Renewed/**Upgraded**/Frozen` → generates or adjusts `FeeDue`"*, so its absence from the §9
+> table is an internal omission in Rank 4, the same defect class `ADR-0016` addressed. `MembershipActivated` is
+> required because `E-10` (line 307) and §9 line 421 (*"**Activates membership**"*) treat activation as a distinct
+> transition, and `MembershipCreated` cannot tell `BC-04`/`BC-03` when entitlement **begins** if status is
+> `PendingPayment`. `MembershipVoided` is required by §5.4.
+>
+> **The `Frozen`/`Unfrozen` exclusion is correctness, not divergence.** Both serve Membership Freeze (**V2**, EA line
+> 728), and §9 gives them the purpose *"Proration + seat hold"* with Proration also **V2** (EA line 731). A V1 PRD
+> excluding a V2 capability's events is right; the inconsistency is that §9's *"V1 event surface"* table contains two
+> V2-only rows.
+>
+> **Status of `MM-GAP-007`: closed.** Ratified 2026-08-04 — see
+> [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) §3 and
+> [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md) §3. **No ADR is required and the BC Map is not
+> modified.** Two observations are carried forward against the BC Map, not against this document (`MM-GAP-007a`,
+> §25.2): `MembershipUpgraded` is at `E-07` but missing from §9, and §9's V1 table lists two V2-only events.
 
 ---
 
@@ -987,7 +1042,7 @@ transactional outbox with retry.
 ### 13.1 `Membership` aggregate
 
 `MM-BR-020` — `Membership` **MUST** be the aggregate root and the transaction boundary. One membership, one
-transaction (BC Map §6).
+transaction (BC Map §8).
 
 **This table is normative.**
 
@@ -1078,8 +1133,8 @@ Additional rules recovered from the architecture rather than invented: `MM-BR-00
 
 | ID | Invariant | Source |
 |---|---|---|
-| `MM-INV-001` | **No overlapping active terms for one `StudentRecordId`** | BC Map §6 `BC-02` row |
-| `MM-INV-002` | `endDate >= startDate` | BC Map §6 (`validUntil > validFrom`; see `MM-GAP-008`) |
+| `MM-INV-001` | **No overlapping active terms for one `StudentRecordId`** | BC Map §8 `BC-02` row |
+| `MM-INV-002` | `endDate >= startDate` | BC Map §8 (`validUntil > validFrom`; see `MM-GAP-008`) |
 | `MM-INV-003` | `status` is always one of the six §5.1 values, reached only by a §5.2 transition | This document |
 | `MM-INV-004` | A membership not satisfying §4.5 confers no entitlement | `MP-GBR-16` |
 | `MM-INV-005` | A membership has at most one successor by renewal and at most one by upgrade | `MM-FR-090`, `MM-FR-101` |
@@ -1157,7 +1212,7 @@ void or edit a plan.
 | `MM-PO-006` | Renew membership | Reception class and above |
 | `MM-PO-007` | Upgrade membership | Reception class and above |
 | `MM-PO-008` | View membership detail | Includes price snapshot |
-| `MM-PO-009` | List operational membership views | §8 |
+| `MM-PO-009` | List operational membership views | §8 *(this document)* |
 | `MM-PO-010` | Query validity for a student | Also used machine-to-machine by `BC-03`/`BC-04` |
 | `MM-PO-011` | Change a membership configurable (`MM-CFG-*`) | Owner class; `BC-25` performs the write |
 
@@ -1234,7 +1289,7 @@ Consequently (`MM-BR-019`), this module **MUST NOT** select a channel, compose a
 schedule a send, or track a delivery receipt.
 
 > EA line 855 lists *Membership Expiry Reminder* as **V2** in its notification module. That concerns the **reminder
-> feature** in `BC-22`, not the **fact**: `MM-EVT-006` is in BC Map §8's V1 `BC-02` event list, so emitting it in V1 is
+> feature** in `BC-22`, not the **fact**: `MM-EVT-006` is in BC Map §9's V1 `BC-02` event list, so emitting it in V1 is
 > correct even if the notification that consumes it ships later. Emitting a fact no one yet consumes is harmless;
 > retrofitting the emitter later is not.
 
@@ -1400,7 +1455,7 @@ Every criterion is deterministic and testable.
 | `MM-AC-049` | `MM-EVT-004` carries `priceDifference` and `remainingDaysOnSource`, and **no** monetary credit or refund | `MM-FR-099`, `MM-FR-100` |
 | `MM-AC-050` | Two concurrent upgrades of one source yield exactly one `Superseded` transition | §15 |
 | `MM-AC-051` | A cross-tenant `membershipId` returns *not found*, never *forbidden* | `MM-NFR-005` |
-| `MM-AC-052` | No query path can return a membership from another tenant, including every §8 view | `MM-NFR-002`, `MM-NFR-003` |
+| `MM-AC-052` | No query path can return a membership from another tenant, including every §8 view *(of this document)* | `MM-NFR-002`, `MM-NFR-003` |
 | `MM-AC-053` | No `MM-EVT-*` payload contains a mobile number, name, email or any `BC-10` field | `MM-BR-015` |
 | `MM-AC-054` | Every §17 mutation produces an audit event; a read produces none | §17 |
 | `MM-AC-055` | The plan-wise view returns a current-state count only, with no period comparison or rate | `MM-FR-117`, `MM-XC-006` |
@@ -1422,7 +1477,7 @@ architecture. Nothing here is included because other membership products have it
 | **`PendingPayment` as an explicit status** | **A — Required for V1** | Not a new idea: BC Map `E-10` says *"may activate a **pending** membership"*. Without the state, `E-10` has nothing to act on and the payment gate cannot exist |
 | **`Scheduled` status for future-dated starts** | **A — Required for V1** | `MM-CFG-004` permits advance sales; without `Scheduled`, a future membership would be either wrongly `Active` (entitlement before payment period) or indistinguishable from `PendingPayment` |
 | **`membership.MembershipActivated` event** | **A — Required for V1** | `BC-04`/`BC-03` must know when entitlement **begins**. `MembershipCreated` cannot say so when the status is `PendingPayment`. Raised as `MM-GAP-007` because BC Map §8 does not list it |
-| **`membership.MembershipUpgraded` event** | **A — Required for V1** | BC Map `E-07`'s contract text already names `MembershipCreated/Renewed/**Upgraded**/Frozen`; its absence from the §8 table appears to be an omission. `BC-05` cannot adjust dues without it |
+| **`membership.MembershipUpgraded` event** | **A — Required for V1** | BC Map `E-07`'s contract text already names `MembershipCreated/Renewed/**Upgraded**/Frozen`; its absence from the §9 table appears to be an omission. `BC-05` cannot adjust dues without it |
 | **Void before activation (§5.4)** | **A — Required for V1** | Wrong-student and wrong-plan errors happen hourly at a reception desk. With `MM-INV-001` blocking overlap, an uncorrectable bad record permanently blocks the correct one. This is error correction on a non-entitling record — **not** V2 Cancellation, which involves refunds |
 | **Auto-void of stale `PendingPayment` (`MM-CFG-007`)** | **A — Required for V1** | Without it, an abandoned unpaid membership blocks `MM-INV-001` forever and the student can never be sold a membership again |
 | **Visible reconciliation queue** | **A — Required for V1** | Not discovered by me — **mandated** by BC Map §10 line 465 as the V1 substitute for the V2 saga |
@@ -1443,7 +1498,7 @@ architecture. Nothing here is included because other membership products have it
 | Waitlist when plan capacity is full | **C — V2/V3** | No plan-capacity concept exists in any source document. Inventing one would invent a requirement |
 | Membership pause for holidays | **C — V2** | This is Membership Freeze, EA line 728 **V2** (`MM-XC-009`) |
 | Family / group membership | **C — Future** | No source document mentions it; adjacent to Cross-Library Membership (Future) |
-| Discount / coupon on a membership | **C — V2** | `Discount` is a `BC-05` `FeeLedger` entity (BC Map §6) with *"discount requires an authorised approver role"*. Putting it here would duplicate `BC-05` |
+| Discount / coupon on a membership | **C — V2** | `Discount` is a `BC-05` `FeeLedger` entity (BC Map §8) with *"discount requires an authorised approver role"*. Putting it here would duplicate `BC-05` |
 | Refund on early termination | **C — V2** | Requires Cancellation + Proration, both V2, and refunds are `BC-05`'s |
 | Membership card / QR credential | **D — Not needed** | Attendance already owns QR (`BC-03`, EA). A second QR credential would duplicate it |
 | Auto-renewal with saved payment method | **D — Not needed for V1** | Explicitly **V3** (`MM-XC-007`) and would require stored payment instruments this module must never hold |
@@ -1470,23 +1525,29 @@ precisely so that omitting them is not a defect. They become mandatory only if p
 
 ## 25. Cross-Document Review
 
-### 25.1 Conflicts found — recorded, NOT resolved
+### 25.1 Conflicts found
 
-Per §0.1 and the authoring instruction, these are raised rather than fixed. **No existing document was modified.**
+Per §0.1, a conflict with a ranked document is raised rather than silently fixed. **No existing document was
+modified.** Two conflicts (**C-2**, **C-3**) were subsequently investigated in
+[`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) and **ratified as compliant on 2026-08-04** — the
+apparent conflict was in this document's *characterisation* of the BC Map, not in its model. Both are now closed
+without any ADR and without amending the BC Map. See [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md).
 
 | # | Conflict | Evidence | Severity | Disposition |
 |---|---|---|---|---|
 | **C-1** | **Membership Analytics is classified V3 in one place and V2 in two others** | EA line **734** *"Membership Analytics (V3)"* inside Membership Management; EA line **837** *"Membership Analytics (V2)"* under Analytics & Growth Reports; EA line **1607** *"Membership Analytics (V2)"* under Business Intelligence | Medium | **No effect on this PRD** — all three agree it is **not V1**, and `MM-XC-006` excludes it either way. But EA (Rank 6) contradicts itself and should be corrected by its owner. Not resolved here |
-| **C-2** | **`MembershipStatus` value set differs from BC Map line 209** | Line 209 says *"Valid/Expired/Frozen"*; §5.1 specifies six values, none named `Valid`, excluding `Frozen` | **High** | **`MM-GAP-006` — must be settled by ADR before freeze.** Reasoning in §5.1; `Frozen` is V2-unreachable, `PendingPayment` is required by `E-10`'s own wording, and `Valid` is a computed answer not a stored status |
-| **C-3** | **Three `BC-02` events are not in BC Map §8's list; two listed events are excluded** | §8 lists `Created`, `Renewed`, `ExpiringSoon`, `Expired`, `Frozen`/`Unfrozen`. This document adds `Activated`, `Upgraded`, `Voided` and excludes `Frozen`/`Unfrozen` | **High** | **`MM-GAP-007` — must be settled by ADR before freeze.** `Upgraded` already appears in `E-07`'s contract text, suggesting a §8 omission. §8 says names *"are fixed here"*, so this needs an amendment, not a unilateral addition |
-| **C-4** | **BC Map §6 writes the term invariant as strictly `validUntil > validFrom`, which a single-day plan cannot satisfy under §4.3's inclusive endpoints** | BC Map line 371; `MM-FR-011` permits `durationDays: 1` | Medium | **`MM-GAP-008`.** Either single-day plans are disallowed or `>` is read against an exclusive-end formulation. Not decided here |
+| **C-2** | ~~`MembershipStatus` value set differs from BC Map line 209~~ — **RESOLVED, not a conflict** | Line 209 is in BC Map **§5**, whose preamble binds *"the resolution column"*. `Valid/Expired/Frozen` sits in column 3 (`Context B meaning`); column 4 (`Resolution (binding)`) requires the type name `MembershipStatus` and two independent state machines — **both satisfied**. Columns 2–3 are provably non-exhaustive: the `Role` row (L212) lists 3 `AccessRole` values where the Rank 3 Authentication PRD defines 5 (§2.2.6, §2.2.7, `BR-2.9`) | **Closed** | **`MM-GAP-006` closed 2026-08-04.** No ADR; BC Map unmodified. Corroborated by `Frozen` = V2 (EA 728), `E-10`'s *"pending membership"* (L307), and `Valid` being derived per `E-02` (L299). Residual editorial observation → `MM-GAP-006a` |
+| **C-3** | ~~Three `BC-02` events are not in BC Map's list; two listed events are excluded~~ — **RESOLVED, not a conflict** | Event surface is BC Map **§9** (L397), not §8. §9 declares closure only for `BC-10` (L429), self-describes as the *"seed"* of a Catalog that does not exist, and the sole ADR trigger (L292) is scoped to **edges** — no new edge is introduced. Frozen `PRD-004` §7.4 registers **10** `BC-01` events where §9 lists **4**, ratified by `ADR-0018` | **Closed** | **`MM-GAP-007` closed 2026-08-04.** No ADR; BC Map unmodified. `Upgraded` is already at `E-07` (L304); `Activated` follows `E-10`/§9 L421; `Voided` follows §5.4; `Frozen`/`Unfrozen` correctly excluded as V2 (EA 728, 731). Residual observations → `MM-GAP-007a` |
+| **C-4** | **BC Map §8 writes the term invariant as strictly `validUntil > validFrom`, which a single-day plan cannot satisfy under §4.3's inclusive endpoints** | BC Map line 371 (*Aggregate & Invariant Register*); `MM-FR-011` permits `durationDays: 1` | Medium | **`MM-GAP-008`.** Either single-day plans are disallowed or `>` is read against an exclusive-end formulation. Not decided here |
 | **C-5** | **No `BC-06` → `BC-02` edge exists, yet holiday-aware terms would need one** | BC Map §7 has `E-04`/`E-05`/`E-06` from `BC-06` to `BC-03`/`BC-04`/`BC-05` only | Low | **`MM-GAP-009`.** V1 explicitly does not extend terms for holidays (`MM-FR-060`). No edge invented |
-| **C-6** | **`Q-01` (expiry grace / seat release) and `Q-06` (proration ownership) are both open and both land on `BC-02`** | BC Map §12; Master PRD lines 673, 678; `MP-DEP-07` names `Q-01`…`Q-07` as a schema-freeze dependency | Medium | **`MM-GAP-001`, `MM-GAP-002`.** V1 behaviour specified so as to be correct under **either** resolution |
-| **C-7** | **EA line 855 lists *Membership Expiry Reminder* as V2 while BC Map §8 lists `MembershipExpiringSoon` as a V1 `BC-02` event** | EA 855; BC Map 411 | Low | **Not a conflict on inspection** — EA describes the `BC-22` *reminder feature*, BC Map the `BC-02` *fact*. §18 records the distinction. Emitting a fact early is harmless; retrofitting the emitter is not |
+| **C-6** | **`Q-01` (expiry grace / seat release) and `Q-06` (proration ownership) are both open and both land on `BC-02`** | BC Map §13 (*Open Questions*); Master PRD lines 673, 678; `MP-DEP-07` names `Q-01`…`Q-07` as a schema-freeze dependency | Medium | **`MM-GAP-001`, `MM-GAP-002`.** V1 behaviour specified so as to be correct under **either** resolution |
+| **C-7** | **EA line 855 lists *Membership Expiry Reminder* as V2 while BC Map §9 lists `MembershipExpiringSoon` as a V1 `BC-02` event** | EA 855; BC Map 411 | Low | **Not a conflict on inspection** — EA describes the `BC-22` *reminder feature*, BC Map the `BC-02` *fact*. §18 records the distinction. Emitting a fact early is harmless; retrofitting the emitter is not |
 
-### 25.2 Open questions — `MM-GAP-001` … `MM-GAP-009`
+### 25.2 Open questions — `MM-GAP-001` … `MM-GAP-009`, plus `MM-GAP-006a`/`MM-GAP-007a`
 
-**None of these is a requirement.** Each records a decision this document declines to invent.
+**None of these is a requirement.** Each records a decision this document declines to invent. `MM-GAP-006` and
+`MM-GAP-007` are **closed** (ratified 2026-08-04); their identifiers are retained rather than reused so that prior
+citations remain resolvable, and each leaves a non-blocking successor observation against the BC Map.
 
 | ID | Question | Owner | Blocking? |
 |---|---|---|---|
@@ -1495,8 +1556,10 @@ Per §0.1 and the authoring instruction, these are raised rather than fixed. **N
 | `MM-GAP-003` | Can age-based plan eligibility be mandatory when DOB's mandatory/optional status is itself unresolved? (`GCP-05` / `SM-GAP-10`) | `BC-10` owner | Not for V1 — eligibility is `MAY` |
 | `MM-GAP-004` | Should membership search use `BC-23`, requiring a new `E-2x` edge? | Architecture | No — local match suffices at V1 scale |
 | `MM-GAP-005` | May an owner force an immediate `seatQuota` change on active memberships? | Product | No — deferral to renewal is the safe default |
-| **`MM-GAP-006`** | **Reconcile the V1 `MembershipStatus` set with BC Map line 209** | **Architecture** | **YES — blocks freeze (C-2)** |
-| **`MM-GAP-007`** | **Amend BC Map §8's `BC-02` event list for `Activated`, `Upgraded`, `Voided`; confirm `Frozen`/`Unfrozen` are V2** | **Architecture** | **YES — blocks freeze (C-3)** |
+| ~~`MM-GAP-006`~~ | ~~Reconcile the V1 `MembershipStatus` set with BC Map line 209~~ | Architecture | **CLOSED 2026-08-04 — ratified compliant (§5.1). No ADR, BC Map unmodified** |
+| `MM-GAP-006a` | Should BC Map §5's per-context columns be annotated *"illustrative, not exhaustive"*, and should the event surface name a `BC-02` pre-activation state given `E-10`? | Architecture (BC Map owner) | **No** — editorial hygiene in a Rank 4 document; this PRD is correct either way |
+| ~~`MM-GAP-007`~~ | ~~Amend the BC Map's `BC-02` event list for `Activated`, `Upgraded`, `Voided`~~ | Architecture | **CLOSED 2026-08-04 — ratified compliant (§12). No ADR, BC Map unmodified** |
+| `MM-GAP-007a` | BC Map §9 omits `MembershipUpgraded` though `E-07` (L304) names it, and lists `Frozen`/`Unfrozen` (V2 per EA 728/731) in a table headed *"V1 event surface"* | Architecture (BC Map owner) | **No** — two internal inconsistencies in Rank 4, pre-existing and independent of this PRD |
 | `MM-GAP-008` | Is `endDate == startDate` (single-day plan) permitted against BC Map's strict `>`? | Architecture | Blocks single-day plans only |
 | `MM-GAP-009` | Should holidays extend a term, and if so via which edge? | Architecture + `BC-06` owner | No — V1 does not extend terms |
 
@@ -1527,4 +1590,5 @@ Per §0.1 and the authoring instruction, these are raised rather than fixed. **N
 
 | Version | Date | Change |
 |---|---|---|
-| v1.0 | 2026-08-04 | Created as **`DRAFT`** under `PRD_LIFECYCLE.md` Stage 2. Specifies `BC-02` Membership for V1: the four authoritative capabilities (Plans, Creation, Renewal, Upgrade) plus the Activation/Validity, Status/Entitlement, Expiry and Operational-Views chapters the architecture requires. **288 identifiers** across 10 registers, contiguous, zero prefix collisions. Membership Analytics excluded as not-V1 (`MM-XC-006`); Downgrade, Freeze, Transfer, Cancellation, Proration and History excluded as V2; Auto Renewal excluded as V3; Cross-Library as Future. **Seven cross-document conflicts recorded rather than resolved** (§25.1), of which **two — `MM-GAP-006` (status set vs BC Map line 209) and `MM-GAP-007` (event list vs BC Map §8) — block freeze and require an ADR.** `Q-01` grace period and `Q-06` proration deliberately **not** decided; V1 behaviour is specified to be correct under either resolution. **No existing document was modified and no other file was created.** |
+| v1.0 | 2026-08-04 | Created as **`DRAFT`** under `PRD_LIFECYCLE.md` Stage 2. Specifies `BC-02` Membership for V1: the four authoritative capabilities (Plans, Creation, Renewal, Upgrade) plus the Activation/Validity, Status/Entitlement, Expiry and Operational-Views chapters the architecture requires. **288 identifiers** across 10 registers, contiguous, zero prefix collisions. Membership Analytics excluded as not-V1 (`MM-XC-006`); Downgrade, Freeze, Transfer, Cancellation, Proration and History excluded as V2; Auto Renewal excluded as V3; Cross-Library as Future. **Seven cross-document conflicts recorded rather than resolved** (§25.1), of which two — `MM-GAP-006` and `MM-GAP-007` — were declared freeze-blocking. `Q-01` grace period and `Q-06` proration deliberately **not** decided. **No existing document was modified and no other file was created.** |
+| v1.1 | 2026-08-04 | **Ratification and correction pass** following [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md); recorded in [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md). **`C-2` closed** — §5.1 rewritten: BC Map line 209 sits in §5, whose preamble binds only the *resolution* column; the six-value set satisfies that column, and columns 2–3 are proven non-exhaustive by the `Role` row (3 values) against the Rank 3 Authentication PRD's 5. **`C-3` closed** — §12 rewritten on the ratified `BC-01` precedent: frozen `PRD-004` §7.4 registers 10 events where BC Map §9 lists 4, blessed by `ADR-0018`; the only ADR trigger (L292) is edge-scoped and no edge is added. **`MembershipUpgraded` preserved.** **Citation corrections:** the event surface is BC Map **§9** (was cited §8); the Aggregate & Invariant Register is **§8** (was cited §6, in 8 places); Open Questions is **§13** (was §12). Two non-blocking successor observations opened against the BC Map (`MM-GAP-006a`, `MM-GAP-007a`). **No requirement, invariant, event, AC, status value or scope decision changed; no ranked or frozen document modified; no ADR created; identifier registers unchanged at 288.** |

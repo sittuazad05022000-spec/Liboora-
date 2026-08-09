@@ -902,7 +902,7 @@ That is the profile of a **B**, not a **C**. A `C` would mean requirements must 
 
 - **It did not touch what it was forbidden to touch.** 9 ranked/frozen documents and the entire ADR directory verified byte-identical; no application code changed.
 - **It reported a worse number about itself.** 96.3% asserted → 92.9% measured, with the reason stated and the direction of travel called out explicitly.
-- **It shipped the tool that can disprove it.** `prod004_traceability.py` is committed and exits 1; anyone can re-run it, and I did.
+- **It shipped the tool that can disprove it.** `tool/docs_check/prd004_traceability.py` is committed and exits 1; anyone can re-run it, and I did.
 - **It refused to resolve what it did not own** — `RF-17` escalated, `SM-4.5c` forbidding self-resolution, `SM-GAP-9` refusing to invent an attendance formula, `SM-GAP-1` refusing to invent a retention period.
 - **It kept `SM-GAP-4` open while making §8.2 executable** — an interim deny that explicitly disclaims being an answer. That is the hardest pattern to get right and it got it right.
 - **It downgraded a wrong citation instead of deleting it** (`SM-2.14`'s note that `MP-GBR-16` is *"analogous rather than authoritative"*), preserving the audit trail.

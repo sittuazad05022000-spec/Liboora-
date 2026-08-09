@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Alignment Report for [`Student_Management_PRD_v1.md`](Student_Management_PRD_v1.md) (`PRD-004`) |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Supporting record. **Not ranked**, therefore editable without an ADR |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04-B` |
@@ -123,7 +123,7 @@ A duplicated requirement is worse than a missing one: two copies drift, and noth
 
 ---
 
-## 5. Missing requirements — nine, recorded as `PROPOSED GAP`, not invented
+## 5. Missing requirements — eleven, recorded as `PROPOSED GAP`, not invented
 
 Instruction: *"If a requirement has no authoritative source, mark it as PROPOSED GAP rather than inventing it."*
 
@@ -138,11 +138,20 @@ Instruction: *"If a requirement has no authoritative source, mark it as PROPOSED
 | `SM-GAP-7` | Directory visibility of members to **other members** | `LCFG-5` says the directory *"exposes members to members"* but **no requirement defines the member-facing field set** |
 | `SM-GAP-8` | Bulk import / `registrationSource = Import` validation rules | `SM-3.8` names the source; no import specification exists |
 | `SM-GAP-9` | Attendance-percentage definition used by the Directory indicator | Owned by `BC-03`; `PRD-006` is unwritten, so the formula has no owner yet |
+| `SM-GAP-10` | Whether Date of Birth should become **mandatory** at `BC-10` | `PRD-003` lists it as **Optional** (§2.2, `SID-2.5`) while `SID-5.9` (§5.2) says it *"**SHALL** be stored, because minor-safety obligations (`ID-6`) depend on it."* That tension is internal to `PRD-003` and is **not** this module's to resolve. `SM-4.5a`/`SM-4.5b` make this module safe either way. Resolving it requires the `BC-10` owner and an ADR (finding `RF-17`) |
+| `SM-GAP-11` | Whether `BC-26` Study Analytics is a consumer of `SM-EV-1` and `SM-EV-5` | **BC Map §8 names `BC-26` a primary consumer of both events; BC Map §7 declares no `BC-01`→`BC-26` edge**, and line 292 states an edge absent from §7 *"does not exist"*. The tension is internal to the **Bounded Context Map (Rank 4)** and is **not** this module's to resolve — resolving it requires the architecture owner and an ADR. §7.4 therefore does **not** list `BC-26`, and this module's behaviour is identical either way (`SM-7.9`). Findings `SR-04`/`SR-05` |
 
-> **These nine rows are quoted from `PRD-004` §10.6, which is authoritative for them.** An earlier draft of this
+> **These eleven rows are quoted from `PRD-004` §10.6, which is authoritative for them.** An earlier draft of this
 > report paraphrased rows 6–9 from memory and produced four *different* gaps (bulk-import file format, export
 > permission, photo size limits, re-enrollment path). The mismatch was caught by diffing this table against the
 > PRD rather than by reading either document alone. The PRD's wording governs; this report was corrected.
+>
+> **Rows 1–9 were present when this report was first written; rows 10 and 11 were added later** — `SM-GAP-10` by
+> finding `RF-17` in the first correction round, `SM-GAP-11` by findings `SR-04`/`SR-05` in the final correction
+> round. This section said *"nine"* until finding **`FR-02`** of
+> [`PRD-004_FINAL_FREEZE_REVIEW.md`](PRD-004_FINAL_FREEZE_REVIEW.md) observed that §4 above already said *"Eleven"*,
+> making the report contradict itself and making the claim to quote §10.6 false. Both rows are now present and the
+> count agrees with §4, with `PRD-004` §10.6 and with `TRACEABILITY_MATRIX.md` §2C.
 
 **Requirements invented: 0.** Each gap carries **no** traceability entry by design — that is what marks it as a
 gap rather than a requirement.
@@ -176,7 +185,7 @@ own Global Identity."*
 | No new bounded context | ✅ Count remains **31** |
 | No `BC-32` | ✅ String `BC-32` absent from the repository |
 | No frozen document modified | ✅ `git diff --quiet 588a2d6` clean for Rank 1–5 |
-| No invented requirements | ✅ 9 gaps recorded instead |
+| No invented requirements | ✅ 11 gaps recorded instead |
 
 **Additionally verified:** **no integration edge was added.** All six `BC-01` edges — `E-01`, `E-09`, `E-11`,
 `E-13`, `E-21`, `E-22` — pre-exist in the BC Map. This matters because BC Map line 292 states: *"If an edge is
@@ -205,7 +214,7 @@ side of that boundary, and depending on it has been legal since `ADR-0011`.
 |---|---|
 | That `PRD-004` is approved | **`DRAFT`, Lifecycle Stage 2.** Not frozen, not baselined, not ranked |
 | That a prior PRD was reviewed | **No prior PRD existed.** §1 |
-| That the 9 gaps are decided | They are **open questions**, deliberately unanswered |
+| That the 11 gaps are decided | They are **open questions**, deliberately unanswered |
 | That any code was written | **Zero files under `lib/` changed.** No development started |
 | That the Directory is implemented | 18 tasks are **specified**, none executed |
 | That gate 3 is green | It is **legitimately red** — 9 `cross-context` violations from `TASK-D10`/`BLK-01`, unrelated to this PRD and **not waived** |
@@ -216,4 +225,5 @@ side of that boundary, and depending on it has been legal since `ADR-0011`.
 
 | Version | Date | Change |
 |---|---|---|
+| v1.1 | 2026-08-04 | **Closes finding `FR-02`** of [`PRD-004_FINAL_FREEZE_REVIEW.md`](PRD-004_FINAL_FREEZE_REVIEW.md). §4 row 4 had been updated to *"Eleven"* gaps during the final correction round, but §5 still said *"nine"*, its table stopped at `SM-GAP-9`, and its blockquote claimed to quote `PRD-004` §10.6 — a claim that was **false** while two of §10.6's eleven rows were absent. `SM-GAP-10` and `SM-GAP-11` are now present, **quoted from §10.6**, and the count agrees with §4, with `PRD-004` §10.6 and with `TRACEABILITY_MATRIX.md` §2C. Two further stale counts corrected (§7 checklist, §8 *"what this report does not claim"*). **No requirement changed, no `PRD-004` change, no ranked or frozen document modified, no ADR, no code.** The v1.0 row below is left as written — it is the historical record of what v1.0 contained, and rewriting it would erase the fact that nine was correct at creation |
 | v1.0 | 2026-08-04 | Created as Phase 20 deliverable 2. Records that **no prior Student Management PRD existed**, so step 1 (*preserve valid requirements*) is vacuous rather than complete; three conflicts (`CONF-1`…`CONF-3`) resolved toward the frozen architecture with **zero ADRs required**; four duplicates (`DUP-1`…`DUP-4`) avoided by citation; nine missing decisions recorded as `SM-GAP-*` rather than invented. All nine clauses of the Directory read-composition rule and all five prohibitions verified individually. **No frozen document modified, no integration edge added, no bounded context created, no application code written.** |

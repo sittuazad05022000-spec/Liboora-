@@ -35,10 +35,10 @@ missing requirements 5. integrate the Library Members Directory capability 6. ma
 | 1 Preserve valid requirements | **Vacuously satisfied — nothing to preserve** | No prior `SM-*` requirement existed in any file. Zero requirements were carried forward, and zero were discarded |
 | 2 Identify conflicts | **Performed against the frozen architecture instead** | The only conflicts available to find were between the *requested scope* and Ranks 1–4. Three were found (§3) |
 | 3 Identify duplicates | **Performed against the whole repository** | Four were found (§4) |
-| 4 Identify missing requirements | **Performed** | Nine are recorded as `SM-GAP-*`, not invented (§5) |
+| 4 Identify missing requirements | **Performed** | **Eleven** are recorded as `SM-GAP-*`, not invented (§5) — nine at creation, plus `SM-GAP-10` (DOB, finding `RF-17`) and `SM-GAP-11` (`BC-26`, findings `SR-04`/`SR-05`) |
 | 5 Integrate the Directory | **Done as chapter 5** | `LMD-1` … `LMD-31` (§6) |
-| 6 Maintain traceability | **Done** | 233 of 242 identifiers sourced; see [`PRD-004_TRACEABILITY.md`](PRD-004_TRACEABILITY.md) |
-| 7 Create implementation tasks | **Done** | 18 tasks; see [`PRD-004_IMPLEMENTATION_TASKS.md`](PRD-004_IMPLEMENTATION_TASKS.md) |
+| 6 Maintain traceability | **Done** | **227 of 240 real requirements sourced (94.6%)**, computed by `tool/docs_check/prd004_traceability.py`; see [`PRD-004_TRACEABILITY.md`](PRD-004_TRACEABILITY.md). *(An earlier version of this row claimed "233 of 242" — a figure inferred from a ten-row group table and never measured. It was withdrawn by finding `RF-07`.)* |
+| 7 Create implementation tasks | **Done** | **24 tasks** (`IMPL-300`…`IMPL-323`); see [`PRD-004_IMPLEMENTATION_TASKS.md`](PRD-004_IMPLEMENTATION_TASKS.md) |
 
 > **Why this is reported instead of quietly skipped.** An audit report of a nonexistent document could have been
 > written to look complete — "reviewed, N requirements preserved" — and nobody reading only this report would

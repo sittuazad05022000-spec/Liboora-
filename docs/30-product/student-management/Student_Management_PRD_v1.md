@@ -4,16 +4,16 @@
 |---|---|
 | **PRD ID** | `PRD-004` |
 | **Document** | Student Management — `BC-01` Enrollment |
-| **Version** | v1.0 (Startup MVP) |
+| **Version** | v1.2 (Startup MVP) |
 | **Status** | **DRAFT** — Lifecycle Stage 2. Not frozen, not baselined, not approved |
-| **Date** | 2026-08-04 |
+| **Date** | 2026-08-04 *(twice corrected same day: independent review, then second independent review)* |
 | **Baseline** | `BASELINE-2026-08-04-B` |
 | **Rank if approved** | Rank 3 (module PRD) — **not yet ranked** |
 | **Owning context** | **`BC-01` Enrollment** `[CORE]`, Library Management cluster, rank 8 |
 | **Product modules** | Master PRD §8 **module 4** (Student Management) and **module 3** (Library Member Directory, *read composition*) |
 | **Consumes through ports** | `BC-10` Global Person Identity (`E-13` ACL) · `BC-18` Identity & Access (`E-11`) · `BC-02` Membership (`E-01`) · `BC-05` Fee & Collection (`E-09`) · `BC-23` Search Indexing (`E-21`) · `BC-29` File & Media (`E-22`) · `BC-24` Audit Trail · `BC-25` Configuration (`E-19`) |
 | **ADRs applied** | [`ADR-0011`](../../00-governance/adr/ADR-0011-global-person-identity.md) · [`ADR-0016`](../../00-governance/adr/ADR-0016-e22-consumer-list-includes-bc-10.md) · [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) |
-| **Rulings applied** | `AR-1` (read composition is not a context) · `AR-2` (Authentication owns registration) |
+| **Rulings applied** | `AR-1` (read composition is not a context — **classification**; `SID-2.7` authorises the specific contributors, see §5.4) · `AR-2` (Authentication owns registration) |
 | **Governing principle** | `SID-4.56` — *"A rule that cannot be checked SHALL be treated as unmet, not as satisfied by intent."* |
 
 ---
@@ -104,9 +104,16 @@ requirement takes that requirement's number with a letter suffix — `SM-7.1a` q
 >
 > **Corrected again on 2026-08-04** by the independent-review correction pass: `SM-c.n` **105 → 107**
 > (`SM-10.11`, `SM-10.12`), `SM-EV-n` **9 → 10** (`SM-EV-10`, finding `RF-02`), `SM-AC-n` **28 → 30**
-> (`SM-AC-29`, `SM-AC-30`), `SM-GAP-n` **9 → 10** (`SM-GAP-10`), plus 15 sub-lettered clarifications. Every count
-> in this section is reproduced by `tool/docs_check/prd004_traceability.py`, which is the only reason it may be
-> stated as fact.
+> (`SM-AC-29`, `SM-AC-30`), `SM-GAP-n` **9 → 10** (`SM-GAP-10`), plus 15 sub-lettered clarifications.
+>
+> **Corrected a third time on 2026-08-04** by the *second*-review final correction pass: `SM-AC-n` **30 → 32**
+> (`SM-AC-31`, `SM-AC-32` — the two guardian/DOB paths that had no criterion, finding `SR-10`) and `SM-GAP-n`
+> **10 → 11** (`SM-GAP-11` — the BC Map §8-vs-§7 tension over `BC-26`, finding `SR-04`/`SR-05`). Base total
+> **248 → 251**. **No `SM-c.n`, `SM-BR-n`, `SM-XC-n`, `SM-INV-n`, `SM-EV-n`, `SM-PO-n`, `SMCFG-n` or `LMD-n` was
+> added, removed or renumbered** — the ten-event set stays closed at ten and the Directory register stays at 31.
+>
+> Every count in this section is reproduced by `tool/docs_check/prd004_traceability.py`, which is the only reason
+> it may be stated as fact.
 
 **Prefix collision check.** Verified mechanically against the authentication (`AUTH`/`BR`/`XC`/`AC`/`EV`/`CFG`/`PO`),
 Library (`LIB`/`LCFG`/`LXC`/`LEV`/`LAC`) and Student Identity (`SID`/`SID-BR`/`SXC`/`SPO`/`SEV`/`SID-INT`/`SID-INV`/
@@ -1123,27 +1130,32 @@ authority. `SM-GAP-*` are excluded from the denominator, because carrying no sou
 
 | Measure | Value |
 |---|---|
-| Base identifiers located | **248** |
-| Proposed gaps (excluded from denominator) | **10** |
-| Denominator — real requirements | **238** |
-| Traced **DIRECT** | **211** |
-| Traced **DERIVED** | **10** |
-| **Untraced** | **17** |
-| **Coverage** | **221 / 238 = 92.9%** |
+| Base identifiers located | **251** |
+| Proposed gaps (excluded from denominator) | **11** |
+| Denominator — real requirements | **240** |
+| Traced **DIRECT** | **218** |
+| Traced **DERIVED** | **9** |
+| **Untraced** | **13** |
+| **Coverage** | **227 / 240 = 94.6%** |
 
-**The 17 untraced identifiers are named, not hidden:** `SM-2.8`, `SM-3.12`, `SM-3.13`, `SM-3.14`, `SM-3.16`,
-`SM-3.17`, `SM-4.1`, `SM-6.1`, `SM-6.3`, `SM-6.5`, `SM-6.6`, `SM-6.8`, `SM-8.11`, `SM-8.15`, `SM-10.1`,
-`SM-10.7`, `SM-10.8`.
+**The 13 untraced identifiers are named, not hidden:** `SM-2.8`, `SM-3.12`, `SM-3.13`, `SM-3.14`, `SM-3.16`,
+`SM-3.17`, `SM-4.1`, `SM-6.1`, `SM-6.3`, `SM-6.5`, `SM-10.1`, `SM-10.7`, `SM-10.8`.
 
 These are **not** proposed gaps. Each is a design decision this module is entitled to make within its own
 aggregate — how it de-duplicates, what its concurrency strategy is, what its table is called — and no ranked
-document legislates them. They are listed so that the 92.9% is falsifiable: re-run the script and it prints the
-same seventeen. Whether any deserves an external citation is a review question, not a defect this document can
+document legislates them. They are listed so that the 94.6% is falsifiable: re-run the script and it prints the
+same thirteen. Whether any deserves an external citation is a review question, not a defect this document can
 close by asserting a higher number.
 
-> **On the direction of the change.** The withdrawn figure was 96.3%; the computed figure is 92.9%, which is
-> **lower**. The correction pass did not tune the metric upward — it replaced an unverifiable claim with a
+> **On the direction of the change.** The withdrawn figure was 96.3%; the first computed figure was 92.9%, which
+> was **lower**. The correction pass did not tune the metric upward — it replaced an unverifiable claim with a
 > reproducible one and accepted the worse result.
+>
+> **The 2026-08-04 final pass moved it to 94.6%, and how it moved matters.** Four identifiers gained citations that
+> were **already true and merely unstated** — `SM-6.6`→`E-20`/`X-10`, `SM-6.8`→BC Map line 209, `SM-8.11`→`X-10`,
+> `SM-8.15`→`SID-5.7` (which states data minimisation almost verbatim). No requirement was reworded to satisfy the
+> regex, none was reclassified as a gap to leave the denominator, and the remaining **13** are still named above.
+> The figure rose because four real sources were cited, not because the measurement was relaxed.
 
 ### 10.6 PROPOSED GAPS — `SM-GAP-1` … `SM-GAP-11`
 
@@ -1214,4 +1226,6 @@ Recorded for the backlog. **Nothing here is implemented by this document.**
 
 | Version | Date | Change |
 |---|---|---|
+| v1.2 | 2026-08-04 | **Final correction pass** following [`PRD-004_SECOND_INDEPENDENT_REVIEW.md`](PRD-004_SECOND_INDEPENDENT_REVIEW.md). Six findings fixed inside this document. **`SR-02` (HIGH)** — `SM-10.9`, `SM-7.14` and `LMD-24a` were written `No X **MUST** Y`, which under §0.1's own vocabulary states the *opposite* of intent; all three now read `**MUST NOT**` with the subject corrected so no double negative is created, and `SM-10.9` additionally names `X-13` and the session-derived tenant rule it implements. **No rule was weakened.** **`SR-10` (MEDIUM)** — `SM-AC-31` and `SM-AC-32` added for §4.2.1 cases 1 and 2 (minor without guardian ⇒ typed rejection; adult without guardian ⇒ enrollment succeeds), so all three DOB cases now have a criterion. **`SR-03`** — §5.4's four composition rows now cite **`SID-2.7`** (Rank 3, frozen) as the operative authority instead of `AR-1`; `AR-1` classifies the mechanism but its worked example never mentions `BC-03` or `BC-05`, so the *"identical precedent"* claim is withdrawn rather than restated. **`SR-04`/`SR-05`** — §7.4 now records what its `Consumers` column omits and why, and the BC Map §8-vs-§7 tension over `BC-26` is registered as **`SM-GAP-11`** for the architecture owner rather than resolved here. **`SR-06`** — `SM-AC-5`, `SM-AC-6` and `SM-AC-25` cited the wrong requirements (field list, membership-state exclusion and export minimisation); they now cite `SM-2.7`/`SM-2.5`, `SM-2.7`/`SM-BR-3` and `LMD-30`/`SM-BR-14`. **`SR-08`** — the `PRD-003` Optional list is §**2.2**, not §2.4. **`SR-09`** — `SM-4.5b` now cites `SID-4.56` and `SID-5.14` first and `AP-3` for the capability-closure half. **`SR-07`** — four already-true citations stated (`SM-6.6`, `SM-6.8`, `SM-8.11`, `SM-8.15`), moving measured coverage **92.9% → 94.6%** with no rewording to suit the regex. Registers: `SM-AC-n` 30→32, `SM-GAP-n` 10→11, base **248→251**, total **266**. **No frozen or ranked document modified; no ADR required; no integration edge added; no bounded context created; `SM-EV-*` still closed at ten; `BC-01` ownership, the Enrollment/Membership separation and the Directory-as-read-composition unchanged.** |
+| v1.1 | 2026-08-04 | Controlled correction pass following [`PRD-004_INDEPENDENT_REVIEW_REPORT.md`](PRD-004_INDEPENDENT_REVIEW_REPORT.md) — see [`PRD-004_CORRECTION_REPORT.md`](PRD-004_CORRECTION_REPORT.md). 15 findings applied, 2 rejected with evidence, 1 escalated as `SM-GAP-10`. Added §0.1 normative vocabulary, `SM-EV-10`, `SM-10.11`, `SM-10.12`, `SM-AC-29`, `SM-AC-30` and 15 sub-lettered clarifications. |
 | v1.0 | 2026-08-04 | Created as `DRAFT` under Lifecycle Stage 2. Specifies `BC-01` Enrollment and, per `PRD_REGISTRY.md` §6, **Master PRD §8 module 3 Library Member Directory as a read-composition chapter (§5)** rather than a separate PRD or bounded context. 242 identifiers declared across 10 registers, zero prefix collisions. **No frozen document modified; no integration edge added; no bounded context created.** Three corrections to the requested scope are recorded rather than silently applied: `EnrollmentStatus` excludes `Expired`, `Prospective` and `Registered` (BC Map line 209 declares a closed 4-value set); no `LibraryMember` aggregate is created (`AR-1`); and 9 requested items are marked **PROPOSED GAP** rather than invented. |

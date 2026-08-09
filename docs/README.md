@@ -98,7 +98,7 @@ of these disagrees with a PRD, the PRD is right.
 | [`student-identity/Student_Identity_PRD_v1.md`](./30-product/student-identity/Student_Identity_PRD_v1.md) | **v1.0** | **The Student Identity baseline.** Chapters 1–5, 226 requirements, nine registers |
 | [`student-identity/README.md`](./30-product/student-identity/README.md) | v1.0 | Module index. Navigational — **not part of the specification** |
 | [`student-identity/STUDENT_IDENTITY_ALIGNMENT.md`](./30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md) | v1.0 | Validation record, `SC-1`…`SC-14`. **Not part of the specification** |
-| [`student-management/Student_Management_PRD_v1.md`](./30-product/student-management/Student_Management_PRD_v1.md) | **v1.0 `DRAFT`** | **`PRD-004` Student Management (`BC-01` Enrollment).** 10 chapters, **242** identifiers, ten registers. **Chapter 5 is the Library Members Directory** (`LMD-1`…`LMD-31`) as a **read composition** — no `LibraryMember` aggregate, no second member store. **Not frozen, not baselined, not ranked** |
+| [`student-management/Student_Management_PRD_v1.md`](./30-product/student-management/Student_Management_PRD_v1.md) | **v1.2 `DRAFT`** | **`PRD-004` Student Management (`BC-01` Enrollment).** 10 chapters, **251** base identifiers (266 with sub-lettered), ten registers. **Chapter 5 is the Library Members Directory** (`LMD-1`…`LMD-31`) as a **read composition** — no `LibraryMember` aggregate, no second member store. **Not frozen, not baselined, not ranked** |
 | [`student-management/README.md`](./30-product/student-management/README.md) | v1.0 | Module index. Navigational — **not part of the specification** |
 | [`student-management/PRD-004_INDEPENDENT_REVIEW_REPORT.md`](./30-product/student-management/PRD-004_INDEPENDENT_REVIEW_REPORT.md) | v1.0 | **Independent 6-persona review, 2026-08-04. Verdict `C` — requires major corrections.** 21 findings (0 critical, 3 high, 11 medium, 2 low, 5 observation). Review record — **not normative, changes no requirement** |
 | [`student-management/PRD-004_CORRECTION_REPORT.md`](./30-product/student-management/PRD-004_CORRECTION_REPORT.md) | v1.0 | **Correction record, 2026-08-04.** All 3 HIGH findings resolved with **no ADR and no ranked-document change**; 15 accepted, 3 rejected with evidence, `RF-17` raised for the `BC-10` owner. Traceability recomputed **96.3% → 92.9%** (lower, and measured). Decision **`B` — needs another review**; `PRD-004` is **not frozen**. Review record — not normative |
@@ -129,7 +129,7 @@ touching anything in this module.
 | [`DEFINITION_OF_DONE.md`](./40-implementation/DEFINITION_OF_DONE.md) | **v1.2.** Three gates: merge, requirement, release. Covers authentication, Library **and** Student Identity |
 | [`LIBRARY_IMPLEMENTATION_TASKS.md`](./40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md) | 23 open Library tasks, `IMPL-100`…`IMPL-127`, with acceptance criteria and per-task traps |
 | [`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./40-implementation/STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) | 25 open Student Identity tasks, `IMPL-200`…`IMPL-226`. **Two are migrations of existing code** |
-| [`TRACEABILITY_MATRIX.md`](./40-implementation/TRACEABILITY_MATRIX.md) | **v1.3.** ~2,524 identifiers mapped to tasks and status — 1,517 authentication, ~422 Library, 343 Student Identity, **242 Student Management (§2C)** |
+| [`TRACEABILITY_MATRIX.md`](./40-implementation/TRACEABILITY_MATRIX.md) | **v1.4.** ~2,524 identifiers mapped to tasks and status — 1,517 authentication, ~422 Library, 343 Student Identity, **251 Student Management (§2C)** |
 
 ## 90-archive
 
@@ -148,7 +148,7 @@ worth being able to read. Several archived documents assert that the Authenticat
 | **Authentication specification** | ✅ Complete — 588 requirements, ready to implement |
 | **Library specification** | ✅ Complete — §§1–25 + §14A + §14B + invitation security, ~422 identifiers |
 | **Student Identity specification** | ✅ Complete — Chapters 1–5, 343 identifiers, nine registers verified gap-free |
-| **Student Management specification** | 🟡 **`DRAFT`** — 10 chapters, 242 identifiers, ten registers. Includes the **Library Members Directory** as chapter 5. **Not reviewed, not frozen, 9 open `SM-GAP-*` decisions, 0 of 28 acceptance criteria tested** |
+| **Student Management specification** | 🟡 **`DRAFT`** — 10 chapters, 251 base identifiers, ten registers. Includes the **Library Members Directory** as chapter 5. **Twice independently reviewed and corrected; still not frozen, 11 open `SM-GAP-*` decisions, 0 of 32 acceptance criteria tested** |
 | **Student Management code** | ❌ **None.** 18 open tasks, `IMPL-300`…`IMPL-317`, **none started** |
 | **Authentication code** | ⚠️ Exists but **unverified** against v2.0 |
 | **Library code** | ❌ **None.** 23 open tasks, `IMPL-100`…`IMPL-127` |

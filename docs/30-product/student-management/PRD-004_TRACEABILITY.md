@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Traceability entries for [`Student_Management_PRD_v1.md`](Student_Management_PRD_v1.md) (`PRD-004`) |
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Supporting record. **Not ranked**, therefore editable without an ADR |
 | **Date** | 2026-08-04 *(corrected same day by the `PRD-004` correction pass — findings `RF-04`, `RF-07`)* |
 | **Baseline** | `BASELINE-2026-08-04-B` |
@@ -15,7 +15,7 @@
 
 ## 1. Prefix inventory — the §2C payload
 
-Ten new registers, **248** identifiers, added to a repository that already carried **2,282** (`1,517`
+Ten new registers, **251** identifiers, added to a repository that already carried **2,282** (`1,517`
 authentication + `≈422` Library + `343` Student Identity).
 
 | Prefix | Meaning | Count | Range | Chapter |
@@ -26,13 +26,13 @@ authentication + `≈422` Library + `343` Student Identity).
 | `SM-INV-n` | Domain invariant | **11** | `SM-INV-1` … `SM-INV-11` | §2.6 |
 | `SM-EV-n` | Domain event (**closed set**) | **10** | `SM-EV-1` … `SM-EV-10` | §7.4 |
 | `SM-PO-n` | Protected operation (**closed list**) | **12** | `SM-PO-1` … `SM-PO-12` | §8.2 |
-| `SM-AC-n` | Acceptance criterion | **30** | `SM-AC-1` … `SM-AC-30` | §10.4 |
+| `SM-AC-n` | Acceptance criterion | **32** | `SM-AC-1` … `SM-AC-32` | §10.4 |
 | `SMCFG-n` | Configurable parameter | **7** | `SMCFG-1` … `SMCFG-7` | §10.3 |
 | `LMD-n` | **Library Members Directory requirement** | **31** | `LMD-1` … `LMD-31` | 5 |
-| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **10** | `SM-GAP-1` … `SM-GAP-10` | §10.6 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **11** | `SM-GAP-1` … `SM-GAP-11` | §10.6 |
 
-**Total 248 base identifiers**, plus **15 sub-lettered clarifications** added by the 2026-08-04 correction pass
-(`PRD-004` §0.2), giving **263** normative identifiers in total. Verified mechanically, not counted by hand.
+**Total 251 base identifiers**, plus **15 sub-lettered clarifications** added by the 2026-08-04 correction passes
+(`PRD-004` §0.2), giving **266** normative identifiers in total. Verified mechanically, not counted by hand.
 
 > **Corrected 2026-08-04 (finding `RF-04`).** This table previously declared **242** over the pre-correction
 > ranges. The independent review found that this document and `PRD-004` §7.4 disagreed about the event register,
@@ -202,9 +202,9 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 | Audit append-only (`X-10`) | ✅ **yes** | checker `_checkAuditMutation` |
 | No `library_member` table (`SM-10.6`, `OWN-4`) | ❌ **not yet** | becomes executable at `IMPL-302` (schema scan) |
 | `personId` never exported (`SM-AC-28`, `OWN-6`) | ❌ **not yet** | becomes executable at `IMPL-316` |
-| 30 `SM-AC-*` criteria | ❌ **not yet** | zero tests written; `IMPL-300`…`IMPL-323` unstarted |
+| 32 `SM-AC-*` criteria | ❌ **not yet** | zero tests written; `IMPL-300`…`IMPL-323` unstarted |
 
-> **Stated plainly:** of the 30 acceptance criteria, **0 are currently executed by any test.** Three
+> **Stated plainly:** of the 32 acceptance criteria, **0 are currently executed by any test.** Three
 > architecture-level rules the PRD relies on *are* enforced today, and they were enforced before this PRD existed.
 > Per `SID-4.56`, the remaining 27 are **unmet**, not "satisfied by design."
 
@@ -227,5 +227,6 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 
 | Version | Date | Change |
 |---|---|---|
+| v1.2 | 2026-08-04 | **Refreshed by the `PRD-004` final correction pass** (second-review finding `SR-01`). Registers updated to the post-correction reality: `SM-AC-n` **30 → 32** (`SM-AC-31`, `SM-AC-32` — the two guardian/DOB criteria, finding `SR-10`), `SM-GAP-n` **10 → 11** (`SM-GAP-11` — the BC Map §8-vs-§7 tension over `BC-26`, findings `SR-04`/`SR-05`), base total **248 → 251**, normative total **263 → 266**, and the executed-criteria disclosure from *"0 of 30"* to *"0 of 32"*. **No mapping was added, removed or re-pointed; no requirement was invented; the measured coverage figure remains computed by the script rather than asserted here.** |
 | v1.1 | 2026-08-04 | **Corrected by the `PRD-004` correction pass.** Three defects, all found by independent review, all resolved by correcting *this* file rather than the PRD — as the Precedence row above requires. (1) `RF-04`: §4 listed **nine** events, placed `StudentLinkedToPerson` at `SM-EV-4`, omitted the BC Map §8 `enrollment.` prefix, and collapsed five events into one untraceable summary row; it now reproduces `PRD-004` §7.4 exactly, with `SM-EV-10` and all ten names enumerated. (2) `RF-07`: the **"233 of 242, 96.3%"** coverage claim is **withdrawn** — it was inferred from a ten-row group table and therefore was never measured; §2 now states plainly that this document maps *groups*, and points to `PRD-004` §10.5.1 where the figure is computed per identifier by `tool/docs_check/prd004_traceability.py`. The computed figure is **lower** than the withdrawn claim. (3) Stale counts refreshed to the post-correction registers: **248** base identifiers (was 242) plus 15 sub-lettered clarifications, `SM-c.n` 105→107, `SM-EV-n` 9→10, `SM-AC-n` 28→30, `SM-GAP-n` 9→10, tasks `IMPL-300`…`IMPL-323`. **No requirement was invented and no count was padded**; every changed number is reproduced by the checker. |
 | v1.0 | 2026-08-04 | Created as Phase 20 deliverable 4. Records the ten new registers (**242** identifiers) as the payload for `TRACEABILITY_MATRIX.md` §2C, with a **zero-collision** result proved by quoted commands and three near-collisions documented — including `MP-SM-0n` in `MASTER_PRD.md`, confirmed a **true negative** by strict word-boundary grep rather than dismissed. Discloses that §0 of `PRD-004` first declared **118** `SM-c.n` (actual **105**, total **242** not 246) and that **the register was corrected rather than the chapters padded**. Maps all ten requirement groups, 3 ADRs, 9 events, 7 configurables to higher-ranked sources, and states that **0 of 28 acceptance criteria are currently executed**. |

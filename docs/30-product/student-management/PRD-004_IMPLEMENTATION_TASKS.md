@@ -1,11 +1,11 @@
-# `PRD-004` Implementation Tasks — `IMPL-300` … `IMPL-317`
+# `PRD-004` Implementation Tasks — `IMPL-300` … `IMPL-323`
 
 | Field | Value |
 |---|---|
 | **Document** | Implementation tasks for [`Student_Management_PRD_v1.md`](Student_Management_PRD_v1.md) (`PRD-004`) |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Backlog record. **Not ranked**, therefore editable without an ADR |
-| **Date** | 2026-08-04 |
+| **Date** | 2026-08-04 *(corrected same day — second-review finding `SR-01`)* |
 | **Baseline** | `BASELINE-2026-08-04-B` |
 | **Purpose** | Phase 20 deliverable 5. Expands `PRD-004` §10.7 into sequenced, independently verifiable tasks |
 | **Implementation state** | ⛔ **NOTHING IN THIS DOCUMENT IS IMPLEMENTED.** Zero files under `lib/` were created or modified. No development has started |
@@ -46,7 +46,7 @@ test exists and runs, it is **not done**, however complete its description.
 
 ---
 
-## 3. The 18 tasks
+## 3. The 24 tasks
 
 Quoted from `PRD-004` §10.7, with sequencing and definition of done added. **Modules** use the repository's
 existing layers; no new module is proposed.
@@ -121,22 +121,60 @@ though no state changed**. Audit implementations commonly hook writes only. It a
 **`IMPL-317`'s failure semantics matter:** a bulk operation with 3 failures out of 100 is **not** success
 (`SM-AC-25`). It must report per-record outcomes.
 
+### 3.6 Wave 6 — Correction-pass tasks
+
+**These six tasks were added by the `PRD-004` correction passes and are reproduced here from `PRD-004` §10.7.**
+They existed in the PRD but were missing from this document, which meant an implementer reading only this file
+would have under-scoped the work by six tasks — finding `SR-01` of the second independent review. The requirement
+and test columns are copied from §10.7 verbatim; **nothing here is invented by this document.**
+
+| Task | Scope | Module | Depends on | Requirements | Test requirement |
+|---|---|---|---|---|---|
+| `IMPL-318` | **Status · expiry · archived-filter indicators** | `app` | `IMPL-312` | `LMD-25`–`LMD-29` | Two independent badges (`SM-AC-19`); archived hidden by default |
+| `IMPL-319` | **Field-level authz, history & operations surface** | `app` | `IMPL-306` | `SM-6.1`–`SM-6.8` | Unauthorised field edit refused; history read from `BC-24` |
+| `IMPL-320` | **`SM-EV-10` consent-gated person link** | `domain/library` | `IMPL-305`, `IMPL-311` | `SM-EV-10`, `SM-7.12a`, `SM-7.12b`, `SM-10.12` | Not emitted absent consent; carries no `StudentRecordId` |
+| `IMPL-321` | **Producer-side transactional outbox** | `platform/event` | `IMPL-302`, `IMPL-311` | `SM-7.7a`, `SM-7.7b` | Commit-without-publish impossible; tenant-partitioned |
+| `IMPL-322` | **Absent-DOB minor-status path** | `domain/library` | `IMPL-308` | `SM-4.5a`–`SM-4.5c`, `SM-INV-3` | `SM-AC-29` passes; fail-safe to minor |
+| `IMPL-323` | **Deterministic restore among archived records** | `domain/library` | `IMPL-307` | `SM-3.14a`, `SM-3.14b` | `SM-AC-30` passes |
+
+**`IMPL-320` and `IMPL-321` are the two most easily got wrong.** `IMPL-320` must prove a **negative** — that
+`SM-EV-10` is *not* emitted when `BC-18` has recorded no consent, and that enrollment still succeeds anyway
+(`SM-7.12a`). `IMPL-321` must prove that a committed state change with an unpublished event is **impossible**, not
+merely unlikely (`SM-7.7a`); a test that publishes and then checks the outbox proves nothing about the failure
+path.
+
+**`IMPL-322` now also carries `SM-AC-31` and `SM-AC-32`.** The second review found that only the *absent*-DOB case
+had a criterion; the two present-DOB guardian paths did not. `SM-AC-31` (minor without guardian ⇒ typed rejection,
+nothing committed) and `SM-AC-32` (adult without guardian ⇒ enrollment succeeds) are verified here together with
+`IMPL-308`, which owns the under-18 rule itself.
+
+**`IMPL-319` is `app`-layer, not `domain`.** `SM-6.6` requires history to be **read from `BC-24`**, so this task
+must not create a parallel audit store in the domain — the constraint that `SM-XC-*` and gate 3 both police.
+
 ---
 
 ## 4. Critical path
 
 ```
 IMPL-300 → IMPL-301 → IMPL-302 → IMPL-303
-              ↓
-IMPL-214 (EXTERNAL, blocks) → IMPL-305 → IMPL-306 → IMPL-307
-                                            ↓
-                                  IMPL-310 → IMPL-312 → IMPL-313 → IMPL-317
-                                                ↑
-                                  IMPL-311 → IMPL-314
+              ↓                      ↓
+IMPL-214 (EXTERNAL, blocks) → IMPL-305 → IMPL-306 → IMPL-307 → IMPL-323
+                                 ↓          ↓
+                                 ↓    IMPL-310 → IMPL-312 → IMPL-313 → IMPL-317
+                                 ↓                  ↑    ↘
+                                 ↓    IMPL-311 → IMPL-314  IMPL-318
+                                 ↓       ↓
+                                 └→ IMPL-320    IMPL-321 (needs IMPL-302)
+                                      IMPL-308 → IMPL-322
+                                      IMPL-306 → IMPL-319
 ```
 
 **Longest chain: `IMPL-300` → `301` → `305`* → `306` → `310` → `312` → `313` → `317` (8 tasks).**
 `*` gated by the external `IMPL-214`.
+
+**Wave 6 does not lengthen the critical path.** `IMPL-318`–`IMPL-323` all branch off existing nodes
+(`IMPL-312`, `IMPL-306`, `IMPL-305`/`311`, `IMPL-302`/`311`, `IMPL-308`, `IMPL-307`) and none of them is a
+prerequisite of another wave-6 task, so all six are parallelisable once their single dependency lands.
 
 **Start `IMPL-300` and `IMPL-302` first** — they unblock the widest fan-out. **Do not start `IMPL-312`** (the
 Directory) early to show visible progress: it depends on `IMPL-306` and `IMPL-310`, and building it first would
@@ -183,8 +221,8 @@ omission is visible as a decision rather than an oversight.
 |---|---|
 | That any task is started | **Zero.** No `lib/` file changed |
 | That the estimates are estimates | **None is given.** No sizing was requested and inventing one would be noise |
-| That 18 tasks complete `BC-01` | They cover `PRD-004` v1.0. The **9 `SM-GAP-*`** decisions remain open |
-| That `IMPL-300`…`317` are registered | They are declared in `PRD-004` §10.7 and here. The roadmap's `IMPL-*` register is **not yet updated** |
+| That 24 tasks complete `BC-01` | They cover `PRD-004` v1.2. The **11 `SM-GAP-*`** decisions remain open |
+| That `IMPL-300`…`323` are registered | They are declared in `PRD-004` §10.7 and here. The roadmap's `IMPL-*` register is **not yet updated** |
 | That gate 3 will be green | It is **red** and stays red until `TASK-D10`/`BLK-01` |
 
 ---
@@ -193,4 +231,5 @@ omission is visible as a decision rather than an oversight.
 
 | Version | Date | Change |
 |---|---|---|
+| v1.1 | 2026-08-04 | **Synchronised with `PRD-004` §10.7 — second-review finding `SR-01` (HIGH).** This document held **18** tasks (`IMPL-300`…`IMPL-317`) while the PRD had **24** (`IMPL-300`…`IMPL-323`); the six tasks added by the first correction pass were never propagated here, so this file under-scoped the backlog and disagreed with its own declared source of truth. Added **§3.6 Wave 6** with `IMPL-318`…`IMPL-323`, copied from §10.7 verbatim, plus the critical-path and count updates. `IMPL-322` now also carries `SM-AC-31`/`SM-AC-32`, the two guardian/DOB criteria added by the final correction pass (finding `SR-10`). **No task was invented, no estimate added, and nothing is implemented — zero `lib/` files changed.** |
 | v1.0 | 2026-08-04 | Created as Phase 20 deliverable 5. Sequences the 18 tasks from `PRD-004` §10.7 into five waves with an explicit critical path, a 7-item definition of done in which items 3–4 block merge, and the five **external** blockers (`BLK-01`, `IMPL-214`, `PRD-005`–`008`, `PRD-023`) that constrain the backlog. Records that **all four Directory tasks are `app`-layer**, enforced by gate 3 rather than review. Lists **six tasks that must not be created**, each mapped to the rule it would break. **Nothing is implemented: zero `lib/` files changed, no estimates invented, no task registered in the roadmap yet.** |

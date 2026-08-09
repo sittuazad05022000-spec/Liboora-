@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.3 |
+| **Version** | v1.4 |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-04** |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** |
 | **Baseline** | **BASELINE-2026-08-04-B** |
-| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.0 (`PRD-004`, `DRAFT`)** |
+| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `DRAFT`)** |
 | **ADRs applied** | `ADR-0001` … **`ADR-0017`** |
 
 ---
@@ -144,21 +144,33 @@ contiguous from 1 to its stated maximum.
 
 | Prefix | Meaning | Count | Range | Source |
 |---|---|---|---|---|
-| `SM-c.n` | Functional requirement | **105** | `SM-1.1` … `SM-10.10` | Chapters 1–4, 6–8, 10 |
+| `SM-c.n` | Functional requirement | **107** | `SM-1.1` … `SM-10.12` | Chapters 1–4, 6–8, 10 |
 | `SM-BR-n` | Business rule | 16 | `SM-BR-1` … `SM-BR-16` | §9.1 |
 | `SM-XC-n` | Exclusion — must be impossible | 14 | `SM-XC-1` … `SM-XC-14` | §1.5 |
 | `SM-INV-n` | Domain invariant | 11 | `SM-INV-1` … `SM-INV-11` | §2.6 |
-| `SM-EV-n` | Domain event (**closed set**) | 9 | `SM-EV-1` … `SM-EV-9` | §7.4 |
+| `SM-EV-n` | Domain event (**closed set**) | **10** | `SM-EV-1` … `SM-EV-10` | §7.4 |
 | `SM-PO-n` | Protected operation (**closed list**) | 12 | `SM-PO-1` … `SM-PO-12` | §8.2 |
-| `SM-AC-n` | Acceptance criterion | 28 | `SM-AC-1` … `SM-AC-28` | §10.4 |
+| `SM-AC-n` | Acceptance criterion | **32** | `SM-AC-1` … `SM-AC-32` | §10.4 |
 | `SMCFG-n` | Configurable parameter | 7 | `SMCFG-1` … `SMCFG-7` | §10.3 |
 | `LMD-n` | **Library Members Directory requirement** | 31 | `LMD-1` … `LMD-31` | Chapter 5 |
-| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | 9 | `SM-GAP-1` … `SM-GAP-9` | §10.6 |
+| `SM-GAP-n` | **PROPOSED GAP** — no authoritative source | **11** | `SM-GAP-1` … `SM-GAP-11` | §10.6 |
 
-**Total Student Management normative identifiers: 242**, of which **9 are proposed gaps carrying no authority**.
+**Total Student Management normative identifiers: 251 base**, of which **11 are proposed gaps carrying no
+authority**, plus **15 sub-lettered clarifications** (`PRD-004` §0.2) giving **266** in total.
 
 Per-chapter `SM-c.n` counts: Ch 1 = 8 · Ch 2 = 16 · Ch 3 = 17 · Ch 4 = 12 · **Ch 5 = 0** · Ch 6 = 8 · Ch 7 = 17 ·
-Ch 8 = 17 · **Ch 9 = 0** · Ch 10 = 10.
+Ch 8 = 17 · **Ch 9 = 0** · Ch 10 = 12.
+
+**Measured traceability coverage: 227 / 240 = 94.6%**, computed by
+[`tool/docs_check/prd004_traceability.py`](../../tool/docs_check/prd004_traceability.py). The 11 proposed gaps are
+excluded from the denominator; the 13 untraced identifiers are named in `PRD-004` §10.5.1.
+
+> ⚠ **This register was stale and was corrected on 2026-08-04 — second-review finding `SR-01` (HIGH).** It declared
+> `SM-c.n` 105, `SM-EV-n` 9, `SM-AC-n` 28, `SM-GAP-n` 9, total **242**, and per-chapter Ch 10 = 10. Those were the
+> **pre-correction** figures: two `PRD-004` correction passes had since added `SM-10.11`, `SM-10.12`, `SM-EV-10`,
+> `SM-AC-29`–`SM-AC-32` and `SM-GAP-10`–`SM-GAP-11`. `PRD_LIFECYCLE.md` Stage 5 requires these counts to be
+> *"verified mechanically — counted by a tool, not by reading"*, and a tool **disproved** them. The figures above
+> are now reproduced by the counting script. **This document is unranked, so no ADR was required to correct it.**
 
 **Chapters 5 and 9 hold no `SM-c.n`, by design.** Chapter 5 numbers exclusively in `LMD-n` so that a
 read-composition requirement can never be mistaken for a `BC-01` domain requirement; chapter 9 numbers
@@ -620,6 +632,7 @@ protection.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.4** | 2026-08-04 | **§2C corrected — second-review finding `SR-01` (HIGH), the one defect that blocked `PRD-004`'s Stage 5 gate.** §2C still carried the **pre-correction** figures (`SM-c.n` 105, `SM-EV-n` 9, `SM-AC-n` 28, `SM-GAP-n` 9, total **242**, Ch 10 = 10) after two `PRD-004` correction passes had changed them. `PRD_LIFECYCLE.md` Stage 5 requires the registered counts to be *"verified mechanically — counted by a tool, not by reading"*, and the counting script **disproved** them. §2C now reads `SM-c.n` **107**, `SM-EV-n` **10**, `SM-AC-n` **32**, `SM-GAP-n` **11**, total **251 base + 15 sub-lettered = 266**, Ch 10 = **12**, and records the measured coverage **227/240 = 94.6%**. Header source bumped to `PRD-004` **v1.2**. **No authentication, Library or Student Identity row changed. No ranked document changed. No ADR required — this document is unranked. No code changed.** |
 | **v1.3** | 2026-08-04 | Added the **Student Management** identifier inventory (**§2C**, `PRD-004` `DRAFT`, **242** identifiers across ten registers, every range verified contiguous) and the collision record **§2C.1**. Records that the register **was corrected by validation before first use**: §0 of `PRD-004` declared **118** `SM-c.n` (total 246); a mechanical count found **105** (total **242**), and **the register was corrected rather than the chapters padded with filler requirements**. Documents that chapters 5 and 9 deliberately hold **no** `SM-c.n` — chapter 5 numbers in `LMD-n` so a read-composition requirement can never be mistaken for a `BC-01` domain requirement. §2C.1 records `MP-SM-01`…`MP-SM-09` in `MASTER_PRD.md` as a **true negative** — Certified Metric IDs, not requirements — **inspected rather than accepted as a collision**, since a checker that cannot tell a substring from a real hit is one that gets switched off. Header updated to baseline **`-B`**, Library PRD **v1.1**, ADRs **`ADR-0001`…`ADR-0017`**. **No authentication, Library or Student Identity row changed. No code changed.** |
 | **v1.2** | 2026-08-04 | Added the Student Identity identifier inventory (§2B, 343 identifiers, all nine registers verified gap-free), the prefix-collision record (§2B.1, including the `PO-n` / `SPO-n` hazard), the Student Identity chapter map (§3B, 38 rows, four marked ⛔ rather than ⬜), configurable traceability (§6B) and event traceability (§7B). Added `ADR-0011` to §4 with its three amendments to the Identity Triad traced individually. **Added `MP-GBR-02` to §5 as an amended rule** — the first global business rule to appear in this matrix as changed rather than as baseline. Added §8A recording that **existing scaffold code implements the superseded pre-`ADR-0011` identity model** — nullable `Account.personId`, nullable `StudentRecord.personId`, `GlobalStudentProfile` owned by `domain/social`, and 4 of 5 seeded accounts with no identity — and that the rank-7.5 boundary is *declared but unenforced* pending `IMPL-014`. No authentication or Library row changed. No code changed. |
 | **v1.1** | 2026-08-03 | Added the Library identifier inventory (§2A, ~422 identifiers, zero collisions with the authentication register), the Library chapter map (§3A, 22 rows), Library configurable traceability (§6A) and Library event traceability (§7A). Added `ADR-0009` and `ADR-0010` to §4. Named `IMPL-100` as a second enforcer of `MP-GBR-08` and `IMPL-112` as a second consumer of `MP-DEP-03`. Recorded the `INV-n` / `INV-SEC-n` / `INV-XC-n` prefix hazard in §2A.1, and stated `INV-10`…`INV-16` in full with the failure each prevents. No authentication row changed. |

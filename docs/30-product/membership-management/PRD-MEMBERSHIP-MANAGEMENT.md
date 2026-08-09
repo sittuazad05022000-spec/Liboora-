@@ -59,9 +59,16 @@ the promise false.
 | `MM-NFR-n` | Non-functional requirement | **14** | `MM-NFR-001` … `MM-NFR-014` | §16.5 |
 | `MM-PO-n` | Protected operation (**closed list**) | **11** | `MM-PO-001` … `MM-PO-011` | §16.3 |
 | `MM-CFG-n` | Configurable | **9** | `MM-CFG-001` … `MM-CFG-009` | §13.4 |
-| `MM-GAP-n` | Proposed gap / open question — **not a requirement** | **9** | `MM-GAP-001` … `MM-GAP-009` | §25.2 |
+| `MM-GAP-n` | Proposed gap / open question — **not a requirement** | **11** | `MM-GAP-001` … `MM-GAP-009`, plus the suffixed successors `MM-GAP-006a` and `MM-GAP-007a` | §25.2 |
 
-**Total: 288 identifiers.** `MM-GAP-*` entries are open questions, not obligations.
+**Total: 290 identifiers**, of which **279 carry obligation** and 11 are `MM-GAP-*` open questions, which are not
+obligations.
+
+> **On the two suffixed identifiers.** `MM-GAP-006` and `MM-GAP-007` were **closed** at v1.1 (§5.1, §12). A
+> letter-suffixed successor records the residual non-blocking observation each one left behind, rather than reusing a
+> retired number or renumbering the register — so every citation written against `MM-GAP-006`/`007` in this document,
+> in [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) or in any review report stays resolvable. The 279
+> obligation-bearing identifiers are unchanged from v1.0.
 
 ### 0.3 What this document is not
 
@@ -366,7 +373,8 @@ reason.
 > **This is not invented.** BC Map `E-10` states: *"`FeePaymentReceived` → **may activate a pending membership**
 > (saga in V2, direct handler in V1)"*, and line 421 lists `BC-05` → `BC-02` with purpose *"Activates membership"*.
 > The word *pending* is the architecture's own. `PendingPayment` is therefore a **recovered** state, not a new one —
-> but see §5 and `MM-GAP-006`, because BC Map line 209's status list does not name it.
+> Line 209's column-3 illustration does not name it, which is not a contradiction: that column carries contextual
+> meaning, not a binding enumeration. See §5.1, where this is ratified and `MM-GAP-006` is closed.
 
 `MM-FR-044` — This module **MUST NOT** call a payment gateway, capture a payment, or record a monetary transaction. It
 consumes the **outcome** only (§10).
@@ -418,8 +426,8 @@ was authorised); `startDate` has been reached in the tenant's timezone; and `end
 `MM-FR-053` — A membership whose `startDate` is in the future and whose payment condition is satisfied **MUST** be
 held in `Scheduled` and **MUST NOT** confer entitlement until `startDate`.
 
-`MM-FR-054` — Activation **MUST** emit `MM-EVT-002` `membership.MembershipActivated` (see `MM-GAP-007` — this event is
-not in the BC Map's list).
+`MM-FR-054` — Activation **MUST** emit `MM-EVT-002` `membership.MembershipActivated` (not listed in BC Map §9, which
+is the *seed* of the Event Catalog rather than a closed set for `BC-02` — reconciled in §12, `MM-GAP-007` closed).
 
 ### 4.2 Term semantics — normative
 
@@ -601,8 +609,9 @@ suspension, without mutating the membership record.
 > **Why suppress rather than mutate.** `PRD-004` §288 requires that on suspension *"`BC-04` Seating and `BC-02`
 > Membership MUST react by refusing new seat…"*. Refusing entitlement is the requirement; rewriting the membership's
 > own status would destroy the term the student paid for, and would be unrecoverable on un-suspension. Suppression at
-> the projection is reversible and leaves the paid term intact. `MM-GAP-006` covers whether this warrants a distinct
-> reported reason.
+> the projection is reversible and leaves the paid term intact. V1 carries no distinct reason code on the projection:
+> `MM-FR-068` and `MM-FR-077` both express suppression as `isValid: false`. Whether a read should distinguish
+> *suspended* from *expired* is a presentation concern this document does not decide.
 
 ### 5.4 Cancellation before activation is not "Membership Cancellation"
 
@@ -1119,7 +1128,7 @@ view, so the reminder and the list can never disagree.
 | `MM-BR-027` | A membership **MUST** belong to exactly one tenant, and that tenant **MUST** equal the ambient `TenantContext` on every read and write |
 | `MM-BR-028` | A membership **MUST** reference a `StudentRecordId` that exists in the same tenant with `EnrollmentStatus` `Active` at creation |
 | `MM-BR-029` | An inactive, unavailable or wrong-tenant plan **MUST NOT** be selectable for create, renew or upgrade |
-| `MM-BR-030` | *(stated in §9)* This module **MUST NOT** own an analytics store |
+| `MM-BR-030` | *Restated from §9, which is the definition site.* This module **MUST NOT** own an analytics store, and `BC-26` **MUST** learn about membership only from the events in §12 |
 | `MM-BR-031` | Membership validity **MUST** be unambiguous: exactly one answer from §4.5 for a given membership and date |
 | `MM-BR-032` | An `Expired`, `PendingPayment`, `Scheduled`, `Superseded` or `Cancelled` membership **MUST NOT** be treated as active entitlement |
 | `MM-BR-033` | Historical membership pricing **MUST NOT** change (`MM-FR-027`) |
@@ -1476,7 +1485,7 @@ architecture. Nothing here is included because other membership products have it
 |---|---|---|
 | **`PendingPayment` as an explicit status** | **A — Required for V1** | Not a new idea: BC Map `E-10` says *"may activate a **pending** membership"*. Without the state, `E-10` has nothing to act on and the payment gate cannot exist |
 | **`Scheduled` status for future-dated starts** | **A — Required for V1** | `MM-CFG-004` permits advance sales; without `Scheduled`, a future membership would be either wrongly `Active` (entitlement before payment period) or indistinguishable from `PendingPayment` |
-| **`membership.MembershipActivated` event** | **A — Required for V1** | `BC-04`/`BC-03` must know when entitlement **begins**. `MembershipCreated` cannot say so when the status is `PendingPayment`. Raised as `MM-GAP-007` because BC Map §8 does not list it |
+| **`membership.MembershipActivated` event** | **A — Required for V1** | `BC-04`/`BC-03` must know when entitlement **begins**. `MembershipCreated` cannot say so when the status is `PendingPayment`. Raised as `MM-GAP-007` because BC Map §9 does not list it; since **closed** — reconciled under the ratified `BC-01` precedent (§12) |
 | **`membership.MembershipUpgraded` event** | **A — Required for V1** | BC Map `E-07`'s contract text already names `MembershipCreated/Renewed/**Upgraded**/Frozen`; its absence from the §9 table appears to be an omission. `BC-05` cannot adjust dues without it |
 | **Void before activation (§5.4)** | **A — Required for V1** | Wrong-student and wrong-plan errors happen hourly at a reception desk. With `MM-INV-001` blocking overlap, an uncorrectable bad record permanently blocks the correct one. This is error correction on a non-entitling record — **not** V2 Cancellation, which involves refunds |
 | **Auto-void of stale `PendingPayment` (`MM-CFG-007`)** | **A — Required for V1** | Without it, an abandoned unpaid membership blocks `MM-INV-001` forever and the student can never be sold a membership again |
@@ -1591,4 +1600,4 @@ citations remain resolvable, and each leaves a non-blocking successor observatio
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created as **`DRAFT`** under `PRD_LIFECYCLE.md` Stage 2. Specifies `BC-02` Membership for V1: the four authoritative capabilities (Plans, Creation, Renewal, Upgrade) plus the Activation/Validity, Status/Entitlement, Expiry and Operational-Views chapters the architecture requires. **288 identifiers** across 10 registers, contiguous, zero prefix collisions. Membership Analytics excluded as not-V1 (`MM-XC-006`); Downgrade, Freeze, Transfer, Cancellation, Proration and History excluded as V2; Auto Renewal excluded as V3; Cross-Library as Future. **Seven cross-document conflicts recorded rather than resolved** (§25.1), of which two — `MM-GAP-006` and `MM-GAP-007` — were declared freeze-blocking. `Q-01` grace period and `Q-06` proration deliberately **not** decided. **No existing document was modified and no other file was created.** |
-| v1.1 | 2026-08-04 | **Ratification and correction pass** following [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md); recorded in [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md). **`C-2` closed** — §5.1 rewritten: BC Map line 209 sits in §5, whose preamble binds only the *resolution* column; the six-value set satisfies that column, and columns 2–3 are proven non-exhaustive by the `Role` row (3 values) against the Rank 3 Authentication PRD's 5. **`C-3` closed** — §12 rewritten on the ratified `BC-01` precedent: frozen `PRD-004` §7.4 registers 10 events where BC Map §9 lists 4, blessed by `ADR-0018`; the only ADR trigger (L292) is edge-scoped and no edge is added. **`MembershipUpgraded` preserved.** **Citation corrections:** the event surface is BC Map **§9** (was cited §8); the Aggregate & Invariant Register is **§8** (was cited §6, in 8 places); Open Questions is **§13** (was §12). Two non-blocking successor observations opened against the BC Map (`MM-GAP-006a`, `MM-GAP-007a`). **No requirement, invariant, event, AC, status value or scope decision changed; no ranked or frozen document modified; no ADR created; identifier registers unchanged at 288.** |
+| v1.1 | 2026-08-04 | **Ratification and correction pass** following [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md); recorded in [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md). **`C-2` closed** — §5.1 rewritten: BC Map line 209 sits in §5, whose preamble binds only the *resolution* column; the six-value set satisfies that column, and columns 2–3 are proven non-exhaustive by the `Role` row, which lists three `AccessRole` values where the Rank 3 Authentication PRD defines five tenant roles (`TR-1`…`TR-5`, §2.2.1–2.2.5) — so a Rank 3 PRD would be in breach if column 2 bound the value set. **`C-3` closed** — §12 rewritten on the ratified `BC-01` precedent: frozen `PRD-004` §7.4 registers 10 events where BC Map §9 lists 4, blessed by `ADR-0018`; the only ADR trigger (L292) is edge-scoped and no edge is added. **`MembershipUpgraded` preserved.** **Citation corrections:** the event surface is BC Map **§9** (was cited §8, in 2 places); the Aggregate & Invariant Register is **§8** (was cited §6, in 8 places); Open Questions is **§13** (was §12). **Four stale cross-references** that still described `MM-GAP-006`/`MM-GAP-007` as open questions (§4.1 note, `MM-FR-054`, §5.3 note, §24.1 row) were rewritten to state the ratified position. Two non-blocking successor observations opened against the BC Map (`MM-GAP-006a`, `MM-GAP-007a`). **Two integrity defects found by the post-edit register audit and fixed:** §0.2 still declared 9 `MM-GAP` identifiers and a total of 288 after the two successors were added — now **290 total, 279 obligation-bearing, 11 `MM-GAP`**, with the suffix convention documented; and §14.1's `MM-BR-030` row was a second em-dash-free definition of a rule defined in §9 — now an explicit restatement naming §9 as the definition site. **No requirement, invariant, event, AC, status value or scope decision changed; no ranked or frozen document modified; no ADR created; the 279 obligation-bearing identifiers are unchanged from v1.0, all registers contiguous, zero duplicate definitions.** |

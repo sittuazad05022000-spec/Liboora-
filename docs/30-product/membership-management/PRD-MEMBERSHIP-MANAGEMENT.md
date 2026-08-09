@@ -158,7 +158,7 @@ Each is a thing that **MUST be impossible** in a correct V1 build, not merely un
 | `MM-XC-012` | Proration arithmetic executed as money (**V2**; and `Q-06` is open — see `MM-GAP-002`) |
 | `MM-XC-013` | Cross-library or cross-tenant membership (**Future**) |
 | `MM-XC-014` | Reading or writing another tenant's membership under any circumstance (§16.1) |
-| `MM-XC-015` | Silently changing the price of an existing membership (`MM-BR-014`) |
+| `MM-XC-015` | Silently changing the price of an existing membership (`MM-BR-033`) |
 | `MM-XC-016` | Defining a role, permission or authorisation model (`BC-18` owns it; `AR-2`) |
 
 ---
@@ -245,7 +245,7 @@ This is the crux of plan governance, and the instruction asks for it explicitly.
 |---|---|---|---|
 | `name` | Editable | **Editable** | A display label. Historical memberships hold a snapshot, so history is unaffected |
 | `description` | Editable | **Editable** | Display only |
-| `price` | Editable | **Editable — future-effective only** | Existing memberships hold a price snapshot and **MUST NOT** change (`MM-BR-014`) |
+| `price` | Editable | **Editable — future-effective only** | Existing memberships hold a price snapshot and **MUST NOT** change (`MM-BR-033`) |
 | `currency` | Editable | **IMMUTABLE** | Changing it would silently restate the meaning of every snapshot |
 | `durationDays` | Editable | **Editable — future-effective only** | Existing terms are already computed and **MUST NOT** shift |
 | `seatQuota` | Editable | **Editable — takes effect on next renewal** | See `MM-FR-025` and `MM-GAP-005` |
@@ -1091,8 +1091,8 @@ Additional rules recovered from the architecture rather than invented: `MM-BR-00
 | `MM-INV-011` | `activatedAt` is set if and only if the membership has ever been `Active` | §4.1 |
 | `MM-INV-012` | `Frozen` is unreachable in V1 | `MM-XC-009` |
 
-`MM-BR-034` note — Invariants `MM-INV-001` and `MM-INV-008` **MUST** be enforced by database constraints, not
-application checks (`MM-FR-046`).
+Restatement for locality (no new obligation): invariants `MM-INV-001` and `MM-INV-008` are enforced by database
+constraints rather than application checks. The governing requirement is `MM-FR-046`, defined in §3.4.
 
 ---
 
@@ -1189,9 +1189,10 @@ another student's membership, any `StaffOnly` plan, or any internal reconciliati
 
 ## 17. Audit
 
-`MM-BR-023` note — Audit **MUST** be emitted as events through `E-20` (`BC-24`), fire-and-forget and outbox-backed.
-This module **MUST NOT** call audit synchronously and **MUST NOT** store an audit log (`MP-GBR-13`: the trail is
-*"append-only with no update or delete path in code"*).
+Audit **MUST** be emitted as events through `E-20` (`BC-24`), fire-and-forget and outbox-backed. This module
+**MUST NOT** call audit synchronously and **MUST NOT** store an audit log (`MP-GBR-13`: the trail is
+*"append-only with no update or delete path in code"*). This is the audit-transport consequence of `MM-BR-023`
+(§16.1) and `MM-XC-004`; it introduces no identifier of its own.
 
 **Mutations requiring audit — normative.**
 
@@ -1210,15 +1211,16 @@ This module **MUST NOT** call audit synchronously and **MUST NOT** store an audi
 | Configurable change | **Yes** | Delegated to `BC-25`; this module records the consuming decision only |
 | Read of a membership | **No** | Access logging is a platform concern, not a domain mutation |
 
-`MM-NFR-013` note — Audit **MUST NOT** contain a mobile number, name or any `BC-10` field (`MP-GBR-34`,
-`MM-BR-015`).
+Restatement for locality (no new obligation): audit records carry no mobile number, name or other `BC-10` field. The
+governing rules are `MP-GBR-34` (Rank 1) and `MM-BR-015`, defined in §12.
 
 ---
 
 ## 18. Notification Integration
 
-`MM-BR-019` note — This module emits **facts**; `BC-22` owns delivery over SMS, push, email and in-app
+This module emits **facts**; `BC-22` owns delivery over SMS, push, email and in-app
 (`MP-GBR-33`: *"The domain emits facts (`membership.MembershipExpiringSoon`), never instructions ('send an SMS')"*).
+The governing rule is `MM-BR-019`, defined in §12; it is restated below for locality, not redefined.
 
 | Fact emitted | Event | Notification purpose (owned by `BC-22`) |
 |---|---|---|
@@ -1228,8 +1230,8 @@ This module **MUST NOT** call audit synchronously and **MUST NOT** store an audi
 | Membership activated | `MM-EVT-002` | Welcome / entitlement begins |
 | Membership upgraded | `MM-EVT-004` | Confirmation |
 
-`MM-BR-019` — This module **MUST NOT** select a channel, compose a message body, hold a template, schedule a send, or
-track a delivery receipt.
+Consequently (`MM-BR-019`), this module **MUST NOT** select a channel, compose a message body, hold a template,
+schedule a send, or track a delivery receipt.
 
 > EA line 855 lists *Membership Expiry Reminder* as **V2** in its notification module. That concerns the **reminder
 > feature** in `BC-22`, not the **fact**: `MM-EVT-006` is in BC Map §8's V1 `BC-02` event list, so emitting it in V1 is
@@ -1240,8 +1242,9 @@ track a delivery receipt.
 
 ## 19. API Requirements — conceptual only
 
-`MM-FR-118` note — The following capabilities **MUST** exist. **No URLs, verbs, payload schemas or status codes are
-specified**, per the authoring instruction and because this repository has no API standard document to conform to.
+The following capabilities **MUST** exist, each realising the requirement cited in its own row — this list introduces
+no identifier of its own. **No URLs, verbs, payload schemas or status codes are specified**, per the authoring
+instruction and because this repository has no API standard document to conform to.
 
 | Capability | Notes |
 |---|---|
@@ -1257,8 +1260,8 @@ specified**, per the authoring instruction and because this repository has no AP
 | Void pre-activation membership | `MM-PO-005`; reason required |
 | Manually activate | `MM-PO-004`; elevated, reason required |
 
-`MM-NFR-013` note — Every mutating capability **MUST** accept an `idempotencyKey` and **MUST** return a typed error
-on rejection.
+Restatement for locality (no new obligation): every mutating capability accepts an `idempotencyKey` and returns a
+typed error on rejection. The governing requirements are `MM-FR-047` (§3.4) and `MM-NFR-013` (§16.5).
 
 ---
 

@@ -362,7 +362,7 @@ owned by `PRD-005`.
 
 | Field | Value |
 |---|---|
-| **Commit SHA** | recorded in §16 below (written after commit, from `git rev-parse HEAD`) |
+| **Commit SHA** | **`979d786b59649234310c339af19dfb482a274e31`** (short `979d786`) |
 | **Branch** | `main` |
 | **Parent** | `8e9429c` (auto-backup carrying the v1.3 PRD edits) · correction baseline `a60a083` |
 
@@ -427,8 +427,8 @@ implementation. `PRD-005` remains `DRAFT` at Stage 2.**
 
 | Field | Value |
 |---|---|
-| **Commit SHA** | `PENDING_SHA` |
-| **Push status** | see below |
+| **Commit SHA** | **`979d786`** |
+| **Push status** | **Pushed** — `github` / `main`, `a60a083..979d786` |
 
 ---
 

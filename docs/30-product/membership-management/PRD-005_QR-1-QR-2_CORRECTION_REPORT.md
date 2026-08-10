@@ -8,7 +8,7 @@
 | **Status after correction** | **DRAFT** — Stage 2. **Not frozen, not registered, not approved** |
 | **Scope** | `QR-1` and `QR-2` **only** |
 | **Date** | 2026-08-04 |
-| **Commit** | **`4de2df8`** — see §6 |
+| **Commit** | **`fabc7e6`** — see §6 |
 
 ---
 
@@ -198,10 +198,10 @@ criterion, any architecture document, any ADR, `PRD_REGISTRY.md`, frozen `PRD-00
 
 | Field | Value |
 |---|---|
-| **Commit SHA** | **`4de2df8`** (full: `4de2df8` — see repository log) |
+| **Commit SHA** | **`fabc7e6`** (full: `fabc7e6859e7b252bd006d9da36cd0d0d51d94cb`) |
 | **Branch** | `main` |
 | **Remote** | `github` → `https://github.com/sittuazad05022000-spec/Liboora-.git` |
-| **Push** | ✅ **Pushed** — `52ed87a..4de2df8  main -> main` |
+| **Push** | ✅ **Pushed** — `52ed87a..fabc7e6  main -> main` |
 | **Unpushed commits** | **0** |
 | **Working tree** | **clean** |
 

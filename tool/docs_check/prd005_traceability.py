@@ -229,9 +229,27 @@ def collisions():
         return [f'collision scan failed: {exc}'], []
     # The membership module owns the register.  `TRACEABILITY_MATRIX.md` §2D is
     # where it is *registered*, so it necessarily cites these identifiers --
-    # that is the gate artefact, not a collision.  Everything else is a real
-    # hit and fails the run.
-    ALLOWED = ('membership-management/', 'TRACEABILITY_MATRIX.md')
+    # that is the gate artefact, not a collision.
+    #
+    # Stage 7 adds four more legitimate citation sites.  Freezing a PRD REQUIRES
+    # the governance layer to name the registers it is admitting: the freeze ADR
+    # states which gaps stay open, the baseline declares what entered Rank 3, the
+    # registry records the status change and the ADR index summarises it.  The
+    # same is true of `PRD-004`: `ADR-0018` cites `SM-*` sixteen times and
+    # `DOCUMENTATION_BASELINE.md` cites `SM-EV-*`/`LMD-*` five times, and that is
+    # correct.  A *citation* is not a *collision* -- a collision would be another
+    # register DEFINING an `MM-` identifier, which the duplicate-definition and
+    # registered-prefix checks above still catch.  This list is deliberately
+    # enumerated file by file rather than widened to `docs/00-governance/`, so a
+    # stray `MM-` in any other governance document still fails the run.
+    ALLOWED = (
+        'membership-management/',
+        'TRACEABILITY_MATRIX.md',
+        'ADR-0019-membership-management-prd-v1.4-baseline.md',
+        'DOCUMENTATION_BASELINE.md',
+        'PRD_REGISTRY.md',
+        'ADR-INDEX.md',
+    )
     outside = [ln for ln in out.split('\n')
                if ln and not any(a in ln for a in ALLOWED)]
     return problems, outside

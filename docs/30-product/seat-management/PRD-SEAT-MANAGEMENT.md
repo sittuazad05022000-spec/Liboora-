@@ -67,15 +67,15 @@ adoption**, by the same grep-absence procedure `PRD-005` §25.3 used for `MM-*`.
 
 | Register | Meaning | Range |
 |---|---|---|
-| `SEAT-FR-n` | Functional requirement | `SEAT-FR-001` … `SEAT-FR-262` |
-| `SEAT-BR-n` | Business rule (cross-cutting, testable) | `SEAT-BR-001` … `SEAT-BR-044` |
+| `SEAT-FR-n` | Functional requirement | `SEAT-FR-001` … `SEAT-FR-304` |
+| `SEAT-BR-n` | Business rule (cross-cutting, testable) | `SEAT-BR-001` … `SEAT-BR-045` |
 | `SEAT-INV-n` | Domain invariant, enforced **synchronously inside the aggregate** | `SEAT-INV-001` … `SEAT-INV-014` |
 | `SEAT-EVT-n` | Domain event — **closed set**, fixed by BC Map §9 | `SEAT-EVT-001` … `SEAT-EVT-004` |
 | `SEAT-XC-n` | Exclusion — must be impossible or is out of scope | `SEAT-XC-001` … `SEAT-XC-022` |
 | `SEAT-PO-n` | Protected operation — **closed list** | `SEAT-PO-001` … `SEAT-PO-024` |
-| `SEAT-CFG-n` | Configurable, with an owner and a default | `SEAT-CFG-001` … `SEAT-CFG-016` |
+| `SEAT-CFG-n` | Configurable, with an owner and a default | `SEAT-CFG-001` … `SEAT-CFG-018` |
 | `SEAT-NFR-n` | Non-functional requirement | `SEAT-NFR-001` … `SEAT-NFR-012` |
-| `SEAT-AC-n` | Acceptance criterion | `SEAT-AC-001` … `SEAT-AC-118` |
+| `SEAT-AC-n` | Acceptance criterion | `SEAT-AC-001` … `SEAT-AC-225` |
 | `SEAT-GAP-n` | **Proposed gap / open question — NOT a requirement** | `SEAT-GAP-001` … `SEAT-GAP-014` |
 
 Ranges are contiguous. Numbers are never reused. `SEAT-GAP-*` identifiers are **questions, not requirements**,
@@ -83,7 +83,7 @@ and must never be cited as verifiable.
 
 ### 0.4 Relationship to the source draft
 
-The source draft's 46 sections are preserved in substance. §40 of this document maps every one of the 45
+The source draft's 46 sections are preserved in substance. §36 of this document maps every one of the
 capabilities on the product owner's do-not-drop checklist to the requirement that carries it. Five changes were
 made because the draft conflicted with a **higher-authority** document; each is stated with its reason in §35.
 **No requirement was removed to simplify.**
@@ -112,15 +112,15 @@ acceptance criteria in §33:
 
 | # | Objective | Proven by |
 |---|---|---|
-| 1 | Complete digitisation of seat management | §§4–5, §40 |
-| 2 | Reduced manual allocation | §17 auto-assignment, §18 QR |
+| 1 | Complete digitisation of seat management | §§4–5, §36 |
+| 2 | Reduced manual allocation | §20 auto-assignment and QR |
 | 3 | Duplicate assignment is **impossible**, not merely unlikely | `SEAT-INV-001`, §21 |
-| 4 | Real-time seat and occupancy information | §20 |
+| 4 | Real-time seat and occupancy information | §§14.3, 21.1 |
 | 5 | Multiple floors, zones and layouts | §4 |
 | 6 | Simple student booking | §11 |
 | 7 | Efficient staff assignment and transfer | §§9–10 |
 | 8 | Owner occupancy visibility | §25 |
-| 9 | Complete, retained history and auditability | §§23–24 |
+| 9 | Complete, retained history and auditability | §23 |
 | 10 | Configurable policy without weakening any invariant | §27 |
 
 ### 1.3 V1 scope

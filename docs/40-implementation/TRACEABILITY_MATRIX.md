@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.4 |
+| **Version** | v1.5 |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** |
-| **Baseline** | **BASELINE-2026-08-04-B** |
-| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `DRAFT`)** |
-| **ADRs applied** | `ADR-0001` … **`ADR-0017`** |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** |
+| **Baseline** | **BASELINE-2026-08-04-C** |
+| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `DRAFT`)** |
+| **ADRs applied** | `ADR-0001` … **`ADR-0018`** |
 
 ---
 
@@ -208,6 +208,99 @@ real collision from a substring is a checker that gets switched off.
 `LMD-n` and `LIB-n.m` are also distinct registers despite both concerning library surfaces: `LMD-n` is the
 Directory read composition inside `BC-01`; `LIB-n.m` is Library Management (`BC-06`/`BC-19`). `LCFG-5` is cited by
 `SMCFG-1` rather than duplicated — `SMCFG-1` **is** `LCFG-5`, consumed through `E-19`.
+
+---
+
+## 2D. Identifier inventory — Membership Management
+
+Verified mechanically against `PRD-MEMBERSHIP-MANAGEMENT.md` (`PRD-005`, **v1.4**, **`DRAFT`**) by
+[`tool/docs_check/prd005_traceability.py`](../../tool/docs_check/prd005_traceability.py). Every count below is
+**computed, not asserted**, and every range is verified contiguous from 1 to its stated maximum.
+
+| Prefix | Meaning | Count | Range | Source |
+|---|---|---|---|---|
+| `MM-FR-n` | Functional requirement | **119** | `MM-FR-001` … `MM-FR-118` + `MM-FR-057a` | §§2–11, 19–20 |
+| `MM-BR-n` | Business rule | **35** | `MM-BR-001` … `MM-BR-035` | §12, §14 |
+| `MM-INV-n` | Domain invariant (enforced inside the aggregate) | **12** | `MM-INV-001` … `MM-INV-012` | §14.2 |
+| `MM-EVT-n` | Domain event (**closed set**) | **7** | `MM-EVT-001` … `MM-EVT-007` | §12 |
+| `MM-XC-n` | Exclusion — must be impossible | **16** | `MM-XC-001` … `MM-XC-016` | §1.5 |
+| `MM-AC-n` | Acceptance criterion | **97** | `MM-AC-001` … `MM-AC-094` + `MM-AC-074a`, `076a`, `080a` | §23 |
+| `MM-NFR-n` | Non-functional requirement | **14** | `MM-NFR-001` … `MM-NFR-014` | §16.5 |
+| `MM-PO-n` | Protected operation (**closed list**) | **11** | `MM-PO-001` … `MM-PO-011` | §16.3 |
+| `MM-CFG-n` | Configurable | **9** | `MM-CFG-001` … `MM-CFG-009` | §13.4 |
+| `MM-GAP-n` | **Proposed gap / open question — not a requirement** | **13** | `MM-GAP-001` … `MM-GAP-010` + `006a`, `007a`, `010a` | §25.2 |
+
+**Total Membership Management identifiers: 333**, of which **320 carry obligation** and **13 are `MM-GAP-*` open
+questions carrying no authority**. Of the 320, **223 are obligations an acceptance criterion can verify** (every
+register except `MM-AC-*` itself).
+
+**Measured coverage — 134 / 223 = 60.1%**, and **77 / 81 = 95.1%** across the five *rule* registers
+(`MM-BR`, `MM-INV`, `MM-EVT`, `MM-XC`, `MM-PO`). Per register: `MM-BR` **31/35** · `MM-INV` **12/12** ·
+`MM-EVT` **7/7** · `MM-XC` **16/16** · `MM-PO` **11/11** · `MM-FR` **48/119** · `MM-NFR` **7/14** ·
+`MM-CFG` **2/9**.
+
+> **The counting rule is deliberately strict, and it is the PRD's own.** `PRD-005` §0.2 binds every coverage figure
+> to one test: an obligation counts as verified **iff its identifier appears in the *Verifies* column of an
+> `MM-AC-*` row in §23**. A mention in criterion text, in a surrounding note, or in prose asserting that a rule is
+> covered elsewhere does **not** count. The four rule-register obligations not verified under it — `MM-BR-012`,
+> `MM-BR-022`, `MM-BR-027`, `MM-BR-028` — are named in `PRD-005` §0.2, §23.1 and §25.3 rather than argued away.
+> This follows `MM-NFR-014` / `SID-4.56`: *"a rule that cannot be checked SHALL be treated as unmet, not as
+> satisfied by intent."* A coverage metric that can be raised by writing prose measures prose.
+
+**`PRD-005` is `DRAFT`, not frozen.** Registering its identifiers here satisfies `PRD_LIFECYCLE.md` **Stage 5**
+only. Stage 6 (`IMPL-*` allocation) and Stage 7 (freeze) are **not** addressed by this section, and nothing here
+confers baseline status — that is `DOCUMENTATION_BASELINE.md` §3's to confer.
+
+### 2D.1 Prefix collisions checked — zero, and the one substring that is *not* one
+
+**Zero collisions** against all four existing registers: authentication
+(`AUTH`/`BR`/`XC`/`AC`/`PR`/`TR`/`EV`/`CFG`), Library (`LIB`/`LCFG`/`LXC`/`LEV`/`LAC`/`PO`/`IT`/`INV`), Student
+Identity (`SID`/`SID-BR`/`SXC`/`SPO`/`SEV`/`SID-INT`/`SID-INV`/`SCFG`/`SID-AC`) and Student Management
+(`SM`/`SM-BR`/`SM-XC`/`SM-INV`/`SM-EV`/`SM-PO`/`SM-AC`/`SMCFG`/`LMD`/`SM-GAP`).
+
+**Every `MM-*` register carries its own infix**, which is why the collision surface is small: `MM-BR-n` cannot be
+confused with authentication's `BR-c.n` (297 of them) or with `SM-BR-n`; `MM-PO-n` cannot be confused with the
+public-preview `PO-n` register or with `SPO-n` — the two-register hazard §2B.1 records; `MM-INV-n` is distinct from
+the Library `INV-n` invariants; `MM-XC-n`, `MM-AC-n`, `MM-EVT-n` and `MM-CFG-n` are likewise infixed. `MM-EVT-n`
+deliberately does **not** reuse `SM-EV-n`'s shape.
+
+A whole-repository word-boundary search returns empty:
+
+```
+grep -rIno '\(^\|[^-A-Za-z]\)MM-[A-Z]\+-[0-9]' docs --include=*.md | grep -v membership-management/   → (empty)
+```
+
+**`YYYY-MM-DD` is a true negative, not a suppressed hit.** A loose `MM-` search returns exactly one line outside
+the module — `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` line 624, *"`expires: YYYY-MM-DD`"* — where `MM` is the
+**month** field of a date format, not a register. It was **inspected rather than counted as a failure**, on the
+§2C.1 principle: a checker that cannot distinguish a real collision from a substring is a checker that gets
+switched off.
+
+### 2D.2 Three conventions the counter models explicitly
+
+A first run of the script reported three failures. **All three were correct `PRD-005` behaviour**, and each is now
+modelled in the tool rather than silenced — the count is only trustworthy if it knows what it is looking at.
+
+| Observation | Why it is not a defect | How it is counted |
+|---|---|---|
+| `MM-GAP-006` and `MM-GAP-007` have **no definition row** — §25.2 holds 11 rows for a 13-identifier register | Both were **closed at v1.1** (`PRD-005` §5.1, §12). Their numbers are **retained, not reused**, so citations written against them stay resolvable, and each leaves a suffixed successor (`MM-GAP-006a`, `MM-GAP-007a`) | Both are counted as **declared identifiers** with no row. Contiguity is judged over the declared set, so `MM-GAP-001`…`010` is contiguous |
+| `MM-BR-030` appears **twice** (lines 886 and 1235) | Line 886 is the definition; line 1235 states *"Restated from §9, which is the definition site."* | The restatement is **skipped**. Counting it would inflate the register; flagging it as a duplicate would be false |
+| **11** `MM-AC-*` rows name no `MM-*` ID in *Verifies* — e.g. `MM-AC-014` → "Edge 1", `MM-AC-032` → "§6.3" | Those cells are **populated and meaningful**; they verify a section or an integration edge rather than a registered identifier | Only a genuinely **blank** cell is a defect. Blank cells: **0** |
+
+### 2D.3 Stage 5 exit gate — mechanically verifiable
+
+`PRD_LIFECYCLE.md` Stage 5 requires counts *"verified mechanically — counted by a tool, not by reading"*, with
+**zero collisions**. Re-run the gate at any time:
+
+```
+python3 tool/docs_check/prd005_traceability.py     # exit 0 = gate satisfied
+```
+
+The script fails (exit 1) if any declared count drifts from the document, any range develops a hole, an identifier
+is defined twice, a `Verifies` cell is blank, a `MM-GAP-*` is cited as verifiable, a dangling identifier appears,
+or the `MM-` prefix collides anywhere in `docs/`. **This is the defence §2C did not have**: §2C carried stale
+`PRD-004` figures through two correction passes until a script disproved them (finding `SR-01`, HIGH). The same
+class of defect cannot silently reach `PRD-005`.
 
 ---
 
@@ -624,7 +717,11 @@ protection.
 [`Student_Identity_PRD_v1.md`](../30-product/student-identity/Student_Identity_PRD_v1.md) ·
 [`STUDENT_IDENTITY_ALIGNMENT.md`](../30-product/student-identity/STUDENT_IDENTITY_ALIGNMENT.md) ·
 [`STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md`](./STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md) ·
-[`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md)
+[`ADR-0011`](../00-governance/adr/ADR-0011-global-person-identity.md) ·
+[`Student_Management_PRD_v1.md`](../30-product/student-management/Student_Management_PRD_v1.md) ·
+[`PRD-MEMBERSHIP-MANAGEMENT.md`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) ·
+[`tool/docs_check/prd005_traceability.py`](../../tool/docs_check/prd005_traceability.py) ·
+[`ADR-0018`](../00-governance/adr/ADR-0018-student-management-prd-v1.2-baseline.md)
 
 ---
 
@@ -632,6 +729,7 @@ protection.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.5** | 2026-08-04 | **Added the Membership Management identifier inventory (§2D) — `PRD-005` v1.4's `PRD_LIFECYCLE.md` Stage 5 gate.** Ten registers, **333 identifiers** (320 obligation-bearing, 13 `MM-GAP-*` open questions), every range verified contiguous, **zero collisions**, **zero duplicate definitions**. Counts are **computed, not asserted**, by the new [`tool/docs_check/prd005_traceability.py`](../../tool/docs_check/prd005_traceability.py) — the defence §2C lacked, since §2C carried stale figures through two correction passes until a script disproved them (`SR-01`, HIGH). Records the measured coverage **134/223 = 60.1%** overall and **77/81 = 95.1%** across the five rule registers, under `PRD-005` §0.2's strict rule (*verified* **iff** the identifier appears in an `MM-AC-*` **Verifies** column — prose never counts), with the four uncovered rules `MM-BR-012`/`022`/`027`/`028` **named rather than argued away** per `MM-NFR-014`/`SID-4.56`. **§2D.1** records zero collisions against all four existing registers and treats `YYYY-MM-DD` in `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` line 624 as a **true negative** — `MM` is a month field, **inspected rather than counted as a failure** (the §2C.1 principle). **§2D.2** models three conventions the first tool run misread as defects: `MM-GAP-006`/`007` are **closed-but-retained** numbers with no definition row; `MM-BR-030` line 1235 is a **self-declared restatement**, not a duplicate; 11 `MM-AC-*` rows verify a **section or edge** rather than a registered ID, and blank cells number **0**. Header bumped to baseline **`-C`**, `ADR-0018`, and `PRD-004` **`FROZEN`**. **Stage 5 only** — no `IMPL-*` range allocated (Stage 6), no freeze (Stage 7). **No authentication, Library, Student Identity or Student Management row changed. No ranked document changed. `PRD-005` itself unchanged — not one byte. No ADR required: this document is unranked. No code changed.** |
 | **v1.4** | 2026-08-04 | **§2C corrected — second-review finding `SR-01` (HIGH), the one defect that blocked `PRD-004`'s Stage 5 gate.** §2C still carried the **pre-correction** figures (`SM-c.n` 105, `SM-EV-n` 9, `SM-AC-n` 28, `SM-GAP-n` 9, total **242**, Ch 10 = 10) after two `PRD-004` correction passes had changed them. `PRD_LIFECYCLE.md` Stage 5 requires the registered counts to be *"verified mechanically — counted by a tool, not by reading"*, and the counting script **disproved** them. §2C now reads `SM-c.n` **107**, `SM-EV-n` **10**, `SM-AC-n` **32**, `SM-GAP-n` **11**, total **251 base + 15 sub-lettered = 266**, Ch 10 = **12**, and records the measured coverage **227/240 = 94.6%**. Header source bumped to `PRD-004` **v1.2**. **No authentication, Library or Student Identity row changed. No ranked document changed. No ADR required — this document is unranked. No code changed.** |
 | **v1.3** | 2026-08-04 | Added the **Student Management** identifier inventory (**§2C**, `PRD-004` `DRAFT`, **242** identifiers across ten registers, every range verified contiguous) and the collision record **§2C.1**. Records that the register **was corrected by validation before first use**: §0 of `PRD-004` declared **118** `SM-c.n` (total 246); a mechanical count found **105** (total **242**), and **the register was corrected rather than the chapters padded with filler requirements**. Documents that chapters 5 and 9 deliberately hold **no** `SM-c.n` — chapter 5 numbers in `LMD-n` so a read-composition requirement can never be mistaken for a `BC-01` domain requirement. §2C.1 records `MP-SM-01`…`MP-SM-09` in `MASTER_PRD.md` as a **true negative** — Certified Metric IDs, not requirements — **inspected rather than accepted as a collision**, since a checker that cannot tell a substring from a real hit is one that gets switched off. Header updated to baseline **`-B`**, Library PRD **v1.1**, ADRs **`ADR-0001`…`ADR-0017`**. **No authentication, Library or Student Identity row changed. No code changed.** |
 | **v1.2** | 2026-08-04 | Added the Student Identity identifier inventory (§2B, 343 identifiers, all nine registers verified gap-free), the prefix-collision record (§2B.1, including the `PO-n` / `SPO-n` hazard), the Student Identity chapter map (§3B, 38 rows, four marked ⛔ rather than ⬜), configurable traceability (§6B) and event traceability (§7B). Added `ADR-0011` to §4 with its three amendments to the Identity Triad traced individually. **Added `MP-GBR-02` to §5 as an amended rule** — the first global business rule to appear in this matrix as changed rather than as baseline. Added §8A recording that **existing scaffold code implements the superseded pre-`ADR-0011` identity model** — nullable `Account.personId`, nullable `StudentRecord.personId`, `GlobalStudentProfile` owned by `domain/social`, and 4 of 5 seeded accounts with no identity — and that the rank-7.5 boundary is *declared but unenforced* pending `IMPL-014`. No authentication or Library row changed. No code changed. |

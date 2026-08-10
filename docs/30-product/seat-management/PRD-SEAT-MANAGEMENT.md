@@ -85,7 +85,7 @@ and must never be cited as verifiable.
 
 The source draft's 46 sections are preserved in substance. §40 of this document maps every one of the 45
 capabilities on the product owner's do-not-drop checklist to the requirement that carries it. Five changes were
-made because the draft conflicted with a **higher-authority** document; each is stated with its reason in §39.
+made because the draft conflicted with a **higher-authority** document; each is stated with its reason in §35.
 **No requirement was removed to simplify.**
 
 ---
@@ -108,7 +108,7 @@ contract named in §3.
 ### 1.2 Objectives
 
 `SEAT-FR-003` — The module **MUST** satisfy these ten objectives, each of which is measurable through the
-acceptance criteria in §36:
+acceptance criteria in §33:
 
 | # | Objective | Proven by |
 |---|---|---|
@@ -148,13 +148,13 @@ not documentation. Five of these distinctions are the ones the source draft blur
 | **`SeatAllocation`** | The aggregate representing one seat held by one student over one time window. **The transaction boundary.** | The seat itself; a reservation; an attendance punch |
 | **`SeatLayout`** | The aggregate representing spatial arrangement — positions and non-seat furniture | The seat inventory; `Floor`; `Zone` |
 | **`SeatState`** | The **derived** operational state a seat presents: `Available`, `Reserved`, `Occupied`, `Maintenance` | `Lock` (an independent flag) and the four contributing facts. See §6 |
-| **`Lock`** | An independent administrative flag suppressing *new* acquisition | A `SeatState` value. **Locked is not a status** — see §6.2 and §39 change **C-2** |
+| **`Lock`** | An independent administrative flag suppressing *new* acquisition | A `SeatState` value. **Locked is not a status** — see §6.2 and §35 change **C-2** |
 | **`Reservation`** | A time-bounded, expiring hold that blocks acquisition but confers no occupancy | An allocation; a booking |
 | **`Booking`** | A **student-initiated** request that produces a reservation or an allocation per §12 | A reservation (a booking is the act; a reservation may be its result) |
 | **`Assignment`** | A **staff-initiated** act creating or moving an allocation | A booking |
 | **`Occupancy`** | Whether the holder of an allocation is **physically present**, derived from `BC-03` check-in/out | The allocation. A student may hold a seat and be absent. See §14 |
-| **`Floor`** | A physical level of a branch — **owned by `BC-06` Library Policy / Library PRD `LIB-10.*`** | A seat container this module creates. See §39 change **C-1** |
-| **`Zone`** | A named area within a floor — **owned by `BC-06`**, `LIB-11.1` | A "Room". See §4.1 and §39 change **C-1** |
+| **`Floor`** | A physical level of a branch — **owned by `BC-06` Library Policy / Library PRD `LIB-10.*`** | A seat container this module creates. See §35 change **C-1** |
+| **`Zone`** | A named area within a floor — **owned by `BC-06`**, `LIB-11.1` | A "Room". See §4.1 and §35 change **C-1** |
 | **`Shift`** | A named time window; **`Shift` definitions are owned by `BC-06`** (`LIB-16.4`) | A seat attribute this module defines |
 | **`SeatCategory`** | A classification of a seat (Normal / Premium / VIP or tenant-defined) | `Zone`. A zone is spatial; a category is a class of seat |
 
@@ -306,7 +306,7 @@ are composed at read time.
 > **The source draft's §5 listed "current student, current shift, join date, membership expiry date" as seat
 > fields.** Storing membership expiry on a seat would make this module a second home for a `BC-02` value, which
 > `PRD-004` `SM-2.4` forbids for the analogous case and which `MM-FR-025` shows is unsafe. **The information
-> remains fully available on the seat card (§13)** — it is composed, not stored. Recorded as §39 change **C-3**.
+> remains fully available on the seat card (§13)** — it is composed, not stored. Recorded as §35 change **C-3**.
 > No capability is lost.
 
 ### 5.2 Seat numbering
@@ -411,7 +411,7 @@ occupied seat presents as `Occupied (locked)`.
 > make the model non-deterministic: the draft's own §23 says *"an existing valid assignment is not automatically
 > removed merely because the seat is locked"* — so a locked occupied seat would have to be both `Locked` and
 > `Occupied`, contradicting *"exactly one current operational status."* An orthogonal flag preserves **both**
-> draft requirements with no contradiction. This is §39 change **C-2**; every locking rule survives, in §19.
+> draft requirements with no contradiction. This is §35 change **C-2**; every locking rule survives, in §19.
 
 `SEAT-FR-039` — Every surface displaying a seat **MUST** display the derived `SeatState` **and** the lock flag
 when set. A lock **MUST NOT** be invisible.
@@ -813,7 +813,7 @@ is conversion trigger T3 and is not an override.
 ends before the requested `validFrom`, subject to `SEAT-FR-083`'s advance window. This is not a conflict; the
 windows do not overlap.
 
-`SEAT-FR-101` — A waiting list **MUST NOT** be implemented in V1 (`SEAT-XC-005`). It is classified **V2** in §38.
+`SEAT-FR-101` — A waiting list **MUST NOT** be implemented in V1 (`SEAT-XC-005`). It is classified **V2** in §34.
 
 `SEAT-XC-005` — **Waiting lists, queues for a specific seat, and automatic promotion when a seat frees** are out of
 scope. A queue is a scheduling feature with its own fairness rules, expiry semantics and notification surface; none
@@ -1328,7 +1328,7 @@ create a reservation as a consolation.
 that the choice is explainable after the fact.
 
 `SEAT-FR-185` — Auto-assignment **MUST NOT** run unattended on a schedule in V1. It is a staff-invoked operation.
-Unattended auto-allocation is classified **V2** in §38.
+Unattended auto-allocation is classified **V2** in §34.
 
 > **Determinism is the requirement here.** A selection algorithm that could return different seats for identical
 > inputs cannot be tested, and `MM-NFR-014` says a rule that cannot be checked is treated as unmet. Stating the
@@ -1656,7 +1656,7 @@ A staff member who needs delivery evidence uses `BC-22`'s surface.
 | A seat was released | `SEAT-EVT-002` `seating.SeatReleased` | |
 | A student was moved to a different seat | `SEAT-EVT-003` `seating.SeatTransferred` | |
 | Occupancy crossed a configured threshold | `SEAT-EVT-004` `seating.OccupancyThresholdCrossed` | BC Map §9: *"capacity alerting"* |
-| A reservation is approaching expiry | **No event in V1** — work queue (§22.4) | Proactive expiry reminders classified **V2** in §38 |
+| A reservation is approaching expiry | **No event in V1** — work queue (§22.4) | Proactive expiry reminders classified **V2** in §34 |
 | A seat-change request is awaiting a decision | **No event in V1** — work queue | |
 | Maintenance was reported | **No event in V1** — work queue | |
 | An allocation was flagged for eligibility or shift review | **No event in V1** — work queue | |
@@ -1679,7 +1679,7 @@ channel, is decided entirely by `BC-22` and by notification preferences this mod
 > **Preserving the draft.** The draft's notification requirements — student notified on assignment, on transfer, on
 > reservation expiry; staff notified on capacity — are all preserved. Three of the four already have an event that
 > BC Map §9 routes to `BC-22`. The fourth, reservation-expiry reminders, has no `BC-04` event and cannot be given
-> one without an ADR, so it is carried by a work queue in V1 and classified V2 in §38. This is a scoping change, not
+> one without an ADR, so it is carried by a work queue in V1 and classified V2 in §34. This is a scoping change, not
 > a removal.
 
 ---
@@ -1759,7 +1759,7 @@ per-seat status and live occupancy *"MUST NOT be public in V1."*
 
 `SEAT-XC-020` — **Public live occupancy is deferred to V2** by `ARCHITECTURE_RULINGS.md` §6, `LIB-24.2` and
 `LIB-14B.13`, *"pending a privacy review."* It **MUST NOT** be invented here. A tenant-configurable
-*"busy / moderate / quiet"* public indicator is **V2**, classified in §38.
+*"busy / moderate / quiet"* public indicator is **V2**, classified in §34.
 
 ---
 
@@ -1818,7 +1818,7 @@ specified, so that each is testable:
 presets created by Platform Support.
 
 `SEAT-FR-260` — Filter criteria **MUST** combine conjunctively (AND) in V1. Arbitrary boolean expression building is
-**V2** (§38). This is a deliberate limit: a query language is a feature with its own surface, and the draft did not
+**V2** (§34). This is a deliberate limit: a query language is a feature with its own surface, and the draft did not
 ask for one.
 
 `SEAT-FR-261` — A filter that would produce an unbounded result **MUST** be paginated, and pagination **MUST** be
@@ -1901,7 +1901,7 @@ the membership requirement of `SEAT-BR-014`, the tenancy rules of §29, or an au
 that can switch off a `MUST` is a defect.
 
 `SEAT-XC-022` — Per-seat, per-student and per-role configuration overrides are **out of scope**. Every configurable
-above is tenant-scoped, or branch-scoped where `BC-06` owns it. Per-seat policy is **V3** (§38).
+above is tenant-scoped, or branch-scoped where `BC-06` owns it. Per-seat policy is **V3** (§34).
 
 ---
 
@@ -2133,7 +2133,7 @@ Case numbering follows the review instruction's list, so that cases already cite
 | 23 | A network retry causes one assignment request to arrive twice | Exactly one allocation, one history row, one audit fact and one notification fact. The idempotency key makes the second call return the first result | `SEAT-BR-032`, `SEAT-FR-203` |
 | 24 | A duplicate request arrives with **no** idempotency key | It is rejected by the invariants, not silently accepted. The invariant is the backstop; the key is the optimisation | `SEAT-FR-204` |
 | 25 | A seat is renumbered after a student has sat in it | History still reads correctly, because the internal identifier never changes and each released allocation retains the number as it was | `SEAT-BR-004`, `SEAT-BR-034` |
-| 26 | A seat is moved to a different position in the layout editor | Nothing about identity, allocation, category or history changes. Position is presentation | `SEAT-BR-006`, `SEAT-FR-024` |
+| 26 | A seat is moved to a different position in the layout editor | Nothing about identity, allocation, category or history changes. Position is presentation | `SEAT-BR-007`, `SEAT-BR-004` |
 | 27 | A seat is dragged into a different zone | This is **not** a move — it is a change of container, which is a structural operation, and it **MUST** be refused while an active allocation exists | `SEAT-FR-297` **new** |
 | 28 | A layout is edited so that a seat holding an active allocation would be deleted | Refused. BC Map §8: *"layout edits cannot orphan an active allocation"* | `SEAT-INV-006`, `SEAT-FR-033` |
 | 29 | A floor or zone is deactivated in `BC-06` while seats on it are allocated | Seats are **not** deleted (`LIB-10.6`). Existing allocations are retained and flagged; new acquisition on that container is refused | `SEAT-FR-298` **new** |
@@ -2276,5 +2276,558 @@ and, per `MM-NFR-014`, **MUST** be treated as unmet.
 `SEAT-NFR-012` — Deriving `SeatState` (§6), reservation expiry (§12) and operational metrics (§25) at read time
 **MUST** be cheap enough to be done on every read. This is a deliberate trade: the module accepts read-time
 computation in exchange for never having a stored status that can disagree with the facts beneath it.
+
+---
+## 33. Acceptance criteria
+
+Every criterion below is deterministic: a fixed precondition, a single action, and one observable outcome. The
+**Verifies** column names the requirement each criterion tests, so a reader can go from any requirement to its test
+and back. Per `SEAT-NFR-011`, every criterion is observable through module state, a module read model or an emitted
+event — nothing here depends on inspecting internals.
+
+Criteria are written against the module's behaviour, not against a screen layout, so a change of user interface does
+not invalidate them.
+
+### 33.1 Spatial model, seat identity and the layout editor
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-001` | A tenant with one branch and no additional floors configured | Seats are created | They attach to the single default floor and its default zone, and creation succeeds | `SEAT-FR-016` |
+| `SEAT-AC-002` | A zone `A` on floor 1 containing seat `A1` | A second seat numbered `A1` is created in zone `A` | Creation is rejected, naming the duplicate number and the zone | `SEAT-BR-005` |
+| `SEAT-AC-003` | Seat `A1` exists in floor 1 zone `A` | Seat `A1` is created in floor 2 zone `B` | Creation succeeds; the two seats are distinct with distinct internal identifiers | `SEAT-BR-006` |
+| `SEAT-AC-004` | A seat number is submitted as `" A1 "` | The seat is created | The stored number is `A1`, and a later `A1` in the same zone is rejected as a duplicate | `SEAT-FR-026` |
+| `SEAT-AC-005` | Seat `S` holds an active allocation | `S` is renumbered from `A1` to `B7` | Renumbering succeeds, the allocation is unchanged, and `S`'s internal identifier is unchanged | `SEAT-FR-027`, `SEAT-BR-004` |
+| `SEAT-AC-006` | Seat `S` holds an active allocation, a lock, and a maintenance record | `S` is dragged to a new position and the layout is saved | Identifier, number, category, type, lock state, maintenance state, allocation, reservation and every history row are unchanged | `SEAT-BR-007` |
+| `SEAT-AC-007` | A layout containing seat `S` with an active allocation | An edit is submitted that deletes `S` | The edit is rejected; no allocation is orphaned | `SEAT-BR-008` |
+| `SEAT-AC-008` | A tenant configures the zone label as `"Room"` | A staff member views any seat surface | The container is labelled `Room` throughout, and the underlying container is still a `Zone` with unchanged behaviour | `SEAT-FR-014` |
+| `SEAT-AC-009` | A `Floor` exists in `BC-06` | This module attempts to rename it | No such operation is available; the attempt cannot be expressed through this module | `SEAT-FR-015` |
+| `SEAT-AC-010` | A floor declares capacity 50 and 60 seats are configured in it | The floor is viewed | Both figures are shown as distinct labelled values; neither is silently corrected and no error blocks operation | `SEAT-FR-018` |
+| `SEAT-AC-011` | A zone contains 20 seats, 5 with active allocations | The zone is set inactive in `BC-06` | No seat is deleted and no allocation is destroyed | `SEAT-FR-019` |
+| `SEAT-AC-012` | A zone has an active layout version `v3` | A layout edit is saved | A new version `v4` becomes active, `v3` is retained, and exactly one version is active | `SEAT-FR-021`, `SEAT-FR-022` |
+| `SEAT-AC-013` | A layout containing a wall, a door, a table and a pillar | A student attempts to book the table | The table is not offered and cannot be addressed by any allocation, reservation, lock or search operation | `SEAT-FR-032` |
+| `SEAT-AC-014` | A Manager without a layout-edit grant | The Manager opens the layout editor | Editing is denied; the layout is readable | `SEAT-FR-028`, `SEAT-PO-016` |
+| `SEAT-AC-015` | A tenant with no 3D layout configured | Every seat operation in this document is exercised | All succeed; no requirement is unsatisfiable for want of 3D | `SEAT-FR-035`, `SEAT-FR-005` |
+| `SEAT-AC-016` | A layout edit placing two seats at the same coordinates | The edit is saved | The edit is rejected before persistence with a reason naming the collision | `SEAT-FR-034` |
+
+### 33.2 Seat lifecycle and derived state
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-017` | A seat with no maintenance, no allocation and no unexpired reservation | Its state is read | `Available` | `SEAT-FR-037`, `SEAT-FR-040` |
+| `SEAT-AC-018` | A seat with an active allocation and an active maintenance record | Its state is read | `Maintenance` — maintenance outranks occupancy | `SEAT-FR-037` |
+| `SEAT-AC-019` | A seat with an active allocation and an unexpired reservation held by the same student | Its state is read | `Occupied` — occupancy outranks reservation | `SEAT-FR-037` |
+| `SEAT-AC-020` | A seat with an active allocation whose holder has not checked in | Its state is read | `Occupied`, with the physically-occupied indicator false | `SEAT-FR-041` |
+| `SEAT-AC-021` | An available seat is locked | Its state is read | `Available`, with the lock flag set — `Locked` is never returned as a state value | `SEAT-FR-038`, `SEAT-XC-001` |
+| `SEAT-AC-022` | A locked available seat | An acquisition is attempted | It is refused at gate step G12, naming the lock | `SEAT-BR-025` |
+| `SEAT-AC-023` | Any seat at any time | Its state is read twice with no intervening fact change | The same value is returned both times, and no code path exists that sets the state directly | `SEAT-BR-010`, `SEAT-XC-002` |
+| `SEAT-AC-024` | A seat under maintenance | A booking, reservation, assignment or auto-assignment is attempted | Every one is rejected with the maintenance reason | `SEAT-FR-043`, `SEAT-FR-169` |
+| `SEAT-AC-025` | A seat whose five facts are set so that maintenance is active | Maintenance ends | The state recomputes from the remaining facts; no fact was implicitly cleared by the maintenance change | `SEAT-BR-009` |
+| `SEAT-AC-026` | A seat displayed on a staff surface with a lock set | The surface is rendered | Both the derived state and the lock flag with its reason are shown | `SEAT-FR-039` |
+| `SEAT-AC-027` | An `Occupied` seat | A transition to `Available` is attempted without a release | The transition is rejected with a distinguishable reason | `SEAT-FR-045` |
+
+### 33.3 The acquisition gate
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-028` | Any of staff assignment, student booking, reservation creation, reservation conversion, auto-assignment, QR assignment, bulk reassignment or seat-change approval | The operation runs | The same ordered gate G1…G16 is evaluated, in the same order | `SEAT-FR-052`, `SEAT-XC-003` |
+| `SEAT-AC-029` | A student whose `EnrollmentStatus` is `Suspended` | Staff attempt to assign a seat | Rejected at G6, naming enrollment status | `SEAT-BR-013` |
+| `SEAT-AC-030` | A student with no valid membership, and an actor holding the Owner role | Owner attempts to assign a seat | Rejected at G7. No override affordance exists for any role | `SEAT-BR-014`, `SEAT-XC-004` |
+| `SEAT-AC-031` | A gate step fails | The response is returned | It names the failing step, and where a limit is involved, the limit and the current value | `SEAT-FR-053`, `SEAT-NFR-010` |
+| `SEAT-AC-032` | A gate step fails midway through evaluation | The transaction ends | No allocation, reservation, history row, counter change or event is produced | `SEAT-FR-054` |
+| `SEAT-AC-033` | A student whose `EnrollmentStatus` is `Inactive`, with `SEAT-CFG-003` unset | Staff attempt to assign a seat | Rejected — the default is *blocks* | `SEAT-CFG-003`, `SEAT-GAP-002` |
+| `SEAT-AC-034` | A seat in a zone that has become inactive | An acquisition is attempted | Rejected at G10, naming the inactive container | `SEAT-FR-298` |
+| `SEAT-AC-035` | Two acquisition attempts on one seat arriving concurrently | Both run | Exactly one succeeds; the other is rejected at G16 under a pessimistic lock, never by an optimistic retry | `SEAT-BR-015`, `SEAT-BR-031` |
+
+### 33.4 Allocation, quota and invariants
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-036` | A seat with an active allocation for window `W` | A second active allocation for a window overlapping `W` is attempted | Rejected by a database constraint under a pessimistic lock, not by an application-level read-then-write check | `SEAT-INV-001`, `SEAT-BR-011` |
+| `SEAT-AC-037` | An allocation is created | Its stored fields are inspected | It carries `StudentRecordId`, and carries no `PersonId`, name, contact detail or monetary value | `SEAT-FR-047`, `SEAT-FR-010` |
+| `SEAT-AC-038` | A student with published `seatQuota` 1 holding one active allocation | A second overlapping allocation is attempted | Rejected, naming the quota and the current count | `SEAT-BR-012`, `SEAT-INV-002` |
+| `SEAT-AC-039` | An `E-02` projection that omits `seatQuota`, with `SEAT-CFG-002` unset | An allocation is attempted | The effective quota is 1 | `SEAT-FR-049` |
+| `SEAT-AC-040` | An allocation with `validFrom` equal to `validUntil` | It is submitted | Rejected — the window must be strictly positive | `SEAT-INV-003` |
+| `SEAT-AC-041` | An allocation created by each of the eight origins in turn | Each is inspected | Each records its origin from the closed set, the origin is immutable, and it appears in the timeline and the audit fact | `SEAT-FR-050`, `SEAT-FR-051` |
+| `SEAT-AC-042` | An allocation whose seat belongs to tenant `T1` | The allocation is written with tenant `T2` | Rejected; tenant identifiers must agree | `SEAT-INV-007`, `SEAT-INV-010` |
+| `SEAT-AC-043` | A seat holding an active allocation for window `W` | An unexpired reservation for the same seat and same window `W` is attempted | Rejected | `SEAT-INV-013` |
+
+### 33.5 Staff assignment, release and transfer
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-044` | A Reception user and an available seat | A student is selected and assigned | The allocation is created with origin `StaffAssigned`, recording actor and timestamp | `SEAT-FR-055`, `SEAT-FR-057` |
+| `SEAT-AC-045` | A Reception user assigning a seat | The student is not explicitly selected | The operation cannot proceed; the module does not infer a student | `SEAT-FR-056` |
+| `SEAT-AC-046` | Seat `S` occupied by student `X` | Staff attempt to assign `S` to student `Y` in one step | Rejected; two explicit steps — release or transfer, then assign — are required | `SEAT-BR-016`, `SEAT-FR-058` |
+| `SEAT-AC-047` | An active allocation | It is released | Its state becomes `Released`, it is retained, and no delete operation exists for it | `SEAT-FR-061`, `SEAT-XC-014` |
+| `SEAT-AC-048` | An active allocation | Release is submitted with no reason | Rejected; a reason is mandatory | `SEAT-FR-060`, `SEAT-FR-224` |
+| `SEAT-AC-049` | Student `X` on seat `S1`, destination seat `S2` available | A transfer is executed | `X` holds `S2` and no longer holds `S1`; both effects are committed together or neither is | `SEAT-FR-063` |
+| `SEAT-AC-050` | Student `X` on seat `S1`, destination `S2` under maintenance | A transfer to `S2` is attempted | Rejected before `S1` is released; `X` still holds `S1` | `SEAT-FR-064` |
+| `SEAT-AC-051` | `maxTransfersPerDay` is 2 and student `X` has had 2 transfers today | A third staff-initiated transfer is attempted | Rejected, naming the limit and the count already used | `SEAT-BR-017`, `SEAT-FR-066` |
+| `SEAT-AC-052` | `maxTransfersPerDay` is reached for student `X` | A relocation is performed under a maintenance `Relocate` disposition | It succeeds and does not count against the limit | `SEAT-FR-067`, `SEAT-FR-168` |
+| `SEAT-AC-053` | `maxTransfersPerDay` is reached, `SEAT-CFG-005` unset | A Manager attempts to override the limit | Denied; only Owner may override by default | `SEAT-CFG-005` |
+| `SEAT-AC-054` | A completed transfer | The two allocation records are inspected | Exactly one transfer linkage exists, bidirectional, written atomically with the release and the new allocation | `SEAT-FR-065`, `SEAT-FR-220` |
+
+### 33.6 Seat-change requests, self-booking and reservations
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-055` | A student holding a seat | A seat-change request is raised | A request record is created in state `Pending`, and no seat is created, moved, reserved or held | `SEAT-FR-068`, `SEAT-FR-069` |
+| `SEAT-AC-056` | A student with one `Pending` request and `SEAT-CFG-006` at its default | A second request is raised | Rejected, naming the limit | `SEAT-FR-074`, `SEAT-CFG-006` |
+| `SEAT-AC-057` | A `Pending` request whose desired seat has since been taken | Staff approve the request | Approval fails, re-evaluating the full gate at approval time and naming the failing step | `SEAT-FR-072`, `SEAT-FR-129` |
+| `SEAT-AC-058` | A `Pending` request older than `SEAT-CFG-007` | Its state is read | `Expired` | `SEAT-FR-075` |
+| `SEAT-AC-059` | A student with a `Pending` request | The student cancels it | It becomes `Cancelled`; the student cannot cancel another student's request | `SEAT-FR-073`, `SEAT-FR-077` |
+| `SEAT-AC-060` | Self-booking with `SEAT-CFG-008` unset | A student attempts to book | Denied — self-booking is disabled by default | `SEAT-FR-076`, `SEAT-CFG-008` |
+| `SEAT-AC-061` | Self-booking enabled | A student submits a booking with no date | Rejected; an explicit `validFrom` and `validUntil` are required | `SEAT-FR-080` |
+| `SEAT-AC-062` | A student whose membership `validUntil` is 30 June, `SEAT-CFG-009` unset | A booking to 15 July is submitted | Rejected — the default is `reject`, not silent truncation | `SEAT-FR-081`, `SEAT-CFG-009` |
+| `SEAT-AC-063` | Self-booking enabled | A booking starting yesterday is submitted | Rejected | `SEAT-FR-082` |
+| `SEAT-AC-064` | `reservationWindow` from `E-05` is 7 days | A booking starting in 30 days is submitted | Rejected, naming the window | `SEAT-FR-083` |
+| `SEAT-AC-065` | Booking mode unset | A student books an available seat | A `Pending` reservation is created requiring approval — `ApprovalRequired` is the default | `SEAT-FR-086`, `SEAT-CFG-010` |
+| `SEAT-AC-066` | Booking mode `Direct` | A student books an available seat | An allocation is created directly with origin `StudentBooked`, the full gate having been evaluated at creation | `SEAT-FR-086`, `SEAT-FR-087` |
+| `SEAT-AC-067` | A `Pending` reservation | Its seat's state is read | The seat is not held by the pending reservation; another student may still acquire it | `SEAT-FR-127` |
+| `SEAT-AC-068` | Conversion mode unset and a student with an active reservation | The student checks in | The reservation converts to an allocation — `OnCheckIn` is the default | `SEAT-FR-089`, `SEAT-CFG-011` |
+| `SEAT-AC-069` | A reservation created while the membership was valid, which then expired | Conversion is triggered | Conversion fails, re-evaluating gate steps G6, G7, G8, G11 and G12 | `SEAT-FR-091` |
+| `SEAT-AC-070` | An already-converted reservation | A second conversion trigger fires | The second trigger has no effect and produces no second allocation | `SEAT-FR-090` |
+| `SEAT-AC-071` | A reservation submitted without `expiresAt` | It is created | Rejected; no reservation may exist without an expiry | `SEAT-FR-092` |
+| `SEAT-AC-072` | A reservation whose `expiresAt` has passed, with no background job having run | Its state is read | `Expired`, and the seat reads as `Available` | `SEAT-FR-093`, `SEAT-FR-095` |
+| `SEAT-AC-073` | A reservation expires | The outcome is inspected | No allocation is created, no monetary effect occurs, and the reservation is retained with its terminal state | `SEAT-FR-094`, `SEAT-FR-225` |
+| `SEAT-AC-074` | A student with 2 consecutive expiries, `SEAT-CFG-012` at default 3 | A third reservation expires unconverted | Self-booking is suspended for `SEAT-CFG-013`, default 7 days | `SEAT-FR-096` |
+| `SEAT-AC-075` | Seat `S` holds an unexpired reservation for student `X` | Staff attempt to assign `S` to student `Y` | Rejected unless the reservation is first cancelled | `SEAT-FR-097` |
+| `SEAT-AC-076` | Seat `S` holds an unexpired reservation for student `X` | Staff assign `S` to `X` | It succeeds as conversion, not as a competing allocation | `SEAT-FR-098` |
+| `SEAT-AC-077` | Seat `S` has an allocation ending 30 June | A student books `S` from 1 July | Accepted — non-overlapping future windows are permitted | `SEAT-FR-100` |
+| `SEAT-AC-078` | An unavailable seat | A student attempts to join a queue for it | No waiting-list affordance exists | `SEAT-FR-101`, `SEAT-XC-005` |
+| `SEAT-AC-079` | A student with `SEAT-CFG-016` at default 1 holding one active reservation | A second reservation is attempted | Rejected | `SEAT-FR-121` |
+| `SEAT-AC-080` | A Reception user with `SEAT-CFG-014` unset | Reception attempts to cancel another student's reservation | Denied | `SEAT-FR-102`, `SEAT-CFG-014` |
+| `SEAT-AC-081` | An active reservation | Staff cancel it | Actor, timestamp and a mandatory reason are recorded, and the seat returns to `Available` | `SEAT-BR-019` |
+| `SEAT-AC-082` | An active reservation whose student is then suspended | The reservation is read | It is auto-cancelled with the triggering condition recorded | `SEAT-FR-125`, `SEAT-FR-126` |
+| `SEAT-AC-083` | A student books the same seat twice for overlapping windows | The second booking is submitted | Rejected | `SEAT-FR-124`, `SEAT-INV-005` |
+
+### 33.7 Fixed and Flexible, shifts, categories and eligibility
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-084` | A `Fixed` seat with an allocation for the day | A second student attempts to acquire it for a non-overlapping shift the same day | Rejected — `Fixed` is held for the whole window | `SEAT-FR-132` |
+| `SEAT-AC-085` | A `Flexible` seat with a morning-shift allocation | A second student acquires it for the evening shift | Accepted; both allocations coexist | `SEAT-FR-133`, `SEAT-BR-022` |
+| `SEAT-AC-086` | A `Flexible` seat with a morning-shift allocation | A second student attempts the same morning shift | Rejected | `SEAT-BR-022`, `SEAT-INV-001` |
+| `SEAT-AC-087` | A `Fixed` seat with an active allocation | The seat is changed to `Flexible` | The change succeeds and the allocation is unaltered, unshortened and unsplit | `SEAT-FR-134` |
+| `SEAT-AC-088` | A `Flexible` seat with two overlapping-day allocations in different shifts | The seat is changed to `Fixed` | Rejected, naming the conflicting allocations | `SEAT-FR-135` |
+| `SEAT-AC-089` | A student on a shift-bounded `Flexible` allocation | The student's shift changes in `BC-02` | The allocation is retained and flagged for staff review; it is never automatically released | `SEAT-FR-139`, `SEAT-FR-140`, `SEAT-BR-043` |
+| `SEAT-AC-090` | An allocation referencing shift `Morning` | `Morning` is deleted in `BC-06` | The allocation retains the shift reference and is flagged; it is not released | `SEAT-FR-141` |
+| `SEAT-AC-091` | A tenant defining a new seat category | The category is added | It is added as data with no code change, and seats may reference it | `SEAT-FR-142`, `SEAT-FR-143` |
+| `SEAT-AC-092` | A category referenced by at least one seat | Deletion is attempted | Rejected; deactivation is offered instead, and existing seats keep the category | `SEAT-FR-145` |
+| `SEAT-AC-093` | A seat with an active allocation | Its category changes from `Normal` to `Premium` | The allocation is retained, unaltered and not invalidated | `SEAT-FR-146`, `SEAT-BR-024` |
+| `SEAT-AC-094` | An `E-02` projection carrying no permitted-category list | A student acquires a `VIP` seat | Permitted — an absent list means no restriction | `SEAT-FR-148` |
+| `SEAT-AC-095` | A student whose plan does not permit `Premium` | A `Premium` seat is attempted | Rejected, stating the category and the reason, and disclosing nothing about any other student | `SEAT-FR-147`, `SEAT-FR-149` |
+| `SEAT-AC-096` | A student holding a `Premium` seat whose plan changes to one without `Premium` | The change is processed | The allocation is retained and flagged; eligibility is not re-evaluated continuously | `SEAT-FR-150`, `SEAT-BR-042` |
+| `SEAT-AC-097` | Any seat category | Its stored fields are inspected | No price, fee or monetary amount is present | `SEAT-FR-144`, `SEAT-FR-279` |
+
+### 33.8 The Membership and Attendance boundaries
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-098` | Any point in the module | Membership validity is needed | It is read from the `E-02` projection only; no local computation, derivation or override exists | `SEAT-FR-151`, `SEAT-XC-010` |
+| `SEAT-AC-099` | The `E-02` projection is unreachable | An acquisition is attempted | It fails closed, with an explicit reason distinguishing unavailability from invalidity | `SEAT-FR-152` |
+| `SEAT-AC-100` | The `E-02` projection is unreachable | A seat card, layout, allocation or occupancy count is read | The read succeeds, with the composed membership fields marked unavailable | `SEAT-FR-153`, `SEAT-FR-106` |
+| `SEAT-AC-101` | A membership renewed 3 seconds ago, projection not yet updated | An acquisition is attempted | The stale result is accepted as a bounded risk within 5 seconds and is not treated as a defect | `SEAT-FR-154`, `SEAT-NFR-002` |
+| `SEAT-AC-102` | An active allocation whose membership expires | `MembershipExpired` is consumed | The allocation is flagged and queued for staff; it is not released, per the open `Q-01` | `SEAT-FR-155`, `SEAT-GAP-003` |
+| `SEAT-AC-103` | An active allocation | `MembershipFrozen` is consumed | The allocation is held — neither released nor converted | `SEAT-FR-156` |
+| `SEAT-AC-104` | Any seat screen | It is rendered | No renew, pay or collect affordance exists, and no monetary value is shown | `SEAT-XC-011`, `SEAT-FR-279` |
+| `SEAT-AC-105` | This module and `BC-02` | Any operation runs | No publication, command call or write to `BC-02` occurs | `SEAT-FR-157` |
+| `SEAT-AC-106` | A student with an active allocation | `StudentCheckedIn` arrives | The allocation is marked physically occupied and the live count increments; no attendance record is created | `SEAT-FR-109`, `SEAT-BR-020` |
+| `SEAT-AC-107` | A student with **no** active allocation | `StudentCheckedIn` arrives | The check-in is recorded as unseated occupancy and is **never rejected**; `BC-03` remains authoritative | `SEAT-FR-112` |
+| `SEAT-AC-108` | A check-in already processed | The same event is redelivered | The count is unchanged — handling is idempotent by event identifier | `SEAT-FR-111`, `SEAT-FR-205` |
+| `SEAT-AC-109` | A check-in whose `tenantId` cannot be resolved | The handler runs | It fails loudly and processes nothing; it never defaults to a tenant | `SEAT-FR-113`, `SEAT-FR-289` |
+| `SEAT-AC-110` | Occupancy accumulated during a day | The operating day rolls over per `BC-06` | Occupancy resets; allocations are unaffected | `SEAT-FR-114` |
+| `SEAT-AC-111` | A missed or stale `E-08` event | Occupancy is recomputed | It converges from the current allocation set and `BC-03` open sessions; no allocation was corrupted | `SEAT-FR-115`, `SEAT-FR-116`, `SEAT-NFR-006` |
+| `SEAT-AC-112` | Any attendance question — a total, a percentage, a correction or a dispute | It is asked of this module | This module is not the source; no attendance record, correction or verification evidence is stored here | `SEAT-XC-007`, `SEAT-XC-008` |
+| `SEAT-AC-113` | A check-in identifying a student who is not the holder of the seat scanned | The event is processed | Both facts are recorded, the discrepancy is flagged for staff, and neither allocation nor attendance is silently altered | `SEAT-FR-299` |
+
+### 33.9 Locking, maintenance and bulk operations
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-114` | A Reception user | Locking a seat is attempted | Denied; Reception holds no lock operation | `SEAT-FR-158`, `SEAT-PO-009` |
+| `SEAT-AC-115` | A lock is submitted with no reason | It is applied | Rejected; a reason is mandatory | `SEAT-FR-159` |
+| `SEAT-AC-116` | An occupied seat | It is locked | The allocation is unchanged, unshortened and valid; the holder keeps the seat | `SEAT-FR-160` |
+| `SEAT-AC-117` | A locked occupied seat | Release or transfer-out of the existing allocation is attempted | It succeeds — a lock never traps a student | `SEAT-FR-161` |
+| `SEAT-AC-118` | A locked seat and an Owner | Owner overrides the lock for one assignment | The assignment succeeds and the override is recorded with actor, timestamp and reason | `SEAT-FR-162`, `SEAT-PO-010` |
+| `SEAT-AC-119` | A locked seat | A student views availability | The seat is not offered, and the lock reason is not disclosed to the student | `SEAT-FR-163`, `SEAT-FR-079` |
+| `SEAT-AC-120` | A Reception user | A seat fault is reported | A `Reported` maintenance record is created and the seat's derived state does **not** become `Maintenance` | `SEAT-FR-166`, `SEAT-PO-012` |
+| `SEAT-AC-121` | A seat with an active allocation | Maintenance is started | The actor must choose Retain, Relocate or Release; the system does not choose, and nothing is silently destroyed | `SEAT-FR-167`, `SEAT-BR-026` |
+| `SEAT-AC-122` | A seat with an unexpired reservation | Maintenance is started | The reservation is cancelled with the cause recorded | `SEAT-BR-027`, `SEAT-FR-126` |
+| `SEAT-AC-123` | A seat under maintenance | Availability counts, auto-assignment candidates and student availability are computed | The seat is excluded from all three | `SEAT-FR-169` |
+| `SEAT-AC-124` | Maintenance has started and ended twice on a seat | The seat timeline is read | Both maintenance episodes appear in order | `SEAT-FR-170`, `SEAT-FR-227` |
+| `SEAT-AC-125` | An import file of 100 rows where row 57 has a duplicate seat number | The import is submitted | No row is applied, and the response names row 57 and the reason | `SEAT-BR-028`, `SEAT-FR-172` |
+| `SEAT-AC-126` | An import file referencing a zone that does not exist | It is submitted | Rejected; the import creates no `Floor` and no `Zone` | `SEAT-FR-174` |
+| `SEAT-AC-127` | An import already applied under key `K` | The same file is submitted again with key `K` | No duplicate seat is created | `SEAT-FR-173` |
+| `SEAT-AC-128` | An import of 2,001 rows | It is submitted | Rejected, naming the limit | `SEAT-FR-179` |
+| `SEAT-AC-129` | A completed export | Its contents are inspected | Seat inventory and layout only — no student identifier, no membership data, no monetary value | `SEAT-FR-175`, `SEAT-FR-284` |
+| `SEAT-AC-130` | A bulk reassignment of 10 seats where student 4 has no valid membership | It is submitted | No reassignment is applied; the gate ran per student per destination seat | `SEAT-BR-029`, `SEAT-FR-177` |
+| `SEAT-AC-131` | Any completed bulk operation | Audit is inspected | Exactly one audit fact describes the operation, its actor, its scope and its row count | `SEAT-FR-178`, `SEAT-FR-285` |
+
+### 33.10 Auto-assignment, QR, real-time and idempotency
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-132` | A student and a set of seats | Auto-assignment runs twice against identical state | It selects the same seat both times, applying the four criteria in the defined order | `SEAT-FR-182` |
+| `SEAT-AC-133` | A student with no valid membership | Auto-assignment is requested | It fails; the candidate set is exactly the seats passing every gate step, so no gate is bypassed | `SEAT-FR-181`, `SEAT-XC-003` |
+| `SEAT-AC-134` | No seat passes the gate for a student | Auto-assignment runs | It fails with a reason naming the most restrictive failing criterion | `SEAT-FR-183` |
+| `SEAT-AC-135` | A tenant with auto-assignment available | Time passes with no staff action | No allocation is created — auto-assignment never runs unattended in V1 | `SEAT-FR-185` |
+| `SEAT-AC-136` | A successful auto-assignment | The allocation is inspected | Origin is `AutoAssigned` and the selecting criteria are recorded | `SEAT-FR-184` |
+| `SEAT-AC-137` | An unauthenticated party scans a seat QR code | The scan is processed | Nothing is assigned; the scan authenticates nobody | `SEAT-BR-030`, `SEAT-FR-187` |
+| `SEAT-AC-138` | An authenticated student scans a seat QR code | The scan is processed | It is treated as a booking, subject to `SEAT-CFG-008` and the full gate | `SEAT-FR-189` |
+| `SEAT-AC-139` | Authenticated staff scan a seat QR code | The scan is processed | The student must be selected explicitly; no student is inferred | `SEAT-FR-190`, `SEAT-FR-056` |
+| `SEAT-AC-140` | A seat QR code is regenerated | The previous code is scanned | It is rejected as invalid | `SEAT-FR-191` |
+| `SEAT-AC-141` | A student scans a seat QR code intending to record attendance | The scan is processed | No attendance record is created by this module | `SEAT-XC-012` |
+| `SEAT-AC-142` | Two staff surfaces viewing one zone | A seat is assigned on the first | The second reflects the change without a manual refresh | `SEAT-FR-192`, `SEAT-NFR-006` |
+| `SEAT-AC-143` | A real-time subscription for tenant `T1` | A seat changes in tenant `T2` | No update is delivered to the `T1` subscriber | `SEAT-FR-193`, `SEAT-INV-009` |
+| `SEAT-AC-144` | A real-time payload | It is inspected | It carries derived state, lock flag and occupancy indicator only — no student identity | `SEAT-FR-195`, `SEAT-FR-276` |
+| `SEAT-AC-145` | A client that missed real-time messages | It acts on its stale view | The authoritative check at the server rejects the invalid action; real-time was never the source of truth | `SEAT-FR-194` |
+| `SEAT-AC-146` | Two concurrent transfers of the same student | Both run | Exactly one succeeds; the student never holds two seats in violation of quota | `SEAT-FR-197`, `SEAT-INV-002` |
+| `SEAT-AC-147` | A lock cannot be acquired within the bounded timeout | The operation ends | It is reported as retryable, not as a permanent failure | `SEAT-FR-199` |
+| `SEAT-AC-148` | A concurrent maintenance-start and acquisition on one seat | Both run | Exactly one outcome holds, and the seat is never both acquired and under maintenance for the same window | `SEAT-FR-200`, `SEAT-XC-001` |
+| `SEAT-AC-149` | A request with idempotency key `K` that has already been processed | It is submitted again | Exactly one allocation, one history row and one event exist | `SEAT-FR-201`, `SEAT-FR-203`, `SEAT-BR-032` |
+| `SEAT-AC-150` | A duplicate request submitted with **no** idempotency key | It is submitted | It is rejected by the invariants, not silently accepted | `SEAT-FR-204` |
+| `SEAT-AC-151` | An idempotency key used in tenant `T1` | The same key value is used in tenant `T2` | Both operations proceed independently; keys are scoped per tenant and per operation | `SEAT-FR-202` |
+| `SEAT-AC-152` | A retry that reaches the server twice | Both arrive | No second allocation, reservation or transfer row is created | `SEAT-XC-013` |
+
+### 33.11 History, audit, notifications, metrics and search
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-153` | A released allocation | An edit or delete is attempted by any role including Owner | No such operation exists | `SEAT-INV-008`, `SEAT-XC-014` |
+| `SEAT-AC-154` | Seat `A1` is released and later renumbered to `B7` | The released allocation is read | It shows `A1`, the number as at release | `SEAT-BR-034` |
+| `SEAT-AC-155` | A chain of three transfers | Transfer history is read | It is produced by walking the allocation linkage; no separate transfer log exists that could disagree | `SEAT-FR-221`, `SEAT-BR-033` |
+| `SEAT-AC-156` | A transfer chain, then a layout edit, a renumber and a category change | The chain is read | It is intact and unbroken | `SEAT-FR-222` |
+| `SEAT-AC-157` | An allocation ended other than by transfer | It is read | It carries a release reason from the closed nine-value set | `SEAT-FR-223` |
+| `SEAT-AC-158` | A seat with allocations, reservations, locks and maintenance episodes | Its timeline is read | All appear in one chronological order by recorded fact time, rebuildable from stored data with no separate write path | `SEAT-FR-227`, `SEAT-FR-228`, `SEAT-FR-229` |
+| `SEAT-AC-159` | A student views their own history | The view is rendered | It is restricted to their own allocations and reveals no other student | `SEAT-FR-230`, `SEAT-FR-275` |
+| `SEAT-AC-160` | Any protected operation completes | Audit is inspected | Exactly one audit fact was emitted over `E-20`, asynchronously, and the operation did not wait for it | `SEAT-FR-233`, `SEAT-FR-234`, `SEAT-NFR-008` |
+| `SEAT-AC-161` | A protected operation is **denied** | Audit is inspected | The denial is audited even though the caller's response discloses nothing | `SEAT-FR-236`, `SEAT-FR-283` |
+| `SEAT-AC-162` | An audit fact | Its payload is inspected | No student name, contact detail, `PersonId` or membership amount is present | `SEAT-FR-235` |
+| `SEAT-AC-163` | Any module screen or report | It is rendered | `BC-24`'s store was not read to produce it | `SEAT-FR-237` |
+| `SEAT-AC-164` | Audit emission fails transiently | The operation completes | The operation succeeds and the audit fact is delivered eventually by the outbox, not dropped | `SEAT-NFR-008` |
+| `SEAT-AC-165` | Any notifiable seat fact | The module acts | No SMS, push, email or template is produced, and no delivery state is stored or displayed | `SEAT-FR-238`, `SEAT-XC-016`, `SEAT-XC-017` |
+| `SEAT-AC-166` | The full set of events this module emits | It is enumerated | It is exactly the four of `SEAT-EVT-001`…`004`; no command-shaped event exists | `SEAT-FR-206`, `SEAT-BR-035` |
+| `SEAT-AC-167` | Any emitted event | Its payload is inspected | It carries `tenantId` and, where a student is involved, `StudentRecordId` — never a name, contact detail or `PersonId` | `SEAT-FR-208`, `SEAT-FR-209` |
+| `SEAT-AC-168` | A lock, unlock, maintenance start, maintenance end, reservation creation or reservation expiry | It occurs | No domain event is emitted, and the fact appears in the corresponding work queue | `SEAT-FR-210`, `SEAT-FR-240` |
+| `SEAT-AC-169` | Occupancy at 88% with the threshold at its default 90% | Occupancy rises to 91% and then to 95% | `SEAT-EVT-004` is emitted once, on the crossing, not on every change while above | `SEAT-FR-242`, `SEAT-CFG-017` |
+| `SEAT-AC-170` | No occupancy threshold configured | Occupancy rises to 100% | No `SEAT-EVT-004` is emitted | `SEAT-FR-241`, `SEAT-GAP-005` |
+| `SEAT-AC-171` | A work queue containing flagged allocations | Time passes with no staff action | Nothing is released, converted or altered — a queue never acts | `SEAT-FR-217` |
+| `SEAT-AC-172` | `policy.BranchPolicyChanged` is consumed | Existing allocations are inspected | `SeatRules` are re-read and no existing allocation, reservation or counted transfer is retroactively re-evaluated | `SEAT-FR-215`, `SEAT-FR-264` |
+| `SEAT-AC-173` | A zone with 100 seats, 70 allocated, 40 holders checked in | Metrics are read | Allocation rate and occupancy rate are two distinct labelled figures, 70% and 40%, never conflated into one | `SEAT-FR-245` |
+| `SEAT-AC-174` | Any operational metric | It is read | It carries an as-of time and is computed from current state by a single query | `SEAT-FR-246`, `SEAT-FR-247` |
+| `SEAT-AC-175` | A request for an occupancy trend, a peak hour or a forecast | It is made of this module | It is not served here; `BC-26` answers it from the emitted events | `SEAT-XC-018`, `SEAT-FR-248` |
+| `SEAT-AC-176` | An unauthenticated public visitor | The public library profile is viewed | No per-seat identity, per-seat state or live per-seat occupancy is exposed | `SEAT-FR-250`, `SEAT-XC-009`, `SEAT-XC-020` |
+| `SEAT-AC-177` | A search by seat number, zone, floor, category, type and state in turn | Each is run | Each returns the matching seats, confined to the caller's tenant and permitted scope | `SEAT-FR-251`, `SEAT-FR-254` |
+| `SEAT-AC-178` | A search for a student's seat by `StudentRecordId` | It is run | The current allocation is returned | `SEAT-FR-252` |
+| `SEAT-AC-179` | A search by student **name** | It is run | The name is resolved through the authoritative upstream context; no name is stored or indexed here | `SEAT-FR-253`, `SEAT-FR-278` |
+| `SEAT-AC-180` | An identical query, state and caller | It is run twice | The same ordered result is returned both times | `SEAT-FR-255`, `SEAT-FR-261` |
+| `SEAT-AC-181` | A student issuing a seat search | It is run | It cannot be used to enumerate other students | `SEAT-FR-256`, `SEAT-FR-275` |
+| `SEAT-AC-182` | Each of the twelve filter presets in turn | It is applied | Each resolves to its published predicate over existing state, with no new stored field | `SEAT-FR-257`, `SEAT-FR-258` |
+| `SEAT-AC-183` | A filter preset saved in tenant `T1` | Tenant `T2` lists presets | It is not visible | `SEAT-FR-259`, `SEAT-FR-293` |
+| `SEAT-AC-184` | A fuzzy, phonetic or relevance-ranked seat search | It is attempted | It is not offered; `BC-04` is not a search-index producer | `SEAT-XC-021`, `SEAT-FR-262` |
+
+### 33.12 Configuration, permissions and multi-tenancy
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-185` | Every configurable in §27.1 | The register is inspected | Each has exactly one owner, exactly one default and one defining requirement | `SEAT-BR-037` |
+| `SEAT-AC-186` | A configurable that is unset | An operation reads it | The published default applies; no operation fails for want of configuration | `SEAT-FR-265`, `SEAT-NFR-005` |
+| `SEAT-AC-187` | A tenant that has configured nothing | Every operation in this document is exercised | All behave per their published defaults, satisfying `LIB-16.2` | `SEAT-FR-265` |
+| `SEAT-AC-188` | Configuration is read | The mechanism is inspected | It uses `BC-25` typed accessors over `E-19`; no raw string lookup exists | `SEAT-FR-263` |
+| `SEAT-AC-189` | An allocation created under a 3-transfer limit | The limit is reduced to 1 | The existing allocation and its already-counted transfers are unaffected | `SEAT-FR-264` |
+| `SEAT-AC-190` | Any configurable value | It is set to any permitted value | No invariant of §7, no gate step of §8 and no `MUST` in this document is disabled | `SEAT-FR-301`, `SEAT-XC-022` |
+| `SEAT-AC-191` | `maxTransfersPerDay` and `reservationWindow` | Their source is inspected | Both arrive over `E-05` from `BC-06` and are not tenant settings of this module | `SEAT-FR-266` |
+| `SEAT-AC-192` | The set of protected operations | It is enumerated | It is exactly the 24 of §28.2; an operation not listed does not exist | `SEAT-FR-272` |
+| `SEAT-AC-193` | Every protected operation | It is invoked | Authorisation is evaluated **before** the acquisition gate, so an unauthorised caller learns nothing about seat or membership state | `SEAT-FR-271`, `SEAT-FR-282` |
+| `SEAT-AC-194` | A Reception user | Any revenue, fee, price or financial figure is sought on a seat surface | None exists anywhere in the module for any role | `SEAT-BR-038`, `SEAT-FR-279` |
+| `SEAT-AC-195` | Any role including Owner | An attempt is made to override gate step G7, `SEAT-INV-001`, a history record or tenant isolation | Every attempt is denied; no such affordance exists | `SEAT-BR-040`, `SEAT-BR-014` |
+| `SEAT-AC-196` | A Platform Support actor | The protected-operation list is evaluated | No operation is held by default | `SEAT-FR-273` |
+| `SEAT-AC-197` | A parent or guardian | Any protected operation is attempted | All are denied; the guardian may read their own student's seat information only | `SEAT-FR-274` |
+| `SEAT-AC-198` | The module's stored fields, caches and indexes | They are inspected | No student name, photograph, contact detail, guardian data, fee or attendance record is present | `SEAT-FR-010`, `SEAT-FR-278` |
+| `SEAT-AC-199` | A student requesting a seat resource belonging to another student | The request is made | The denial is indistinguishable from not-found in message, status code and the absence of any existence signal | `SEAT-FR-281`, `SEAT-FR-282` |
+| `SEAT-AC-200` | An export attempted by Reception, a student or a guardian | It is requested | Denied in every form | `SEAT-FR-286` |
+| `SEAT-AC-201` | Every seat, layout version, category, allocation, reservation, lock, maintenance record and filter preset | Its row is inspected | Each carries `tenantId` | `SEAT-FR-287` |
+| `SEAT-AC-202` | Any query or mutation | It is executed | It is filtered by the resolved `tenantId`; an unfiltered query cannot be expressed | `SEAT-INV-009` |
+| `SEAT-AC-203` | Tenant context cannot be resolved | An operation is attempted | It fails loudly; no default or fallback tenant is used | `SEAT-FR-289`, `SEAT-FR-290` |
+| `SEAT-AC-204` | A caller in tenant `T1` referencing a seat in tenant `T2` | The request is made | It is treated as not-found, not as forbidden | `SEAT-FR-294`, `SEAT-INV-010` |
+| `SEAT-AC-205` | Tenant `T1` and tenant `T2` each with a seat numbered `A1` | Both are read | Both exist independently with no collision | `SEAT-FR-292` |
+| `SEAT-AC-206` | A tenant at its seat-inventory entitlement limit | A further seat is created | Rejected via `E-17`, checked **before** the aggregate mutates, failing closed | `SEAT-FR-295`, `SEAT-FR-296` |
+| `SEAT-AC-207` | A suspended tenant | Any write in this module is attempted | Every write is rejected; reads behave per `BC-19` | `SEAT-INV-011` |
+| `SEAT-AC-208` | Any global index, cross-tenant surface or global cache key | It is inspected | No `StudentRecordId` appears in it | `SEAT-FR-291` |
+
+### 33.13 Governing rules, remaining invariants and remaining exclusions
+
+These criteria exist so that the coverage promise of `SEAT-FR-302` is true rather than aspirational. Each covers a
+rule whose subject is the document's own consistency, a structural invariant, or an exclusion whose evidence is an
+absence.
+
+| ID | Given | When | Then | Verifies |
+|---|---|---|---|---|
+| `SEAT-AC-209` | Any requirement, event payload or user-facing label in the module | Its terminology is inspected | It uses the §2 vocabulary; a bare "Seat", "Status", "Room" or "Shift" in a cross-context contract is treated as a defect | `SEAT-BR-001` |
+| `SEAT-AC-210` | A proposed requirement that would duplicate a responsibility in the §3 ownership table | It is raised | It is recorded as a defect and raised, not implemented | `SEAT-BR-002`, `SEAT-BR-044` |
+| `SEAT-AC-211` | A seat at any moment, including mid-import and mid-layout-edit | Its containers are inspected | It belongs to exactly one `Zone`, that `Zone` to exactly one `Floor`, that `Floor` to exactly one `Branch`; no orphan is representable at any point | `SEAT-BR-003`, `SEAT-INV-012` |
+| `SEAT-AC-212` | A tenant with booking mode set | The effective configuration is inspected | Exactly one mode is in force; two modes cannot be simultaneously effective | `SEAT-BR-018` |
+| `SEAT-AC-213` | A seat with an unexpired reservation | A second reservation for an overlapping window is attempted | Rejected under gate G15 | `SEAT-BR-021`, `SEAT-INV-004` |
+| `SEAT-AC-214` | An allocation referencing a seat, zone or floor that does not exist | It is written | Rejected; a dangling reference is not representable | `SEAT-INV-006`, `SEAT-INV-014` |
+| `SEAT-AC-215` | The module's rule set | It is inspected for plan-to-category mappings | The module evaluates the rule and authors none; the mapping lives in `BC-02` | `SEAT-BR-023`, `SEAT-FR-147` |
+| `SEAT-AC-216` | A figure computed by aggregating over a period, comparing periods or retaining a series | It is requested of this module | It is not served here; only current-state figures are | `SEAT-BR-036`, `SEAT-XC-018` |
+| `SEAT-AC-217` | A figure needed both operationally and analytically | Both are produced | This module publishes the facts and `BC-26` defines the metric; no metric is defined twice | `SEAT-XC-019` |
+| `SEAT-AC-218` | A Manager | Locking, maintenance control and bulk operations are attempted | All are permitted, matching the seating-oversight remit | `SEAT-BR-039`, `SEAT-PO-011`, `SEAT-PO-013` |
+| `SEAT-AC-219` | An operation to which tenancy, authorisation, idempotency, the gate, invariants and side effects all apply | It is executed | They are evaluated in exactly that order, so an unauthorised caller in the wrong tenant learns nothing | `SEAT-BR-041`, `SEAT-FR-271` |
+| `SEAT-AC-220` | A conflict between this document and a higher-authority document | It is discovered | It is recorded in §31 as a gap; it is not resolved in this document | `SEAT-BR-044`, `SEAT-FR-302` |
+| `SEAT-AC-221` | A gap in §31 that blocks a build-time decision | Implementation reaches it | It is escalated; no behaviour is picked to unblock it | `SEAT-BR-045` |
+| `SEAT-AC-222` | A user interface offering an override | It is inspected | Reservation override and membership override are never presented as one action, and no membership override exists | `SEAT-XC-006`, `SEAT-XC-004` |
+| `SEAT-AC-223` | Audit retention, legal hold, purge or tamper-evidence | It is sought in this module | None is defined here; `BC-24` owns them | `SEAT-XC-015` |
+| `SEAT-AC-224` | An allocation is released | `SEAT-EVT-002` is inspected | It is emitted exactly once, carrying tenant context and the release reason available to its consumers | `SEAT-EVT-002`, `SEAT-FR-223` |
+| `SEAT-AC-225` | A transfer completes | `SEAT-EVT-003` is inspected | It is emitted exactly once for the transfer, not once per allocation row | `SEAT-EVT-003`, `SEAT-FR-065` |
+
+### 33.14 Coverage statement
+
+`SEAT-FR-302` — Every `SEAT-BR-*`, `SEAT-INV-*`, `SEAT-EVT-*` and `SEAT-XC-*` identifier in this document **MUST** be
+cited by at least one `SEAT-AC-*` criterion. A rule with no criterion is, per `MM-NFR-014`, *"a rule that cannot be
+checked"* and **SHALL** be treated as unmet.
+
+`SEAT-FR-303` — Where a `SEAT-FR-*` requirement is a statement of ownership or exclusion whose only observable
+consequence is the **absence** of a capability, the absence itself **MUST** be the criterion, as in `SEAT-AC-009`,
+`SEAT-AC-104` and `SEAT-AC-112`. An unobservable requirement **MUST NOT** be published (`SEAT-NFR-011`).
+
+---
+## 34. V1 scope classification
+
+Every change this review makes to the source draft is classified below. The categories are those the review asked
+for. Nothing appears in this document that is not classified here, and nothing classified **V2**, **V3**, **Future**
+or **Not recommended** carries a requirement identifier anywhere in this document — a deferred feature that still had
+requirements would be V1 by the back door.
+
+### 34.1 Required V1 corrections
+
+Each of these fixes something in the draft that would have shipped a defect. None adds a feature.
+
+| # | Correction | Why it was required | Where |
+|---|---|---|---|
+| 1 | `Room` realised as the existing `Zone`, with a configurable tenant label | "Room" appears nowhere in the BC Map, Master PRD or Library PRD. Creating a fourth container would have created a second spatial hierarchy the rest of the platform cannot address | §4.1, `SEAT-FR-013`, `SEAT-FR-014` |
+| 2 | `Locked` removed from the status set; made an orthogonal flag | Five statuses where one is a modifier of the other four makes `Occupied + Locked` unrepresentable, so locking an occupied seat would have had to release its student | §6, `SEAT-FR-038` |
+| 3 | `SeatState` derived from five stored facts rather than stored | A stored status can disagree with the facts beneath it, and there is then no rule for which wins | §6, `SEAT-BR-010`, `SEAT-XC-002` |
+| 4 | Booking, reservation and assignment separated, with one closed configurable deciding the outcome | The draft used the three terms interchangeably. The seven review questions cannot be answered while they are one concept | §12, `SEAT-CFG-010` |
+| 5 | Membership expiry, current student, current shift and join date removed from the seat record | Storing a `BC-02` value on a seat makes this module a second home for it. `MM-FR-025` shows why that is unsafe. The data remains fully visible, composed at read time | §5.1, §13, `SEAT-FR-025` |
+| 6 | One ordered acquisition gate for all eight acquisition paths | The draft stated eligibility rules per feature, which permits one path to omit a check another applies | §8, `SEAT-FR-052` |
+| 7 | Audit realised as emission over `E-20`, not a module-owned immutable store | `BC-24` owns *"the immutable append-only record of who did what"*. A second store would be a second answer to the same question | §23.5, `SEAT-FR-232` |
+| 8 | Transfer history derived from bidirectional allocation linkage, not a separate log | Two records of one fact can disagree, and no rule would say which wins | §23.3, `SEAT-FR-221` |
+| 9 | Notifications reduced to facts; the event set closed at four | `BC-22` owns channels, templates, quiet hours and delivery. BC Map §9 fixes this module's events at four | §24, `SEAT-FR-206`, `SEAT-BR-035` |
+| 10 | Analytics reduced to current-state counts, with the boundary set at *time* | `BC-26` owns the metric layer. Without a testable boundary, "occupancy analytics" grows into a second analytics module | §25, `SEAT-BR-036` |
+| 11 | Allocation rate and occupancy rate separated into two labelled figures | Conflating them yields a number that is wrong in one sense whichever way it is read | `SEAT-FR-245` |
+| 12 | Public live occupancy deferred, with the aggregate indicator retained | `ARCHITECTURE_RULINGS.md` §6 and `LIB-24.2` defer it to V2 pending a privacy review | `SEAT-XC-020`, `SEAT-FR-117` |
+| 13 | `Floor` and `Zone` made read-only here; creation and naming left to `BC-06` | `LIB-10.*` and `LIB-11.*` own them. `LIB-11.5` says assignment is this module's and the container is not | `SEAT-FR-015` |
+| 14 | Shift definitions consumed from `BC-06`, never authored | `LIB-16.4` assigns shift configuration to `BC-06` | §16.3, `SEAT-FR-136` |
+| 15 | Seat QR separated from attendance QR | A seat QR that records attendance would make this module an attendance writer, which `BC-03` owns | `SEAT-XC-012` |
+| 16 | Zone or floor change of a seat treated as a container change, not repositioning | The draft's free repositioning would silently move a seated student between containers | `SEAT-FR-297` |
+| 17 | Retain-and-flag adopted wherever an upstream fact invalidates a live allocation | Automatic release of a seated student on an upstream change is a physical-world eviction that cannot be compensated | `SEAT-BR-042`, `SEAT-BR-043` |
+
+### 34.2 Existing V1 requirement clarifications
+
+These were already in the draft. The review made them deterministic; it did not add or remove capability.
+
+| # | Requirement | What was ambiguous | Now |
+|---|---|---|---|
+| 1 | Reservation expiry | *"expires after a period"* | Explicit `expiresAt`, derived at read time, no background job required (`SEAT-FR-092`, `SEAT-FR-095`) |
+| 2 | Auto-cancellation | *"cancelled when appropriate"* | Six named conditions, cause recorded (`SEAT-FR-125`, `SEAT-FR-126`) |
+| 3 | Max transfers per day | limit stated, source unstated | Owned by `BC-06` over `E-05`, override grant named, system moves excluded (`SEAT-BR-017`, `SEAT-FR-067`) |
+| 4 | Eligibility | *"based on membership"* | Evaluated at acquisition and conversion only; absent list means permit; five change cases tabulated (`SEAT-FR-147`…`150`) |
+| 5 | Auto assignment | *"assigns a suitable seat"* | Four ordered criteria, deterministic, staff-invoked (`SEAT-FR-182`, `SEAT-FR-185`) |
+| 6 | Bulk import | *"validates rows"* | Validated in full before any row applies; all-or-nothing; idempotent by key (`SEAT-BR-028`, `SEAT-FR-173`) |
+| 7 | Maintenance on an occupied seat | unstated | Three explicit dispositions chosen by a human (`SEAT-FR-167`) |
+| 8 | Real-time sync | *"updates in real time"* | An optimisation, never the source of truth; tenant-scoped; identity-free payload (`SEAT-FR-194`, `SEAT-FR-195`) |
+| 9 | Seat timeline | *"shows history"* | A derived read model over five existing stores, with no write path of its own (`SEAT-FR-227`, `SEAT-FR-228`) |
+| 10 | Smart filters | *"useful filters"* | Twelve presets, each an exact predicate over existing state (`SEAT-FR-258`) |
+| 11 | Search by student | *"search by student name"* | Name resolved upstream at query time; no name stored or indexed here (`SEAT-FR-253`) |
+| 12 | Owner configuration | a list of settings | Eighteen configurables, each with one owner, one default and one defining requirement (§27.1) |
+| 13 | Role permissions | four prose lists | Twenty-four protected operations in one closed table (§28.2) |
+| 14 | Seat booking dates | *"booking dates"* | Mandatory explicit window, no past start, bounded by `reservationWindow` and membership `validUntil` (§11.1) |
+| 15 | Fixed vs flexible | *"flexible seats are shared"* | Shared only in non-overlapping windows; change of type in both directions specified (`SEAT-FR-133`…`135`) |
+| 16 | Concurrency | *"handle conflicts"* | Database constraint plus pessimistic lock, never optimistic; two lock ordering specified (`SEAT-BR-011`, `SEAT-FR-198`) |
+
+### 34.3 V2 — deliberately not in this document
+
+None of these carries a requirement identifier here.
+
+| # | Feature | Why not V1 |
+|---|---|---|
+| 1 | Waiting list for an unavailable seat | A queue needs fairness, notification and expiry rules of its own, and every one of them depends on `BC-22`, which V1 does not integrate for reminders (`SEAT-FR-101`, `SEAT-XC-005`) |
+| 2 | Unattended scheduled auto-allocation | Automatic seating without a human in the loop can evict or misplace at scale; V1 keeps auto-assignment staff-invoked (`SEAT-FR-185`) |
+| 3 | Proactive reservation-expiry reminders | Requires a notification carrier this module is not permitted to invent; BC Map §9 fixes the event set at four (`SEAT-FR-240`, `SEAT-GAP-005`) |
+| 4 | Public live occupancy, per-seat or as a busy/moderate/quiet indicator | Deferred by `ARCHITECTURE_RULINGS.md` §6 and `LIB-24.2` pending a privacy review, and *"must not be invented"* (`SEAT-XC-020`, `SEAT-GAP-014`) |
+| 5 | Arbitrary boolean filter expressions | V1 is AND-only; a general expression builder is a query-language feature, not a seating feature (`SEAT-FR-260`) |
+| 6 | Membership freeze handling as a live workflow | Freeze itself is V2 per `MM-GAP-010`; `SEAT-FR-156` is inert until the event exists (`SEAT-GAP-004`) |
+| 7 | Seat-level pricing or premium surcharge | Money is `BC-05`'s and plan pricing is `BC-02`'s; `LIB-11.4` places zone pricing in the plan (`SEAT-FR-144`) |
+| 8 | Floor-scoped or zone-scoped staff permissions | `MP-GBR-21` closes the scope register; adding a scope is a platform decision (`SEAT-FR-269`, `SEAT-GAP-006`) |
+
+### 34.4 V3 and Future
+
+| # | Feature | Category | Why |
+|---|---|---|---|
+| 1 | Per-seat or per-student policy overrides | V3 | Every configurable in V1 is tenant-level. Per-entity overrides multiply the state space and make a denial hard to explain (`SEAT-XC-022`) |
+| 2 | 3D layout as a required capability | Future | Optional in V1 by `SEAT-FR-035`; making it mandatory is a product decision, not a correction |
+| 3 | Seat recommendation based on a student's history | Future | Requires behavioural analytics `BC-26` does not yet publish |
+| 4 | Cross-branch seat search and allocation | Future | Requires a branch-spanning availability model no context currently owns |
+
+### 34.5 Not recommended
+
+| # | Suggestion | Why not |
+|---|---|---|
+| 1 | An override that permits seating without a valid membership | `MP-GBR-16` and `SEAT-BR-014` make G7 absolute for every role. An override would contradict a Rank 1 global rule |
+| 2 | A module-owned immutable audit store | Duplicates `BC-24`; two append-only records of one action can disagree |
+| 3 | A stored `SeatState` column for query performance | Reintroduces the contradiction §6 removes. `SEAT-NFR-012` accepts read-time derivation as the deliberate trade |
+| 4 | Optimistic concurrency on allocation | `MP-GBR-17` and BC Map §10.1 forbid it: double allocation is *"a physical-world conflict that cannot be compensated"* |
+| 5 | Deleting a seat, allocation or history row | Append-only is required for history to be answerable at all (`SEAT-XC-014`) |
+| 6 | Storing the student's name on the seat for display speed | `SEAT-FR-010` and `MP-GBR-03` forbid it; the seat card composes it |
+| 7 | Letting this module extend or renew a membership from a seat screen | `SEAT-FR-157` forbids writing to `BC-02`; a deep link is permitted |
+| 8 | An occupancy trend chart in this module | `BC-26` owns it, and `SEAT-XC-019` forbids defining a metric twice |
+
+---
+
+## 35. Change log against the source draft
+
+Five substantive changes were made to the draft's stated design. Each is recorded with its reason, as the review
+required. Everything else in the draft was preserved, clarified or reorganised, not changed.
+
+**C-1 — "Room" is realised as the existing `Zone`, with a configurable label.**
+The draft introduced `Room` as a container between `Floor` and `Seat`. The term appears nowhere in the BC Map, the
+Master PRD or the Library PRD, while `Zone` is already defined there with exactly that role (`LIB-11.1`: *"a `Zone`
+MUST belong to exactly one `Floor`"*). Inventing a fourth container would have created a spatial hierarchy no other
+context can address, and would have required this module to own containers `LIB-11.5` assigns elsewhere. **No
+capability is lost:** a tenant that wants the word "Room" configures it (`SEAT-FR-014`) and every draft requirement
+about rooms is satisfied by zones.
+
+**C-2 — `Locked` is not a seat status.**
+The draft listed four statuses and also described locking as a state. Modelling `Locked` as a fifth status makes
+`Occupied + Locked` unrepresentable, which would force locking an occupied seat to release its student — the opposite
+of the draft's intent. It is now an orthogonal flag that suppresses acquisition only (`SEAT-FR-038`,
+`SEAT-BR-025`), and `SEAT-FR-161` guarantees a lock can never trap a student. **No capability is lost.**
+
+**C-3 — Membership expiry, current student, current shift and join date are not seat fields.**
+The draft listed them on the seat record. Storing a `BC-02` value on a seat makes this module a second home for it;
+`PRD-004` `SM-2.4` forbids the analogous case, and `MM-FR-025` shows that a copied quota diverges from its source.
+All four remain fully visible on the seat card, composed at read time from the authoritative context and labelled
+with an as-of time (§13, `SEAT-FR-104`, `SEAT-FR-105`). **No capability is lost; the data is read, not owned.**
+
+**C-4 — Booking, reservation and assignment are three distinct concepts governed by one configurable.**
+The draft used the words interchangeably, which left the seven review questions unanswerable and would have produced
+different behaviour on different screens. They are now defined separately (`SEAT-FR-085`), and the outcome of a
+student booking is decided by a single closed-valued tenant setting, `SEAT-CFG-010`, with `ApprovalRequired` as the
+default (`SEAT-FR-086`). Every behaviour the draft described is reachable through one of the three modes. **No
+capability is lost; the ambiguity is.**
+
+**C-5 — Public live occupancy is deferred to V2 by existing ruling.**
+The draft implied a public availability view. `ARCHITECTURE_RULINGS.md` §6, `LIB-24.2` and `LIB-14B.13` defer public
+live occupancy to V2 pending a privacy review and state it *"must not be invented"*. This document therefore excludes
+it (`SEAT-XC-020`) while retaining `LIB-7.3`'s aggregate seat capacity and permitting a coarse aggregate indicator
+for the public profile (`SEAT-FR-117`). Staff-facing live occupancy — the operational capability the draft actually
+needed — is fully specified (§25). **The deferral is a higher-authority decision this document records rather than
+overrides**, and the residual question is `SEAT-GAP-014`.
+
+---
+## 36. Completeness checklist — every original V1 capability
+
+This section exists to answer one question mechanically: **was any capability in the source draft dropped?** Each row
+names a capability from the draft and the requirement that carries it in this document. A row with no requirement
+would be a dropped capability; there are none.
+
+Where the realisation differs from the draft's wording, the **Note** column says how, and every such difference is one
+of the five changes in §35 or a clarification in §34.2.
+
+| # | Original V1 capability | Carried by | Note |
+|---|---|---|---|
+| 1 | 2D layout management, mandatory | `SEAT-FR-035` | Unchanged |
+| 2 | 3D layout, optional | `SEAT-FR-035`, `SEAT-FR-005` | Optional; its absence limits nothing |
+| 3 | Floors | `SEAT-FR-013`, `SEAT-FR-016`…`019` | Read from `BC-06`; C-1 |
+| 4 | Rooms | `SEAT-FR-013`, `SEAT-FR-014` | Realised as `Zone` with a configurable label; C-1 |
+| 5 | Drag-and-drop layout editor | `SEAT-FR-029`, `SEAT-FR-030` | Unchanged |
+| 6 | Walls, doors, tables, pillars | `SEAT-FR-031`, `SEAT-FR-032` | Unchanged; non-allocatable |
+| 7 | Layout versioning and save | `SEAT-FR-021`, `SEAT-FR-022`, `SEAT-FR-033` | Unchanged |
+| 8 | Unique seat identifiers | `SEAT-FR-023`, `SEAT-BR-004`, `SEAT-BR-005` | Internal identity separated from display number |
+| 9 | Four seat statuses | `SEAT-FR-037`, `SEAT-FR-040`…`043` | All four retained; derived, not stored; C-2, C-3 |
+| 10 | Seat assignment by reception | `SEAT-FR-055`, `SEAT-PO-001` | Unchanged |
+| 11 | Seat release | `SEAT-FR-059`…`061`, `SEAT-PO-002` | Unchanged |
+| 12 | Seat transfer | `SEAT-FR-062`…`067`, `SEAT-PO-003` | Unchanged |
+| 13 | Seat change requests | `SEAT-FR-068`…`075`, `SEAT-PO-004` | Unchanged |
+| 14 | Owner controls | §28.2, `SEAT-PO-001`…`024` | All retained in the closed table |
+| 15 | Manager controls | `SEAT-BR-039`, §28.2 | Retained; bounded per Authentication `TR-2` |
+| 16 | Reception controls | `SEAT-BR-038`, §28.2 | Retained; no financial data per `BR-2.12` |
+| 17 | Student controls | `SEAT-FR-076`…`079`, `SEAT-FR-277` | Retained; `self` scope only |
+| 18 | Seat card | `SEAT-FR-103`…`107` | All fields retained; membership composed not stored; C-3 |
+| 19 | Student self-booking | `SEAT-FR-076`…`084`, `SEAT-PO-005` | Retained; disabled by default |
+| 20 | Seat booking dates | §11.1, `SEAT-FR-080`…`083` | Retained and made mandatory and bounded |
+| 21 | Fixed seats | `SEAT-FR-131`, `SEAT-FR-132` | Unchanged |
+| 22 | Flexible seats | `SEAT-FR-133`, `SEAT-BR-022` | Unchanged |
+| 23 | Shift integration | §16.3, `SEAT-FR-136`…`141` | Retained; definitions consumed from `BC-06` per `LIB-16.4` |
+| 24 | Seat categories | `SEAT-FR-142`…`146` | Retained; no money on a category |
+| 25 | Eligibility rules | `SEAT-FR-147`…`150`, `SEAT-BR-023` | Retained; evaluated here, authored in `BC-02` |
+| 26 | Membership-based access | `SEAT-BR-014` (G7), §18 | Retained and made absolute |
+| 27 | Membership integration | §18, `SEAT-FR-151`…`157` | Retained; consumed via `E-02`, never recreated |
+| 28 | Seat reservation | §15, `SEAT-FR-118`…`130` | Unchanged |
+| 29 | Reservation expiry | `SEAT-FR-092`…`095` | Retained; explicit and read-time derived |
+| 30 | Reservation auto-cancel | `SEAT-FR-125`, `SEAT-FR-126` | Retained; six named conditions |
+| 31 | Reservation approval workflow | `SEAT-FR-127`…`130`, `SEAT-PO-008` | Unchanged |
+| 32 | Automatic assignment | `SEAT-FR-180`…`185`, `SEAT-PO-017` | Retained; deterministic and staff-invoked |
+| 33 | QR-based assignment | `SEAT-FR-186`…`191` | Retained; separated from attendance QR |
+| 34 | Seat locking | `SEAT-FR-158`…`163`, `SEAT-PO-009` | Retained as an orthogonal flag; C-2 |
+| 35 | Maintenance mode | `SEAT-FR-164`…`170`, `SEAT-PO-011` | Unchanged |
+| 36 | Maintenance workflow | `SEAT-FR-166`…`168`, `SEAT-BR-026` | Retained; three explicit dispositions |
+| 37 | Bulk import | `SEAT-FR-171`…`174`, `SEAT-PO-013` | Retained; all-or-nothing and idempotent |
+| 38 | Bulk export | `SEAT-FR-175`, `SEAT-PO-014` | Retained; inventory only |
+| 39 | Bulk reassignment | `SEAT-FR-176`, `SEAT-BR-029`, `SEAT-PO-015` | Retained; gate per student per seat |
+| 40 | Search by seat | `SEAT-FR-251` | Unchanged |
+| 41 | Search by student | `SEAT-FR-252`, `SEAT-FR-253` | Retained; names resolved upstream |
+| 42 | Smart filters | `SEAT-FR-257`, `SEAT-FR-258` | Retained; twelve exact predicates |
+| 43 | Real-time sync | `SEAT-FR-192`…`195` | Retained; advisory, never authoritative |
+| 44 | Live occupancy | §14.3, `SEAT-FR-109`…`117` | Retained; staff-facing. Public view is V2 by ruling; C-5 |
+| 45 | Occupancy analytics | §25, `SEAT-FR-244`…`249` | Current-state counts retained here; period analytics belong to `BC-26` |
+| 46 | Seat timeline | `SEAT-FR-227`…`231` | Retained as a derived read model |
+| 47 | Transfer history | `SEAT-FR-220`…`222` | Retained; derived from allocation linkage |
+| 48 | Assignment history | `SEAT-FR-218`, `SEAT-FR-219`, `SEAT-BR-034` | Retained; append-only |
+| 49 | Notifications | §24, `SEAT-FR-239` | Facts retained; delivery is `BC-22`'s |
+| 50 | Owner configuration | §27.1, eighteen configurables | Retained; each with one owner and one default |
+| 51 | Max transfers per day | `SEAT-BR-017`, `SEAT-FR-066`, `SEAT-FR-067` | Retained; owned by `BC-06` |
+| 52 | Audit log | §23.5, `SEAT-FR-232`…`237` | Every fact retained; storage is `BC-24`'s |
+| 53 | Role permissions, all four roles | §28.2, `SEAT-BR-038`…`040` | All four retained in one closed table |
+| 54 | Concurrency safety | §21, `SEAT-BR-011`, `SEAT-BR-031` | Retained; pessimistic, never optimistic |
+| 55 | Operation priority rules | `SEAT-BR-041` | Retained as an explicit order |
+| 56 | Configuration behaviour | `SEAT-FR-263`…`265`, `SEAT-FR-301` | Retained; never retroactive, never disables a `MUST` |
+| 57 | Success criteria | `SEAT-FR-003`, §33 | Realised as 225 acceptance criteria |
+| 58 | Out of scope / product boundary | §3.2, twenty-two `SEAT-XC-*` | Retained and made explicit per context |
+
+### 36.1 The eighteen original business rules
+
+The draft's `BR-001`…`BR-018` are carried as follows. None was dropped; several were split because one draft rule
+combined two testable statements.
+
+| Draft rule | Carried by |
+|---|---|
+| `BR-001` one active allocation per seat | `SEAT-BR-011`, `SEAT-INV-001` |
+| `BR-002` valid membership required | `SEAT-BR-014` (G7), `SEAT-FR-151` |
+| `BR-003` seat number unique | `SEAT-BR-005`, `SEAT-BR-006` |
+| `BR-004` status transitions | `SEAT-FR-044`, `SEAT-FR-045` |
+| `BR-005` fixed vs flexible sharing | `SEAT-FR-132`, `SEAT-FR-133`, `SEAT-BR-022` |
+| `BR-006` reservation expiry | `SEAT-FR-092`…`095` |
+| `BR-007` eligibility by category | `SEAT-FR-147`, `SEAT-FR-150` |
+| `BR-008` transfer limit | `SEAT-BR-017`, `SEAT-FR-066` |
+| `BR-009` maintenance blocks allocation | `SEAT-FR-043`, `SEAT-FR-169` |
+| `BR-010` lock blocks allocation | `SEAT-BR-025`, `SEAT-FR-160`, `SEAT-FR-161` |
+| `BR-011` release requires reason | `SEAT-FR-060`, `SEAT-FR-224` |
+| `BR-012` history immutable | `SEAT-INV-008`, `SEAT-XC-014` |
+| `BR-013` bulk operations atomic | `SEAT-BR-028`, `SEAT-FR-177` |
+| `BR-014` suspension releases seat | `SEAT-BR-013`, `SEAT-BR-043`, `SEAT-FR-125` |
+| `BR-015` one reservation per student | `SEAT-FR-121`, `SEAT-INV-005` |
+| `BR-016` layout edit safety | `SEAT-BR-008`, `SEAT-FR-034` |
+| `BR-017` audit every change | `SEAT-FR-234`, `SEAT-FR-236` |
+| `BR-018` tenant isolation | `SEAT-INV-009`, `SEAT-INV-010`, `SEAT-FR-287` |
+
+### 36.2 Verdict on completeness
+
+`SEAT-FR-304` — No capability present in the source draft has been removed from this document. Where a capability's
+**realisation** changed, the change is one of the five in §35, each justified by a higher-authority document, and the
+capability itself survives. Where a capability was **deferred**, the deferral is an existing platform ruling recorded
+in §34.3, not a decision taken here.
 
 ---

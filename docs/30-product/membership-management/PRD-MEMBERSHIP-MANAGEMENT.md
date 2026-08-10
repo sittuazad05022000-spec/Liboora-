@@ -4,7 +4,7 @@
 |---|---|
 | **PRD ID** | `PRD-005` |
 | **Document** | Membership Management — `BC-02` Membership |
-| **Version** | v1.2 (Startup MVP) |
+| **Version** | v1.3 (Startup MVP) |
 | **Status** | **DRAFT** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 2. Not frozen, not baselined, not approved. **`C-2` and `C-3` ratified as compliant; no freeze-blocking gap remains open in this document** |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04-C` |
@@ -16,7 +16,7 @@
 | **ADRs applied** | [`ADR-0001`](../../00-governance/adr/ADR-0001-modular-monolith.md) · [`ADR-0003`](../../00-governance/adr/ADR-0003-hybrid-tenancy-global-account.md) · [`ADR-0012`](../../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md) · [`ADR-0013`](../../00-governance/adr/ADR-0013-capability-context-ownership.md) · [`ADR-0014`](../../00-governance/adr/ADR-0014-tenant-key-and-audit-mutation-enforcement.md) · [`ADR-0018`](../../00-governance/adr/ADR-0018-student-management-prd-v1.2-baseline.md) |
 | **Rulings applied** | `AR-1` (Discovery delegates membership creation to `BC-02`) · `AR-2` (Authentication owns registration) |
 | **Depends on** | [`PRD-004`](../student-management/Student_Management_PRD_v1.md) **v1.2, FROZEN** — `E-01`, *"Membership may not exist without an active enrollment"* |
-| **Supporting documents** | [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) (`C-2`/`C-3` investigation) · [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md) (ratification + correction pass) · [`PRD-005_SECOND_INDEPENDENT_REVIEW.md`](PRD-005_SECOND_INDEPENDENT_REVIEW.md) (adversarial re-review, verdict B, findings `F-1`…`F-4`) · [`PRD-005_F1-F4_CORRECTION_REPORT.md`](PRD-005_F1-F4_CORRECTION_REPORT.md) (v1.2 correction of `F-1`…`F-4`) |
+| **Supporting documents** | [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md) (`C-2`/`C-3` investigation) · [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md) (ratification + correction pass) · [`PRD-005_SECOND_INDEPENDENT_REVIEW.md`](PRD-005_SECOND_INDEPENDENT_REVIEW.md) (adversarial re-review, verdict B, findings `F-1`…`F-4`) · [`PRD-005_F1-F4_CORRECTION_REPORT.md`](PRD-005_F1-F4_CORRECTION_REPORT.md) (v1.2 correction of `F-1`…`F-4`) · [`PRD-005_THIRD_INDEPENDENT_REVIEW.md`](PRD-005_THIRD_INDEPENDENT_REVIEW.md) (third adversarial review, verdict B, findings `TR-1`…`TR-5`) · [`PRD-005_TR-1-TR-5_CORRECTION_REPORT.md`](PRD-005_TR-1-TR-5_CORRECTION_REPORT.md) (v1.3 correction of `TR-1`…`TR-5`) |
 
 ---
 
@@ -63,9 +63,28 @@ the promise false.
 
 **Total: 332 identifiers**, of which **320 carry obligation** and 12 are `MM-GAP-*` open questions, which are not
 obligations. Of the 320, **223 are obligations that an acceptance criterion can verify** (all registers except
-`MM-AC-*` itself) and **140 of those 223 are verified**, including **81 of 81** — 100% — in the `MM-BR-*`,
-`MM-INV-*`, `MM-XC-*`, `MM-PO-*` and `MM-EVT-*` registers. The residual uncovered balance is `MM-FR-*` detail whose
-chapters are already covered by §23's original 58 criteria.
+`MM-AC-*` itself).
+
+**Coverage counting rule (binding on every coverage figure in this document).** An obligation counts as *verified* if
+and only if **its identifier appears in the *Verifies* column of at least one `MM-AC-*` row in §23**. Nothing else
+counts — not a mention in the criterion text, not a mention in a surrounding note, and **not prose stating that a rule
+is covered elsewhere**. This rule is deliberately strict, because `MM-NFR-014` requires that *"a rule that cannot be
+checked SHALL be treated as unmet, not as satisfied by intent"*, and a metric that can be raised by writing prose
+measures prose rather than verification. Under this rule the measured figures are:
+
+| Scope | Verified | Total | Coverage |
+|---|---|---|---|
+| `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*`, `MM-EVT-*` (the five *rule* registers) | **77** | **81** | **95.1%** |
+| All criterion-verifiable obligations | **134** | **223** | **60.1%** |
+
+Per register: `MM-BR-*` 31/35 · `MM-INV-*` 12/12 · `MM-EVT-*` 7/7 · `MM-XC-*` 16/16 · `MM-PO-*` 11/11 · `MM-FR-*`
+48/119 · `MM-NFR-*` 7/14 · `MM-CFG-*` 2/9.
+
+The four rule-register obligations **not** verified under this rule are `MM-BR-012`, `MM-BR-022`, `MM-BR-027` and
+`MM-BR-028`. Each is a restatement whose substance is exercised by criteria written against its definition site
+(`MM-AC-051`/`052`, `MM-AC-004`…`011`, `MM-AC-015`), so the risk is low — but they are counted as **uncovered**, not
+as covered by argument. The residual `MM-FR-*`, `MM-NFR-*` and `MM-CFG-*` balance is detail inside chapters whose
+behaviour §23's criteria exercise; it is likewise counted honestly rather than excluded to improve the ratio. See §23.1.
 
 > **On the two suffixed identifiers.** `MM-GAP-006` and `MM-GAP-007` were **closed** at v1.1 (§5.1, §12). A
 > letter-suffixed successor records the residual non-blocking observation each one left behind, rather than reusing a
@@ -1023,8 +1042,28 @@ transactional outbox with retry.
 
 `MM-BR-035` — The event register above **MUST** be closed at **seven** events. Adding, removing or renaming an
 `MM-EVT-*` **MUST** require a new version of this document, and **MUST NOT** be done by an implementation. Every
-consumer named in the table **MUST** be reachable on an integration edge already declared in `MM-BR-006`; a consumer
-that is not **MUST NOT** be listed here.
+**V1** consumer named in the table **MUST** be reachable on an integration edge already declared in `MM-BR-006`; a V1
+consumer that is not **MUST NOT** be listed here. A consumer annotated **`(V2)`** asserts **no V1 edge and no V1
+delivery obligation**: it **MAY** be listed only where BC Map §9 already names it, and **MUST NOT** be depended on by
+any V1 behaviour in this document.
+
+> **Why `BC-28` is annotated `(V2)` rather than removed, and why it is not the `BC-26` case.** `MM-EVT-006`'s consumer
+> cell names `BC-22` and `BC-28` (V2). `BC-28` Workflow Orchestration is a **V2** context — BC Map register line 137
+> and the V2 roll-up at line 147 — and BC Map **§7** is scoped, by its own preamble at line 292, to *"every edge that
+> crosses a context boundary **in V1**"*. `BC-28` consequently has **no §7 row at all**, and neither do the other
+> wholly-V2 contexts `BC-07`, `BC-08` and `BC-09`. Its absence from §7 is therefore **that table working as designed,
+> not a defect**, and no *"missing edge"* inference can be drawn from it.
+>
+> **This is the inverse of the `BC-26` case below.** `BC-26` Analytics is a **V1** context (line 135) that §9 names as
+> a consumer while §7 declares no inbound edge to it from any of the eleven producers that name it — a genuine tension
+> **inside** §7's own declared V1 scope. `BC-28` presents no such tension, so it is **not** recorded as an
+> architectural gap.
+>
+> **`BC-28` is retained because BC Map §9 line 411 itself names it** as a consumer of
+> `membership.MembershipExpiringSoon`. Deleting it would make this table diverge from the Rank 4 Published Language for
+> no reason. The `(V2)` annotation, made enforceable by `MM-BR-035` above, is what keeps the claim honest: **no V1 edge
+> to `BC-28` is asserted, none is invented, the BC Map is not modified, and no V1 behaviour here depends on `BC-28`.**
+> V1 delivery of this event is to `BC-22` on `E-23` alone.
 
 > **Why `BC-26` Analytics is not listed as a consumer, and why that follows the frozen precedent rather than
 > departing from it.** BC Map **§9** names `BC-26` a consumer of `membership.MembershipCreated` (line 409),
@@ -1075,10 +1114,11 @@ that is not **MUST NOT** be listed here.
 >
 > **No ADR trigger applies.** The BC Map states exactly one, at line 292, and it is scoped to **edges**: *"If an edge
 > is not in this table, it **does not exist** and adding it requires an ADR."* That is §7, not §9, and it is why
-> `ADR-0016` was needed for a missing edge consumer. These three events introduce **no new edge**: every consumer
-> named in the table above is reachable on an edge this document already declares in `MM-BR-006` — `BC-05` on `E-07`,
-> `BC-04` on `E-02`, `BC-03` on `E-03`, `BC-22` on `E-23` and `BC-24` on `E-20`. **`BC-26` is not among them and is
-> therefore not listed as a consumer**; see `MM-BR-035` and `MM-GAP-010`.
+> `ADR-0016` was needed for a missing edge consumer. These three events introduce **no new edge**: every **V1**
+> consumer named in the table above is reachable on an edge this document already declares in `MM-BR-006` — `BC-05` on
+> `E-07`, `BC-04` on `E-02`, `BC-03` on `E-03`, `BC-22` on `E-23` and `BC-24` on `E-20`. **`BC-26` is not among them
+> and is therefore not listed as a consumer**; see `MM-BR-035` and `MM-GAP-010`. The single `(V2)`-annotated consumer,
+> `BC-28` on `MM-EVT-006`, asserts **no V1 edge** — see the `(V2)` note above and `MM-BR-035`.
 >
 > **Each addition is sourced, not invented.** `MembershipUpgraded` is **already in the Map** — `E-07` (line 304) reads
 > *"`MembershipCreated/Renewed/**Upgraded**/Frozen` → generates or adjusts `FeeDue`"*, so its absence from the §9
@@ -1490,10 +1530,10 @@ Every criterion is deterministic and testable.
 | `MM-AC-021` | A `PendingPayment` membership reports `isValid: false` | `MM-FR-042`, `MM-FR-068` |
 | `MM-AC-022` | A zero-price membership starting today is created `Active` | `MM-FR-041` |
 | `MM-AC-023` | A membership with a future `startDate` is `Scheduled` and confers nothing until that date | `MM-FR-053` |
-| `MM-AC-024` | `fee.FeePaymentReceived` transitions `PendingPayment` → `Active`/`Scheduled` and emits `MM-EVT-002` | `MM-FR-043`, `E-10` |
+| `MM-AC-024` | `fee.FeePaymentReceived` transitions `PendingPayment` → `Active`/`Scheduled` and emits `MM-EVT-002` | `MM-FR-043`, `MM-EVT-002`, `E-10` |
 | `MM-AC-025` | A duplicate `fee.FeePaymentReceived` produces no second activation and no second event | Edge 14 |
-| `MM-AC-026` | Manual activation requires `MM-PO-004`, a reason, and is audited as bypassing the payment gate | `MM-FR-043`, §17 |
-| `MM-AC-027` | A user holding `MM-PO-003` but not `MM-PO-004` cannot activate without payment | `MM-NFR-008` |
+| `MM-AC-026` | Manual activation requires `MM-PO-004`, a reason, and is audited as bypassing the payment gate | `MM-FR-043`, `MM-PO-004`, §17 |
+| `MM-AC-027` | A user holding `MM-PO-003` but not `MM-PO-004` cannot activate without payment | `MM-NFR-008`, `MM-PO-003`, `MM-PO-004` |
 | `MM-AC-028` | Two concurrent creates for one student yield exactly one membership; the loser gets a typed overlap error | §15, `MM-INV-001` |
 | `MM-AC-029` | A repeated create with the same `idempotencyKey` returns the original `membershipId` and emits no second event | `MM-FR-047` |
 | `MM-AC-030` | An overlapping create is rejected naming the conflicting membership, not silently returning it | `MM-FR-049` |
@@ -1506,16 +1546,16 @@ Every criterion is deterministic and testable.
 | `MM-AC-037` | A second renewal of the same source is rejected naming the existing successor | `MM-FR-090` |
 | `MM-AC-038` | Renewal from `PendingPayment` or `Scheduled` is rejected | `MM-FR-082` |
 | `MM-AC-039` | A membership that expires mid-renewal still renews, using the after-expiry rule | §15 |
-| `MM-AC-040` | Renewal emits exactly one `MM-EVT-003` | `MM-FR-091` |
+| `MM-AC-040` | Renewal emits exactly one `MM-EVT-003` | `MM-FR-091`, `MM-EVT-003` |
 | `MM-AC-041` | With the expiry job stopped, a membership past `endDate` still reports `isValid: false` | `MM-FR-107`, `MM-NFR-012` |
-| `MM-AC-042` | The expiry job emits `MM-EVT-005` exactly once per membership and is safe to re-run | `MM-FR-105`, `MM-FR-106` |
-| `MM-AC-043` | `MM-EVT-006` fires once per membership per threshold crossing at `MM-CFG-008` | `MM-FR-108` |
+| `MM-AC-042` | The expiry job emits `MM-EVT-005` exactly once per membership and is safe to re-run | `MM-FR-105`, `MM-FR-106`, `MM-EVT-005` |
+| `MM-AC-043` | `MM-EVT-006` fires once per membership per threshold crossing at `MM-CFG-008` | `MM-FR-108`, `MM-EVT-006` |
 | `MM-AC-044` | No entitlement is granted after `endDate`; there is no grace path in V1 | `MM-FR-111`, `MM-INV-004` |
 | `MM-AC-045` | Expiry does not alter `EnrollmentStatus` and does not delete the membership | `MM-FR-070` |
 | `MM-AC-046` | Upgrade from `Expired` is rejected | `MM-FR-093` |
 | `MM-AC-047` | Upgrade targets exclude plans priced at or below the source snapshot | `MM-FR-094`, `MM-FR-095` |
 | `MM-AC-048` | Upgrade sets the source to `Superseded` and leaves its `endDate` unchanged | `MM-FR-096`, `MM-FR-098` |
-| `MM-AC-049` | `MM-EVT-004` carries `priceDifference` and `remainingDaysOnSource`, and **no** monetary credit or refund | `MM-FR-099`, `MM-FR-100` |
+| `MM-AC-049` | `MM-EVT-004` carries `priceDifference` and `remainingDaysOnSource`, and **no** monetary credit or refund | `MM-FR-099`, `MM-FR-100`, `MM-EVT-004` |
 | `MM-AC-050` | Two concurrent upgrades of one source yield exactly one `Superseded` transition | §15 |
 | `MM-AC-051` | A cross-tenant `membershipId` returns *not found*, never *forbidden* | `MM-NFR-005` |
 | `MM-AC-052` | No query path can return a membership from another tenant, including every §8 view *(of this document)* | `MM-NFR-002`, `MM-NFR-003` |
@@ -1540,7 +1580,7 @@ block had been numbered; the suffix convention is the one documented in §0.2.
 | `MM-AC-059` | No schema in this module contains a monetary ledger, balance, receipt or refund table | `MM-BR-001`, `MM-XC-004` |
 | `MM-AC-060` | No code path in this module calls a payment gateway, and no gateway credential is readable by it | `MM-BR-002`, `MM-XC-003` |
 | `MM-AC-061` | The only inbound payment signal handled is `fee.FeePaymentReceived` on `E-10`; no polling loop exists | `MM-BR-002` |
-| `MM-AC-062` | This module creates no `FeeDue`; `MM-EVT-001`/`003`/`004` are emitted and `BC-05` raises the due | `MM-BR-003` |
+| `MM-AC-062` | This module creates no `FeeDue`; `MM-EVT-001`/`003`/`004` are emitted and `BC-05` raises the due | `MM-BR-003`, `MM-EVT-001` |
 | `MM-AC-063` | A membership whose payment succeeded but whose update failed appears in the reconciliation queue and is not silently activated | `MM-BR-004` |
 | `MM-AC-064` | Activation is idempotent on `paymentReference`: a replayed callback yields no second activation | `MM-BR-005` |
 | `MM-AC-065` | Only the ten edges listed in `MM-BR-006` are used; no call leaves this module on any other edge | `MM-BR-006` |
@@ -1554,7 +1594,7 @@ block had been numbered; the suffix convention is the one documented in §0.2.
 | `MM-AC-073` | Re-delivering an event with a seen `eventId` produces no duplicate consumer effect; delivery is outbox-backed | `MM-BR-017` |
 | `MM-AC-074` | Events for one `membershipId` are ordered by `sequence`; no consumer relies on cross-membership ordering | `MM-BR-018` |
 | `MM-AC-074a` | No notification is sent and no analytic metric is computed inside this module; both are reached only as event consumers | `MM-BR-019`, `MM-XC-005`, `MM-XC-006` |
-| `MM-AC-075` | The event register contains exactly **seven** `MM-EVT-*` entries, and every consumer named resolves to an edge declared in `MM-BR-006` | `MM-BR-035` |
+| `MM-AC-075` | The event register contains exactly **seven** `MM-EVT-*` entries; every consumer named **without** a `(V2)` annotation resolves to an edge declared in `MM-BR-006`; and no V1 code path delivers to, or depends on, a `(V2)`-annotated consumer | `MM-BR-035` |
 | `MM-AC-076` | `BC-26` is not named a consumer of any `MM-EVT-*`, and no `BC-02` → `BC-26` call exists | `MM-BR-035`, `MM-BR-030` |
 | `MM-AC-076a` | Voiding a pre-activation membership emits exactly one `MM-EVT-007` carrying `reason` and `voidedBy`, and no void path exists for an `Active` membership | `MM-EVT-007`, `MM-FR-078`, `MM-FR-079` |
 | `MM-AC-077` | One membership is one transaction: no command mutates two memberships atomically | `MM-BR-020`, `MM-INV-010` |
@@ -1562,7 +1602,7 @@ block had been numbered; the suffix convention is the one documented in §0.2.
 | `MM-AC-079` | Every membership and plan table carries `tenantId` in its primary or unique key | `MM-BR-023`, `MM-INV-007` |
 | `MM-AC-080` | No hard-delete path exists for a membership record; terminal states are the only retirement | `MM-BR-024` |
 | `MM-AC-080a` | A duplicate command carrying an `idempotencyKey` already seen for that tenant and command type creates no second membership, proven under a write race | `MM-INV-008`, `MM-FR-046` |
-| `MM-AC-081` | `MM-EVT-006` and the expiring-memberships view read the **same** `MM-CFG-008` value and cannot disagree | `MM-BR-026`, `MM-CFG-008` |
+| `MM-AC-081` | `MM-EVT-006` and the expiring-memberships view read the **same** `MM-CFG-008` value and cannot disagree | `MM-BR-026`, `MM-CFG-008`, `MM-EVT-006` |
 | `MM-AC-082` | Every `MM-CFG-*` is read through a typed `BC-25` accessor; no raw string config lookup exists | `MM-BR-025`, `MM-CFG-001` |
 | `MM-AC-083` | Creating a membership against a plan from another tenant or an inactive plan is rejected | `MM-BR-029`, `MM-INV-010` |
 | `MM-AC-084` | §4.5 yields exactly **one** validity answer for a given membership and date | `MM-BR-031`, `MM-INV-004` |
@@ -1579,18 +1619,38 @@ block had been numbered; the suffix convention is the one documented in §0.2.
 
 > **On honesty of coverage.** These 39 criteria were derived by listing, mechanically, every `MM-BR-*`, `MM-INV-*`,
 > `MM-XC-*`, `MM-PO-*` and `MM-EVT-*` with no verifying criterion, and then writing a criterion **only** where the
-> existing rule text is already falsifiable. The measured result is **81 of 81 (100%)** in those five registers and
-> **140 of 223 (62.8%)** across every criterion-verifiable obligation — both figures reproduced by script, not
-> asserted.
+> existing rule text is already falsifiable.
 >
-> **Nothing was padded, and the limits are stated rather than hidden.** `MM-AC-093` and `MM-AC-094` each verify a
-> group of registers because the underlying obligations are genuinely one test apiece (an authorisation matrix, and a
-> set of must-be-impossible constructions); splitting them into eighteen near-identical rows would inflate the count
-> without adding a single distinct check. `MM-BR-012`, `MM-BR-022`, `MM-BR-027` and `MM-BR-028` are intentionally
-> **not** given new criteria — they are already verified by `MM-AC-051`/`052`, `MM-AC-004`…`011` and `MM-AC-015`, or
-> are restatements whose definition sites are covered. The remaining **83** uncovered obligations are `MM-FR-*`
-> detail inside chapters whose behaviour §23's original 58 criteria already exercise; they are counted honestly in
-> the 62.8% rather than excluded to flatter the ratio.
+> **The measurement rule is the strict one defined in §0.2**: an obligation is verified **only** if its identifier
+> appears in the *Verifies* column of an `MM-AC-*` row. Measured under that rule, the result is **77 of 81 (95.1%)**
+> in those five registers and **134 of 223 (60.1%)** across every criterion-verifiable obligation.
+>
+> **Why these figures are lower than the ones v1.2 published, and why the lower ones are the true ones.** v1.2 declared
+> **81/81 (100.0%)** and **140/223 (62.8%)**. Those figures were produced by a script that scanned each §23 block as a
+> whole — including the surrounding prose — rather than the *Verifies* column alone. The third independent review
+> ([`PRD-005_THIRD_INDEPENDENT_REVIEW.md`](PRD-005_THIRD_INDEPENDENT_REVIEW.md), finding `TR-2`) reproduced the
+> arithmetic and showed that the 100% figure depended on **this very paragraph**: the sentence naming `MM-BR-012`,
+> `MM-BR-022`, `MM-BR-027` and `MM-BR-028` as *not* separately covered was itself being counted as evidence that they
+> *were* covered. A metric that rises when you write prose about a gap is not measuring verification, so the counting
+> rule was tightened rather than the number defended. **v1.3 corrects the claim, not the coverage** — no criterion was
+> deleted and none was weakened.
+>
+> **`TR-4` moved eight identifiers into the column where they belonged, without inventing a single criterion.**
+> `MM-EVT-001`…`MM-EVT-006`, `MM-PO-003` and `MM-PO-004` were each already tested by an existing criterion whose text
+> named them but whose *Verifies* cell did not: `MM-AC-062`, `MM-AC-024`, `MM-AC-040`, `MM-AC-049`, `MM-AC-042`,
+> `MM-AC-043`/`MM-AC-081`, `MM-AC-027` and `MM-AC-026`/`MM-AC-027` respectively. Adding the register IDs to those cells
+> raised the strict measure from **69/81** to **77/81** — a traceability repair, not new coverage.
+>
+> **The four remaining gaps are stated, not argued away.** `MM-BR-012`, `MM-BR-022`, `MM-BR-027` and `MM-BR-028` are
+> restatements whose substance is exercised at their definition sites by `MM-AC-051`/`052`, `MM-AC-004`…`011` and
+> `MM-AC-015`. That is a reason the residual risk is low; it is **not** a claim that they are verified, and they are
+> counted as **uncovered** in the 95.1%. The remaining **89** uncovered obligations are `MM-FR-*`, `MM-NFR-*` and
+> `MM-CFG-*` detail inside chapters whose behaviour §23's criteria already exercise; they are likewise counted honestly
+> in the 60.1% rather than excluded to flatter the ratio.
+>
+> **Nothing was padded.** `MM-AC-093` and `MM-AC-094` each verify a group of registers because the underlying
+> obligations are genuinely one test apiece (an authorisation matrix, and a set of must-be-impossible constructions);
+> splitting them into eighteen near-identical rows would inflate the count without adding a single distinct check.
 
 ---
 
@@ -1696,7 +1756,7 @@ citations remain resolvable, and each leaves a non-blocking successor observatio
 | `MM-GAP-007a` | BC Map §9 omits `MembershipUpgraded` though `E-07` (L304) names it, and lists `Frozen`/`Unfrozen` (V2 per EA 728/731) in a table headed *"V1 event surface"* | Architecture (BC Map owner) | **No** — two internal inconsistencies in Rank 4, pre-existing and independent of this PRD |
 | `MM-GAP-008` | Is `endDate == startDate` (single-day plan) permitted against BC Map's strict `>`? | Architecture | Blocks single-day plans only |
 | `MM-GAP-009` | Should holidays extend a term, and if so via which edge? | Architecture + `BC-06` owner | No — V1 does not extend terms |
-| `MM-GAP-010` | **BC Map §9 names `BC-26` a consumer of `BC-02` events (L409, L410, L412, L413), but §7 declares no `BC-02` → `BC-26` edge — `BC-26`'s only inbound edge is `E-26` from `BC-27` (L335), and L292 says an absent edge "does not exist".** Should a `BC-02` → `BC-26` edge be added under an ADR, or does projection fan-out need a general rule? | Architecture (BC Map owner) | **No** — `BC-26` is simply not listed as a consumer (`MM-BR-035`), exactly as frozen `PRD-004` did at `SM-GAP-11`. No edge invented, nothing additional emitted, no event changed |
+| `MM-GAP-010` | **Systemic, not `BC-02`-specific: BC Map §9 names `BC-26` Analytics a consumer for *eleven* producing contexts — `BC-01`, `BC-02`, `BC-03`, `BC-04`, `BC-05`, `BC-10`, `BC-11`, `BC-12`, `BC-18`, `BC-20`, `BC-27` — while §7 declares an inbound edge to `BC-26` from only *one* of them (`E-26`, from `BC-27`, L335). L292 says an edge absent from §7 "does not exist".** So **ten** producer→`BC-26` relationships are asserted in §9 with no §7 edge; the `BC-02` instance (L409/410/412/413) and the frozen `BC-01` instance (`SM-GAP-11`) are two symptoms of one Rank 4 defect. The general question the architecture owner must settle is therefore: **is consumption of a Published-Language event a relationship that requires its own §7 edge at all?** Either (i) §7 needs ten new producer→`BC-26` edges under an ADR; or (ii) read-model/projection fan-out is declared *not* to be a §7 edge — the `E-20` *"All contexts"* pattern generalised — and §9 consumer cells become self-sufficient; or (iii) §9's consumer column is declared advisory, in which case §7 remains the sole authority on who may receive what. **A ruling on the class settles every module PRD at once instead of each one re-deriving the same refusal.** *(Related but **not** an instance: `MM-EVT-006` names `BC-28` Workflow, a **V2** context. §7 is V1-scoped by its own preamble at L292, and no wholly-V2 context — `BC-07`, `BC-08`, `BC-09`, `BC-28` — has a §7 row. That absence is by construction, so it is **not** part of this gap; see the `(V2)` note in §12.)* | Architecture (BC Map owner) | **No** — `BC-26` is simply not listed as a consumer (`MM-BR-035`), exactly as frozen `PRD-004` did at `SM-GAP-11`. No edge invented, no ADR created, the BC Map is not modified, nothing additional emitted, no event changed. This document is correct under **all three** resolutions above |
 
 ### 25.3 Checks performed
 
@@ -1710,7 +1770,7 @@ citations remain resolvable, and each leaves a non-blocking successor observatio
 | Ownership violations | **None.** No write outside `BC-02`; no payment, notification, analytics, audit-storage or authorisation model here |
 | Prefix collision | `MM-*` prefixes verified absent from `docs/**` before adoption (`PRD_REGISTRY.md` §5 procedure) |
 | Register contiguity | Each range in §0.2 is contiguous with no gaps; the two suffixed identifiers (`MM-FR-057a`, and `MM-GAP-006a`/`007a`) are documented in §0.2 |
-| Verification coverage | **Measured, not asserted.** Every `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*` and `MM-EVT-*` now carries at least one verifying `MM-AC-*` — **81/81 = 100.0%** — and **140/223 = 62.8%** of all criterion-verifiable obligations are verified (§23.1). `MM-NFR-014` therefore holds across every obligation register, not only the functional one |
+| Verification coverage | **Measured, not asserted**, under the strict counting rule defined in §0.2 (identifier present in an `MM-AC-*` *Verifies* cell; prose never counts). **77/81 = 95.1%** of the `MM-BR-*`/`MM-INV-*`/`MM-XC-*`/`MM-PO-*`/`MM-EVT-*` registers, and **134/223 = 60.1%** of all criterion-verifiable obligations (§23.1). `MM-INV-*`, `MM-EVT-*`, `MM-XC-*` and `MM-PO-*` are at **100%**; `MM-BR-*` is at 31/35. **Four rules are not verified by a criterion of their own** — `MM-BR-012`, `MM-BR-022`, `MM-BR-027`, `MM-BR-028` — each a restatement whose substance is exercised at its definition site (`MM-AC-051`/`052`, `MM-AC-004`…`011`, `MM-AC-015`); they are counted as **uncovered**, and this row does **not** claim otherwise. v1.2's *"every rule carries a verifying criterion — 81/81"* was false and is corrected here (`TR-3`) |
 
 ### 25.4 What this document deliberately did not do
 
@@ -1728,4 +1788,5 @@ citations remain resolvable, and each leaves a non-blocking successor observatio
 |---|---|---|
 | v1.0 | 2026-08-04 | Created as **`DRAFT`** under `PRD_LIFECYCLE.md` Stage 2. Specifies `BC-02` Membership for V1: the four authoritative capabilities (Plans, Creation, Renewal, Upgrade) plus the Activation/Validity, Status/Entitlement, Expiry and Operational-Views chapters the architecture requires. **288 identifiers** across 10 registers, contiguous, zero prefix collisions. Membership Analytics excluded as not-V1 (`MM-XC-006`); Downgrade, Freeze, Transfer, Cancellation, Proration and History excluded as V2; Auto Renewal excluded as V3; Cross-Library as Future. **Seven cross-document conflicts recorded rather than resolved** (§25.1), of which two — `MM-GAP-006` and `MM-GAP-007` — were declared freeze-blocking. `Q-01` grace period and `Q-06` proration deliberately **not** decided. **No existing document was modified and no other file was created.** |
 | v1.1 | 2026-08-04 | **Ratification and correction pass** following [`PRD-005_BLOCKER_ANALYSIS.md`](PRD-005_BLOCKER_ANALYSIS.md); recorded in [`PRD-005_CORRECTION_REPORT.md`](PRD-005_CORRECTION_REPORT.md). **`C-2` closed** — §5.1 rewritten: BC Map line 209 sits in §5, whose preamble binds only the *resolution* column; the six-value set satisfies that column, and columns 2–3 are proven non-exhaustive by the `Role` row, which lists three `AccessRole` values where the Rank 3 Authentication PRD defines five (Owner, Manager, Reception plus Platform Support §2.2.6 and Platform Administrator §2.2.7, with `BR-2.9` naming *"both platform roles"*) — so a Rank 3 PRD would be in breach if column 2 bound the value set. *(This row's original wording cited "`TR-1`…`TR-5`, §2.2.1–2.2.5"; the second independent review verified that §5.1's actual citations are §2.2.6, §2.2.7 and `BR-2.9`, and this row is corrected to match the evidence §5.1 relies on. The conclusion is unchanged.)* **`C-3` closed** — §12 rewritten on the ratified `BC-01` precedent: frozen `PRD-004` §7.4 registers 10 events where BC Map §9 lists 4, blessed by `ADR-0018`; the only ADR trigger (L292) is edge-scoped and no edge is added. **`MembershipUpgraded` preserved.** **Citation corrections:** the event surface is BC Map **§9** (was cited §8, in 2 places); the Aggregate & Invariant Register is **§8** (was cited §6, in 8 places); Open Questions is **§13** (was §12). **Four stale cross-references** that still described `MM-GAP-006`/`MM-GAP-007` as open questions (§4.1 note, `MM-FR-054`, §5.3 note, §24.1 row) were rewritten to state the ratified position. Two non-blocking successor observations opened against the BC Map (`MM-GAP-006a`, `MM-GAP-007a`). **Two integrity defects found by the post-edit register audit and fixed:** §0.2 still declared 9 `MM-GAP` identifiers and a total of 288 after the two successors were added — now **290 total, 279 obligation-bearing, 11 `MM-GAP`**, with the suffix convention documented; and §14.1's `MM-BR-030` row was a second em-dash-free definition of a rule defined in §9 — now an explicit restatement naming §9 as the definition site. **No requirement, invariant, event, AC, status value or scope decision changed; no ranked or frozen document modified; no ADR created; the 279 obligation-bearing identifiers are unchanged from v1.0, all registers contiguous, zero duplicate definitions.** |
-| v1.2 | 2026-08-04 | **Correction of the four findings raised by [`PRD-005_SECOND_INDEPENDENT_REVIEW.md`](PRD-005_SECOND_INDEPENDENT_REVIEW.md) (verdict **B**); recorded in [`PRD-005_F1-F4_CORRECTION_REPORT.md`](PRD-005_F1-F4_CORRECTION_REPORT.md).** **`F-1` (BC-26, moderate):** BC Map §9 names `BC-26` a consumer of `BC-02` events (L409/410/412/413) but §7 declares **no `BC-02` → `BC-26` edge** (`E-26` from `BC-27` is its only inbound, L335) and L292 says an absent edge *"does not exist"*. Following frozen `PRD-004` §7.4's treatment of the identical `BC-01` tension (`SM-GAP-11`), **`BC-26` is no longer listed as a consumer** — removed from the header row and from all six `MM-EVT-*` rows — **no edge invented, no ADR, BC Map unmodified, nothing additional emitted**. The false reachability sentence in §12 (which claimed `BC-26` reachable on `E-07`/`E-02`/`E-03`/`E-20`/`E-23`, none of which terminate at `BC-26`) is corrected to the five consumers that do verify. New `MM-BR-035` makes the consumer rule enforceable; tension recorded as `MM-GAP-010`; conflict recorded as `C-8`. **`F-2` (closure unenforceable):** §12 asserted a *"closed set"* with no requirement to enforce it — no analogue of frozen `SM-7.12`. **`MM-BR-035`** now requires the register be closed at **seven** and that every consumer resolve to an `MM-BR-006` edge. **`F-3` (`endDate` contradiction):** §10.2 required `endDate` *"recomputed from the activation date"* while `MM-FR-057` defines `endDate = startDate + (durationDays − 1)` and `MM-FR-058` forbids clock dependence. Resolved by **`MM-FR-057a`**: the whole term is re-derived from a new `startDate` (= `activatedAt`) using the **unchanged** `MM-FR-057` formula, so both requirements stay literally true and the term is never stretched beyond `durationDays`; §10.2, `MM-CFG-009` and §21 edge 13 aligned. **`F-4` (verification honesty):** **39** criteria added (`MM-AC-059`…`MM-AC-094` plus `MM-AC-074a`/`076a`/`080a`, §23.1), derived by mechanically listing every `MM-BR-*`/`MM-INV-*`/`MM-XC-*`/`MM-PO-*`/`MM-EVT-*` with no verifying criterion. Coverage of those five registers rises from **13.8% (11/80)** to **100.0% (81/81)**; coverage across all criterion-verifiable obligations from **28.1%** to **62.8% (140/223)**, so `MM-NFR-014` now holds across every obligation register. Also corrected the v1.1 history row's imprecise `TR-1…TR-5` citation to the §2.2.6/§2.2.7/`BR-2.9` evidence §5.1 actually relies on. **Four defects in this correction pass were caught by its own post-edit audit and fixed before commit:** a phantom reference to a non-existent 119th `MM-FR`, three rules still uncovered after the first draft of §23.1 (`MM-BR-019`, `MM-INV-008`, `MM-EVT-007`), an `MM-AC-088` that cited the open question `MM-GAP-008` as if it were a verifiable obligation, and declared counts that overstated coverage. Registers: **332 identifiers, 320 obligation-bearing, 12 `MM-GAP`**, all contiguous, zero duplicates. **No requirement was deleted or weakened, no scope, status value, event payload or invariant changed; no ranked or frozen document modified; no ADR created; no code touched; not frozen.** |
+| v1.2 | 2026-08-04 | **Correction of the four findings raised by [`PRD-005_SECOND_INDEPENDENT_REVIEW.md`](PRD-005_SECOND_INDEPENDENT_REVIEW.md) (verdict **B**); recorded in [`PRD-005_F1-F4_CORRECTION_REPORT.md`](PRD-005_F1-F4_CORRECTION_REPORT.md).** **`F-1` (BC-26, moderate):** BC Map §9 names `BC-26` a consumer of `BC-02` events (L409/410/412/413) but §7 declares **no `BC-02` → `BC-26` edge** (`E-26` from `BC-27` is its only inbound, L335) and L292 says an absent edge *"does not exist"*. Following frozen `PRD-004` §7.4's treatment of the identical `BC-01` tension (`SM-GAP-11`), **`BC-26` is no longer listed as a consumer** — removed from the header row and from all six `MM-EVT-*` rows — **no edge invented, no ADR, BC Map unmodified, nothing additional emitted**. The false reachability sentence in §12 (which claimed `BC-26` reachable on `E-07`/`E-02`/`E-03`/`E-20`/`E-23`, none of which terminate at `BC-26`) is corrected to the five consumers that do verify. New `MM-BR-035` makes the consumer rule enforceable; tension recorded as `MM-GAP-010`; conflict recorded as `C-8`. **`F-2` (closure unenforceable):** §12 asserted a *"closed set"* with no requirement to enforce it — no analogue of frozen `SM-7.12`. **`MM-BR-035`** now requires the register be closed at **seven** and that every consumer resolve to an `MM-BR-006` edge. **`F-3` (`endDate` contradiction):** §10.2 required `endDate` *"recomputed from the activation date"* while `MM-FR-057` defines `endDate = startDate + (durationDays − 1)` and `MM-FR-058` forbids clock dependence. Resolved by **`MM-FR-057a`**: the whole term is re-derived from a new `startDate` (= `activatedAt`) using the **unchanged** `MM-FR-057` formula, so both requirements stay literally true and the term is never stretched beyond `durationDays`; §10.2, `MM-CFG-009` and §21 edge 13 aligned. **`F-4` (verification honesty):** **39** criteria added (`MM-AC-059`…`MM-AC-094` plus `MM-AC-074a`/`076a`/`080a`, §23.1), derived by mechanically listing every `MM-BR-*`/`MM-INV-*`/`MM-XC-*`/`MM-PO-*`/`MM-EVT-*` with no verifying criterion. Coverage of those five registers rises from **13.8% (11/80)** to **100.0% (81/81)**; coverage across all criterion-verifiable obligations from **28.1%** to **62.8% (140/223)**, so `MM-NFR-014` now holds across every obligation register. *(**These two v1.2 figures were later shown to be wrong and are superseded by v1.3.** They were produced by a script that scanned each §23 block including its prose, so a note stating that four rules were **not** separately covered was counted as coverage of them. The third independent review raised this as `TR-2`; §0.2 now fixes the counting rule and the measured values are **95.1% (77/81)** and **60.1% (134/223)**. The row is annotated rather than rewritten, so the figures v1.2 actually published stay auditable — the same convention this row applied to v1.1. The **coverage** described above was real; only its **measurement** was overstated.)* Also corrected the v1.1 history row's imprecise `TR-1…TR-5` citation to the §2.2.6/§2.2.7/`BR-2.9` evidence §5.1 actually relies on. **Four defects in this correction pass were caught by its own post-edit audit and fixed before commit:** a phantom reference to a non-existent 119th `MM-FR`, three rules still uncovered after the first draft of §23.1 (`MM-BR-019`, `MM-INV-008`, `MM-EVT-007`), an `MM-AC-088` that cited the open question `MM-GAP-008` as if it were a verifiable obligation, and declared counts that overstated coverage. Registers: **332 identifiers, 320 obligation-bearing, 12 `MM-GAP`**, all contiguous, zero duplicates. **No requirement was deleted or weakened, no scope, status value, event payload or invariant changed; no ranked or frozen document modified; no ADR created; no code touched; not frozen.** |
+| v1.3 | 2026-08-04 | **Correction of the five findings raised by [`PRD-005_THIRD_INDEPENDENT_REVIEW.md`](PRD-005_THIRD_INDEPENDENT_REVIEW.md) (verdict **B**); recorded in [`PRD-005_TR-1-TR-5_CORRECTION_REPORT.md`](PRD-005_TR-1-TR-5_CORRECTION_REPORT.md).** **`TR-1` (`MM-BR-035` violated by its own table, high):** v1.2's `MM-BR-035` required *every* consumer named in §12 to be reachable on an `MM-BR-006` edge, yet `MM-EVT-006` listed `BC-28`, which appears on **no** BC Map §7 edge at all. Investigation of the primary source shows the review's suggested remedy (a) — de-list `BC-28` and record a second architectural gap — would have recorded a **defect that does not exist**: BC Map §7 is scoped by its own preamble (L292) to *"every edge that crosses a context boundary **in V1**"*, `BC-28` Workflow is a **V2** context (L137, L147), and **no** wholly-V2 context (`BC-07`, `BC-08`, `BC-09`, `BC-28`) has a §7 row. `BC-28`'s absence is §7 working as designed, **not** the `BC-26` tension, in which a **V1** context is named as a consumer with no inbound edge. Remedy **(b)** applied instead: `MM-BR-035`'s reachability clause is narrowed to **V1** consumers, and a `(V2)`-annotated consumer is now defined to assert **no V1 edge and no V1 delivery obligation**, may be listed only where BC Map §9 already names it (L411 does), and **MUST NOT** be depended on by any V1 behaviour. `BC-28` is retained with its `(V2)` annotation so §12 does not diverge from the Rank 4 Published Language. `MM-AC-075` re-verified and tightened to test the annotation rule. **No edge invented, no ADR created, BC Map unmodified.** **`TR-2` (coverage figure not reproducible, high):** v1.2 declared **81/81 = 100.0%** and **140/223 = 62.8%**, figures reachable only by scanning each §23 block *including its prose*; the 100% depended on the very sentence stating that four rules were **not** separately covered. A metric that rises when prose about a gap is written measures prose, not verification. §0.2 now defines a **binding strict counting rule** — an obligation is verified **only** if its identifier appears in an `MM-AC-*` *Verifies* cell — and publishes the measured result with a per-register breakdown. **The claim was corrected, not the coverage: no criterion was deleted, weakened or manufactured.** **`TR-3` (false universal claim):** §25.3's *"Every `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*` and `MM-EVT-*` now carries at least one verifying `MM-AC-*` — 81/81 = 100.0%"* was untrue and is replaced by the measured statement, naming the four unverified rules explicitly. No requirement weakened, no criterion removed. **`TR-4` (traceability hygiene):** `MM-EVT-001`…`MM-EVT-006`, `MM-PO-003` and `MM-PO-004` were each already tested by an existing criterion whose **text** named them but whose *Verifies* cell did not. The register IDs were added to those **existing** cells — `MM-AC-062`, `MM-AC-024`, `MM-AC-040`, `MM-AC-049`, `MM-AC-042`, `MM-AC-043`/`MM-AC-081`, `MM-AC-027`, `MM-AC-026` — with **no new criterion, no duplicate criterion and no change to any criterion's substance**. Strict coverage consequently rises from **69/81 (85.2%)** to **77/81 (95.1%)**, and from **126/223 (56.5%)** to **134/223 (60.1%)**. **`TR-5` (gap too narrow):** `MM-GAP-010` described only the `BC-02` instance. It is broadened to the systemic Rank 4 defect — BC Map §9 names `BC-26` a consumer for **eleven** producing contexts while §7 declares an inbound edge to `BC-26` from only **one** (`E-26`) — and now poses the general question (must Published-Language consumption carry its own §7 edge?) with the three candidate resolutions, so one ruling settles the class rather than each module PRD re-deriving the same refusal. `BC-28` is explicitly excluded from the gap, with the V1-scope reasoning. Registers unchanged: **332 identifiers, 320 obligation-bearing, 12 `MM-GAP`**, all contiguous, zero duplicates, 97 `MM-AC-*` rows. **No requirement was added, deleted, weakened or renumbered; no scope, status value, event, payload or invariant changed; no ranked or frozen document modified; no ADR created; no API, schema, SQL, UI or test was specified; no code touched; not frozen, not registered, not approved.** |

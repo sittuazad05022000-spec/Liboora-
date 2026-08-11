@@ -13,6 +13,7 @@
 | **Date** | 2026-08-10 |
 | **Mandate** | **Review only.** No PRD modified, no ADR, no architecture document, no traceability matrix, no implementation tasks, no specification, no code, no freeze, no registry or baseline change |
 | **Verdict** | **B — MINOR CORRECTIONS.** 1 MEDIUM · 3 LOW · 6 rejected. 0 CRITICAL, 0 HIGH. All six Stage 4 gate checks pass; the single MEDIUM is an internal wording conflict resolvable inside the PRD without an ADR |
+| **Disposition of findings** | Acted on after this review by [`PRD-007_CORRECTION_RECORD.md`](PRD-007_CORRECTION_RECORD.md): `RQ-1` **RESOLVED** · `RQ-3` **RESOLVED** (partially for `SEAT-NFR-009`) · `RQ-4` **RESOLVED** · `RQ-2` **deferred, no edit** — reason and owner recorded. **This review's verdict and findings below are left exactly as issued;** the correction record is a separate artefact and does not re-verdict this one. A Stage 4 **re-review** remains for an independent reviewer |
 
 ---
 

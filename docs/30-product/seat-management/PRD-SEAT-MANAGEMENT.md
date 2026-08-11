@@ -1670,8 +1670,12 @@ work queue of §22.4. It **MUST NOT** be silently dropped, and a new event type 
 (`SEAT-FR-210`; BC Map §7: *"if an edge is not in this table, it does not exist and adding it requires an ADR"*).
 
 `SEAT-FR-241` — The occupancy threshold that triggers `SEAT-EVT-004` **MUST** be configurable
-(`SEAT-CFG-017`, owner `BC-06` via `E-05`, default **90%** of the branch's active seat count). Where the threshold
-is unset, no threshold event is emitted; the module **MUST NOT** substitute a hard-coded value.
+(`SEAT-CFG-017`, owner `BC-06` via `E-05`). **90%** of the branch's active seat count is the value *proposed* for
+that contract to carry; it becomes applicable only once `E-05` actually carries it, and until then it is a documented
+proposal, **not** a default this module applies (`SEAT-FR-212`, `SEAT-FR-265`, `SEAT-CFG-017`, `SEAT-GAP-005`). Where
+the threshold is unset no threshold event is emitted at any occupancy value (`SEAT-AC-170`); where it is set to an
+integer in 1–100 that value is the threshold and `SEAT-EVT-004` is emitted on a crossing of it (`SEAT-AC-169`). The
+module **MUST NOT** substitute a hard-coded value.
 
 `SEAT-FR-242` — `SEAT-EVT-004` **MUST** be emitted on a **crossing**, not on every occupancy change while above the
 threshold, so that a busy branch does not produce one event per check-in. Re-crossing downward re-arms it.
@@ -2347,7 +2351,7 @@ not invalidate them.
 | `SEAT-AC-030` | A student with no valid membership, and an actor holding the Owner role | Owner attempts to assign a seat | Rejected at G7. No override affordance exists for any role | `SEAT-BR-014`, `SEAT-XC-004` |
 | `SEAT-AC-031` | A gate step fails | The response is returned | It names the failing step, and where a limit is involved, the limit and the current value | `SEAT-FR-053`, `SEAT-NFR-010` |
 | `SEAT-AC-032` | A gate step fails midway through evaluation | The transaction ends | No allocation, reservation, history row, counter change or event is produced | `SEAT-FR-054` |
-| `SEAT-AC-033` | A student whose `EnrollmentStatus` is `Inactive`, with `SEAT-CFG-003` unset | Staff attempt to assign a seat | Rejected — the default is *blocks* | `SEAT-CFG-003`, `SEAT-GAP-002` |
+| `SEAT-AC-033` | A student whose `EnrollmentStatus` is `Inactive`, with `SEAT-CFG-003` unset | Staff attempt to assign a seat | Rejected — the default is *blocks* | `SEAT-CFG-003` |
 | `SEAT-AC-034` | A seat in a zone that has become inactive | An acquisition is attempted | Rejected at G10, naming the inactive container | `SEAT-FR-298` |
 | `SEAT-AC-035` | Two acquisition attempts on one seat arriving concurrently | Both run | Exactly one succeeds; the other is rejected at G16 under a pessimistic lock, never by an optimistic retry | `SEAT-BR-015`, `SEAT-BR-031` |
 
@@ -2441,7 +2445,7 @@ not invalidate them.
 | `SEAT-AC-099` | The `E-02` projection is unreachable | An acquisition is attempted | It fails closed, with an explicit reason distinguishing unavailability from invalidity | `SEAT-FR-152` |
 | `SEAT-AC-100` | The `E-02` projection is unreachable | A seat card, layout, allocation or occupancy count is read | The read succeeds, with the composed membership fields marked unavailable | `SEAT-FR-153`, `SEAT-FR-106` |
 | `SEAT-AC-101` | A membership renewed 3 seconds ago, projection not yet updated | An acquisition is attempted | The stale result is accepted as a bounded risk within 5 seconds and is not treated as a defect | `SEAT-FR-154`, `SEAT-NFR-002` |
-| `SEAT-AC-102` | An active allocation whose membership expires | `MembershipExpired` is consumed | The allocation is flagged and queued for staff; it is not released, per the open `Q-01` | `SEAT-FR-155`, `SEAT-GAP-003` |
+| `SEAT-AC-102` | An active allocation whose membership expires | `MembershipExpired` is consumed | The allocation is flagged and queued for staff; it is not released, per the open `Q-01` | `SEAT-FR-155` |
 | `SEAT-AC-103` | An active allocation | `MembershipFrozen` is consumed | The allocation is held — neither released nor converted | `SEAT-FR-156` |
 | `SEAT-AC-104` | Any seat screen | It is rendered | No renew, pay or collect affordance exists, and no monetary value is shown | `SEAT-XC-011`, `SEAT-FR-279` |
 | `SEAT-AC-105` | This module and `BC-02` | Any operation runs | No publication, command call or write to `BC-02` occurs | `SEAT-FR-157` |
@@ -2524,7 +2528,7 @@ not invalidate them.
 | `SEAT-AC-167` | Any emitted event | Its payload is inspected | It carries `tenantId` and, where a student is involved, `StudentRecordId` — never a name, contact detail or `PersonId` | `SEAT-FR-208`, `SEAT-FR-209` |
 | `SEAT-AC-168` | A lock, unlock, maintenance start, maintenance end, reservation creation or reservation expiry | It occurs | No domain event is emitted, and the fact appears in the corresponding work queue | `SEAT-FR-210`, `SEAT-FR-240` |
 | `SEAT-AC-169` | Occupancy at 88% with the threshold set to 90 | Occupancy rises to 91% and then to 95% | `SEAT-EVT-004` is emitted once, on the crossing, not on every change while above | `SEAT-FR-242`, `SEAT-CFG-017`, `SEAT-FR-211`, `SEAT-FR-212`, `SEAT-EVT-004` |
-| `SEAT-AC-170` | No occupancy threshold configured | Occupancy rises to 100% | No `SEAT-EVT-004` is emitted | `SEAT-FR-241`, `SEAT-FR-212`, `SEAT-GAP-005` |
+| `SEAT-AC-170` | No occupancy threshold configured | Occupancy rises to 100% | No `SEAT-EVT-004` is emitted | `SEAT-FR-241`, `SEAT-FR-212` |
 | `SEAT-AC-171` | A work queue containing flagged allocations | Time passes with no staff action | Nothing is released, converted or altered — a queue never acts | `SEAT-FR-217` |
 | `SEAT-AC-172` | `policy.BranchPolicyChanged` is consumed | Existing allocations are inspected | `SeatRules` are re-read and no existing allocation, reservation or counted transfer is retroactively re-evaluated | `SEAT-FR-215`, `SEAT-FR-264` |
 | `SEAT-AC-173` | A zone with 100 seats, 70 allocated, 40 holders checked in | Metrics are read | Allocation rate and occupancy rate are two distinct labelled figures, 70% and 40%, never conflated into one | `SEAT-FR-245` |

@@ -1475,8 +1475,10 @@ where a person must be told, they are emitted as notification facts (§24.2).
 configured threshold, in either direction, and **MUST NOT** be emitted repeatedly while the value stays on one side
 of it.
 
-`SEAT-FR-212` — Threshold values are tenant configuration. Where none is configured, the module **MUST** default to
-**90%** of active seat capacity and **MUST** remain operable.
+`SEAT-FR-212` — Threshold values are tenant configuration. Where a threshold **is** configured it is an integer
+1–100 and `SEAT-FR-211`'s crossing rule applies to that value. Where none is configured no threshold exists:
+`SEAT-EVT-004` **MUST NOT** be emitted at any occupancy value, the **90%** figure **MUST NOT** be substituted as a
+fallback (`SEAT-CFG-017`, `SEAT-FR-241`, `SEAT-FR-265`), and the module **MUST** remain operable.
 
 ### 22.3 Consumption
 
@@ -2517,8 +2519,8 @@ not invalidate them.
 | `SEAT-AC-166` | The full set of events this module emits | It is enumerated | It is exactly the four of `SEAT-EVT-001`…`004`; no command-shaped event exists | `SEAT-FR-206`, `SEAT-BR-035` |
 | `SEAT-AC-167` | Any emitted event | Its payload is inspected | It carries `tenantId` and, where a student is involved, `StudentRecordId` — never a name, contact detail or `PersonId` | `SEAT-FR-208`, `SEAT-FR-209` |
 | `SEAT-AC-168` | A lock, unlock, maintenance start, maintenance end, reservation creation or reservation expiry | It occurs | No domain event is emitted, and the fact appears in the corresponding work queue | `SEAT-FR-210`, `SEAT-FR-240` |
-| `SEAT-AC-169` | Occupancy at 88% with the threshold at its default 90% | Occupancy rises to 91% and then to 95% | `SEAT-EVT-004` is emitted once, on the crossing, not on every change while above | `SEAT-FR-242`, `SEAT-CFG-017` |
-| `SEAT-AC-170` | No occupancy threshold configured | Occupancy rises to 100% | No `SEAT-EVT-004` is emitted | `SEAT-FR-241`, `SEAT-GAP-005` |
+| `SEAT-AC-169` | Occupancy at 88% with the threshold at its default 90% | Occupancy rises to 91% and then to 95% | `SEAT-EVT-004` is emitted once, on the crossing, not on every change while above | `SEAT-FR-242`, `SEAT-CFG-017`, `SEAT-FR-211`, `SEAT-FR-212` |
+| `SEAT-AC-170` | No occupancy threshold configured | Occupancy rises to 100% | No `SEAT-EVT-004` is emitted | `SEAT-FR-241`, `SEAT-FR-212`, `SEAT-GAP-005` |
 | `SEAT-AC-171` | A work queue containing flagged allocations | Time passes with no staff action | Nothing is released, converted or altered — a queue never acts | `SEAT-FR-217` |
 | `SEAT-AC-172` | `policy.BranchPolicyChanged` is consumed | Existing allocations are inspected | `SeatRules` are re-read and no existing allocation, reservation or counted transfer is retroactively re-evaluated | `SEAT-FR-215`, `SEAT-FR-264` |
 | `SEAT-AC-173` | A zone with 100 seats, 70 allocated, 40 holders checked in | Metrics are read | Allocation rate and occupancy rate are two distinct labelled figures, 70% and 40%, never conflated into one | `SEAT-FR-245` |

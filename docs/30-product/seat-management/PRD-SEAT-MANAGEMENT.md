@@ -28,8 +28,8 @@ architecture-aligned successor to the Seat Management v1.0 draft supplied by the
 
 It does **not** define — and must not be read as defining — a database schema, SQL migration, API URL,
 framework choice, Flutter widget, backend code or infrastructure. Those belong to the Specification and
-Implementation stages (Lifecycle Stages 7→8). This constraint is the source draft's §43, retained verbatim in
-intent.
+Implementation stages (Lifecycle Stages 7→8). This constraint is the source draft's §43 — that number is the source
+draft's own numbering, not a section of this document, which has 36 sections — retained verbatim in intent.
 
 ### 0.2 Normative language
 
@@ -1850,7 +1850,14 @@ allocation created under the old value remains valid under the old value until i
 
 `SEAT-FR-265` — Where a configurable is unset and the table below states a default, the default **MUST** apply. The
 module **MUST NOT** treat an unset configurable as *unlimited*, *permitted* or *disabled* except where the default
-column says so explicitly.
+column says so explicitly. Exactly one row exercises that escape clause — `SEAT-CFG-017`, the only configurable in
+§27.1 whose value domain admits `unset` — and its Default column states its unset behaviour explicitly. The
+resolution is therefore deterministic and admits no substitution: where `SEAT-CFG-017` is **unset** no threshold
+exists, `SEAT-EVT-004` is **never** emitted at any occupancy value including 100%, and the **90%** figure **MUST
+NOT** be applied as a fallback (`SEAT-FR-241`, `SEAT-AC-170`); where it is **set** to an integer in 1–100 that value
+is the threshold and `SEAT-EVT-004` is emitted on a crossing of it (`SEAT-FR-242`, `SEAT-AC-169`). **90%** becomes
+the applicable default only once the threshold is carried by the `E-05` contract; until that confirmation it is a
+documented proposal, not an active default (`SEAT-FR-267`, `SEAT-GAP-005`).
 
 ### 27.1 The register
 
@@ -1872,7 +1879,7 @@ column says so explicitly.
 | `SEAT-CFG-014` | Whether **Reception** may cancel another student's reservation | `BC-25` | **not granted** | Boolean | §12.7, `SEAT-FR-102` |
 | `SEAT-CFG-015` | Default reservation hold duration | `BC-25` | **30 minutes** | Duration, 5 minutes … `reservationWindow` | §15, `SEAT-FR-120` |
 | `SEAT-CFG-016` | Maximum concurrent active reservations per student | `BC-25` | **1** | Positive integer | §15, `SEAT-FR-121` |
-| `SEAT-CFG-017` | Occupancy percentage that emits `SEAT-EVT-004` | **`BC-06`** via `E-05` | **90%** | Integer 1–100, or unset | §24.1, `SEAT-FR-241` |
+| `SEAT-CFG-017` | Occupancy percentage that emits `SEAT-EVT-004` | **`BC-06`** via `E-05` | **Unset in V1 — no event is emitted and no value is substituted** (explicit unset behaviour per `SEAT-FR-265`); **90%** applies only once `E-05` carries the threshold (`SEAT-GAP-005`) | Integer 1–100, or unset | §24.1, `SEAT-FR-241`, `SEAT-FR-265`, `SEAT-FR-267` |
 | `SEAT-CFG-018` | *Expiring soon* filter horizon | `BC-25` | **7 days** | Duration, 1 day … 90 days | §26.2, `SEAT-FR-258` |
 
 ### 27.2 Values owned by `BC-06`, consumed not configured
@@ -2434,10 +2441,10 @@ not invalidate them.
 | `SEAT-AC-105` | This module and `BC-02` | Any operation runs | No publication, command call or write to `BC-02` occurs | `SEAT-FR-157` |
 | `SEAT-AC-106` | A student with an active allocation | `StudentCheckedIn` arrives | The allocation is marked physically occupied and the live count increments; no attendance record is created | `SEAT-FR-109`, `SEAT-BR-020` |
 | `SEAT-AC-107` | A student with **no** active allocation | `StudentCheckedIn` arrives | The check-in is recorded as unseated occupancy and is **never rejected**; `BC-03` remains authoritative | `SEAT-FR-112` |
-| `SEAT-AC-108` | A check-in already processed | The same event is redelivered | The count is unchanged — handling is idempotent by event identifier | `SEAT-FR-111`, `SEAT-FR-205` |
+| `SEAT-AC-108` | A check-in already processed | The same event is redelivered | The count is unchanged — handling is idempotent by event identifier | `SEAT-FR-111`, `SEAT-FR-205`, `SEAT-NFR-007` |
 | `SEAT-AC-109` | A check-in whose `tenantId` cannot be resolved | The handler runs | It fails loudly and processes nothing; it never defaults to a tenant | `SEAT-FR-113`, `SEAT-FR-289` |
 | `SEAT-AC-110` | Occupancy accumulated during a day | The operating day rolls over per `BC-06` | Occupancy resets; allocations are unaffected | `SEAT-FR-114` |
-| `SEAT-AC-111` | A missed or stale `E-08` event | Occupancy is recomputed | It converges from the current allocation set and `BC-03` open sessions; no allocation was corrupted | `SEAT-FR-115`, `SEAT-FR-116`, `SEAT-NFR-006` |
+| `SEAT-AC-111` | A missed or stale `E-08` event | Occupancy is recomputed | It converges from the current allocation set and `BC-03` open sessions; no allocation was corrupted | `SEAT-FR-115`, `SEAT-FR-116`, `SEAT-NFR-006`, `SEAT-NFR-007` |
 | `SEAT-AC-112` | Any attendance question — a total, a percentage, a correction or a dispute | It is asked of this module | This module is not the source; no attendance record, correction or verification evidence is stored here | `SEAT-XC-007`, `SEAT-XC-008` |
 | `SEAT-AC-113` | A check-in identifying a student who is not the holder of the seat scanned | The event is processed | Both facts are recorded, the discrepancy is flagged for staff, and neither allocation nor attendance is silently altered | `SEAT-FR-299` |
 
@@ -2456,12 +2463,12 @@ not invalidate them.
 | `SEAT-AC-122` | A seat with an unexpired reservation | Maintenance is started | The reservation is cancelled with the cause recorded | `SEAT-BR-027`, `SEAT-FR-126` |
 | `SEAT-AC-123` | A seat under maintenance | Availability counts, auto-assignment candidates and student availability are computed | The seat is excluded from all three | `SEAT-FR-169` |
 | `SEAT-AC-124` | Maintenance has started and ended twice on a seat | The seat timeline is read | Both maintenance episodes appear in order | `SEAT-FR-170`, `SEAT-FR-227` |
-| `SEAT-AC-125` | An import file of 100 rows where row 57 has a duplicate seat number | The import is submitted | No row is applied, and the response names row 57 and the reason | `SEAT-BR-028`, `SEAT-FR-172` |
+| `SEAT-AC-125` | An import file of 100 rows where row 57 has a duplicate seat number | The import is submitted | No row is applied, and the response names row 57 and the reason | `SEAT-BR-028`, `SEAT-FR-172`, `SEAT-NFR-009` |
 | `SEAT-AC-126` | An import file referencing a zone that does not exist | It is submitted | Rejected; the import creates no `Floor` and no `Zone` | `SEAT-FR-174` |
 | `SEAT-AC-127` | An import already applied under key `K` | The same file is submitted again with key `K` | No duplicate seat is created | `SEAT-FR-173` |
 | `SEAT-AC-128` | An import of 2,001 rows | It is submitted | Rejected, naming the limit | `SEAT-FR-179` |
 | `SEAT-AC-129` | A completed export | Its contents are inspected | Seat inventory and layout only — no student identifier, no membership data, no monetary value | `SEAT-FR-175`, `SEAT-FR-284` |
-| `SEAT-AC-130` | A bulk reassignment of 10 seats where student 4 has no valid membership | It is submitted | No reassignment is applied; the gate ran per student per destination seat | `SEAT-BR-029`, `SEAT-FR-177` |
+| `SEAT-AC-130` | A bulk reassignment of 10 seats where student 4 has no valid membership | It is submitted | No reassignment is applied; the gate ran per student per destination seat | `SEAT-BR-029`, `SEAT-FR-177`, `SEAT-NFR-009` |
 | `SEAT-AC-131` | Any completed bulk operation | Audit is inspected | Exactly one audit fact describes the operation, its actor, its scope and its row count | `SEAT-FR-178`, `SEAT-FR-285` |
 
 ### 33.10 Auto-assignment, QR, real-time and idempotency

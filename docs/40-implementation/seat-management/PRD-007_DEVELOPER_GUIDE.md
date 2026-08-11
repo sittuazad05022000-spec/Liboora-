@@ -6,7 +6,7 @@
 | **Module** | **`BC-04` Seating** — `[CORE]`, Library Management domain |
 | **Specification** | [`PRD-SEAT-MANAGEMENT.md`](../../30-product/seat-management/PRD-SEAT-MANAGEMENT.md) **v1.0**, **`FROZEN`** |
 | **Backlog** | [`PRD-007_IMPLEMENTATION_TASKS.md`](./PRD-007_IMPLEMENTATION_TASKS.md) — 100 tasks, `IMPL-500`…`IMPL-599` |
-| **Version** | v1.0 |
+| **Version** | **v1.1** — wording correction only; see §11 |
 | **Date** | 2026-08-04 |
 | **Authority** | **Navigational and explanatory only. This document carries no requirement and no authority.** Where it disagrees with the frozen PRD, **the PRD is right and this guide is a defect** |
 | **Status of the code** | **Nothing is implemented.** 0 of 100 tasks started · 0 of 226 acceptance criteria proven |
@@ -267,9 +267,19 @@ prerequisites. Priorities: 64 P1 · 32 P2 · 4 P3.
 6  flutter build web --release
 ```
 
-> **Gate 3 is already RED** on 9 pre-existing `app → domain/library` violations, waived to 2026-10-31 by `ADR-0012`
-> (`BLK-01` / `TASK-D10`). It is not your change that broke it — and do not add a tenth violation on the grounds
-> that it is red anyway.
+> **Gate 3 is already RED** on 9 pre-existing `app → domain/library` violations. **They are not waived.**
+> `ADR-0012` §3.4 deliberately leaves this edge failing because the sites are already tracked by **`TASK-D10`**
+> (`BLK-01`), a **P0 release blocker**: waiving an edge that is scheduled to disappear *"would convert a tracked
+> release blocker into untracked debt with a later expiry date."* So the redness is a true statement about the
+> codebase, not a defect in the checker, and **the gate stays red until `TASK-D10` is completed**. Unlike the 12
+> dated exceptions in the same ADR, this edge carries **no expiry** — there is no date on which it self-clears.
+>
+> **This is pre-existing and unrelated to `PRD-007`.** All nine sites date to the original scaffold commit, in
+> `lib/app/session.dart` and five `lib/app/dashboards/*.dart` files; no Seat Management work created any of them.
+> It is not your change that broke it. **Do not** waive the edge in `tool/module_dependencies.yaml`, weaken
+> `check_module_boundaries.dart`, or add a tenth violation on the grounds that it is red anyway — a waiver would
+> also turn **gate 4** red, because `test/architecture/boundary_checker_test.dart` asserts this edge's absence from
+> the exception list.
 
 **Do not put a `SEAT-*` identifier in a `tool/`, `lib/` or `test/` path or filename.** The Stage 5 gate forbids
 identifier leakage outside the specification directory and the traceability matrix. Cite identifiers in comments
@@ -360,4 +370,5 @@ conflict between two ranked documents by choosing one in an implementation; that
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-04 | **Corrected wording only — no guidance reversed, nothing added or removed from scope.** §6's pipeline-gate note said the nine `app → domain/library` violations were *"waived to 2026-10-31 by `ADR-0012`"*. **They are not waived.** `ADR-0012` §3.4 deliberately withholds the waiver because the sites are already tracked by `TASK-D10` (`BLK-01`), a P0 release blocker, and §4's removal table records this edge as *"Not waived. Closes with `TASK-D10`"* with expiry **n/a** — 2026-10-31 is the expiry of two unrelated Wave-1 exceptions. The note now states the four facts accurately: not waived · an intentional tracked release blocker · red until `TASK-D10` completes · pre-existing and unrelated to `PRD-007`. It also records that a waiver would turn **gate 4** red, since `boundary_checker_test.dart` asserts this edge's absence from the exception list. Verified mechanically first: the checker's output is **byte-identical** at `7602890` (pre-Stage-7) and `a8037da` (post-Stage-7) — SHA256 `66d14bbe…` both — and `git blame` puts all nine lines in the original scaffold commit `a44ebb0e`, 86 commits before the Stage 6 baseline. **No requirement, identifier, task or acceptance criterion was touched, and `PRD-SEAT-MANAGEMENT.md` remains byte-identical** at `c8760a46…`. Permitted without an ADR: this guide is unranked — baseline §3.4 records it as *"navigational and explanatory — carries no requirement and no authority"* — and §7 step 1 requires an ADR only for **Rank 1–5** documents. The same defect was corrected in the same commit in `seat-management/README.md`, the only other document that carried it; every other document in the repository already said *"unwaived"* correctly. Logged as **`GCP-10`**. |
 | **v1.0** | 2026-08-04 | Created at Stage 7 from the frozen `PRD-SEAT-MANAGEMENT.md` v1.0, as the first per-module developer guide in this repository — following the `DEVELOPER_HANDOFF.md` §4A precedent of a per-module trap list rather than duplicating it. **Explanatory only: no requirement is created, restated as normative, or reinterpreted**, and every claim carries the identifier it derives from so it can be checked against the frozen text. Contains **no code, no API specification, no database schema and no migration** — deliberately, because the PRD specifies behaviour and a guide that invented an interface would be inventing requirements at Rank *below* the specification. Records the module's honest state: **0 of 100 tasks, 0 of 226 acceptance criteria**, `PRD-006` still `PLANNED` so occupancy cannot be derived, 118 obligations without a criterion, and **`GCP-09`'s ten mis-targeted citations** — with an explicit warning not to fix them in a frozen document and not to search-and-replace them, since the same three identifiers are cited correctly six times elsewhere. |

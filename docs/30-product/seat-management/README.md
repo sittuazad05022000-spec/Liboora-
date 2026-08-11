@@ -173,8 +173,13 @@ authorisation and never evaluates, grants or caches it.
   frozen PRD is never silently modified. Three of the ten are in the §8 gate table, the most-read table in the
   document. **Read [`PRD-007_STAGE7_FREEZE.md`](PRD-007_STAGE7_FREEZE.md) §8A before following an *Authority*
   pointer**, and do not search-and-replace: the same identifiers are cited correctly six times elsewhere.
-- **Pipeline gate 3 is already RED** repository-wide — 9 pre-existing `app → domain/library` violations waived to
-  2026-10-31 by `ADR-0012` (`BLK-01` / `TASK-D10`). Not caused by this module; do not add to it.
+- **Pipeline gate 3 is already RED** repository-wide, on 9 pre-existing `app → domain/library` violations. These are
+  **not waived.** `ADR-0012` §3.4 deliberately withholds a waiver because the sites are already tracked by
+  **`TASK-D10`** (`BLK-01`), a **P0 release blocker**, and waiving them *"would convert a tracked release blocker
+  into untracked debt."* The red gate is the intended signal that `TASK-D10` is not done, and it **stays red until
+  `TASK-D10` is completed** — there is no expiry date to wait out, unlike the 12 dated exceptions in the same ADR.
+  **Pre-existing and unrelated to `PRD-007`**: all nine date to the original scaffold commit and none was
+  introduced by this module. Do not waive it, do not silence the checker, and do not add a tenth violation.
 
 ---
 

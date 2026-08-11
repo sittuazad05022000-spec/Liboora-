@@ -7,15 +7,15 @@
 | **Bounded context** | **`BC-04` Seating** — `[CORE]`, Library Management domain |
 | **Aggregates owned** | `SeatAllocation` · `SeatLayout` *(BC Map §8)* |
 | **Version** | **v1.0** |
-| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 2**. Not architecture-reviewed, not traceability-registered, **not frozen** |
+| **Status** | **`FROZEN`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 7**. Admitted to the documentation baseline by [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md). **Frozen, not `VERIFIED`** — Stage 9 requires implementation evidence that does not yet exist |
 | **Date** | 2026-08-04 |
 | **Release** | **V1** |
-| **Baseline** | Written against `BASELINE-2026-08-04-D` |
-| **Rank** | Rank 3 (module PRD) — **claimed on freeze, not now** |
+| **Baseline** | Written against `BASELINE-2026-08-04-D`; **admitted to `BASELINE-2026-08-04-E`** |
+| **Rank** | **Rank 3** (module PRD) — conferred by [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3.3 and §4, not claimed here |
 | **Identifier prefix** | **`SEAT-*`** — see §0.3 |
 | **Consumes** | `BC-02` Membership (`E-02`) · `BC-03` Attendance (`E-08`) · `BC-06` Library Policy (`E-05`) · `BC-01` Enrollment (`E-01`-family status event) · `BC-21` Entitlement (`E-17`) · `BC-19` Tenancy (`E-18`) · `BC-25` Configuration (`E-19`) |
 | **Publishes to** | `BC-24` Audit Trail (`E-20`) · `BC-22` Notification Delivery (`E-23`) · `BC-26` Analytics · `BC-22` capacity alerting |
-| **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0011`, `ADR-0016` (Rank 2) · Library PRD v1.0, Authentication PRD v2.0, `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN** (Rank 3) · BC Map (Rank 4) · `ARCHITECTURE_RULINGS.md` `AR-1`…`AR-7` (Rank 5) |
+| **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0011`, `ADR-0016`, **`ADR-0020`** (Rank 2) · Library PRD v1.0, Authentication PRD v2.0, `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN** (Rank 3) · BC Map (Rank 4) · `ARCHITECTURE_RULINGS.md` `AR-1`…`AR-7` (Rank 5) |
 
 ---
 
@@ -2847,5 +2847,16 @@ combined two testable statements.
 **realisation** changed, the change is one of the five in §35, each justified by a higher-authority document, and the
 capability itself survives. Where a capability was **deferred**, the deferral is an existing platform ruling recorded
 in §34.3, not a decision taken here.
+
+---
+
+## 37. Document change history
+
+Distinct from §35, which records changes made to the *source draft* while this document was written. This section
+records changes to **this document** after it was issued.
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.0** | 2026-08-04 | **`FROZEN` — admitted to the documentation baseline by [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md) at Rank 3 as the authoritative specification for `BC-04` Seating**, under `BASELINE-2026-08-04-E`. Completed [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 7. **No requirement, business rule, invariant, event, exclusion, protected operation, configurable, acceptance criterion, register, gap or scope statement was added, removed, renumbered or reworded on admission** — the only edits are the four lifecycle metadata rows in the header table (*Status*, *Baseline*, *Rank*, *Authorities applied*) and this section. All **683 identifiers** across ten registers, all **226 `SEAT-AC-*`**, the four `SEAT-EVT-*` closed by `SEAT-FR-206`, and all **14 `SEAT-GAP-*`** are unchanged and were re-verified at exit 0 by `tool/docs_check/prd007_traceability.py` immediately before admission. **The version is preserved at v1.0** — freeze confers status, not a renumbering (the `PRD-003`-at-v1.0, `PRD-004`-at-v1.2 and `PRD-005`-at-v1.4 precedents). **Freeze is conferred by the baseline row, not by this table**: per [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §2.1 no PRD in this repository declares its own status, and the *Status* row above cites `ADR-0020` rather than asserting freeze on this document's own authority. **`FROZEN` is not `VERIFIED`** — **0 of 100 implementation tasks** (`IMPL-500`…`IMPL-599`) and **0 of 226 acceptance criteria** are proven by a test, and `SEAT-NFR-011` (quoting `SID-4.56`) holds that a rule that cannot be checked SHALL be treated as unmet. **All fourteen gaps remain OPEN and are not ratified by admission**; `SEAT-BR-045` forbids resolving any of them by implementation choice. **After this point any business-rule change requires an ADR → version increment → changelog → baseline update, in that order** (`PRD_LIFECYCLE.md` Stage 7). |
 
 ---

@@ -268,7 +268,28 @@ def main():
 
     # `TRACEABILITY_MATRIX.md` is the Stage 5 gate artefact: it MUST cite the
     # register it registers.  A citation is not a collision (see docstring).
-    ALLOWED = ("seat-management/", "TRACEABILITY_MATRIX.md")
+    #
+    # Stage 7 adds four more legitimate citation sites.  Freezing a PRD REQUIRES
+    # the governance layer to name the registers it is admitting: the freeze ADR
+    # states which gaps stay open, the baseline declares what entered Rank 3, the
+    # registry records the status change and the ADR index summarises it.  This
+    # is not an exemption invented for this run -- `prd005_traceability.py`
+    # enumerates the same four sites for `MM-*`, because `ADR-0019` cites `MM-*`
+    # eighty times and `DOCUMENTATION_BASELINE.md` eighteen; `ADR-0018` did the
+    # same for `SM-*` before it.  A *citation* is not a *collision* -- a
+    # collision would be another register DEFINING a `SEAT-` identifier, which
+    # the duplicate-definition and form checks above still catch.  This list is
+    # deliberately enumerated file by file rather than widened to
+    # `docs/00-governance/`, so a stray `SEAT-` in any other governance
+    # document still fails the run.
+    ALLOWED = (
+        "seat-management/",
+        "TRACEABILITY_MATRIX.md",
+        "ADR-0020-seat-management-prd-v1.0-baseline.md",
+        "DOCUMENTATION_BASELINE.md",
+        "PRD_REGISTRY.md",
+        "ADR-INDEX.md",
+    )
 
     def outside(hits):
         return [h for h in hits if not any(a in h for a in ALLOWED)]

@@ -209,6 +209,50 @@ grep -n "PRD-008" docs/30-product/attendance-management/PRD-006_*.md
 #   narrative of this reconciliation, or a v1.0/v1.1 changelog row
 ```
 
+### 6.1 Measured results
+
+| Check | Result |
+|---|---|
+| Ten `ATT-*` registers | **148 / 42 / 12 / 4 / 21 / 14 / 24 / 14 / 209 / 18** — all contiguous, **506** identifiers, unchanged |
+| Obligation coverage | **279/279 = 100.0%**, 0 orphan `ATT-AC-*` — unchanged |
+| V1 attendance modes | **6** — `MANUAL`, `FACE`, `FIXED_QR`, `FIXED_QR_WIFI`, `FIXED_QR_GPS`, `DYNAMIC_QR`. Byte-identical to the pre-rename blob |
+| `ATTENDANCE_MODE_RFID` | **0** — the Future classification holds |
+| `attendance.*` events | **4** — unchanged |
+| Out-of-range identifiers | **0** |
+| Protected-path diff `14e899c..HEAD` | **empty** |
+| ADR files | **21** (20 ADRs + `ADR-INDEX.md`) — none created |
+| `ATT-` in `TRACEABILITY_MATRIX.md` | **0** — Stage 5 provably still unpassed |
+
+### 6.2 A pre-existing gate failure found while verifying — reported, NOT fixed
+
+Running the repository's five documentation gates surfaced a **`tool/docs_check/prd007_traceability.py` FAIL**: it
+reports `SEAT-*` identifiers *"found outside the module and outside the registry"*, naming this module's two files.
+
+**This is not a regression from the renumbering, and it is proved rather than asserted.** The identical failure
+was reproduced against a pristine worktree of `14e899c` — before the rename and before this reconciliation — where
+it names the same citations under their old `PRD-008_*` filenames. Every gate's exit code is unchanged:
+
+| Gate | At `14e899c` | At `HEAD` | Verdict |
+|---|---|---|---|
+| `prd007_traceability.py` | **1** | **1** | Pre-existing |
+| `prd007_task_coverage.py` | 0 | 0 | Unchanged |
+| `prd005_traceability.py` | 1 | 1 | Pre-existing |
+| `prd005_task_coverage.py` | 0 | 0 | Unchanged |
+| `prd004_traceability.py` | 1 | 1 | Pre-existing (`SM-10.7`, `SM-10.8`) |
+
+**Cause.** The script's `ALLOWED` list (lines **285–292**) enumerates six paths permitted to cite `SEAT-*`. It was
+last widened by `ADR-0020` on the stated reasoning that *"a citation is not a collision"*. The Attendance PRD did
+not exist when that list was written, and it legitimately cites frozen `PRD-007` — which is exactly what a
+downstream consumer of `E-08` is supposed to do. The scan cannot distinguish a citation from a collision by path
+alone, so it flags them. **No `SEAT-*` identifier is defined outside Seat Management**; the register is not
+colliding.
+
+**Why it is left unfixed here.** Widening the list is a change to a **Stage 5 gate artefact belonging to frozen
+`PRD-007`**, whose precedent (`ADR-0020`) records such a change in an ADR. This reconciliation has no authority
+over `PRD-007`'s gates and was explicitly scoped to numbering. **The correct change is named, not applied**: add
+`"attendance-management/"` to `ALLOWED` at line **286**, under whatever record `PRD-007`'s owner requires. Logging
+it here follows the `GCP-09` precedent — a defect found after the gates passed is disclosed, not silently repaired.
+
 ---
 
 ## 7. Status after this record
@@ -222,6 +266,7 @@ grep -n "PRD-008" docs/30-product/attendance-management/PRD-006_*.md
 | Was any frozen document modified? | **No** |
 | Is `ATT-GAP-001` closed? | **Yes** — by conformance, not by an owner ruling. 17 gaps remain open |
 | Is `PRD-006` frozen? | **No.** Stage 2, `DRAFT`, Unranked. **This record confers no status and advanced no stage** |
+| Did any gate regress? | **No.** All five exit codes are identical to `14e899c` (§6.2). One pre-existing `prd007_traceability.py` FAIL was **found and reported, not fixed** |
 | What is the next gate? | **Stage 3 — Architecture Review**, requiring a written alignment record. Unchanged by this work |
 
 ---

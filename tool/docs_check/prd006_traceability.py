@@ -406,9 +406,25 @@ def main():
     # ---- 8. Collisions -------------------------------------------------------
     # A citation is not a collision (see docstring).  Enumerated file by file so
     # a stray ATT- in any other document still fails the run.
+    #
+    # ADR-0021 is listed for the same reason prd005_traceability.py lists
+    # ADR-0019 and prd007_traceability.py lists ADR-0020: governance cannot
+    # record a decision ABOUT a register without naming the identifiers it
+    # concerns.  ADR-0021 cites `ATT-CFG-005/006/011/012/014/019/023`,
+    # `ATT-GAP-017`, `ATT-BR-043`/`044` and `ATT-FR-149`..`151` -- every one a
+    # reference to a row DEFINED in PRD-006 section 16.3, none a new definition.
+    # This list stays enumerated file by file rather than widened to
+    # docs/00-governance/, so a stray ATT- in any other governance document
+    # still fails the run, and the duplicate-definition, registered-prefix and
+    # count checks above -- which are what detect a genuine collision -- are
+    # untouched.  DOCUMENTATION_BASELINE.md, PRD_REGISTRY.md and ADR-INDEX.md
+    # are deliberately NOT added: unlike the PRD-005/PRD-007 cases this is not a
+    # freeze, none of those three has been modified, and adding them now would
+    # pre-authorise an edit that has not been made.
     ALLOWED = (
         "attendance-management/",
         "TRACEABILITY_MATRIX.md",
+        "ADR-0021-attendance-management-configurable-defaults.md",
     )
 
     def outside(hits):

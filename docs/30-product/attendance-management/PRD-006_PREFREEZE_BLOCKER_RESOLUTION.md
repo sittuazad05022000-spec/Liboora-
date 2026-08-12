@@ -314,6 +314,8 @@ and **PASSES**, the `LIB-16.2` breach closes, `ATT-GAP-017` closes, the ledger b
 | Invent ranges so the Guide *could* take them | Inventing the envelope is the same act one step removed |
 | Modify `PRD-006` | It is the subject; hash unchanged, and §6 of the readiness review depends on that |
 | Modify `PRD-007` or any frozen document | Instruction 5; all verified byte-identical |
+| Modify `prd007_traceability.py` | Its exit 1 is pre-existing and its 2 problem classes are unchanged. Fixing another module's gate is not this record's work |
+| Widen the `prd006` `ALLOWED` list to a directory | One named file only (§10.1); a stray `ATT-` elsewhere in governance still fails |
 | Resolve any architectural gap | Instruction 6. **18 open, 1 narrowed — unchanged** |
 | Upgrade either CONDITIONAL verdict | `PRD_LIFECYCLE.md` L104 |
 | **Accept** `ADR-0021` | An ADR is accepted by its deciders. It is **Proposed** |
@@ -333,8 +335,32 @@ and **PASSES**, the `LIB-16.2` breach closes, `ATT-GAP-017` closes, the ledger b
 | `PRD-007` frozen with 14 open gaps | `ADR-0020` §3.1 | Confirmed |
 | No frozen PRD carries a live breach | `grep -c 'live breach'` across 4 frozen PRDs | **0, 0, 0, 0** vs `PRD-006` **1** |
 | Gap ledger unchanged | Parsed §32.1 verdict cells | **2 · 1 · 18** |
-| Stage 5 / Stage 6 gates still pass | Both tools re-run | **exit 0 · exit 0** |
+| Stage 5 / Stage 6 gates still pass | Both tools re-run **after** `ADR-0021` was authored and its `ALLOWED` entry added | **exit 0 · exit 0** — see §10.1 |
+| Collision check still fires on a genuine stray | Negative control: probe file with `ATT-FR-999` in `docs/00-governance/` | **exit 1** with probe, **exit 0** without |
+| `prd007_traceability.py` not worsened | Failing **problem-class** count before vs after | **2 · 2** — unchanged, pre-existing |
+| `ADR-0021` defines no identifier | Register-row form, `ATT-*` and `SEAT-*` | Cites only; **0** definitions |
 | `PRD-006` unmodified | SHA-256 | `93ab1c60…` unchanged |
+
+### 10.1 A gate this record's own ADR broke, and how it was repaired
+
+**Recorded because it happened after §10's first draft and would otherwise read as a stale pass.**
+
+`tool/docs_check/prd006_traceability.py` was at **exit 0** before `ADR-0021` existed and went to **exit 1** the
+moment it did: the collision scan flags any `ATT-` token outside `attendance-management/`, and an ADR *about* the
+attendance configurables cannot avoid naming them.
+
+The fix is the repository's **existing** convention, not a new exemption — `prd005_traceability.py` lists
+`ADR-0019` for `MM-*` and `prd007_traceability.py` lists `ADR-0020` for `SEAT-*`, both on the recorded reasoning
+that *“a citation is not a collision — a collision would be another register **defining** an identifier.”* The
+`ALLOWED` list gained **one named file**. `ADR-0021` defines none.
+
+**Deliberately not done:** the list was not widened to `docs/00-governance/` (negative control above proves a stray
+still fails); `DOCUMENTATION_BASELINE.md`, `PRD_REGISTRY.md` and `ADR-INDEX.md` were **not** added despite both
+precedents listing all three, because those were *freezes* and this is not — none has been modified, and
+pre-authorising an unmade edit would let a later change pass unnoticed; the duplicate-definition, registered-prefix
+and §2F count checks are untouched; and `prd007_traceability.py` was not modified at all.
+
+Full disclosure: `ADR-0021` §7.2a.
 
 ---
 
@@ -342,4 +368,5 @@ and **PASSES**, the `LIB-16.2` breach closes, `ATT-GAP-017` closes, the ledger b
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.0.1** | 2026-08-04 | **Corrects §10 and adds §10.1 after authoring `ADR-0021` broke a gate that §10 had already recorded as passing.** `prd006_traceability.py` went **exit 0 → exit 1** the moment the ADR existed, because its collision scan flags any `ATT-` token outside `attendance-management/` and an ADR *about* the attendance configurables cannot avoid naming them. Repaired by the repository's **existing** convention — the `ALLOWED` list gained **one named file**, matching `prd005_traceability.py`'s listing of `ADR-0019` and `prd007_traceability.py`'s of `ADR-0020`, on the recorded reasoning that *“a citation is not a collision”*; `ADR-0021` **defines no identifier**. Adds three verification rows: a **negative control** proving a stray `ATT-FR-999` probe elsewhere in `docs/00-governance/` still returns exit 1; confirmation that `prd007_traceability.py`'s failing **problem-class** count is **unchanged at 2** and pre-existing; and confirmation that `ADR-0021` defines **0** `ATT-*` and **0** `SEAT-*` identifiers. Records in §9 that `prd007_traceability.py` was **not** modified and that the `ALLOWED` list was **not** widened to a directory, and that `DOCUMENTATION_BASELINE.md`/`PRD_REGISTRY.md`/`ADR-INDEX.md` were deliberately **not** added despite both precedents listing all three — those were *freezes*, this is not, none has been modified, and pre-authorising an unmade edit would let a later change pass unnoticed. **The §10 row was corrected rather than left standing**: it was true when written and false by the time the work finished, which is the failure mode `GCP-01`/`GCP-07`/`GCP-08` record as a class. |
 | **v1.0** | 2026-08-04 | Created to dispose of the six Stage 7 blockers. **Three resolved by investigation, one referred, two remaining.** Stage 3's conditional finding has **no outstanding disposition** (0 architectural conflicts; Check 12 is gap-bearing, not conflict-bearing; `F-1` cosmetic and disclosed; 6 findings recorded as rejected with reasons). Stage 4's disposition is **complete** — 8 of 8 findings dispositioned, the sole outstanding item `RQ-1` being `ATT-GAP-017` itself, so one blocker rather than two; the outstanding independent Stage 4 **re-review** is recorded as a process recommendation, not an unmet gate condition. **Answered from existing governance that CONDITIONAL verdicts do not bar freeze** — Stage 3's gate requires a record of dispositions and Stage 4's explicitly permits *"deferred with a reason and an owner"*; Stage 7's gate names no verdict grade; baseline §6 carries `GCP-05` and `GCP-06`, unresolved contradictions **inside frozen Rank 3 and Rank 4 documents**; and `ADR-0020` §3 admitted `PRD-007` with 14 open gaps under the heading *"investigated, not resolved"* — while recording the **honest limit** that no precedent exists for an explicitly CONDITIONAL verdict, since `PRD-007` was A—PASS throughout, and referring that confirmation to the governance owner rather than inferring it. **`ATT-GAP-017` was investigated exhaustively and deliberately not closed**: a repo-wide search across four concept families found **zero** authoritative values, independently confirming the PRD's own claim; the `ACN-001`/`AR-4`/`DOCUMENTATION_AUDIT-001` precedents were examined and found to establish that values may be **anchored**, not that a reviewer may do the anchoring — in every case the anchor came from an external standard or from the product owner supplying new input, and **no new authority has arrived**; `CONFIGURATION_GUIDE.md` cannot absorb the seven because Rank 7 sets values *within an envelope* and **all seven envelopes are themselves marked unresolved**, so a Guide entry would require inventing the range first; and `ATT-BR-043` forbids substitution normatively, naming *"another product"* explicitly, which forecloses borrowing the `CFG-*`/`ICFG-*` figures. Records the near-miss that the Authentication PRD's code-expiry values would have *looked* like a source for `ATT-CFG-006` while actually importing a security parameter across a bounded-context boundary. Isolates **why this gap blocks when eighteen others do not**: it is not an absent decision but a **live breach of Rank 3 `LIB-16.2`** — measured **17/24 with defaults, 7/24 with neither** — which freeze would confer Rank 3 upon, and which would be **the first such breach in a frozen PRD in this repository** (measured: 0 in each of the four frozen module PRDs, 1 in `PRD-006`); `ATT-BR-044` satisfies `LIB-16.2`'s *second* sentence in fact and makes the breach latent, but the first sentence is unqualified and remains breached. Prepared **[`ADR-0021`](../../00-governance/adr/ADR-0021-attendance-management-configurable-defaults.md) — Proposed, not accepted**, presenting four costed options and **proposing no values**. Concludes `PRD-006` is **NOT yet eligible** for Stage 7, and states the mechanical consequence of the owner's decision: check 3 moves 17/24 → 24/24, the breach closes, the ledger becomes 3/1/17, `IMPL-667` unblocks. **Nothing frozen, no baseline row, no value invented, no gap resolved, no verdict re-graded, `PRD-006` byte-identical, and no frozen or authoritative document modified.** |

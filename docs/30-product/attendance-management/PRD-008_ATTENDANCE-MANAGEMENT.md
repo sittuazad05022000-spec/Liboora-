@@ -307,9 +307,15 @@ exist** and adding it requires an ADR."* No edge in this document is new.
 `ATT-PO-007` — Identity resolution. The authenticated actor **MUST** arrive from the `BC-18` session established
 before the attendance operation. This module **MUST NOT** authenticate.
 
-> **On `ATT-PO-007` and `E-11`.** BC Map `E-11` is `BC-18 → BC-01`, not `BC-18 → BC-03`. Attendance therefore does
-> not hold an `E-11`-style resolution edge of its own; it receives an already-authenticated context from the
-> application layer. This is recorded as **`ATT-GAP-002`** rather than resolved, because the map does not state
+> **On `ATT-PO-007` and `E-11` — `ATT-GAP-002` is now RESOLVED from existing governance (§32.1).** BC Map `E-11`
+> is `BC-18 → BC-01`, not `BC-18 → BC-03`. Attendance therefore does not hold an `E-11`-style resolution edge of
+> its own; it receives an already-authenticated context from the application layer. **Frozen `PRD-007` (Rank 3,
+> admitted by `ADR-0020`) establishes exactly this pattern for a sibling Core context**: its §3 context table
+> lists `BC-18` as a context it *"**Consumes** — the existing RBAC + scope model"* with **no `E-` edge**, and
+> `SEAT-BR-030` states *"A QR scan **MUST NOT** authenticate anybody. Authentication is `BC-18`'s exclusively."*
+> A Core context consuming an already-established session without its own inbound identity edge is therefore a
+> **frozen, ratified pattern**, not an unauthorised assumption. The original wording below is retained because it
+> records why the question was asked; the answer is that the map does not need to state
 > where that context is composed for `BC-03`.
 
 ### 5.3 Outbound edges — published
@@ -327,7 +333,8 @@ of a fourth. **BC Map §7 declares no `BC-03 → BC-26` edge and no `BC-03 → B
 edges do not exist.
 
 `ATT-XC-003` — This module **MUST NOT** create, assume or rely on a direct integration edge to `BC-26` Analytics
-or `BC-13` Trust & Safety. Both are recorded as gaps (**`ATT-GAP-003`**), not resolved.
+or `BC-13` Trust & Safety. They are recorded as **`ATT-GAP-003`** (`BC-26`) and **`ATT-GAP-004`** (`BC-13`), not
+resolved.
 
 > **This is the systemic defect `MM-GAP-010` already records**, admitted in `BASELINE-2026-08-04-D`: BC Map §9
 > names `BC-26` a consumer for eleven producing contexts while §7 declares an inbound edge from only one. `BC-03`
@@ -339,7 +346,44 @@ or `BC-13` Trust & Safety. Both are recorded as gaps (**`ATT-GAP-003`**), not re
 is recorded as **`ATT-GAP-010`**.
 
 `ATT-XC-005` — This module **MUST NOT** consume `BC-27` AI Assistance. No `BC-03 → BC-27` edge exists in BC Map
-§7. This blocks OCR/Vision processing and is recorded as **`ATT-GAP-011`**.
+§7, and none is required — see the direction ruling immediately below. What remains unresolved is recorded as
+**`ATT-GAP-011`**.
+
+> **The OCR/Vision direction was inverted, and existing governance settles it. `ATT-GAP-011` is now PARTIALLY
+> RESOLVED (§32.1).** The first draft of this document asked for a `BC-03 → BC-27` edge. **BC Map §7.4 shows that
+> such an edge would be architecturally backwards.** §7.4 rule **`F-1`**: *"**No capability context may import,
+> reference, or query a domain context.** Not AI, not Analytics, not Search, not Notification, not Workflow, not
+> Audit."* Rule **`F-3`**: *"Where a capability must *cause* a domain change (e.g. Workflow expiring a membership,
+> AI applying a suggestion), it does so by **invoking the domain's public command API** through a registered port
+> — with the domain re-validating every invariant. **The capability is an untrusted caller.**"* Rule **`F-4`**:
+> *"AI-initiated domain writes additionally require a **Human-in-the-Loop approval record** (`BC-27`) and produce
+> an `AI Action Log` entry (`BC-24`). **No exceptions in V1.**"* Master PRD `MP-GBR-29`…`MP-GBR-32` restate all
+> four at **Rank 1**.
+>
+> **Three consequences follow, and none of them is invented here:**
+>
+> 1. **`BC-03` must not call `BC-27`.** An OCR request modelled as `BC-03 → BC-27` would make Attendance depend on
+>    a capability; `F-3`'s direction is the reverse. **`ATT-XC-005` is therefore correct and is strengthened, not
+>    relaxed.** The absence of a `BC-03 → BC-27` edge in §7 is not a defect to be closed by an ADR — it is the
+>    intended state.
+> 2. **`BC-03`'s command API is the only legitimate entry point**, with `BC-03` re-validating every invariant and
+>    treating the caller as untrusted (`F-3`). Every §13B record therefore passes the same `ATT-INV-*` set as a
+>    §13A record. This is already what §15 and §18 require of *all* writes; no new mechanism appears.
+> 3. **`F-4`'s Human-in-the-Loop approval record is already this document's §13C rule.** `ATT-INV-009` forbids any
+>    attendance record from an unresolved OCR result, and `NEEDS_MANUAL_VERIFICATION` requires a named staff actor
+>    to confirm before a record exists. **The staff verification step IS the `F-4` approval.** It was written as a
+>    product safeguard and turns out to satisfy a Rank 1 / Rank 4 architectural mandate — which is why §13C is
+>    preserved verbatim and is now additionally load-bearing.
+>
+> **What `F-3`/`F-4` do NOT settle, and what therefore keeps `ATT-GAP-011` open.** They establish the *direction*
+> and the *approval requirement* for an AI-initiated domain write. They do **not** name an OCR/Vision capability.
+> BC-27's charter (BC Map L136) is *"prompts, agents, RAG retrieval, memory, guardrails, PII redaction,
+> human-in-the-loop, model routing"* — **no vision, no OCR, no image ingestion**. A repository-wide search for
+> `OCR`, `computer vision`, `document AI` and `image recognition` across `docs/**` returns **zero** capability
+> nodes, including in Enterprise Architecture v2.1's AI Platform tree. **No context owns OCR.** Assigning it to
+> `BC-27` would be inventing a capability, which §0.4 forbids. `ATT-GAP-011` is therefore **narrowed** from *"who
+> owns OCR and what edge is needed"* to a single question with no edge component: **which context owns an
+> OCR/Vision capability, given that `F-1`/`F-3` already fix how it must reach `BC-03` once it exists?**
 
 `ATT-XC-006` — This module **MUST NOT** consume `BC-23` Search Indexing (`E-21` consumers are `BC-01`, `BC-10`),
 `BC-31` Integration (`X-03`), or any Student Network context `BC-11`…`BC-17` (`X-05`).
@@ -773,6 +817,31 @@ Four separate questions are unresolved and are recorded as gaps, not answered:
 | What is the **retention period**, and what is the legal basis? | **`ATT-GAP-014`** |
 | What is the **deletion** obligation on withdrawal or `ID-5` erasure? | **`ATT-GAP-014`** |
 
+#### 12.4a Biometric boundary — the seven dimensions, audited against authoritative sources
+
+The re-audit required each of seven dimensions to be *architecturally resolved where existing governance permits*.
+The honest result is **two resolved, five unresolvable without an owner's decision**. Each row states the source
+consulted and, where nothing was found, says so rather than filling the cell.
+
+| # | Dimension | Verdict | Authoritative basis, or the absence of one |
+|---|---|---|---|
+| 1 | **Ownership** | ❌ **UNRESOLVED — `ATT-GAP-012`** | No context in BC Map §3 claims biometrics. `BC-18`'s aggregate set is `Account` · `AccessPolicy` with entities `Credential`, `AuthSession`, `Device`, `ConsentRecord` (BC Map L380) — **no biometric template**. Authentication PRD v2.0 (Rank 3) L968 excludes **Biometric login** outright: *"Device-local convenience, not an authentication factor the platform can verify."* `BC-01` owns a *Library Identification Photo* (`SM-4.3`), which `SXC-4` calls *"organisation-scoped biometric-adjacent asset"* — **adjacent is not a template**, and `BC-01` ≠ `BC-03`. **No source assigns an owner. This document must not appoint one.** |
+| 2 | **Processing** | ⚠️ **DIRECTION SETTLED ONLY** | If matching is ever performed by a capability, BC Map §7.4 `F-1`/`F-3` fix the direction exactly as for OCR (§5.4): the capability is an untrusted caller into `BC-03`'s command API, never the reverse. **This settles *how*, not *who*.** No vision/matching capability exists in `docs/**` — the same void as `ATT-GAP-011`. |
+| 3 | **Enrollment** | ❌ **UNRESOLVED — `ATT-GAP-012`** | Enrollment writes a durable biometric record. With no owner (row 1) and no storage path (row 5), there is no context authorised to hold it. Note `ID-6` and BC Map L380 require **guardian consent before social activation for a minor** — the only consent gate in the repository, owned by `BC-18`, and **not** written for biometrics. Whether it extends to biometric enrollment of a minor is exactly the kind of question `§0.4` forbids this document from answering. |
+| 4 | **Liveness** | ❌ **UNRESOLVED — `ATT-GAP-013`** | A repository-wide search for `liveness` and `anti-spoof` returns only **infrastructure** hits — EA L1984 `Readiness & Liveness (V2)` is a health-probe node, not biometric liveness. **No biometric liveness capability exists.** `ATT-XC-019` stands. |
+| 5 | **Storage** | ✅ **RESOLVED — negatively, and this is a real answer** | `E-22`'s consumer list is `BC-01`, `BC-10`, `BC-14` (BC Map L331, amended by `ADR-0016`). `BC-03` is absent, and BC Map L292 rules that an unlisted edge *"does not exist."* **`BC-03` therefore has no authorised byte-storage path of any kind** — this is settled, not open. It is the same finding as `ATT-GAP-010` and it applies to templates as forcefully as to register images. The consequence is definite: **a template cannot be stored by `BC-03` today.** |
+| 6 | **Privacy / PII** | ✅ **RESOLVED — constraints are binding and already apply** | `MP-GBR-32` (Rank 1): *"**PII is redacted before egress to any model.** Retrieval is tenant- and permission-filtered — asserted per query, not assumed."* Rule `F-4` and `MP-GBR-31` add the mandatory approval record. **These bind any future biometric design without further decision.** What they do *not* do is authorise collection — a constraint on handling is not a licence to collect. |
+| 7 | **Retention / deletion** | ❌ **UNRESOLVED — `ATT-GAP-014`** | `ID-5` and `MP-GBR-04` require that erasure delete the `Account`, anonymise the `Person`, and **retain** attendance history *"under legal basis and pseudonymised."* **A biometric template cannot be pseudonymised — it *is* the identifier.** `ID-5`'s mechanism is therefore not merely silent on biometrics, it is **structurally inapplicable** to them. BC Map `Q-04` is separately open on attendance retention generally. Legal counsel must decide; no engineer may. |
+| 8 | **Device boundary** | ❌ **UNRESOLVED — `ATT-GAP-009`** | `BC-18` owns `Device` (BC Map L380) but in the *authentication* sense — credentials and sessions. `BC-08` Inventory owns *"books, furniture, **devices**, consumables"* (L103) but is **V2**, so it cannot own a V1 face scanner's lifecycle. **A V1 gap between two contexts, neither of which can take it.** §17 and `ATT-XC-021` stand. |
+
+> **Row 7 is the strongest finding in this section, and it hardens `ATT-FR-064` rather than relaxing it.** The
+> re-audit was asked to resolve biometrics wherever governance allows. On retention it establishes something
+> sharper than "no rule exists": the platform's *existing* erasure guarantee is **incompatible in principle** with
+> holding a face template, because the anonymisation `ID-5` promises cannot be performed on data whose entire
+> purpose is to identify a person. That is not a gap to be filled with a duration in days — it is a conflict a
+> decision-maker must confront. `ATT-FR-064`'s outright build block is therefore **confirmed as correct**, and is
+> now supported by a Rank 1 rule rather than only by the absence of one.
+
 `ATT-FR-064` — Until `ATT-GAP-012` and `ATT-GAP-014` are both answered by their named owners, face verification
 **MUST NOT** be implemented. The mode is specified; it is **not** authorised to be built.
 
@@ -884,17 +953,25 @@ store. It uses `E-20` for audit and, where authorised, the platform's storage ar
 
 ### 13E. What blocks this workflow today
 
-Three architectural prerequisites are missing, and this document records them rather than inventing them.
+Prerequisites are missing, and this document records them rather than inventing them. **The second row below was
+re-audited against BC Map §7.4 and its framing was wrong; the corrected form is shown.**
 
-| Missing | Consequence | Gap |
-|---|---|---|
-| **No `BC-03` → `BC-29` File & Media edge.** `E-22`'s consumer list is `BC-01`, `BC-10`, `BC-14` (amended by `ADR-0016`) | Attendance has no authorised way to hold a register image as a `FileRef` | **`ATT-GAP-010`** |
-| **No `BC-03` → `BC-27` AI Assistance edge**, and no OCR/Vision capability is defined anywhere in `docs/**` | There is no authorised processor for the image | **`ATT-GAP-011`** |
-| **No retention or storage-ownership rule** for register images | Unknown how long an image of many students' handwriting may be kept | **`ATT-GAP-016`** |
+| Missing | Consequence | Gap | Status after re-audit |
+|---|---|---|---|
+| **No `BC-03` → `BC-29` File & Media edge.** `E-22`'s consumer list is `BC-01`, `BC-10`, `BC-14` (amended by `ADR-0016`) | Attendance has no authorised way to hold a register image as a `FileRef` | **`ATT-GAP-010`** | **OPEN — needs an ADR.** A precedent exists and is named in §32.1 |
+| ~~No `BC-03` → `BC-27` AI Assistance edge~~ → **no context owns an OCR/Vision capability anywhere in `docs/**`** | There is no authorised processor for the image. **The missing edge was never the real blocker** — BC Map §7.4 `F-1`/`F-3` forbid that direction, so its absence is correct | **`ATT-GAP-011`** | **NARROWED** — direction and approval settled by `F-3`/`F-4` (§5.4); capability ownership still unowned |
+| **No retention or storage-ownership rule** for register images | Unknown how long an image of many students' handwriting may be kept | **`ATT-GAP-016`** | **OPEN — legal counsel.** Note this image contains *third-party* handwriting, not only the uploader's |
 
 `ATT-FR-080` — Until `ATT-GAP-010` and `ATT-GAP-011` are answered by their named owners, the OCR/Vision workflow
 **MUST NOT** be implemented. §13A individual manual entry is **unaffected** and remains fully specified and
 buildable.
+
+> **What the §7.4 finding changes, and what it does not.** It removes a false prerequisite: this document no
+> longer asks anyone to add a `BC-03` → `BC-27` edge, and an ADR that added one would be wrong. It also confirms
+> that §13C's staff-verification step is the `F-4` Human-in-the-Loop approval record rather than merely a product
+> nicety. **It does not unblock the workflow.** `ATT-FR-080` stands unchanged, because an approval mechanism with
+> no processor to approve is still not buildable, and because `ATT-GAP-010` — where the image bytes may legally
+> live — is untouched by §7.4.
 
 > **The two manual workflows are deliberately separable.** 13A needs nothing that does not already exist. 13B needs
 > two edges that do not exist. Specifying them together, then blocking only the second, is what lets a team ship
@@ -1967,6 +2044,10 @@ the extraction method, the per-register counts and the reproducible command.
 
 **Eighteen questions. None is a requirement. None may be resolved by implementation choice** (§0.4).
 
+> **Re-audited in v1.1.** The table below is the original register, preserved. **§32.1 is the resolution ledger**
+> produced by the re-audit and is the authoritative status for each row: **2 resolved, 1 narrowed, 18 open.**
+> Where a row's status changed, §32.1 states the source that changed it.
+
 | ID | Question | Authoritative sources in tension | Owner who must decide | Blocks |
 |---|---|---|---|---|
 | **`ATT-GAP-001`** | **Is this PRD `PRD-006` or `PRD-008`?** `PRD_REGISTRY.md` line 236 allocates **`PRD-006` = Attendance Management, `BC-03`**, and line 238 allocates **`PRD-008` = Revenue & Finance, `BC-05`**. Frozen `PRD-007` refers to the Attendance PRD as **`PRD-006`** twice (§14, and its dependency table). The authoring instruction for this document specifies `PRD-008`. Registry §8 rule 1: *"Numbers are never reused or reassigned."* | `PRD_REGISTRY.md` §4.2 (unranked register, but §8 rule 5 says *"If this register disagrees with a PRD, fix this register"*) · `PRD-007` v1.0 **FROZEN, Rank 3** | **Registry owner + architecture owner.** Requires either a registry correction or a renumbering of this document | Registry status change; any freeze |
@@ -1994,6 +2075,70 @@ the extraction method, the per-register counts and the reproducible command.
 **Count note.** The register declares `ATT-GAP-001`…`018` (18). Three suffixed entries — `ATT-GAP-008a`,
 `ATT-GAP-016a`, `ATT-GAP-017a` — follow the suffixed-successor precedent used by `PRD-005` (`MM-GAP-010a`) and are
 counted within their parent's number, giving **21 rows against 18 numbers**. This is stated rather than hidden.
+
+### 32.1 Gap resolution ledger — the re-audit result
+
+Every one of the 21 rows was re-tested against authoritative sources. A row moves out of `OPEN` **only** when a
+Rank 1–5 document, a frozen PRD or an accepted ADR decides it. **Nothing here is resolved by preference,
+inference from silence, or convenience.** Where no source exists, the row says so and names who must decide.
+
+| Gap | Verdict | Basis, or why it cannot close |
+|---|---|---|
+| `ATT-GAP-001` | 🔴 **OPEN — escalated** | See §32.2. Two authoritative documents disagree; a PRD may not settle it. |
+| `ATT-GAP-002` | ✅ **RESOLVED** | Frozen `PRD-007` (Rank 3) consumes `BC-18` with **no `E-` edge** — §3 context table, `SEAT-BR-030`. A Core context receiving an established session without its own identity edge is a **ratified pattern**. Applied at §5.2. |
+| `ATT-GAP-003` | 🔴 **OPEN — inherited, not owned** | BC Map §9 names `BC-26` a consumer; §7 declares no edge. This is the **systemic** `SM-GAP-11`/`MM-GAP-010` defect affecting ten producing contexts. `ADR-0018` §3.2 states resolution *"requires the architecture owner and a separate ADR."* Frozen `PRD-004` and `PRD-005` both declined to resolve it; **this document follows the frozen precedent exactly.** |
+| `ATT-GAP-004` | 🔴 **OPEN — and materially worse than `003`** | Same §9-vs-§7 shape, but `BC-13`'s inbound edge situation is *not* the analytics one. BC Map §6 rule 2: *"`BC-13` acts **on** other contexts, not beside them… T&S publishes `EnforcementActionTaken` events and other contexts subscribe and self-restrict. **T&S never reaches into their models.**"* `E-14`'s targets are `BC-11`, `BC-12`, `BC-14`, `BC-15` — **`BC-03` is not among them**, so `BC-03` is not even a self-restriction subscriber. Fraud escalation has **no authorised path in either direction**. Architecture owner. |
+| `ATT-GAP-005` | 🔴 **OPEN — upstream question already open** | BC Map `Q-04` is open *in the authoritative document itself* (L543), with only an unratified note: *"default 7 years financial, 2 years attendance."* A PRD may not promote an architecture document's own open question to an answer. Legal counsel + architecture owner. |
+| `ATT-GAP-006` | 🔴 **OPEN** | No Rank 1–5 source defines a cryptographic construction. Secrets are `BC-25`'s *references* only (BC Map L134); the construction is Security Platform's. Inventing one here would be a security design, which §0.4 forbids. |
+| `ATT-GAP-007` | 🔴 **OPEN** | No source identifies a network technically or authorises spoof detection. `ATT-FR-039`'s prohibition on anti-spoof claims stands. |
+| `ATT-GAP-008` | 🔴 **OPEN — Library PRD owner** | `LIB-6.5` Map Location is owned by `BC-06` and is silent on attendance use. Merging the two values would take ownership of a Rank 3 field. |
+| `ATT-GAP-008a` | 🔴 **OPEN** | No source authorises mock-location detection. `ATT-FR-050` stands. |
+| `ATT-GAP-009` | 🔴 **OPEN — a genuine V1 hole** | `BC-18` owns `Device` for *authentication* (L380); `BC-08` owns physical devices but is **V2** (L103). **No V1 context can own a V1 face scanner's lifecycle.** Architecture owner. |
+| `ATT-GAP-010` | 🔴 **OPEN — needs an ADR; precedent named** | `E-22` excludes `BC-03` (L331); L292 makes the edge non-existent. **`ADR-0016` is the exact precedent** — it added `BC-10` to this same consumer list, on the finding that a Rank 3 requirement depended on an edge §7 said did not exist. The mechanism to close this is therefore *known and proven*; only the decision is missing. **This document does not make it** — and unlike `ADR-0016`'s trigger, no Rank 3 requirement compels `BC-03`'s inclusion, so the case is weaker, not stronger. |
+| `ATT-GAP-011` | 🟡 **NARROWED — direction resolved, ownership open** | BC Map §7.4 `F-1`/`F-3`/`F-4` + `MP-GBR-29`…`32` settle the direction and the approval requirement (§5.4). **The requested `BC-03` → `BC-27` edge is refuted, not granted.** Remaining question, stripped of its false edge component: *which context owns an OCR/Vision capability?* Zero hits for `OCR`/`vision`/`document AI` across `docs/**`, including EA's AI tree; `BC-27`'s charter (L136) contains no vision function. Architecture owner. |
+| `ATT-GAP-012` | 🔴 **OPEN — storage sub-question RESOLVED negatively** | §12.4a rows 1 and 5. Ownership: unassigned by every source. Storage: **settled** — `BC-03` has no `E-22` path, so it cannot store a template at all. The gap is narrowed to ownership. |
+| `ATT-GAP-013` | 🔴 **OPEN** | §12.4a row 4 — the only `liveness` hits in the repository are infrastructure health probes. No biometric liveness capability exists. |
+| `ATT-GAP-014` | 🔴 **OPEN — and now shown to be a conflict, not a void** | §12.4a row 7. `ID-5`/`MP-GBR-04` promise erasure by **pseudonymisation**, which is structurally inapplicable to a template that *is* the identifier. Legal counsel + Security Platform. |
+| `ATT-GAP-015` | 🔴 **OPEN — correctly framed, cannot self-close** | EA v2.1 lists `Face Recognition (V3)` (L754) but is **Rank 6, descriptive only** — Baseline §4: *"Update it to match 1–5; never the reverse."* EA therefore cannot *force* V3. **But no Rank 1–5 document places Face in V1 either**, so the product instruction cannot be ratified from sources. Product owner + architecture owner. Note this gap is **currently moot in effect**: `ATT-FR-064` blocks the build regardless of version class. |
+| `ATT-GAP-016` | 🔴 **OPEN — legal counsel** | No retention source. Aggravating factor recorded at §13E: the image carries **third-party** handwriting. |
+| `ATT-GAP-016a` | 🔴 **OPEN** | `E-24` and `MP-ASM-03` exist; neither addresses a rotating code that cannot be validated offline. `ATT-PO-014`/`ATT-NFR-012` prohibitions stand. |
+| `ATT-GAP-017` | 🔴 **OPEN — and it is a live `LIB-16.2` breach** | Seven configurables have no default. `LIB-16.2` (Rank 3): *"Every setting **MUST** have a documented default."* Inventing seven numbers would satisfy the letter and destroy the point. Product owner. Recorded as the single **FAIL** in the verification report. |
+| `ATT-GAP-017a` | 🔴 **OPEN** | No Rank 1–5 latency/throughput figure. EA states none. |
+| `ATT-GAP-018` | 🔴 **OPEN** | No source authorises an *"at least one mode enabled"* constraint. `ATT-FR-106` and `ATT-AC-209` preserve the permissive behaviour rather than inventing a restriction. |
+
+**Result: 2 resolved, 1 narrowed, 18 open** — of which 2 (`ATT-GAP-010`, `ATT-GAP-012` storage) now carry a
+*definite negative* answer rather than an unknown, and 2 (`ATT-GAP-004`, `ATT-GAP-014`) were **upgraded in
+severity** by the re-audit. **No gap was closed by invention.** The count did not improve much, and it should
+not have: a re-audit that resolves most of its own open questions has usually re-labelled them.
+
+### 32.2 `ATT-GAP-001` — the numbering conflict, re-verified and NOT resolved here
+
+Re-verified this pass against primary sources, with **`PRD_REGISTRY.md` left byte-for-byte unmodified**:
+
+| Source | Location | Says |
+|---|---|---|
+| `PRD_REGISTRY.md` §4.2 | line **236** | `PRD-006` · Attendance Management · **`BC-03`** · `[CORE]` · V1 · `PLANNED` |
+| `PRD_REGISTRY.md` §4.2 | line **238** | `PRD-008` · **Revenue & Finance** · `BC-05` · `[CORE]` · V1 · `PLANNED` |
+| `PRD-007` **FROZEN**, Rank 3 | line **223** | *"`BC-03` Attendance (**`PRD-006`**, PLANNED)"* |
+| `PRD-007` **FROZEN**, Rank 3 | line **862** | *"`BC-03` Attendance is a **separate bounded context** and **`PRD-006`** is its PRD."* |
+| `PRD_REGISTRY.md` §8 rule 1 | line **554** | *"**Numbers are never reused or reassigned**"* |
+| `PRD_REGISTRY.md` §8 rule 5 | line **559** | *"If this register disagrees with a PRD, **fix this register**."* |
+
+**Three independent authorities call this document `PRD-006`** — the registry, and a **frozen Rank 3 PRD twice**.
+Only the authoring instruction says `PRD-008`, and `PRD-008` is **already allocated to Revenue & Finance**, so
+adopting it is not a free choice: it collides with a live allocation and breaches §8 rule 1.
+
+**Why §8 rule 5 does not rescue it.** Rule 5 (*"fix this register"*) is frequently mis-read as *"the PRD wins."*
+It cannot apply here for two reasons. First, the disagreement is not registry-vs-PRD — it is registry **and a
+frozen PRD** vs a draft. Second, applying it would require **modifying `PRD_REGISTRY.md`**, which the re-audit
+instruction explicitly forbids and which rule 1 forbids independently.
+
+> **This document therefore continues to carry the filename and header `PRD-008` exactly as instructed, while
+> recording that the evidence points to `PRD-006`.** That is deliberate. Renaming unilaterally would edit a
+> decision belonging to the registry owner; silently keeping the number and dropping the finding would hide a
+> collision from whoever attempts a freeze. **`ATT-GAP-001` blocks any Stage 7 freeze of this document** — a
+> frozen PRD carrying a number allocated to a different bounded context would corrupt every downstream citation,
+> including the two inside a document that is already frozen and cannot be edited to follow.
 
 ---
 

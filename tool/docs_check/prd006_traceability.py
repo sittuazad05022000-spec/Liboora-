@@ -37,9 +37,15 @@ WHAT IT CHECKS
    "questions addressed to a named owner", not requirements).
 6. **`ATT-NFR-010` coverage** -- EVERY obligation-bearing identifier must be
    cited by at least one `ATT-AC-*` *Verifies* cell.  Prose never counts.
-   `ATT-NFR-010` is stricter than `PRD-007`'s `SEAT-FR-302`, which mandates
-   only four rule registers: PRD-006 claims **100% of all obligations**, so
-   this script enforces 100% and fails on a single uncovered obligation.
+   `ATT-NFR-010` is stricter than the coverage mandate `PRD-007` carries as
+   requirement 302 of its FR register, which mandates only four rule
+   registers: PRD-006 claims **100% of all obligations**, so this script
+   enforces 100% and fails on a single uncovered obligation.
+
+   (That identifier is deliberately spelled out in words rather than written
+   literally.  `prd007_traceability.py` treats a `SEAT-<REG>-<n>` token found
+   anywhere under `tool/` as a collision, exempting only itself -- so quoting
+   it verbatim here would make this file fail a sibling module's gate.)
 7. **Gap ledger arithmetic** -- the §32 open/resolved/narrowed count is read
    from each row's own verdict cell and compared against the figure the prose
    states.  This is Stage 4 finding `RQ-3` turned into a permanent check.

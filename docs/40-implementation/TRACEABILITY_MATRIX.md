@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.6 |
+| **Version** | v1.7 |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** |
 | **Baseline** | **BASELINE-2026-08-04-D** |
-| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** |
+| **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** · **Attendance Management PRD v1.3 (`PRD-006`, `DRAFT`)** |
 | **ADRs applied** | `ADR-0001` … **`ADR-0018`** |
 
 ---
@@ -401,6 +401,158 @@ inspection rather than assumed: `SEAT-FR-*`, `SEAT-BR-*`, `SEAT-INV-*`, `SEAT-XC
 `SEAT-CFG-*`, `SEAT-AC-*` and `SEAT-GAP-*` are defined in **table rows**. The two forms have **zero overlap**. A
 pattern loose enough to accept both counts line-initial *citations* as definitions and returns **307**
 `SEAT-FR-*` for a register of **304** — a phantom duplicate in the checker, not a defect in the PRD.
+
+---
+
+## 2F. Identifier inventory — Attendance Management
+
+Verified mechanically against `PRD-006_ATTENDANCE-MANAGEMENT.md` (`PRD-006`, **v1.3**, **`DRAFT`**) by
+[`tool/docs_check/prd006_traceability.py`](../../tool/docs_check/prd006_traceability.py). Every count below is
+**computed, not asserted**, and every range is verified contiguous from 1 to its stated maximum. The meanings are
+`PRD-006` §0.3's own, not this section's paraphrase — `ATT-PO-*` in particular is a **port**, not a protected
+operation, and does not correspond to `PO-n` in §2A or `SPO-n` in §2B.
+
+| Prefix | Meaning | Count | Range | Source |
+|---|---|---|---|---|
+| `ATT-FR-n` | Functional requirement — what the module does | **151** | `ATT-FR-001` … `ATT-FR-151` | §§3.2–25, across **57** sections incl. §13A–§13E and §12.4a |
+| `ATT-BR-n` | Business rule — a decision the domain enforces | **45** | `ATT-BR-001` … `ATT-BR-045` | §§4.1–23.4, across **35** sections incl. §13A–§13C |
+| `ATT-INV-n` | Invariant — must hold at every observable moment | **12** | `ATT-INV-001` … `ATT-INV-012` | §3.5, §6.2, §13C, §14.1, §18, §20 |
+| `ATT-EVT-n` | Domain event this module publishes | **4** | `ATT-EVT-001` … `ATT-EVT-004` | §22.1 |
+| `ATT-XC-n` | Exclusion — what this module must never do | **21** | `ATT-XC-001` … `ATT-XC-021` | §§3.4–17, across **18** sections |
+| `ATT-PO-n` | **Port** — what it consumes, and from whom | **14** | `ATT-PO-001` … `ATT-PO-014` | §5.2, §5.3, §27.1 |
+| `ATT-CFG-n` | Configurable value | **24** | `ATT-CFG-001` … `ATT-CFG-024` | §16.3 |
+| `ATT-NFR-n` | Non-functional requirement | **14** | `ATT-NFR-001` … `ATT-NFR-014` | §15.4, §27 |
+| `ATT-AC-n` | Acceptance criterion | **213** | `ATT-AC-001` … `ATT-AC-213` | §§30.1–30.19 |
+| `ATT-GAP-n` | **Open question — not a requirement** | **18** | `ATT-GAP-001` … `ATT-GAP-018` | §32.1 |
+
+**Total Attendance Management identifiers: 516**, of which **285 carry obligation**, **213 are `ATT-AC-*`
+acceptance criteria** and **18 are `ATT-GAP-*` open questions carrying no authority**. The `ATT-GAP-*` register's
+18 numbers carry **21 rows**: `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are **suffixed successors declared
+up front in §0.3**, following the `MM-GAP-006a`/`007a`/`010a` precedent §2D records for the frozen `PRD-005`. The
+numeric range `001…018` remains contiguous — a suffix is an addition to a declared number, never a break in the
+sequence — and both figures, 18 and 21, are checked separately. Across the whole document these identifiers are
+referenced **1,262** times, resolving to **519** distinct identifiers (516 numbers plus the 3 suffixed rows), with
+**zero dangling references**; the 213 acceptance-criterion rows carry **328** citations in their *Verifies*
+columns, with **zero orphan criteria**, **zero blank cells** and **zero `ATT-GAP-*` cited as verifiable**.
+
+**Measured coverage — 285 / 285 = 100%.** Every obligation-bearing identifier in all eight obligation registers is
+cited by at least one `ATT-AC-*` *Verifies* cell. Prose never counts. **This threshold is stricter than
+`PRD-007`'s**, and deliberately so: `SEAT-FR-302` mandates coverage across four *rule* registers only (85/85, with
+118 obligations outside its mandate uncovered at 73.4% overall), whereas `ATT-NFR-010` states that *"a rule that
+cannot be checked **MUST** be treated as unmet. A requirement in this document with no acceptance criterion is not
+satisfied by assertion."* That claim admits no excluded register, so the gate script enforces **285/285** and fails
+on a single uncovered obligation. The figure is **measured, not asserted** — `PRD-006` v1.0 published *"100%
+coverage"* while the true figure was 137/279 = 49.1%, and the last coverage hole (`ATT-BR-045`, which had no
+criterion at all) was closed during Stage 4 reconciliation by **extending `ATT-AC-152`, not by inventing a
+criterion**.
+
+**`PRD-006` is v1.3 `DRAFT`, not frozen.** Registering its identifiers here satisfies `PRD_LIFECYCLE.md` **Stage 5**
+only. Stage 6 (`IMPL-*` allocation) and Stage 7 (freeze) are **not** addressed by this section. `PRD-006` contains
+**one** occurrence of the token `IMPL-`, at line 90 — the generic phrase *"ADRs, `IMPL-*` tasks and PRD numbers —
+cross-references outlive documents"*, **inspected at its line**: it is a statement of the never-reuse rule, not an
+allocation. **No `IMPL-*` number is claimed or consumed**, so Stage 6 remains untouched. Nothing here confers
+baseline status — that is `DOCUMENTATION_BASELINE.md` §3's to confer, and `PRD-006`'s own header records that it is
+*"not frozen, not ranked, not admitted to any baseline."* Its Stage 3 and Stage 4 verdicts were both
+**⚠️ CONDITIONAL**; **this section does not upgrade them.**
+
+### 2F.1 Prefix collisions checked — zero, in both directions
+
+**Zero collisions** against all six existing registers — authentication (`AUTH`/`BR`/`XC`/`AC`/`PR`/`TR`/`EV`/
+`AERR`/`CFG`/`SO`/`PP`/`AU`/`EP`), Library (`LIB`/`LIB-14B`/`LIB-DISC`/`INV-SEC`/`LBR`/`LIB-PREV`/`LXC`/`INV-XC`/
+`LAC`/`LAC-14B`/`IAC`/`LCFG`/`ICFG`/`LEV`/`PO`/`IT`), Student Identity (`SID`/`SID-BR`/`SXC`/`SPO`/`SEV`/`SID-INT`/
+`SID-INV`/`SCFG`/`SID-AC`), Student Management (`SM`/`SM-BR`/`SM-XC`/`SM-INV`/`SM-EV`/`SM-PO`/`SM-AC`/`SMCFG`/
+`LMD`/`SM-GAP`), Membership (`MM-FR`/`MM-BR`/`MM-INV`/`MM-EVT`/`MM-XC`/`MM-AC`/`MM-NFR`/`MM-PO`/`MM-CFG`/`MM-GAP`)
+and Seat Management (`SEAT-FR`/`SEAT-BR`/`SEAT-INV`/`SEAT-EVT`/`SEAT-XC`/`SEAT-PO`/`SEAT-CFG`/`SEAT-NFR`/`SEAT-AC`/
+`SEAT-GAP`). `PRD-006` §0.3 records that the collision procedure was **executed before writing**, per
+`PRD_LIFECYCLE.md` Stage 2 rule 2, and that `ATT-*` was free at that time.
+
+**Checked in both directions**, because a one-way check cannot catch the `PO-n` / `SPO-n` class of error §2B.1
+records — and this module is precisely where that hazard recurs, since `ATT-PO-*` is a **port** while `PO-n` is a
+Library protected operation:
+
+| Direction | Question | Result |
+|---|---|---|
+| Outward | Does any `ATT-<REG>-<n>` identifier exist outside the module? — `grep -rIno '\(^\|[^-A-Za-z]\)ATT-[A-Z]\+-[0-9]' docs --include=*.md \| grep -v attendance-management/ \| grep -v TRACEABILITY_MATRIX.md` | **(empty)** |
+| Outward, loose | Does the bare token `ATT-<CAPITAL>` appear outside the module at all? | **0 hits** |
+| Outward, code | Does `ATT-*` appear in `tool/`, `lib/` or `test/`? | **0 hits** (excluding the gate script itself) |
+| Inward | Does `PRD-006` cite a foreign register by a bare prefix? | **19 prefixes — every one a correct foreign citation or a substring** |
+
+This section's own citations are **not** counted as outward hits. `TRACEABILITY_MATRIX.md` is where the register is
+*registered*, so it necessarily names these identifiers; the allow-list in the gate script is enumerated **file by
+file** rather than widened to a directory, so a stray `ATT-` in any *other* document still fails the run.
+
+The inward direction is the one that matters, and **every hit was inspected at its line rather than counted as a
+failure**, on the §2C.1 principle — *a checker that cannot tell a substring from a real hit is one that gets
+switched off*:
+
+| Bare token in `PRD-006` | Hits | What it actually is | Verdict |
+|---|---:|---|---|
+| `BC-nn` | 312 | Bounded-context identifiers from `LIBOORA_BOUNDED_CONTEXT_MAP.md` | ✅ correct foreign citation |
+| `PRD-nnn` | 99 | Sibling PRD numbers from `PRD_REGISTRY.md` | ✅ correct foreign citation |
+| `MP-GBR-nn` | 29 | **Master PRD** global business rules (Rank 1) | ✅ correct foreign citation |
+| `LIB-n.n` | 27 | **Library** PRD requirements | ✅ correct foreign citation |
+| `ID-n` | 23 | **Student Identity** requirements (`ID-1`, `ID-2`, `ID-5`, `ID-6`) | ✅ correct foreign citation |
+| `ADR-nnnn` | 20 | Architecture decision records (Rank 2) | ✅ correct foreign citation |
+| `RQ-n` | 11 | **This document's own** Stage 4 review findings `RQ-1`…`RQ-8`, cited in the §34 changelog | ✅ **not a register** — review-finding labels, scoped to `PRD-006_REQUIREMENTS_REVIEW.md` |
+| `NG-n` | 10 | The **non-goals** table at line 168 — *"`NG-1` \| Authenticating a person \| `BC-18` Identity & Access"* | ✅ **not a register** — a local scoping table, no obligation attached |
+| `SEAT-BR-n`, `SEAT-FR-n`, `SEAT-XC-n` | 18 | **Seat Management** identifiers registered in §2E above | ✅ correct foreign citation |
+| `MM-GAP-nnn` | 7 | **Membership** gaps — `MM-GAP-010` (the systemic missing-edge defect) and the `MM-GAP-006a`/`007a`/`010a` suffix precedent | ✅ correct foreign citation |
+| `AUTH-n.n` | 6 | **Authentication** requirements (`AUTH-1.1`, `AUTH-2.8`, `AUTH-2.16`) | ✅ correct foreign citation |
+| `SXC-n` | 3 | A **Student Identity** exclusion — line 813, *"the only adjacent statement is `SXC-4` in `PRD-003`"* | ✅ correct foreign citation |
+| `MP-ASM-nn` | 3 | **Master PRD** assumptions — `MP-ASM-03`, on offline capture | ✅ correct foreign citation |
+| `GCP-nn` | 3 | Governance conformance points `GCP-01`/`07`/`08`, line 2295 | ✅ correct foreign citation |
+| `TR-n` | 1 | An **authentication** trust requirement — `TR-2`, line 2107 | ✅ correct foreign citation |
+| `SM-GAP-nn` | 1 | A **Student Management** gap — `SM-GAP-11`, line 2196 | ✅ correct foreign citation |
+| `SM-n.n` | 1 | A **Student Management** requirement — `SM-4.3`, line 834, the Library Identification Photo | ✅ correct foreign citation |
+| `SM-03` | 3 | **A substring, not a hit.** Lines 1647, 2177, 2211 contain **`MP-ASM-03`**; a bare-substring search for `SM-0` finds `SM-03` inside it. A word-boundary search returns these **0 times** | ✅ **true negative** — recorded here for the same reason §2C.1 records `MP-SM-01`…`09` and §2D.1 records `YYYY-MM-DD` |
+
+**Numeric ranges are per-register, not global.** `PRD_LIFECYCLE.md` §5 rule 1 makes the *identifier* unique across
+the platform — not the number — and §2B.1 states that independently numbered registers *"overlap numerically on
+purpose; the prefix carries the producer."* `ATT-FR-001` therefore does not collide with `SEAT-FR-001`,
+`MM-FR-001`, `SM-1.1` or `AUTH-1.1`, and **no range-overlap prohibition applies to this section**. The one range
+this repository allocates globally is `IMPL-*`, governed by Stage 6 — **untouched here**, per §2F above.
+
+### 2F.2 Stage 5 exit gate — mechanically verifiable
+
+`PRD_LIFECYCLE.md` Stage 5 requires counts *"verified mechanically — counted by a tool, not by reading"*, with
+**zero collisions**. Re-run the gate at any time:
+
+```
+python3 tool/docs_check/prd006_traceability.py     # exit 0 = gate satisfied
+```
+
+The script fails (exit 1) if any count registered in §2F drifts from the document, any range registered in §2F or
+declared in `PRD-006` §0.3 disagrees with the definition sites, a range develops a hole, a suffixed successor is
+defined without being declared in §0.3, an identifier is defined twice, an acceptance-criterion row is malformed or
+its *Verifies* cell blank, an `ATT-GAP-*` is cited as verifiable, a dangling identifier appears, `ATT-NFR-010`
+coverage falls below **285 / 285**, the §32.1 gap ledger's own verdict cells disagree with the tally the prose
+states, or the `ATT-` prefix appears outside the module. **Three declarations, one computation**: §0.3's ranges,
+§0.3's totals and §2F's registrations are each checked against the same measured figures, so no two can drift apart
+unnoticed. The gap-ledger check is Stage 4 finding `RQ-3` — which found the document stating **three different**
+open-gap counts — turned into a permanent check.
+
+**Two conventions the script models explicitly, both established by inspection rather than assumed.**
+
+**First, `PRD-006` does not follow `PRD-007`'s definition-form convention, and a script ported without
+re-inspection gets the wrong answer.** §2E.2 records that `PRD-007` defines each register in exactly *one* shape —
+five in prose, five in table rows, zero overlap. **`PRD-006` uses both shapes for the same register**: `ATT-FR-*`
+is defined 110 times in prose and 42 times in table rows, `ATT-PO-*` 5 and 9, `ATT-BR-*`, `ATT-XC-*` and
+`ATT-NFR-*` likewise. Both are genuine definitions. So **form alone cannot separate a definition from a
+restatement here — location can.** Six sections are *indexes*, restating identifiers defined elsewhere for
+navigation: §0 (incl. the §0.3 register table), §28 (the business-rule index, which carries a back-pointer
+column), §29 (the exclusion index, which carries an *"Owner instead"* column), §31.1 and §31.2 (coverage and
+upstream traceability), and §32 (which restates §32.1's 21 ledger rows in a different shape — counting both would
+double every gap). Counting index sections as definition sites produces **14 phantom duplicates** — the same class
+of false positive §2C.1 warns about, and exactly what the Stage 4 review opened all 14 pairs to reject as finding
+`R-1`. §16.2 is the trap in the other direction: it *looks* like an index because it contains a two-column mode
+map, but its **prose** is the real definition site for `ATT-FR-099` and `ATT-FR-100`, so it is excluded for table
+definitions only.
+
+**Second, `ATT-NFR-001` is defined once and restated once.** Line 1110 (§15.4) defines it; line 1607 (§27) repeats
+it prefixed *"(stated in §15.4)"* — a **self-declared restatement**, inspected at its line, not a second
+definition. It is allow-listed by identifier rather than by pattern, so a *new* duplicate must be justified rather
+than silently absorbed, and the script emits a note if the allow-listed pair ever stops having two sites. This
+mirrors `MM-BR-030` in §2D.2.
 
 ---
 
@@ -831,6 +983,7 @@ protection.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.7** | 2026-08-04 | **Added the Attendance Management identifier inventory (§2F) — `PRD-006` v1.3's `PRD_LIFECYCLE.md` Stage 5 gate.** Ten registers, **516 identifiers** (285 obligation-bearing, 213 `ATT-AC-*`, 18 `ATT-GAP-*` open questions carrying **21 rows** via the declared suffixed successors `ATT-GAP-008a`/`016a`/`017a`), every range verified **contiguous from 1 to its stated maximum**, **zero collisions**, **zero duplicate definitions**, **zero dangling references** across **1,262** occurrences, and **zero orphan acceptance criteria**, **zero blank *Verifies* cells** and **zero `ATT-GAP-*` cited as verifiable** across **213** rows carrying **328** citations. Counts are **computed, not asserted**, by the new [`tool/docs_check/prd006_traceability.py`](../../tool/docs_check/prd006_traceability.py), which checks **three declarations against one computation** (§0.3's ranges, §0.3's totals, §2F's registrations). Records the measured coverage **285/285 = 100%** — **stricter than `PRD-007`'s** by the PRD's own choice, since `ATT-NFR-010` admits no excluded register where `SEAT-FR-302` mandates only four, so the script enforces 100% of *all* obligations and fails on one uncovered. The figure is **measured, not asserted**: `PRD-006` v1.0 published *"100% coverage"* against a true 137/279 = 49.1%, and the last hole (`ATT-BR-045`) was closed by **extending `ATT-AC-152`, not by inventing a criterion**. **§2F.1** records the collision check run in **both directions** — outward **0**, code **0** — and resolves **19 inward foreign prefixes** as **correct foreign citations, inspected at their lines rather than counted as failures** (the §2C.1 principle), with two recorded **true negatives**: `NG-1`…`NG-10` at line 168 is the **non-goals table**, not a register, and `SM-03` at lines 1647/2177/2211 is a **substring of `MP-ASM-03`** that a word-boundary search returns **0 times** — the same class as §2C.1's `MP-SM-01`…`09` and §2D.1's `YYYY-MM-DD`. It also records that **numeric ranges are per-register, not global**, so `ATT-FR-001` does not collide with `SEAT-FR-001` or `MM-FR-001`. **§2F.2** records the exit gate and the one convention that **differs from `PRD-007`**: where §2E.2 found definition form to be **per register** with zero overlap, `PRD-006` defines the *same* register in **both** prose and table form (`ATT-FR-*` 110 + 42, `ATT-PO-*` 5 + 9), so **location, not form, separates a definition from a restatement** — six index sections (§0, §28, §29, §31.1, §31.2, §32) restate rather than define, and counting them produces **14 phantom duplicates**, the class Stage 4 rejected as finding `R-1` after opening all 14 pairs; §16.2 is excluded for table definitions **only**, because its prose genuinely defines `ATT-FR-099`/`100`. `ATT-NFR-001` line 1607, marked *"(stated in §15.4)"*, is allow-listed **by identifier** as a self-declared restatement, mirroring `MM-BR-030` in §2D.2. `PRD-006` v1.3 `DRAFT` added to Sources. **Stage 5 only** — no `IMPL-*` range allocated (Stage 6), no freeze (Stage 7); the document's single `IMPL-` token, at line 90, was **inspected at its line** and is the generic never-reuse rule, **not an allocation**. **`PRD-006`'s Stage 3 and Stage 4 verdicts remain ⚠️ CONDITIONAL — this section does not upgrade them.** **No authentication, Library, Student Identity, Student Management, Membership or Seat Management row changed. No ranked document changed. `PRD-006` itself unchanged — not one byte. No requirement, acceptance criterion or identifier was added, removed, renumbered or reworded. No mapping was invented and no `ATT-GAP-*` was resolved, narrowed or altered. No ADR required: this document is unranked. No code changed.** |
 | **v1.6** | 2026-08-04 | **Added the Seat Management identifier inventory (§2E) — `PRD-007` v1.0's `PRD_LIFECYCLE.md` Stage 5 gate.** Ten registers, **683 identifiers** (669 obligation-bearing, 14 `SEAT-GAP-*` open questions), every range verified **contiguous from 1 to its stated maximum**, **zero collisions**, **zero duplicate definitions**, **zero dangling references** across **1,641** occurrences, and **zero orphan acceptance criteria** across **226** rows. Counts are **computed, not asserted**, by the new [`tool/docs_check/prd007_traceability.py`](../../tool/docs_check/prd007_traceability.py). Records the measured coverage **325/443 = 73.4%** overall and **85/85 = 100%** across the four rule registers — the figure `SEAT-FR-302` actually mandates — with the 118 uncovered obligations **named by register rather than argued away** (86 `SEAT-FR-*`, 18 `SEAT-PO-*`, 9 `SEAT-CFG-*`, 5 `SEAT-NFR-*`), per `SEAT-NFR-011`/`SID-4.56`. **§2E.1** records the collision check run in **both directions** — the direction a one-way check omits — and resolves **five bare foreign prefixes, 36 hits**, inside `PRD-007` as **correct foreign citations, inspected at their lines rather than counted as failures** (the §2C.1 principle): `BR-2.9`/`BR-2.12` and `TR-2` are authentication, `LCFG-9`/`LCFG-10` and `LXC-7` are Library, `LMD-23`/`LMD-24` is Student Management, and `BR-001`…`BR-018` are the **source draft's** rules in the §36.1 carried-by table — **not a register**, and absent from `docs/**` outside the module. It also records that **numeric ranges are per-register, not global** (§5 rule 1 makes the *identifier* unique, and §2B.1 states registers *"overlap numerically on purpose"*), so **no range-overlap prohibition applies**. **§2E.2** models the one convention a first tool run misreads: definition form is **per register** — five registers in prose, five in table rows, **zero overlap** — and a pattern loose enough to accept both returns **307** `SEAT-FR-*` for a register of **304**, a phantom duplicate in the checker, not a defect in the PRD. Header bumped to baseline **`-D`**, `PRD-005` **`FROZEN`** (per `ADR-0019`), and `PRD-007` v1.0 `DRAFT` added to Sources. **Stage 5 only** — no `IMPL-*` range allocated (Stage 6), no freeze (Stage 7); `PRD-007` contains **0** occurrences of `IMPL-`. **No authentication, Library, Student Identity, Student Management or Membership row changed. No ranked document changed. `PRD-007` itself unchanged — not one byte. No requirement, acceptance criterion or identifier was added, removed, renumbered or reworded. No `SEAT-GAP-*` was resolved or altered. No ADR required: this document is unranked. No code changed.** |
 | **v1.5** | 2026-08-04 | **Added the Membership Management identifier inventory (§2D) — `PRD-005` v1.4's `PRD_LIFECYCLE.md` Stage 5 gate.** Ten registers, **333 identifiers** (320 obligation-bearing, 13 `MM-GAP-*` open questions), every range verified contiguous, **zero collisions**, **zero duplicate definitions**. Counts are **computed, not asserted**, by the new [`tool/docs_check/prd005_traceability.py`](../../tool/docs_check/prd005_traceability.py) — the defence §2C lacked, since §2C carried stale figures through two correction passes until a script disproved them (`SR-01`, HIGH). Records the measured coverage **134/223 = 60.1%** overall and **77/81 = 95.1%** across the five rule registers, under `PRD-005` §0.2's strict rule (*verified* **iff** the identifier appears in an `MM-AC-*` **Verifies** column — prose never counts), with the four uncovered rules `MM-BR-012`/`022`/`027`/`028` **named rather than argued away** per `MM-NFR-014`/`SID-4.56`. **§2D.1** records zero collisions against all four existing registers and treats `YYYY-MM-DD` in `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` line 624 as a **true negative** — `MM` is a month field, **inspected rather than counted as a failure** (the §2C.1 principle). **§2D.2** models three conventions the first tool run misread as defects: `MM-GAP-006`/`007` are **closed-but-retained** numbers with no definition row; `MM-BR-030` line 1235 is a **self-declared restatement**, not a duplicate; 11 `MM-AC-*` rows verify a **section or edge** rather than a registered ID, and blank cells number **0**. Header bumped to baseline **`-C`**, `ADR-0018`, and `PRD-004` **`FROZEN`**. **Stage 5 only** — no `IMPL-*` range allocated (Stage 6), no freeze (Stage 7). **No authentication, Library, Student Identity or Student Management row changed. No ranked document changed. `PRD-005` itself unchanged — not one byte. No ADR required: this document is unranked. No code changed.** |
 | **v1.4** | 2026-08-04 | **§2C corrected — second-review finding `SR-01` (HIGH), the one defect that blocked `PRD-004`'s Stage 5 gate.** §2C still carried the **pre-correction** figures (`SM-c.n` 105, `SM-EV-n` 9, `SM-AC-n` 28, `SM-GAP-n` 9, total **242**, Ch 10 = 10) after two `PRD-004` correction passes had changed them. `PRD_LIFECYCLE.md` Stage 5 requires the registered counts to be *"verified mechanically — counted by a tool, not by reading"*, and the counting script **disproved** them. §2C now reads `SM-c.n` **107**, `SM-EV-n` **10**, `SM-AC-n` **32**, `SM-GAP-n` **11**, total **251 base + 15 sub-lettered = 266**, Ch 10 = **12**, and records the measured coverage **227/240 = 94.6%**. Header source bumped to `PRD-004` **v1.2**. **No authentication, Library or Student Identity row changed. No ranked document changed. No ADR required — this document is unranked. No code changed.** |

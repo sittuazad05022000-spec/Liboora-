@@ -415,9 +415,16 @@ The 43 divide into four groups, each traceable to a named authority rather than 
 
 > **This is the number a reader should take from §6, not the 100%.** Every obligation has a path *or* a documented
 > blocker — which is what the Stage 6 gate asks — but roughly one obligation in seven cannot be started until someone
-> with authority answers a question. The `ATT-NFR-*` concentration is the sharpest case: 13 of 14 non-functional
-> obligations sit behind `IMPL-679`, so the module's quality bar is the last thing that becomes assertable and the
-> first thing a schedule would be tempted to drop.
+> with authority answers a question. The `ATT-NFR-*` concentration is the sharpest case: **13 of the 14**
+> non-functional obligations are reachable only through a blocked task — **11** behind `IMPL-679`, plus
+> `ATT-NFR-012` behind `IMPL-677` (offline) and `ATT-NFR-014` behind `IMPL-649` (the OCR path) — leaving
+> `ATT-NFR-001` as the only one with an unblocked route, through `IMPL-659`. The module's quality bar is therefore the
+> last thing that becomes assertable and the first thing a schedule would be tempted to drop.
+
+> **The split of that 13 was measured, and the first version of this paragraph got it wrong.** It read *"13 of 14 sit
+> behind `IMPL-679`"*, which conflated *blocked* with *blocked by the harness*; a count returned 11. The distinction
+> matters because it changes who must act: eleven of them wait on `ATT-GAP-017a`, one on `ATT-GAP-016a` and one on
+> the register-image gaps, and those are three different owners, not one.
 
 ---
 
@@ -630,15 +637,25 @@ Coverage 285/285 = 100.0%   (excluded: 213 ATT-AC verified by tests, 21 ATT-GAP 
 > descriptively in the new file; **`prd006_traceability.py` was not modified**, because loosening a sibling gate to
 > accommodate a new file is how a namespace check stops being one.
 
-**One pre-existing failure is widened by one line and is disclosed rather than hidden.**
+**One pre-existing failure is widened by two lines and is disclosed rather than hidden.**
 `prd007_traceability.py` exits 1 on two problems, both of which are `PRD-006` sibling documents citing `SEAT-*`
-identifiers — `PRD-006_VERIFICATION_REPORT.md`, `PRD-006_REQUIREMENTS_REVIEW.md`, the PRD itself (18 citations) and
-two others. This file adds **exactly one** such line: §8's single-transaction row cites **`SEAT-FR-115`** (§5's
-`IMPL-676` row states the Seating boundary using only `ATT-*` identifiers, and was checked rather than assumed). It
-is **a citation, not a definition** — inspected at its line, per the §2C.1 principle that *a bare-substring hit must
-be inspected at its line, not counted as a failure*. The problem **count is unchanged at two**, no new failure class
-is introduced, and the practice follows `PRD-006`'s own: a document that must state a boundary against Seating has to
-name the requirement on the other side of it.
+identifiers. Measured across the five sibling files already on that list: `PRD-006_REQUIREMENTS_REVIEW.md` 22,
+the PRD itself 18, `PRD-006_VERIFICATION_REPORT.md` 7, `PRD-006_STAGE4_FINDINGS_CORRECTION.md` 3 and
+`PRD-006_ARCHITECTURE_ALIGNMENT.md` 2. This file adds **two** such lines, both citing **`SEAT-FR-115`**: §8's
+single-transaction row (L489), and **this very paragraph** (L644), which cannot name the identifier it discloses
+without matching the pattern it is disclosing. §5's `IMPL-676` row states the Seating boundary using only `ATT-*`
+identifiers, and was checked rather than assumed.
+
+> **This figure was corrected before commit.** The paragraph first claimed *exactly one* line, having counted the
+> substantive citation and overlooked that the disclosure sentence is itself a citation. Running the gate's own
+> pattern over this file returned **two**. A disclosure that under-reports its own footprint is the specific failure
+> it exists to prevent, so the count is stated as measured. The corollary is unavoidable rather than sloppy: any
+> honest note about a namespace hit becomes a namespace hit.
+
+Both are **citations, not definitions** — inspected at their lines, per the §2C.1 principle that *a bare-substring hit
+must be inspected at its line, not counted as a failure*. The gate's problem **count is unchanged at two** because it
+reports failing *classes*, not occurrences; no new class is introduced, and the practice follows `PRD-006`'s own: a
+document that must state a boundary against Seating has to name the requirement on the other side of it.
 
 ---
 
@@ -647,3 +664,4 @@ name the requirement on the other side of it.
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created as the **Stage 6** gate artefact for `PRD-006` v1.3 **DRAFT**. Allocated **`IMPL-600` … `IMPL-679`** — 80 tasks in 8 waves, contiguous with 0 holes — after enumerating every `IMPL-*` in the repository (247 distinct tokens) rather than reading `PRD_LIFECYCLE.md`'s stale `IMPL-227+` table, and after inspecting both `IMPL-600` tokens at their source lines to confirm they are `PRD-007` §3.2's *"Unallocated"* markers rather than uses — applying `PRD-007`'s own principle that *"a maximum cannot distinguish an allocation from a marker."* **No reserve needed skipping**, because `PRD-007` declared none; that is a finding about `PRD-007`, not a licence, so `IMPL-680`–`699` is reserved here (rule 2) against the 18 open gaps. Records `Priority`, `Blocks` and `Blocked by` per task (rule 3) and the group→requirement→invariant→acceptance table (rule 4). Coverage is **computed, not asserted**: `tool/docs_check/prd006_task_coverage.py` proves **285/285 = 100.0%** of obligations claimed, 0 undefined citations, 0 gaps cited as obligations, 0 duplicate or out-of-range identifiers, 0 collisions with the six foreign ranges, 0 cycles, `Blocks`/`Blocked by` mutually consistent, 1 root, 1 leaf, and 0 `BLOCKED` markers lacking a named gap; the 10-task critical path is derived from the graph. **The gate was then tested against 12 deliberate mutations, all 12 of which produced exit 1**, because a check that has only ever passed has not been shown able to fail. Three defects the derivation caught during authoring were fixed rather than argued away: a hand-written `Blocked by` list for `IMPL-679` left `IMPL-671` (authorization) and `IMPL-672` (multi-tenancy) outside the acceptance harness's ancestry although the tenancy acceptance band requires them, so the harness's 23 edges are now computed as *"every otherwise-terminal task"*; a `BLOCKED` count written as *"Thirteen"* measured **12**; and §8's forbidden-task table covered 18 of the 19 gaps until a comparison against §32.1's verdict column named the omission (`ATT-GAP-017a`, a latency budget — the easiest gap to close by accident, because inventing a number feels like rigour). Lists **37 tasks that must not be created**, each mapped to the rule it would break, **20 of which would close a gap by writing code**, together referencing all 18 open gaps plus the 1 narrowed one. **Stage 3 and Stage 4 are represented as ⚠️ CONDITIONAL, which is what they returned** — `PRD-007`'s ✅ prerequisite wording is deliberately **not** reused, and §2 records why Stage 6 may still be entered on a conditional verdict: the gate conditions on the artefacts existing, not on a verdict grade. Running the new tool turned the **passing** Stage 5 gate red, because `prd006_traceability.py` treats an `ATT-<REG>-<n>` token under `tool/` as a namespace collision; the new file's docstring was reworded and **the Stage 5 tool was not modified**. **Nothing is implemented: zero `lib/` files changed, no estimates invented, no specification written, no schema, SQL, DDL, API shape, event, payload, widget tree or class signature; no configuration default and no security value invented; the 18 open `ATT-GAP-*` remain open and 12 tasks remain blocked behind them; `PRD-006` unmodified and still `DRAFT`; `PRD-007`, `PRD_REGISTRY.md`, the BC Map, the Dependency Matrix, all 20 ADRs, `DOCUMENTATION_BASELINE.md`, `PRD_LIFECYCLE.md`, `TRACEABILITY_MATRIX.md` and the four sibling backlogs all byte-identical; the four stale `IMPL-227+` tables left stale; no registry entry, no ADR, and no freeze.** |
+| v1.0.1 | 2026-08-04 | **Pre-commit correction to §11's own disclosure, not to any task.** §11 stated that this file adds *exactly one* `SEAT-*` citation to `prd007_traceability.py`'s pre-existing hit list. Running that gate's own pattern over this file returned **two**: §8's single-transaction row and the disclosure paragraph itself, which cannot name the identifier it is disclosing without matching the pattern it is disclosing. The count and the per-file measurements (22, 18, 7, 3, 2 across the five sibling documents already listed) are now stated as measured, and the paragraph's self-reference was re-checked against its actual line number after the edit shifted it. **No task, requirement citation, priority, dependency edge, allocation bound or coverage figure changed**; the gate still exits 0 at 285/285. Recorded because a disclosure that under-reports its own footprint is precisely the failure the disclosure exists to prevent. |

@@ -69,23 +69,37 @@ DEFINITION SITES -- ESTABLISHED BY INSPECTION, NOT ASSUMED
 and a script ported from `prd007_traceability.py` without re-inspection gets
 the wrong answer:
 
-    ATT-FR   prose 110  +  table 42   -- BOTH forms are real definitions
-    ATT-BR   prose  39  +  table  1   -- plus a 45-row INDEX in section 28
-    ATT-XC   prose  21      table 21  -- the table in section 29 is the INDEX
-    ATT-PO   prose   5  +  table  9   -- BOTH forms are real definitions
+    reg   prose  table  total  form
+    FR      110     41    151  BOTH   -- both forms are real definitions
+    BR       39      6     45  BOTH   -- both forms are real definitions
+    INV      12      0     12  PROSE
+    EVT       0      4      4  TABLE
+    XC       21      0     21  PROSE  -- the section 29 table is the INDEX
+    PO        5      9     14  BOTH   -- both forms are real definitions
+    CFG       0     24     24  TABLE  -- section 16.3, the nine-column register
+    NFR      15      0     15  PROSE  -- 14 + one self-declared restatement
+    AC        0    213    213  TABLE
+    GAP       0     21     21  TABLE  -- 18 numbers, 21 rows
 
-So form alone cannot separate a definition from a restatement here.  What
-separates them is **location**.  Four sections are *indexes* -- they restate
-identifiers defined elsewhere, for navigation:
+Three registers -- FR, BR and PO -- define identifiers in BOTH shapes, and the
+table-form definitions all sit in five ordinary content sections (8.3, 9.3,
+10.3, 11.3, 12.2), not in an index.  So form alone cannot separate a definition
+from a restatement here.  What separates them is **location**.  Six sections
+are *indexes* -- they restate identifiers defined elsewhere, for navigation,
+and INDEX_SECTION below is the authoritative list:
 
-    section 0.3    the register declaration table
-    section 28     the business-rule index      (carries a back-pointer column)
-    section 29     the exclusion index          (carries an "Owner instead" col)
-    section 31.2   upstream traceability
+    section 0 / 0.3   the register declaration table
+    section 28        the business-rule index    (carries a back-pointer column)
+    section 29        the exclusion index        (carries an "Owner instead" col)
+    section 31.1      coverage measurement
+    section 31.2      upstream traceability
+    section 32        the gap register (32.1 is the ledger of record)
 
-Counting those as definitions produces 14 phantom duplicates -- exactly the
-class of false positive `TRACEABILITY_MATRIX.md` §2C.1 warns about, and exactly
-what the Stage 4 review rejected as finding `R-1` after opening all 14 pairs.
+Counting those as definition sites produces **95** phantom duplicates -- the
+class of false positive `TRACEABILITY_MATRIX.md` §2C.1 warns about, and the
+class the Stage 4 review rejected as finding `R-1` by opening the pairs rather
+than trusting the count.  Honouring the list leaves exactly ONE duplicate,
+`ATT-NFR-001`, which is the genuine self-declared restatement described below.
 Section 16.2 looks like an index (it contains a mapping table) but is a real
 definition site for `ATT-FR-099` and `ATT-FR-100`; it is NOT excluded.
 
@@ -114,7 +128,7 @@ ORDER = ["FR", "BR", "INV", "EVT", "XC", "PO", "CFG", "NFR", "AC", "GAP"]
 
 # Sections that RESTATE identifiers rather than define them.  Established by
 # inspection (see module docstring); widening this list would hide real
-# duplicates, narrowing it produces 14 phantom ones.
+# duplicates, dropping it entirely produces 95 phantom ones.
 INDEX_SECTION = re.compile(
     r'^## (0\.\s|28\.\s|29\.\s|32\.\s)'   # 0.x, 28 BR index, 29 XC index,
                                           # 32 gap register (32.1 is the ledger

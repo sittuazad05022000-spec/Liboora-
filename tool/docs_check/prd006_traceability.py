@@ -421,10 +421,22 @@ def main():
     # are deliberately NOT added: unlike the PRD-005/PRD-007 cases this is not a
     # freeze, none of those three has been modified, and adding them now would
     # pre-authorise an edit that has not been made.
+    #
+    # ADR-0022 and ADR-0023 are listed on exactly the same reasoning, and their
+    # addition is recorded rather than performed silently (the ADR-0021 section
+    # 7.2a precedent).  PRD-006 section 32 records ATT-GAP-010 and ATT-GAP-011
+    # as the only two gaps whose owner entry reads "needs an ADR"; an ADR that
+    # frames either question cannot avoid naming the gap it is about, nor the
+    # exclusion (ATT-XC-004/005) and build block (ATT-FR-080) that depend on it.
+    # Both are Proposed, both DEFINE nothing -- every ATT- token in either file
+    # is a citation of a row defined in PRD-006 -- and both leave their gap
+    # open, so no verdict in this script's output changes as a result.
     ALLOWED = (
         "attendance-management/",
         "TRACEABILITY_MATRIX.md",
         "ADR-0021-attendance-management-configurable-defaults.md",
+        "ADR-0022-bc-03-fileref-e22-consumer-list.md",
+        "ADR-0023-ocr-vision-capability-ownership.md",
     )
 
     def outside(hits):

@@ -160,6 +160,40 @@ a change to the thing it describes"* — and both are **disclosed rather than ab
 
 ---
 
+## 4a. Disclosed: one gate script was maintained, and the maintenance is recorded rather than performed silently
+
+**Authoring the two drafts broke a passing gate, and the break was caused by the drafts.**
+`tool/docs_check/prd006_traceability.py` was at **exit 0** before they existed and went to **exit 1** the moment
+they did, because its collision scan treats any `ATT-` token outside `attendance-management/` as a possible
+collision — and an ADR *about* `ATT-GAP-010`/`011` cannot avoid naming them, nor the exclusion (`ATT-XC-004`,
+`ATT-XC-005`) and build block (`ATT-FR-080`) that depend on them.
+
+**The fix is the repository's existing convention, not a new exemption**, and it follows `ADR-0021` §7.2a — which
+recorded the identical event when *that* ADR was written. The `ALLOWED` list gained **two named files**:
+
+| Precedent | Script | Names |
+|---|---|---|
+| `MM-*` | `prd005_traceability.py` | `ADR-0019` |
+| `SEAT-*` | `prd007_traceability.py` | `ADR-0020` |
+| `ATT-*` | `prd006_traceability.py` | `ADR-0021`, and now **`ADR-0022`, `ADR-0023`** |
+
+All three rest on the recorded reasoning that *"a citation is not a collision — a collision would be another
+register **defining** an identifier."* **Neither draft defines anything**: `grep -E '^\| \*?\*?`?ATT-[A-Z]+-[0-9]+'`
+returns only rows inside *"What this ADR does not decide"* and *"Consequences"* tables, every token referring to a
+row defined in `PRD-006`.
+
+**Verified safe, not assumed safe:**
+
+| Check | Result |
+|---|---|
+| List stays enumerated file by file, not widened to `docs/00-governance/` | ✅ A stray `ATT-` elsewhere in governance **still fails** |
+| Duplicate-definition, registered-prefix and count checks | ✅ **Untouched** |
+| `DOCUMENTATION_BASELINE.md`, `PRD_REGISTRY.md`, `ADR-INDEX.md` | ✅ Still **deliberately excluded** — this is not a freeze |
+| Every count after the change | ✅ **Identical** — 516 / 285 / 213 / 18 open / 100.0% / 0 collisions |
+| Verdict change caused by the edit | ✅ **None.** Both gaps remain open |
+
+---
+
 ## 5. Verification
 
 | Claim | Method | Result |
@@ -176,6 +210,8 @@ a change to the thing it describes"* — and both are **disclosed rather than ab
 | No context created | BC Map §3 | **31** |
 | No edge added | BC Map §7 | unchanged |
 | Zero code changes | `git status lib/ test/ pubspec.yaml` | **0** |
+| Gate restored after the `ALLOWED` maintenance | `prd006_traceability.py` | **exit 0, PASS** — all counts identical |
+| Other three gates unaffected | re-run | task coverage **exit 0**; `prd007_task` **exit 0**; `prd007_trace` **exit 1, same 2 pre-existing classes** |
 
 ---
 

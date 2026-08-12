@@ -6,8 +6,8 @@
 | **Module** | Attendance Management (Master PRD §8 module **8**) |
 | **Bounded context** | **`BC-03` Attendance** — `[CORE]`, Library Management domain |
 | **Aggregate owned** | `AttendanceDay` *(BC Map §8 — one student-day, **not** one punch)* |
-| **Version** | **v1.2 — DRAFT** |
-| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 2**. **Not reviewed, not frozen, not admitted to any baseline.** No ADR has been raised and none is claimed |
+| **Version** | **v1.3 — DRAFT** |
+| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **Not frozen, not ranked, not admitted to any baseline.** Stage 3 architecture alignment and Stage 4 requirements review have both been *performed* and both returned **⚠️ CONDITIONAL**; a conditional verdict is not a pass, so **no stage is claimed passed** and Stages 5, 6 and 7 are unattempted. See [`PRD-006_ARCHITECTURE_ALIGNMENT.md`](./PRD-006_ARCHITECTURE_ALIGNMENT.md), [`PRD-006_REQUIREMENTS_REVIEW.md`](./PRD-006_REQUIREMENTS_REVIEW.md) and [`PRD-006_STAGE4_FINDINGS_CORRECTION.md`](./PRD-006_STAGE4_FINDINGS_CORRECTION.md). No ADR has been raised and none is claimed |
 | **Date** | 2026-08-04 |
 | **Release** | **V1** |
 | **Baseline** | Written against `BASELINE-2026-08-04-E`. **Not admitted to it** |
@@ -53,22 +53,28 @@ contiguous; a gap would make the published range false.
 
 | Register | Range | Count | Meaning |
 |---|---|---|---|
-| **`ATT-FR-*`** | `ATT-FR-001` … `ATT-FR-148` | **148** | Functional requirements — what the module does |
-| **`ATT-BR-*`** | `ATT-BR-001` … `ATT-BR-042` | **42** | Business rules — decisions the domain enforces |
+| **`ATT-FR-*`** | `ATT-FR-001` … `ATT-FR-151` | **151** | Functional requirements — what the module does |
+| **`ATT-BR-*`** | `ATT-BR-001` … `ATT-BR-045` | **45** | Business rules — decisions the domain enforces |
 | **`ATT-INV-*`** | `ATT-INV-001` … `ATT-INV-012` | **12** | Invariants — must hold at every observable moment |
 | **`ATT-EVT-*`** | `ATT-EVT-001` … `ATT-EVT-004` | **4** | Events this module publishes |
 | **`ATT-XC-*`** | `ATT-XC-001` … `ATT-XC-021` | **21** | Exclusions — what this module must never do |
 | **`ATT-PO-*`** | `ATT-PO-001` … `ATT-PO-014` | **14** | Ports — what it consumes, and from whom |
 | **`ATT-CFG-*`** | `ATT-CFG-001` … `ATT-CFG-024` | **24** | Configurable values |
 | **`ATT-NFR-*`** | `ATT-NFR-001` … `ATT-NFR-014` | **14** | Non-functional requirements |
-| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-209` | **209** | Acceptance criteria |
+| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-213` | **213** | Acceptance criteria |
 | **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018`, plus the suffixed successors `ATT-GAP-008a`, `ATT-GAP-016a`, `ATT-GAP-017a` | **18 numbers / 21 rows** | **Open questions. NOT requirements** |
 
-**Total: 506 identifiers** — **279 obligation-bearing** (`ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC`,
-`ATT-PO`, `ATT-CFG`, `ATT-NFR`), **209 acceptance criteria**, and **18 gap numbers carrying 21 rows**. Acceptance
+**Total: 516 identifiers** — **285 obligation-bearing** (`ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC`,
+`ATT-PO`, `ATT-CFG`, `ATT-NFR`), **213 acceptance criteria**, and **18 gap numbers carrying 21 rows**. Acceptance
 criteria are counted separately from obligations because a criterion *verifies* an obligation rather than
 imposing one; §31 measures obligations against criteria and would be circular if criteria were counted as
 obligations.
+
+> **These totals were 506 / 279 / 209 in v1.0…v1.2.** They rose in **v1.3** because the Stage 4 requirements
+> review recorded eight findings and six of them were closed by *writing what was missing*, not by relaxing a
+> claim: `ATT-FR-149`, `ATT-FR-150`, `ATT-FR-151`, `ATT-BR-043`, `ATT-BR-044`, `ATT-BR-045` and
+> `ATT-AC-210`…`ATT-AC-213`. **No identifier was renumbered, withdrawn or reused, and no gap changed status.**
+> See §34 and `PRD-006_STAGE4_FINDINGS_CORRECTION.md`.
 
 **On the three suffixed gap numbers.** `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are declared here rather
 than discovered later. A suffixed successor records a question that emerged *from* its parent question and would
@@ -944,9 +950,13 @@ unless the Owner has explicitly enabled unattended creation (`ATT-CFG-020`), who
 
 ### 13D. Register image audit
 
-`ATT-FR-078` — Where the existing architecture supports it, the audit relationship **MUST** be retained between:
-the uploaded register image · the OCR/Vision result · the matched student · the staff verification · the final
-Manual `AttendanceRecord` · the correction history.
+`ATT-FR-078` — Where this workflow operates at all, the audit relationship **MUST** be retained between: the
+uploaded register image · the OCR/Vision result · the matched student · the staff verification · the final Manual
+`AttendanceRecord` · the correction history. **This obligation is unconditional within the workflow.** The
+workflow itself is build-blocked by `ATT-FR-080` until `ATT-GAP-010` and `ATT-GAP-011` are answered; if the
+answers do not permit the full chain to be retained, **the workflow does not ship** — the chain is not the part
+that gets dropped. An audit trail that breaks at the image is what makes a mis-attributed attendance
+uninvestigable, which is the specific harm §13D exists to prevent.
 
 `ATT-FR-079` — This module **MUST NOT** create an attendance-specific audit store or an attendance-specific file
 store. It uses `E-20` for audit and, where authorised, the platform's storage architecture.
@@ -993,8 +1003,14 @@ buildable.
 | 3 | Open presence exists | Check-out | **Check-out recorded** where the tenant uses check-out. Presence closes |
 | 4 | No open presence | Check-out | **Invalid check-out.** Rejected; no record created |
 
-`ATT-INV-010` — At most one presence **SHALL** be open for one student in one tenant at one time
-(`ATT-INV-004` restated at the operation level).
+`ATT-INV-010` — At most one presence **SHALL** be open for one student in one tenant at one time —
+`ATT-INV-004` **applied at the operation level and scoped to the tenant**, which is a narrowing, not a
+restatement. BC Map §8 states *"no more than one open session per student"*; because `ID-2` makes
+`StudentRecordId` per-tenant, *"one student"* there is already one student **record**, and a person enrolled at
+two libraries is two records. `ATT-INV-010` says so explicitly so that neither invariant is later deleted as a
+duplicate of the other: **`ATT-INV-004` is the aggregate invariant, `ATT-INV-010` is the operation-level rule
+that enforces it, and the tenant qualifier is load-bearing** — one person **MAY** hold an open presence at two
+different libraries at the same time, and that is not a violation.
 
 ### 14.2 Check-out is optional at tenant level
 
@@ -1084,7 +1100,7 @@ the method.
 
 ### 15.4 High-volume behaviour
 
-`ATT-FR-096` — The module **MUST** conceptually support 50+ students entering rapidly, concurrent Fixed QR scans,
+`ATT-FR-096` — The module **MUST** support 50+ students entering rapidly, concurrent Fixed QR scans,
 concurrent Dynamic QR scans, multiple face attempts, rapid manual entries and bulk register capture — without
 violating any invariant in §6.2.
 
@@ -1165,6 +1181,56 @@ as required by §0.3 and `LIB-16.2`/`LIB-16.3`.
 already exist. Manual (`ATT-CFG-017`) defaults **Enabled** because it needs no device, no edge and no unresolved
 decision — and because `LIB-16.2` requires that *"a library that has changed nothing MUST be fully operable."* A
 tenant that configures nothing can still take attendance, by reception, on day one.
+
+#### The seven settings whose default is unresolved — `ATT-GAP-017`
+
+Seven rows above carry **`ATT-GAP-017`** in the Default column instead of a value: `ATT-CFG-005`, `ATT-CFG-006`,
+`ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019` and `ATT-CFG-023`. **This is a live breach of
+`LIB-16.2`** (Rank 3, Library PRD: *"Every setting **MUST** have a documented default"*) and it is recorded as a
+breach rather than closed by choosing seven numbers. No Rank 1–5 document states any of these values, and a
+rotation interval, a GPS radius or a face-match threshold invented by a PRD author is a security and product
+decision made by whoever wrote the document first — which §0.4 forbids and which `ATT-GAP-017` assigns to the
+**product owner**.
+
+What the rules below add is not a value. They make the **behaviour in the absence of a value deterministic**, so
+that the missing default cannot be filled in silently by an implementer, and so that the second sentence of
+`LIB-16.2` — *"a library that has changed nothing MUST be fully operable"* — is satisfied in fact.
+
+`ATT-BR-043` — A configurable whose Default column names an unresolved gap has **no default value, and no value
+**SHALL** be substituted for it** — not zero, not a framework default, not a value copied from another tenant,
+another mode, another product or an example in this document. An implementation that supplies one has resolved
+`ATT-GAP-017` by implementation choice, which §0.4 forbids.
+
+`ATT-FR-149` — Where a mode's operation requires a setting whose default is unresolved and the Owner has not
+supplied a value, that mode **MUST NOT** be enableable, and the attempt to enable it **MUST** be rejected with a
+specific reason naming the missing setting (`ATT-NFR-005`). The mode **MUST NOT** enable itself with an assumed
+value, and **MUST NOT** enable in a degraded or partially-validated form.
+
+`ATT-FR-150` — No attendance **MUST** ever be recorded, accepted or rejected by evaluating a setting that has no
+value. Where such an evaluation would be required, the operation **MUST** fail closed (`ATT-FR-127`'s rule,
+applied to configuration rather than tenancy) rather than proceed on a substituted value.
+
+`ATT-BR-044` — **`LIB-16.2`'s operability requirement is met despite this breach, and here is the check.** Each
+of the seven belongs to a capability that is **off by default**, so none is reachable in a tenant that has
+configured nothing: `ATT-CFG-005`/`006` require Dynamic QR (`ATT-CFG-002` — **Disabled**); `ATT-CFG-011`/`012`
+require Fixed QR + GPS (`ATT-CFG-004` — **Disabled**); `ATT-CFG-014` requires Face (`ATT-CFG-016` — **Disabled**,
+and `ATT-FR-064` blocks the build outright); `ATT-CFG-019` requires the register-image workflow (`ATT-CFG-018` —
+**Disabled**, and `ATT-FR-080` blocks the build outright); and `ATT-CFG-023` is optional by construction —
+`ATT-FR-115` applies only *"where a correction window is configured"*, so its absence means no window is enforced,
+which is a defined behaviour rather than a missing one. **A tenant on day one uses Manual, which has a concrete
+default and no unresolved setting.** The breach is therefore real but **latent**: it cannot be reached without an
+Owner deliberately enabling a mode whose values this document has refused to invent.
+
+`ATT-FR-151` — The Owner **MUST** be shown, at configuration time, that a setting has no platform default and
+requires an explicit value before its mode can operate. A blank field **MUST NOT** be presented as though it
+carried a default.
+
+> **Why this is not a resolution of `ATT-GAP-017`, and must not be recorded as one.** Every rule above is about
+> *the absence of a value*. Not one of them supplies a value, narrows a range, or makes any of the seven settings
+> usable. `ATT-GAP-017` remains **OPEN** and still blocks Dynamic QR, GPS, Face and the register workflow from
+> operating. What changes is that the gap can no longer be closed accidentally: previously an implementer meeting
+> a blank default had no instruction and would reasonably have picked something; now the specified behaviour is to
+> refuse. **A specification hole that is specified as a hole is still a hole — but it is no longer a trap.**
 
 ### 16.4 Configuration behaviour
 
@@ -1451,6 +1517,17 @@ QR flows **MUST NOT** be merged.
 
 ### 23.4 No second attendance system
 
+The prohibition runs in both directions across this boundary, and both halves already exist. `PRD-007`
+`SEAT-BR-020` forbids `BC-04` from creating, storing, modifying, deleting or verifying an attendance record. The
+reciprocal obligation on this side is `ATT-BR-033` (§14.7): this module **MUST NOT** create a second presence,
+occupancy or *"currently inside"* system of record beyond the `AttendanceDay` aggregate, and `ATT-FR-140` forbids
+it owning, computing or publishing live occupancy as an authoritative seating fact.
+
+`ATT-BR-045` — Neither module **SHALL** hold a shadow copy of the other's system of record. Attendance is the sole
+source of attendance facts; Seating is the sole source of occupancy facts (`E-08`: *"Seating is the occupancy
+owner, Attendance is the trigger"*). Where the two disagree — a missed or stale event — `SEAT-FR-115` makes
+occupancy advisory and non-corrupting; **the attendance record is never reconciled backwards from occupancy.**
+
 ---
 
 ## 24. Operational Data
@@ -1632,6 +1709,9 @@ The complete `ATT-BR-*` register, with the section that states each in context.
 | `ATT-BR-040` | No silent manipulation of attendance | §18 |
 | `ATT-BR-041` | Six false equivalences that must never be claimed | §19.1 |
 | `ATT-BR-042` | Never overstate a control; state its bound where offered | §19.3 |
+| `ATT-BR-043` | A configurable whose default is unresolved has no value, and none may be substituted | §16.3 |
+| `ATT-BR-044` | The `LIB-16.2` operability check: a tenant that configures nothing is still fully operable | §16.3 |
+| `ATT-BR-045` | Neither module holds a shadow copy of the other's system of record | §23.4 |
 
 ---
 
@@ -1674,7 +1754,7 @@ the prohibition is absent.
 
 ## 30. Acceptance Criteria
 
-**209 criteria.** Every one of the 279 obligations in force — across `ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`,
+**213 criteria.** Every one of the 285 obligations in force — across `ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`,
 `ATT-XC`, `ATT-PO`, `ATT-CFG` and `ATT-NFR` — is covered by at least one, verified mechanically rather than
 asserted (§31.1). **No criterion tests a `GAP`**, because a gap is a question and a question cannot pass.
 
@@ -1914,7 +1994,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-149` | **No stored attendance fact can be destructively updated or deleted; the append-only correction record is the only mutation path** | `ATT-INV-008` |
 | `ATT-AC-150` | Every timestamp is timezone-explicit and resolved against the tenant's configured zone, never server local time | `ATT-BR-032`, `ATT-NFR-011` |
 | `ATT-AC-151` | Throughput is achieved without relaxing an invariant, batching across aggregates or deferring duplicate detection | `ATT-BR-036` |
-| `ATT-AC-152` | No second presence or "currently inside" system of record exists beyond the `AttendanceDay` aggregate | `ATT-BR-033`, `ATT-FR-140` |
+| `ATT-AC-152` | No second presence or "currently inside" system of record exists beyond the `AttendanceDay` aggregate, no shadow copy of seat occupancy is held here, and no attendance record is ever reconciled backwards from an occupancy state | `ATT-BR-033`, `ATT-FR-140`, `ATT-BR-045` |
 
 ### 30.17 Corrections, audit and authorization (§18–§20)
 
@@ -1976,7 +2056,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-196` | "Attendance Method" set in the Library module changes behaviour owned here, and the Library module implements none of that behaviour | `ATT-BR-037` |
 | `ATT-AC-197` | Each of the six mode-enable configurables independently controls exactly its own mode | `ATT-CFG-001`, `ATT-CFG-002`, `ATT-CFG-003`, `ATT-CFG-004`, `ATT-CFG-016` |
 | `ATT-AC-198` | Every configurable in §16.3 whose default is resolved is validated before persistence, rejects an out-of-domain value, and takes effect only at its stated effective point | `ATT-CFG-007`, `ATT-CFG-009`, `ATT-CFG-010`, `ATT-CFG-013`, `ATT-CFG-015`, `ATT-CFG-018`, `ATT-CFG-021`, `ATT-CFG-022`, `ATT-CFG-024` |
-| `ATT-AC-199` | **Each of the seven configurables whose default is unresolved is blocked from use until `ATT-GAP-017` is answered, and no default is invented for it** | `ATT-CFG-006`, `ATT-CFG-014`, `ATT-CFG-019`, `ATT-CFG-023` |
+| `ATT-AC-199` | **Each of the seven configurables whose default is unresolved is blocked from use until `ATT-GAP-017` is answered, and no default is invented for it** | `ATT-CFG-005`, `ATT-CFG-006`, `ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019`, `ATT-CFG-023`, `ATT-BR-043` |
 | `ATT-AC-200` | Every configuration change is audited with the acting actor and is tenant-resolvable | `ATT-CFG-001`…`ATT-CFG-024` |
 | `ATT-AC-201` | **This document states no latency figure, throughput number or percentile target** | `ATT-NFR-003` |
 | `ATT-AC-202` | Every attendance decision is reproducible from recorded evidence, the rules in force at the time, and the correction history | `ATT-NFR-004` |
@@ -1986,6 +2066,10 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-206` | **Stale or unavailable membership validity produces a flagged attendance record, never a blocked one** | `ATT-NFR-009` |
 | `ATT-AC-207` | Every obligation in this document has at least one acceptance criterion, and any obligation without one is reported as unmet rather than assumed satisfied | `ATT-NFR-010` |
 | `ATT-AC-208` | Manual-mode surfaces meet the same accessibility standard as the app modes, measured rather than asserted | `ATT-NFR-014` |
+| `ATT-AC-210` | Enabling a mode whose required setting has no value is rejected with a reason naming the missing setting; the mode does not enable with an assumed value | `ATT-FR-149` |
+| `ATT-AC-211` | No attendance is recorded, accepted or rejected by evaluating a setting that has no value; the operation fails closed instead | `ATT-FR-150` |
+| `ATT-AC-212` | A tenant that has configured nothing can record attendance by Manual on day one, and none of the seven unresolved settings is reachable in that state | `ATT-BR-044` |
+| `ATT-AC-213` | A setting with no platform default is presented to the Owner as requiring an explicit value, never as a blank field carrying a default | `ATT-FR-151` |
 
 ---
 
@@ -1995,20 +2079,26 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 
 | Register | In force | Covered by ≥1 `ATT-AC` | Coverage |
 |---|---|---|---|
-| `ATT-FR-*` | 148 | 148 | **100%** |
-| `ATT-BR-*` | 42 | 42 | **100%** |
+| `ATT-FR-*` | 151 | 151 | **100%** |
+| `ATT-BR-*` | 45 | 45 | **100%** |
 | `ATT-INV-*` | 12 | 12 | **100%** |
 | `ATT-EVT-*` | 4 | 4 | **100%** |
 | `ATT-XC-*` | 21 | 21 | **100%** |
 | `ATT-PO-*` | 14 | 14 | **100%** |
 | `ATT-CFG-*` | 24 | 24 | **100%** |
 | `ATT-NFR-*` | 14 | 14 | **100%** |
-| **Obligation-bearing total** | **279** | **279** | **100%** |
+| **Obligation-bearing total** | **285** | **285** | **100%** |
 | `ATT-GAP-*` | 18 | **0 — by design** | Gaps are questions, never criteria |
 
-**No orphan requirement** (every obligation has a criterion) and **no orphan criterion** (all 209 criteria name at
+**No orphan requirement** (every obligation has a criterion) and **no orphan criterion** (all 213 criteria name at
 least one requirement). These figures are **measured**, not asserted: the companion verification report records
 the extraction method, the per-register counts and the reproducible command.
+
+> **The denominator moved in v1.3, and the numerator moved with it.** Six obligations were added by the Stage 4
+> findings reconciliation and **each arrived with its criterion in the same edit** — `ATT-BR-043` is verified by
+> `ATT-AC-199`, and `ATT-FR-149`, `ATT-FR-150`, `ATT-BR-044`, `ATT-FR-151` by `ATT-AC-210`…`ATT-AC-213`
+> respectively; `ATT-BR-045` is verified by `ATT-AC-152`. Coverage was re-measured after the edit rather than
+> assumed to have survived it, which is the same discipline the retraction below records.
 
 > **This table previously read 100% while the measured value was 49.1%** — 137 of 279 obligations, with 142 having
 > no criterion at all. The claim was written before the criteria existed and was false. It was found by the
@@ -2042,11 +2132,24 @@ the extraction method, the per-register counts and the reproducible command.
 
 ## 32. Open Questions / Gaps
 
-**Eighteen questions — 17 still open. None is a requirement. None may be resolved by implementation choice** (§0.4).
+**Eighteen numbers, 21 rows — 18 still open. None is a requirement. None may be resolved by implementation
+choice** (§0.4).
 
-> **Re-audited in v1.1; `ATT-GAP-001` reconciled in v1.2.** The table below is the original register, preserved.
-> **§32.1 is the resolution ledger** and is the authoritative status for each row: **3 resolved, 1 narrowed,
-> 17 open.** Where a row's status changed, §32.1 states the source that changed it.
+> **Re-audited in v1.1; `ATT-GAP-001` reconciled in v1.2; the count restated in v1.3.** The table below is the
+> original register, preserved. **§32.1 is the resolution ledger** and is the authoritative status for each row.
+>
+> **The count is stated over the 21 rows, and a row is counted by the status in its own verdict cell:
+> 2 resolved, 1 narrowed, 18 open.** Where a row's status changed, §32.1 states the source that changed it.
+>
+> **Read the denominator before comparing counts.** The register declares **18 numbers**; the ledger carries
+> **21 rows**, because three suffixed successors (`ATT-GAP-008a`, `016a`, `017a`) are counted within their
+> parent's number. Every count in this document is now stated over **rows**, so that a tool counting the ledger's
+> verdict column and a reader counting the register reach the same three figures. **`ATT-GAP-012` is counted as
+> OPEN**, which is what its verdict cell says: its *storage sub-question* is answered negatively, but the
+> ownership question that defines the gap is not, and a partially answered gap is an open gap. The v1.1 and v1.2
+> changelog entries state the earlier figures **3 resolved / 1 narrowed / 17 open**, which counted that partial
+> answer as a resolution; **those figures are superseded by this row, and no gap's status changed to produce the
+> new ones.**
 >
 > **The register still declares eighteen `ATT-GAP-*` numbers.** A resolved gap keeps its number — `PRD_LIFECYCLE.md`
 > §5 rule 5: *"Numbers are never reused, even after withdrawal."* Resolution changes a row's **status**, never the
@@ -2055,7 +2158,7 @@ the extraction method, the per-register counts and the reproducible command.
 | ID | Question | Authoritative sources in tension | Owner who must decide | Blocks |
 |---|---|---|---|---|
 | **`ATT-GAP-001`** | ✅ **RESOLVED 2026-08-04 — this document is `PRD-006`.** *The question was:* is this PRD `PRD-006` or `PRD-008`? `PRD_REGISTRY.md` line 236 allocates **`PRD-006` = Attendance Management, `BC-03`**, and line 238 allocates **`PRD-008` = Revenue & Finance, `BC-05`**; frozen `PRD-007` refers to the Attendance PRD as **`PRD-006`** twice (§14, and its dependency table), while the authoring instruction had specified `PRD-008`. **Resolved by conforming this document to the standing allocation**, not by reassigning any number: registry §8 rule 1 (*"Numbers are never reused or reassigned"*) is **satisfied**, since `PRD-006` was already Attendance's and `PRD-008` remains reserved to Revenue & Finance. **No registry edit was required** and none was made. See §32.2 and [`PRD-006_NUMBERING_RECONCILIATION.md`](./PRD-006_NUMBERING_RECONCILIATION.md) | `PRD_REGISTRY.md` line **236** (allocation) · `PRD-007` v1.0 **FROZEN, Rank 3**, lines **223** and **862** — all three now **agree** with this document | *Was: registry owner + architecture owner.* **Closed by conformance** — no owner decision was needed, because no authority was in conflict with the registry | **Nothing.** This gap no longer blocks Stage 7 |
-| **`ATT-GAP-002`** | Where is the authenticated `BC-18` context composed for a `BC-03` operation? `E-11` is `BC-18 → BC-01`; no `BC-18 → BC-03` edge exists | BC Map §7.2 | Architecture owner | Nothing at product level |
+| **`ATT-GAP-002`** | ✅ **RESOLVED in v1.1 — see §32.1 and §5.2.** *The question was:* where is the authenticated `BC-18` context composed for a `BC-03` operation, given that `E-11` is `BC-18 → BC-01` and no `BC-18 → BC-03` edge exists? **Answered from existing governance, not by invention**: frozen `PRD-007` (Rank 3) consumes `BC-18` with **no `E-` edge** (its §3 context table, and `SEAT-BR-030`), so a Core context receiving an already-established session without its own inbound identity edge is a **ratified pattern**. Attendance receives the authenticated context from the application layer (`ATT-PO-007`) | BC Map §7.2 · frozen `PRD-007` §3, `SEAT-BR-030` — **no longer in tension** | *Was: architecture owner.* **Closed by an existing ratified pattern** — no owner decision was needed | **Nothing.** No `BC-18 → BC-03` edge is asserted or required |
 | **`ATT-GAP-003`** | Is `BC-26` a consumer of `attendance.*`? BC Map §9 says yes for three events; §7 declares no edge | BC Map §9 vs §7 | Architecture owner | Analytics of attendance |
 | **`ATT-GAP-004`** | Is `BC-13` a consumer of `attendance.FraudSignalDetected`? §9 says yes; §7 declares no edge | BC Map §9 vs §7 | Architecture owner | Fraud escalation |
 | **`ATT-GAP-005`** | What is the retention period for attendance after enrollment archival? | BC Map `Q-04` **open** · `ID-5` requires retention | Legal counsel + architecture owner | Deletion behaviour |
@@ -2110,12 +2213,14 @@ inference from silence, or convenience.** Where no source exists, the row says s
 | `ATT-GAP-017a` | 🔴 **OPEN** | No Rank 1–5 latency/throughput figure. EA states none. |
 | `ATT-GAP-018` | 🔴 **OPEN** | No source authorises an *"at least one mode enabled"* constraint. `ATT-FR-106` and `ATT-AC-209` preserve the permissive behaviour rather than inventing a restriction. |
 
-**Result: 3 resolved, 1 narrowed, 17 open** — of which 2 (`ATT-GAP-010`, `ATT-GAP-012` storage) now carry a
+**Result over the 21 rows: 2 resolved (`ATT-GAP-001`, `ATT-GAP-002`), 1 narrowed (`ATT-GAP-011`), 18 open** —
+counted by each row's own verdict cell, so that this figure and a mechanical scan of the column above agree.
+Of the 18 open, 2 (`ATT-GAP-010`, `ATT-GAP-012` storage) now carry a
 *definite negative* answer rather than an unknown, and 2 (`ATT-GAP-004`, `ATT-GAP-014`) were **upgraded in
 severity** by the re-audit. **No gap was closed by invention.** The count did not improve much, and it should
 not have: a re-audit that resolves most of its own open questions has usually re-labelled them.
 
-> **The third resolution — `ATT-GAP-001`, closed in v1.2 — is the weakest kind of good news** and is recorded as
+> **The most recent resolution — `ATT-GAP-001`, closed in v1.2 — is the weakest kind of good news** and is recorded as
 > such. It was closed by **conforming this document to a decision the registry had already made**, not by
 > answering an open architectural question. It required no owner ruling, no ADR and no registry edit. **It tells
 > you nothing about whether attendance can be built** — the two gaps that actually block a mode from being built,
@@ -2251,10 +2356,11 @@ decided here, because nothing depends on the answer while it is out of V1 scope.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.3 — DRAFT** | 2026-08-04 | **Stage 4 findings reconciliation. Still DRAFT, still unranked, still not frozen, still no ADR raised.** Closes the eight findings `RQ-1`…`RQ-8` raised by [`PRD-006_REQUIREMENTS_REVIEW.md`](./PRD-006_REQUIREMENTS_REVIEW.md), whose **verdict and findings are left exactly as issued** — this changelog and [`PRD-006_STAGE4_FINDINGS_CORRECTION.md`](./PRD-006_STAGE4_FINDINGS_CORRECTION.md) record what was done about them; the review is not re-verdicted by the document it reviewed. **`RQ-1`** (seven configurables with no default — a live `LIB-16.2` breach): closed **without inventing a single value**, by specifying *the behaviour in the absence of a value* instead of the value. `ATT-BR-043` forbids substitution of any kind — not zero, not a framework default, not another tenant's, another mode's or an example's; `ATT-FR-149` makes a mode whose required setting is empty **un-enableable**, with the rejection naming the missing setting; `ATT-FR-150` makes evaluation against a valueless setting **fail closed**; `ATT-BR-044` states the `LIB-16.2` operability check and shows the breach is **latent** — all seven belong to capabilities that are off by default, so a day-one tenant records attendance by Manual and never reaches them; `ATT-FR-151` requires the Owner to be shown that no platform default exists, so **a blank field is never presented as though it carried one**. **`ATT-GAP-017` remains 🔴 OPEN and the `LIB-16.2` breach remains a breach** — a hole that is specified as a hole is still a hole, and recording this as a resolution would be the exact `§0.4` failure of resolving a gap by implementation choice. **`RQ-2`**: `ATT-AC-199` re-cited from a partial list to **all seven** configurables plus `ATT-BR-043`, and `ATT-AC-210`…`ATT-AC-213` added so each new obligation arrives with its own criterion. **`RQ-3`** (three different open-gap counts in one document): the count is now stated **over the 21 rows and read from each row's own verdict cell — 2 resolved, 1 narrowed, 18 open** — so the figure and a mechanical scan of the ledger agree, as Stage 5 requires. `ATT-GAP-012` is counted **open**, which is what its verdict cell says: its storage sub-question is answered negatively, but the ownership question that defines it is not, and a partially answered gap is an open gap. The earlier 3/1/17 figures are marked **superseded**, and **no gap's status was changed to produce the new ones**. **`RQ-4`**: the `ATT-GAP-002` §32 register row, which still read OPEN while §32.1 recorded it RESOLVED, is reconciled to **RESOLVED** with its basis (frozen `PRD-007` §3 and `SEAT-BR-030`) and its owner closed. **`RQ-5`**: §23.4, previously a heading with no body, now states the seat-occupancy boundary in both directions and adds `ATT-BR-045` — neither module holds a shadow copy of the other's system of record, and **the attendance record is never reconciled backwards from occupancy**. **`RQ-6`**: `ATT-FR-078` made unconditional within its workflow — if the open questions do not permit the full evidence chain to be retained, **the workflow does not ship; the chain is not the part that gets dropped**. **`RQ-7`**: *\"MUST conceptually support\"* → *\"**MUST** support\"* in `ATT-FR-096`; an obligation qualified by \"conceptually\" is untestable. **`RQ-8`**: `ATT-INV-010` re-labelled a **narrowing** of `ATT-INV-004` rather than a restatement, with the tenant qualifier explained as load-bearing — one person **MAY** hold an open presence at two libraries at once, and that is not a violation. **Registers changed by addition only: `ATT-FR` 148 → 151, `ATT-BR` 42 → 45, `ATT-AC` 209 → 213; total 506 → 516, obligation-bearing 279 → 285.** No identifier was renumbered, withdrawn or reused; the six V1 modes, the RFID-Future classification, §13A buildability, §13C staff verification, every edge, event, invariant, exclusion and configurable **value** are untouched. Coverage re-measured after the edit, not assumed: **285/285 = 100%, 0 orphan criteria**. **No default or security value was invented, no authoritative document was modified, and no ADR was raised** — nothing here decides structure, ownership, boundaries or platform rules; `RQ-1`'s architectural question is precisely what `ATT-GAP-017` holds open for its named owner. **This reconciliation does not advance the lifecycle and does not freeze anything**: Stage 4's verdict remains **⚠️ CONDITIONAL** while `ATT-GAP-017` is open, and Stages 5, 6 and 7 remain unattempted. |
 | **v1.2 — DRAFT** | 2026-08-04 | **PRD numbering reconciliation — `PRD-008` → `PRD-006`. Metadata only. Still Stage 2, still unranked, still not frozen, still no ADR raised.** This document now carries **`PRD-006`**, the number [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) line 236 has always allocated to Attendance Management / `BC-03`. The drafting-time `PRD-008` was withdrawn because line 238 reserves it for **Revenue & Finance / `BC-05`**; **that reservation is preserved intact and this document makes no claim on it.** **The direction of the correction is the point: the register was right and the draft was wrong, so the draft moved.** Changed: the two filenames (via `git mv`, history preserved), the header *PRD* and *Version* rows, `ATT-GAP-001`, its §32.1 ledger row, §32.2, and the end-of-file line. **`ATT-GAP-001` moves 🔴 OPEN → ✅ RESOLVED, taking the open count from 18 to 17** — and it is the **only** register entry whose status changed. **No requirement identifier was added, removed, renumbered or reworded**; all ten registers remain at **506 identifiers** (`ATT-GAP-*` still declares 18 numbers / 21 rows — a resolved gap keeps its number per `PRD_LIFECYCLE.md` §5 rule 5); coverage remains **279/279**; the six V1 modes, the RFID-Future classification, §13A buildability and the §13C staff-verification rule are untouched; no edge, event, invariant, exclusion or configurable changed. **No ADR was raised, and none is required** — Baseline §7 step 1 governs **Rank 1–5** documents and this one is Unranked by its own header; `ADR-INDEX.md` Process step 1 governs changes to structure, ownership, boundaries or platform rules, none of which this touches; and registry §8 rule 1 is **satisfied, not excepted**, because no number was reassigned. **`PRD_REGISTRY.md`, `PRD-007` and every other authoritative document are byte-for-byte unmodified** — `PRD-007`'s two citations of `PRD-006` (lines 223, 862) are now **satisfied** rather than dangling. The four stale *derived* registry summary lines this creates are **identified in §32.2 and deliberately not corrected**, as they belong to the registry owner under §8 rule 3. **This reconciliation does not advance the lifecycle: Stages 3, 4, 5, 6 and 7 remain unpassed**, and 17 gaps remain open. Execution record: [`PRD-006_NUMBERING_RECONCILIATION.md`](./PRD-006_NUMBERING_RECONCILIATION.md) |
 | **v1.1 — DRAFT** | 2026-08-04 | **Gap re-audit. Still Stage 2, still unranked, still not frozen, still no ADR raised.** No requirement identifier was added, removed, renumbered or reworded; all ten registers are unchanged at **506 identifiers**; coverage remains **279/279**; the six V1 modes, the RFID-Future classification, §13A buildability and the §13C staff-verification rule are all preserved untouched. Three sections were added — **§12.4a** (biometric boundary audited across eight dimensions), **§32.1** (gap resolution ledger) and **§32.2** (the numbering conflict re-verified) — and three existing passages were corrected. **Result: 2 gaps resolved, 1 narrowed, 18 open.** `ATT-GAP-002` closes on frozen `PRD-007`'s ratified pattern of consuming `BC-18` with no `E-` edge. `ATT-GAP-011` is **narrowed by refutation**: the first draft asked for a `BC-03` → `BC-27` edge, and BC Map §7.4 `F-1`/`F-3`/`F-4` with `MP-GBR-29`…`32` show that edge would be **architecturally backwards** — a capability is an untrusted caller into the domain's command API, never the reverse — so its absence is correct and `ATT-XC-005` is strengthened rather than relaxed; §13C's staff verification is identified as already being `F-4`'s mandatory Human-in-the-Loop approval record. The storage sub-question of `ATT-GAP-012` is **answered negatively and definitely**: `BC-03` has no `E-22` path, so it cannot hold a biometric template at all. Two gaps were **upgraded in severity** rather than closed: `ATT-GAP-004`, because BC Map §6 rule 2 and `E-14` show `BC-03` is not even a Trust & Safety self-restriction subscriber, leaving fraud escalation with no authorised path in either direction; and `ATT-GAP-014`, because `ID-5`/`MP-GBR-04` promise erasure by **pseudonymisation**, which is structurally inapplicable to data that *is* the identifier — making it a conflict rather than a void, and confirming `ATT-FR-064`'s outright build block on Rank 1 grounds instead of merely on absence. `ATT-GAP-001` was re-verified against primary sources with **`PRD_REGISTRY.md` left byte-for-byte unmodified**, and is escalated: three authorities (the registry, and frozen `PRD-007` twice) call this document `PRD-006`, while `PRD-008` is already allocated to Revenue & Finance — so the gap **blocks any Stage 7 freeze**. **Nothing was resolved by invention, by inference from silence, or by convenience**; the 18 remaining gaps each name the owner who must decide. **No authoritative document was modified, no ADR file was created, and no API, schema, task or code artefact was produced.** |
 | **v1.0 — DRAFT** | 2026-08-04 | **Initial draft. Stage 2 of `PRD_LIFECYCLE.md`. Not reviewed, not frozen, unranked, no ADR raised.** Specifies `BC-03` Attendance for V1. Six independent attendance modes established as a closed set, with mode independence (`ATT-BR-004`…`ATT-BR-007`) stated as the central product rule and a generic verification layer explicitly prohibited (`ATT-XC-011`). RFID classified Future only, with zero V1 artefacts. Manual attendance established as a first-class mode with two workflows — individual entry (buildable today) and physical-register OCR/Vision (blocked on two missing edges) — separated deliberately so the smartphone-less student is served without waiting for an AI architecture decision. 506 identifiers across ten registers, 279 obligation-bearing, 209 acceptance criteria, **100% coverage of obligations — measured, not asserted**. The first internal pass of this draft published 100% while the true figure was 137/279 = 49.1%; the mechanical check required by `ATT-NFR-010` caught it, and it was corrected by writing the 91 missing criteria (`ATT-AC-119`…`ATT-AC-209`) rather than by lowering the claim. Ten out-of-range placeholder identifiers left over from drafting were deleted, the single out-of-range exclusion (drafted as number 023) was renumbered `ATT-XC-021` to close the exclusion range at 21, and the §0.3 total was corrected from an arithmetically impossible 296 to the true 506. **Eighteen gaps recorded and none resolved by invention**, including `ATT-GAP-001`, a direct conflict between the instructed number `PRD-008` and `PRD_REGISTRY.md`'s allocation of `PRD-006` to this context, and `ATT-GAP-012`/`014`, which block the Face mode from being built at all. **No integration edge was invented** — every consumed and published edge is quoted from BC Map §7; the four events are exactly BC Map §9's. **No authoritative document was modified.** |
 
 ---
 
-*End of `PRD-006_ATTENDANCE-MANAGEMENT.md` v1.2 DRAFT.*
+*End of `PRD-006_ATTENDANCE-MANAGEMENT.md` v1.3 DRAFT.*

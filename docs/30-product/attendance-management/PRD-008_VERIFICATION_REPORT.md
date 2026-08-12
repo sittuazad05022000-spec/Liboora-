@@ -1,15 +1,15 @@
-# PRD-008 — Attendance Management v1.0 — Verification Report
+# PRD-008 — Attendance Management v1.1 — Verification Report
 
 | Field | Value |
 |---|---|
-| **Report for** | [`PRD-008_ATTENDANCE-MANAGEMENT.md`](./PRD-008_ATTENDANCE-MANAGEMENT.md) v1.0 **DRAFT** |
+| **Report for** | [`PRD-008_ATTENDANCE-MANAGEMENT.md`](./PRD-008_ATTENDANCE-MANAGEMENT.md) v1.1 **DRAFT** |
 | **Bounded Context** | **`BC-03` Attendance** — determined from `LIBOORA_BOUNDED_CONTEXT_MAP.md` §3.1 L98, **not assumed** |
 | **Aggregate** | `AttendanceDay` — BC Map §8 L372 |
 | **Lifecycle stage** | `PRD_LIFECYCLE.md` **Stage 2 — Draft**. Not reviewed, **not frozen**, unranked |
 | **Report date** | 2026-08-04 |
 | **Baseline in force** | `BASELINE-2026-08-04-E` |
-| **Verdict** | **CONDITIONAL PASS** — internally complete and mechanically verified; **18 gap numbers / 21 questions OPEN**, so **no full architectural PASS is claimed** |
-| **Files created by this task** | Exactly **2** — the PRD and this report |
+| **Verdict** | **CONDITIONAL PASS — unchanged after the v1.1 gap re-audit.** Internally complete and mechanically re-verified. The re-audit **resolved 2 gaps and narrowed 1**, leaving **18 open**, and **upgraded 2 in severity**. A full architectural PASS is still **not** claimed, and the verdict deliberately did not improve — see §16 |
+| **Files created by this task** | Exactly **2** — the PRD and this report. The v1.1 re-audit **created none** and modified only these same two |
 | **Authoritative documents modified** | **ZERO** |
 
 ---
@@ -466,8 +466,145 @@ Stage 2 one.
 
 ---
 
+## 16. Re-audit of `PRD-008` v1.1 — gap resolution
+
+This section records the second pass. Its remit was narrow and explicit: **re-audit the PRD and this report,
+establish OCR/Vision and Face/Biometric boundaries *only where existing governance allows*, resolve the `ATT-GAP`
+register against authoritative sources without inventing anything, re-verify the numbering conflict without
+modifying `PRD_REGISTRY.md`, preserve the six V1 modes and the OCR-failure rule, and modify these two files
+only.** No ADR was created, nothing was frozen, and no API, schema, task or code artefact was produced.
+
+### 16.1 What the re-audit changed in the PRD
+
+| # | Change | Nature |
+|---|---|---|
+| 1 | **§5.2** — `ATT-GAP-002` marked **RESOLVED**, citing frozen `PRD-007`'s pattern of consuming `BC-18` with no `E-` edge | Resolution from a Rank 3 frozen source |
+| 2 | **§5.4** — the OCR direction ruling: BC Map §7.4 `F-1`/`F-3`/`F-4` refute the requested `BC-03` → `BC-27` edge | **Refutation** of the PRD's own earlier request |
+| 3 | **§5.4** — `ATT-XC-003` corrected to attribute `BC-26` to `ATT-GAP-003` and `BC-13` to `ATT-GAP-004` | Citation precision |
+| 4 | **§12.4a** — new: the biometric boundary audited across eight dimensions | 2 resolved, 6 unresolved, each with its source or its stated absence |
+| 5 | **§13E** — blocker table re-framed; the "missing `BC-27` edge" row corrected | Removes a **false prerequisite** |
+| 6 | **§32.1** — new: the gap resolution ledger, all 21 rows | The central deliverable |
+| 7 | **§32.2** — new: the numbering conflict re-verified against primary sources | `PRD_REGISTRY.md` untouched |
+
+**No requirement identifier was added, removed, renumbered or reworded.** All ten registers are byte-stable at
+506 identifiers.
+
+### 16.2 The single most consequential finding — a request refuted, not granted
+
+`PRD-008` v1.0 asked the architecture owner for a `BC-03` → `BC-27` edge so that OCR could be processed. **The
+re-audit found that edge would be architecturally backwards**, and that its absence from BC Map §7 is correct
+rather than a defect:
+
+| Rule | Source | Statement |
+|---|---|---|
+| `F-1` | BC Map §7.4 L341 | *"**No capability context may import, reference, or query a domain context.** Not AI, not Analytics, not Search, not Notification, not Workflow, not Audit."* |
+| `F-3` | BC Map §7.4 L343 | *"Where a capability must *cause* a domain change… it does so by **invoking the domain's public command API** through a registered port — with the domain re-validating every invariant. **The capability is an untrusted caller.**"* |
+| `F-4` | BC Map §7.4 L344 | *"AI-initiated domain writes additionally require a **Human-in-the-Loop approval record** (`BC-27`) and produce an `AI Action Log` entry (`BC-24`). **No exceptions in V1.**"* |
+| `MP-GBR-29`…`32` | `MASTER_PRD.md` **Rank 1** | Restates all four at the highest rank |
+
+Two consequences were recorded in the PRD:
+
+1. **`ATT-XC-005` is strengthened, not relaxed.** An ADR adding a `BC-03` → `BC-27` edge would now be *wrong*.
+2. **§13C's staff-verification step is `F-4`'s Human-in-the-Loop approval record.** `ATT-INV-009` and
+   `NEEDS_MANUAL_VERIFICATION` were written as a product safeguard; they turn out to satisfy a Rank 1 and Rank 4
+   architectural mandate. This is the reason the rule was preserved **verbatim** — it is now load-bearing.
+
+**This did not unblock the workflow, and the report does not pretend otherwise.** `ATT-FR-080` stands unchanged.
+A repository-wide search for `OCR`, `computer vision`, `document AI` and `image recognition` across `docs/**`
+returns **zero** capability nodes — including in EA v2.1's AI Platform tree — and `BC-27`'s charter (BC Map L136)
+lists *"prompts, agents, RAG retrieval, memory, guardrails, PII redaction, human-in-the-loop, model routing"*
+with **no vision function**. `ATT-GAP-011` is therefore **narrowed, not closed**: the edge question is answered,
+the ownership question is not.
+
+### 16.3 Biometric boundary — the eight dimensions
+
+| Dimension | Verdict | One-line basis |
+|---|---|---|
+| Ownership | ❌ OPEN | No context claims biometrics; Authentication PRD L968 **excludes** biometric login outright |
+| Processing | ⚠️ Direction only | `F-1`/`F-3` fix *how*; no capability exists to say *who* |
+| Enrollment | ❌ OPEN | No owner, no storage path; `ID-6`'s guardian-consent gate was not written for biometrics |
+| Liveness | ❌ OPEN | Only `liveness` hits repo-wide are infrastructure health probes (EA L1984) |
+| **Storage** | ✅ **RESOLVED — negatively** | `E-22` excludes `BC-03` (BC Map L331); L292 makes the edge non-existent. **`BC-03` cannot store a template at all** |
+| **Privacy / PII** | ✅ **RESOLVED — binding** | `MP-GBR-32` + `F-4` already constrain any future design. A handling constraint is **not** a licence to collect |
+| Retention / deletion | ❌ OPEN — **and worse than a void** | `ID-5`/`MP-GBR-04` promise erasure by **pseudonymisation**, structurally inapplicable to data that *is* the identifier |
+| Device boundary | ❌ OPEN | `BC-18` owns `Device` for *auth*; `BC-08` owns physical devices but is **V2**. No V1 context can own a V1 scanner |
+
+> **The retention row is the strongest result in the re-audit, and it makes the PRD more restrictive.**
+> `ATT-FR-064`'s outright build block was previously justified by the *absence* of a rule. It is now justified by
+> the *presence* of one it conflicts with. That is a worse position for the feature and a better one for the
+> document.
+
+### 16.4 Gap ledger summary
+
+| Status | Count | Gaps |
+|---|---|---|
+| ✅ **RESOLVED** | **2** | `ATT-GAP-002` (frozen `PRD-007` pattern) · storage sub-question of `ATT-GAP-012` (settled negatively) |
+| 🟡 **NARROWED** | **1** | `ATT-GAP-011` (direction refuted; ownership open) |
+| 🔺 **UPGRADED in severity** | **2** | `ATT-GAP-004` (no path in *either* direction) · `ATT-GAP-014` (a conflict, not a void) |
+| 🔴 **OPEN** | **18** | All others, each naming the owner who must decide |
+
+**The verdict did not improve, and that is the correct outcome.** Two gaps closed; two got worse. A re-audit that
+resolved most of its own open questions would almost certainly have re-labelled them rather than answered them.
+
+### 16.5 `ATT-GAP-001` — re-verified, escalated, and NOT resolved
+
+Re-checked against primary sources with **`PRD_REGISTRY.md` left byte-for-byte unmodified**:
+
+| Source | Line | Says |
+|---|---|---|
+| `PRD_REGISTRY.md` | 236 | `PRD-006` · Attendance Management · `BC-03` |
+| `PRD_REGISTRY.md` | 238 | `PRD-008` · **Revenue & Finance** · `BC-05` |
+| `PRD-007` **FROZEN** | 223 | *"`BC-03` Attendance (**`PRD-006`**, PLANNED)"* |
+| `PRD-007` **FROZEN** | 862 | *"…**`PRD-006`** is its PRD."* |
+
+Three authorities — one of them a **frozen Rank 3 document, twice** — call this `PRD-006`, and `PRD-008` is
+already allocated. §8 rule 5 (*"fix this register"*) does **not** rescue the instructed number: the disagreement
+is not registry-vs-PRD but registry **and a frozen PRD** vs a draft, and acting on it would require modifying the
+registry, which both rule 1 and the re-audit instruction forbid. **The document keeps the instructed filename and
+header while recording that the evidence points elsewhere, and `ATT-GAP-001` now explicitly blocks any Stage 7
+freeze.**
+
+### 16.6 Preservation — verified mechanically, not asserted
+
+| Guarantee | Check | Result |
+|---|---|---|
+| Six V1 modes, exactly | `ATTENDANCE_MODE_*` distinct constants | **6** ✅ |
+| RFID not a V1 mode | `ATTENDANCE_MODE_RFID` occurrences | **0** ✅ |
+| Manual §13A buildable | *"13A individual manual entry is **unaffected**"* present | ✅ |
+| OCR failure → staff verification | `ATT-INV-009` ×4, `NEEDS_MANUAL_VERIFICATION` ×10 | ✅ |
+| Face build block | `ATT-FR-064` present | ✅ |
+| OCR build block | `ATT-FR-080` present | ✅ |
+| No seventh mode / no generic verification layer | `ATT-XC-010`, `ATT-XC-011` | ✅ |
+| Four events, exactly | `attendance.*` distinct names | **4** ✅ |
+| All ten registers contiguous | range scan | **10/10** ✅ |
+| Obligation coverage | `ATT-AC` *Verifies* parse | **279/279 = 100.0%** ✅ |
+| External identifiers exist | 28 newly-cited tokens grepped outside this module | **28/28** ✅ |
+| `PRD-007` byte-identical | SHA-256 | `c8760a46…4b7c6` ✅ |
+| Protected paths untouched | `git diff` across all authoritative paths | **empty** ✅ |
+
+> **One scanner result that needs explaining rather than fixing.** A range scan across *both* files reports three
+> out-of-range tokens — `ATT-FR-149`, `ATT-BR-043` and `ATT-XC-023`. **All three are in this report, none is in
+> the PRD**, and all three sit in §3's reconciliation table (`R-1`, `R-2`), whose entire purpose is to record
+> *which identifiers were deleted or renumbered* in v1.0. Removing them would delete the evidence that the
+> reconciliation happened. **The PRD itself scans clean at zero dangling references**, which is the figure that
+> matters, and the two are reported separately here rather than blended into one flattering number.
+
+### 16.7 What is still FAILING, and what a freeze would still require
+
+The single product **FAIL** from v1.0 is **unchanged**: seven configurables (`ATT-CFG-005`, `006`, `011`, `012`,
+`014`, `019`, `023`) have no default, and `LIB-16.2` (Rank 3) requires that *"every setting **MUST** have a
+documented default."* The re-audit found no source supplying them, and **did not invent seven numbers to turn the
+FAIL green.**
+
+Before Stage 7 freeze, at minimum: `ATT-GAP-001` (numbering — a hard blocker), `ATT-GAP-017` (the `LIB-16.2`
+breach), and the Face cluster `ATT-GAP-012`/`013`/`014`/`015` must be decided by their named owners. **None of
+them is a product decision this document may make.**
+
+---
+
 ## 15. Change log
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-04 | **Re-audit of `PRD-008` v1.1. Verdict CONDITIONAL PASS — deliberately unchanged.** §16 added. Gap register re-tested against authoritative sources: **2 resolved, 1 narrowed, 18 open, 2 upgraded in severity.** `ATT-GAP-002` closed on frozen `PRD-007`'s ratified pattern of consuming `BC-18` without an `E-` edge. The PRD's own request for a `BC-03` → `BC-27` edge was **refuted** — BC Map §7.4 `F-1`/`F-3`/`F-4` and `MP-GBR-29`…`32` make that direction forbidden, so `ATT-XC-005` was strengthened and §13C's staff verification was identified as already being `F-4`'s mandatory Human-in-the-Loop approval record. Biometrics audited across eight dimensions: storage **resolved negatively** (`BC-03` has no `E-22` path, so it cannot hold a template at all) and PII constraints confirmed binding, while ownership, enrollment, liveness, retention and device boundary remain open. `ATT-GAP-004` and `ATT-GAP-014` were **upgraded in severity** — the first because `E-14` and BC Map §6 rule 2 leave fraud escalation with no authorised path in either direction, the second because `ID-5`'s pseudonymisation guarantee is structurally inapplicable to a biometric template, converting a void into a conflict and hardening `ATT-FR-064`. `ATT-GAP-001` re-verified against primary sources with **`PRD_REGISTRY.md` unmodified** and escalated to a freeze blocker. Preservation verified mechanically: 6 modes, 0 RFID, 4 events, 10/10 registers contiguous, 279/279 coverage, 28/28 new external identifiers confirmed, `PRD-007` byte-identical, protected-path diff empty. The seven-configurable `LIB-16.2` **FAIL is unchanged and was not papered over.** No authoritative document modified; no ADR, schema, API, task or code created; **`PRD-008` is NOT frozen.** |
 | **v1.0** | 2026-08-04 | Initial verification of `PRD-008` v1.0 DRAFT. **Verdict CONDITIONAL PASS.** Ten registers verified contiguous and collision-free (506 identifiers, 0 dangling references, 71 external identifiers all confirmed to exist); obligation coverage **measured at 100.0% (279/279)** after the audit found the draft's published 100% was false at **137/279 = 49.1%**, with 142 obligations unverified and the entire `ATT-PO` register at zero — corrected by **writing the 91 missing criteria (`ATT-AC-119`…`ATT-AC-209`)**, not by lowering the claim, on the `TR-2` precedent from `PRD-005`. Seven internal reconciliations applied, none requiring an external decision: ten out-of-range placeholder identifiers deleted, `ATT-XC-023` renumbered `ATT-XC-021` and added to the §29 register, the §0.3 total corrected from an arithmetically impossible 296 to 506, and the 18-numbers/21-rows gap convention declared up front. **Zero invented edges, events, roles or defaults.** Twenty-one gap rows recorded OPEN across 18 numbers, including `ATT-GAP-001` (the registry allocates `PRD-006` to Attendance and `PRD-008` to Revenue & Finance) and `ATT-GAP-012`/`014` (which block the Face mode entirely). One product FAIL disclosed: seven configurables lack the default `LIB-16.2` requires. `PRD-007` verified byte-identical; no authoritative document modified; no ADR, schema, API spec, migration, task list or code created. **`PRD-008` is NOT frozen.** |

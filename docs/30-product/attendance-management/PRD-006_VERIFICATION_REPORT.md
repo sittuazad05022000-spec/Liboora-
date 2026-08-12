@@ -1,8 +1,8 @@
-# PRD-008 — Attendance Management v1.1 — Verification Report
+# PRD-006 — Attendance Management v1.2 — Verification Report
 
 | Field | Value |
 |---|---|
-| **Report for** | [`PRD-008_ATTENDANCE-MANAGEMENT.md`](./PRD-008_ATTENDANCE-MANAGEMENT.md) v1.1 **DRAFT** |
+| **Report for** | [`PRD-006_ATTENDANCE-MANAGEMENT.md`](./PRD-006_ATTENDANCE-MANAGEMENT.md) v1.2 **DRAFT** |
 | **Bounded Context** | **`BC-03` Attendance** — determined from `LIBOORA_BOUNDED_CONTEXT_MAP.md` §3.1 L98, **not assumed** |
 | **Aggregate** | `AttendanceDay` — BC Map §8 L372 |
 | **Lifecycle stage** | `PRD_LIFECYCLE.md` **Stage 2 — Draft**. Not reviewed, **not frozen**, unranked |
@@ -16,7 +16,7 @@
 
 ## 1. Scope and honesty statement
 
-This report verifies the **internal integrity** of `PRD-008` and its **conformance to authorities that already
+This report verifies the **internal integrity** of `PRD-006` and its **conformance to authorities that already
 exist**. It does **not** certify that the module is architecturally complete, because it is not: two of the six V1
 modes depend on architecture no ranked document provides, and the PRD's own number is contested by the registry.
 
@@ -140,7 +140,7 @@ identifier extracted (including expansion of `…` ranges). The union was compar
 
 BC Map §7 L292: *"If an edge is not in this table, it does not exist and adding it requires an ADR."*
 
-| Edge | Direction | Authorised for `BC-03`? | Used by PRD-008 | Verdict |
+| Edge | Direction | Authorised for `BC-03`? | Used by PRD-006 | Verdict |
 |---|---|---|---|---|
 | `E-03` | `BC-02` → `BC-03` | Yes — BC Map §7.1 | Consumed, `ATT-PO-001` | **PASS** |
 | `E-04` | `BC-06` → `BC-03` | Yes — BC Map §7.1 | Consumed, `ATT-PO-002` | **PASS** |
@@ -152,7 +152,7 @@ BC Map §7 L292: *"If an edge is not in this table, it does not exist and adding
 | `E-23` | → `BC-22` | Yes — §7.3 universal | Published, `ATT-PO-010` | **PASS** |
 | `E-24` | `BC-03` → `BC-30` | Yes — BC Map §7.3 | Consumed, `ATT-PO-006` | **PASS** |
 
-**Edges asserted by PRD-008 that are not in BC Map §7: ZERO.**
+**Edges asserted by PRD-006 that are not in BC Map §7: ZERO.**
 
 Five further edge identifiers appear in the text (`E-01`, `E-10`, `E-11`, `E-21`, `E-22`). Each was inspected
 individually, and **none is asserted as a `BC-03` edge**:
@@ -166,7 +166,7 @@ individually, and **none is asserted as a `BC-03` edge**:
 
 ### 6.2 Events — exactly the BC Map §9 four
 
-| Event | BC Map §9 | In PRD-008 | Naming convention |
+| Event | BC Map §9 | In PRD-006 | Naming convention |
 |---|---|---|---|
 | `attendance.StudentCheckedIn` | Yes | `ATT-EVT-001` | `<Context>.<Aggregate><PastTenseVerb>` — **PASS** |
 | `attendance.StudentCheckedOut` | Yes | `ATT-EVT-002` | **PASS** |
@@ -196,7 +196,7 @@ BC Map `E-03`, `MP-GBR-16` and `MM-BR-007` all hold that **Seating blocks, Atten
 
 ### 6.5 PRD-007 boundary — the frozen neighbour
 
-| `PRD-007` rule | Requirement | PRD-008 response | Verdict |
+| `PRD-007` rule | Requirement | PRD-006 response | Verdict |
 |---|---|---|---|
 | `SEAT-BR-020` | Seating must not create/verify attendance | Attendance is sole owner (`ATT-FR-001`); no reciprocal claim on seating (`ATT-FR-138`/`139`) | **PASS** |
 | `SEAT-FR-109`/`110` | Consume `E-08` for occupancy | Published per `ATT-PO-008` | **PASS** |
@@ -272,7 +272,7 @@ requires *every* setting to have a documented default, so this is a **genuine no
 
 | Gap | Question | Owner | Blocks |
 |---|---|---|---|
-| **`ATT-GAP-001`** | **Is this PRD-008 or PRD-006?** Registry L236 allocates **`PRD-006`** to Attendance and **`PRD-008`** to Revenue & Finance; the frozen `PRD-007` cites `PRD-006` twice | Governance owner | Document identity |
+| **`ATT-GAP-001`** | ✅ **RESOLVED in v1.2 — this document is `PRD-006`.** *Was:* is this `PRD-008` or `PRD-006`? Registry L236 allocates **`PRD-006`** to Attendance and **`PRD-008`** to Revenue & Finance; the frozen `PRD-007` cites `PRD-006` twice. Closed by conforming the draft to the standing allocation — no registry edit, no renumbering, no ADR | *Was governance owner.* **Closed by conformance** | **Nothing** |
 | `ATT-GAP-002` | Where is the authenticated `BC-18` context composed for a `BC-03` operation? | Architecture owner | Nothing at product level |
 | `ATT-GAP-003` | `BC-26` named a consumer in BC Map §9, denied by §7 | Architecture owner | Analytics consumption |
 | `ATT-GAP-004` | `BC-13` named a consumer in BC Map §9, denied by §7 | Architecture owner | Fraud-signal consumption |
@@ -304,7 +304,7 @@ These are **defects in the source documents**, raised rather than chosen, per `D
 
 | Conflict | Higher authority | Lower authority | Action taken |
 |---|---|---|---|
-| **PRD number** | `PRD_REGISTRY.md` (governance): Attendance = **`PRD-006`** | The product instruction: **`PRD-008`** | **`ATT-GAP-001`.** Filed under the instructed name with the conflict flagged in the header field itself. Registry §8 rule 1 — *"Numbers are never reused or reassigned"* — means a PRD cannot settle this |
+| **PRD number** | `PRD_REGISTRY.md` (governance): Attendance = **`PRD-006`** | The product instruction: **`PRD-008`** | ✅ **RESOLVED in v1.2 — the higher authority prevailed.** The document was renamed to **`PRD-006`**; `PRD-008` remains reserved to Revenue & Finance. Registry §8 rule 1 — *"Numbers are never reused or reassigned"* — is **satisfied**: both standing allocations are honoured and neither was changed. `PRD_REGISTRY.md` and `PRD-007` are byte-for-byte unmodified. **This is the only one of the five conflicts below that is now closed** |
 | **Face version** | No Rank 1–5 document places Face in V1 | EA v2.1 (**Rank 6, descriptive**) says V3 | **`ATT-GAP-015`.** Rank 6 is *"never the reverse"*, so EA cannot overrule a product decision — but no Rank 1–5 document authorises V1 either. Specified as V1 per instruction; **blocked** by `ATT-GAP-012`/`014` regardless |
 | **`BC-26`/`BC-13` consumers** | BC Map §7 (edge table) — no edge | BC Map §9 (event table) — names them | **`ATT-GAP-003`/`004`.** The same Rank 4 document contradicts itself; instances of the systemic `MM-GAP-010`. §7 L292 applied: **no edge asserted** |
 | **Configurable defaults** | `LIB-16.2` — every setting needs a default | Seven have none | **`ATT-GAP-017`.** Non-conformance disclosed, not papered over |
@@ -392,7 +392,7 @@ These are **defects in the source documents**, raised rather than chosen, per `D
 | 16 | Architecture boundaries respected | **PASS** — §10 |
 | 17 | No invented edge | **PASS** — 0 |
 | 18 | Git status clean of unintended change | **PASS** — no protected path touched |
-| 19 | **PRD-008 NOT frozen** | **PASS** — Status `DRAFT`, Stage 2, Rank **Unranked**, **no ADR raised** |
+| 19 | **PRD-006 NOT frozen** | **PASS** — Status `DRAFT`, Stage 2, Rank **Unranked**, **no ADR raised**. Unchanged by the v1.2 renumbering, which conferred no status |
 
 ### 12.1 Protected documents — verified untouched
 
@@ -419,18 +419,22 @@ six modes, RFID excluded from V1 entirely, and the frozen `PRD-007` untouched to
 
 **What is not proven, and is not claimed:**
 
-1. **No full architectural PASS.** Eighteen gap numbers carrying 21 questions are OPEN. Four of them —
-   `ATT-GAP-010`, `ATT-GAP-011`, `ATT-GAP-012` and `ATT-GAP-014` — block real V1 scope: the register-image
+1. **No full architectural PASS.** Of eighteen gap numbers carrying 21 questions, **17 remain OPEN**. Four of them
+   — `ATT-GAP-010`, `ATT-GAP-011`, `ATT-GAP-012` and `ATT-GAP-014` — block real V1 scope: the register-image
    workflow and the Face mode cannot be built until an architecture owner answers.
-2. **The document's own number is contested** (`ATT-GAP-001`). `PRD_REGISTRY.md` allocates `PRD-006` to this
-   context and `PRD-008` to Revenue & Finance, and the **frozen** `PRD-007` refers to the Attendance PRD as
-   `PRD-006` twice. This must be settled by the governance owner before the number is relied upon elsewhere.
+2. ✅ **The document's own number is no longer contested** (`ATT-GAP-001`, **RESOLVED v1.2**). `PRD_REGISTRY.md`
+   allocates `PRD-006` to this context and `PRD-008` to Revenue & Finance, and the **frozen** `PRD-007` refers to
+   the Attendance PRD as `PRD-006` twice. **This document now carries `PRD-006`**, so all three agree. The
+   registry's own *derived* summary lines (501, 504, 505) are correspondingly stale and are identified for the
+   registry owner in PRD §32.2 — **not corrected here.**
 3. **`LIB-16.2` is not satisfied** — seven configurables have no documented default (`ATT-GAP-017`).
 4. **0 of 209 acceptance criteria are proven by a test.** The module is **specified**, not **verified**.
 
 **Stage 2 of `PRD_LIFECYCLE.md` is met.** Stage 3 Architecture Review is the next gate, and it cannot be entered
-until at least `ATT-GAP-001`, `ATT-GAP-003`/`004`, `ATT-GAP-010`, `ATT-GAP-011` and `ATT-GAP-015` have their
-owners' answers. **PRD-008 is NOT frozen, and no ADR has been raised.**
+until at least `ATT-GAP-003`/`004`, `ATT-GAP-010`, `ATT-GAP-011` and `ATT-GAP-015` have their owners' answers.
+**`ATT-GAP-001` is struck from that list — it is the only one the v1.2 reconciliation removed, and it was removed
+by conformance rather than by an answer.** **PRD-006 is NOT frozen, and no ADR has been raised**; renumbering
+confers no status and advanced no stage.
 
 ---
 
@@ -438,7 +442,7 @@ owners' answers. **PRD-008 is NOT frozen, and no ADR has been raised.**
 
 ```bash
 cd /home/user/flutter_app/docs/30-product/attendance-management
-F=PRD-008_ATTENDANCE-MANAGEMENT.md
+F=PRD-006_ATTENDANCE-MANAGEMENT.md
 
 # Register contents, per family
 grep -ohE '\bATT-(FR|BR|INV|EVT|XC|PO|CFG|NFR|AC|GAP)-[0-9]+[a-z]?\b' $F | sort -u
@@ -461,12 +465,12 @@ sha256sum ../seat-management/PRD-SEAT-MANAGEMENT.md
 Coverage and contiguity were computed by parsing the *Verifies* column of every §30 row and comparing the union
 against the §0.3 declaration. The analysis scripts were written to `/tmp` deliberately and **not** committed: the
 instruction forbids creating implementation tooling, and a `prd008_*` gate script would be exactly that. When
-`PRD-008` reaches Stage 5, a permanent gate belongs in `tool/docs_check/` — that is a Stage 5 deliverable, not a
+`PRD-006` reaches Stage 5, a permanent gate belongs in `tool/docs_check/` — that is a Stage 5 deliverable, not a
 Stage 2 one.
 
 ---
 
-## 16. Re-audit of `PRD-008` v1.1 — gap resolution
+## 16. Re-audit of `PRD-006` v1.1 — gap resolution
 
 This section records the second pass. Its remit was narrow and explicit: **re-audit the PRD and this report,
 establish OCR/Vision and Face/Biometric boundaries *only where existing governance allows*, resolve the `ATT-GAP`
@@ -491,7 +495,7 @@ only.** No ADR was created, nothing was frozen, and no API, schema, task or code
 
 ### 16.2 The single most consequential finding — a request refuted, not granted
 
-`PRD-008` v1.0 asked the architecture owner for a `BC-03` → `BC-27` edge so that OCR could be processed. **The
+The v1.0 draft asked the architecture owner for a `BC-03` → `BC-27` edge so that OCR could be processed. **The
 re-audit found that edge would be architecturally backwards**, and that its absence from BC Map §7 is correct
 rather than a defect:
 
@@ -546,7 +550,7 @@ the ownership question is not.
 **The verdict did not improve, and that is the correct outcome.** Two gaps closed; two got worse. A re-audit that
 resolved most of its own open questions would almost certainly have re-labelled them rather than answered them.
 
-### 16.5 `ATT-GAP-001` — re-verified, escalated, and NOT resolved
+### 16.5 `ATT-GAP-001` — re-verified in v1.1, RECONCILED in v1.2
 
 Re-checked against primary sources with **`PRD_REGISTRY.md` left byte-for-byte unmodified**:
 
@@ -559,10 +563,32 @@ Re-checked against primary sources with **`PRD_REGISTRY.md` left byte-for-byte u
 
 Three authorities — one of them a **frozen Rank 3 document, twice** — call this `PRD-006`, and `PRD-008` is
 already allocated. §8 rule 5 (*"fix this register"*) does **not** rescue the instructed number: the disagreement
-is not registry-vs-PRD but registry **and a frozen PRD** vs a draft, and acting on it would require modifying the
-registry, which both rule 1 and the re-audit instruction forbid. **The document keeps the instructed filename and
-header while recording that the evidence points elsewhere, and `ATT-GAP-001` now explicitly blocks any Stage 7
-freeze.**
+was not registry-vs-PRD but registry **and a frozen PRD** vs a draft, and acting on it would require modifying a
+**correct** register to match an **incorrect** draft.
+
+> ✅ **Resolved in v1.2 by moving the draft, not the register.** Both filenames were renamed via `git mv`
+> (history preserved), and the header, `ATT-GAP-001`, the §32.1 ledger row, §32.2 and the end-of-file line were
+> aligned to `PRD-006`. **`PRD_REGISTRY.md` is byte-for-byte unmodified** (`f8e71ce8…`), **`PRD-007` is
+> byte-for-byte unmodified** (`c8760a46…`), **no number was reassigned**, and **no ADR was raised**.
+
+**Why no ADR was required — tested, not assumed:**
+
+| Rule | Source | Applies? |
+|---|---|---|
+| *"A change to any **Rank 1–5** document requires an ADR before the change"* | `DOCUMENTATION_BASELINE.md` §7 step 1, L286 | **No** — this document's header declares it *"**Unranked** … claims no authority"*, and `PRD_REGISTRY.md` is absent from the rank ladder (L203–215) |
+| *"A decision that changes **structure, ownership, a boundary, or a platform-wide rule** requires an ADR"* | `ADR-INDEX.md` Process step 1, L87 | **No** — `BC-03` ownership, nine edges, four events, the aggregate and all 506 identifiers are untouched |
+| *"Numbers are **never reused or reassigned**"* | `PRD_REGISTRY.md` §8 rule 1, L554 | **Satisfied, not excepted** — `PRD-006` was always Attendance's, `PRD-008` stays Revenue & Finance's |
+| *"Adding a bounded context to a PRD's ownership is an architecture change requiring an ADR"* | `PRD_REGISTRY.md` §8 rule 6, L560 | **No** — no context added |
+| *"A frozen PRD is never silently modified"* | `PRD_LIFECYCLE.md` Stage 7, L175 | **Respected** — no frozen document was touched |
+
+**An ADR records a decision between options. There was no decision to make:** the registry had already allocated
+`PRD-006` to `BC-03` at line 236, and a Stage 2 draft has no standing to hold a different number. Manufacturing an
+ADR for a conformance action would have invented governance, which is the failure mode this repository's own
+`ADR-0017` history cautions against in the opposite direction.
+
+**`ATT-GAP-001` no longer blocks Stage 7.** Nothing else about the freeze position changed — Stages 3, 4, 5, 6 and
+7 all remain unpassed, and Stage 5 remains provably unpassed with **zero** `ATT-` prefixes in
+`TRACEABILITY_MATRIX.md`.
 
 ### 16.6 Preservation — verified mechanically, not asserted
 

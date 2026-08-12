@@ -11,6 +11,7 @@
 | **Status of this file** | **Unranked.** A review record. It claims no authority. Where this file disagrees with the PRD, the PRD is right and this file is a defect |
 | **Mandate** | **Stage 4 only.** Read-only. No document was modified. No ADR was created. PRD-006 is **not frozen** by this review |
 | **Verdict** | ⚠️ **CONDITIONALLY PASSED** — 5 of 6 gate checks PASS · 1 FAILS and is carried as an explicit deferral with a named reason and a named owner · 8 findings · Stage 4 **gate satisfied** |
+| **Disposition of findings** | Acted on after this review by [`PRD-006_STAGE4_FINDINGS_CORRECTION.md`](./PRD-006_STAGE4_FINDINGS_CORRECTION.md), which took the PRD to **v1.3 — DRAFT**: `RQ-2`, `RQ-3`, `RQ-4`, `RQ-5`, `RQ-6`, `RQ-7`, `RQ-8` **RESOLVED** · `RQ-1` **MITIGATED, not resolved** — five obligations added specifying the behaviour *in the absence of a value*, but **no default was invented**, `ATT-GAP-017` remains **OPEN** with the product owner, and Stage 4 check 3 still fails 17/24. Re-verification after the corrections: registers **ALL PASS** at 516 identifiers, coverage **285/285 = 100%**, **0 orphan criteria**, five of six checks pass, **gate still satisfied**, verdict **⚠️ CONDITIONALLY PASSED — unchanged**. **This review's verdict and findings below are left exactly as issued;** the correction record is a separate artefact and does not re-verdict this one. A Stage 4 **re-review** remains for an independent reviewer |
 
 ---
 

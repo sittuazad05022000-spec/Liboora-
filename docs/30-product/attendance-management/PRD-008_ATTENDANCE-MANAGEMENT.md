@@ -57,14 +57,24 @@ contiguous; a gap would make the published range false.
 | **`ATT-BR-*`** | `ATT-BR-001` … `ATT-BR-042` | **42** | Business rules — decisions the domain enforces |
 | **`ATT-INV-*`** | `ATT-INV-001` … `ATT-INV-012` | **12** | Invariants — must hold at every observable moment |
 | **`ATT-EVT-*`** | `ATT-EVT-001` … `ATT-EVT-004` | **4** | Events this module publishes |
-| **`ATT-XC-*`** | `ATT-XC-001` … `ATT-XC-020` | **20** | Exclusions — what this module must never do |
+| **`ATT-XC-*`** | `ATT-XC-001` … `ATT-XC-021` | **21** | Exclusions — what this module must never do |
 | **`ATT-PO-*`** | `ATT-PO-001` … `ATT-PO-014` | **14** | Ports — what it consumes, and from whom |
 | **`ATT-CFG-*`** | `ATT-CFG-001` … `ATT-CFG-024` | **24** | Configurable values |
 | **`ATT-NFR-*`** | `ATT-NFR-001` … `ATT-NFR-014` | **14** | Non-functional requirements |
-| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-118` | **118** | Acceptance criteria |
-| **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018` | **18** | **Open questions. NOT requirements** |
+| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-209` | **209** | Acceptance criteria |
+| **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018`, plus the suffixed successors `ATT-GAP-008a`, `ATT-GAP-016a`, `ATT-GAP-017a` | **18 numbers / 21 rows** | **Open questions. NOT requirements** |
 
-**Total: 296 identifiers**, of which **278 are obligation-bearing** (everything except the 18 gaps).
+**Total: 506 identifiers** — **279 obligation-bearing** (`ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC`,
+`ATT-PO`, `ATT-CFG`, `ATT-NFR`), **209 acceptance criteria**, and **18 gap numbers carrying 21 rows**. Acceptance
+criteria are counted separately from obligations because a criterion *verifies* an obligation rather than
+imposing one; §31 measures obligations against criteria and would be circular if criteria were counted as
+obligations.
+
+**On the three suffixed gap numbers.** `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are declared here rather
+than discovered later. A suffixed successor records a question that emerged *from* its parent question and would
+be misleading under a fresh number, and it follows the precedent already carried in this repository by
+`MM-GAP-006a`, `MM-GAP-007a` and `MM-GAP-010a` in the frozen `PRD-005`. The numeric range `001…018` remains
+contiguous; the suffixes are additions to declared numbers, never a break in the sequence.
 
 **Collision procedure, executed before writing.** `PRD_LIFECYCLE.md` Stage 2 rule 2 requires the prefix to be
 chosen against the collision procedure *before* writing. A search of `docs/**` for `ATT-[A-Z]+-[0-9]+` and for any
@@ -960,9 +970,6 @@ on server local time.
 
 ### 14.7 No second presence system
 
-`ATT-XC-021` *(register note: this identifier is out of the declared `ATT-XC` range and is **not** used — see the
-range in §0.3; the rule below carries the in-range identifier)*
-
 `ATT-BR-033` — This module **MUST NOT** create a second presence, occupancy or "currently inside" system of
 record beyond the `AttendanceDay` aggregate. Live seat occupancy is `BC-04`'s (§23).
 
@@ -1022,8 +1029,6 @@ concurrently **MUST NOT** contend with each other.
 
 `ATT-FR-097` — All attendance configuration **MUST** be stored through **`BC-25` Configuration** (`E-19`) and
 **MUST** be resolvable per tenant (`LIB-16.1`).
-
-`ATT-XC-022` *(out of range — not used; see `ATT-XC-023` below for the in-range rule)*
 
 `ATT-FR-098` — This module **MUST NOT** implement a configuration store, a settings hierarchy or a feature-flag
 system. `ADR-0017` assigns `BC-25` to `PRD-023`.
@@ -1117,7 +1122,7 @@ from temporarily disabling everything during a closure. Recorded as **`ATT-GAP-0
 `ATT-FR-107` — This module **MUST** own the **meaning of an attendance scan**: what a scan asserts, whether it is
 valid, and what record it produces.
 
-`ATT-XC-023` — This module **MUST NOT** create a Device Management bounded context, own generic device lifecycle,
+`ATT-XC-021` — This module **MUST NOT** create a Device Management bounded context, own generic device lifecycle,
 or specify device provisioning, pairing, firmware, health monitoring or inventory.
 
 `ATT-BR-039` — `BC-18`'s `Device` entity is an **authentication device** (a session-bearing client). It is **not**
@@ -1344,8 +1349,6 @@ systemic `MM-GAP-010`.
 inside" as an authoritative seating fact. §24 exposes attendance-derived operational facts only, which are not
 seat occupancy.
 
-`ATT-XC-024` *(out of declared range — not used; the rule is carried by `ATT-FR-140` above)*
-
 ### 23.2 Reciprocity with the frozen document
 
 `PRD-007` `SEAT-FR-109`/`110` consume `attendance.StudentCheckedIn`/`CheckedOut` to set a physically-occupied flag;
@@ -1371,8 +1374,6 @@ QR flows **MUST NOT** be merged.
 
 ### 23.4 No second attendance system
 
-`ATT-BR-043` *(out of declared `ATT-BR` range — not used; carried by `ATT-FR-138`…`ATT-FR-140` above)*
-
 ---
 
 ## 24. Operational Data
@@ -1381,8 +1382,6 @@ QR flows **MUST NOT** be merged.
 permits: students currently inside · check-ins today · check-outs today · attendance by mode · failed attempts ·
 manual entries · OCR entries requiring verification · active modes.
 
-`ATT-XC-025` *(out of declared range — not used; the rule is `ATT-FR-146` below)*
-
 `ATT-FR-146` — This module **MUST NOT** own analytics. It **MUST NOT** define a metric, compute a certified
 figure, build a read model, produce a report, or become the source for any attendance percentage, streak or
 dashboard. `BC-26` Analytics Read Model owns the metric/semantic layer.
@@ -1390,8 +1389,6 @@ dashboard. `BC-26` Analytics Read Model owns the metric/semantic layer.
 `ATT-FR-147` — Operational facts exposed under `ATT-FR-145` **MUST** be described as operational reads of the
 attendance aggregate, **MUST NOT** be presented as certified metrics, and **MUST NOT** be used to contradict
 `BC-26`.
-
-`ATT-BR-044` *(out of declared range — not used)*
 
 > **"Students currently inside" is deliberately ambiguous between two owners**, and the ambiguity is resolved by
 > naming: this module can report *how many open presences exist*, which is an attendance fact. `BC-04` owns
@@ -1421,8 +1418,6 @@ The following outcomes **MUST** be distinguishable to the actor who caused them,
 | Duplicate attendance | All | `ATT-FR-081` row 2 |
 | Invalid check-out sequence | All | `ATT-FR-081` row 4 |
 | Mode disabled | All | `ATT-FR-104` |
-
-`ATT-BR-045` *(out of declared range — not used)*
 
 ---
 
@@ -1498,10 +1493,6 @@ modes; the students served by Manual are those least served by devices.
 conflict-resolution policy; Sync executes it."* Master PRD `MP-ASM-03` records the assumption that *"libraries
 operate with intermittent connectivity; offline attendance capture is required."* EA lists *Offline Attendance
 Capture (V1)*.
-
-`ATT-FR-149` *(out of declared range — not used; the offline rules below carry in-range identifiers)*
-
-`ATT-BR-046` *(out of declared range — not used)*
 
 `ATT-PO-011` — This module **MUST** define the conflict-resolution policy for attendance mutations replayed by
 `BC-30`, and **MUST NOT** implement the queue, the replay or the conflict detection itself.
@@ -1593,22 +1584,27 @@ Each exclusion states what is **impossible**, not merely discouraged.
 | `ATT-XC-018` | …make Face an authentication method or framework | `BC-18`, `AUTH-1.1` |
 | `ATT-XC-019` | …specify a liveness algorithm or anti-spoofing technique | `ATT-GAP-013` |
 | `ATT-XC-020` | …specify biometric storage, retention or deletion design | `ATT-GAP-012`/`014` |
+| `ATT-XC-021` | …create a Device Management bounded context or own device lifecycle | §17, `ATT-GAP-009` |
 
-Three further exclusions are stated as requirements because the `ATT-XC` range is closed at 020: `ATT-FR-098`
-(no configuration system), `ATT-FR-130` (no audit store), `ATT-FR-146` (no analytics ownership), `ATT-XC-023`
-(no Device Management BC — in range, stated at §17).
-
-> **On the four bracketed "out of range" notes** in §14.7, §16.1, §23.1, §23.4, §24, §25 and §27.1: those numbers
-> were reserved during drafting and are **deliberately unused**, with the governing rule carried by an in-range
-> identifier named at each site. §0.3's published ranges are the authority. The notes are left visible rather than
-> deleted so no reader concludes an identifier was silently dropped.
+**This table is the complete `ATT-XC` register — all 21 of them.** Three further prohibitions are carried as
+`MUST NOT` functional requirements rather than exclusions, because each is a boundary against a *named owner*
+rather than a general prohibition: `ATT-FR-098` (no configuration system — `BC-25` is `PRD-023`'s under
+`ADR-0017`), `ATT-FR-130` (no audit store — `BC-24` owns it) and `ATT-FR-146` (no analytics ownership — `BC-26`
+owns the metric layer). They are listed here so a reader searching only the exclusion register does not conclude
+the prohibition is absent.
 
 ---
 
 ## 30. Acceptance Criteria
 
-118 criteria. Every `ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC` and `ATT-PO` in force is covered by at
-least one. No criterion tests a `GAP`.
+**209 criteria.** Every one of the 279 obligations in force — across `ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`,
+`ATT-XC`, `ATT-PO`, `ATT-CFG` and `ATT-NFR` — is covered by at least one, verified mechanically rather than
+asserted (§31.1). **No criterion tests a `GAP`**, because a gap is a question and a question cannot pass.
+
+§30.1–§30.12 cover the user-facing flows. **§30.13–§30.19 cover the structural obligations** — ownership, mode
+independence, invariants, corrections, ports, exclusions, configurables and non-functional rules. Those were the
+obligations a first draft of this section left unverified, and several of them are the ones most likely to be
+broken silently: a boundary crossed, an edge invented, a claim overstated. They are criteria now, not prose.
 
 ### 30.1 Student App — Fixed QR (mode 1)
 
@@ -1788,6 +1784,132 @@ least one. No criterion tests a `GAP`.
 | `ATT-AC-117` | Exactly four `attendance.*` events are published, with the BC Map §9 names, and no other | `ATT-FR-134`, `ATT-EVT-001`…`004` |
 | `ATT-AC-118` | **No `SeatAllocation` or `SeatLayout` is ever created, modified, deleted or read by this module; the only `BC-04` contact is the `E-08` event, and no attendance QR assigns a seat** | `ATT-FR-138`, `ATT-FR-139`, `ATT-FR-144` |
 
+### 30.13 Ownership, roles and scope (§3)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-119` | Every attendance fact in the system is reachable through an `AttendanceDay` owned by this module; no attendance fact exists outside it | `ATT-FR-001` |
+| `ATT-AC-120` | **No aggregate belonging to another bounded context is created, mutated or deleted by any attendance path, in any mode, by any actor** | `ATT-FR-002`, `ATT-INV-001` |
+| `ATT-AC-121` | Only the five Master PRD §6 roles appear in any attendance surface, permission or fixture; a sixth role name appears nowhere | `ATT-FR-003` |
+| `ATT-AC-122` | Every attendance permission resolves to a scope drawn from the closed register `self` / `guardianOf` / `tenantWide`, and an out-of-register scope is rejected | `ATT-FR-005`, `ATT-BR-001` |
+| `ATT-AC-123` | An actor holding a permission but failing its scope on a given record is denied, proving permission and scope are evaluated separately | `ATT-BR-001` |
+| `ATT-AC-124` | Stored `VerificationEvidence` describes what was verified and contains no identity attribute beyond the `StudentRecordId` reference | `ATT-BR-002` |
+
+### 30.14 Mode set and mode independence (§7)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-125` | Exactly six attendance modes exist; a seventh cannot be configured, recorded or referenced | `ATT-FR-007` |
+| `ATT-AC-126` | Each of the six modes can be enabled or disabled per tenant with no effect on the other five | `ATT-FR-009` |
+| `ATT-AC-209` | **A tenant with every mode disabled is accepted by configuration validation; no "at least one mode must be enabled" rule is enforced while `ATT-GAP-018` is open** | `ATT-FR-106` |
+| `ATT-AC-127` | **With several modes enabled, a student completing any one enabled mode obtains attendance without performing a second method** | `ATT-BR-004`, `ATT-BR-005` |
+| `ATT-AC-128` | Modes 3 and 4 are recorded as one `AttendanceMethod` each, not as a QR punch plus a separate Wi-Fi or GPS punch | `ATT-BR-006` |
+| `ATT-AC-129` | A single operation mutates exactly one `AttendanceDay`; no path mutates two aggregates in one transaction | `ATT-BR-003` |
+
+### 30.15 Mode-level rules not covered above (§8–§13)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-130` | A fixed QR is bound to exactly one tenant and is rejected when presented in another | `ATT-FR-012` |
+| `ATT-AC-131` | A fixed QR carries no credential and cannot authenticate a session | `ATT-BR-009` |
+| `ATT-AC-132` | A dynamic code outside its validity window is rejected as expired | `ATT-FR-024` |
+| `ATT-AC-133` | Approved networks are configurable per tenant and owned by the Owner role through `BC-25` | `ATT-FR-032`, `ATT-FR-033` |
+| `ATT-AC-134` | Wi-Fi evidence is recorded as environment verification and is never used to identify the student | `ATT-BR-016` |
+| `ATT-AC-135` | Library coordinates and acceptance radius are configurable per tenant, with the radius bounded | `ATT-FR-041`, `ATT-FR-042` |
+| `ATT-AC-136` | GPS evidence is recorded as environment verification and is never used to identify the student | `ATT-BR-018` |
+| `ATT-AC-137` | **No Owner-facing surface, document string or help text describes mode 3 as spoofing-resistant or mode 4 as location-spoofing-resistant while `ATT-GAP-007` / `ATT-GAP-008a` are open** | `ATT-FR-039`, `ATT-FR-050` |
+| `ATT-AC-138` | A face match resolves to exactly one enrolled `StudentRecordId` within the tenant, and an ambiguous match produces no attendance | `ATT-FR-054` |
+| `ATT-AC-139` | Face verification supports check-out wherever the tenant has check-out enabled | `ATT-FR-061` |
+| `ATT-AC-140` | A second manual workflow for high-volume register capture exists and is distinct from individual entry | `ATT-FR-070` |
+| `ATT-AC-141` | The OCR high-confidence threshold is configurable and governs which entries are presented as high-confidence | `ATT-FR-077` |
+| `ATT-AC-142` | The register-image workflow is recorded as Manual mode, never as a seventh mode, and never as authentication | `ATT-BR-026` |
+| `ATT-AC-143` | No attendance-specific audit store and no attendance-specific file store exists in the module, and no audit record has an update or delete path | `ATT-FR-079`, `ATT-FR-130` |
+
+### 30.16 Invariants, timing and concurrency (§6, §14, §15)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-144` | Concurrent scans by the same student produce exactly one state transition | `ATT-FR-020`, `ATT-INV-010` |
+| `ATT-AC-145` | Idempotency is enforced inside the aggregate boundary; a check-then-write implementation fails this criterion under concurrent load | `ATT-BR-034` |
+| `ATT-AC-146` | A transport-level replay is absorbed by idempotency and creates no second record | `ATT-FR-095` |
+| `ATT-AC-147` | Every `AttendanceDay` carries exactly one `tenantId` and every punch within it belongs to that tenant | `ATT-INV-006` |
+| `ATT-AC-148` | Every punch records exactly one `AttendanceMethod` drawn from the six V1 modes | `ATT-INV-007` |
+| `ATT-AC-149` | **No stored attendance fact can be destructively updated or deleted; the append-only correction record is the only mutation path** | `ATT-INV-008` |
+| `ATT-AC-150` | Every timestamp is timezone-explicit and resolved against the tenant's configured zone, never server local time | `ATT-BR-032`, `ATT-NFR-011` |
+| `ATT-AC-151` | Throughput is achieved without relaxing an invariant, batching across aggregates or deferring duplicate detection | `ATT-BR-036` |
+| `ATT-AC-152` | No second presence or "currently inside" system of record exists beyond the `AttendanceDay` aggregate | `ATT-BR-033`, `ATT-FR-140` |
+
+### 30.17 Corrections, audit and authorization (§18–§20)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-153` | Authorised staff can correct a record, and the correction emits `attendance.AttendanceCorrected` | `ATT-FR-110`, `ATT-FR-111` |
+| `ATT-AC-154` | A correction never changes the recorded `AttendanceMethod` of the original punch | `ATT-FR-112` |
+| `ATT-AC-155` | A correction is subject to the same authorisation and tenant rules as creation | `ATT-FR-113` |
+| `ATT-AC-156` | A missed check-out can be corrected, and the record shows both the original missed state and the correction | `ATT-FR-114` |
+| `ATT-AC-157` | A correction outside a configured correction window is rejected with a specific reason | `ATT-FR-115`, `ATT-CFG-023` |
+| `ATT-AC-158` | The full correction history is retrievable by an authorised actor, is append-only, and carries actor and reason on every entry | `ATT-FR-116`, `ATT-INV-005`, `ATT-INV-011`, `ATT-BR-040` |
+| `ATT-AC-159` | Every attendance operation is authorised by `BC-18`; no authorisation decision is evaluated, granted, cached or inferred locally | `ATT-FR-117` |
+| `ATT-AC-160` | No new RBAC system, role, permission model or scope is defined by this module | `ATT-FR-118` |
+| `ATT-AC-161` | An account holding no role in the active tenant is treated exactly as an account with no access | `ATT-FR-120` |
+| `ATT-AC-162` | A detected fraud signal is recordable and emits `attendance.FraudSignalDetected` | `ATT-FR-122` |
+| `ATT-AC-163` | **No attendance record, evidence object, event payload, audit fact or log line contains a password, OTP, session token, credential or key** | `ATT-FR-123`, `ATT-FR-133` |
+| `ATT-AC-164` | `StudentRecordId` never appears in any artefact crossing a tenant boundary | `ATT-FR-125` |
+| `ATT-AC-165` | A suspended tenant rejects attendance writes | `ATT-FR-128` |
+| `ATT-AC-166` | Audit facts reach `BC-24` via `E-20` as fire-and-forget outbox-backed events, with no synchronous audit call on any attendance path | `ATT-FR-129`, `ATT-PO-009` |
+| `ATT-AC-167` | Each occurrence listed in `ATT-FR-131` produces an audit fact carrying the acting actor and the tenant of record | `ATT-FR-131`, `ATT-FR-132` |
+
+### 30.18 Ports, events and downstream boundary (§5, §22, §23, §24, §27)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-168` | Membership validity is consumed as a read projection through `E-03` and is never written by this module | `ATT-PO-001` |
+| `ATT-AC-169` | Attendance rules are consumed from `BC-06` through `E-04` and are conformed to without local translation or reinterpretation | `ATT-PO-002` |
+| `ATT-AC-170` | An entitlement check runs through `E-17` **before** the aggregate mutates | `ATT-PO-003` |
+| `ATT-AC-171` | Tenant context arrives ambiently through `E-18` and appears as no domain method parameter | `ATT-PO-004` |
+| `ATT-AC-172` | Configuration is read through `E-19` typed accessors, with no raw string lookup and no local configuration store | `ATT-PO-005`, `ATT-FR-097`, `ATT-FR-098` |
+| `ATT-AC-173` | The authenticated actor arrives from a `BC-18` session established before the operation; this module performs no authentication | `ATT-PO-007` |
+| `ATT-AC-174` | Notification-relevant occurrences leave as facts through `E-23`; no channel, template, quiet-hour rule or dispatch exists here | `ATT-PO-010`, `ATT-FR-148` |
+| `ATT-AC-175` | Check-in and check-out events reach `BC-04` through `E-08` carrying a stable event identifier, and Seating remains the occupancy owner | `ATT-PO-008`, `ATT-FR-141` |
+| `ATT-AC-176` | A redelivered event represents no new fact, and attendance completes without `BC-04` having processed anything | `ATT-FR-136`, `ATT-FR-142` |
+| `ATT-AC-177` | **No check-out event is emitted for a check-out that did not occur** | `ATT-FR-143` |
+| `ATT-AC-178` | Event names follow `<Context>.<Aggregate><PastTenseVerb>`; no imperative name enters the bus | `ATT-FR-135` |
+| `ATT-AC-179` | The four events are published as facts to the backbone with no direct edge to `BC-26` or `BC-13`, and no attendance path depends on either consuming them | `ATT-FR-137` |
+| `ATT-AC-180` | Operational facts are exposed as reads of the attendance aggregate, are never labelled certified metrics, and no report, metric definition or read model is built here | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147` |
+| `ATT-AC-181` | The conflict-resolution policy for replayed mutations is defined here and executed by `BC-30`; no queue, replay loop or conflict detector exists in this module | `ATT-PO-006`, `ATT-PO-011` |
+| `ATT-AC-182` | A replayed punch is absorbed by idempotency rather than applied twice, and preserves every §6.2 invariant | `ATT-PO-012` |
+| `ATT-AC-183` | A replayed punch never overwrites a correction made while the device was offline | `ATT-PO-013` |
+| `ATT-AC-184` | **No surface, document string or configuration promises offline Dynamic QR while `ATT-GAP-016a` is open** | `ATT-PO-014`, `ATT-NFR-012` |
+
+### 30.19 Exclusions, configurables and non-functional obligations (§16, §17, §28, §29)
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `ATT-AC-185` | **No staff attendance is recorded, stored, corrected or represented, including in the data model** | `ATT-XC-001` |
+| `ATT-AC-186` | The module ships inside the monolith as a module, not as a separate service, process or deployable | `ATT-XC-002` |
+| `ATT-AC-187` | **No integration edge to `BC-26`, `BC-13`, `BC-29`, `BC-27`, `BC-23`, `BC-31` or `BC-11`…`BC-17` exists in code, configuration or dependency graph** | `ATT-XC-003`, `ATT-XC-004`, `ATT-XC-005`, `ATT-XC-006` |
+| `ATT-AC-188` | No attendance path reads from or writes to another bounded context's database, table or store | `ATT-XC-007` |
+| `ATT-AC-189` | No distributed transaction, two-phase commit or cross-aggregate lock is used, and none is required | `ATT-XC-009`, `ATT-NFR-013` |
+| `ATT-AC-190` | **No generic verification layer, pipeline or chain exists, and no attendance requires a sequence of modes** | `ATT-XC-011` |
+| `ATT-AC-191` | The document specifies no dynamic-QR cryptography, no network-identification or spoof-detection mechanism, no mock-location detection, no liveness algorithm and no biometric storage design | `ATT-XC-013`, `ATT-XC-015`, `ATT-XC-017`, `ATT-XC-019`, `ATT-XC-020` |
+| `ATT-AC-192` | No Device Management bounded context, device lifecycle, provisioning, pairing, firmware or inventory capability is created | `ATT-XC-021`, `ATT-FR-107`, `ATT-FR-108`, `ATT-FR-109` |
+| `ATT-AC-193` | `BC-18`'s `Device` is never used as an attendance scanner, and no attendance-hardware record is stored in `BC-18`'s model | `ATT-BR-039` |
+| `ATT-AC-194` | **No surface claims QR = authentication, GPS = identity, Wi-Fi = identity, OCR = authentication, or OCR = definitive identity without verification** | `ATT-BR-041` |
+| `ATT-AC-195` | Where a protection is bounded, the bound is stated rather than the protection overstated | `ATT-BR-042` |
+| `ATT-AC-196` | "Attendance Method" set in the Library module changes behaviour owned here, and the Library module implements none of that behaviour | `ATT-BR-037` |
+| `ATT-AC-197` | Each of the six mode-enable configurables independently controls exactly its own mode | `ATT-CFG-001`, `ATT-CFG-002`, `ATT-CFG-003`, `ATT-CFG-004`, `ATT-CFG-016` |
+| `ATT-AC-198` | Every configurable in §16.3 whose default is resolved is validated before persistence, rejects an out-of-domain value, and takes effect only at its stated effective point | `ATT-CFG-007`, `ATT-CFG-009`, `ATT-CFG-010`, `ATT-CFG-013`, `ATT-CFG-015`, `ATT-CFG-018`, `ATT-CFG-021`, `ATT-CFG-022`, `ATT-CFG-024` |
+| `ATT-AC-199` | **Each of the seven configurables whose default is unresolved is blocked from use until `ATT-GAP-017` is answered, and no default is invented for it** | `ATT-CFG-006`, `ATT-CFG-014`, `ATT-CFG-019`, `ATT-CFG-023` |
+| `ATT-AC-200` | Every configuration change is audited with the acting actor and is tenant-resolvable | `ATT-CFG-001`…`ATT-CFG-024` |
+| `ATT-AC-201` | **This document states no latency figure, throughput number or percentile target** | `ATT-NFR-003` |
+| `ATT-AC-202` | Every attendance decision is reproducible from recorded evidence, the rules in force at the time, and the correction history | `ATT-NFR-004` |
+| `ATT-AC-203` | Every rejection carries a specific, distinguishable reason; a generic failure fails this criterion | `ATT-NFR-005` |
+| `ATT-AC-204` | Tenant isolation meets the `X-13` standard and is verified by the Multi-Tenant Test Suite | `ATT-NFR-006` |
+| `ATT-AC-205` | No attendance operation depends on a synchronous call to `BC-22`, `BC-24` or `BC-26`, and the module remains functional when `BC-04` is unavailable | `ATT-NFR-007`, `ATT-NFR-008` |
+| `ATT-AC-206` | **Stale or unavailable membership validity produces a flagged attendance record, never a blocked one** | `ATT-NFR-009` |
+| `ATT-AC-207` | Every obligation in this document has at least one acceptance criterion, and any obligation without one is reported as unmet rather than assumed satisfied | `ATT-NFR-010` |
+| `ATT-AC-208` | Manual-mode surfaces meet the same accessibility standard as the app modes, measured rather than asserted | `ATT-NFR-014` |
+
 ---
 
 ## 31. Traceability
@@ -1800,15 +1922,23 @@ least one. No criterion tests a `GAP`.
 | `ATT-BR-*` | 42 | 42 | **100%** |
 | `ATT-INV-*` | 12 | 12 | **100%** |
 | `ATT-EVT-*` | 4 | 4 | **100%** |
-| `ATT-XC-*` | 20 | 20 | **100%** |
+| `ATT-XC-*` | 21 | 21 | **100%** |
 | `ATT-PO-*` | 14 | 14 | **100%** |
 | `ATT-CFG-*` | 24 | 24 | **100%** |
 | `ATT-NFR-*` | 14 | 14 | **100%** |
-| **Obligation-bearing total** | **278** | **278** | **100%** |
+| **Obligation-bearing total** | **279** | **279** | **100%** |
 | `ATT-GAP-*` | 18 | **0 — by design** | Gaps are questions, never criteria |
 
-**No orphan requirement** (every obligation has a criterion) and **no orphan criterion** (every criterion names at
-least one requirement). This is asserted here and verified mechanically in the companion verification report.
+**No orphan requirement** (every obligation has a criterion) and **no orphan criterion** (all 209 criteria name at
+least one requirement). These figures are **measured**, not asserted: the companion verification report records
+the extraction method, the per-register counts and the reproducible command.
+
+> **This table previously read 100% while the measured value was 49.1%** — 137 of 279 obligations, with 142 having
+> no criterion at all. The claim was written before the criteria existed and was false. It was found by the
+> mechanical pass this document's own `ATT-NFR-010` requires (*"a rule that cannot be checked **MUST** be treated
+> as unmet"*), and it was fixed by **writing the 91 missing criteria (`ATT-AC-119`…`ATT-AC-209`), not by lowering
+> the claim to match**. This mirrors `TR-2` in `PRD-005`, where a false 100% was retracted and the corrected
+> figure published. A coverage number that has never been executed is a decorative number; this one has.
 
 ### 31.2 Upstream traceability
 
@@ -1917,8 +2047,6 @@ configurable, **no** RFID acceptance criterion, **no** RFID event, **no** RFID d
 implementation task. EA v2.1 lists `RFID Attendance (V3)`; whether Future or V3 is the correct class is not
 decided here, because nothing depends on the answer while it is out of V1 scope.
 
-`ATT-FR-148a` *(not used — no RFID requirement is created, deliberately)*
-
 > **No V1 Device Management architecture is created for RFID**, and none is implied. §17 leaves attendance
 > hardware ownership open as `ATT-GAP-009` for the V1 Face scanner; RFID readers are not in scope at all.
 
@@ -1928,7 +2056,7 @@ decided here, because nothing depends on the answer while it is out of V1 scope.
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0 — DRAFT** | 2026-08-04 | **Initial draft. Stage 2 of `PRD_LIFECYCLE.md`. Not reviewed, not frozen, unranked, no ADR raised.** Specifies `BC-03` Attendance for V1. Six independent attendance modes established as a closed set, with mode independence (`ATT-BR-004`…`ATT-BR-007`) stated as the central product rule and a generic verification layer explicitly prohibited (`ATT-XC-011`). RFID classified Future only, with zero V1 artefacts. Manual attendance established as a first-class mode with two workflows — individual entry (buildable today) and physical-register OCR/Vision (blocked on two missing edges) — separated deliberately so the smartphone-less student is served without waiting for an AI architecture decision. 296 identifiers across ten registers, 278 obligation-bearing, 118 acceptance criteria, 100% coverage of obligations. **Eighteen gaps recorded and none resolved by invention**, including `ATT-GAP-001`, a direct conflict between the instructed number `PRD-008` and `PRD_REGISTRY.md`'s allocation of `PRD-006` to this context, and `ATT-GAP-012`/`014`, which block the Face mode from being built at all. **No integration edge was invented** — every consumed and published edge is quoted from BC Map §7; the four events are exactly BC Map §9's. **No authoritative document was modified.** |
+| **v1.0 — DRAFT** | 2026-08-04 | **Initial draft. Stage 2 of `PRD_LIFECYCLE.md`. Not reviewed, not frozen, unranked, no ADR raised.** Specifies `BC-03` Attendance for V1. Six independent attendance modes established as a closed set, with mode independence (`ATT-BR-004`…`ATT-BR-007`) stated as the central product rule and a generic verification layer explicitly prohibited (`ATT-XC-011`). RFID classified Future only, with zero V1 artefacts. Manual attendance established as a first-class mode with two workflows — individual entry (buildable today) and physical-register OCR/Vision (blocked on two missing edges) — separated deliberately so the smartphone-less student is served without waiting for an AI architecture decision. 506 identifiers across ten registers, 279 obligation-bearing, 209 acceptance criteria, **100% coverage of obligations — measured, not asserted**. The first internal pass of this draft published 100% while the true figure was 137/279 = 49.1%; the mechanical check required by `ATT-NFR-010` caught it, and it was corrected by writing the 91 missing criteria (`ATT-AC-119`…`ATT-AC-209`) rather than by lowering the claim. Ten out-of-range placeholder identifiers left over from drafting were deleted, the single out-of-range exclusion (drafted as number 023) was renumbered `ATT-XC-021` to close the exclusion range at 21, and the §0.3 total was corrected from an arithmetically impossible 296 to the true 506. **Eighteen gaps recorded and none resolved by invention**, including `ATT-GAP-001`, a direct conflict between the instructed number `PRD-008` and `PRD_REGISTRY.md`'s allocation of `PRD-006` to this context, and `ATT-GAP-012`/`014`, which block the Face mode from being built at all. **No integration edge was invented** — every consumed and published edge is quoted from BC Map §7; the four events are exactly BC Map §9's. **No authoritative document was modified.** |
 
 ---
 

@@ -395,6 +395,30 @@ span work in waves 2–4 and waves 7–8 respectively, because the PRD's own cri
 sections. That is stated here rather than hidden. The binding of each individual criterion to a named test is
 `IMPL-679`'s deliverable and is **not** claimed as done.
 
+### 6.1 How much of the coverage is actually reachable
+
+100% coverage is not the same as 100% buildable, and stating only the first figure would be the more flattering of
+two true statements. Partitioning the 285 obligations by whether **any** unblocked task claims them:
+
+| Reachability | Count | Share |
+|---|---|---|
+| Claimed by at least one **unblocked** task | **242** | 84.9% |
+| Reachable **only** through a ⛔ blocked task | **43** | 15.1% |
+| Claimed by no task | **0** | 0% |
+
+The 43 divide into four groups, each traceable to a named authority rather than to a difficulty: the **Face** block
+(`ATT-FR-052`, `053`, `062`–`064`, `107`–`109`, `ATT-BR-021`, `022`, `039`, `ATT-XC-019`–`021`) behind
+`ATT-GAP-009`/`012`/`013`/`014`/`015`; the **register-image and OCR** path (`ATT-FR-070`, `071`, `078`–`080`,
+`ATT-BR-026`) behind `ATT-GAP-010`/`011`/`016`; the **valueless configurables** (`ATT-FR-149`–`151`, `ATT-BR-038`,
+`043`, `044`) behind `ATT-GAP-017`; and the **offline and non-functional** set (`ATT-PO-011`–`014`,
+`ATT-NFR-002`–`014`) behind `ATT-GAP-016a`/`017a`.
+
+> **This is the number a reader should take from §6, not the 100%.** Every obligation has a path *or* a documented
+> blocker — which is what the Stage 6 gate asks — but roughly one obligation in seven cannot be started until someone
+> with authority answers a question. The `ATT-NFR-*` concentration is the sharpest case: 13 of 14 non-functional
+> obligations sit behind `IMPL-679`, so the module's quality bar is the last thing that becomes assertable and the
+> first thing a schedule would be tempted to drop.
+
 ---
 
 ## 7. Critical path — computed, not asserted
@@ -457,7 +481,7 @@ real concurrency.
 | "Keep the session token in `VerificationEvidence` to debug a failed scan" | `ATT-XC-008`, `ATT-FR-123`, `ATT-FR-133`, `ID-1`. Evidence describes **what was verified, never who the person is or how they authenticated**. This is the one where a debugging convenience becomes a credential store |
 | "Wrap check-in and seat occupancy in a single transaction so they can't diverge" | `ATT-XC-009`, `ATT-NFR-013`, `ATT-FR-142`. Attendance is complete when the attendance write commits. `SEAT-FR-115` already makes occupancy advisory and non-corrupting, which is the design's answer to divergence |
 | "Add an NFC tap mode — the reader hardware is already on the desk" | `ATT-XC-010`, §33. RFID, NFC and BLE are **Future/V3**. V1 has **six** modes and a seventh is a scope decision, not a task |
-| "Build a `VerificationStrategy` pipeline so the six modes plug in uniformly" | `ATT-XC-011`, `ATT-BR-004`. The modes are **independent and each sufficient alone**; a shared pipeline creates the cross-mode coupling `ATT-BR-005` exists to forbid, and makes `IMPL-613`'s independence test unwritable |
+| "Build a `VerificationStrategy` pipeline so the six modes plug in uniformly" | `ATT-XC-011`, `ATT-BR-004`. The modes are **independent and each sufficient alone**; a shared pipeline creates the cross-mode coupling `ATT-BR-005` exists to forbid, and makes `IMPL-611`'s independence test unwritable |
 | "Sign the dynamic code with HMAC-SHA256 on a 30-second window" | `ATT-XC-013`, **`ATT-GAP-006` open**. Every part of that sentence — construction, algorithm, key length, rotation period — is Security Platform's to decide. Secrets are `BC-25`'s **references** only. Choosing one here is a security design, which §0.4 forbids in those words |
 | "Detect a spoofed SSID so Wi-Fi mode is trustworthy" | `ATT-XC-015`, `ATT-FR-039`, **`ATT-GAP-007` open**. No source authorises spoof detection or defines how a network is technically identified. `ATT-FR-039` requires the mode **not** be presented as anti-proxy until the gap is answered — a detector would present it as exactly that |
 | "Add mock-location detection to GPS mode" | `ATT-XC-017`, `ATT-FR-050`, **`ATT-GAP-008a` open**. Same shape as the row above, same prohibition, same unanswered owner |
@@ -474,7 +498,7 @@ real concurrency.
 | "Auto-create attendance from high-confidence OCR rows" | `ATT-BR-027`, `ATT-BR-028`. Confidence is **not self-certifying**; high-confidence entries are **presented for confirmation**, not created. The default is not a tuning knob |
 | "Auto-close a missed check-out at closing time" | `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-143`. A missed check-out is a **recorded state**, not a defect to be tidied. Inventing the timestamp also emits `ATT-EVT-002` for an event that did not occur |
 | "Cache validity so Dynamic QR works offline" | `ATT-PO-014`, `ATT-NFR-012`, **`ATT-GAP-016a` open**. A rotating server-validated code **cannot** be validated offline; `ATT-AC-184` forbids any surface, string or setting promising otherwise. This is also the fail-closed rule: an offline scan fails, it does not assume valid |
-| "Set the check-in latency budget at p95 ≤ 500 ms so the NFR is testable" | **`ATT-GAP-017a` open**. No Rank 1–5 document states a latency or throughput figure and EA states none. `IMPL-673` measures and reports what the implementation achieves; it **must not** convert a measurement into a budget, because a budget nobody ratified becomes the number the next reviewer treats as a requirement |
+| "Set the check-in latency budget at p95 ≤ 500 ms so the NFR is testable" | **`ATT-GAP-017a` open**. No Rank 1–5 document states a latency or throughput figure and EA states none. `IMPL-659` asserts **correctness** under 50+ concurrent arrivals, which is what `ATT-FR-096` and `ATT-NFR-001` actually require, and `IMPL-679` carries the gap unresolved. Neither may convert a measurement into a budget, because a budget nobody ratified becomes the number the next reviewer treats as a requirement |
 | "Show a live 'currently inside' count on the dashboard" | `ATT-BR-033`, `ATT-FR-140`, `ATT-FR-146`, `ATT-BR-045`. A second presence system of record. Occupancy is `BC-04`'s (`E-08`: *"Seating is the occupancy owner, Attendance is the trigger"*) and the metric layer is `BC-26`'s |
 | "Reconcile a disputed attendance record against seat occupancy" | `ATT-BR-045`. Explicitly: *"**the attendance record is never reconciled backwards from occupancy**."* The arrow has one direction and it is not this one |
 | "Emit `attendance.ReminderRequested` so parents are notified" | `ATT-FR-134`, `ATT-FR-135`, `ATT-FR-148`. The event register is **closed at four** by BC Map §9, and an imperative name is a **command**, not a fact. `BC-22` decides channel and recipient |
@@ -506,3 +530,120 @@ accident.
 > **The proportion is the finding, not the list.** Over half of what a reasonable engineer would build next is
 > blocked by a question nobody has answered. That is a statement about `PRD-006`'s readiness, not about the
 > engineer — and it is why §2's Stage 3 and Stage 4 verdicts are **⚠️ CONDITIONAL** rather than ✅.
+
+---
+
+## 9. What this document does **not** claim
+
+| Not claimed | Actual state |
+|---|---|
+| That any task is started | **Zero.** No `lib/` file created or modified. §5 is a backlog, not a progress report |
+| That `PRD-006` is frozen | It is **`DRAFT`**. Stage 6 makes it *eligible* for a Stage 7 proposal and nothing more |
+| That Stage 3 or Stage 4 passed | Both were **performed** and both returned **⚠️ CONDITIONAL**. A conditional verdict is not a pass, and §2 records it as a constraint on these tasks rather than as a cleared prerequisite. This is where `PRD-006` differs from `PRD-007`, whose Stage 4 was an unqualified **PASS** — that document's ✅ wording is **not** reused here |
+| That the registry was updated | `PRD_REGISTRY.md` still records `PRD-006` as **`PLANNED`** and is **byte-identical**. Status is conferred by admission to the baseline, never self-declared |
+| That the traceability matrix was updated | `TRACEABILITY_MATRIX.md` is **byte-identical**. Stage 5 registered the prefixes in §2F; Stage 6's gate names no matrix edit, and `PRD-005`'s and `PRD-007`'s Stage 6 made none |
+| That an ADR was created | **None.** No ranked document changed, so `DOCUMENTATION_BASELINE.md` §7 is not triggered |
+| That estimates exist | **None is given.** No sizing was requested. An invented figure would be the same defect class as an invented default — a number with no source that a later reader treats as a commitment |
+| That 80 tasks complete `BC-03` | They cover `PRD-006` v1.3's **285 obligations**. The **18 open `ATT-GAP-*`** remain undecided and unimplemented, and **12** tasks are blocked behind them |
+| That the 12 blocked tasks can be unblocked by better engineering | Each is blocked by a **decision**, not a difficulty. §4 names the authority for each: architecture owner, product owner, legal counsel or Security Platform. No amount of implementation skill closes one |
+| That face verification is deliverable | `IMPL-630`–`639` exist to record the boundary. `ATT-FR-064` **blocks the build outright** while `ATT-GAP-012` and `ATT-GAP-014` are open, and `ATT-GAP-015` leaves even the version class unratified |
+| That the seven valueless configurables have values | They do not. `IMPL-667` implements `ATT-BR-043`/`ATT-FR-149`/`ATT-FR-150`/`ATT-FR-151` — the behaviour in the **absence** of a value — and is itself ⛔ blocked on `ATT-GAP-017`, which stays open. The `LIB-16.2` breach remains a breach |
+| That the 213 `ATT-AC-*` are bound to tests | They are **allocated to waves** in §6. Binding each to a named test is `IMPL-679`'s deliverable, and `IMPL-679` is itself blocked |
+| That the wave→`ATT-AC-*` mapping is exhaustive per wave | It follows `PRD-006` §30's own sectioning. Where the PRD's criteria span two waves the band is shared, and §6 states that rather than hiding it |
+| That `IMPL-600`…`679` are in the roadmap register | They are declared **here** and nowhere else yet. `IMPLEMENTATION_ROADMAP.md` and `PRD_LIFECYCLE.md`'s Stage 6 table still end at `IMPL-227+` |
+| That the stale `IMPL-227+` tables were corrected | They were **not**, and correcting them was not attempted. Four documents now carry the stale claim; §3.3 records which and why amending a governance document is out of scope for a backlog. `PRD-004` §7 and `PRD-005` §3.3 recorded the same staleness and also left it |
+| That gate 3 will be green | It is **red** and stays red until `TASK-D10`/`BLK-01`. `ADR-0012` expiry 2026-10-31. The 9 violations are real debt and **must not be waived** |
+| That the upstreams exist | `PRD-004` and `PRD-005` are frozen but **unimplemented**; `PRD-007` is frozen and unimplemented; `PRD-023` (`BC-25` Configuration) is unwritten though `ATT-FR-097` depends on it. See §4 |
+| That module paths are architecture decisions | The `Module` column reuses the **existing** rank map. No new module is proposed, no directory is created, and no file path is specified |
+| That the critical path is a schedule | §7's 10-task chain is a **graph property**, not a plan. Every task on it from `IMPL-643` onward is blocked or downstream of a blocked task, so the longest path is also the one least likely to be walked |
+| That anything here is a specification | No schema, SQL, DDL, API shape, endpoint, payload format, widget tree, class signature, table name or column is written. §5's `Scope` cells describe **obligations**, and its `Test requirement` cells describe **what must be true**, not how |
+
+---
+
+## 10. Definition of done — applies to every task
+
+A task is done when **all** hold. Items 3 and 4 block merge (`TRACEABILITY_MATRIX.md` §10.4).
+
+1. `dart format --set-exit-if-changed .` → exit 0
+2. `flutter analyze` → `No issues found!`
+3. `dart run tool/check_module_boundaries.dart` → **no new violation** (the 9 existing `TASK-D10` violations are pre-existing and **must not be waived**)
+4. `flutter test test/architecture/` → all pass
+5. `flutter test` → all pass, **including the task's own new test**
+6. The `ATT-*` requirements in the task's Requirements cell are each asserted by at least one test
+7. No frozen document modified; no integration edge used beyond the **six inbound BC Map edges** of §5.2 (`E-03`, `E-04`, `E-17`, `E-18`, `E-19`, `E-24`) and the **three outbound** of §5.3 (`E-08`, `E-20`, `E-23`) — `ATT-PO-007` is deliberately **edgeless**, the already-authenticated actor arriving without a `BC-03` → `BC-18` edge per `ATT-GAP-002`'s resolution
+8. `python3 tool/docs_check/prd006_task_coverage.py` → exit 0 *(if the task row itself changed)*
+
+> **Item 6 is the one that is usually skipped.** A task can pass items 1–5 while asserting nothing about its
+> requirements. `ATT-NFR-010` and `SID-4.56` treat such a requirement as **unmet**, not as satisfied by intent.
+
+> **Item 7 has a specific edge here.** §5.2 closes the inbound edge set at six and `ATT-XC-007` forbids reading another
+> context's tables. A task that queries a `BC-01`, `BC-02`, `BC-04` or `BC-18` table to avoid building a port passes
+> items 1–5 and violates the Single Owner Rule that `ATT-XC-007` makes a defect. `IMPL-605` exists so that the four
+> **non-existent** edges — Analytics, File & Media, AI Assistance, Search Indexing — fail as structural
+> impossibilities rather than as review findings.
+
+> **A ninth item applies to the 12 blocked tasks, and it is not a test.** A blocked task is done when its
+> **boundary** is asserted and its gap is still open — `IMPL-630` is done when face verification is *unbuildable*,
+> not when it works. Any commit that makes a blocked task's capability function has closed an `ATT-GAP-*` by
+> implementation choice, which §0.4 forbids, and item 8's gap check is what catches it.
+
+---
+
+## 11. Stage 6 exit gate — re-runnable
+
+```
+python3 tool/docs_check/prd006_task_coverage.py     → exit 0
+```
+
+The gate fails if any of the following becomes true: a task has an empty **Requirements** cell; a task cites an
+`ATT-*` identifier `PRD-006` does not define; a task cites an `ATT-GAP-*` as an obligation; an `IMPL-*` is
+duplicated, falls outside `IMPL-600`…`IMPL-679`, or collides with `IMPL-014`–`073` / `100`–`127` / `200`–`226` /
+`300`–`323` / `400`–`499` / `500`–`599`; a **Blocked by** entry names no known task; a **Priority** cell is blank;
+**Blocks** and **Blocked by** disagree for a local pair; the dependency graph acquires a cycle; or any of the **285**
+obligations loses its last claiming task.
+
+Current result — **PASS**:
+
+```
+Tasks parsed 80 · unique 80 · duplicates 0 · out of range 0 · foreign collisions 0
+Allocation span IMPL-600..679 · holes 0
+Tasks with no requirement 0 · undefined citations 0 · malformed ranges 0
+Unresolvable dependencies 0 · missing Priority 0 · Blocks/Blocked-by disagreements 0
+Cycles 0 · longest chain 10 · roots 1 · leaves 1
+Priorities P1 64 · P2 15 · P3 1
+Tasks marked BLOCKED 12 · BLOCKED without a named gap 0
+Coverage 285/285 = 100.0%   (excluded: 213 ATT-AC verified by tests, 21 ATT-GAP questions)
+```
+
+> **The gate was tested against 12 deliberate mutations before this result was accepted**, because a check that has
+> only ever returned PASS has not been shown to be capable of returning FAIL. A duplicated identifier, an
+> out-of-range identifier, a collision with the seat range, an emptied Requirements cell, a citation to a
+> non-existent requirement, a gap cited as an obligation, a dangling dependency, a one-sided `Blocks` entry, an
+> introduced cycle, a blanked `Priority`, a dropped obligation and a `BLOCKED` marker with its gap reference stripped
+> were each injected in turn. **All 12 produced exit 1 and named the offending task**; the file was then restored and
+> verified byte-identical to its pre-mutation state.
+
+> **Running this gate revealed that the Stage 5 gate is sensitive to this file's existence, and that was fixed here
+> rather than there.** `prd006_traceability.py` treats an `ATT-<REG>-<n>` token found anywhere under `tool/` as a
+> namespace collision, exempting only itself. The first draft of `prd006_task_coverage.py` quoted six such
+> identifiers in its docstring and so turned the **passing** Stage 5 gate red. The identifiers were reworded
+> descriptively in the new file; **`prd006_traceability.py` was not modified**, because loosening a sibling gate to
+> accommodate a new file is how a namespace check stops being one.
+
+**One pre-existing failure is widened by one line and is disclosed rather than hidden.**
+`prd007_traceability.py` exits 1 on two problems, both of which are `PRD-006` sibling documents citing `SEAT-*`
+identifiers — `PRD-006_VERIFICATION_REPORT.md`, `PRD-006_REQUIREMENTS_REVIEW.md`, the PRD itself (18 citations) and
+two others. This file adds **exactly one** such line: §8's single-transaction row cites **`SEAT-FR-115`** (§5's
+`IMPL-676` row states the Seating boundary using only `ATT-*` identifiers, and was checked rather than assumed). It
+is **a citation, not a definition** — inspected at its line, per the §2C.1 principle that *a bare-substring hit must
+be inspected at its line, not counted as a failure*. The problem **count is unchanged at two**, no new failure class
+is introduced, and the practice follows `PRD-006`'s own: a document that must state a boundary against Seating has to
+name the requirement on the other side of it.
+
+---
+
+## 12. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| v1.0 | 2026-08-04 | Created as the **Stage 6** gate artefact for `PRD-006` v1.3 **DRAFT**. Allocated **`IMPL-600` … `IMPL-679`** — 80 tasks in 8 waves, contiguous with 0 holes — after enumerating every `IMPL-*` in the repository (247 distinct tokens) rather than reading `PRD_LIFECYCLE.md`'s stale `IMPL-227+` table, and after inspecting both `IMPL-600` tokens at their source lines to confirm they are `PRD-007` §3.2's *"Unallocated"* markers rather than uses — applying `PRD-007`'s own principle that *"a maximum cannot distinguish an allocation from a marker."* **No reserve needed skipping**, because `PRD-007` declared none; that is a finding about `PRD-007`, not a licence, so `IMPL-680`–`699` is reserved here (rule 2) against the 18 open gaps. Records `Priority`, `Blocks` and `Blocked by` per task (rule 3) and the group→requirement→invariant→acceptance table (rule 4). Coverage is **computed, not asserted**: `tool/docs_check/prd006_task_coverage.py` proves **285/285 = 100.0%** of obligations claimed, 0 undefined citations, 0 gaps cited as obligations, 0 duplicate or out-of-range identifiers, 0 collisions with the six foreign ranges, 0 cycles, `Blocks`/`Blocked by` mutually consistent, 1 root, 1 leaf, and 0 `BLOCKED` markers lacking a named gap; the 10-task critical path is derived from the graph. **The gate was then tested against 12 deliberate mutations, all 12 of which produced exit 1**, because a check that has only ever passed has not been shown able to fail. Three defects the derivation caught during authoring were fixed rather than argued away: a hand-written `Blocked by` list for `IMPL-679` left `IMPL-671` (authorization) and `IMPL-672` (multi-tenancy) outside the acceptance harness's ancestry although the tenancy acceptance band requires them, so the harness's 23 edges are now computed as *"every otherwise-terminal task"*; a `BLOCKED` count written as *"Thirteen"* measured **12**; and §8's forbidden-task table covered 18 of the 19 gaps until a comparison against §32.1's verdict column named the omission (`ATT-GAP-017a`, a latency budget — the easiest gap to close by accident, because inventing a number feels like rigour). Lists **37 tasks that must not be created**, each mapped to the rule it would break, **20 of which would close a gap by writing code**, together referencing all 18 open gaps plus the 1 narrowed one. **Stage 3 and Stage 4 are represented as ⚠️ CONDITIONAL, which is what they returned** — `PRD-007`'s ✅ prerequisite wording is deliberately **not** reused, and §2 records why Stage 6 may still be entered on a conditional verdict: the gate conditions on the artefacts existing, not on a verdict grade. Running the new tool turned the **passing** Stage 5 gate red, because `prd006_traceability.py` treats an `ATT-<REG>-<n>` token under `tool/` as a namespace collision; the new file's docstring was reworded and **the Stage 5 tool was not modified**. **Nothing is implemented: zero `lib/` files changed, no estimates invented, no specification written, no schema, SQL, DDL, API shape, event, payload, widget tree or class signature; no configuration default and no security value invented; the 18 open `ATT-GAP-*` remain open and 12 tasks remain blocked behind them; `PRD-006` unmodified and still `DRAFT`; `PRD-007`, `PRD_REGISTRY.md`, the BC Map, the Dependency Matrix, all 20 ADRs, `DOCUMENTATION_BASELINE.md`, `PRD_LIFECYCLE.md`, `TRACEABILITY_MATRIX.md` and the four sibling backlogs all byte-identical; the four stale `IMPL-227+` tables left stale; no registry entry, no ADR, and no freeze.** |

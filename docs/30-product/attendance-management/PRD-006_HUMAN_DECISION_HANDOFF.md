@@ -183,9 +183,31 @@ the option names the actor, and the actor must then act by naming numbers. None 
 
 ---
 
-## 4. Decisions for **Security Platform**
+## 4. Decisions for **Security Platform** — *or, per `ADR-0021` §4, for the Product Owner directly*
 
-**Precondition D-8.** The role is registered at `PRD_OWNERSHIP_MODEL.md` **L180**
+> **⚠️ CORRECTION RECORDED 2026-08-04 — this section is narrower than previously stated.**
+> `ADR-0021` §4 Option A, quoted verbatim, distinguishes two strengths of security
+> involvement: *"Who acts | **Product owner; security input required for `ATT-CFG-014`
+> (face) and advisable for `ATT-CFG-005`/`006` (QR rotation)**."*
+>
+> | Setting | Security involvement, verbatim | Effect now |
+> |---|---|---|
+> | `ATT-CFG-014` | *"**required**"* | Moot — D-3a = V3 removes it from V1 |
+> | `ATT-CFG-005` | *"**advisable**"* | **Not a hard gate.** The Product Owner may supply it |
+> | `ATT-CFG-006` | *"**advisable**"* | **Not a hard gate.** The Product Owner may supply it |
+>
+> **Consequence: `ATT-CFG-005` and `ATT-CFG-006` are NOT blocked on a Security Platform that
+> does not exist.** They are blocked only on **two defaults and two ranges that no one has
+> stated**. `ATT-GAP-017`'s owner column (L2178) reads *"Product owner"* — singular — so the
+> Product Owner may supply all four answers, taking the *advisable* security input if and
+> when the platform is constituted. **This is the shortest legitimate path to closing the
+> `LIB-16.2` breach for these two settings, and it requires no new authority.**
+>
+> Nothing is written for them here, because no value was given. The forbidden borrow recorded
+> below still stands.
+
+**Precondition D-8** *(now optional for `005`/`006`, per the correction above)*. The role is
+registered at `PRD_OWNERSHIP_MODEL.md` **L180**
 (`PRD-012a` → Domain Owner *"Security Platform"*) but has never been constituted: the
 platform is `[RECONSTRUCTED]` (`LIBOORA_ENTERPRISE_ARCHITECTURE.md` L88; L50 = *"not
 present in the transmitted text… architected to enterprise standard"*), `PRD-012a` *"has
@@ -352,23 +374,37 @@ which is why §4 below now records that the Product Owner may supply those two d
 
 ## 8. Freeze determination — this run
 
+Re-measured **2026-08-04, after the three Product Owner decisions were recorded.**
+
 | # | Condition | Status |
 |---|---|---|
-| 1 | `ATT-CFG-005` default + range | ⛔ absent |
-| 2 | `ATT-CFG-006` default + range | ⛔ absent |
-| 3 | `ATT-CFG-014` envelope + ARB ratification | ⛔ absent |
-| 4 | `ATT-CFG-019` default + domain | ⛔ absent |
-| 5 | `ATT-CFG-011`/`012`/`023` in §16.3 | ⚠️ values decided, **not yet in the PRD** (transfer at D-10) |
-| 6 | `ADR-0021`/`0022`/`0023` dispositions | ⛔ all `Proposed` |
-| 7 | D-2 governance confirmation | ⛔ *"not asserted as settled"* |
-| 8 | `LIB-16.2` breach cleared | ⛔ 6 of 14 answers |
+| 1 | `ATT-CFG-005` default + range | ⛔ **absent** — 2 answers owed. Product Owner may supply (§4 correction) |
+| 2 | `ATT-CFG-006` default + range | ⛔ **absent** — 2 answers owed. Product Owner may supply (§4 correction) |
+| 3 | `ATT-CFG-014` envelope | ✅ **CLEARED by D-3a** — V3; no V1 default owed |
+| 4 | `ATT-CFG-019` default + domain | ⛔ **absent** — 2 answers owed; and no context owns OCR (D-6) |
+| 5 | `ATT-CFG-011`/`012`/`023` in §16.3 | ⚠️ decided and re-confirmed, **not yet in the PRD** (transfer at D-10) |
+| 6 | `ADR-0021`/`0022`/`0023` dispositions | ⛔ all `Proposed` — re-verified this run |
+| 7 | D-9 governance confirmation | ⛔ *"not asserted as settled"* |
+| 8 | `LIB-16.2` breach cleared | ⛔ **6 of 12** answers — breach at 3 settings (was 4) |
 | 9 | Admitting ADR | ⛔ does not exist |
-| 10 | `DOCUMENTATION_BASELINE.md` §3 row | ⛔ 0 rows for `attendance-management` |
-| 11 | `PRD_REGISTRY.md` status | ⛔ `` `PLANNED` `` |
-| 12 | Human decisions available in-repo or via directory | ⛔ **0 ticked approvals, 32 open boxes, 0 signed commits** |
+| 10 | `DOCUMENTATION_BASELINE.md` §3 row | ⛔ **0** rows for `attendance-management` |
+| 11 | `PRD_REGISTRY.md` status | ⛔ `` `PLANNED` `` (L236) |
+| 12 | `ATT-GAP-015` closure | ⛔ **PO half ✅ / ARB half ⛔** — L2175 owner is a conjunction |
 
-**Verdict: ⛔ NOT FROZEN.** Twelve conditions blocking; **D-0** (an Architecture Owner
-existing in the external team directory) gates the resolution of every one.
+**Verdict: ⛔ NOT FROZEN — but the blocking set has genuinely narrowed.**
+
+| Measure | Previous run | **This run** |
+|---|---|---|
+| Conditions blocking | 12 | **11** — condition 3 cleared by D-3a |
+| Product Owner decisions outstanding | 3 (D-5, D-3a, D-16) | **0** |
+| `ATT-GAP-017` answers | 6 of 14 | **6 of 12** |
+| V1 settings lacking a default | 4 | **3** |
+| Blocked on a **non-existent** authority | `005`, `006` (Security Platform) | **none** — §4 correction: security input is *"advisable"*, not required |
+
+**The freeze is now blocked on six unstated numbers and the ARB, not on a missing role.**
+Conditions 1, 2 and 4 need **six answers** (three defaults, three ranges). Conditions 6, 7,
+12 and D-6 need the **Architecture Owner**, a role that is registered and whose incumbency
+sits in the external team directory (§7 rule 4). Nothing here is blocked on inventing a role.
 
 ---
 

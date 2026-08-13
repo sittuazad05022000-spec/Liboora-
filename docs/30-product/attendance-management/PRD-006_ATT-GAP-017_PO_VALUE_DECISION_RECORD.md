@@ -1,12 +1,13 @@
-# `ATT-GAP-017` — Product Owner Value Decision Record (partial)
+# `ATT-GAP-017` — Product Owner Value Decision Record (3 of 7 complete)
 
 | Field | Value |
 |---|---|
 | **Document** | `ATT-GAP-017` Product Owner Value Decision Record |
-| **Version** | v1.0 · 2026-08-04 |
-| **Decision** | **Three of seven defaults supplied by the Product Owner** |
-| **Product Owner** | ✅ **DECIDED** — `ATT-CFG-011` = **50 m** · `ATT-CFG-012` = **30 m** · `ATT-CFG-023` = **15 minutes** |
-| **`ATT-GAP-017` status** | 🔴 **OPEN — partially answered** (§3) |
+| **Version** | v1.1 · 2026-08-04 |
+| **Decision** | **Three of seven configurables COMPLETE — default + allowed range supplied by the Product Owner** |
+| **Product Owner** | ✅ **DECIDED** — `ATT-CFG-011` **50 m / 20–200 m** · `ATT-CFG-012` **30 m / 5–100 m** · `ATT-CFG-023` **15 min / 0–60 min** (§1, §8) |
+| **Remaining** | ⛔ **`ATT-CFG-005`, `006`, `019`, `014` — all BLOCKED** (§9) |
+| **`ATT-GAP-017` status** | 🔴 **OPEN — 6 of 14 answers supplied** (§3, §8) |
 | **`PRD-006` §16.3** | **NOT amended** — and §4 states why |
 | **Subject** | `PRD-006_ATTENDANCE-MANAGEMENT.md` v1.3 DRAFT · SHA-256 `93ab1c60d740c4e0…` **unmodified** |
 | **Freeze** | 🔴 **Not conferred.** Nothing here freezes anything |
@@ -145,3 +146,97 @@ preserves the Face V3 ruling without amending §12.
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. Records the first genuine Product Owner values for `ATT-GAP-017`: `ATT-CFG-011` = **50 m**, `ATT-CFG-012` = **30 m**, `ATT-CFG-023` = **15 minutes**. Verified each against its register validation rule (`> 0`, `> 0`, `≥ 0` — all satisfied) and checked the two distance values for mutual consistency (30 m accuracy floor is finer than the 50 m radius, so they do not conflict). Recomputed `LIB-16.2` sentence-1 coverage: **17/24 → 20/24 = 83.3%**; settings lacking a default **7 → 4** (`005`, `006`, `014`, `019`); settings lacking an allowed range **7 → 7, unchanged**. Established from source that `ATT-GAP-017` asks for *"default values **and** allowed ranges"* and that `ATT-FR-042` requires `ATT-CFG-011` to have **both**, so three defaults answer 3 of 14 required items and **the gap stays OPEN**. Declined to amend `PRD-006` §16.3, giving four measured reasons: the `ATT-CFG-011` row would self-contradict, ten dependent statements say *"seven"*, a partial edit reproduces the logged `GCP-01`/`07`/`08` defect class, and amending the subject re-triggers Stage 4 to reach the same verdict. **No range, threshold, approval, signature or ADR acceptance invented; no gate weakened; `PRD-006` and all protected documents byte-identical; no code written; nothing pushed.** |
+
+---
+
+## 8. Ranges supplied — the three settings are now COMPLETE
+
+The Product Owner subsequently supplied the missing allowed ranges. **Recorded exactly as authorised; not
+changed, widened, narrowed or reinterpreted.**
+
+| ID | Setting | Default | **Allowed range** | Register validation rule | Verified |
+|---|---|---|---|---|---|
+| `ATT-CFG-011` | GPS acceptance radius | **50 m** | **20 – 200 m** | *"Must be > 0 and within bound"* | ✅ `20 > 0`; `20 ≤ 50 ≤ 200` |
+| `ATT-CFG-012` | Minimum location accuracy | **30 m** | **5 – 100 m** | *"Must be > 0"* | ✅ `5 > 0`; `5 ≤ 30 ≤ 100` |
+| `ATT-CFG-023` | Correction window | **15 min** | **0 – 60 min** | *"Must be ≥ 0"* | ✅ `0 ≥ 0`; `0 ≤ 15 ≤ 60` |
+
+Every default falls inside its own range, and every range endpoint satisfies the register's validation
+predicate. **`ATT-FR-042` is now fully satisfied for `ATT-CFG-011`** — it required *"a default **and** a bounded
+allowed range"*, and both now exist.
+
+**These three settings are complete.** Of the fourteen answers `ATT-GAP-017` requires (7 defaults + 7 ranges),
+**six now exist**.
+
+### 8.1 One disclosed observation — recorded, not acted upon
+
+Computed from the two GPS ranges as authorised:
+
+| Combination | Radius | Accuracy tolerance | Ratio |
+|---|---|---|---|
+| **Chosen defaults** | 50 m | 30 m | 0.6× — accuracy finer than radius ✅ |
+| **Worst combination the ranges permit** | 20 m (min) | 100 m (max) | **5.0×** |
+
+At the permitted extremes a tenant could set a 20 m radius while accepting fixes accurate only to ±100 m, so a
+position could pass the accuracy test yet be five radii from the library. No rule in `PRD-006` relates
+`ATT-CFG-011` to `ATT-CFG-012` — `ATT-FR-045` and `ATT-FR-046` evaluate them independently — so this is **not a
+rule violation** and both ranges are validly recorded as given.
+
+**It is disclosed, not corrected.** Adding a cross-validation rule (for example *"accuracy tolerance MUST NOT
+exceed the radius"*) would be inventing a requirement the Product Owner did not authorise, and narrowing either
+range would breach the instruction not to narrow them. It is surfaced here so the decision is made knowingly by
+its owner rather than discovered later in implementation.
+
+---
+
+## 9. The four remaining configurables — searched again, all BLOCKED
+
+A final repository-wide search for authoritative values or ranges for the remaining four:
+
+| ID | Setting | Owner | Result |
+|---|---|---|---|
+| `ATT-CFG-005` | Dynamic QR rotation interval | **Security Platform** → PO | ⛔ **BLOCKED** — no value, no range anywhere |
+| `ATT-CFG-006` | Dynamic QR validity window | **Security Platform** → PO | ⛔ **BLOCKED** — no value, no range anywhere |
+| `ATT-CFG-019` | OCR high-confidence threshold | PO, after OCR ownership | ⛔ **BLOCKED** — `ADR-0023` **Proposed**; ownership unassigned |
+| `ATT-CFG-014` | Face match confidence threshold | PO + Security Platform | ⛔ **BLOCKED** — no ARB approval of Face V3 exists |
+
+The only near-hit in the entire repository is `ADR-0021` L227, which is not a value but a warning about
+supplying one: *"a range is itself a security statement (`0.01` vs `0.95` for face match). Splitting it does
+**not** reduce the judgement required; it relocates half of it."*
+
+No Security Platform approval document exists in `attendance-management/`; the sole approval artefact is
+`PRD-006_ATT-GAP-015_APPROVAL_REQUEST.md`, whose ARB signature line remains blank.
+
+**`ATT-CFG-019` cannot be answered even by the Product Owner today.** `ADR-0023`'s own title states *"No context
+owns an OCR/Vision capability, **and this ADR does not assign one**."* Until ownership is assigned, there is no
+owner to set the threshold — the instruction's own condition *"`ADR-0023` governance follow karo"* is therefore
+unmet, and accepting that ADR without ARB authority is prohibited.
+
+---
+
+## 10. Why §16.3 still cannot be amended, and v1.4 not issued
+
+The instruction's finalization sequence is explicitly conditional: *"**Jab saare 7 configurables ke default +
+allowed range legitimately available ho jayein**"* — then amend, synchronise, version and freeze.
+
+**Measured: 3 of 7 settings are complete. 4 are not.** The condition is unmet, so steps 1–8 do not begin.
+
+| Measure | Original | **Now** | Freeze needs |
+|---|---|---|---|
+| Settings with a documented default | 17/24 | **20/24 = 83.3%** | 24/24 |
+| Settings with a documented range | 17/24 | **20/24** | 24/24 |
+| Settings fully complete of the seven | 0 | **3** | 7 |
+| `ATT-GAP-017` answers supplied | 0/14 | **6/14** | 14/14 |
+| `LIB-16.2` sentence 1 | 🔴 breached | 🔴 **still breached** — 4 settings | satisfied |
+
+Amending §16.3 for three rows now would move the subject hash off `93ab1c60d740c4e0`, re-trigger Stage 4, force
+the ten *"seven"* statements to be recomputed to *"four"*, and still terminate in a `LIB-16.2` breach — a second
+full amendment cycle would then be needed when the last four arrive. **One coherent amendment at seven-of-seven
+is what the instruction asks for and what the document deserves.**
+
+---
+
+## 11. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-08-04 | Appended §8–§10. **Recorded the three PO-authorised allowed ranges**: `ATT-CFG-011` 20–200 m, `ATT-CFG-012` 5–100 m, `ATT-CFG-023` 0–60 min — transcribed exactly, not changed, widened, narrowed or reinterpreted. Verified every default lies inside its own range and every endpoint satisfies its register predicate (`> 0`, `> 0`, `≥ 0`); **`ATT-FR-042` is now fully satisfied for `ATT-CFG-011`**, both halves present. These three settings are **COMPLETE**; `ATT-GAP-017` now has **6 of 14** required answers and default coverage is **20/24 = 83.3%**. **Disclosed one computed observation without acting on it**: the two GPS ranges permit radius 20 m with accuracy tolerance 100 m — a 5.0× ratio where a fix could pass accuracy yet sit five radii away; no `PRD-006` rule relates the two settings, so both ranges are valid as given, and adding a cross-validation rule or narrowing a range would have been invention. Searched the repository a final time for `ATT-CFG-005`, `006`, `019`, `014`: **all four BLOCKED**, zero values or ranges anywhere, the only near-hit being `ADR-0021` L227 warning against supplying one. Recorded that **`ATT-CFG-019` cannot be answered even by the PO** while `ADR-0023` remains Proposed and no context owns OCR. Declined to amend §16.3 or issue v1.4 because the instruction's own precondition — all seven complete — is measurably unmet at 3 of 7. **No value, range, threshold, approval, signature or ADR acceptance invented; no gate weakened; no governance bypassed; `PRD-006` byte-identical; no code written; nothing pushed.** |

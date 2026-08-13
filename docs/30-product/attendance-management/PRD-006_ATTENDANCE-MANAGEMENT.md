@@ -62,10 +62,10 @@ contiguous; a gap would make the published range false.
 | **`ATT-CFG-*`** | `ATT-CFG-001` … `ATT-CFG-024` | **24** | Configurable values |
 | **`ATT-NFR-*`** | `ATT-NFR-001` … `ATT-NFR-014` | **14** | Non-functional requirements |
 | **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-213` | **213** | Acceptance criteria |
-| **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018`, plus the suffixed successors `ATT-GAP-008a`, `ATT-GAP-016a`, `ATT-GAP-017a` | **18 numbers / 21 rows** | **Open questions. NOT requirements** |
+| **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018`, plus the suffixed successors `ATT-GAP-002a`, `ATT-GAP-008a`, `ATT-GAP-016a`, `ATT-GAP-017a` | **18 numbers / 22 rows** | **Open questions. NOT requirements** |
 
 **Total: 516 identifiers** — **285 obligation-bearing** (`ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC`,
-`ATT-PO`, `ATT-CFG`, `ATT-NFR`), **213 acceptance criteria**, and **18 gap numbers carrying 21 rows**. Acceptance
+`ATT-PO`, `ATT-CFG`, `ATT-NFR`), **213 acceptance criteria**, and **18 gap numbers carrying 22 rows**. Acceptance
 criteria are counted separately from obligations because a criterion *verifies* an obligation rather than
 imposing one; §31 measures obligations against criteria and would be circular if criteria were counted as
 obligations.
@@ -76,8 +76,8 @@ obligations.
 > `ATT-AC-210`…`ATT-AC-213`. **No identifier was renumbered, withdrawn or reused, and no gap changed status.**
 > See §34 and `PRD-006_STAGE4_FINDINGS_CORRECTION.md`.
 
-**On the three suffixed gap numbers.** `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are declared here rather
-than discovered later. A suffixed successor records a question that emerged *from* its parent question and would
+**On the four suffixed gap numbers.** `ATT-GAP-002a`, `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are
+declared here rather than discovered later. A suffixed successor records a question that emerged *from* its parent question and would
 be misleading under a fresh number, and it follows the precedent already carried in this repository by
 `MM-GAP-006a`, `MM-GAP-007a` and `MM-GAP-010a` in the frozen `PRD-005`. The numeric range `001…018` remains
 contiguous; the suffixes are additions to declared numbers, never a break in the sequence.
@@ -478,7 +478,9 @@ lock to record attendance.
 
 ### 7.1 The six V1 modes — the closed set
 
-`ATT-FR-007` — V1 **MUST** support exactly these six attendance modes, and no others.
+`ATT-FR-007` — V1 **MUST** support exactly these six attendance modes, and no others **until a seventh is
+authorised by the process named in §7.1a**. A seventh **MUST NOT** be added by an implementer, by an example, or by
+re-labelling one of the six.
 
 | # | Mode identifier | Short name | What it verifies |
 |---|---|---|---|
@@ -489,8 +491,42 @@ lock to record attendance.
 | 5 | **`ATTENDANCE_MODE_FACE`** | Face | A face was matched against an enrolled student |
 | 6 | **`ATTENDANCE_MODE_MANUAL`** | Manual | Authorised staff recorded the presence |
 
-`ATT-XC-010` — V1 **MUST NOT** define a seventh mode. RFID, NFC and BLE are **Future/V3** (§12, §33) and **MUST
-NOT** appear as a V1 mode, requirement, configurable, event or acceptance criterion.
+`ATT-XC-010` — V1 **MUST NOT** define a seventh mode **by any route other than §7.1a's**. RFID, NFC and BLE are
+**Future/V3** (§12, §33) and **MUST NOT** appear as a V1 mode, requirement, configurable, event or acceptance
+criterion. **A Wi-Fi Presence attendance type (§10A) is a Product-Owner-approved *seventh* type whose mode
+constant, configurable and criterion are withheld pending the authority named in §7.1a — the approval of the
+capability and the creation of its identifiers are separate acts, and only the first has occurred.**
+
+#### 7.1a The seventh attendance type — approved in product scope, not yet definable
+
+**Product Owner decision `D-10`, 2026-08-05** (recorded in
+[`PRD-006_PO_DECISION_RESOLUTION_RECORD.md`](./PRD-006_PO_DECISION_RESOLUTION_RECORD.md) §1): a student's
+registered device connecting to an authorized library Wi-Fi network **may** create attendance automatically, and
+this is an **additive seventh attendance type** — *"Do NOT fake it as FIXED_QR_WIFI."*
+
+**What that decision does settle.** The capability is in V1 product scope (`D-16`); it is a *seventh* type rather
+than a variant of an existing one; and **reusing `ATTENDANCE_MODE_FIXED_QR_WIFI` is prohibited**, because that
+mode is defined as *a Fixed QR scan plus a Wi-Fi condition* and recording a scan-less event under it would assert
+a QR scan that never happened. `ATT-FR-008` already forbids rewriting a recorded method; recording the wrong
+method in the first place is the same falsehood committed earlier.
+
+**What it does not settle, and why the mode constant is absent from the table above.** Three things are outstanding
+and none is within Product Owner authority:
+
+| # | Outstanding | Authority | Carried by |
+|---|---|---|---|
+| 1 | Whether a **scan-less** value may join an invariant-bearing `AttendanceMethod` enum (`ATT-INV-007`) | Architecture owner / ARB | `ADR-0025` (**`Proposed`**) |
+| 2 | The seventh **enable configurable** — `ATT-CFG-*` is registered at **24** by `TRACEABILITY_MATRIX.md` §2F, a **Rank 4** document | Architecture owner | Resolution record §3.2 |
+| 3 | The seventh **acceptance criterion** — `ATT-AC-*` is registered at **213** by the same Rank 4 §2F | Architecture owner | Resolution record §3.2 |
+
+**No mode constant is named here, and none is reserved.** A name written into this table would be a new identifier
+in a register whose size a Rank 4 document fixes, and `PRD-006` has no authority to change that document. The
+capability is therefore **approved and not yet buildable** — recorded as such rather than presented as either
+absent or ready. §33.1 states the class.
+
+**The temptation that is refused.** It would be trivial to enable this feature today by recording Wi-Fi-Presence
+attendance as mode 3. That is exactly what `D-10` forbids and what `ATT-FR-008` and `ATT-INV-007` exist to prevent,
+and it is **not done**.
 
 ### 7.2 Mode independence — the central product rule
 
@@ -695,7 +731,7 @@ validation → `AttendanceDay`. Both parts of the condition **MUST** pass for th
 | Requirement | Rule |
 |---|---|
 | `ATT-FR-032` | The approved network(s) **MUST** be configurable per tenant (`ATT-CFG-008`) |
-| `ATT-FR-033` | The configuration **MUST** be owned by the Owner role and stored through `BC-25` (`E-19`) |
+| `ATT-FR-033` | The configuration **MUST** be manageable by the **`owner` and `manager` roles** — Product Owner decision **`D-12`**, 2026-08-05 — and stored through `BC-25` (`E-19`). Both roles are subject, without exception, to tenant isolation (`ATT-BR-017`), authorisation by `BC-18` (`ATT-FR-117`) and an audit fact on every change (`ATT-FR-038`). **This grants `manager` no other permission**: `ATT-FR-118` forbids defining a new role, permission model or scope, and none is defined — `manager` already exists (`ATT-FR-003`) with tenant-wide operational scope (§19.2) |
 | `ATT-FR-034` | Where Wi-Fi is unavailable on the device, the mode **MUST** fail with a distinguishable "network unavailable" reason |
 | `ATT-FR-035` | Where the device is on a network that is not approved, the mode **MUST** fail with a distinguishable "network not approved" reason |
 | `ATT-FR-036` | A failure of the Wi-Fi condition **MUST NOT** create an attendance record, and **MUST NOT** silently downgrade to `ATTENDANCE_MODE_FIXED_QR` |
@@ -710,7 +746,273 @@ network would be detected. No Rank 1–5 document defines a network-verification
 untrusted/spoofed-network handling is therefore **not** specified — **`ATT-GAP-007`**.
 
 `ATT-FR-039` — Until `ATT-GAP-007` is answered, this mode **MUST NOT** be presented to an Owner as
-spoofing-resistant.
+spoofing-resistant. **The same prohibition applies in full to Wi-Fi Presence (§10A): `D-13`'s permission for a
+library-side component narrows `ATT-GAP-007` but does not close it, and no Wi-Fi-based capability in this document
+may be described as spoofing-resistant while it is open.**
+
+---
+
+## 10A. Wi-Fi Presence — automatic attendance, session duration and multi-device
+
+**Product Owner decisions `D-10` (seventh type), `D-11` (duration split), `D-12` (Manager permission), `D-13`
+(library-side component permitted), `D-14` (detection model), `D-15` (5-minute grace), `D-16` (V1 scope) —
+2026-08-05.** Recorded in
+[`PRD-006_PO_DECISION_RESOLUTION_RECORD.md`](./PRD-006_PO_DECISION_RESOLUTION_RECORD.md).
+
+> **Read §7.1a first.** This section states the **product rules** for the capability. Its **mode constant, enable
+> configurable and acceptance criterion do not yet exist**, for the Rank 4 reason §7.1a gives. Every rule below is
+> therefore a rule the capability must satisfy *when it becomes definable* — it is written now so that the
+> behaviour is decided by this document rather than by whoever implements it first, and so that nothing in it is
+> quietly satisfied by re-purposing an existing mode.
+>
+> **No rule in this section creates a new `ATT-*` identifier.** Each one is stated under, and constrained by, an
+> existing requirement that already carries the obligation. The mapping is explicit in §10A.9.
+
+### 10A.1 The status vocabulary — exactly seven strings, fixed
+
+**`D-10`…`D-16` fix these seven strings.** The Product Owner instruction is *"Do not invent alternative status
+names."* This document therefore **MUST NOT** introduce an eighth, a synonym, an abbreviation or a localised
+variant as a stored status value.
+
+| # | Situation | Status |
+|---|---|---|
+| 1 | Correct shift **and** verified presence | **`VERIFIED PRESENCE`** |
+| 2 | Verified presence outside the student's booked shift | **`SCHEDULE MISMATCH`** |
+| 3 | All valid registered devices disconnected for more than 5 minutes | **`SESSION ENDED`** |
+| 4 | A proper exit cannot be reliably verified | **`INCOMPLETE / EXIT NOT VERIFIED`** |
+| 5 | A device or account cannot be identified | **`UNKNOWN DEVICE / UNVERIFIED PRESENCE`** |
+| 6 | An unknown person manually verified as a member | **`VERIFIED MEMBER`** |
+| 7 | An unknown person not verified | **`UNVERIFIED — NO ATTENDANCE`** |
+
+**One gap in the vocabulary is disclosed rather than filled.** `SEAT-FR-046` makes a `SeatAllocation`'s shift
+reference **nullable**, so a student may hold a verified presence with **no** booked shift. The seven strings
+contain no value for that case, and this document **MUST NOT** invent an eighth or silently fold the case into
+either 1 or 2 — see `ADR-0029` §3.2. It is a Product Owner decision that has not been made.
+
+### 10A.2 One account, one session — the multi-device rule
+
+**The binding product principle, as given:**
+
+```
+ONE STUDENT ACCOUNT + ONE OR MORE REGISTERED DEVICES = ONE ACTIVE STUDENT PRESENCE SESSION
+```
+
+The system **MUST NOT** create, for one student in one tenant at one time: two attendances · two presence sessions ·
+two study-hour sessions · two students · double occupancy.
+
+| # | Situation | Required outcome |
+|---|---|---|
+| 1 | Phone A verified **and** Phone B verified | **ONE `VERIFIED PRESENCE`** |
+| 2 | Phone A disconnects, Phone B remains verified | **Continue the SAME student session** |
+| 3 | Phone B disconnects, Phone A remains verified | **Continue the SAME student session** |
+| 4 | **All** valid registered devices lose verified presence | Start the 5-minute grace period (§10A.4) — the session does **not** end at this instant |
+| 5 | Any valid registered device reconnects within 5 minutes | **Continue the SAME existing session.** No new session; no reset of duration; no double counting |
+| 6 | No valid registered device for more than 5 minutes | **`SESSION ENDED`** |
+
+**Device-level observations MAY exist for audit and security purposes** (`ATT-FR-129`…`133`, `E-20`), **but the
+student-level attendance and presence remain singular.** A per-device audit trail is not a per-device attendance.
+
+**This rule is not new machinery — it is `ATT-INV-004`/`ATT-INV-010` applied to a new trigger.** §14.1 already
+resolves every check-in against a four-row state table, and row 2 already rejects a second check-in while a
+presence is open. A second device is exactly that case: it is a duplicate trigger, absorbed by the invariant and by
+the idempotency rules `ATT-FR-090`…`ATT-FR-095`, **not** a second student-day. The tenant qualifier in
+`ATT-INV-010` remains load-bearing and is unchanged — one person **MAY** still hold an open presence at two
+different libraries.
+
+### 10A.3 Wi-Fi presence is not identity — the unknown device and the unknown person
+
+`ATT-XC-014` (§10.1) governs this section without amendment: Wi-Fi **MUST NOT** be treated as identity,
+authentication, or proof that a specific person was present. Two further consequences follow and are stated so no
+implementer supplies them differently:
+
+- **Wi-Fi presence alone MUST NOT identify a student.** Presence on an authorized network is environment evidence
+  about a *device*, never an assertion about a *person*.
+- **A network name alone MUST NOT be identity proof, and MUST NOT be proof of location.** *"Same Wi-Fi name means
+  this is the library"* is **not** a claim this document makes (§10A.8).
+
+| Situation | Required outcome |
+|---|---|
+| A device is detected on the authorized network but is **not** associated with a Liboora account | **`UNKNOWN DEVICE / UNVERIFIED PRESENCE`**. **No** automatic attendance · **no** session duration · **no** presence session · **no** member identity is created. An Owner/Manager review item is raised |
+| That unknown person is subsequently **manually verified** as a member by authorised staff | **`VERIFIED MEMBER`** — recorded through the existing Manual workflow (§13) and its authorisation and audit rules, which are unchanged |
+| That unknown person is **not** verified | **`UNVERIFIED — NO ATTENDANCE`**. No attendance record exists |
+
+**Association of a device with an account is a prerequisite, not a by-product.** Detection **MUST NOT** be treated
+as association, and association **MUST NOT** be inferred from repeated detection of the same device.
+
+### 10A.4 The 5-minute disconnect rule — `D-15`
+
+**The grace period is EXACTLY 5 MINUTES.** This value was supplied by the Product Owner. It is **not** derived,
+inferred, or defaulted, and it **MUST NOT** be widened, narrowed or made configurable without a further decision
+from the same authority.
+
+| Phase | Rule |
+|---|---|
+| **T0** | The instant **all** valid registered devices lose verified Wi-Fi presence. The grace period starts here — **not** when the first device disconnects |
+| **T0 → T0 + 5 min** | The session is **recoverable**. A brief disconnect **MUST NOT** immediately end it. If **any** valid registered device regains verified presence, the **SAME** session continues: no new session, no reset of duration, no double counting |
+| **After T0 + 5 min** with no valid device | **`SESSION ENDED`** |
+| **Reconnect after the session has already ended** | A new session **MUST NOT** be created *merely* because a device reconnects. The ended session stays ended, and any new presence is evaluated on its own terms |
+
+**No second grace period exists.** This document defines exactly one, of exactly this length, and **MUST NOT**
+introduce another for reconnection, for re-verification, or for session closure.
+
+### 10A.5 The incomplete session — never fabricate an exit
+
+Where the end of a session cannot be reliably verified, the status is **`INCOMPLETE / EXIT NOT VERIFIED`**.
+
+`ATT-BR-030` already forbids auto-completing a missed check-out with an invented timestamp, and `ATT-FR-083`
+already forbids emitting a fabricated check-out event. Both apply here in full. The following assumptions are
+named because each is a plausible thing an implementer might reach for, and **every one is prohibited** as an
+inferred exit time:
+
+- the scheduled shift end
+- midnight, or any day boundary
+- the app-close time
+- the phone shutdown or battery-exhaustion time
+- the last known network event
+- **any other arbitrary end time**
+
+**Only verified duration may contribute to Study Hours. The unverified period MUST NOT inflate Study Hours**, and
+**MUST NOT** be estimated, rounded up, or back-filled. The student **MUST** be informed that the exit could not be
+verified, and an Owner/Manager review item **MAY** be raised — as a **fact** under `ATT-FR-148`, never as a
+channel, template or dispatch decision.
+
+**`ATT-FR-083`'s reason applies unchanged.** Seating derives live occupancy from `E-08`; a fabricated exit silently
+frees a seat that is still occupied. *Fabricating one is worse than missing one.*
+
+### 10A.6 Verified session duration — `D-11`, and the ARB question it leaves open
+
+**`D-11` = C.** The split, as decided:
+
+| Owned by **`BC-03` Attendance** | Owned by **`BC-26` Analytics** |
+|---|---|
+| *"How long did this **verified presence session** last?"* | Study Hours **totals** |
+| — | Weekly and monthly **aggregation** |
+| — | **Streaks** |
+| — | Analytics **views** |
+
+**What this changes here: nothing structural.** `ATT-FR-146` stands unamended — this module still **MUST NOT** own
+analytics, define a metric, compute a certified figure, build a read model or produce a report. `ATT-FR-147` stands
+— any duration exposed is an **operational read** of the attendance aggregate, never a certified metric.
+**The entire Study Hours domain is NOT transferred to Attendance, and `PRD-009` is NOT invented.**
+
+Worked example, stated because the arithmetic is the whole point of `D-11`:
+
+| Case | Verified duration |
+|---|---|
+| Verified presence 06:00 → 10:00 | **4 hours** |
+| The same session with **two** phones connected throughout | **still 4 hours — NOT 8** |
+| Phone A disconnects at 08:00, Phone B remains verified | duration **continues** uninterrupted |
+| All devices disconnect at 08:00, one reconnects at 08:03 | the **same** session's duration continues; nothing is reset or double-counted |
+| `INCOMPLETE / EXIT NOT VERIFIED` | the missing end is **never fabricated**; only the verified part counts |
+
+> **⛔ REMAINING ARB DECISION, recorded rather than resolved.** Whether *verified session duration* qualifies as an
+> **operational fact** admissible under `ATT-FR-145`, or is a **metric** reserved to `BC-26` by `ATT-FR-146`, is a
+> semantic ruling belonging to the ARB. `ADR-0026` §8 frames it and **does not decide it**. The Product Owner
+> instruction is explicit: *"If ARB must rule whether session duration is an operational fact, record that as the
+> remaining ARB decision rather than pretending it is resolved."*
+>
+> **Consequently `ATT-FR-145`'s list of operational facts is deliberately left unamended.** Adding *session
+> duration* to it would silently pre-empt the ruling. It is not added. The delivery path to `BC-26` also remains
+> open as **`ATT-GAP-003`**.
+
+### 10A.7 Shift validation — the product rule, and the blocker
+
+**Product rule.** Every verified presence **MUST** be compared with the student's **booked library schedule**. A
+presence inside the booked shift is **`VERIFIED PRESENCE`**; a presence outside it is **`SCHEDULE MISMATCH`**,
+which **MUST** alert the student and **MUST** create an Owner/Manager review item — as facts under `ATT-FR-148`,
+through the approved notification system. **No notification frequency, cooldown or escalation interval is defined
+here, and none may be invented** (`X-04`, `LIB-16.5`).
+
+> **⛔ BLOCKED — no authorised input exists. `ADR-0029` (`Proposed`).** `BC-03` cannot obtain a student's booked
+> shift through any declared edge. `E-03` carries `MembershipValidity{studentRecordId, validUntil, seatQuota}`;
+> `E-04` carries branch-wide `AttendanceRules{openTime, closeTime, graceMinutes, lateEntryPolicy}`; and **no
+> `BC-04` → `BC-03` edge exists** — `E-08` runs the other way. The per-student booking lives in `BC-04`'s
+> `SeatAllocation` (`SEAT-FR-046`, frozen `PRD-007`), and BC Map §7 states that an edge absent from its table
+> *"does not exist and adding it requires an ADR."*
+>
+> **The available shortcut is refused.** Comparing presence against branch **opening hours** from `E-04` would
+> compile and would be wrong: a library open 06:00–22:00 with a student booked 06:00–10:00 would report
+> `VERIFIED PRESENCE` for a 19:00 arrival — precisely the case the rule exists to catch. Branch hours are not a
+> booking, and they **MUST NOT** be substituted for one.
+>
+> Therefore **`SCHEDULE MISMATCH` is specified and not computable** until `ADR-0029` is decided by the Architecture
+> owner. Recorded as **`ATT-GAP-002a`**.
+
+### 10A.8 Security — three claims this document never makes
+
+Stated as prohibitions because each is a sentence a reader or an implementer might otherwise supply:
+
+| # | This document **MUST NOT** claim | Why |
+|---|---|---|
+| 1 | *"Same Wi-Fi name means this is the library"* | A network name is trivially reproducible. `ATT-XC-015` leaves network identification unspecified — **`ATT-GAP-007`** |
+| 2 | *"Wi-Fi alone proves the student's identity"* | `ATT-XC-014`: two students on one network are indistinguishable to a network check |
+| 3 | *"Cheating is impossible"* | `ATT-FR-039`, `ATT-BR-042`. No control in this document is presented as making proxy attendance impossible |
+
+`D-13` permits a **library-side device or software component** if Architecture/Security determines one is necessary.
+**It selects no mechanism.** No hardware, router, network identifier, API, gateway or certificate is named here, and
+`ATT-XC-015` continues to forbid specifying one. `ATT-GAP-007` is **narrowed by permission, not closed**.
+
+### 10A.9 Which existing obligations carry this section
+
+Stated explicitly so that no rule above is mistaken for a new, unverified requirement. **No identifier is added in
+any register** — the reason is in the resolution record §3.2.
+
+| §10A rule | Already-obligating requirement | Verified by |
+|---|---|---|
+| One account = one session; a second device is a duplicate trigger | `ATT-INV-004`, `ATT-INV-010`, `ATT-FR-081` row 2, `ATT-FR-084`…`086`, `ATT-FR-090`…`095`, `ATT-BR-034` | `ATT-AC-144`, `ATT-AC-145`, `ATT-AC-146` |
+| No second presence system; duration is not occupancy | `ATT-BR-033`, `ATT-FR-140`, `ATT-BR-045` | `ATT-AC-152` |
+| Never fabricate an exit; only verified duration counts | `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-083`, `ATT-FR-088` | `ATT-AC-093`, `ATT-AC-095`, `ATT-AC-177` |
+| Wi-Fi is not identity; unknown device raises no attendance | `ATT-XC-014`, `ATT-BR-041`, `ATT-FR-036` | `ATT-AC-033` |
+| No anti-spoof claim; no mechanism named | `ATT-XC-015`, `ATT-FR-039`, `ATT-BR-042` | `ATT-AC-194`, `ATT-AC-195` |
+| Duration is an operational read, never a metric | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147` | `ATT-AC-180` |
+| Alerts are facts, never channels or templates | `ATT-FR-148`, `ATT-NFR-005` | §25's signal table |
+| Every timestamp from the platform time port, timezone-explicit | `ATT-FR-088`, `ATT-BR-032`, `ATT-NFR-011` | `ATT-AC-150` |
+| Tenant isolation of every fact above | `ATT-BR-017`, `ATT-NFR-006`, `ATT-INV-006` | `ATT-AC-147` |
+| Manual verification of an unknown person | §13, `ATT-BR-038`, `ATT-FR-110`…`116` | §30.13, §30.17 |
+| The smartphone-less student is unaffected | `ATT-BR-008`, `ATT-NFR-014` | §30.5 |
+
+### 10A.10 The student experience — nine steps, and what is not promised
+
+1. The student **books a shift**.
+2. The student **arrives** at the library.
+3. A **registered device** connects to the authorized Wi-Fi network.
+4. The network is **verified** — *by the mechanism Architecture/Security finally approves* (`ADR-0027`; **not
+   specified here**).
+5. The device is **associated with the student's Liboora account** — association is required, never inferred
+   (§10A.3).
+6. The **presence session starts automatically**.
+7. **Attendance is recorded automatically** — under the seventh type of §7.1a, once it is definable.
+8. **Verified session duration is recorded** — subject to the ARB ruling in §10A.6.
+9. **Study Hours may use it** — aggregation remains `BC-26`'s (`ATT-FR-146`).
+
+**Detection model — `D-14` = C.** The student **MUST NOT** be required to keep the Liboora app visibly open
+continuously. Detection is **app-open detection, plus periodic/background-aware checks, plus reconciliation and
+filling of legitimate gaps** — and reconciliation is already half-solved by the offline policy in §27.1
+(`ATT-PO-011`…`ATT-PO-013`), which absorbs a replayed punch by idempotency rather than applying it twice.
+
+**What is NOT promised, and MUST NOT be:**
+
+- **No periodic-check interval is stated.** `D-14` explicitly withholds it — *"Do not invent the periodic-check
+  interval."* `ATT-NFR-003` independently forbids a latency or throughput figure while **`ATT-GAP-017a`** is open.
+- **Android background execution is NOT claimed to be guaranteed on every device.** `ADR-0028` frames the platform
+  question and its permission matrix is six columns of *"To be decided"*.
+- **No OS permission, service type or scheduling mechanism is specified.** `ATT-FR-044` remains the only
+  OS-permission line in this document, and it concerns location for mode 4.
+- Where platform restrictions prevent reliable background execution, the approved `D-14` architecture governs.
+  **This document promises no behaviour the platform may be unable to deliver.**
+
+### 10A.11 Existing attendance is untouched
+
+**This capability is ADDITIVE.** Nothing in §10A removes, weakens, re-scopes or reinterprets:
+
+Fixed QR (§8) · Dynamic QR (§9) · Fixed QR + Wi-Fi (§10) · Fixed QR + GPS (§11) · Face (§12) · Manual (§13) · the
+six existing modes and their independence (`ATT-BR-004`…`ATT-BR-007`) · every approved numeric value in §16.3 ·
+the anti-cheating protections of §19.3 · the audit rules of §21 · the correction rules of §18 · tenant isolation
+(§20).
+
+**`ATT-BR-007` is preserved verbatim**: a Wi-Fi condition applies **only** to `ATTENDANCE_MODE_FIXED_QR_WIFI`, and
+`ATT-XC-011` continues to forbid a verification pipeline or chain. **No existing mode is reinterpreted to perform
+the new behaviour** — that is the specific failure `D-10` prohibits, and §7.1a records that it is not done.
 
 ---
 
@@ -1159,7 +1461,7 @@ as required by §0.3 and `LIB-16.2`/`LIB-16.3`.
 | `ATT-CFG-005` | Dynamic QR rotation interval | Owner | **30 seconds** | **15–120 seconds** | Must be > 0 and ≤ validity window | Reject | Next code generated | Yes |
 | `ATT-CFG-006` | Dynamic QR validity window | Owner | **60 seconds** | **30–300 seconds** | Must be ≥ rotation interval | Reject | Next code generated | Yes |
 | `ATT-CFG-007` | Dynamic QR single-use per student-day | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next scan | Yes |
-| `ATT-CFG-008` | Approved Wi-Fi network(s) | Owner | **Empty** | Tenant-scoped list | Non-empty when `ATT-CFG-003` enabled | Reject; mode cannot enable | Next scan | Yes |
+| `ATT-CFG-008` | Approved Wi-Fi network(s) | **Owner + Manager** (`D-12`) | **Empty** | Tenant-scoped list | Non-empty when `ATT-CFG-003` enabled | Reject; mode cannot enable | Next scan | Yes |
 | `ATT-CFG-009` | Wi-Fi verification required strictness | Owner | **Strict** | `strict` only in V1 | Enum | Reject | Next scan | Yes |
 | `ATT-CFG-010` | Library coordinates | Owner | **Unset** | Valid geocoded coordinates | Required when `ATT-CFG-004` enabled | Reject; mode cannot enable | Next scan | Yes |
 | `ATT-CFG-011` | GPS acceptance radius | Owner | **50 metres** | **20–200 metres** | Must be > 0 and within bound | Reject | Next scan | Yes |
@@ -1380,6 +1682,7 @@ scope.
 | Operation | Role(s) | Scope |
 |---|---|---|
 | Configure attendance modes and values (§16) | `owner` | `tenantWide` |
+| **Manage authorized Wi-Fi networks (`ATT-CFG-008`, `ATT-FR-032`/`033`)** | **`owner`, `manager`** — Product Owner decision **`D-12`**; audited under `ATT-FR-038`, tenant-scoped under `ATT-BR-017` | `tenantWide` |
 | Operational attendance actions | `manager` | `tenantWide` |
 | Individual manual entry (§13A) | `reception`, `manager` | `tenantWide` |
 | OCR verification (§13C) | `reception`, `manager` | `tenantWide` |
@@ -1611,6 +1914,15 @@ The following outcomes **MUST** be distinguishable to the actor who caused them,
 | Duplicate attendance | All | `ATT-FR-081` row 2 |
 | Invalid check-out sequence | All | `ATT-FR-081` row 4 |
 | Mode disabled | All | `ATT-FR-104` |
+| **Presence outside the booked shift — `SCHEDULE MISMATCH`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`; **not computable until `ADR-0029` — `ATT-GAP-002a`** |
+| **Unknown device on the authorized network — `UNKNOWN DEVICE / UNVERIFIED PRESENCE`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.3 — Owner/Manager review item |
+| **Exit could not be verified — `INCOMPLETE / EXIT NOT VERIFIED`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, `ATT-BR-030`, §10A.5 — student informed; no end time fabricated |
+
+**These three rows are outcomes of §10A, and they add no `ATT-*` identifier.** Each is emitted as a **fact** under
+`ATT-FR-148` and each carries a distinguishable reason under `ATT-NFR-005`. **No notification frequency, cooldown,
+quiet-hour rule or escalation interval is stated for any of them, and none may be invented** — `X-04` and
+`LIB-16.5` place channel, template and dispatch with `BC-22`, and Product Owner decisions `D-10`…`D-16` withheld
+the intervals explicitly.
 
 ---
 
@@ -1848,7 +2160,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-030` | Mode 3 cannot be enabled with no approved network configured | `ATT-CFG-008` |
 | `ATT-AC-031` | Wi-Fi configuration changes produce an audit fact | `ATT-FR-038` |
 | `ATT-AC-032` | With modes 1 and 3 both enabled, a mode-1 attendance performs no Wi-Fi check | `ATT-BR-007` |
-| `ATT-AC-033` | No product surface or document describes Wi-Fi as identity or as preventing sharing | `ATT-XC-014` |
+| `ATT-AC-033` | No product surface or document describes Wi-Fi as identity or as preventing sharing. **Extended for §10A: a device detected on the authorized network but not associated with an account produces `UNKNOWN DEVICE / UNVERIFIED PRESENCE` and creates no attendance, no session, no duration and no member identity; repeated detection of the same device never becomes association; manual staff verification produces `VERIFIED MEMBER` and non-verification produces `UNVERIFIED — NO ATTENDANCE`; and no surface asserts that a matching network name proves the library's location, that Wi-Fi proves a student's identity, or that cheating is impossible** | `ATT-XC-014`, `ATT-XC-015`, `ATT-BR-041`, `ATT-FR-039` |
 
 ### 30.4 Fixed QR + GPS (mode 4)
 
@@ -1995,7 +2307,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 
 | ID | Criterion | Verifies |
 |---|---|---|
-| `ATT-AC-125` | Exactly six attendance modes exist; a seventh cannot be configured, recorded or referenced | `ATT-FR-007` |
+| `ATT-AC-125` | Exactly six attendance modes exist and are selectable; a seventh cannot be configured, recorded or referenced **by any route other than §7.1a's. Specifically: the Wi-Fi Presence type approved by `D-10` has no mode constant, no enable configurable and no selectable presence in any surface, and a scan-less Wi-Fi-Presence event cannot be recorded as `ATTENDANCE_MODE_FIXED_QR_WIFI`, `ATTENDANCE_MODE_MANUAL` or any other existing mode** | `ATT-FR-007`, `ATT-XC-010`, `ATT-FR-008`, `ATT-BR-007` |
 | `ATT-AC-126` | Each of the six modes can be enabled or disabled per tenant with no effect on the other five | `ATT-FR-009` |
 | `ATT-AC-209` | **A tenant with every mode disabled is accepted by configuration validation; no "at least one mode must be enabled" rule is enforced while `ATT-GAP-018` is open** | `ATT-FR-106` |
 | `ATT-AC-127` | **With several modes enabled, a student completing any one enabled mode obtains attendance without performing a second method** | `ATT-BR-004`, `ATT-BR-005` |
@@ -2009,7 +2321,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-130` | A fixed QR is bound to exactly one tenant and is rejected when presented in another | `ATT-FR-012` |
 | `ATT-AC-131` | A fixed QR carries no credential and cannot authenticate a session | `ATT-BR-009` |
 | `ATT-AC-132` | A dynamic code outside its validity window is rejected as expired | `ATT-FR-024` |
-| `ATT-AC-133` | Approved networks are configurable per tenant and owned by the Owner role through `BC-25` | `ATT-FR-032`, `ATT-FR-033` |
+| `ATT-AC-133` | Approved networks are configurable per tenant through `BC-25` and are manageable by **both the `owner` and `manager` roles** (`D-12`); **every change by either role emits an audit fact naming the actor, neither role can read or write another tenant's list, and holding `manager` confers no configuration permission beyond this one** | `ATT-FR-032`, `ATT-FR-033`, `ATT-FR-038`, `ATT-BR-017`, `ATT-FR-118` |
 | `ATT-AC-134` | Wi-Fi evidence is recorded as environment verification and is never used to identify the student | `ATT-BR-016` |
 | `ATT-AC-135` | Library coordinates and acceptance radius are configurable per tenant, with the radius bounded | `ATT-FR-041`, `ATT-FR-042` |
 | `ATT-AC-136` | GPS evidence is recorded as environment verification and is never used to identify the student | `ATT-BR-018` |
@@ -2029,11 +2341,11 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-145` | Idempotency is enforced inside the aggregate boundary; a check-then-write implementation fails this criterion under concurrent load | `ATT-BR-034` |
 | `ATT-AC-146` | A transport-level replay is absorbed by idempotency and creates no second record | `ATT-FR-095` |
 | `ATT-AC-147` | Every `AttendanceDay` carries exactly one `tenantId` and every punch within it belongs to that tenant | `ATT-INV-006` |
-| `ATT-AC-148` | Every punch records exactly one `AttendanceMethod` drawn from the six V1 modes | `ATT-INV-007` |
+| `ATT-AC-148` | Every punch records exactly one `AttendanceMethod` drawn from the six V1 modes, **and no punch carries a method value that misrepresents how it was produced — a Wi-Fi-Presence event asserts no QR scan and no staff action** | `ATT-INV-007`, `ATT-FR-008` |
 | `ATT-AC-149` | **No stored attendance fact can be destructively updated or deleted; the append-only correction record is the only mutation path** | `ATT-INV-008` |
 | `ATT-AC-150` | Every timestamp is timezone-explicit and resolved against the tenant's configured zone, never server local time | `ATT-BR-032`, `ATT-NFR-011` |
 | `ATT-AC-151` | Throughput is achieved without relaxing an invariant, batching across aggregates or deferring duplicate detection | `ATT-BR-036` |
-| `ATT-AC-152` | No second presence or "currently inside" system of record exists beyond the `AttendanceDay` aggregate, no shadow copy of seat occupancy is held here, and no attendance record is ever reconciled backwards from an occupancy state | `ATT-BR-033`, `ATT-FR-140`, `ATT-BR-045` |
+| `ATT-AC-152` | No second presence or "currently inside" system of record exists beyond the `AttendanceDay` aggregate, no shadow copy of seat occupancy is held here, and no attendance record is ever reconciled backwards from an occupancy state. **Extended for §10A: one student account with two or more registered devices verified on the authorized network simultaneously produces exactly ONE presence session, ONE attendance and ONE verified duration — a 06:00→10:00 session observed by two phones measures 4 hours, not 8; when all valid devices disconnect the session persists for exactly 5 minutes and any valid device reconnecting inside that window continues the SAME session without resetting or double-counting its duration; after 5 minutes with no valid device the session reads `SESSION ENDED`, and a later reconnection does not resurrect it; where the exit cannot be verified the record reads `INCOMPLETE / EXIT NOT VERIFIED` and no end timestamp is fabricated from the shift end, midnight, app-close, device shutdown or the last network event; and per-device observations appear only in the audit trail, never as a second attendance** | `ATT-BR-033`, `ATT-FR-140`, `ATT-BR-045`, `ATT-INV-004`, `ATT-INV-010`, `ATT-BR-030`, `ATT-FR-083` |
 
 ### 30.17 Corrections, audit and authorization (§18–§20)
 
@@ -2071,7 +2383,7 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-177` | **No check-out event is emitted for a check-out that did not occur** | `ATT-FR-143` |
 | `ATT-AC-178` | Event names follow `<Context>.<Aggregate><PastTenseVerb>`; no imperative name enters the bus | `ATT-FR-135` |
 | `ATT-AC-179` | The four events are published as facts to the backbone with no direct edge to `BC-26` or `BC-13`, and no attendance path depends on either consuming them | `ATT-FR-137` |
-| `ATT-AC-180` | Operational facts are exposed as reads of the attendance aggregate, are never labelled certified metrics, and no report, metric definition or read model is built here | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147` |
+| `ATT-AC-180` | Operational facts are exposed as reads of the attendance aggregate, are never labelled certified metrics, and no report, metric definition or read model is built here. **Extended for `D-11`: Study Hours totals, weekly/monthly aggregation, streaks and analytics views are absent from this module; `ATT-FR-145`'s list does NOT carry session duration, because whether verified duration is an operational fact is an unresolved ARB question (§10A.6) and adding it would pre-empt the ruling; and no `PRD-009` is referenced, assumed or created** | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147` |
 | `ATT-AC-181` | The conflict-resolution policy for replayed mutations is defined here and executed by `BC-30`; no queue, replay loop or conflict detector exists in this module | `ATT-PO-006`, `ATT-PO-011` |
 | `ATT-AC-182` | A replayed punch is absorbed by idempotency rather than applied twice, and preserves every §6.2 invariant | `ATT-PO-012` |
 | `ATT-AC-183` | A replayed punch never overwrites a correction made while the device was offline | `ATT-PO-013` |
@@ -2171,20 +2483,20 @@ the extraction method, the per-register counts and the reproducible command.
 
 ## 32. Open Questions / Gaps
 
-**Eighteen numbers, 21 rows — 18 still open. None is a requirement. None may be resolved by implementation
+**Eighteen numbers, 22 rows — 19 still open. None is a requirement. None may be resolved by implementation
 choice** (§0.4).
 
 > **Re-audited in v1.1; `ATT-GAP-001` reconciled in v1.2; the count restated in v1.3; `ATT-GAP-017` resolved in
 > v1.4.** The table below is the original register, with resolved rows updated in place. **§32.1 is the resolution
 > ledger** and is the authoritative status for each row.
 >
-> **The count is stated over the 21 rows, and a row is counted by the status in its own verdict cell:
-> 3 resolved, 1 narrowed, 17 open.** Where a row's status changed, §32.1 states the source that changed it. The
+> **The count is stated over the 22 rows, and a row is counted by the status in its own verdict cell:
+> 3 resolved, 1 narrowed, 18 open.** Where a row's status changed, §32.1 states the source that changed it. The
 > v1.3 figures 2/1/18 are **superseded** by `ATT-GAP-017`'s resolution, and **no other row's status was altered to
 > produce the new count** — exactly one row moved, and it moved because its named owner decided it.
 >
 > **Read the denominator before comparing counts.** The register declares **18 numbers**; the ledger carries
-> **21 rows**, because three suffixed successors (`ATT-GAP-008a`, `016a`, `017a`) are counted within their
+> **22 rows**, because four suffixed successors (`ATT-GAP-002a`, `008a`, `016a`, `017a`) are counted within their
 > parent's number. Every count in this document is now stated over **rows**, so that a tool counting the ledger's
 > verdict column and a reader counting the register reach the same three figures. **`ATT-GAP-012` is counted as
 > OPEN**, which is what its verdict cell says: its *storage sub-question* is answered negatively, but the
@@ -2201,7 +2513,8 @@ choice** (§0.4).
 |---|---|---|---|---|
 | **`ATT-GAP-001`** | ✅ **RESOLVED 2026-08-04 — this document is `PRD-006`.** *The question was:* is this PRD `PRD-006` or `PRD-008`? `PRD_REGISTRY.md` line 236 allocates **`PRD-006` = Attendance Management, `BC-03`**, and line 238 allocates **`PRD-008` = Revenue & Finance, `BC-05`**; frozen `PRD-007` refers to the Attendance PRD as **`PRD-006`** twice (§14, and its dependency table), while the authoring instruction had specified `PRD-008`. **Resolved by conforming this document to the standing allocation**, not by reassigning any number: registry §8 rule 1 (*"Numbers are never reused or reassigned"*) is **satisfied**, since `PRD-006` was already Attendance's and `PRD-008` remains reserved to Revenue & Finance. **No registry edit was required** and none was made. See §32.2 and [`PRD-006_NUMBERING_RECONCILIATION.md`](./PRD-006_NUMBERING_RECONCILIATION.md) | `PRD_REGISTRY.md` line **236** (allocation) · `PRD-007` v1.0 **FROZEN, Rank 3**, lines **223** and **862** — all three now **agree** with this document | *Was: registry owner + architecture owner.* **Closed by conformance** — no owner decision was needed, because no authority was in conflict with the registry | **Nothing.** This gap no longer blocks Stage 7 |
 | **`ATT-GAP-002`** | ✅ **RESOLVED in v1.1 — see §32.1 and §5.2.** *The question was:* where is the authenticated `BC-18` context composed for a `BC-03` operation, given that `E-11` is `BC-18 → BC-01` and no `BC-18 → BC-03` edge exists? **Answered from existing governance, not by invention**: frozen `PRD-007` (Rank 3) consumes `BC-18` with **no `E-` edge** (its §3 context table, and `SEAT-BR-030`), so a Core context receiving an already-established session without its own inbound identity edge is a **ratified pattern**. Attendance receives the authenticated context from the application layer (`ATT-PO-007`) | BC Map §7.2 · frozen `PRD-007` §3, `SEAT-BR-030` — **no longer in tension** | *Was: architecture owner.* **Closed by an existing ratified pattern** — no owner decision was needed | **Nothing.** No `BC-18 → BC-03` edge is asserted or required |
-| **`ATT-GAP-003`** | Is `BC-26` a consumer of `attendance.*`? BC Map §9 says yes for three events; §7 declares no edge | BC Map §9 vs §7 | Architecture owner | Analytics of attendance |
+| **`ATT-GAP-002a`** | **How does `BC-03` obtain a student's booked shift, so that `SCHEDULE MISMATCH` (§10A.7) can be computed?** The per-student booking is `BC-04`'s (`SEAT-FR-046`, frozen `PRD-007`); `Shift` definitions are `BC-06`'s (`PRD-007` L158); `E-03` carries only `MembershipValidity`, `E-04` only branch-wide `AttendanceRules`, and **no `BC-04` → `BC-03` edge exists** — `E-08` runs the other way. Substituting branch opening hours is **refused** (`ADR-0029` §3.1). A **suffixed successor of `ATT-GAP-002`** because it is the same class of question — a `BC-03` inbound path that no edge provides — and it emerged from that parent's reasoning | BC Map §7 **L292** (*"an edge not in this table does not exist"*) · `E-03` L300 · `E-04` L301 · `E-08` L305 · frozen `PRD-007` `SEAT-FR-046`, L158 | Architecture owner — needs an ADR (BC Map §7). Framed by **`ADR-0029`** (**`Proposed`**) | **`SCHEDULE MISMATCH` entirely** |
+| **`ATT-GAP-003`** | Is `BC-26` a consumer of `attendance.*`? BC Map §9 says yes for three events; §7 declares no edge | BC Map §9 vs §7 | Architecture owner | Analytics of attendance **— and, under `D-11`, the delivery path for Study Hours** |
 | **`ATT-GAP-004`** | Is `BC-13` a consumer of `attendance.FraudSignalDetected`? §9 says yes; §7 declares no edge | BC Map §9 vs §7 | Architecture owner | Fraud escalation |
 | **`ATT-GAP-005`** | What is the retention period for attendance after enrollment archival? | BC Map `Q-04` **open** · `ID-5` requires retention | Legal counsel + architecture owner | Deletion behaviour |
 | **`ATT-GAP-006`** | What cryptographic construction secures a dynamic QR code? | No Rank 1–5 source. Secrets owned by Security Platform | Security Platform owner | Dynamic QR build |

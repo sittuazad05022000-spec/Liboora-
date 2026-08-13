@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | **Document** | `ATT-GAP-017` Product Owner Value Decision Record |
-| **Version** | v1.1 · 2026-08-04 |
-| **Decision** | **Three of seven configurables COMPLETE — default + allowed range supplied by the Product Owner** |
-| **Product Owner** | ✅ **DECIDED** — `ATT-CFG-011` **50 m / 20–200 m** · `ATT-CFG-012` **30 m / 5–100 m** · `ATT-CFG-023` **15 min / 0–60 min** (§1, §8) |
-| **Remaining** | ⛔ **`ATT-CFG-005`, `006`, `019`, `014` — all BLOCKED** (§9) |
-| **`ATT-GAP-017` status** | 🔴 **OPEN — 6 of 14 answers supplied** (§3, §8) |
+| **Version** | v1.3 · 2026-08-04 |
+| **Decision** | **All six V1 defaults now supplied; three allowed ranges still outstanding** (§13) |
+| **Product Owner** | ✅ **DECIDED** — `005` **30 s** · `006` **60 s** · `011` **50 m / 20–200 m** · `012` **30 m / 5–100 m** · `019` **0.90** · `023` **15 min / 0–60 min** · Dynamic QR **V1** · OCR **V1** · Face **V3** (§1, §8, §13) |
+| **Remaining** | ⛔ **Allowed ranges for `ATT-CFG-005`, `006`, `019` — not supplied** (§13.3) |
+| **`ATT-GAP-017` status** | 🔴 **OPEN — 9 of 12 answers supplied (75.0%)** (§13.2) |
 | **`PRD-006` §16.3** | **NOT amended** — and §4 states why |
 | **Subject** | `PRD-006_ATTENDANCE-MANAGEMENT.md` v1.3 DRAFT · SHA-256 `93ab1c60d740c4e0…` **unmodified** |
 | **Freeze** | 🔴 **Not conferred.** Nothing here freezes anything |
@@ -239,6 +239,7 @@ is what the instruction asks for and what the document deserves.**
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.3** | 2026-08-04 | Appended §13. **Recorded nine further Product Owner rulings** from the FINAL ONE-SHOT FREEZE instruction: `ATT-CFG-005` = **30 s**, `ATT-CFG-006` = **60 s**, `ATT-CFG-019` = **0.90**, the three earlier values re-confirmed, and the scope rulings **Dynamic QR = V1**, **OCR = V1**, **Face = V3**, plus D-5/D-3a/D-16 = APPROVED. **Verified every value against its own §16.3 validation predicate** — `30 > 0` and `30 ≤ 60`; `60 ≥ 30`; `0 ≤ 0.90 ≤ 1` — and additionally checked the pair `005`/`006` for **mutual** satisfaction, since each of their rules references the other: rotation 30 s ≤ validity 60 s, so a code survives exactly two rotations and no pair of the six values contradicts another. **`LIB-16.2` sentence 1 is now SATISFIED at 24/24** — every setting has a documented default or is out of V1; this is the first time that sentence has been met and it is recorded as a genuine milestone rather than folded into the remaining shortfall. **`ATT-GAP-017` advances 6/12 → 9/12 = 75.0%** but stays 🔴 **OPEN**: it asks for *"default values **and** allowed ranges"*, and `ATT-CFG-005`, `006` and `019` received a default with **no range**, leaving their *Allowed domain* cells reading *"unresolved"* against §16.3's preamble requirement that *"every entry carries… allowed domain"*. **Declined to derive the three missing ranges**, testing and rejecting six candidate derivations: the validation predicate is not a domain (`ADR-0021` §2.3 — *"`Bounded 0–1` is a **type**, not a range"*, which for `019` means a tenant could still set `0.01`), symmetric ranges around the defaults would be invention, `CONFIGURATION_GUIDE.md` is Rank 7 and *"cannot change the envelope"*, and the `Authentication_PRD_v2.md` L72/L92 borrow stays forbidden — **noting explicitly that `ATT-CFG-005` = 30 s coincides with L72's *"30 seconds"*, which raises rather than lowers the importance of the prohibition; the authority here is the Product Owner's own ruling, not that document**. Recorded that **OCR = V1 does not lift `ATT-FR-080`**, which blocks the workflow build until `ATT-GAP-010` and `ATT-GAP-011` are answered by their named owners. Declined to amend §16.3 or issue v1.4 because step 4's own precondition — *"only when the configuration set is genuinely complete"* — is measurably unmet at 9 of 12. **No value, range, threshold, approval, signature or ADR acceptance invented; no gate weakened; `PRD-006` byte-identical at `93ab1c60d740c4e0`; no code written; nothing pushed.** |
 | **v1.2** | 2026-08-04 | Appended §12. **Recorded the Product Owner's D-5 approval** (`ADR-0021` D-1 route) and **D-3a → Face Attendance = V3**, and **re-confirmed the three preserved values unchanged**. Established from `PRD-006` L2178 that `ATT-GAP-017`'s owner column reads *"Product owner"* — **singular** — so the route decision is within this role's sole authority, unlike `ATT-GAP-015` (L2175) whose owner is a **conjunction**. Recomputed the arithmetic on the new denominator: D-3a removes `ATT-CFG-014` from the V1 configuration surface, so `ATT-GAP-017` falls from **14 required answers to 12** and stands at **6 of 12 = 50.0%**; V1 settings lacking a documented default fall **4 → 3** (`ATT-CFG-005`, `006`, `019`); the `LIB-16.2` sentence-1 breach **narrows but does not clear**. **Recorded a correction that materially narrows the blocking set**: `ADR-0021` §4 Option A states security input is *"**required** for `ATT-CFG-014` (face)"* but only *"**advisable** for `ATT-CFG-005`/`006` (QR rotation)"* — so those two settings are **not** blocked on the unconstituted Security Platform and the Product Owner may supply them directly. §9's characterisation of them as *"Security Platform → PO"* is superseded to that extent. Declined again to amend §16.3 or issue v1.4: step 2's own precondition — *"only when all required configuration defaults/ranges are legitimately available"* — is measurably unmet at **6 of 12**, and `ATT-CFG-005`, `006`, `019` have no value from any authority anywhere in the repository, re-searched this run. **No value, range, threshold, approval, signature or ADR acceptance invented; no gate weakened; `PRD-006` byte-identical at `93ab1c60d740c4e0`; no code written; nothing pushed.** |
 | **v1.1** | 2026-08-04 | Appended §8–§10. **Recorded the three PO-authorised allowed ranges**: `ATT-CFG-011` 20–200 m, `ATT-CFG-012` 5–100 m, `ATT-CFG-023` 0–60 min — transcribed exactly, not changed, widened, narrowed or reinterpreted. Verified every default lies inside its own range and every endpoint satisfies its register predicate (`> 0`, `> 0`, `≥ 0`); **`ATT-FR-042` is now fully satisfied for `ATT-CFG-011`**, both halves present. These three settings are **COMPLETE**; `ATT-GAP-017` now has **6 of 14** required answers and default coverage is **20/24 = 83.3%**. **Disclosed one computed observation without acting on it**: the two GPS ranges permit radius 20 m with accuracy tolerance 100 m — a 5.0× ratio where a fix could pass accuracy yet sit five radii away; no `PRD-006` rule relates the two settings, so both ranges are valid as given, and adding a cross-validation rule or narrowing a range would have been invention. Searched the repository a final time for `ATT-CFG-005`, `006`, `019`, `014`: **all four BLOCKED**, zero values or ranges anywhere, the only near-hit being `ADR-0021` L227 warning against supplying one. Recorded that **`ATT-CFG-019` cannot be answered even by the PO** while `ADR-0023` remains Proposed and no context owns OCR. Declined to amend §16.3 or issue v1.4 because the instruction's own precondition — all seven complete — is measurably unmet at 3 of 7. **No value, range, threshold, approval, signature or ADR acceptance invented; no gate weakened; no governance bypassed; `PRD-006` byte-identical; no code written; nothing pushed.** |
 
@@ -342,3 +343,112 @@ precondition is unmet, so the amendment does not begin and every step downstream
 *"four"* remaining settings — a smaller partial edit, but still a partial edit, and still the
 `GCP-01`/`07`/`08` defect class if the ten dependent *"seven configurables"* statements are
 left stale.
+
+---
+
+## 13. Product Owner decisions of the FINAL ONE-SHOT FREEZE instruction
+
+Nine rulings were received. All are transcribed exactly as authorised, verified against the
+register's own predicates, and their consequences computed.
+
+### 13.1 The rulings as received, and their verification
+
+**Configurable defaults — every one verified against its own §16.3 validation rule:**
+
+| ID | Setting | Default as authorised | Register validation rule (verbatim) | Verified |
+|---|---|---|---|---|
+| `ATT-CFG-005` | Dynamic QR rotation interval | **30 seconds** | *"Must be > 0 and ≤ validity window"* | ✅ `30 > 0`; `30 ≤ 60` |
+| `ATT-CFG-006` | Dynamic QR validity window | **60 seconds** | *"Must be ≥ rotation interval"* | ✅ `60 ≥ 30` |
+| `ATT-CFG-019` | OCR high-confidence threshold | **0.90** | *"Within bound"* (`Bounded 0–1`) | ✅ `0 ≤ 0.90 ≤ 1` |
+| `ATT-CFG-011` | GPS acceptance radius | **50 m** *(re-confirmed)* | *"Must be > 0 and within bound"* | ✅ `50 > 0`; inside 20–200 |
+| `ATT-CFG-012` | Min. acceptable location accuracy | **30 m** *(re-confirmed)* | *"Must be > 0"* | ✅ `30 > 0`; inside 5–100 |
+| `ATT-CFG-023` | Correction window | **15 min** *(re-confirmed)* | *"Must be ≥ 0"* | ✅ `15 ≥ 0`; inside 0–60 |
+
+**Cross-setting consistency, computed:** `ATT-CFG-005` (30 s) ≤ `ATT-CFG-006` (60 s), so a
+dynamic code survives exactly two rotation periods. The two rules — *"≤ validity window"* and
+*"≥ rotation interval"* — are mutually satisfied rather than merely individually satisfied.
+**No contradiction exists between any pair of the six values.**
+
+**Scope rulings:**
+
+| Ruling | Effect |
+|---|---|
+| **Dynamic QR = V1** | Confirms §33.1's *"Fixed QR + …"* family and keeps `ATT-CFG-005`/`006` **inside** the V1 configuration surface, so both owe a default **and a range** |
+| **OCR = V1** | Keeps the register-image workflow in V1, so `ATT-CFG-019` owes a default **and a range**. Does **not** lift `ATT-FR-080`, which blocks the build until `ATT-GAP-010` **and** `ATT-GAP-011` are answered by their **named owners** |
+| **Face Attendance = V3** | `ATT-CFG-014` leaves the V1 surface — no V1 default owed (`ADR-0021` §4 Option D: *"the settings cease to exist in V1, so no default is owed"*). Product half of `ATT-GAP-015` final; **ARB half outstanding** |
+| **D-5, D-3a, D-16 = APPROVED** | Recorded in `PRD-006_HUMAN_DECISION_HANDOFF.md` §2 |
+
+### 13.2 Recomputed arithmetic — genuine progress, measured
+
+`ATT-GAP-017` asks, verbatim, for *"the **default values and allowed ranges**"* — **two answers
+per setting**. Face V3 removes `ATT-CFG-014`, so the denominator is **12**.
+
+| ID | Default | Allowed range | State |
+|---|---|---|---|
+| `ATT-CFG-005` | ✅ **30 s** | ⛔ **not supplied** | ◐ half |
+| `ATT-CFG-006` | ✅ **60 s** | ⛔ **not supplied** | ◐ half |
+| `ATT-CFG-011` | ✅ 50 m | ✅ 20–200 m | ✅ COMPLETE |
+| `ATT-CFG-012` | ✅ 30 m | ✅ 5–100 m | ✅ COMPLETE |
+| `ATT-CFG-019` | ✅ **0.90** | ⛔ **not supplied** | ◐ half |
+| `ATT-CFG-023` | ✅ 15 min | ✅ 0–60 min | ✅ COMPLETE |
+| `ATT-CFG-014` | — | — | OUT OF V1 |
+
+| Measure | Previous | **Now** | Freeze needs |
+|---|---|---|---|
+| `ATT-GAP-017` answers | 6 of 12 | **9 of 12 = 75.0%** | 12 of 12 |
+| **Defaults supplied** | 3 of 6 | **6 of 6 — COMPLETE** | 6 |
+| Allowed ranges supplied | 3 of 6 | **3 of 6** | 6 |
+| Settings fully complete | 3 | **3** | 6 |
+| `LIB-16.2` **sentence 1** (*"documented default"*) | 🔴 breached at 3 | ✅ **SATISFIED — 24/24** | satisfied |
+
+### 13.3 What is genuinely achieved, and the one thing still missing
+
+**A real milestone: `LIB-16.2` sentence 1 is now satisfied.** Its text is *"Every setting
+**MUST** have a documented default. A library that has changed nothing **MUST** be fully
+operable."* Every one of the 24 `ATT-CFG-*` settings now has a default value or is out of V1.
+**That half of the breach closes.**
+
+**What remains: three allowed ranges.** `ATT-CFG-005`, `ATT-CFG-006` and `ATT-CFG-019`
+received a default but **no range**, and §16.3 carries a separate ***Allowed domain*** column
+that currently reads *"Bounded duration — **unresolved**"* and *"Bounded 0–1 —
+**unresolved**"*. Three independent sources make the range a requirement rather than a nicety:
+
+1. **`ATT-GAP-017` itself** asks for *"default values **and** allowed ranges"*. Nine of twelve
+   answers is not twelve.
+2. **§16.3's preamble (L1150)** — *"Every entry carries owner, default, **allowed domain**,
+   validation, failure behaviour, effective behaviour and audit."* An entry reading
+   *"unresolved"* in that column does not carry it.
+3. **`ADR-0021` §2.3** adjudicates the difference precisely: *"**An envelope is a declared
+   range**… `Bounded 0–1` is a **type**, not a range: it excludes `1.7` but admits `0.01` and
+   `0.99` equally."* For `ATT-CFG-019` this is concrete — `0.90` is the default, but with the
+   domain unresolved a tenant could set `0.01` and accept near-anything as high-confidence OCR.
+
+**Why I did not derive the three ranges.** Each candidate derivation was tested and rejected:
+
+| Tempting derivation | Why refused |
+|---|---|
+| Infer `005`'s range from its rule *"> 0 and ≤ validity window"* | That is the **validation predicate**, already present in its own column. It bounds one setting by another, never stating an absolute domain. `ADR-0021` §2.3: a type or predicate *"is not a range"* |
+| Set `019`'s range to `0–1` | That is the **type**, verbatim what §2.3 rejects as insufficient |
+| Build ranges symmetrically around the defaults (e.g. 15–60 s) | Pure invention. The instruction forbids *"any additional values/ranges"* |
+| Copy `Authentication_PRD_v2.md` L72/L92 (*"30 seconds"*, *"5 minutes"*) | `ADR-0021` §2.1 pre-adjudicates: *"Borrowing the number would import a security parameter across a context boundary and **dress an invention as a citation**"*. Note the coincidence that `ATT-CFG-005` = 30 s **matches** L72 — this makes the temptation greater and the prohibition more important, and the authority for 30 s here is the **Product Owner's own ruling**, not that document |
+| Let `CONFIGURATION_GUIDE.md` supply them | `ADR-0021` §2.3: the Guide is Rank 7 and *"**cannot change the envelope**"*; supplying one would require inventing it first |
+
+**A range is a value, and `ATT-BR-043` forbids substituting one:** *"A configurable whose
+Default column names an unresolved gap has **no default value, and no value SHALL be
+substituted for it**."*
+
+### 13.4 Why §16.3 is still not amended and v1.4 not issued
+
+Instruction step 4 is explicitly conditional: *"Amend `PRD-006` §16.3 **only when the
+configuration set is genuinely complete**."*
+
+**Measured: 9 of 12 — not complete.** Amending now would write three rows whose *Default*
+column states `30 s` / `60 s` / `0.90` while their *Allowed domain* column still reads
+*"unresolved"*, contradicting §16.3's own preamble in the same row, and would leave
+`ATT-GAP-017` open so that the ten dependent *"seven configurables"* statements could not be
+truthfully synchronised either. **One coherent amendment at twelve of twelve is what step 4
+asks for.**
+
+**Three defaults away from a complete set.** The remaining need is narrow and precise: an
+allowed range for `ATT-CFG-005`, `ATT-CFG-006` and `ATT-CFG-019` — the same authority that
+supplied the defaults, `PRD-006` L2178's *"Product owner"*, singular.

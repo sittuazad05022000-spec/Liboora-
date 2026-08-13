@@ -9,7 +9,7 @@
 | **Outcome** | 🔴 **FREEZE NOT EXECUTED.** Every one of the eight instructed steps is gated on an approval that does not exist in the repository |
 | **Steps executed** | **4 of 8** — those that are unconditional (gate re-runs, ADR inspection, arithmetic re-check) |
 | **Steps not executed** | **4 of 8** — every step whose precondition is an approval, value or signature |
-| **Version** | v1.1 · 2026-08-04 |
+| **Version** | v1.2 · 2026-08-04 |
 
 ---
 
@@ -337,3 +337,96 @@ added. Freeze is *"conferred, not claimed"* (`PRD_LIFECYCLE.md` L161) and there 
 | Version | Date | Change |
 |---|---|---|
 | **v1.1** | 2026-08-04 | Appended §11. Second freeze instruction executed as an independent measurement pass. Eight searches — three new: other branches/stashes/untracked (**0**), git history for an ever-ticked approval (**0** commits), git history for an ever-Accepted ADR (**only ever Proposed**). Together these close the possibility that an approval existed and was lost. Inspected `ADR-0021` §2.1–§2.4 and established it **proposes no values** — it is evidence that no anchoring authority exists, so accepting it would ratify a document stating the values cannot be set. Read the sole genuine PO ruling in full and recorded that it **itself** states the Face V3 decision *"does not make `PRD-006` freezable."* Inspected the single `PRD-006` mention in `DOCUMENTATION_BASELINE.md` and confirmed it is a disclosure inside the `PRD-007` declaration, not a Rank 3 row. All four gates re-run: Stage 4 no trigger, Stage 5 exit 0, Stage 6 exit 0 at 285/285, Stage 7 unsatisfied. All eight protected documents byte-identical. **Nothing invented, no gate weakened, no gap closed, no code written, nothing pushed.** |
+
+---
+
+## 12. The minimum freeze-required set — new analysis
+
+A third freeze instruction was received. Rather than repeat §11, this pass answers a question no prior record
+has asked: **of the eleven blockers, which are *strictly required* for freeze, and which are merely open?**
+The distinction matters because a shorter critical path is actionable where an eleven-item list is not.
+
+### 12.1 State re-measured (fourth pass)
+
+| Measure | Value |
+|---|---|
+| HEAD / tree | `df97269`, clean |
+| Unticked option boxes · blank signature rows | **24** · **8** |
+| Genuine ticked approvals | **0** — the single `☑`-pattern hit is §11's own table quoting the grep |
+| `ADR-0021` / `0022` / `0023` | **Proposed** · **Proposed** · **Proposed** |
+| Valueless settings, extracted live from §16.3 | **7** — `ATT-CFG-005`, `006`, `011`, `012`, **`014`**, `019`, `023` → **17/24 = 70.8%** |
+
+### 12.2 What Stage 7 actually requires — read at source
+
+`PRD_LIFECYCLE.md` Stage 7: *"**Gate:** a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank"*
+and *"Freeze is **conferred, not claimed**."* The row is governed by baseline §7:
+
+> 1. A change to any Rank 1–5 document requires an ADR **before** the change.
+
+So the gate decomposes into **two** requirements, not one: an **accepted admitting ADR**, and then the row.
+
+### 12.3 A twelfth blocker, not previously listed: there is no admitting ADR
+
+Every prior freeze in this repository was conferred by a dedicated admitting ADR:
+
+> `ADR-0020` — *"Seat Management PRD v1.0 **is the official baseline** for `BC-04` Seating"* · Status **Accepted** ·
+> Closes *"`PRD_LIFECYCLE.md` Stage 7 for `PRD-007`. Registry status `PLANNED` → `FROZEN`"*
+
+No equivalent exists for `PRD-006`. The three Proposed ADRs are, by their own titles, the **opposite** of
+admitting instruments:
+
+| ADR | Title (verbatim) | `Amends` field |
+|---|---|---|
+| `ADR-0021` | *"The seven valueless `ATT-CFG-*` settings require an owner decision, **and this ADR does not make it**"* | *"**No document.**"* |
+| `ADR-0022` | *"Whether `BC-03` may hold a `FileRef` from `BC-29`, **and this ADR does not decide it**"* | *"**Nothing.**"* |
+| `ADR-0023` | *"No context owns an OCR/Vision capability, **and this ADR does not assign one**"* | *"**Nothing.**"* |
+
+`ADR-0021`'s own *Does NOT close* field is explicit: it does not close *"`PRD_LIFECYCLE.md` Stage 7 for
+`PRD-006`, nor the `PRD_REGISTRY.md` L236 status defect."*
+
+**Consequence: accepting all three ADRs tomorrow would still not confer freeze.** A twelfth item — an admitting
+ADR in the `ADR-0018`/`0019`/`0020` form — must be authored and accepted. It is recorded here as **item 12**.
+
+### 12.4 The minimum set — six of twelve
+
+Classifying each item by whether freeze is *impossible* without it:
+
+| # | Item | Freeze-required? | Reason |
+|---|---|---|---|
+| 2 | `ATT-CFG-011` value | ✅ **REQUIRED** | Clears part of the `LIB-16.2` breach |
+| 3 | `ATT-CFG-012` value | ✅ **REQUIRED** | Same |
+| 4 | `ATT-CFG-023` value | ✅ **REQUIRED** | Same |
+| 5 | `ATT-CFG-005` range | ✅ **REQUIRED** | Same |
+| 6 | `ATT-CFG-006` range | ✅ **REQUIRED** | Same |
+| 8 | `ATT-CFG-019` value | ✅ **REQUIRED** | Same |
+| 1 | Face V3 ARB approval | ⬜ reduces, does not clear | Removes `ATT-CFG-014` → breach 7 → 6. **Not required if item 8's route also sets `014`** |
+| 7 | `ADR-0023` acceptance | ⬜ prerequisite to #8 only | Required *only* on the route where OCR ownership gates `019` |
+| 9 | `ADR-0022` acceptance | ❌ **NOT required** | `ATT-GAP-011` is *narrowed*: BC Map §7.4 `F-1`/`F-3`/`F-4` record the missing edge as *"the intended state"* |
+| 10 | `ADR-0021` acceptance | ⬜ records, does not enable | Its own text proposes no values |
+| 11 | Baseline §3 row | ✅ **REQUIRED** | It **is** the Stage 7 gate |
+| **12** | **Admitting ADR (new)** | ✅ **REQUIRED** | Baseline §7 step 1 — must precede the row |
+
+**Minimum viable path: items 2, 3, 4, 5, 6, 8 (six values/ranges) → item 12 (admitting ADR) → item 11 (row).**
+Items 9 and 10 may follow freeze; item 1 changes the arithmetic but not the requirement.
+
+**Every one of the six required values is a human decision that does not exist.** `ATT-BR-043` forbids
+substituting any of them, and `ADR-0021` §2.3 establishes that `CONFIGURATION_GUIDE.md` cannot supply them
+because *"the envelope itself is unresolved."*
+
+### 12.5 Gates — fifth independent run
+
+| Stage | Result |
+|---|---|
+| **Stage 4** | **0** commits to subject since `93fa81f`, sha256 `93ab1c60d740c4e0` → no re-review triggered. Recorded verdict ⚠️ **CONDITIONALLY PASSED** (5 of 6 checks pass, check 3 fails, **gate satisfied**) — **not upgraded** |
+| **Stage 5** | ✅ **exit 0** — 516 identifiers · 285 obligation-bearing · 0 dangling · 0 orphan · 0 collisions · ledger **18 open** |
+| **Stage 6** | ✅ **exit 0** — 80 tasks · 12 BLOCKED · 0 blocked without a named gap · **285/285 = 100.0%** |
+| **Stage 7** | 🔴 **UNSATISFIED** — baseline rows for `attendance-management`: **0**; registry L236 still `` `PLANNED` `` |
+
+### 12.6 Verdict
+
+**Not frozen.** Six required human values are absent, the admitting ADR does not exist, and the baseline row
+does not exist. Nothing in this pass was invented, upgraded or weakened.
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.2** | 2026-08-04 | Appended §12. Fourth state audit (0 genuine approvals, 24 unticked, 8 blank signatures, three ADRs Proposed, seven valueless settings extracted live at 17/24). **New finding: a twelfth freeze blocker.** Stage 7's gate decomposes via baseline §7 step 1 into *accepted admitting ADR* **then** *baseline row*; every prior freeze used a dedicated admitting ADR (`ADR-0020`: *"is the official baseline for `BC-04`"*, Accepted, closing Stage 7 and flipping the registry). **No such ADR exists for `PRD-006`**, and all three existing ADRs are by their own titles non-deciding instruments amending *"Nothing"* — so accepting all three would still not confer freeze. **Second new finding: the minimum freeze-required set is six of twelve items**, not eleven — the six values/ranges (`011`, `012`, `023`, `005`, `006`, `019`), plus the admitting ADR and the baseline row; `ADR-0022` is **not** required (`ATT-GAP-011` is narrowed by BC Map §7.4 as *"the intended state"*), `ADR-0021` records rather than enables, and Face V3 changes the arithmetic but not the requirement. Gates re-run fifth time: Stage 4 no trigger and verdict **not upgraded**, Stage 5 exit 0, Stage 6 exit 0 at 285/285, Stage 7 unsatisfied (0 rows, registry `PLANNED`). All nine protected documents byte-identical. **No value, approval, signature or ADR acceptance invented; no gate weakened; no gap closed; no code written; nothing pushed.** |

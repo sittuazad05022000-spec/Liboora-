@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.0 · 2026-08-04 |
+| **Version** | v1.1 · 2026-08-04 |
 | **Instruction** | Request BQ-2 / CF-2 — *"existing frozen `SEAT-CFG-017` precedent ke 'Unset in V1 — no value is substituted' pattern ko candidate resolution ke roop mein formally evaluate karo"* |
 | **Method** | Predicate-by-predicate structural comparison against the frozen `PRD-007` precedent. Every claim computed from the repository. |
 | **Verdict** | 🟡 **PARTIALLY PERMITTED — and insufficient to close `ATT-GAP-017`** |
@@ -171,8 +171,45 @@ So Option E **reduces** the blocker but does **not** eliminate the external depe
 
 ---
 
-## 10 · Change history
+## 10 · Exhaustive authority search for the missing envelopes (v1.1)
+
+The freeze instruction directs that `ATT-CFG-005`/`006`/`019` be resolved *"existing repository governance, frozen precedents aur authoritative owners ke basis par."* Every remaining avenue was therefore tested, not assumed. **All five are foreclosed by the repository itself.**
+
+| # | Avenue tested | Search performed | Result |
+|---|---|---|---|
+| 1 | **Rank 7 `CONFIGURATION_GUIDE.md`** | 35 parameters scanned for rotation / QR / confidence / OCR / face / threshold | ⛔ `DOCUMENTATION_BASELINE.md` §4 Rank 7: *"Operating values **within the envelope** 1–3 define."* The Guide *"cannot change the envelope"*, and here the envelope is what is missing. `ADR-0021` L100–109. |
+| 2 | **Authentication PRD OTP figures** | Found real numerics: `CFG-2` *"30 seconds"*, *"OTP challenge validity — **5 minutes**"* | ⛔ **Pre-adjudicated as the expected mistake.** `ADR-0021` L75–80: *"Reusing it for `ATT-CFG-006` would **look** like citing a source. It would not be one … Same word, different threat model, different bounded context, different owner. Borrowing the number would import a security parameter across a context boundary and **dress an invention as a citation**."* |
+| 3 | **External standards** (the `DOCUMENTATION_AUDIT-001` route) | `NIST`, `OWASP`, `ISO/IEC`, `FMR`, `FNMR`, *false match rate* across all of `docs/` | ⛔ **0 hits** outside `attendance-management/`. That route required *"named external standards, applied by an **authorised audit**"* — no audit is in flight, and `ADR-0021` L92–94: *"none of them establishes that a **reviewer** may perform the anchoring."* |
+| 4 | **Delegation for an unauthored owner** | `PRD_OWNERSHIP_MODEL.md` searched for delegate / escalate / interim / acting / proxy / on-behalf / vacant | ⛔ **No delegation mechanism exists.** L35 states the opposite principle: an absent owner *"terminates the search for a real one."* Security Platform's absence cannot be routed around. |
+| 5 | **`docs/30-product/` security directory** | Directory listing | ⛔ 8 modules present (`authentication`, `library`, `membership-management`, `seat-management`, `student-identity`, `student-management`, `attendance-management`, `MASTER_PRD.md`) — **no security module**. `PRD_REGISTRY.md` L248: `PRD-012` *"is therefore a placeholder that will never be authored."* |
+
+### 10.1 The determinism test — why PRD-006 passes it and still cannot freeze
+
+All five prior admission ADRs freeze on one test, stated identically in `ADR-0020` L128–129:
+
+> *"Admission is sound because `PRD-007`'s specified behaviour is **deterministic under every candidate resolution** of all fourteen — the same test `ADR-0018` applied to `SM-GAP-10` and `ADR-0019` to `MM-GAP-001`."*
+
+**`PRD-006` passes this test.** `ATT-BR-043`, `ATT-FR-149`, `ATT-FR-150`, `ATT-FR-151` and `ATT-BR-044` (17 combined citations) make the absence of a value fully deterministic; the Stage 6 backlog assigns **no** task to a gap and marks 12 tasks BLOCKED, each naming its gap. On the `ADR-0018` (2 gaps), `ADR-0019` (5 gaps) and `ADR-0020` (14 gaps) precedent, **open gaps alone would not bar freeze.**
+
+**The breach is a separate and independent obstacle, and `ADR-0021` says so in terms** (L286–287):
+
+> *"**D-2 is not a workaround for D-1.** Even confirmed in the affirmative, it does not close `ATT-GAP-017`, and the `LIB-16.2` breach in §2.5 stands **independently** of it."*
+
+Measured confirmation that no precedent covers this: `ADR-0008`, `0009`, `0010`, `0011`, `0018`, `0019`, `0020` were searched for *live breach* / *breach of `LIB`* / *non-conformance* / `LIB-16.2` → **0 hits**. **No PRD in this repository has ever been frozen carrying a live Rank 3 rule breach.** Freezing `PRD-006` today would not apply an existing precedent; it would create a new one — which is a governance decision, not a reviewer's.
+
+### 10.2 D-2 remains unconfirmed, and is a second independent gate
+
+`ADR-0021` §5 puts the governance question directly: *"does a CONDITIONAL Stage 3 / Stage 4 verdict permit entry to Stage 7?"* It records four supported readings that it does, then states the honest limit:
+
+> *"All four are **readings** … Bases 1–2 argue from silence … **This is recorded as a supported reading and referred for confirmation. It is not asserted as settled.** Inferring a governance rule from four silences and acting on it would be **inventing governance** — the thing this ADR exists to avoid."*
+
+`PRD-006` holds ⚠️ CONDITIONALLY ALIGNED (Stage 3, 21/22) and ⚠️ CONDITIONALLY PASSED (Stage 4, 5/6). Every previously frozen PRD reached Stage 7 on **A — PASS**. Upgrading either verdict without fresh evidence is explicitly forbidden by the instruction, and no fresh evidence exists — the subject document is byte-unchanged at `93ab1c60d740c4e0`.
+
+---
+
+## 11 · Change history
 
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Formal predicate evaluation of the `SEAT-CFG-017` unset pattern against `ATT-CFG-005`/`006`/`019`. 6 of 8 preconditions met; rows 7 (unresolved domain) and 8 (no authorising FR) fail. Ceiling computed at 9 of 14 answers. Two required PO authorisations recorded. Corrects the prior analysis §5 extrapolation. |
+| v1.1 | 2026-08-04 | §10 added: exhaustive five-avenue authority search for the missing envelopes — Rank 7 Guide, OTP figures, external standards, delegation, security directory — all five foreclosed by the repository, each with the foreclosing citation. §10.1 records that `PRD-006` **passes** the determinism test all five admission ADRs use, that the `LIB-16.2` breach stands independently of it per `ADR-0021` L286, and that **no PRD has ever frozen with a live Rank 3 breach** (0 hits across seven admission ADRs). §10.2 records D-2 as a second unconfirmed gate. |

@@ -61,7 +61,7 @@ contiguous; a gap would make the published range false.
 | **`ATT-PO-*`** | `ATT-PO-001` … `ATT-PO-014` | **14** | Ports — what it consumes, and from whom |
 | **`ATT-CFG-*`** | `ATT-CFG-001` … `ATT-CFG-024` | **24** | Configurable values |
 | **`ATT-NFR-*`** | `ATT-NFR-001` … `ATT-NFR-014` | **14** | Non-functional requirements |
-| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-213` | **213** | Acceptance criteria |
+| **`ATT-AC-*`** | `ATT-AC-001` … `ATT-AC-214` | **214** | Acceptance criteria |
 | **`ATT-GAP-*`** | `ATT-GAP-001` … `ATT-GAP-018`, plus the suffixed successors `ATT-GAP-008a`, `ATT-GAP-016a`, `ATT-GAP-017a` | **18 numbers / 21 rows** | **Open questions. NOT requirements** |
 
 **Total: 516 identifiers** — **285 obligation-bearing** (`ATT-FR`, `ATT-BR`, `ATT-INV`, `ATT-EVT`, `ATT-XC`,
@@ -1156,25 +1156,25 @@ as required by §0.3 and `LIB-16.2`/`LIB-16.3`.
 | `ATT-CFG-002` | Dynamic QR enabled | Owner | **Disabled** | `true` / `false` | Boolean | Reject; retain previous | Next operation | Yes |
 | `ATT-CFG-003` | Fixed QR + Wi-Fi enabled | Owner | **Disabled** | `true` / `false` | Boolean; requires `ATT-CFG-008` set | Reject; retain previous | Next operation | Yes |
 | `ATT-CFG-004` | Fixed QR + GPS enabled | Owner | **Disabled** | `true` / `false` | Boolean; requires `ATT-CFG-010` set | Reject; retain previous | Next operation | Yes |
-| `ATT-CFG-005` | Dynamic QR rotation interval | Owner | **`ATT-GAP-017`** | Bounded duration — **unresolved** | Must be > 0 and ≤ validity window | Reject | Next code generated | Yes |
-| `ATT-CFG-006` | Dynamic QR validity window | Owner | **`ATT-GAP-017`** | Bounded duration — **unresolved** | Must be ≥ rotation interval | Reject | Next code generated | Yes |
+| `ATT-CFG-005` | Dynamic QR rotation interval | Owner | **30 seconds** | **15–120 seconds** | Must be > 0 and ≤ validity window | Reject | Next code generated | Yes |
+| `ATT-CFG-006` | Dynamic QR validity window | Owner | **60 seconds** | **30–300 seconds** | Must be ≥ rotation interval | Reject | Next code generated | Yes |
 | `ATT-CFG-007` | Dynamic QR single-use per student-day | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next scan | Yes |
 | `ATT-CFG-008` | Approved Wi-Fi network(s) | Owner | **Empty** | Tenant-scoped list | Non-empty when `ATT-CFG-003` enabled | Reject; mode cannot enable | Next scan | Yes |
 | `ATT-CFG-009` | Wi-Fi verification required strictness | Owner | **Strict** | `strict` only in V1 | Enum | Reject | Next scan | Yes |
 | `ATT-CFG-010` | Library coordinates | Owner | **Unset** | Valid geocoded coordinates | Required when `ATT-CFG-004` enabled | Reject; mode cannot enable | Next scan | Yes |
-| `ATT-CFG-011` | GPS acceptance radius | Owner | **`ATT-GAP-017`** | Bounded distance — **unresolved** | Must be > 0 and within bound | Reject | Next scan | Yes |
-| `ATT-CFG-012` | Minimum acceptable location accuracy | Owner | **`ATT-GAP-017`** | Bounded distance — **unresolved** | Must be > 0 | Reject | Next scan | Yes |
+| `ATT-CFG-011` | GPS acceptance radius | Owner | **50 metres** | **20–200 metres** | Must be > 0 and within bound | Reject | Next scan | Yes |
+| `ATT-CFG-012` | Minimum acceptable location accuracy | Owner | **30 metres** | **5–100 metres** | Must be > 0 | Reject | Next scan | Yes |
 | `ATT-CFG-013` | Face enrollment required before use | Owner | **Enabled** | `true` only in V1 | Boolean | Reject | Immediate | Yes |
-| `ATT-CFG-014` | Face match confidence threshold | Owner | **`ATT-GAP-017`** | Bounded 0–1 — **unresolved** | Within bound | Reject | Next scan | Yes |
+| `ATT-CFG-014` | Face match confidence threshold | Owner | **Not in V1** — `D-3a`, Face = **V3** | **Not in V1** — §16.3a | Within bound | Reject | Next scan | Yes |
 | `ATT-CFG-015` | Face liveness required | Owner | **Enabled** | `true` / `false` | Boolean; only where the scanner supports it | Reject | Next scan | Yes |
 | `ATT-CFG-016` | Face mode enabled | Owner | **Disabled** | `true` / `false` | Boolean; blocked by `ATT-FR-064` | Reject | Next operation | Yes |
 | `ATT-CFG-017` | Manual mode enabled | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next operation | Yes |
 | `ATT-CFG-018` | Register-image workflow enabled | Owner | **Disabled** | `true` / `false` | Boolean; blocked by `ATT-FR-080` | Reject | Next upload | Yes |
-| `ATT-CFG-019` | OCR high-confidence threshold | Owner | **`ATT-GAP-017`** | Bounded 0–1 — **unresolved** | Within bound | Reject | Next processing run | Yes |
+| `ATT-CFG-019` | OCR high-confidence threshold | Owner | **0.90** | **0.80–1.00** | Within bound | Reject | Next processing run | Yes |
 | `ATT-CFG-020` | Unattended creation of high-confidence OCR entries | Owner | **Disabled** | `true` / `false` | Boolean | Reject | Next processing run | Yes |
 | `ATT-CFG-021` | Check-out tracking enabled | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next operation | Yes |
 | `ATT-CFG-022` | Staff correction permitted | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next correction | Yes |
-| `ATT-CFG-023` | Correction window | Owner | **`ATT-GAP-017`** | Bounded duration — **unresolved** | Must be ≥ 0 | Reject | Next correction | Yes |
+| `ATT-CFG-023` | Correction window | Owner | **15 minutes** | **0–60 minutes** | Must be ≥ 0 | Reject | Next correction | Yes |
 | `ATT-CFG-024` | Parent attendance visibility | Owner | **Enabled** | `true` / `false` | Boolean | Reject | Next read | Yes |
 
 `ATT-BR-038` — Every default above is **Disabled** for a mode unless the mode requires nothing that does not
@@ -1182,19 +1182,48 @@ already exist. Manual (`ATT-CFG-017`) defaults **Enabled** because it needs no d
 decision — and because `LIB-16.2` requires that *"a library that has changed nothing MUST be fully operable."* A
 tenant that configures nothing can still take attendance, by reception, on day one.
 
-#### The seven settings whose default is unresolved — `ATT-GAP-017`
+#### 16.3a The seven settings that once had no default — `ATT-GAP-017`, **RESOLVED**
 
-Seven rows above carry **`ATT-GAP-017`** in the Default column instead of a value: `ATT-CFG-005`, `ATT-CFG-006`,
-`ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019` and `ATT-CFG-023`. **This is a live breach of
-`LIB-16.2`** (Rank 3, Library PRD: *"Every setting **MUST** have a documented default"*) and it is recorded as a
-breach rather than closed by choosing seven numbers. No Rank 1–5 document states any of these values, and a
-rotation interval, a GPS radius or a face-match threshold invented by a PRD author is a security and product
-decision made by whoever wrote the document first — which §0.4 forbids and which `ATT-GAP-017` assigns to the
-**product owner**.
+Seven rows above once carried **`ATT-GAP-017`** in the Default column instead of a value: `ATT-CFG-005`,
+`ATT-CFG-006`, `ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019` and `ATT-CFG-023`. That was **a live
+breach of `LIB-16.2`** (Rank 3, Library PRD: *"Every setting **MUST** have a documented default"*), and it was
+recorded as a breach rather than closed by choosing seven numbers, because no Rank 1–5 document stated any of these
+values and a rotation interval, a GPS radius or a face-match threshold invented by a PRD author is a security and
+product decision made by whoever wrote the document first — which §0.4 forbids and which `ATT-GAP-017` assigned to
+the **product owner**.
 
-What the rules below add is not a value. They make the **behaviour in the absence of a value deterministic**, so
-that the missing default cannot be filled in silently by an implementer, and so that the second sentence of
-`LIB-16.2` — *"a library that has changed nothing MUST be fully operable"* — is satisfied in fact.
+**`ATT-GAP-017` has now been answered by that owner, in full.** Six of the seven belong to V1 and each now carries
+**both** an authoritative default **and** an authoritative allowed range, decided by the Product Owner and recorded
+in [`PRD-006_ATT-GAP-017_PO_VALUE_DECISION_RECORD.md`](./PRD-006_ATT-GAP-017_PO_VALUE_DECISION_RECORD.md) §1, §8,
+§13 and §14:
+
+| ID | Default | Allowed range | Decision record |
+|---|---|---|---|
+| `ATT-CFG-005` | **30 seconds** | **15–120 seconds** | §13.1, §14.1 |
+| `ATT-CFG-006` | **60 seconds** | **30–300 seconds** | §13.1, §14.1 |
+| `ATT-CFG-011` | **50 metres** | **20–200 metres** | §1, §8 |
+| `ATT-CFG-012` | **30 metres** | **5–100 metres** | §1, §8 |
+| `ATT-CFG-019` | **0.90** | **0.80–1.00** | §13.1, §14.1 |
+| `ATT-CFG-023` | **15 minutes** | **0–60 minutes** | §1, §8 |
+
+The seventh, **`ATT-CFG-014`** (face match confidence threshold), owes no V1 value: decision **D-3a** places Face
+verification in **V3** (see §33.2 and `ATT-GAP-015`), so the setting is not part of the V1 configuration surface
+and no V1 default or range is owed for it. **This is not an unresolved default; it is a setting that does not exist
+in V1.**
+
+**Every value above was verified against its own validation rule in the same table**, and the two Dynamic QR
+settings were additionally checked for **mutual** satisfaction, since each of their rules references the other:
+rotation `30 s` ≤ validity `60 s`, so a code survives exactly two rotation periods. Across the full ranges the two
+are not unconditionally compatible — rotation `120 s` with validity `30 s` would violate *"≤ validity window"* —
+and that combination is **rejected before persistence** by the rule already stated in the row, per `LIB-16.3` and
+`ATT-NFR-005`. No range was narrowed and no cross-setting constraint was invented to pre-empt it; the decision
+record discloses the observation at §14.3.
+
+**Both sentences of `LIB-16.2` are now satisfied, and the second is no longer satisfied merely latently.** The
+rules below are retained unchanged. They are what made the absence of a value deterministic while the gap was
+open, and they remain the governing behaviour for any setting that has no value — including `ATT-CFG-014` if Face
+is ever brought forward without its threshold being decided, and any future configurable added without one. **They
+were never a substitute for the values, and the values do not make them redundant.**
 
 `ATT-BR-043` — A configurable whose Default column names an unresolved gap has **no default value, and no value
 **SHALL** be substituted for it** — not zero, not a framework default, not a value copied from another tenant,
@@ -1210,27 +1239,40 @@ value, and **MUST NOT** enable in a degraded or partially-validated form.
 value. Where such an evaluation would be required, the operation **MUST** fail closed (`ATT-FR-127`'s rule,
 applied to configuration rather than tenancy) rather than proceed on a substituted value.
 
-`ATT-BR-044` — **`LIB-16.2`'s operability requirement is met despite this breach, and here is the check.** Each
-of the seven belongs to a capability that is **off by default**, so none is reachable in a tenant that has
-configured nothing: `ATT-CFG-005`/`006` require Dynamic QR (`ATT-CFG-002` — **Disabled**); `ATT-CFG-011`/`012`
-require Fixed QR + GPS (`ATT-CFG-004` — **Disabled**); `ATT-CFG-014` requires Face (`ATT-CFG-016` — **Disabled**,
-and `ATT-FR-064` blocks the build outright); `ATT-CFG-019` requires the register-image workflow (`ATT-CFG-018` —
-**Disabled**, and `ATT-FR-080` blocks the build outright); and `ATT-CFG-023` is optional by construction —
-`ATT-FR-115` applies only *"where a correction window is configured"*, so its absence means no window is enforced,
-which is a defined behaviour rather than a missing one. **A tenant on day one uses Manual, which has a concrete
-default and no unresolved setting.** The breach is therefore real but **latent**: it cannot be reached without an
-Owner deliberately enabling a mode whose values this document has refused to invent.
+`ATT-BR-044` — **`LIB-16.2`'s operability requirement is met, and here is the check.** It is met on two
+independent grounds, and it was met on the first of them even while `ATT-GAP-017` was open. **First, by
+reachability:** each of the seven belongs to a capability that is **off by default**, so none is reachable in a
+tenant that has configured nothing — `ATT-CFG-005`/`006` require Dynamic QR (`ATT-CFG-002` — **Disabled**);
+`ATT-CFG-011`/`012` require Fixed QR + GPS (`ATT-CFG-004` — **Disabled**); `ATT-CFG-014` requires Face
+(`ATT-CFG-016` — **Disabled**, and `ATT-FR-064` blocks the build outright); `ATT-CFG-019` requires the
+register-image workflow (`ATT-CFG-018` — **Disabled**, and `ATT-FR-080` blocks the build outright); and
+`ATT-CFG-023` is optional by construction — `ATT-FR-115` applies only *"where a correction window is configured"*,
+so its absence means no window is enforced, which is a defined behaviour rather than a missing one. **A tenant on
+day one uses Manual, which has a concrete default and no unresolved setting.** **Second, and now decisively, by
+value:** every V1 setting among the seven carries an authoritative default and allowed range (§16.3a), so enabling
+its mode no longer requires the Owner to supply a value this document declined to invent. `ATT-CFG-014` is out of
+V1. The operability requirement is therefore satisfied **without relying on latency**, and the reachability
+argument is retained because it is what governs any future configurable that arrives without a default.
 
 `ATT-FR-151` — The Owner **MUST** be shown, at configuration time, that a setting has no platform default and
 requires an explicit value before its mode can operate. A blank field **MUST NOT** be presented as though it
 carried a default.
 
-> **Why this is not a resolution of `ATT-GAP-017`, and must not be recorded as one.** Every rule above is about
-> *the absence of a value*. Not one of them supplies a value, narrows a range, or makes any of the seven settings
-> usable. `ATT-GAP-017` remains **OPEN** and still blocks Dynamic QR, GPS, Face and the register workflow from
-> operating. What changes is that the gap can no longer be closed accidentally: previously an implementer meeting
-> a blank default had no instruction and would reasonably have picked something; now the specified behaviour is to
-> refuse. **A specification hole that is specified as a hole is still a hole — but it is no longer a trap.**
+> **What resolved `ATT-GAP-017`, and what did not.** Every rule above is about *the absence of a value*, and not
+> one of them supplies a value. They did not resolve the gap and were never recorded as having done so. **The gap
+> was resolved by its named owner deciding the values** — the Product Owner, per L2178's owner column, whose
+> rulings are transcribed at §16.3a and recorded in full in
+> [`PRD-006_ATT-GAP-017_PO_VALUE_DECISION_RECORD.md`](./PRD-006_ATT-GAP-017_PO_VALUE_DECISION_RECORD.md).
+> **The rules remain in force and are not spent.** They continue to govern `ATT-CFG-014` should Face be brought
+> forward without its threshold decided, and any configurable added later without a default. Their purpose was
+> that a specification hole should never be a trap; their continuing purpose is that a future one never becomes
+> one either.
+>
+> **What is still open.** Values were the whole of `ATT-GAP-017` and none of anything else. Dynamic QR's
+> cryptographic construction remains blocked by `ATT-GAP-006`; the register-image workflow remains build-blocked
+> by `ATT-FR-080` pending `ATT-GAP-010` **and** `ATT-GAP-011`; Face remains blocked by `ATT-GAP-012`/`014` and is
+> **V3** by D-3a; mode 3's anti-spoof claims remain blocked by `ATT-GAP-007` and mode 4's by `ATT-GAP-008a`.
+> **Having a value is not having a mode.**
 
 ### 16.4 Configuration behaviour
 
@@ -2055,8 +2097,9 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-195` | Where a protection is bounded, the bound is stated rather than the protection overstated | `ATT-BR-042` |
 | `ATT-AC-196` | "Attendance Method" set in the Library module changes behaviour owned here, and the Library module implements none of that behaviour | `ATT-BR-037` |
 | `ATT-AC-197` | Each of the six mode-enable configurables independently controls exactly its own mode | `ATT-CFG-001`, `ATT-CFG-002`, `ATT-CFG-003`, `ATT-CFG-004`, `ATT-CFG-016` |
-| `ATT-AC-198` | Every configurable in §16.3 whose default is resolved is validated before persistence, rejects an out-of-domain value, and takes effect only at its stated effective point | `ATT-CFG-007`, `ATT-CFG-009`, `ATT-CFG-010`, `ATT-CFG-013`, `ATT-CFG-015`, `ATT-CFG-018`, `ATT-CFG-021`, `ATT-CFG-022`, `ATT-CFG-024` |
-| `ATT-AC-199` | **Each of the seven configurables whose default is unresolved is blocked from use until `ATT-GAP-017` is answered, and no default is invented for it** | `ATT-CFG-005`, `ATT-CFG-006`, `ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019`, `ATT-CFG-023`, `ATT-BR-043` |
+| `ATT-AC-198` | **Every** configurable in §16.3 is validated before persistence, rejects an out-of-domain value, and takes effect only at its stated effective point — including each of the six whose default and allowed range were decided by the Product Owner | `ATT-CFG-005`, `ATT-CFG-006`, `ATT-CFG-007`, `ATT-CFG-009`, `ATT-CFG-010`, `ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-013`, `ATT-CFG-015`, `ATT-CFG-018`, `ATT-CFG-019`, `ATT-CFG-021`, `ATT-CFG-022`, `ATT-CFG-023`, `ATT-CFG-024` |
+| `ATT-AC-199` | **Each of the six V1 configurables formerly blocked by `ATT-GAP-017` carries the exact default and allowed range its owner decided — `ATT-CFG-005` 30 s / 15–120 s, `ATT-CFG-006` 60 s / 30–300 s, `ATT-CFG-011` 50 m / 20–200 m, `ATT-CFG-012` 30 m / 5–100 m, `ATT-CFG-019` 0.90 / 0.80–1.00, `ATT-CFG-023` 15 min / 0–60 min — no value is invented, widened or narrowed, and `ATT-CFG-014` presents no V1 default because Face is V3** | `ATT-CFG-005`, `ATT-CFG-006`, `ATT-CFG-011`, `ATT-CFG-012`, `ATT-CFG-014`, `ATT-CFG-019`, `ATT-CFG-023`, `ATT-BR-043` |
+
 | `ATT-AC-200` | Every configuration change is audited with the acting actor and is tenant-resolvable | `ATT-CFG-001`…`ATT-CFG-024` |
 | `ATT-AC-201` | **This document states no latency figure, throughput number or percentile target** | `ATT-NFR-003` |
 | `ATT-AC-202` | Every attendance decision is reproducible from recorded evidence, the rules in force at the time, and the correction history | `ATT-NFR-004` |
@@ -2068,8 +2111,9 @@ broken silently: a boundary crossed, an edge invented, a claim overstated. They 
 | `ATT-AC-208` | Manual-mode surfaces meet the same accessibility standard as the app modes, measured rather than asserted | `ATT-NFR-014` |
 | `ATT-AC-210` | Enabling a mode whose required setting has no value is rejected with a reason naming the missing setting; the mode does not enable with an assumed value | `ATT-FR-149` |
 | `ATT-AC-211` | No attendance is recorded, accepted or rejected by evaluating a setting that has no value; the operation fails closed instead | `ATT-FR-150` |
-| `ATT-AC-212` | A tenant that has configured nothing can record attendance by Manual on day one, and none of the seven unresolved settings is reachable in that state | `ATT-BR-044` |
+| `ATT-AC-212` | A tenant that has configured nothing can record attendance by Manual on day one; and every V1 setting among the seven now carries a default, so operability no longer depends on those settings being unreachable | `ATT-BR-044` |
 | `ATT-AC-213` | A setting with no platform default is presented to the Owner as requiring an explicit value, never as a blank field carrying a default | `ATT-FR-151` |
+| `ATT-AC-214` | **A value outside a configurable's stated allowed range is rejected before persistence with a specific reason and is not partially applied — including the cross-setting case of a rotation interval exceeding the validity window, which is rejected even though both values lie inside their own ranges** | `ATT-CFG-005`, `ATT-CFG-006`, `ATT-NFR-005` |
 
 ---
 

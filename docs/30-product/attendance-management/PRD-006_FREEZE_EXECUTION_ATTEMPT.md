@@ -9,7 +9,7 @@
 | **Outcome** | 🔴 **FREEZE NOT EXECUTED.** Every one of the eight instructed steps is gated on an approval that does not exist in the repository |
 | **Steps executed** | **4 of 8** — those that are unconditional (gate re-runs, ADR inspection, arithmetic re-check) |
 | **Steps not executed** | **4 of 8** — every step whose precondition is an approval, value or signature |
-| **Version** | v1.0 · 2026-08-04 |
+| **Version** | v1.1 · 2026-08-04 |
 
 ---
 
@@ -259,3 +259,81 @@ breach to **7 → 3**.
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. Records an attempted execution of the eight-step freeze workflow. **Four steps executed, four not.** Evaluated every conditional in the instruction against the repository and found none satisfied: **0** approval checkboxes ticked out of 24, **0** signature lines filled of 5, **0** numeric values assigned to any of the six configurables by any document, **0** authoritative values in `docs/20-configuration/`, and all three ADRs still **Proposed**. Inspected `ADR-0021`, `ADR-0022` and `ADR-0023` and accepted none — every §4 options list is unselected, and `ADR-INDEX.md` defines Proposed as *"under consideration; not binding"*. Re-ran all four gates independently: **Stage 4** — no re-review triggered (0 commits touched the subject since `93fa81f`, hash identical), verdict ⚠️ CONDITIONALLY PASSED unchanged and not upgraded; **Stage 5** — exit 0, 516 identifiers, 285 obligation-bearing, 0 dangling, 0 orphan, 0 collisions; **Stage 6** — exit 0, 285/285 = 100.0%, 12 BLOCKED, 0 blocked without a named gap; **Stage 7** — `grep -c 'attendance-management'` in the baseline returns **0**, so the gate is unsatisfied as a matter of fact. Recomputed `LIB-16.2` arithmetic by field-extracting the Default column with `awk` rather than reading any prior figure: **7 of 24** settings carry `ATT-GAP-017`, giving **17/24 = 70.8%** default and range coverage; sentence 1 breached, sentence 2 satisfied in fact. Audited all 13 Stage 7 conditions — **4 pass, 3 partial, 6 fail** — and did not execute step 8. Maintains **ONE** remaining blocker list of 11 human decisions with owner, status and required action, and identifies the critical path: Block D has zero prerequisites and the largest single effect. **No approval, value, signature or ADR acceptance was invented; no gap was closed; no gate was weakened; `PRD-006` and all seven protected governance documents are byte-identical; no code was written; nothing was pushed.** |
+
+---
+
+## 11. Independent re-verification — second freeze instruction
+
+A second instruction to *"legitimately FREEZE"* `PRD-006` was received and executed as a fresh measurement pass
+rather than a re-reading of §1–§10. Every figure below was recomputed from the repository.
+
+### 11.1 Has any approval or value arrived?
+
+Eight independent searches, including three not performed in the first pass:
+
+| # | Search | Result |
+|---|---|---|
+| 1 | Commits since `bf6df97` | **0** — tree clean, HEAD unmoved |
+| 2 | Blank signature placeholders in the consolidated package | **8 rows, all blank** (L226, 238, 251, 284, 296, 328, 341, 372) |
+| 3 | Unticked option boxes `☐` | **24** |
+| 4 | Ticked boxes (`☑`/`[x]`/`[X]`) | **0** genuine — the only hits are the grep pattern quoted inside this file's own tables |
+| 5 | Numeric value for any of the six, repo-wide (`*.md`, `*.yaml`, `*.json`, `*.txt`) | **0** — every hit is a *reference to* the setting, never an assignment |
+| 6 | **Other branches / stashes / untracked files** *(new)* | `main` only · **0** stashes · **0** untracked |
+| 7 | **Git history: was an approval ever ticked and later reverted?** *(new)* | **0** commits in the entire history of the package or the three ADRs ever added a ticked box |
+| 8 | **Git history: was any ADR ever set to Accepted?** *(new)* | Only ever `**Proposed**` — two byte-variants of the same line, no other status has existed |
+
+Search 7 and 8 close the last remaining possibility — that an approval existed and was lost. It never existed.
+
+### 11.2 `ADR-0021` proposes no values — inspected, not assumed
+
+The instruction directs that approved values be *recorded*. `ADR-0021` was read to test whether it already
+carries values awaiting only acceptance. **It does not.** Its §2 is an evidence section establishing the
+opposite conclusion, in four parts:
+
+- **§2.1** — the absence of an authoritative source was **tested** across four directories and four concept
+  families: *"Result: zero authoritative values for all seven."* It also records the near-miss it expects a
+  future reader to make — reusing the Authentication OTP validity figure for `ATT-CFG-006` — and rejects it:
+  *"Same word, different threat model, different bounded context, different owner."*
+- **§2.2** — three precedents (`ACN-001`, `AR-4`, `DOCUMENTATION_AUDIT-001`) show a value may be set once
+  *anchored* to a standard, to analysis, or to owner input. *"What none of them establishes: that a reviewer
+  may perform the anchoring. No new authority has arrived for `ATT-GAP-017`."*
+- **§2.3** — `CONFIGURATION_GUIDE.md` (Rank 7) cannot absorb them: it sets values *within* an envelope, and
+  for all seven **the envelope itself is unresolved**. *"`Bounded 0–1` is a type, not a range … a face-match
+  threshold of `0.01` authorises impersonation."*
+- **§2.4** — `ATT-BR-043` forbids substitution *"from another tenant, another mode, another product"* by name.
+
+So accepting `ADR-0021` today would ratify a document whose own content states the values cannot yet be set.
+
+### 11.3 The one genuine approval on record contradicts freeze
+
+`PRD-006_ATT-GAP-015_DECISION_RECORD.md` holds the only real human ruling in this workstream — Product Owner,
+Face = V3, 2026-08-04. Read in full, the ruling **itself** states:
+
+> *"`ATT-CFG-014` leaves the V1 configuration surface and the `LIB-16.2` breach reduces from **seven settings
+> to six**. We confirm this does **not** clear the breach and does **not** make `PRD-006` freezable."*
+
+The Product Owner has already ruled on the freeze question, and ruled against it. ARB remains ⏳ PENDING.
+
+### 11.4 Gates — fourth independent run
+
+| Gate | Result |
+|---|---|
+| **Stage 4** trigger | **0** commits to the subject since `93fa81f`; sha256 `93ab1c60d740c4e0` identical → no re-review triggered |
+| **Stage 5** | ✅ **exit 0 PASS** — 21-row ledger, 2 resolved · 1 narrowed · **18 open**, 0 collisions |
+| **Stage 6** | ✅ **exit 0 PASS** — 285/285 = 100.0% |
+| **Stage 7** | 🔴 **UNSATISFIED** — `grep -c 'attendance-management'` in `DOCUMENTATION_BASELINE.md` → **0** |
+
+**The single `PRD-006` occurrence in the baseline was inspected** *(new this pass)*: it sits in
+`BASELINE-2026-08-04-E`, the `PRD-007` declaration, which names `PRD-006` only to disclose that
+*"`PRD-006` is still `PLANNED`, so a seating module built today would … derive no live occupancy."*
+It is a disclosure **about** the absence of this freeze, not a row conferring it. `PRD_REGISTRY.md` L236
+likewise still reads `PLANNED`.
+
+### 11.5 Verdict
+
+Unchanged. **`PRD-006` is not frozen.** The eleven-item list in §7 stands with no item resolved and no item
+added. Freeze is *"conferred, not claimed"* (`PRD_LIFECYCLE.md` L161) and there is no authority to confer it.
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-08-04 | Appended §11. Second freeze instruction executed as an independent measurement pass. Eight searches — three new: other branches/stashes/untracked (**0**), git history for an ever-ticked approval (**0** commits), git history for an ever-Accepted ADR (**only ever Proposed**). Together these close the possibility that an approval existed and was lost. Inspected `ADR-0021` §2.1–§2.4 and established it **proposes no values** — it is evidence that no anchoring authority exists, so accepting it would ratify a document stating the values cannot be set. Read the sole genuine PO ruling in full and recorded that it **itself** states the Face V3 decision *"does not make `PRD-006` freezable."* Inspected the single `PRD-006` mention in `DOCUMENTATION_BASELINE.md` and confirmed it is a disclosure inside the `PRD-007` declaration, not a Rank 3 row. All four gates re-run: Stage 4 no trigger, Stage 5 exit 0, Stage 6 exit 0 at 285/285, Stage 7 unsatisfied. All eight protected documents byte-identical. **Nothing invented, no gate weakened, no gap closed, no code written, nothing pushed.** |

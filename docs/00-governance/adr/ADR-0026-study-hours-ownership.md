@@ -18,6 +18,53 @@
 
 ---
 
+## 0. Product Owner decision recorded — Option 3 in shape, with the ARB's semantic finding **deliberately left open**
+
+> **This section records a Product Owner answer. It does not change this ADR's status.** This ADR remains
+> **`Proposed`**, and §5's first action — the ARB's ownership finding — remains **unperformed**.
+
+| PO decision | Question asked | Answer as given |
+|---|---|---|
+| **`D-11`** | D2 — who owns Study Hours? | **C** — Attendance owns *"How long did this verified presence session last?"*; Analytics owns Study Hours totals · weekly/monthly aggregation · streaks · analytics views. *"Do NOT transfer the entire Study Hours domain to Attendance. Do NOT invent PRD-009. If ARB must rule whether session duration is an operational fact, **record that as the remaining ARB decision rather than pretending it is resolved.**"* |
+
+**`D-11` selects the *shape* of Option 3 and nothing more.** The split it describes — per-session duration in
+Attendance, totals and aggregation in Analytics — is Option 3's split, stated in the Product Owner's own words. Three
+things follow, and only three:
+
+1. **Option 2 is eliminated.** The entire Study Hours domain is **not** transferred to Attendance. `BC-26`'s ownership of totals, weekly/monthly aggregation, streaks and analytics views stands, and `Student_Identity_PRD_v1.md` (**Rank 3**) is untouched and byte-identical.
+2. **Option 1 is eliminated as a V1 route, and `PRD-009` is prohibited.** *"Do NOT invent PRD-009."* This ADR created none and creates none.
+3. **Option 4 is eliminated.** Study Hours/session-duration is V1 scope (see also `D-16` on `ADR-0024`).
+
+### 0.1 ⛔ REMAINING ARB DECISION — preserved open at the Product Owner's explicit instruction
+
+> **The Product Owner did not resolve, and expressly declined to have anyone pretend to resolve, the semantic
+> question this ADR was written to frame.** The instruction is quoted above and is honoured literally: *"If ARB must
+> rule whether session duration is an operational fact, **record that as the remaining ARB decision rather than
+> pretending it is resolved.**"*
+
+**The open question, unchanged from §4 Option 3 and §5 action 1:**
+
+> **Is a verified presence session's elapsed duration an *operational fact* of the class `ATT-FR-145` (L1576) already
+> permits `BC-03` to expose — or is it the beginning of the Study Hours metric that `Student_Identity_PRD_v1.md`
+> L474 grants `BC-26`?** If the former, state **in words** where "operational session duration" ends and "the Study
+> Hours metric" begins, so the boundary is not re-litigated.
+
+**Only the Architecture Owner (ARB) may answer this.** `PRD_OWNERSHIP_MODEL.md` §5: *"Only the Architecture Owner
+approves"*. It is carried as a numbered remaining decision in
+[`PRD-006_PO_DECISION_RESOLUTION_RECORD.md`](../../30-product/attendance-management/PRD-006_PO_DECISION_RESOLUTION_RECORD.md) §5.
+
+**What was done in `PRD-006` while it stays open, and what was deliberately *not* done.** `PRD-006` §10A.6 states the
+product rule (a session's duration belongs to the session; totals and aggregation do not) and carries its own
+⛔ REMAINING ARB DECISION block. **`ATT-FR-145` was deliberately left unamended** — its permitted-fact list gained
+nothing. That is the whole point: extending it to name session duration **would be** the ARB's finding, made by
+whoever typed the edit. So the field is not added, and the ARB's ruling is not pre-empted.
+
+**A consequence stated plainly.** Because `ATT-FR-145` is unamended, a `PRD-006` implemented today would hold a
+verified session's duration as an internal operational fact and would **not** be cleared to expose it as a read.
+That is a real limitation of leaving the question open, and it is disclosed rather than engineered around.
+
+---
+
 ## 1. The measured fact
 
 Repository-wide measurement, run on the current working tree:
@@ -149,5 +196,9 @@ Recorded so the eventual specification does not re-open them:
 - It does **not** amend `Student_Identity_PRD_v1.md`, or any other document.
 - It does **not** create, name, sequence or draft `PRD-009`.
 - It does **not** create a `BC-03` → `BC-26` edge, or close `ATT-GAP-003`.
-- It does **not** decide whether session duration is an operational fact — that is Option 3's open finding.
+- It does **not** decide whether session duration is an operational fact — that is Option 3's open finding, and §0.1 keeps it open **by instruction** rather than by omission.
 - It does **not** assert approval by any person or body.
+- It does **not** treat `D-11` as the ARB finding §5 action 1 requires. `D-11` chose a shape; the ARB must still rule on the semantics and draw the boundary in words.
+- It does **not** extend `ATT-FR-145`'s permitted-fact list, because doing so *would be* the ruling it is not entitled to make.
+- It does **not** create, name, sequence or draft `PRD-009` — `D-11` prohibits it, and none exists.
+- It does **not** become `Accepted` by virtue of §0. Its status is unchanged: **`Proposed`**.

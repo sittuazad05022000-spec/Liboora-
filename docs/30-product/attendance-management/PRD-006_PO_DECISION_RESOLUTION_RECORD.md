@@ -146,8 +146,15 @@ The temporary row was removed and the file restored to `28965ddbb4480a50` before
 **The third is not.** It fails against a Rank 4 document whose amendment belongs to the Architecture Owner, and
 governance step 10 forbids modifying it. Therefore:
 
-> **No new identifier may be added in ANY of the ten registers** — not `ATT-FR-152`, not `ATT-BR-046`, not
-> `ATT-CFG-025`, not a new `ATT-XC`, not a new `ATT-AC`.
+> **No new identifier may be added in ANY of the ten registers** — not the next free `ATT-FR` number, not the next
+> free `ATT-BR` number, not the next free `ATT-CFG` number, not a new `ATT-XC`, not a new `ATT-AC`.
+
+> **Why the hypothetical numbers are described rather than written out.** The Stage 5 gate resolves every
+> well-formed `ATT-<REG>-<NNN>` token in PRD-006 against the definition sites and reports any that resolves to no
+> definition as a **dangling reference**. It cannot distinguish a citation from a hypothetical, and it is correct not
+> to try. So PRD-006 itself never writes out an identifier that does not exist. **The gate transcripts quoted in
+> this record are the sole exception and are reproduced verbatim, unedited**, because a measurement that has been
+> tidied is no longer a measurement — and this record is not a file the dangling check reads.
 
 The plan this work inherited said only that new **`ATT-AC`** numbers should be avoided. That was **materially
 wrong**, and the amendment was re-shaped around the measurement rather than the assumption.
@@ -196,7 +203,7 @@ own §0.3: three suffixed successors already exist (`ATT-GAP-008a`, `016a`, `017
 `MM-GAP-010a`.
 
 **Consequence.** A genuinely new open question may be recorded as a suffixed successor **of a genuine parent**. It
-may **not** be used to smuggle in an unrelated question — `ATT-GAP-019` would fail §2F, and a suffix on an
+may **not** be used to smuggle in an unrelated question — a nineteenth `ATT-GAP` number would fail §2F, and a suffix on an
 unrelated parent would be dishonest labelling. Where neither is available, the question is recorded as a
 **Proposed ADR** instead, which is how Conflict 14 is handled.
 

@@ -21,6 +21,48 @@
 
 ---
 
+## 0. Product Owner decision recorded — a permission was granted, **not a mechanism**
+
+> **This section records a Product Owner answer. It does not change this ADR's status, and it does not close
+> `ATT-GAP-007`.** This ADR remains **`Proposed`**.
+
+| PO decision | Question asked | Answer as given |
+|---|---|---|
+| **`D-13`** | D4 — may a library-side device or software component participate in verification? | **YES** — permitted if Architecture/Security determines it necessary. *"**YES does NOT select a particular hardware, router, BSSID, API, gateway, certificate, or other mechanism.**"* |
+
+**`D-13` removes a constraint from the option space and adds nothing to it.** Before it, §4's candidate families
+divided into those needing only the student's device and those needing something on the library side, and it was
+unknown whether the latter were even permissible. They now are. **That is the entire content of the decision**, and
+the Product Owner wrote the disclaimer themselves — reproduced above verbatim so no reader can mistake a permission
+for a design.
+
+**What `D-13` does not supply.** No hardware, no router, no BSSID, no SSID, no network identifier of any kind, no API,
+no gateway, no certificate, no comparison rule, no format, no threshold, no timeout, no tolerance. The measurement in
+the banner above still holds after this section was written: `grep -ci "bssid"` = **0** and `grep -ci "ssid"` = **0**
+in `PRD-006`.
+
+### 0.1 `ATT-GAP-007` is **narrowed and still counted OPEN**
+
+`PRD-006` §32.1 continues to record `ATT-GAP-007` as 🔴 **OPEN**, and its verdict cell now reads *narrowed by `D-13`*
+rather than resolved. The reason is stated in one line and is the same reason this ADR exists:
+
+> **A permission is not a mechanism.** `ATT-XC-015` excludes the network-identity mechanism from `PRD-006`'s scope;
+> `D-13` widens who may take part in supplying one but names none, so nothing `ATT-XC-015` excludes has been
+> supplied. `ATT-XC-015` and `ATT-FR-039` are byte-identical apart from `ATT-FR-039`'s extension to cover the new
+> capability, which likewise names no mechanism.
+
+The ledger therefore moves from *3 resolved / 0 narrowed / 17 open* to *3 resolved / **1 narrowed** / 18 open* — the
+narrowing is recorded as a distinct state precisely so that it is not mistaken for a closure.
+
+### 0.2 ⛔ REMAINING ARCHITECTURE + SECURITY DECISION — unchanged
+
+Everything in §4, §5 and §6 stands. The mechanism, its identity format, its comparison rule and its spoof-resistance
+posture remain for the **Architecture Owner (ARB) with Security input**, as `ATT-GAP-007`'s owner entry already
+names. `D-13` tells that authority it *may* consider library-side options; it does not tell it what to choose, and it
+does not shorten the list of requirements a choice must satisfy.
+
+---
+
 ## 1. Context
 
 `PRD-006` deliberately refuses to specify how a Wi-Fi network is technically identified. `ATT-XC-015` (L708) excludes

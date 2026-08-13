@@ -431,12 +431,46 @@ def main():
     # Both are Proposed, both DEFINE nothing -- every ATT- token in either file
     # is a citation of a row defined in PRD-006 -- and both leave their gap
     # open, so no verdict in this script's output changes as a result.
+    #
+    # ADR-0024..ADR-0029 are listed on the identical reasoning, and the addition
+    # is recorded rather than performed silently -- the DOCUMENTATION_BASELINE.md
+    # L298 precedent, where prd007_traceability.py's ALLOWED was "widened by four
+    # NAMED files ... because recording a freeze requires the governance layer to
+    # cite the register it admits".  The same applies here for a decision rather
+    # than a freeze: six Proposed ADRs frame architecture questions raised by the
+    # Wi-Fi Presence request, and an ADR cannot state which rule it would change
+    # without naming that rule.  Every ATT- token in all six is a citation of a
+    # row DEFINED in PRD-006; none of the six DEFINES an identifier, none adds a
+    # register number, and all six remain Proposed -- so no verdict printed by
+    # this script changes as a result, and the gap ledger's counts are untouched.
+    #
+    # This failure was NOT pre-existing at the module's own baseline: it was
+    # introduced by commit 3982993, which added ADR-0024..ADR-0028 without the
+    # corresponding maintenance.  It is reported as such rather than presented as
+    # inherited.  It was found by running this gate BEFORE amending PRD-006, so
+    # the red could not be misattributed to the amendment.
+    #
+    # As with every entry above, the list stays enumerated FILE BY FILE rather
+    # than widened to docs/00-governance/ or to an ADR-00* glob, so a stray ATT-
+    # in any other governance document still fails the run.  Nothing else in this
+    # script is relaxed: the duplicate-definition, dangling-reference, orphan,
+    # count, range and section 2F cross-checks -- which are what detect a genuine
+    # collision -- are byte-identical.  DOCUMENTATION_BASELINE.md, PRD_REGISTRY.md
+    # and ADR-INDEX.md remain deliberately EXCLUDED, for the reason already given
+    # above: PRD-006 is not frozen, none of those three has been modified, and
+    # adding them would pre-authorise an edit that has not been made.
     ALLOWED = (
         "attendance-management/",
         "TRACEABILITY_MATRIX.md",
         "ADR-0021-attendance-management-configurable-defaults.md",
         "ADR-0022-bc-03-fileref-e22-consumer-list.md",
         "ADR-0023-ocr-vision-capability-ownership.md",
+        "ADR-0024-wifi-presence-session-architecture.md",
+        "ADR-0025-wifi-presence-attendance-integration.md",
+        "ADR-0026-study-hours-ownership.md",
+        "ADR-0027-authorized-wifi-network-identity.md",
+        "ADR-0028-android-background-presence-detection.md",
+        "ADR-0029-student-shift-visibility-for-attendance.md",
     )
 
     def outside(hits):

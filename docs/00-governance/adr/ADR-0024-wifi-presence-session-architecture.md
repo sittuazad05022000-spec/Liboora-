@@ -17,6 +17,40 @@
 
 ---
 
+## 0. Product Owner decision recorded — and what it does **not** decide
+
+> **This section records a Product Owner answer. It does not change this ADR's status.** Governance step 8 of the
+> instruction that produced it is explicit: *"do NOT mark an ADR Accepted merely because the Product Owner approved a
+> product decision."* Placement of an aggregate is an **Architecture Owner (ARB)** decision. This ADR therefore
+> remains **`Proposed`**.
+
+| PO decision | Question asked | Answer as given |
+|---|---|---|
+| **`D-16`** | D8 — what is in V1? | **A** — *"V1 includes all three: Wi-Fi Presence · Automatic Attendance · Study Hours/session-duration"* |
+| **`D-15`** | D6 — disconnect grace | **EXACTLY 5 MINUTES**; abandoned status **`INCOMPLETE / EXIT NOT VERIFIED`** |
+
+**What `D-16` settles.** The V1/V2 scoping question this ADR's §1 opened is answered: a Library Presence Session is
+**required for V1**, not deferred. §1's premise is confirmed rather than assumed, and no option in §4 is eliminated
+by that confirmation.
+
+**What `D-16` does not settle — the whole of this ADR's actual subject.** It does **not** choose an option in §4, does
+**not** create, name or place an aggregate, does **not** decide whether verified presence is or is not the *"second
+presence system of record"* forbidden by `ATT-BR-045`, and does **not** authorise the BC Map §8 amendment that §6
+records as necessary. Scope authority and structure authority are different authorities.
+
+**What the multi-device principle adds to constraint 4.** The Product Owner has since fixed the principle
+**`ONE STUDENT ACCOUNT + ONE OR MORE REGISTERED DEVICES = ONE ACTIVE STUDENT PRESENCE SESSION`**. §5 constraint 4
+already required one authoritative session per student; the principle **strengthens** it to bind regardless of how
+many of that student's devices are verified, and adds that a reconnection inside `D-15`'s five minutes must continue
+the **same** session rather than open a new one. The product rules are written in `PRD-006` §10A.2 and §10A.4. **The
+mechanism by which a session is held open across a device change is not decided here**, and is exactly what §4's
+placement question governs.
+
+**What `D-15` does *not* supply.** Five minutes is a grace **duration**. It is not a detection interval — that is
+`ADR-0028` — and it is not a second grace period; `PRD-006` §10A.4 records that no second one exists.
+
+---
+
 ## 1. Context
 
 The Product Owner has decided that **Wi-Fi Presence is required for V1** (Option B). That scope decision is genuine
@@ -127,3 +161,6 @@ accidentally violate them:
 - It does **not** decide the Study Hours question — that is `ADR-0026`.
 - It does **not** decide how attendance is produced from a session — that is `ADR-0025`.
 - It does **not** assert approval by any person or body.
+- It does **not** treat the Product Owner's `D-16` scope answer as an ARB placement approval. §0 records the answer and states what it leaves open.
+- It does **not** decide how one logical session spans several registered devices, even though the Product Owner has fixed the one-session **rule**.
+- It does **not** become `Accepted` by virtue of §0. Its status is unchanged: **`Proposed`**.

@@ -22,6 +22,48 @@
 
 ---
 
+## 0. Product Owner decision recorded — §4.1's finding was accepted, and this ADR is still `Proposed`
+
+> **This section records a Product Owner answer. It does not change this ADR's status.** The mode set is a
+> platform-wide rule carrying an invariant (`ATT-INV-007`); amending it is an **Architecture Owner (ARB)** decision.
+> Governance step 8 is explicit: *"do NOT mark an ADR Accepted merely because the Product Owner approved a product
+> decision."* This ADR remains **`Proposed`**.
+
+| PO decision | Question asked | Answer as given |
+|---|---|---|
+| **`D-10`** | D1 — may a Wi-Fi connection automatically create attendance, and how is it typed? | **A** — *"Library Wi-Fi connection may automatically create attendance. This is an additive 7th attendance type. **Do NOT fake it as FIXED_QR_WIFI.** Amend the required attendance-mode rules through the proper ADR/governance process."* |
+
+**§4.1's central finding was put to the Product Owner and was accepted.** This ADR reported that reusing
+`ATTENDANCE_MODE_FIXED_QR_WIFI` for a scan-less event *"records a false provenance"* and *"would be"* the bypass the
+Product Owner's own guard forbids. `D-10` answers by prohibiting that reuse **in the Product Owner's own words**. The
+finding was therefore not overruled, and §4.1 stands unamended and is not softened.
+
+**What `D-10` settles — three things, all of them product-side.**
+
+1. **Automatic attendance from verified Wi-Fi presence is approved product scope.** The question of *whether* the
+   capability is wanted is closed.
+2. **Option §4.1 is eliminated.** Reuse of `FIXED_QR_WIFI` is prohibited by the Product Owner as well as advised
+   against by this ADR. `PRD-006` §7.1a records the prohibition and `ATT-BR-007` is preserved **verbatim** — mode 3
+   is not reinterpreted to perform the new behaviour.
+3. **The route is Option A in shape** — an *additive seventh type*, amended *"through the proper ADR/governance
+   process"* — which is a direction to use this process, **not a substitute for its outcome**.
+
+**What `D-10` does not settle, and must not be read as settling.** A Product Owner may say *"there shall be a seventh
+type"*; only the ARB may **define** one. Specifically, `D-10` does **not**:
+
+- **name the mode constant.** §4.3 L47's `ATTENDANCE_MODE_WIFI_PRESENCE` remains *"name illustrative, not proposed"*, and `PRD-006` §7.1a states *"No mode constant is named here, and none is reserved."*
+- **amend `ATT-FR-007`'s closed enumeration, `ATT-XC-010` or `ATT-INV-007`.** `PRD-006` records that a seventh is *authorised in product scope and not yet definable*; the enumeration itself is unchanged.
+- **authorise the `TRACEABILITY_MATRIX.md` §2F amendment** that §7 records as necessary. That matrix is **Rank 4**.
+- **create the register entries a seventh mode needs.** Measurement establishes that **no new identifier may be added to any of the ten registers** while §2F fixes their counts: a seventh configurable would need an `ATT-CFG` number beyond 24, and a criterion for it an `ATT-AC` number beyond 213. `PRD-006` §7.1a carries this as a three-row outstanding table, and the constraint was proven by injecting a temporary row and observing the §2F failure — it is measured, not assumed.
+
+**Consequence for §5 and §6.** Option B §4.1 is now closed by product decision; Option B §4.2 (presence as a
+*trigger* producing no new mode) remains architecturally available and is **not** eliminated by `D-10`, because a
+Product Owner's *"7th attendance type"* expresses the intended semantics rather than a storage design. **The ARB may
+still find that §4.2 satisfies `D-10`'s intent honestly.** This ADR does not decide that, and does not pretend
+`D-10` decided it.
+
+---
+
 ## 1. Context
 
 Option B requires that establishing a valid Wi-Fi Presence Session **automatically records attendance**.
@@ -128,3 +170,7 @@ Measured, so the decision is not made to look more expensive than it is:
 - It does **not** select Option A or Option B.
 - It does **not** claim the mode-preserving route is free — §4.1 records that it is not.
 - It does **not** assert approval by any person or body.
+- It does **not** treat `D-10` as an ARB approval of a seventh mode. §0 records what the Product Owner may and may not settle.
+- It does **not** soften or withdraw §4.1 now that the Product Owner has agreed with it — the finding is left exactly as originally written.
+- It does **not** eliminate Option B §4.2 on the strength of `D-10`, and does not claim that only Option A can satisfy it.
+- It does **not** become `Accepted` by virtue of §0. Its status is unchanged: **`Proposed`**.

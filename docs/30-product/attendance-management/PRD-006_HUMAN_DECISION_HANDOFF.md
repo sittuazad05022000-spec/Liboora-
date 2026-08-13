@@ -69,36 +69,59 @@ a reviewer, and none is ticked here.
 
 ## 2. Decisions for the **Product Owner**
 
+> **STATUS 2026-08-04 — all three Product Owner decisions RECEIVED and RECORDED.** The
+> Product Owner has ruled on **D-5**, **D-3a** and **D-16**. Each is transcribed below
+> exactly as authorised. **`ATT-GAP-017`'s owner column (L2178) reads *"Product owner"* —
+> singular** — so D-5 is within this role's sole authority and is validly decided.
+
 ### D-5 · `ADR-0021` D-1 — by what route are the seven defaults *and ranges* established?
 
-`ADR-0021` §4 costs four options and recommends none. Choose exactly one:
+`ADR-0021` §4 costs four options and recommends none.
 
-- ☐ **Option A** — The owner supplies the seven values and their ranges directly
-- ☐ **Option B** — Commission an anchored analysis; the owner ratifies its output
-  *(§4 note: "Whoever the owner commissions produces the anchors; **the product owner still ratifies.** An anchor is evidence, not authority")*
-- ☐ **Option C** — `PRD-006` supplies the **envelopes**; `CONFIGURATION_GUIDE.md` supplies the **values**
-- ☐ **Option D** — Descope the affected capabilities from V1
+- ✅ **APPROVED** — Product Owner, 2026-08-04. Authority: `PRD-006` §32 L2178 names
+  *"Product owner"* alone as `ATT-GAP-017`'s owner; `ADR-0021` §4.1 — *"Each requires **the
+  product owner to act**."*
 
-**Note on arithmetic.** `ATT-GAP-017` (L2178) asks for *"the **default values and allowed
-ranges**"* for seven settings = **14 answers**. Three defaults and three ranges exist
-(§3 below) = **6**. Whichever option is chosen must produce the remaining **8**.
+**Which of the four options was not named, and none is inferred here.** The approval is
+recorded as given. What the approval *does* and *does not* produce is arithmetic, not
+interpretation:
+
+| Route | What it would still require |
+|---|---|
+| **A** — owner supplies values and ranges directly | The six missing answers, from the Product Owner |
+| **B** — commissioned anchored analysis | An analysis, then *"the product owner still ratifies"* |
+| **C** — PRD holds envelopes, `CONFIGURATION_GUIDE` holds values | Six envelope halves, then six value halves |
+| **D** — descope the affected capabilities | An explicit Product Owner ruling descoping **Dynamic QR** and the **register-image OCR workflow** from V1. Not stated |
+
+**Measured consequence: D-5 = APPROVED authorises the route but does not itself supply a
+number.** Under A, B and C the remaining answers are still owed; under D a further explicit
+descope ruling is owed. See §3.1 for the recomputed arithmetic.
 
 ### D-3a · `ATT-CFG-014` — is Face attendance V1 at all?
 
 `ATT-GAP-015` (Owner: *"Product owner + architecture owner"*) records the conflict: EA
-v2.1 lists `Face Recognition (V3)`; the product instruction says V1. A prior Face V3
-decision is on record and **preserved unchanged** — but it has never been **ratified by
-ARB**, so it is carried, not resolved.
+v2.1 L754 lists `Face Recognition (V3)`; the product instruction says V1.
 
-- ☐ Confirm **Face is V3** → `ATT-CFG-014` needs no V1 value; `ATT-GAP-017` drops to 12 answers
-- ☐ Confirm **Face is V1** → `ATT-CFG-014` needs a default + envelope (D-3)
+- ✅ **APPROVED → Face Attendance = V3.** Product Owner, 2026-08-04. Consistent with the
+  prior ruling in `PRD-006_ATT-GAP-015_DECISION_RECORD.md` §1, which is **preserved
+  unchanged**, and with EA v2.1 L754 — the only face reference in the EA.
+
+**Effect, and its limit.** `ATT-CFG-014` leaves the V1 configuration surface, so
+`ATT-GAP-017` drops from **14 required answers to 12** and the `LIB-16.2` shortfall drops
+from four settings to **three**. **`ATT-GAP-015` does not close.** L2175's owner column is a
+**conjunction** — *"Product owner **+** architecture owner"* — and the ledger verdict at
+L2209 states the gap *"**cannot self-close**."* The Product Owner half is now final; the
+Architecture Owner half is listed in §5.
 
 ### D-16 · Admitting-ADR co-authority
 
 Per `ADR-0018`/`0019`/`0020`, freeze authorisation is *"**Product owner** (freeze
 authorisation); **Principal Enterprise Architect**; independent reviewer."*
 
-- ☐ Product Owner authorises freeze *(only after D-10 … D-12 pass)*
+- ✅ **APPROVED — Product Owner freeze authorisation given**, 2026-08-04. Recorded as the
+  **first of the three signatures** the precedent requires. It is held on the record and
+  takes effect when D-10 … D-12 pass and the two co-signatures exist. **It is not treated
+  as, and does not substitute for, the other two.**
 
 ---
 
@@ -119,6 +142,44 @@ PRD** — §16.3 L1165/1166/1177 still read *"Bounded distance — unresolved"* 
 duration — unresolved"*. They transfer into the PRD at **D-10**, in one coherent
 amendment together with the other four rows. Amending three rows alone would falsify
 §16.3's own preamble and leave the ten dependent *"seven configurables"* statements stale.
+
+**Re-confirmed 2026-08-04** by the Product Owner in the same instruction that supplied D-5,
+D-3a and D-16. Transcribed identically; not changed, widened, narrowed or reinterpreted.
+
+### 3.1 Recomputed arithmetic after D-5, D-3a and D-16
+
+`ATT-GAP-017` (L2178) asks for *"the **default values and allowed ranges**"* — two answers
+per setting. **D-3a removes `ATT-CFG-014` from the V1 surface**, so the denominator falls
+from 14 to 12.
+
+| Setting | Default | Allowed range | State |
+|---|---|---|---|
+| `ATT-CFG-011` | ✅ 50 m | ✅ 20–200 m | **COMPLETE** |
+| `ATT-CFG-012` | ✅ 30 m | ✅ 5–100 m | **COMPLETE** |
+| `ATT-CFG-023` | ✅ 15 min | ✅ 0–60 min | **COMPLETE** |
+| `ATT-CFG-014` | — | — | **OUT OF V1** by D-3a |
+| `ATT-CFG-005` | ⛔ | ⛔ | **2 answers owed** |
+| `ATT-CFG-006` | ⛔ | ⛔ | **2 answers owed** |
+| `ATT-CFG-019` | ⛔ | ⛔ | **2 answers owed** |
+
+| Measure | Before this instruction | **After D-5 + D-3a** | Freeze needs |
+|---|---|---|---|
+| `ATT-GAP-017` answers | 6 of 14 | **6 of 12 = 50.0%** | 12 of 12 |
+| Settings of the seven complete | 3 | **3, plus 1 descoped = 4 of 7 disposed** | 7 |
+| V1 settings still lacking a default | 4 | **3** — `005`, `006`, `019` | 0 |
+| `LIB-16.2` sentence 1 | 🔴 breached at 4 | 🔴 **breached at 3** | satisfied |
+| §16.3 rows reading *"unresolved"* | 7 | **7 — unchanged; nothing written yet** | 0 |
+
+**The precondition on step 2 of the instruction is therefore measurably unmet.** It reads
+*"complete the PRD-006 v1.3 → v1.4 amendment **only when all required configuration
+defaults/ranges are legitimately available**."* Six of twelve are available. `ATT-CFG-005`,
+`ATT-CFG-006` and `ATT-CFG-019` have **no value from any authority anywhere in the
+repository** — re-searched this run. Writing any of the six missing answers would be
+inventing a value, which the same instruction forbids.
+
+**Why D-5 = APPROVED does not by itself supply them.** D-5 authorises the *route*.
+`ADR-0021` §4 Option A's own text confirms the distinction: *"Who acts | **Product owner**"* —
+the option names the actor, and the actor must then act by naming numbers. None was named.
 
 ---
 
@@ -164,14 +225,16 @@ not been opened"* (L331), and `SECURITY` is a **platform, not a bounded context*
 
 ### D-3 · `ATT-CFG-014` — Face match confidence envelope *(only if D-3a = V1)*
 
-Requires **Security input + ARB ratification** (`ADR-0021` L7: *"security input required
-for `ATT-CFG-014`"*; `ATT-GAP-012` owner: *"Architecture owner + Security Platform"*).
+- ⬜ **NO LONGER REQUIRED FOR V1 FREEZE.** D-3a = **V3**, so `ATT-CFG-014` leaves the V1
+  configuration surface and **no V1 default or envelope is owed for it**. `ADR-0021` §4
+  Option D states the principle: *"The settings cease to exist in V1, so **no default is
+  owed**."*
 
-`ADR-0021` §2.3 states why a type is not an envelope: *"`Bounded 0–1` is a **type**, not a
-range: it excludes `1.7` but admits `0.01` and `0.99` equally, and a face-match threshold
-of `0.01` authorises impersonation."*
-
-- ☐ Allowed range: `__________` · ☐ Default within it: `__________`
+**Deferred, not cancelled.** The setting still exists in §16.3 and will need a default and
+an envelope when Face is built in V3, at which point `ADR-0021` L7's *"security input
+required for `ATT-CFG-014`"* applies in full, together with `ATT-GAP-012`, `ATT-GAP-013` and
+`ATT-GAP-014`. `ADR-0021` §2.3 remains on the record for that occasion: *"`Bounded 0–1` is a
+**type**, not a range… a face-match threshold of `0.01` authorises impersonation."*
 
 ---
 
@@ -270,11 +333,20 @@ Not pre-filled. Signing is a human act and no signature is fabricated here.
 
 | Role | Decisions owned | Signature | Date |
 |---|---|---|---|
-| **Product Owner** | D-5, D-3a, D-16 | ______________________ | __________ |
-| **Security Platform** | D-1, D-2, D-3 *(input)* | ______________________ | __________ |
-| **Architecture Owner (ARB)** | D-6, D-4, D-7, D-9, D-9a, D-17, D-8 | ______________________ | __________ |
+| **Product Owner** | D-5, D-3a, D-16 | ✅ **DECIDED — recorded §2** | **2026-08-04** |
+| **Security Platform** | D-1, D-2 *(input — advisable, not required)* | ______________________ | __________ |
+| **Architecture Owner (ARB)** | D-6, D-4, D-7, D-9, D-9a, D-17, D-8, `ATT-GAP-015` half | ______________________ | __________ |
 | **Principal Enterprise Architect** | D-13 co-signature | ______________________ | __________ |
 | **Independent reviewer** | D-13 co-signature | ______________________ | __________ |
+
+**Product Owner row recorded as a decision, not a transcribed personal signature.** No name
+is written: `PRD_OWNERSHIP_MODEL.md` §7 rule 4 — *"**Never** record a personal name"* — and
+§6 rule 3 — *"**No row names a person.**"* The authority is the role, and the role has ruled.
+
+**D-3 is struck from the Security Platform row.** D-3a = V3 removes `ATT-CFG-014` from V1, so
+the one item for which `ADR-0021` L7 made security input *"required"* is no longer owed for
+this freeze. What remains for `005`/`006` is described by §4 Option A as *"**advisable**"* —
+which is why §4 below now records that the Product Owner may supply those two directly.
 
 ---
 

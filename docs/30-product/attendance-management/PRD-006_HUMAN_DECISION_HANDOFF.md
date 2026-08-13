@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| **Document** | The single consolidated decision sheet for [`PRD-006_ATTENDANCE-MANAGEMENT.md`](PRD-006_ATTENDANCE-MANAGEMENT.md) v1.3 DRAFT (sha256 `93ab1c60d740c4e0`) |
-| **Result** | ⛔ **NOT FROZEN — 6 of 15 conditions now satisfied** (§8). The Product Owner has decided **all six V1 defaults** and **`LIB-16.2` sentence 1 is satisfied 24/24 for the first time**. Two blockers remain: **three allowed ranges** (`ATT-CFG-005`/`006`/`019` — Product Owner) and the **Architecture Owner** items (three `Proposed` ADRs, the ARB half of Face V3, D-9, and the admitting ADR's two co-signatures) |
-| **Version** | v1.1 · 2026-08-04 |
+| **Document** | The single consolidated decision sheet for [`PRD-006_ATTENDANCE-MANAGEMENT.md`](PRD-006_ATTENDANCE-MANAGEMENT.md) **v1.4 DRAFT** (sha256 `28965ddbb4480a50`, moved from `93ab1c60d740c4e0` by the §16.3 amendment — the move is what re-triggers Stage 4) |
+| **Result** | ⛔ **NOT FROZEN — 9 of 15 conditions now satisfied** (§8). The Product Owner has now decided **all six V1 defaults *and* all six V1 allowed ranges**, `ATT-GAP-017` is **RESOLVED at 12/12**, `LIB-16.2` is satisfied in **both** sentences, and §16.3 is **amended in v1.4**. **Every Product-Owner-owned condition is discharged.** The six that remain are **all** Architecture-Owner-side: three `Proposed` ADRs, the ARB half of Face V3, D-9, the admitting ADR's two co-signatures, the baseline rank row and the registry status |
+| **Version** | v1.2 · 2026-08-04 |
 | **Purpose** | One place where every remaining `PRD-006` decision can be made by its existing role-holder. Replaces the need for any further investigation document |
 | **Supersedes as the operative sheet** | `PRD-006_CONSOLIDATED_DECISION_PACKAGE.md` · `PRD-006_ATT-GAP-017_OWNER_DECISION_REQUEST.md` · `PRD-006_ATT-GAP-017_DECISION_SHEET.md` — all retained as evidence, none contradicted |
 | **Roles used** | **Architecture Owner (ARB)** · **Product Owner** · **Security Platform** — all three pre-existing. **No new role, authority, person, rule, value or range is created** |
@@ -158,16 +158,18 @@ from 14 to 12.
 | `ATT-CFG-012` | ✅ 30 m | ✅ 5–100 m | **COMPLETE** |
 | `ATT-CFG-023` | ✅ 15 min | ✅ 0–60 min | **COMPLETE** |
 | `ATT-CFG-014` | — | — | **OUT OF V1** by D-3a |
-| `ATT-CFG-005` | ⛔ | ⛔ | **2 answers owed** |
-| `ATT-CFG-006` | ⛔ | ⛔ | **2 answers owed** |
-| `ATT-CFG-019` | ⛔ | ⛔ | **2 answers owed** |
+| `ATT-CFG-005` | ✅ 30 s | ✅ 15–120 s | **COMPLETE** |
+| `ATT-CFG-006` | ✅ 60 s | ✅ 30–300 s | **COMPLETE** |
+| `ATT-CFG-019` | ✅ 0.90 | ✅ 0.80–1.00 | **COMPLETE** |
 
-| Measure | Before this instruction | **After D-5 + D-3a** | Freeze needs |
-|---|---|---|---|
-| `ATT-GAP-017` answers | 6 of 14 | **6 of 12 = 50.0%** | 12 of 12 |
-| Settings of the seven complete | 3 | **3, plus 1 descoped = 4 of 7 disposed** | 7 |
-| V1 settings still lacking a default | 4 | **3** — `005`, `006`, `019` | 0 |
-| `LIB-16.2` sentence 1 | 🔴 breached at 4 | 🔴 **breached at 3** | satisfied |
+| Measure | Two instructions ago | After the six defaults | **After the three ranges** | Freeze needs |
+|---|---|---|---|---|
+| `ATT-GAP-017` answers | 6 of 14 | 9 of 12 = 75.0% | ✅ **12 of 12 = 100%** | 12 of 12 |
+| Settings of the seven complete | 3 | 3 + 1 descoped | ✅ **6 complete + 1 descoped = 7 of 7 disposed** | 7 |
+| V1 settings still lacking a default | 4 | 0 | ✅ **0** | 0 |
+| V1 settings still lacking a range | 4 | 3 — `005`, `006`, `019` | ✅ **0** | 0 |
+| `LIB-16.2` sentence 1 | 🔴 breached at 4 | ✅ satisfied 24/24 | ✅ **satisfied 24/24** | satisfied |
+| `LIB-16.2` sentence 2 | 🔴 latent | 🟡 latent | ✅ **satisfied — no longer latent** | satisfied |
 | §16.3 rows reading *"unresolved"* | 7 | **7 — unchanged; nothing written yet** | 0 |
 
 **The precondition on step 2 of the instruction is therefore measurably unmet.** It reads
@@ -228,7 +230,9 @@ not been opened"* (L331), and `SECURITY` is a **platform, not a bounded context*
 | Also blocks | `ATT-GAP-006` — *"What cryptographic construction secures a dynamic QR code?"* |
 
 - ✅ **Default: 30 seconds** — Product Owner, 2026-08-04. Verified `30 > 0` and `30 ≤ 60`
-- ⛔ **Allowed range: still not supplied** — the *Allowed domain* cell remains *"unresolved"*
+- ✅ **Allowed range: 15–120 seconds** — Product Owner, 2026-08-04. Verified against the
+  register predicate at both endpoints: `15 > 0` ✅ and `120 > 0` ✅, and the default sits
+  inside it — `15 ≤ 30 ≤ 120` ✅. Now written to §16.3 L1159 in `PRD-006` **v1.4**
 
 ### D-2 · `ATT-CFG-006` — Dynamic QR validity window
 
@@ -239,7 +243,20 @@ not been opened"* (L331), and `SECURITY` is a **platform, not a bounded context*
 
 - ✅ **Default: 60 seconds** — Product Owner, 2026-08-04. Verified `60 ≥ 30` — the D-1/D-2
   ordering constraint is satisfied, and `005` ≤ `006` holds in both directions
-- ⛔ **Allowed range: still not supplied** — the *Allowed domain* cell remains *"unresolved"*
+- ✅ **Allowed range: 30–300 seconds** — Product Owner, 2026-08-04. Verified `30 > 0` ✅,
+  `30 ≤ 60 ≤ 300` ✅, and against D-1: the floor `30 ≥ 15` and the ceiling `300 ≥ 120`, so
+  every D-1 value has at least one admissible D-2 partner. Now written to §16.3 L1160 in v1.4
+
+> **Disclosed, not corrected — the ranges overlap at their extremes.** Taken *as ranges*, the
+> pair admits one combination the predicate rejects: rotation at its maximum `120 s` with
+> validity at its minimum `30 s` gives `120 ≤ 30` = **false**. This is recorded rather than
+> repaired, on two grounds. Narrowing either approved endpoint would **change a Product-Owner
+> approved value**, which the instruction forbids; adding a cross-setting guard would **invent
+> a rule**. And it needs neither: `LIB-16.2`'s companion rule `LIB-16.3` already requires that
+> *"every setting change **MUST** be validated before persistence"* and that an invalid value
+> *"**MUST** be rejected with a specific reason"*, so the combination is refused at write time
+> by a rule that already exists. This follows the §8.1 precedent, where the 5.0× GPS
+> radius-to-accuracy ratio was disclosed and deliberately left unacted-upon.
 
 > **Forbidden source, recorded so it is not re-proposed.** `Authentication_PRD_v2.md` L92
 > carries *"OTP challenge validity | 5 minutes"* and L72 *"Minimum interval between OTP
@@ -279,10 +296,12 @@ required for `ATT-CFG-014`"* applies in full, together with `ATT-GAP-012`, `ATT-
 Current §16.3 (L1173): Domain **`Bounded 0–1 — unresolved`** · Validation *"Within bound"*.
 
 - ✅ **Default: 0.90** — Product Owner, 2026-08-04. Verified `0 ≤ 0.90 ≤ 1`
-- ⛔ **Allowed domain: still not supplied.** `ADR-0021` §2.3 makes this concrete for exactly
-  this setting: *"`Bounded 0–1` is a **type**, not a range: it excludes `1.7` but admits
-  `0.01` and `0.99` equally."* With the domain unresolved, a tenant may set `0.01` and treat
-  near-anything as high-confidence OCR — the default does not constrain that
+- ✅ **Allowed domain: 0.80–1.00** — Product Owner, 2026-08-04. Verified `0 ≤ 0.80 ≤ 1` ✅,
+  `0 ≤ 1.00 ≤ 1` ✅, and `0.80 ≤ 0.90 ≤ 1.00` ✅. This **closes the exact risk** `ADR-0021`
+  §2.3 named: *"`Bounded 0–1` is a **type**, not a range: it excludes `1.7` but admits `0.01`
+  and `0.99` equally."* `0.80–1.00` is a genuine narrowing of that type, and the `0.01`
+  configuration the ADR warned about is now rejected by the register itself rather than only
+  discouraged by the default. Now written to §16.3 L1173 in v1.4
 
 > **Note on D-6.** OCR = **V1** is now ruled, so `ATT-CFG-019` is firmly inside the V1
 > surface. This **strengthens** rather than removes the need for D-6: a V1 setting must have
@@ -387,9 +406,12 @@ which is why §4 below now records that the Product Owner may supply those two d
 
 ## 8. Freeze determination — this run
 
-Re-measured **2026-08-04, after the FINAL ONE-SHOT FREEZE instruction** supplied
-`ATT-CFG-005` = 30 s, `ATT-CFG-006` = 60 s, `ATT-CFG-019` = 0.90, Dynamic QR = V1,
-OCR = V1, Face = V3, and D-5/D-3a/D-16 = APPROVED.
+Re-measured **2026-08-04, after the PRODUCT OWNER FINAL APPROVAL instruction** supplied the
+three outstanding allowed ranges — `ATT-CFG-005` **15–120 s**, `ATT-CFG-006` **30–300 s**,
+`ATT-CFG-019` **0.80–1.00** — completing a set whose defaults (30 s / 60 s / 0.90), scope
+rulings (Dynamic QR = V1, OCR = V1, Face = V3) and D-5/D-3a/D-16 approvals were already
+recorded. Every row below was re-measured against the repository in this run, not carried
+forward from the previous one.
 
 | # | Condition | Status |
 |---|---|---|
@@ -399,34 +421,54 @@ OCR = V1, Face = V3, and D-5/D-3a/D-16 = APPROVED.
 | 4 | `ATT-CFG-011`/`012`/`023` defaults + ranges | ✅ complete and re-confirmed |
 | 5 | `ATT-CFG-014` envelope | ✅ **CLEARED by D-3a** — V3; no V1 default owed |
 | 6 | **`LIB-16.2` sentence 1** — *"every setting MUST have a documented default"* | ✅ **SATISFIED 24/24** |
-| 7 | **Allowed ranges for `005`, `006`, `019`** | ⛔ **NOT SUPPLIED** — cells still read *"unresolved"* |
-| 8 | `ATT-GAP-017` closure | ⛔ **9 of 12 = 75.0%** — needs 12 |
-| 9 | §16.3 amended → v1.4 | ⛔ blocked by 7 — step 4 requires a *genuinely complete* set |
-| 10 | `ADR-0021`/`0022`/`0023` dispositions | ⛔ all `Proposed` — re-verified this run |
+| 7 | **Allowed ranges for `005`, `006`, `019`** | ✅ **15–120 s · 30–300 s · 0.80–1.00** — each endpoint *and* each default verified against its own register predicate, and `005`/`006` verified mutually |
+| 8 | `ATT-GAP-017` closure | ✅ **12 of 12 = 100% — RESOLVED**; `LIB-16.2` satisfied in **both** sentences |
+| 9 | §16.3 amended → v1.4 | ✅ **DONE** — six *Default* + six *Allowed domain* cells written, `ATT-CFG-014` = *Not in V1*; Stage 5 and Stage 6 both re-run **PASS** |
+| 10 | `ADR-0021`/`0022`/`0023` dispositions | ⛔ all three still `Proposed` — **re-read this run** at L5 of each file: *"Proposed — not binding"* |
 | 11 | `ATT-GAP-015` closure (Face V3) | ⛔ **PO half ✅ / ARB half ⛔** — L2175 owner is a conjunction |
 | 12 | D-9 governance confirmation | ⛔ *"not asserted as settled"* |
 | 13 | Admitting ADR for `BC-03` | ⛔ does not exist; needs **PEA + independent reviewer** beside D-16 |
 | 14 | `DOCUMENTATION_BASELINE.md` §3 row | ⛔ **0** rows for `attendance-management` |
 | 15 | `PRD_REGISTRY.md` status | ⛔ `` `PLANNED` `` (L236) |
 
-**Verdict: ⛔ NOT FROZEN — but six of fifteen conditions are now genuinely satisfied.**
+**Verdict: ⛔ NOT FROZEN — nine of fifteen conditions are now satisfied, and the six that
+remain are all held by a single party that is not the Product Owner.**
 
 | Measure | Previous run | **This run** |
 |---|---|---|
-| **Defaults supplied** | 3 of 6 | ✅ **6 of 6 — COMPLETE** |
-| Allowed ranges supplied | 3 of 6 | **3 of 6** |
-| `ATT-GAP-017` answers | 6 of 12 | **9 of 12 = 75.0%** |
-| `LIB-16.2` sentence 1 | 🔴 breached at 3 | ✅ **SATISFIED — first time** |
-| Product Owner decisions outstanding | 0 | **0** |
+| **Defaults supplied** | 6 of 6 | ✅ **6 of 6 — COMPLETE** |
+| **Allowed ranges supplied** | 3 of 6 | ✅ **6 of 6 — COMPLETE** |
+| `ATT-GAP-017` answers | 9 of 12 = 75.0% | ✅ **12 of 12 = 100% — RESOLVED** |
+| `LIB-16.2` sentence 1 | ✅ satisfied 24/24 | ✅ **satisfied 24/24** |
+| `LIB-16.2` sentence 2 | 🟡 latent only | ✅ **satisfied on two independent grounds** |
+| §16.3 amended | ⛔ blocked | ✅ **v1.4, one coherent amendment** |
+| Conditions satisfied | 6 of 15 | ✅ **9 of 15** |
+| **Product Owner conditions outstanding** | 3 | ✅ **0 — the role is fully discharged** |
+| Architecture-Owner-side conditions outstanding | 6 | ⛔ **6 — unchanged, and unchangeable from here** |
 
-**Two distinct blockers remain, and they belong to different parties.**
+**The blocking set is now single-party.** Conditions 10, 11, 12, 13, 14 and 15 all require the
+**Architecture Owner** or a co-signature the Architecture Owner's process produces. There is no
+longer any product-side decision, value, range or scope ruling that would move any of them:
 
-1. **Three allowed ranges** — `ATT-CFG-005`, `006`, `019`. Product Owner authority
-   (L2178, singular). Nothing else is needed for the entire §16.3 → v1.4 → Stage 4 →
-   baseline → registry chain, which is mechanical once the set is complete.
-2. **The Architecture Owner items** — conditions 10, 11, 12 and 13. `ADR-0021`/`0022`/`0023`
-   acceptance, the ARB half of Face V3, the D-9 governance reading, and the admitting ADR's
-   two co-signatures (Principal Enterprise Architect, independent reviewer) beside D-16.
+1. **Conditions 10 / 11 / 12** — `ADR-0021`, `ADR-0022` and `ADR-0023` acceptance; the
+   **architecture-owner half** of `ATT-GAP-015` (its §32 owner cell is the conjunction
+   *"Product owner + architecture owner"*, and only the first half has ruled); and the **D-9**
+   governance reading, which `ADR-0021` §5 records as *"a supported reading… not asserted as
+   settled"*.
+2. **Condition 13** — the admitting ADR for `BC-03`, which needs the **Principal Enterprise
+   Architect** and an **independent reviewer** beside the already-recorded D-16.
+3. **Conditions 14 / 15** — the `DOCUMENTATION_BASELINE.md` §3 row at an assigned precedence
+   rank (measured **0** rows for `attendance-management` this run) and the `PRD_REGISTRY.md`
+   status, still `` `PLANNED` `` at L236. Both are *conferred*, per `PRD_LIFECYCLE.md`:
+   *"Freeze is **conferred, not claimed**."*
+
+> **Why the Product Owner cannot take this further, stated plainly.** `PRD_OWNERSHIP_MODEL.md`
+> §2.2 gives the Product Owner *"whether a requirement is correct and in scope"* and gives the
+> Architecture Owner *"ADR approval; any Rank 1–5 document change; every §11 exception"*, with
+> §5 adding *"**Only the Architecture Owner approves.**"* The value decisions recorded in this
+> sheet were inside product authority and have been executed in full. The remaining six are
+> outside it. Supplying them from here would be fabricating an approval, which is the one thing
+> this package exists to avoid.
 
 ---
 
@@ -450,4 +492,6 @@ OCR = V1, Face = V3, and D-5/D-3a/D-16 = APPROVED.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-04 | **The three outstanding allowed ranges recorded; every Product-Owner-owned condition on this sheet is now discharged.** D-1 `ATT-CFG-005` **15–120 s**, D-2 `ATT-CFG-006` **30–300 s**, D-4 `ATT-CFG-019` **0.80–1.00**, all Product Owner, 2026-08-04. Each was verified against the validation predicate stated in its own §16.3 row at **both endpoints and at the default** — nine checks, all passing — and `005`/`006` were verified **mutually**, since each predicate references the other. One computed observation is **disclosed and deliberately left unrepaired**: across the full ranges, rotation `120 s` with validity `30 s` violates *"≤ validity window"*; narrowing an approved endpoint would change a Product-Owner approved value and adding a cross-setting guard would invent a rule, so neither was done — `LIB-16.3` already rejects that combination before persistence, and the §8.1 GPS-ratio precedent is followed. `ATT-CFG-019`'s `0.80–1.00` is recorded as a **genuine narrowing of the type**, closing the `0.01` risk `ADR-0021` §2.3 named. `ATT-GAP-017` moves **9 of 12 → 12 of 12 = 100%, RESOLVED**, and `LIB-16.2` is satisfied in **both** sentences. Header updated to the amended subject document: **v1.4 DRAFT**, sha256 **`28965ddbb4480a50`** (from `93ab1c60d740c4e0`) — the move is what re-triggers Stage 4. §8 re-measured **6 of 15 → 9 of 15** satisfied, with conditions 10/11/14/15 **re-read from the repository this run** rather than carried forward: three ADRs still `Proposed` at L5 of each file, **0** baseline rows for `attendance-management`, registry still `PLANNED` at L236, `ATT-GAP-015`'s owner still a conjunction with the architecture-owner half open. The blocking set is now recorded as **single-party** — all six remaining conditions are Architecture-Owner-side — and **Product Owner conditions outstanding = 0**. Also records the `ATT-CFG-005` = 30 s coincidence with `Authentication_PRD_v2.md` L72 as raising rather than lowering the §2.1 prohibition. **No approval, signature, authority, value, range or governance rule was invented; no ADR was accepted; no ranked document was modified; no gate script was touched.** |
+| **v1.1** | 2026-08-04 | *(Row added retrospectively in v1.2 — the v1.1 edit updated the header to v1.1 but did not append its own change-history row. Recorded here rather than silently corrected.)* Registered the six Product Owner **defaults** (`ATT-CFG-005` 30 s, `006` 60 s, `019` 0.90 alongside the pre-existing `011`/`012`/`023`), the scope rulings **Dynamic QR = V1**, **OCR = V1**, **Face = V3** (`D-3a`), and **D-5 / D-3a / D-16 = APPROVED**. Struck D-3 from the Security Platform row, since D-3a removes `ATT-CFG-014` from V1. Recorded `LIB-16.2` sentence 1 as **satisfied 24/24 for the first time**, `ATT-GAP-017` at **9 of 12**, and the freeze determination at **6 of 15** conditions satisfied, with the three allowed ranges left explicitly **⛔ NOT SUPPLIED** rather than derived. |
 | **v1.0** | 2026-08-04 | Created as the single consolidated human-decision handoff, replacing further investigation documents. Consolidates **all** remaining `PRD-006` decisions into one sheet: D-1 `ATT-CFG-005`, D-2 `ATT-CFG-006`, D-3 `ATT-CFG-014` envelope, D-3a Face V1-vs-V3, D-4 `ATT-CFG-019`, D-5 `ADR-0021` D-1 route, D-6 `ADR-0023`, D-7 `ADR-0022`, D-8 Security Platform binding, D-9 `ADR-0021` D-2, D-9a where D-2 sits, D-10…D-15 the mechanical amendment/gate/baseline/registry chain, D-16/D-13 admitting-ADR authorisation, D-18 freeze. Dependency order given as a graph with three load-bearing orderings (D-6 → D-4; D-8 → D-1/D-2; D-1 → D-2 per *"Must be ≥ rotation interval"*). Uses only the three pre-existing roles and records **no personal name**, per §7 rule 4. Preserves the three PO decisions unchanged and discloses that they are **not yet in §16.3**, transferring at D-10 with the other four rows. Records the forbidden OTP borrow (`ADR-0021` §2.1) so it is not re-proposed, the 14-answer arithmetic (6 available), the ten dependent *"seven configurables"* statements, the independent `LIB-16.2` breach (`ADR-0021` L286; 0 precedent for freezing with a live Rank 3 breach), and — in the PRD's favour — that **PRD-006 passes the `ADR-0020` L128 determinism test**, so open gaps alone would not bar freeze. Freeze determination: **NOT FROZEN**, 12 conditions blocking, measured at 0 ticked approvals / 32 open boxes / 0 signed commits / all seven §16.3 rows *"unresolved"*. No value chosen, no ADR accepted, no signature fabricated, no authority invented, no gate weakened, no ranked document modified. |

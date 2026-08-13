@@ -213,7 +213,7 @@ the opposite of citing it as an obligation.
 
 > **On the ⛔ **BLOCKED** marker.** **Eleven** tasks carry it — `IMPL-630`, `IMPL-631`, `IMPL-633`, `IMPL-634`,
 > `IMPL-638`, `IMPL-639`, `IMPL-643`, `IMPL-648`, `IMPL-649`, `IMPL-677`, `IMPL-679`, counted from the
-> table rather than estimated. **`IMPL-667` was the twelfth and is now unblocked**, because `ATT-GAP-017` was
+> table rather than estimated. **`IMPL-667` was the twelfth and is now cleared**, because `ATT-GAP-017` was
 > answered by its named owner in `PRD-006` v1.4 — the only one of these blockers whose owner has decided. The
 > other eleven are untouched by that decision. A blocked task is **not** deferred and **not** removed:
 > its requirement exists in the PRD and must be represented, so the task exists and its *permitted deliverable is
@@ -323,7 +323,7 @@ the opposite of citing it as an obligation.
 | `IMPL-664` | The five Wi-Fi and GPS environment configurables | `platform/data` | P1 | `IMPL-625`, `IMPL-628`, `IMPL-660` | `IMPL-667` | `ATT-CFG-008`–`ATT-CFG-012` | Approved networks, strictness, coordinates, radius and minimum accuracy are all tenant-scoped and read through the port; changing one alters only its own mode |
 | `IMPL-665` | The five Face and OCR threshold configurables | `platform/data` | P2 | `IMPL-635`, `IMPL-647`, `IMPL-660` | `IMPL-667` | `ATT-CFG-013`–`ATT-CFG-015`, `ATT-CFG-019`, `ATT-CFG-020` | Enrollment-required, match threshold, liveness-required, OCR high-confidence threshold and unattended-creation are read through the port; the unattended-creation switch defaults to presenting rather than creating |
 | `IMPL-666` | The four operational configurables — check-out tracking, staff correction, correction window, parent visibility | `platform/data` | P1 | `IMPL-651`, `IMPL-660` | `IMPL-667`, `IMPL-669` | `ATT-CFG-021`–`ATT-CFG-024` | Each is tenant-scoped, read through the port, and observably changes the behaviour it names; none disables an invariant |
-| `IMPL-667` | A configurable whose default is unresolved **has no value and none may be substituted** — plus the operability check and the Owner-facing disclosure. ✅ **UNBLOCKED**: `ATT-GAP-017` is **RESOLVED** in `PRD-006` v1.4, so the `LIB-16.2` breach is closed and this task may proceed. **Its scope does not shrink** — `ATT-BR-043`/`ATT-FR-149`/`ATT-FR-150`/`ATT-FR-151` still govern any setting that has no value, including `ATT-CFG-014` while Face is V3 | `app` | P1 | `IMPL-662`, `IMPL-663`, `IMPL-664`, `IMPL-665`, `IMPL-666` | `IMPL-679` | `ATT-BR-038`, `ATT-BR-043`, `ATT-BR-044`, `ATT-FR-149`, `ATT-FR-150`, `ATT-FR-151` | A test asserts that each defaultless setting resolves to *no value*, that a mode requiring one is unavailable with a recorded reason rather than falling back to a guess, that **no attendance is accepted or rejected by evaluating a valueless setting**, and that a tenant configuring nothing is still fully operable. **No default is invented** — the six V1 values come from `PRD-006` §16.3 as decided by the Product Owner, and the refusal behaviour is still exercised against `ATT-CFG-014` |
+| `IMPL-667` | A configurable whose default is unresolved **has no value and none may be substituted** — plus the operability check and the Owner-facing disclosure. ✅ **CLEARED**: `ATT-GAP-017` is **RESOLVED** in `PRD-006` v1.4, so the `LIB-16.2` breach is closed and this task may proceed. **Its scope does not shrink** — `ATT-BR-043`/`ATT-FR-149`/`ATT-FR-150`/`ATT-FR-151` still govern any setting that has no value, including `ATT-CFG-014` while Face is V3 | `app` | P1 | `IMPL-662`, `IMPL-663`, `IMPL-664`, `IMPL-665`, `IMPL-666` | `IMPL-679` | `ATT-BR-038`, `ATT-BR-043`, `ATT-BR-044`, `ATT-FR-149`, `ATT-FR-150`, `ATT-FR-151` | A test asserts that each defaultless setting resolves to *no value*, that a mode requiring one is unavailable with a recorded reason rather than falling back to a guess, that **no attendance is accepted or rejected by evaluating a valueless setting**, and that a tenant configuring nothing is still fully operable. **No default is invented** — the six V1 values come from `PRD-006` §16.3 as decided by the Product Owner, and the refusal behaviour is still exercised against `ATT-CFG-014` |
 | `IMPL-668` | Configuration change validation, atomicity, effect timing, and the audit fact | `domain/library` | P1 | `IMPL-660`, `IMPL-662` | `IMPL-679` | `ATT-FR-101`–`ATT-FR-105` | An invalid value is rejected with a specific reason and the previous value survives; no change is partially applied; a change takes effect from the next operation and never retroactively; disabling a mode stops new attendance without altering existing records; every change emits an audit fact with the actor |
 | `IMPL-669` | Corrections — append-only, actor and reason recorded, method immutable, history retrievable, window honoured, and **never silently** | `domain/library` | P1 | `IMPL-608`, `IMPL-609`, `IMPL-666` | `IMPL-675` | `ATT-FR-110`–`ATT-FR-116`, `ATT-BR-040`, `ATT-INV-011` | A correction appends and never destructively updates; it carries actor and reason; it cannot change the original recorded method; a missed check-out is correctable and the result shows both the original and the correction; a correction outside the configured window is refused; full history is retrievable by an authorised actor; no path mutates attendance without producing a correction record |
 
@@ -404,19 +404,26 @@ two true statements. Partitioning the 285 obligations by whether **any** unblock
 
 | Reachability | Count | Share |
 |---|---|---|
-| Claimed by at least one **unblocked** task | **242** | 84.9% |
-| Reachable **only** through a ⛔ blocked task | **43** | 15.1% |
+| Claimed by at least one unobstructed task | **248** | 87.0% |
+| Reachable **only** through a ⛔ blocked task | **37** | 13.0% |
 | Claimed by no task | **0** | 0% |
 
-The 43 divide into four groups, each traceable to a named authority rather than to a difficulty: the **Face** block
+The 37 divide into three groups, each traceable to a named authority rather than to a difficulty: the **Face** block
 (`ATT-FR-052`, `053`, `062`–`064`, `107`–`109`, `ATT-BR-021`, `022`, `039`, `ATT-XC-019`–`021`) behind
 `ATT-GAP-009`/`012`/`013`/`014`/`015`; the **register-image and OCR** path (`ATT-FR-070`, `071`, `078`–`080`,
-`ATT-BR-026`) behind `ATT-GAP-010`/`011`/`016`; the **valueless configurables** (`ATT-FR-149`–`151`, `ATT-BR-038`,
-`043`, `044`) behind `ATT-GAP-017`; and the **offline and non-functional** set (`ATT-PO-011`–`014`,
+`ATT-BR-026`) behind `ATT-GAP-010`/`011`/`016`; and the **offline and non-functional** set (`ATT-PO-011`–`014`,
 `ATT-NFR-002`–`014`) behind `ATT-GAP-016a`/`017a`.
 
+> **This partition moved in v1.4, and the movement was measured rather than assumed.** It read **242 / 43** while
+> `ATT-GAP-017` was open. The Product Owner's decision cleared `IMPL-667`, and with it the fourth group — the
+> **valueless configurables** (`ATT-FR-149`–`151`, `ATT-BR-038`, `043`, `044`, six obligations) — which had been
+> reachable only through that one blocked task and now has an unobstructed route. `248 − 242 = 6` and `43 − 37 = 6`
+> are the same six, which is the arithmetic check that the group moved rather than that something was recounted.
+> Nothing else in the partition changed: the Face, OCR and non-functional groups are untouched, because a value
+> decision was not the thing blocking any of them.
+
 > **This is the number a reader should take from §6, not the 100%.** Every obligation has a path *or* a documented
-> blocker — which is what the Stage 6 gate asks — but roughly one obligation in seven cannot be started until someone
+> blocker — which is what the Stage 6 gate asks — but roughly one obligation in eight cannot be started until someone
 > with authority answers a question. The `ATT-NFR-*` concentration is the sharpest case: **13 of the 14**
 > non-functional obligations are reachable only through a blocked task — **11** behind `IMPL-679`, plus
 > `ATT-NFR-012` behind `IMPL-677` (offline) and `ATT-NFR-014` behind `IMPL-649` (the OCR path) — leaving
@@ -553,8 +560,8 @@ accident.
 | That the traceability matrix was updated | `TRACEABILITY_MATRIX.md` is **byte-identical**. Stage 5 registered the prefixes in §2F; Stage 6's gate names no matrix edit, and `PRD-005`'s and `PRD-007`'s Stage 6 made none |
 | That an ADR was created | **None.** No ranked document changed, so `DOCUMENTATION_BASELINE.md` §7 is not triggered |
 | That estimates exist | **None is given.** No sizing was requested. An invented figure would be the same defect class as an invented default — a number with no source that a later reader treats as a commitment |
-| That 80 tasks complete `BC-03` | They cover `PRD-006` v1.3's **285 obligations**. The **18 open `ATT-GAP-*`** remain undecided and unimplemented, and **12** tasks are blocked behind them |
-| That the 12 blocked tasks can be unblocked by better engineering | Each is blocked by a **decision**, not a difficulty. §4 names the authority for each: architecture owner, product owner, legal counsel or Security Platform. No amount of implementation skill closes one |
+| That 80 tasks complete `BC-03` | They cover `PRD-006` v1.4's **285 obligations**. The **17 open `ATT-GAP-*`** remain undecided and unimplemented, and **11** tasks are blocked behind them |
+| That the 11 blocked tasks can be cleared by better engineering | Each is blocked by a **decision**, not a difficulty. `IMPL-667` was the twelfth, and what cleared it was a Product Owner decision, not engineering — which is the rule, not the exception to it. §4 names the authority for each: architecture owner, product owner, legal counsel or Security Platform. No amount of implementation skill closes one |
 | That face verification is deliverable | `IMPL-630`–`639` exist to record the boundary. `ATT-FR-064` **blocks the build outright** while `ATT-GAP-012` and `ATT-GAP-014` are open, and `ATT-GAP-015` leaves even the version class unratified |
 | That the seven valueless configurables have values | **Six of them now do**, decided by the Product Owner and recorded in `PRD-006` §16.3 — `ATT-GAP-017` is **RESOLVED** and the `LIB-16.2` breach is **closed in both sentences**. The seventh, `ATT-CFG-014`, has no V1 value because Face is **V3**. `IMPL-667` still implements `ATT-BR-043`/`ATT-FR-149`/`ATT-FR-150`/`ATT-FR-151` — the behaviour in the **absence** of a value — because those rules were never a substitute for the values and are not spent by them |
 | That the 213 `ATT-AC-*` are bound to tests | They are **allocated to waves** in §6. Binding each to a named test is `IMPL-679`'s deliverable, and `IMPL-679` is itself blocked |
@@ -591,7 +598,7 @@ A task is done when **all** hold. Items 3 and 4 block merge (`TRACEABILITY_MATRI
 > **non-existent** edges — Analytics, File & Media, AI Assistance, Search Indexing — fail as structural
 > impossibilities rather than as review findings.
 
-> **A ninth item applies to the 12 blocked tasks, and it is not a test.** A blocked task is done when its
+> **A ninth item applies to the 11 blocked tasks, and it is not a test.** A blocked task is done when its
 > **boundary** is asserted and its gap is still open — `IMPL-630` is done when face verification is *unbuildable*,
 > not when it works. Any commit that makes a blocked task's capability function has closed an `ATT-GAP-*` by
 > implementation choice, which §0.4 forbids, and item 8's gap check is what catches it.

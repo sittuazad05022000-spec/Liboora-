@@ -33,10 +33,11 @@
 |---|---|---|
 | **`D-10`** | D1 — may a Wi-Fi connection automatically create attendance, and how is it typed? | **A** — *"Library Wi-Fi connection may automatically create attendance. This is an additive 7th attendance type. **Do NOT fake it as FIXED_QR_WIFI.** Amend the required attendance-mode rules through the proper ADR/governance process."* |
 
-**§4.1's central finding was put to the Product Owner and was accepted.** This ADR reported that reusing
+**`D-10` agrees with §4.1's central finding. Whether it was reached by reading it is not claimed here, because that
+cannot be verified from the answer.** What is observable is that the two coincide. This ADR reported that reusing
 `ATTENDANCE_MODE_FIXED_QR_WIFI` for a scan-less event *"records a false provenance"* and *"would be"* the bypass the
-Product Owner's own guard forbids. `D-10` answers by prohibiting that reuse **in the Product Owner's own words**. The
-finding was therefore not overruled, and §4.1 stands unamended and is not softened.
+Product Owner's own guard forbids. `D-10` prohibits that reuse **in the Product Owner's own words**. The finding was
+therefore not overruled, and §4.1 stands unamended and is not softened.
 
 **What `D-10` settles — three things, all of them product-side.**
 

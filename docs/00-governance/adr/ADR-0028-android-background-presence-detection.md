@@ -18,6 +18,70 @@
 > grep -in "android"                          → 0 hits
 > grep -in "background|foreground service"    → 0 hits
 > ```
+
+---
+
+## 0. Product Owner decisions recorded — a row on §6's spectrum was chosen; **no interval was supplied**
+
+> **This section records Product Owner answers. It does not change this ADR's status.** The execution model, the
+> permission matrix and every numeric value remain **Architecture Owner (ARB) + platform owner** decisions. This ADR
+> remains **`Proposed`**.
+
+| PO decision | Question asked | Answer as given |
+|---|---|---|
+| **`D-14`** | D5 — how is presence detected? | **C** — app-open detection **+** periodic/background-aware checks **+** reconciliation. *"**Do not invent the periodic-check interval.** Do not claim Android background execution is guaranteed on every device."* |
+| **`D-15`** | D6 — disconnect grace | **EXACTLY 5 MINUTES**; abandoned status **`INCOMPLETE / EXIT NOT VERIFIED`** |
+
+### 0.1 `D-14` selects **row 3** of §6's spectrum
+
+§6 offered four models and declined to choose. The Product Owner has now chosen, and the answer maps onto **row 3**:
+
+| Model (§6, verbatim) | Status after `D-14` |
+|---|---|
+| Fully background, no user action | **not selected** — and `D-14`'s own clause forbids claiming it is guaranteed |
+| Background detection + user-visible ongoing indicator | **not selected**, not excluded as an implementation detail of row 3 |
+| **Opportunistic detection on app open / periodic wake, with reconciliation** | ✅ **SELECTED** — *"app-open detection + periodic/background-aware checks + reconciliation"* |
+| Explicit user action (student taps to start/end presence) | **not selected** |
+
+**§6's tension is resolved in the honest direction.** This ADR recorded that *"the lower rows are more reliable, and
+the upper rows are what the Product Owner asked for"*, and that a move down the spectrum would be *"a legitimate scope
+refinement, not a failure."* `D-14` is exactly that move: it takes the moderate-automation, low-platform-risk row
+rather than insisting on the top one. The phrase **"background-aware"** — the Product Owner's word — is read as
+*aware of and tolerant of background restriction*, not as an assertion that background execution works.
+
+**`D-14` also settles B-8 in principle.** *"Reconciliation"* is named explicitly as part of the model, which
+corroborates §7's finding that this behaviour is *"already half-solved"*. **B-8's mechanism is still not specified**,
+and §7's open portion is unchanged.
+
+### 0.2 ⛔ REMAINING ARCHITECTURE + PLATFORM DECISIONS — the substance of this ADR, still open
+
+**`D-14` chose a shape. It supplied no value and no mechanism.** Specifically, all of the following remain open:
+
+- **The periodic-check interval.** The Product Owner **prohibited** inventing it: *"Do not invent the periodic-check interval."* None is stated here, in `PRD-006`, or anywhere else. §5 constraint **C-3** independently forbids it — `ATT-NFR-003` states no latency or throughput figure, an omission carried as `ATT-GAP-017a`. **Two independent prohibitions now cover the same number, and it is not written.**
+- **B-1, B-2, B-4, B-5, B-6, B-7, B-9** — §3's behaviours remain 🔴 absent or ⚠️ partial exactly as tabulated. Choosing row 3 does not describe how a connectivity change is observed, what happens at each background limit, or what a reboot does.
+- **§4's permission matrix** — every *"To be decided"* cell is still to be decided. `D-14` names no permission and no API level.
+- **No timeout, backoff, retry count or battery budget** — none proposed, per §10.
+
+### 0.3 What `D-15`'s five minutes is, and what it is **not**
+
+`D-15` fixes a **grace duration**: after **all** of a student's valid devices lose presence, five minutes elapse
+before the session is treated as ended. It is written into `PRD-006` §10A.4 with its T0 defined, and the abandoned
+status string is `INCOMPLETE / EXIT NOT VERIFIED`, one of the seven fixed strings.
+
+> **Five minutes is not a detection interval, and must not be reused as one.** A grace period says how long to wait
+> before concluding a session ended; a check interval says how often to look. They are different quantities with
+> different owners — the first is the Product Owner's and is now answered, the second is the platform owner's and is
+> **deliberately unanswered**. Inferring the second from the first would be inventing the value `D-14` prohibits.
+
+`PRD-006` §10A.4 also records that **no second grace period exists**, so nothing here introduces one.
+
+### 0.4 The prohibition on overclaiming, honoured
+
+*"Do not claim Android background execution is guaranteed on every device."* No such claim is made here or in
+`PRD-006`. §1's measured void, §5's C-1 and C-2 accessibility constraints, and §6's platform-risk column all stand
+unamended. `PRD-006` §33.1 records background detection as **V1 scope that is not yet buildable**, and §10A.10 states
+what the student experience does **not** promise — neither document asserts reliability this ADR has no basis to
+assert.
 > The only OS-permission line in the entire document is `ATT-FR-044` (L739), which covers **denied location
 > permission**. There is nothing else to build on and nothing to contradict.
 
@@ -149,6 +213,10 @@ violating C-1…C-8.
 - It does **not** specify an execution model, service type or detection mechanism.
 - It does **not** state which permissions are required, when they are requested, or what happens if denied — beyond reusing the existing `ATT-FR-044` for denied location.
 - It does **not** propose any interval, timeout, backoff, retry count or battery budget.
-- It does **not** invent a grace period. That is on the decision sheet, per the Product Owner's §15.
+- It does **not** invent a grace period. The Product Owner supplied one as `D-15`; §0.3 records it and states that it is **not** a detection interval.
 - It does **not** amend `ATT-XC-021`, `ATT-FR-002`, `ATT-PO-011` or any other rule.
 - It does **not** assert approval by any person or body.
+- It does **not** state the periodic-check interval `D-14`'s model implies. Two independent prohibitions cover that number (`D-14`'s own clause and C-3 / `ATT-NFR-003`), and it is not written.
+- It does **not** treat `D-14`'s selection of §6 row 3 as specifying B-1…B-9 or any permission — §0.2 lists what remains open.
+- It does **not** claim Android background execution is guaranteed on any device, still less on every device.
+- It does **not** become `Accepted` by virtue of §0. Its status is unchanged: **`Proposed`**.

@@ -159,3 +159,6 @@ of which are the single network-identity question.
 - It does **not** close `ATT-GAP-007`.
 - It does **not** claim any mechanism is spoof-proof.
 - It does **not** assert approval by any person or body.
+- It does **not** treat `D-13`'s YES as selecting, narrowing to, or hinting at any mechanism — §0 reproduces the Product Owner's own disclaimer to that effect.
+- It does **not** close, downgrade or reclassify `ATT-GAP-007`, which remains 🔴 OPEN and merely **narrowed**.
+- It does **not** become `Accepted` by virtue of §0. Its status is unchanged: **`Proposed`**.

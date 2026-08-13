@@ -286,6 +286,32 @@ rules they route.
 **This is disclosed as maintenance caused by this work's own prior commit** (§3.1), not presented as a
 pre-existing condition.
 
+**Performed and verified.** The widening was applied and both gates re-run. `prd006_traceability.py` → **exit 0**,
+`collisions outside module: 0`, `dangling references: 0`, `orphan criteria: 0`, coverage **285/285 = 100.0%**.
+`prd006_task_coverage.py` → **exit 0**, 285/285, 11 BLOCKED tasks all naming their gap, 0 BLOCKED without a gap.
+
+---
+
+## 6.1 The five existing ADRs, updated to record the decisions — every one still `Proposed`
+
+Governance step 12 requires an ADR to be prepared as **`Proposed`** unless the legitimate authority has actually
+approved it, and step 8 forbids marking one **Accepted** *"merely because the PO approved a product decision."*
+Each of `ADR-0024`…`ADR-0028` therefore gained a **§0** recording the answers that bear on it, and a **status row
+that did not change**.
+
+| ADR | Decisions recorded | What the answer settled | What §0 states it did **not** settle | Status |
+|---|---|---|---|---|
+| **`ADR-0024`** session placement | `D-16`, `D-15` | Presence Session is **V1**, not deferred — §1's premise confirmed | Chooses no option in §4; creates, names and places **no aggregate**; does not rule on `ATT-BR-045`'s *"second presence system of record"*; does not authorise the BC Map §8 amendment | **`Proposed`** |
+| **`ADR-0025`** attendance integration | `D-10` | Automatic attendance is approved scope; **`FIXED_QR_WIFI` reuse prohibited** (§4.1's finding not overruled); route is Option A **in shape** | Names **no mode constant**; amends neither `ATT-FR-007` nor `ATT-XC-010` nor `ATT-INV-007`; does not authorise the Rank 4 §2F amendment; does **not** eliminate Option B §4.2 | **`Proposed`** |
+| **`ADR-0026`** Study Hours | `D-11` | Option 3's **shape**; Options 1, 2, 4 eliminated; `PRD-009` prohibited; Rank 3 `Student_Identity_PRD_v1.md` untouched | **§0.1 keeps the ARB's operational-fact ruling open by instruction**; `ATT-FR-145` deliberately unamended | **`Proposed`** |
+| **`ADR-0027`** network identity | `D-13` | Library-side components are **permissible** | Selects **no mechanism** — the PO's own disclaimer is reproduced verbatim; `ATT-GAP-007` **narrowed, still OPEN** | **`Proposed`** |
+| **`ADR-0028`** Android detection | `D-14`, `D-15` | **§6 spectrum row 3** selected; reconciliation named, corroborating §7 | **No periodic-check interval** (two independent prohibitions); B-1…B-9 and every §4 permission cell still open; §0.3 states 5 minutes is **not** a detection interval | **`Proposed`** |
+
+**Verified after editing:** all six ADRs (`ADR-0024`…`ADR-0029`) report `Status: Proposed — not binding`, and no file
+asserts approval by any person or body. One sentence in `ADR-0025` §0 was corrected during authoring because it
+claimed §4.1 *"was put to the Product Owner"* — a process assertion not evidenced by the answer. It now states only
+what is observable: that `D-10` and §4.1 **coincide**.
+
 ---
 
 ## 7. What this record does **not** do

@@ -108,6 +108,30 @@ Named explicitly so they are not taken later by someone who does not know they w
 
 ### 5.1 `O-5` — SELECTED: read-time composition over a registered read edge, with a two-axis card
 
+> **⚠ CHALLENGED IN PART — `E-27` may not have been necessary, and this notice is added rather than
+> the record being quietly rewritten.** A later freeze-readiness investigation found that **`E-27` conflicts
+> with a Rank 4 control this ADR never examined**: `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` L89/L202 permit
+> **only** `E-01`…`E-10` as Core Library **intra-cluster** edges, *"Enforced as an explicit allow-list, not
+> 'anything within the cluster'"* — and `BC-03` and `BC-04` are **both** cluster members.
+>
+> Worse for this ADR's reasoning, the same investigation found that **no new edge was needed at all**: frozen
+> Rank 3 **`SEAT-FR-104`** already requires the Seat Card to compose holder data **from `BC-01` at read time**,
+> while **no `BC-01` → `BC-04` edge exists anywhere in the map** — so read-time composition across a context
+> boundary is an already-ratified pattern that does **not** require its own registered edge.
+>
+> **The part of this ADR that survives is `O-5` itself** — read-time composition, the four-state card, nothing
+> stored, no fifth event, no overload of the existing check-out event. **The part under challenge is only its
+> *transport documentation*** — the decision to express that read as a new numbered map edge.
+>
+> See [`ADR-0033`](./ADR-0033-e27-core-cluster-edge-allowlist.md) (**`Proposed`**), which recommends
+> **withdrawing `E-27`** rather than widening the Rank 4 allow-list.
+>
+> **This ADR's status is unchanged — still `Accepted`.** It was accepted under a genuine conferral, and
+> silently un-accepting it now would itself be the unauthorised status change this engagement forbids;
+> **only the Architecture Owner can act on `ADR-0033`.** Until that decision exists, **implementers MUST NOT
+> treat `E-27` as settled architecture.**
+
+
 **`O-5` is `O-3` corrected by two facts discovered after `O-3` was drafted.** It is recorded as a fifth option rather
 than as an edit to `O-3`, because `O-3` overstated what is needed and understated what already exists, and both
 errors are load-bearing.
@@ -217,6 +241,18 @@ written before any ranked document was touched.
 | **Precedent** | `ADR-0016` — one cell, no structural change |
 
 ### 6.2 `LIBOORA_BOUNDED_CONTEXT_MAP.md` §7.1 — Rank 4
+
+> **⚠ THIS AMENDMENT IS THE ONE UNDER CHALLENGE.** This section checked that adding `E-27` satisfied BC Map
+> **L292** (*"If an edge is not in this table, it does not exist and adding it requires an ADR"*). **It did not
+> check `LIBOORA_MODULE_DEPENDENCY_MATRIX.md`**, which independently restricts Core Library intra-cluster edges
+> to `E-01`…`E-10`. **That omission is this ADR's own error, and it is recorded here — at the section that made
+> it — rather than only in a separate document a reader of this section might never open.**
+>
+> `ADR-0033` (**`Proposed`**) proposes the remedy. **This ADR cannot supply it**: this ADR's `Amends` row does
+> not name the Dependency Matrix, and `DOCUMENTATION_BASELINE.md` §7 requires *"an ADR **before** the change"*
+> — so amending the Matrix under **this** ADR would be a silent Rank 4 modification wearing an unrelated
+> authority.
+
 
 | Aspect | Value |
 |---|---|

@@ -444,6 +444,17 @@ def main():
     # register number, and all six remain Proposed -- so no verdict printed by
     # this script changes as a result, and the gap ledger's counts are untouched.
     #
+    # ADR-0030 is listed on exactly the same reasoning as ADR-0024..ADR-0029.
+    # It frames R-17 -- the absent BC-18 -> BC-03 device-resolution dependency --
+    # and it cannot state which Attendance rules require that resolution, nor
+    # which tenant-isolation rule bounds it, without citing ATT-BR-017 and
+    # ATT-XC-014.  Both are rows DEFINED in PRD-006; ADR-0030 DEFINES nothing,
+    # adds no register number, creates no edge and remains Proposed, so no
+    # verdict printed by this script changes as a result.  This entry was added
+    # in the same session that created the file, after this gate reported the
+    # failure -- i.e. the maintenance and the cause are disclosed together rather
+    # than the second being left for a later commit to inherit.
+    #
     # This failure was NOT pre-existing at the module's own baseline: it was
     # introduced by commit 3982993, which added ADR-0024..ADR-0028 without the
     # corresponding maintenance.  It is reported as such rather than presented as
@@ -471,6 +482,7 @@ def main():
         "ADR-0027-authorized-wifi-network-identity.md",
         "ADR-0028-android-background-presence-detection.md",
         "ADR-0029-student-shift-visibility-for-attendance.md",
+        "ADR-0030-device-account-resolution-for-attendance.md",
     )
 
     def outside(hits):

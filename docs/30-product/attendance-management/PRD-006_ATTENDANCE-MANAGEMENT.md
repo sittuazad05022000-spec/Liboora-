@@ -790,6 +790,16 @@ reference **nullable**, so a student may hold a verified presence with **no** bo
 contain no value for that case, and this document **MUST NOT** invent an eighth or silently fold the case into
 either 1 or 2 — see `ADR-0029` §3.2. It is a Product Owner decision that has not been made.
 
+> **⛔ FOUR FURTHER NAMES WERE REQUESTED AND ARE NOT STORED AS STATUS VALUES — Product Owner decision required.**
+> A later Product Owner instruction names `SHIFT TIME ENDED / TOLERANCE PERIOD`,
+> `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`, `SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE` and
+> `NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING`, while the **same** authority's earlier instruction — *"Do not
+> invent alternative status names"* — closes this table at seven. The same instruction resolves the conflict it
+> creates: *"Do not silently invent a final status string if the existing seven-status registry forbids adding one.
+> If a new status is necessary, mark it as a Product Owner decision required and explain why."* **It is marked, not
+> resolved.** §10A.7b states exactly what each name needs and which of them a second, derived dimension can carry
+> without an eighth stored value. **No eighth stored status value is created by this document.**
+
 ### 10A.2 One account, one session — the multi-device rule
 
 **The binding product principle, as given:**
@@ -809,6 +819,17 @@ two study-hour sessions · two students · double occupancy.
 | 4 | **All** valid registered devices lose verified presence | Start the 5-minute grace period (§10A.4) — the session does **not** end at this instant |
 | 5 | Any valid registered device reconnects within 5 minutes | **Continue the SAME existing session.** No new session; no reset of duration; no double counting |
 | 6 | No valid registered device for more than 5 minutes | **`SESSION ENDED`** |
+
+**Presence is the DISJUNCTION over valid registered devices, and T0 is the LATEST observation across all of them.**
+The student holds verified presence while **ANY** valid registered device does — never only while a particular one
+does, and never only while all do. The grace period of §10A.4 therefore begins at the **latest** valid loss
+observation among **all** valid devices, not at the first device's loss. Stated explicitly because the opposite
+reading — treating one device as primary, or starting the clock at the first disconnect — would end sessions that
+are still live.
+
+Worked, because the arithmetic is the point: Phone A verified 06:00 and lost 08:00; Phone B verified 06:30 and lost
+10:00. The result is **ONE** session, verified union **06:00 → 10:00 = 4 hours**. It is **not** two sessions, **not**
+6 hours, and **not** 8 hours. Phone A's 08:00 loss starts no grace period, because Phone B still holds presence.
 
 **Device-level observations MAY exist for audit and security purposes** (`ATT-FR-129`…`133`, `E-20`), **but the
 student-level attendance and presence remain singular.** A per-device audit trail is not a per-device attendance.
@@ -856,6 +877,58 @@ from the same authority.
 **No second grace period exists.** This document defines exactly one, of exactly this length, and **MUST NOT**
 introduce another for reconnection, for re-verification, or for session closure.
 
+**No server timer implements this rule.** The 5 minutes is a **predicate over recorded observations**, evaluated
+when the session is read or reconciled — never a scheduled job. `SEAT-FR-116` (frozen `PRD-007`) already requires a
+`BC-03` open-session set to be **recomputable**; a derived predicate satisfies that requirement, and a timer would
+not be needed to satisfy it. The observation path is `NetworkCallback` → V1 Local Write Queue (`BC-30`, via the
+already-authorised `E-24`) → `WorkManager` reconciliation → backend-derived state. **No other scheduler, no
+periodic interval and no `Job Runtime` dependency is introduced** (§10A.10, `ADR-0028`).
+
+#### 10A.4a Exit precedence — `SESSION ENDED` vs `INCOMPLETE / EXIT NOT VERIFIED`
+
+**Resolves CONFLICT 16 and `R-13`.** Rows 3 and 4 of §10A.1 previously overlapped: *"all devices disconnected for
+more than 5 minutes"* and *"a proper exit cannot be reliably verified"* both described a session with no live
+device, and nothing said which won. **A Product Owner decision now separates them, and the separating fact is
+not elapsed time — it is whether a disconnect was actually OBSERVED.**
+
+**Product Owner decision.** Wi-Fi disconnect **is** an approved/configured exit method for Wi-Fi Presence. It is
+**not** a claim about physics. The two are recorded distinguishably:
+
+| Recorded fact | Meaning | May end a session |
+|---|---|---|
+| **Wi-Fi-based exit detected** | A valid loss observation was received and no valid device regained presence within the 5 minutes | **Yes** — under the approved exit method |
+| **Physically verified exit** | An exit confirmed by an act of the student or of staff (a check-out, a Manual entry, a correction under §18) | **Yes** |
+
+**These MUST NOT be conflated, merged, displayed identically, or stored as the same value.** A Wi-Fi-based exit
+**MUST NOT** be presented as proof that the student physically left at that instant — see §10A.8, which is extended
+by a fourth never-claim for exactly this.
+
+**The precedence, highest first. The first row whose condition holds decides the status.**
+
+| # | Condition | Status | Exit fact | Why it outranks the rows below |
+|---|---|---|---|---|
+| **1** | A **physically verified exit** exists (check-out, Manual, §18 correction) | **`SESSION ENDED`** | *Physically verified exit* | A human act beats every inference. `ATT-FR-083` already treats a real check-out as the only emitter of a real `E-08` |
+| **2** | **No** valid loss observation was received, and observations simply stopped — process killed, **force-stopped**, device rebooted, permission revoked, OEM background restriction | **`INCOMPLETE / EXIT NOT VERIFIED`** | **none — and none is fabricated** | **This is the critical distinction.** Absence of observation is not observation of absence. Reaching row 3 here would require inventing the disconnect that was never seen — the exact fabrication `ATT-BR-030` and `ATT-FR-083` forbid |
+| **3** | A **valid loss observation** was received for the last remaining valid device, and no valid device regained presence within the 5 minutes | **`SESSION ENDED`** | *Wi-Fi-based exit detected* | The approved exit method applies, **because the disconnect was observed** |
+| **4** | A valid loss observation was received and **any** valid device regained presence within the 5 minutes | **`VERIFIED PRESENCE`** — the **SAME** session | not applicable | §10A.4; no second session, no new attendance record, no double count |
+| **5** | The session is still open and at least one valid device holds verified presence | **`VERIFIED PRESENCE`** | not applicable | Nothing has ended |
+| **6** | The outcome cannot be placed in rows 1–5 on the evidence recorded | **`INCOMPLETE / EXIT NOT VERIFIED`** | **none** | The safe default is the one that fabricates nothing. **There is no row 7 and no arbitrary end time** |
+
+**Row 2 outranks row 3 deliberately, and that ordering is the whole resolution.** Elapsed time is visible in both
+cases; the observation is not. Ordering these the other way would let any killed process silently become a clean
+`SESSION ENDED` with an invented exit instant — which is precisely the failure §10A.5 enumerates.
+
+**Force-stop, reboot, permission revocation and OEM restriction MUST NOT be presented as fraud, as a rule
+violation, or as the student's fault.** They are platform outcomes (`ADR-0028` §5). The student **MUST** be
+informed that the exit could not be verified, as a fact under `ATT-FR-148`.
+
+**A gap in observations remains, in every row above, NOT evidence of presence and NOT a fraud signal.** `R-13` is
+resolved in one direction only: an **observed** loss may end a session; an **unobserved** silence may not end one
+and may not extend one either. Only verified presence counts (§10A.6).
+
+**This subsection adds no `ATT-*` identifier.** It is `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-083` and `ATT-FR-088`
+applied to a new trigger, and §10A.9 maps it.
+
 ### 10A.5 The incomplete session — never fabricate an exit
 
 Where the end of a session cannot be reliably verified, the status is **`INCOMPLETE / EXIT NOT VERIFIED`**.
@@ -879,6 +952,19 @@ channel, template or dispatch decision.
 
 **`ATT-FR-083`'s reason applies unchanged.** Seating derives live occupancy from `E-08`; a fabricated exit silently
 frees a seat that is still occupied. *Fabricating one is worse than missing one.*
+
+**The end of the verified interval is not the exit time — a correction of an error this work made.** The last
+verified observation timestamp **MAY** be recorded as **the end of the verified interval**, which is a measured
+fact. It **MUST NOT** be stored, displayed, published or reasoned about as the session's **exit time**. The two are
+different claims, and the fifth prohibited assumption above — *"the last known network event"* — forbids exactly the
+slide from the first to the second. **An earlier review of this document performed that slide** (it inferred that a
+rebooted device *"yields a session whose verified presence ends"* at the last event); it is retracted here and named
+so the same inference is not made again.
+
+**Causes are named, and none of them is fraud.** An `INCOMPLETE / EXIT NOT VERIFIED` outcome arises from process
+death, **force-stop**, device reboot, revoked permission or OEM background restriction (`ADR-0028` §5). It **MUST
+NOT** be presented to a student, to staff, or in any surface or report, as fraud, as a rule violation, or as the
+student's fault.
 
 ### 10A.6 Verified session duration — `D-11`, and the ARB question it leaves open
 
@@ -939,6 +1025,93 @@ here, and none may be invented** (`X-04`, `LIB-16.5`).
 > Therefore **`SCHEDULE MISMATCH` is specified and not computable** until `ADR-0029` is decided by the Architecture
 > owner. Recorded as **`ATT-GAP-002a`**.
 
+**Branch opening hours remain refused as the source of truth.** The student's booked shift **MUST** come from the
+authoritative seating/membership allocation (`BC-04`'s `SeatAllocation`, `SEAT-FR-046`), never from `E-04`'s
+branch-wide `openTime`/`closeTime`. A library open 06:00–22:00 with a student booked 06:00–10:00 must **not** report
+`VERIFIED PRESENCE` for a 19:00 arrival. **No undocumented direct database read is defined here**, and no edge,
+event or read model is silently created: the mechanism is routed to `ADR-0029`, which frames five options and selects
+none. Everything below §10A.7a and §10A.7b specifies is therefore **specified and not computable** on the same
+blocker.
+
+### 10A.7a Shift tolerance — 30 minutes, and the register that blocks it
+
+**Product Owner decision. Default shift tolerance = 30 MINUTES.** This value was supplied by the Product Owner and
+is, with the 5-minute grace, **the only numeric value this capability is authorised to state**. It **MUST NOT** be
+widened, narrowed, doubled for one side, or supplemented by any second tolerance.
+
+**Configurable by Owner AND Manager**, tenant/library scoped, and **every change is auditable** under the existing
+rules — `ATT-FR-038` (audit on configuration change), `ATT-BR-017` (tenant isolation), `BC-18` authorisation. This
+is the same authority set `D-12` already granted for `ATT-CFG-008`, and **no new role is defined** — `ATT-FR-118`
+still forbids defining one.
+
+**The tolerance applies on BOTH sides of the booked shift.** Booked 06:00–10:00 with 30 minutes gives an
+**effective operational window of 05:30–10:30**. **Study Hours count only verified presence inside the booked shift
+06:00–10:00.**
+
+| Window | Operational treatment | Contributes to booked-shift Study Hours |
+|---|---|---|
+| **before 05:30** | Outside the operational window entirely — §10A.7b governs | **No** |
+| **05:30 – 06:00** | **Early-arrival tolerance.** Presence **MAY** be accepted operationally | **NO** — it **MUST NOT** increase booked-shift Study Hours |
+| **06:00 – 10:00** | **Normal booked-shift presence** — `VERIFIED PRESENCE` | **Yes** — the verified portion only |
+| **10:00 – 10:30** | **Shift time ended / tolerance period.** **MUST NOT** be silently treated as normal booked-shift presence. The student **and** authorised staff **MAY** be alerted under existing notification ownership | **NO** |
+| **after 10:30** | **Shift overstay / presence outside the booked window.** **MUST NOT** silently continue as normal `VERIFIED PRESENCE`. Alert student **and** authorised staff | **NO** |
+
+Worked example, stated because the arithmetic is the point. Booked 06:00–10:00, tolerance 30 minutes, verified
+presence 05:50 → 10:10. Study Hours count **only 06:00 → 10:00**. The 10 minutes before and the 10 minutes after are
+operationally accepted and contribute **nothing**; the 20 minutes of tolerance-window presence **MUST NOT** inflate
+the booked-shift figure. This is `ATT-FR-145`/`146`/`147` unchanged: the excluded time is not a metric being
+withheld, it is presence that falls outside the booked shift the figure is *about*.
+
+> **⛔ BLOCKED — the tolerance cannot be registered as a configurable value. `R-8`. MEASURED, NOT ASSUMED.**
+> §16.3's configurable register ends at **`ATT-CFG-024`**, and `TRACEABILITY_MATRIX.md` §2F — a **Rank 4** document
+> this PRD has no authority to amend — fixes `ATT-CFG-*` at **24**. A twenty-fifth row was injected into a working
+> copy of §16.3 and the Stage 5 gate re-run. **It failed five ways**, three of them decisive:
+> *"section 0.3 declares ATT-CFG-\* as 24 ending 024; computed 25 ending 025"*, *"section 2F registers ATT-CFG-\* as
+> 24 (001..024); computed 25 (001..025)"*, and *"ATT-NFR-010 requires every obligation to carry a criterion; 1
+> uncovered"* — the last because a new configurable would also require a new `ATT-AC` beyond **`ATT-AC-213`**, which
+> §2F fixes at 213. The probe row was removed before anything else was written.
+>
+> **Therefore the 30-minute tolerance is stated here as a product rule and is NOT registered as `ATT-CFG-*`.** The
+> value, its authority, its scope and its auditability are all specified above and are binding as product intent;
+> what is missing is the register entry, and creating one requires an amendment to a Rank 4 document by the
+> **Architecture owner**. Recorded under the existing **`ATT-GAP-002a`** blocker, whose subject — the booked shift —
+> is the same fact this tolerance is measured against. **A tolerance around a shift that cannot be read is not
+> independently implementable**, so this adds no new gap number; a nineteenth `ATT-GAP` number would fail §2F for
+> the same reason.
+
+### 10A.7b Out-of-shift presence, and the student with no booking at all
+
+**Two situations must not be collapsed into one another, and the difference is whether a booking exists.**
+
+| Situation | Required treatment | Notify |
+|---|---|---|
+| Booked 06:00–10:00; verified at **18:00** — far outside both the shift and its tolerance | **MUST NOT** be normal `VERIFIED PRESENCE`. Treated as **out-of-shift presence**, the `SCHEDULE MISMATCH` case of §10A.7 | student **and** authorised staff |
+| The student has **NO booked shift at all** (`SEAT-FR-046` makes the shift reference **nullable**) | **MUST NOT** be classified as `SCHEDULE MISMATCH`. A mismatch asserts a booking exists and was missed; here none exists, and reporting one would be a false statement about the student | **Product Owner decision required** — see below |
+
+**Why the second row cannot simply be given a name.** §10A.1 closes the stored status vocabulary at seven on the
+Product Owner's own instruction, and the four names a later instruction supplies —
+`SHIFT TIME ENDED / TOLERANCE PERIOD`, `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`,
+`SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE`, `NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING` — would make eight, nine,
+ten and eleven. The instruction that supplies them also governs the collision: *"Do not silently invent a final
+status string if the existing seven-status registry forbids adding one."*
+
+**What is resolved without an eighth stored value, and what is not:**
+
+| Requested name | Resolution here | Needs a Product Owner decision |
+|---|---|---|
+| `SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE` | **Resolved.** It is `SCHEDULE MISMATCH` (row 2 of §10A.1) with the reason *out-of-shift presence* carried in the existing distinguishable-reason channel `ATT-NFR-005` uses. **No new stored value** | **No** |
+| `SHIFT TIME ENDED / TOLERANCE PERIOD` | **Resolved as a WINDOW, not a status.** §10A.7a's table makes it a property of *when* presence falls relative to the booked shift — a second, derived dimension over the same session. The stored status stays one of the seven; the window is computed, and it is what the alert is *about* | **No** |
+| `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW` | **Resolved the same way** — a derived window, not a stored status | **No** |
+| **`NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING`** | **NOT RESOLVED. This one genuinely needs an eighth value.** It is not a window over a booked shift, because there is no booked shift to be a window over; and it is not a reason under `SCHEDULE MISMATCH`, because that status asserts the booking the case lacks. Folding it into `VERIFIED PRESENCE` would silently certify presence against a shift nobody booked; folding it into `SCHEDULE MISMATCH` would report a mismatch that did not occur | **YES — Product Owner** |
+
+**The decision required, stated so it is answerable.** Either (i) authorise an **eighth** stored status value for
+presence without a booking, which reopens §10A.1's closure and needs a Rank 4 register amendment for whatever
+identifiers carry it; or (ii) rule that presence without a booking is **not admissible** for Wi-Fi Presence at all,
+so no status is needed; or (iii) rule that it is carried as a **nullable-shift qualifier** on an existing status,
+naming which one and accepting that the status alone no longer tells the whole story. **This document selects
+none of the three.** `ADR-0029` §3.2 already records the underlying ambiguity; the product half of it is now
+explicit, bounded and assigned.
+
 ### 10A.8 Security — three claims this document never makes
 
 Stated as prohibitions because each is a sentence a reader or an implementer might otherwise supply:
@@ -948,6 +1121,8 @@ Stated as prohibitions because each is a sentence a reader or an implementer mig
 | 1 | *"Same Wi-Fi name means this is the library"* | A network name is trivially reproducible. `ATT-XC-015` leaves network identification unspecified — **`ATT-GAP-007`** |
 | 2 | *"Wi-Fi alone proves the student's identity"* | `ATT-XC-014`: two students on one network are indistinguishable to a network check |
 | 3 | *"Cheating is impossible"* | `ATT-FR-039`, `ATT-BR-042`. No control in this document is presented as making proxy attendance impossible |
+| 4 | *"A Wi-Fi disconnect proves the student physically left at that instant"* | §10A.4a. Wi-Fi disconnect is an **approved exit method**, not a physical observation. A phone may lose Wi-Fi while its owner stays seated. The recorded fact is *Wi-Fi-based exit detected*, and it **MUST NOT** be rendered as *physically verified exit* |
+| 5 | *"An absence of observations proves the student left"* | §10A.4a row 2, §10A.3. Silence is not evidence. It is also **not** evidence the student stayed |
 
 `D-13` permits a **library-side device or software component** if Architecture/Security determines one is necessary.
 **It selects no mechanism.** No hardware, router, network identifier, API, gateway or certificate is named here, and
@@ -963,6 +1138,10 @@ any register** — the reason is in the resolution record §3.2.
 | One account = one session; a second device is a duplicate trigger | `ATT-INV-004`, `ATT-INV-010`, `ATT-FR-081` row 2, `ATT-FR-084`…`086`, `ATT-FR-090`…`095`, `ATT-BR-034` | `ATT-AC-144`, `ATT-AC-145`, `ATT-AC-146` |
 | No second presence system; duration is not occupancy | `ATT-BR-033`, `ATT-FR-140`, `ATT-BR-045` | `ATT-AC-152` |
 | Never fabricate an exit; only verified duration counts | `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-083`, `ATT-FR-088` | `ATT-AC-093`, `ATT-AC-095`, `ATT-AC-177` |
+| Exit precedence (§10A.4a); observed loss may end a session, silence may not | `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-083`, `ATT-FR-088`, `ATT-NFR-005` | `ATT-AC-093`, `ATT-AC-095` |
+| Shift tolerance (§10A.7a) is configured, tenant-scoped and audited | `ATT-FR-038`, `ATT-BR-017`, `ATT-FR-118` | `ATT-AC-147`, `ATT-AC-169` |
+| Tolerance and overstay time never inflate Study Hours | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147`, `ATT-BR-030` | `ATT-AC-180` |
+| Presence is the disjunction over devices; T0 is the latest loss | `ATT-INV-004`, `ATT-INV-010` | `ATT-AC-144`, `ATT-AC-145` |
 | Wi-Fi is not identity; unknown device raises no attendance | `ATT-XC-014`, `ATT-BR-041`, `ATT-FR-036` | `ATT-AC-033` |
 | No anti-spoof claim; no mechanism named | `ATT-XC-015`, `ATT-FR-039`, `ATT-BR-042` | `ATT-AC-194`, `ATT-AC-195` |
 | Duration is an operational read, never a metric | `ATT-FR-145`, `ATT-FR-146`, `ATT-FR-147` | `ATT-AC-180` |
@@ -1001,6 +1180,25 @@ filling of legitimate gaps** — and reconciliation is already half-solved by th
   OS-permission line in this document, and it concerns location for mode 4.
 - Where platform restrictions prevent reliable background execution, the approved `D-14` architecture governs.
   **This document promises no behaviour the platform may be unable to deliver.**
+
+**Android background execution is NOT guaranteed on every device, and this document states that as a fact rather
+than a caveat.** The consequences are specified so no implementer supplies them differently:
+
+| Platform event | What happens | What MUST NOT happen |
+|---|---|---|
+| **Force-stop** by the user | Background execution stops · `WorkManager` stops · `NetworkCallback` stops · **no presence claim is made for the unobserved period**. On next app open, reconciliation occurs | A presence claim covering the silence · a fabricated disconnect · a fabricated exit · `SESSION ENDED` (§10A.4a row 2 gives `INCOMPLETE / EXIT NOT VERIFIED`) |
+| **OEM background restriction** (battery optimiser, vendor policy) | Observations may be delayed, batched or dropped | **Fabricated presence.** A restriction **MUST NOT** produce evidence. It also **MUST NOT** be reported as student misconduct |
+| **Device reboot** | Callbacks are not re-registered until the app or an authorised receiver runs | Inferring an exit at the reboot instant — the fourth prohibited assumption in §10A.5 |
+| **Permission revoked** mid-session | Verification can no longer be performed | Continuing to assert verified presence · asserting an exit |
+
+**No polling loop, no Wi-Fi scanning, no server timer and no mandatory foreground service is specified.**
+`WifiManager.startScan()` is throttled by the platform and is not used. A foreground service is **not** required:
+it would buy *punctuality* that the derived-state model of §10A.4 does not need, at the cost of a persistent
+notification. Whether one is nonetheless warranted is `ADR-0028`'s question, not this document's — and
+`ATT-FR-044` remains the only OS-permission line here.
+
+**`WorkManager`'s guarantee is EVENTUAL, never PUNCTUAL.** It is used for **reconciliation**, and the 5-minute rule
+**MUST NOT** be built on it as a deadline. That is why §10A.4 is a predicate over observations rather than a timer.
 
 ### 10A.11 Existing attendance is untouched
 
@@ -1918,8 +2116,12 @@ The following outcomes **MUST** be distinguishable to the actor who caused them,
 | **Presence outside the booked shift — `SCHEDULE MISMATCH`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`; **not computable until `ADR-0029` — `ATT-GAP-002a`** |
 | **Unknown device on the authorized network — `UNKNOWN DEVICE / UNVERIFIED PRESENCE`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.3 — Owner/Manager review item |
 | **Exit could not be verified — `INCOMPLETE / EXIT NOT VERIFIED`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, `ATT-BR-030`, §10A.5 — student informed; no end time fabricated |
+| **Shift time ended — tolerance period entered** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7a — student **and** authorised staff; a **window** fact, not a status change; **blocked with `ATT-GAP-002a`** |
+| **Shift overstay — presence outside the booked window** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7a — student **and** authorised staff; **MUST NOT** be emitted as normal `VERIFIED PRESENCE`; **blocked with `ATT-GAP-002a`** |
+| **Presence with no booked shift** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7b — **Product Owner decision required**; **MUST NOT** be emitted as `SCHEDULE MISMATCH` |
+| **Wi-Fi-based exit detected (distinct from a physically verified exit)** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.4a — the two **MUST** be distinguishable to the reader |
 
-**These three rows are outcomes of §10A, and they add no `ATT-*` identifier.** Each is emitted as a **fact** under
+**These rows are outcomes of §10A, and they add no `ATT-*` identifier.** Each is emitted as a **fact** under
 `ATT-FR-148` and each carries a distinguishable reason under `ATT-NFR-005`. **No notification frequency, cooldown,
 quiet-hour rule or escalation interval is stated for any of them, and none may be invented** — `X-04` and
 `LIB-16.5` place channel, template and dispatch with `BC-22`, and Product Owner decisions `D-10`…`D-16` withheld
@@ -2010,6 +2212,17 @@ be absorbed by idempotency (`ATT-INV-003`), not applied twice.
 
 `ATT-PO-014` — The offline behaviour of **Dynamic QR** is undefined: a rotating server-validated code cannot be
 validated offline. This document **MUST NOT** promise offline Dynamic QR — **`ATT-GAP-016a`**.
+
+**Wi-Fi Presence observations fall under this policy without amendment to it.** A presence observation
+(gain or loss of verified presence on a valid registered device) is an attendance mutation for the purposes of
+`ATT-PO-011`…`ATT-PO-013`: `BC-03` defines the conflict-resolution policy, `BC-30` executes queue and replay over
+the already-authorised **`E-24`**, a replayed observation **MUST** be absorbed by idempotency
+(`ATT-INV-003`, `ATT-FR-090`…`095`) rather than applied twice, and a replayed observation **MUST NOT** overwrite a
+staff correction made under §18. **No new port, edge or event is created** — `E-24` already exists, and EA records
+`Local Write Queue` and `Sync Protocol` as **V1**. **Late arrival of an observation MUST NOT fabricate a disconnect
+that was never observed**: a queued *loss* is an observed loss whenever it arrives (§10A.4a row 3), while a **gap
+containing no queued observation at all** remains row 2 — `INCOMPLETE / EXIT NOT VERIFIED`. Ordering by the platform
+time port (`ATT-FR-088`), never by device clock.
 
 ---
 

@@ -145,6 +145,61 @@ The accepting decision must record:
 **Six of the ten requirements are already met by existing rules.** The open work is R-1, R-2, R-8 and R-10 — all four
 of which are the single network-identity question.
 
+## 6A. Decision-ready comparison — OPTION A / B / C across eight dimensions
+
+> **Requested by the Product Owner for Architecture + Security.** *"Do NOT silently choose a mechanism. But produce
+> a decision-ready comparison."* This section compares three **families**, not products. It still names no BSSID,
+> SSID, router, certificate profile, API or vendor. **It changes this ADR's status not at all: `Proposed`.**
+
+| Option | Shape |
+|---|---|
+| **A** | **Device-observable network evidence only.** The student's device reports what it can observe about the network it joined; the backend compares that against the tenant's configured list (`ATT-CFG-008`) |
+| **B** | **Device evidence + library-side corroboration.** As A, plus something on the library side independently attests that a session was seen on its own network. Permitted in principle by **`D-13`** |
+| **C** | **Cryptographic / challenge-based verification.** The library side holds a secret or key and answers a fresh per-session challenge that cannot be pre-computed or replayed off-site |
+
+| Dimension | **OPTION A** | **OPTION B** | **OPTION C** |
+|---|---|---|---|
+| **1 Security strength** | **Weakest.** Everything it relies on is client-asserted and observable by anyone on any network. A hostile client controls its own report | **Moderate.** Two independent sources must agree; a purely client-side lie fails corroboration | **Strongest.** Presence rests on a fresh secret-backed proof rather than on a description of the environment |
+| **2 Replay risk** | **High.** Whatever the device observes can be recorded and re-presented elsewhere or later. Answers `N-3` with *"yes, replayable"* | **Reduced.** Corroboration is bounded in time and place, so a replay must also be corroborated | **Lowest by construction.** Freshness is the mechanism's purpose; a captured answer is useless for the next challenge |
+| **3 Operational cost** | **Lowest.** No library-side component to run, monitor or replace | **Medium.** A component per library to deploy, keep online and support; its downtime becomes an attendance incident | **Highest.** Key material to provision, rotate, revoke and recover, plus everything B costs |
+| **4 Library setup burden** | **Near zero.** Configure the network list and nothing else | **Real.** Physical or software installation per branch, and a competent hand to do it | **Highest.** Setup plus key custody, which small libraries are least equipped to do safely |
+| **5 Android permission impact** | **Depends entirely on `N-2`, and this is the decisive hidden cost.** Identifiers that describe the surrounding network are **location-gated** on modern Android: obtaining them requires `ACCESS_FINE_LOCATION`, a **runtime prompt** a student may refuse, and refusal must then fail verification distinguishably (`ATT-FR-034`…`036`), not silently | **Can be designed to avoid the location gate**, because the evidence can be an *exchange with a reachable endpoint* rather than a *description of the radio environment* | **Same as B, and for the same reason** — a challenge/response over the joined network needs no environment description, so `ACCESS_FINE_LOCATION` need not be forced |
+| **6 Privacy impact** | **Worse than it appears.** Forcing a location permission to take attendance is disproportionate to the purpose and hard to explain to a student | **Better.** Corroboration is about the library's own network, not the student's surroundings | **Best.** A proof of interaction reveals least about the student, and `AUTH-6.43` (no factor exposure) is easiest to honour |
+| **7 V1 feasibility** | **Highest** — nothing to ship but app and backend logic | **Feasible but gated on procurement and rollout** across every tenant, which is a programme, not a task | **Lowest for V1.** Key management is the part that is easy to specify and hard to operate correctly |
+| **8 Maintenance burden** | **Lowest**, but with a standing security debt that never amortises | **Ongoing** per-branch fleet maintenance | **Highest** — rotation, revocation, recovery and the incident path for a compromised library key |
+
+**What every option must satisfy, and what none of them may claim.** `SSID ≠ identity proof` holds in all three:
+**a copied Wi-Fi name MUST NOT automatically produce valid presence** (§3 R-2, `PRD-006` §10A.8 row 1). Option A is
+the option most exposed to exactly that attack, and that is the finding, not an argument. In no option is any claim
+of spoof-proofing made (`ATT-FR-039`, `ATT-BR-042`).
+
+### 6A.1 Recommendation — offered conditionally, because the request made it conditional
+
+The instruction is *"identify which option is recommended **IF** the governing authority permits recommendation."*
+`PRD_OWNERSHIP_MODEL.md` §5 reserves the decision to the Architecture owner and this ADR is `Proposed`, so what
+follows is **a recommendation on the record, not a decision, and it binds nothing.**
+
+**Recommended: OPTION B as the V1 target, with OPTION C as the direction of travel — and OPTION A explicitly not
+recommended as a sufficient basis for automatic attendance.**
+
+The reasoning, kept to what has been measured:
+
+1. **Option A fails the requirement that gives this capability its point.** Automatic attendance with no scan
+   creates value only if presence means something; A's evidence is client-asserted and replayable, so it would
+   grant attendance on the strength of a description anyone can copy.
+2. **Option A's privacy and permission cost is the reverse of the intuition.** It looks cheapest and may be the
+   only option that forces `ACCESS_FINE_LOCATION` on every student — a runtime prompt, a refusal path, and a
+   disproportionate ask. **This is `R-15`, and it is the strongest single argument against A.**
+3. **`D-13` already permits the library side**, so B needs no further product permission — only Architecture and
+   Security approval of a mechanism.
+4. **C is not rejected; it is sequenced.** Its weakness is operational, not conceptual: key custody in small
+   libraries. A B-shaped deployment can be strengthened toward C without changing the product rules, because
+   `PRD-006` names no mechanism anywhere.
+
+**What would overturn this recommendation, stated so it is falsifiable:** a finding that `N-2` resolves *negatively*
+— that sufficient device-observable evidence exists **without** any location permission — would remove A's largest
+cost and reopen it on cost grounds alone. That question is Security's, is unresolved, and is **not** assumed here.
+
 ## 7. Consequences
 
 - **If accepted:** `ATT-XC-015` is amended in `PRD-006` to point at this decision instead of excluding the topic; `ATT-GAP-007` closes; R-10's definition unblocks duplicate prevention and the multi-AP handoff rule.

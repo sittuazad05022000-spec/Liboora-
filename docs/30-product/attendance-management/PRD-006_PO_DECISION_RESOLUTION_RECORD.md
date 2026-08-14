@@ -375,8 +375,9 @@ freeze pass."*
 
 ### 5.2 `R-11`…`R-20` — later decisions, and the three that have since closed
 
-Opened by subsequent architecture reviews of the same capability. **Status is stated per row, and two rows record a
-blocker this work itself raised and then retired on evidence.**
+Opened by subsequent architecture reviews of the same capability. **Status is stated per row, and three rows have
+closed — two of them a blocker this work itself raised and then retired on evidence, and one because the authority
+that created the constraint chose to lift it.**
 
 | # | Decision required | Authority | Status |
 |---|---|---|---|
@@ -384,17 +385,29 @@ blocker this work itself raised and then retired on evidence.**
 | **`R-12`** | Ratify the derived-state model for presence sessions | Architecture Owner | 🔴 Open — but `R-11` shows it is the *sanctioned* model, not a workaround |
 | **`R-13`** | Does an observation **gap** end a session? | **Product Owner** | 🟢 **RESOLVED by `D-17`.** An **observed** loss may end one; **unobserved silence** may not, and may not extend one either. §10A.4a row 2 |
 | **`R-14`** | Accept that no mandatory foreground service is required, at the cost of more `INCOMPLETE / EXIT NOT VERIFIED` outcomes | Product Owner | 🔴 Open |
-| **`R-15`** | **Does network evidence force `ACCESS_FINE_LOCATION`?** | Security Platform | 🔴 Open — **upstream of `ADR-0027`'s option choice**, and §6A.1 names it as the strongest argument against Option A |
+| **`R-15`** | **Does network evidence force `ACCESS_FINE_LOCATION`?** | Security Platform | 🔴 Open — **but NARROWED, not closed, by `D-21`.** Location Verification is now optional and **default OFF**, so the answer no longer decides whether every student is prompted; it decides only whether a candidate *mechanism* is viable. **The question is still upstream of `ADR-0027`'s option choice**, and §6B.1 restates the recommendation on the new premise rather than leaving it on the old one |
 | **`R-16`** | A staleness bound for derived session state | Architecture Owner | 🔴 Open — blocked by `ATT-GAP-017a` (`ATT-NFR-003` forbids a latency figure) |
 | **`R-17`** | **How does `BC-03` resolve an observed device to a student?** No `BC-18` → `BC-03` edge exists | Architecture Owner + Security | 🔴 Open — **now framed by `ADR-0030` (new, `Proposed`)**, which specifies the minimum payload and **prohibits enumeration** |
 | **`R-18`** | Silent push as a wake source | Architecture Owner | 🔴 Open — and **not needed** by the derived-state model |
-| **`R-19`** | **Amendment of §2F's `ATT-CFG` and `ATT-AC` counts, so `D-18`'s tolerance can be registered** | Architecture Owner | 🔴 Open — **a second dependent of `R-8`**; §3.6 |
-| **`R-20`** | **Is an eighth stored status value authorised for presence without a booking?** | **Product Owner** | 🔴 Open — three options in `PRD-006` §10A.7b, **none selected**; §3.7 |
+| **`R-19`** | **Amendment of §2F's `ATT-CFG` and `ATT-AC` counts, so `D-18`'s tolerance can be registered** | Architecture Owner | 🔴 **Open, and now the single most consequential open row.** **A second dependent of `R-8`**; §3.6. Framed by **`ADR-0031`** (new, `Proposed`), which names the **five documents an accepting decision must amend, two of them Rank 4**. **While it is open, NO acceptance criterion verifies the 30-minute tolerance** — the value is stated as a product rule and is unregistered, so Stage 5 traces nothing to it. That is a real gap, not a formality |
+| **`R-20`** | **Is an eighth stored status value authorised for presence without a booking?** | **Product Owner** | 🟢 **RESOLVED by `D-20` — and the answer was TWO, not one.** `NO BOOKED SHIFT / PRESENCE UNASSIGNED` **and** `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`, both **stored** values. **This row closed because the authority that set the seven-string closure lifted it, not because the analysis changed.** Measured consequence: the two strings needed **no** Rank 4 amendment (§1.0b) — **the opposite of `R-19`**. **The vocabulary is settled; the data path is not** — see §1.0c |
 
-**Two rows are now green, and both closed on measured evidence rather than assertion** — `R-11` against a frozen
-Rank 3 requirement, `R-13` by a Product Owner decision. **The remaining eight are open, and not one is answered
-here.** `R-19` and `R-20` are new, and both exist because a Product Owner decision met a constraint the Product
-Owner does not control.
+**Three rows are now green, and each closed for a different reason — the reasons are not interchangeable.** `R-11`
+closed against a **frozen Rank 3 requirement** (`SEAT-FR-116`); `R-13` closed by a **Product Owner decision** on
+behaviour (`D-17`); `R-20` closed because the **Product Owner lifted a constraint the Product Owner had imposed**
+(`D-20`). Only the first is evidence about the system; the other two are exercises of authority, and recording them
+as though they were the same kind of fact would overstate how much has been *discovered*.
+
+**Seven rows remain open, and not one is answered here.** `R-19` is the load-bearing one: it is the only open row
+that currently prevents an approved numeric value from being verifiable. `R-15` has been **narrowed** by `D-21`
+without being closed — narrowing is progress, and it is not resolution.
+
+> **A note on the arithmetic, because it changed direction.** `R-19` and `R-20` were both opened by v1.6 for the same
+> reason: a Product Owner decision met a constraint the Product Owner does not control. **One of those two premises
+> turned out to be wrong.** `R-20`'s constraint *was* the Product Owner's own (the seven-string closure), so it was
+> theirs to lift, and they lifted it. `R-19`'s constraint is a **Rank 4 register** and is genuinely not theirs. **The
+> two blockers looked symmetrical and were not**, and the asymmetry was established by probing each one separately
+> rather than by reasoning from the first to the second.
 
 ### 5.1 D7 was not answered
 

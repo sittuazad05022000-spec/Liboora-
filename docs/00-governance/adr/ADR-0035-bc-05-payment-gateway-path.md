@@ -149,6 +149,66 @@ error an Accepted ADR was written to correct.** This ADR does **not** propose it
 > `DOCUMENTATION_BASELINE.md` §4, *"a conflict is a defect — do not choose, raise it."* It is raised here and in
 > the alignment record as the substance of the Architecture Owner's decision.
 
+### 3.2 The four concepts separated, and measured one at a time *(added by the `D-2` investigation)*
+
+`FEE-GAP-002` was previously argued as a single ownership question. It is **four**, and they do **not** all resolve
+to the same place. Each row below is measured, with the rank of the source that settles it.
+
+| # | Concept | Owner | Rank | Authoritative evidence |
+|---|---|---|---|---|
+| **1** | **Payment intent** — deciding that a student owes money and that a payment should be attempted | **`BC-05`** | 3, 4 | BC Map **L100**: `BC-05` *"owns money owed by a **student to the library**: fee structures, dues, receipts, discounts, refunds, cash reconciliation"*. Frozen `PRD-005` **L164** places *"payment transaction, gateway, ledger, receipt, refund, reconciliation"* outside `BC-02` and with *"`BC-05` / Business Platform"*. EA **L74** describes library payments as *"**domain intent** over Business Platform rails"* |
+| **2** | **Payment execution** — interacting with the money rail | ⛔ **UNDECLARED at context level.** Declared at **module** level as `platform/business` | — | See §3.3. No bounded context declares it; the module manifest declares the onward hop but names no implementer |
+| **3** | **Gateway integration** — vendor protocol, credentials, retries | **`BC-31`** | 4 | BC Map **L140**: *"Owns **outbound** third-party contracts, credentials, retries, idempotent delivery"*. Reached from `platform/business` by the manifest-declared port at `tool/module_dependencies.yaml` **L409** — `ports: [platform/integration:payment_gateway]`. **Never reached by `BC-05` directly** (Matrix L167 `✖`, `X-03` L352) |
+| **4** | **Payment verification** — server-side confirmation that money actually moved | **`BC-05`** *(the rule)* / ⛔ **undeclared** *(the mechanism)* | 1, 3 | `MP-GBR-18` (**Rank 1**): *"Payment capture is idempotent by gateway reference."* Frozen `MM-BR-005` (**Rank 3**): *"**Enforcement of the payment side is `BC-05`'s**."* `BC-05` therefore owns the **obligation**; but the *mechanism* — what a gateway response is verified **against** — cannot be specified while row 2 is open |
+| **5** | **Student financial truth** — the confirmed, auditable record | **`BC-05`, exclusively** | 1, 4 | BC Map **L374**: the `FeeLedger` aggregate — *"balance = Σ dues − Σ receipts (never stored independently); receipt is immutable once issued"*. `MP-GBR-24` (**Rank 1**) bars `BC-20`. Ubiquitous-language table **L202**: `FeePayment` (BC-05) **vs** `SubscriptionCharge` (BC-20) |
+| **6** | **Webhook / reconciliation ingress** — receiving and reconciling the rail's asynchronous callback | ⛔ **NO OWNER EXISTS** | — | See §3.4. This is a **wider** gap than `D-2` as originally stated |
+
+**Row 5 is the load-bearing one, and it is not in doubt.** Whatever executes the rail, the *financial truth* stays
+in `BC-05`. That is what `MP-GBR-24` protects, and no option in §6 disturbs it.
+
+### 3.3 Row 2 — what *is* declared, measured in the machine-checked source
+
+The module manifest `tool/module_dependencies.yaml` is not prose; it is the file
+`tool/check_module_boundaries.dart` actually reads. Measured at HEAD:
+
+| Measurement | Result |
+|---|---|
+| `platform/business` rank | **6** (L406) |
+| `platform/business` declared ports | **`[platform/integration:payment_gateway]`** (L409) — **the second hop is declared** |
+| Does the manifest schema express *who implements* a port? | **Yes** — the key is `provides_ports:` |
+| Which modules use `provides_ports:`? | **Exactly two** — `domain/person` (L188) and `platform/identity` (L442) |
+| Does `platform/business` declare `provides_ports:`? | **No** — measured `0` occurrences in its block (L405–L416) |
+
+**This is the decisive negative measurement.** The manifest *can* name an implementer — `platform/identity` names
+five, with consumer lists and constraints. `platform/business` names none. So the callee is undeclared **in the
+machine-checked source as well as in the prose**, and its absence is a real gap rather than an artefact of reading
+the wrong document.
+
+**What this does settle:** the *chain* is complete at module level. `domain/library` → `platform/business`
+(L119, declared port) → `platform/integration` (L409, declared port) → vendor. Every hop is authorised. **No edge is
+missing anywhere along it.** What is missing is a **named owner** for the middle hop's behaviour.
+
+### 3.4 Row 6 — webhook ingress has no owner anywhere in the map, and this is new
+
+| Measurement | Result |
+|---|---|
+| `grep -c "webhook\|Webhook"` in the Rank 4 BC Map | **0** |
+| `grep -c "inbound"` in the Rank 4 BC Map | **0** |
+| What `BC-31` owns, verbatim (L140) | *"Owns **outbound** third-party contracts…"* |
+| Where the EA puts inbound adapters (L165) | *"Integration Platform = **outbound** adapters, **API Platform = inbound adapters**"* |
+| Does `API Platform` have a `BC-` identifier? | **No.** It appears in the BC Map only as a diagram band (L223) and as the single Open Host Service (L358). It is **not** one of the 31 contexts |
+
+**A webhook is inbound.** `BC-31` is defined as outbound-only, so it does not own webhook receipt by its own
+definition; and the component the EA nominates for inbound adapters is not a bounded context at all. The EA lists
+*"Webhook Reconciliation (V1)"* at **L1407** under `Payment Gateway`, but the EA is marked in
+`DOCUMENTATION_BASELINE.md` L139 as **"Descriptive — must follow the PRDs, never lead them"**, so it records an
+intention and **cannot confer ownership**.
+
+> **This finding widens `D-2` rather than closing it.** The original question asked who *executes*. Measured, the
+> asynchronous *return path* has no owner either — and it is the path on which financial truth actually depends,
+> because `FEE-BR-014` already holds that client-side success is never financial truth. The Architecture Owner's
+> decision must name an owner for **both**.
+
 ---
 
 ## 4. Why the absence of a numbered edge is not, by itself, a defect
@@ -204,6 +264,34 @@ Which context implements `payment_intent` for **student → library** money is *
 none**, and until one is selected, `PRD-008` **MUST NOT** specify the payment-execution contract, the verification
 mechanism, the webhook, or any endpoint.
 
+**What the `D-2` investigation added, without selecting.** Four of the six ownership rows in §3.2 are **closed by
+measurement** — payment intent, gateway integration, the payment-verification *obligation*, and student financial
+truth. Two remain open: **execution** (row 2) and **webhook/reconciliation ingress** (row 6). The investigation also
+changed the shape of the remaining choice:
+
+| Option | Status after measurement | Why |
+|---|---|---|
+| **`O-2`** — `BC-20` executes the rail | ⛔ **Contradicted by a Rank 1 rule** | `MP-GBR-24`. Unchanged from §3.1, and the shared kernel now **mechanically enforces** it: `packages/liboora_contracts` bans `class Payment ` with the message *"FeePayment (BC-05) or SubscriptionCharge (BC-20)"*. The split is CI-enforced, not merely prose |
+| **`O-1`** — create `BC-32` for payment execution | ⚠ **Evidentially disfavoured** | `AR-1` (Rank 4, authoritative) supplies the test a new context must pass: it must own *"an aggregate… an invariant… business state"*. A rail that executes and returns owns **none** — §3.2 row 5 keeps the aggregate in `BC-05` and row 4 keeps the invariant there. `PRD_REGISTRY.md` L355 applied exactly this test and recorded *"**no `BC-32` was created** and the context count remains 31"* |
+| **`O-3`** — a `platform/business` capability owning no context | ✅ **The only option no higher-ranked source contradicts** | Frozen `PRD-005` **L164** (Rank 3) attributes the subject to *"`BC-05` / **Business Platform**"* — the **platform**, not `BC-20`. EA **L122** independently resolves the same duplication to *"**BUSINESS PLATFORM** (money movement) / Library (fee *domain intent*)"*, again naming no context. `ADR-0013` (Accepted) supplies the precedent: *"a capability context is owned by its platform"* |
+
+> ⚠ **This is convergence, not authority, and the distinction is the whole point.** Three sources independently
+> name the **platform** and none names a **context**, which is what `O-3` asserts. But `PRD-005` L164 is a
+> *"not mine"* scope table — it is authoritative about where the subject is **not** (`BC-02`), and only indicative
+> about where it **is**; and the EA is **descriptive by baseline designation** and may not lead a PRD. **Converging
+> indicative evidence is not a decision.** Two things still require the Architecture Owner and cannot be measured
+> into existence:
+>
+> 1. **The Rank 1 reading.** `MASTER_PRD.md` L232 versus `MP-GBR-24` L362 (§3.1). Both are Rank 1, so precedence
+>    cannot arbitrate, and `O-3`'s admissibility depends on which reading is correct.
+> 2. **Row 6 has no candidate at all.** No source, at any rank, names an owner for webhook ingress. `O-3` does not
+>    supply one either. **No amount of further measurement will produce this answer** — it does not exist in the
+>    repository, and inventing it is precisely what this ADR must not do.
+>
+> **`D-2` therefore remains UNRESOLVED and this ADR remains `PROPOSED`.** The investigation narrowed the decision
+> from *"who owns payments?"* to *"confirm `O-3`, and name an owner for webhook ingress"* — which is a materially
+> smaller and better-specified question, but still a decision, and still not this document's to take.
+
 ### 5.3 `D-3` — `D-14` mis-attributes `E-25` and should be corrected
 
 `PRD_DEPENDENCY_GRAPH.md` **L116** reads `| D-14 | PRD-008/PRD-020 | PRD-019 BC-31 Integration | API | E-25 |`.
@@ -230,7 +318,10 @@ on the `D-2` outcome. Recommended once `D-2` is settled: remove the `E-25` citat
 | **O-3** | `payment_intent` is a **`platform/business` capability with no context of its own** — a rail, like `data.repository`, owning no aggregate | Matches how the other 13 no-edge ports already work; smallest change; `ADR-0013`'s *"a capability context is owned by its platform"* is adjacent precedent | The BC Map's aggregate table would carry no owner for gateway references; reconciliation ownership still needs naming |
 
 **No recommendation is offered.** Each has a real cost, and `MP-GBR-24` is a Rank 1 rule whose interpretation is not
-this document's to settle. The Architecture Owner should also state **who owns webhook/verification receipt** under
+this document's to settle. *(The `D-2` investigation subsequently measured these three against the authoritative
+sources and recorded the result in §5.2: `O-2` is contradicted by Rank 1, `O-1` fails the `AR-1` test, and `O-3` is
+the only one no higher-ranked source contradicts. **That is a narrowing of the evidence, not a selection** — the
+table above still stands as written, and none of the three is chosen here.)* The Architecture Owner should also state **who owns webhook/verification receipt** under
 the chosen option, since `PRD-008` cannot specify server-side confirmation without it.
 
 ---

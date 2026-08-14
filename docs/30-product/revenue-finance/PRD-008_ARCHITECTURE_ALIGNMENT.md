@@ -265,6 +265,77 @@ a gateway would repeat exactly the defect `ADR-0015` was written to correct.**
 rail while modelling no student money · `O-3` a platform capability owning no aggregate — and **recommends none**.
 Each has a real cost, and choosing between them is an interpretation of a Rank 1 rule, which is not a Stage 3 act.
 
+### 3.5.1 The `D-2` investigation — four concepts separated, four of six rows closed *(added at v0.7)*
+
+The blocker was re-opened under a direct instruction not to assume that `BC-20`, `BC-31` or `BC-05` owns payment
+execution, and to determine ownership from the authoritative architecture. Separating the concepts changed the
+answer's shape: **`FEE-GAP-002` is not one ownership question but six, and four of them are already settled.**
+
+| # | Concept | Owner | Rank | Evidence |
+|---|---|---|---|---|
+| 1 | Payment **intent** | ✅ **`BC-05`** | 3, 4 | BC Map L100 · frozen `PRD-005` L164 · EA L74 *"domain intent over Business Platform rails"* |
+| 2 | Payment **execution** | ⛔ **undeclared** (context) / `platform/business` (module) | — | §3.5.2 |
+| 3 | **Gateway integration** | ✅ **`BC-31`** | 4 | BC Map L140 · manifest L409 `ports: [platform/integration:payment_gateway]` |
+| 4 | Payment **verification** | ✅ **`BC-05`** owns the obligation · ⛔ mechanism blocked | 1, 3 | `MP-GBR-18` · frozen `MM-BR-005` *"Enforcement of the payment side is `BC-05`'s"* |
+| 5 | **Student financial truth** | ✅ **`BC-05`, exclusively** | 1, 4 | BC Map L374 `FeeLedger` · `MP-GBR-24` · L202 |
+| 6 | **Webhook / reconciliation ingress** | ⛔ **NO OWNER EXISTS** | — | §3.5.3 |
+
+**Row 5 is the one `MP-GBR-24` protects, and it was never actually in doubt.** Whatever executes the rail, the
+confirmed financial record stays in `BC-05`'s `FeeLedger`. **No shared financial model, table or metric was created
+or proposed** to resolve any of this — and the split is now known to be **mechanically enforced**: the rank-0 shared
+kernel `packages/liboora_contracts` carries `banned_symbols` including `class Payment ` with the message
+*"FeePayment (BC-05) or SubscriptionCharge (BC-20)"*.
+
+### 3.5.2 Row 2 — the negative measurement that makes this a real gap
+
+`tool/module_dependencies.yaml` is the machine-checked source `check_module_boundaries.dart` reads.
+
+| Measurement | Result |
+|---|---|
+| Does the schema express *who implements* a port? | **Yes** — the key is `provides_ports:` |
+| Which modules use it? | **Exactly two** — `domain/person` (L188), `platform/identity` (L442) |
+| Does `platform/business` use it? | **No** — 0 occurrences in its block (L405–L416) |
+| Is the onward hop declared? | **Yes** — L409, `ports: [platform/integration:payment_gateway]` |
+
+**The manifest *can* name an implementer and does not name one here.** The chain
+`domain/library` → `platform/business` → `platform/integration` → vendor is **fully authorised at every hop**;
+what is missing is a named owner for the middle hop's behaviour. This confirms the gap is genuine and not an
+artefact of having read the wrong document.
+
+### 3.5.3 Row 6 — a gap wider than `D-2` was originally stated
+
+| Measurement | Result |
+|---|---|
+| `webhook` in the Rank 4 BC Map | **0** |
+| `inbound` in the Rank 4 BC Map | **0** |
+| `BC-31`, verbatim (L140) | *"Owns **outbound** third-party contracts…"* |
+| EA L165 | *"Integration Platform = **outbound** adapters, **API Platform = inbound** adapters"* |
+| Does `API Platform` hold a `BC-` id? | **No** — a diagram band (L223) and the single OHS (L358); not one of the 31 contexts |
+
+**A webhook is inbound; `BC-31` is outbound by definition; and the component the EA nominates for inbound is not a
+bounded context.** The EA does list *"Webhook Reconciliation (V1)"* (L1407), but `DOCUMENTATION_BASELINE.md` L139
+marks the EA **"Descriptive — must follow the PRDs, never lead them"**, so it records intent and confers no
+ownership. **No webhook schema, endpoint or provider behaviour was invented** to fill this.
+
+### 3.5.4 Why this narrows the decision without taking it
+
+| Option | Status after measurement | Basis |
+|---|---|---|
+| `O-2` — `BC-20` executes | ⛔ **contradicted by Rank 1** | `MP-GBR-24`, now also CI-enforced via `banned_symbols` |
+| `O-1` — create `BC-32` | ⚠ **evidentially disfavoured** | `AR-1` requires a new context to own *"an aggregate… an invariant… business state"*; a rail owns none — rows 4 and 5 keep both in `BC-05`. `PRD_REGISTRY.md` L355 applied this same test and created no `BC-32` |
+| `O-3` — platform capability, no context | ✅ **uncontradicted** | Frozen `PRD-005` L164 attributes the subject to *"`BC-05` / **Business Platform**"* — the platform, not `BC-20`. EA L122 resolves the same duplication to *"**BUSINESS PLATFORM** (money movement) / Library (fee domain intent)"*. `ADR-0013`: *"a capability context is owned by its platform"* |
+
+> ⚠ **Convergence is not authority, and check 2 does not pass on it.** Three sources name the **platform** and none
+> names a **context** — but `PRD-005` L164 is a *"not mine"* scope table, authoritative about where the subject is
+> **not** and only indicative about where it **is**; and the EA is **descriptive by designation**. Two things remain
+> that measurement cannot supply: **(i)** the Rank 1 reading of `MASTER_PRD.md` L232 versus `MP-GBR-24` L362, on
+> which `O-3`'s admissibility depends (§3.6); **(ii)** **row 6 has no candidate at any rank** — no source names an
+> owner for webhook ingress, and `O-3` does not supply one.
+>
+> **`ADR-0035` therefore stays `PROPOSED` and check 2 stays ⛔ BLOCKED.** The decision is now materially
+> smaller — *"confirm `O-3`, and name an owner for webhook ingress"* — but it is still a decision, and Stage 3
+> alignment is not the act that takes it.
+
 ### 3.6 ⚠ **RAISED — a Rank 1 internal contradiction, disclosed and not resolved**
 
 | Line | Text | Implication |

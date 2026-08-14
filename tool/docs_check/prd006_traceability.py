@@ -571,6 +571,56 @@ def main():
             if hits:
                 fail("ATT-* found in %s/: %s" % (d, hits[:10]))
 
+    # ---- 8b. Definition guard on files exempted as CITERS ---------------------
+    # A MEASURED LIMITATION OF CHECK 3, DISCLOSED RATHER THAN RELIED ON.
+    #
+    # Check 3 ("duplicate definitions") reads exactly ONE file -- PRD (line 176).
+    # It therefore CANNOT see a definition placed in any other document, and
+    # never could.  The docstring's claim that a real collision is "still caught
+    # by the duplicate-definition check above" is true only for a second
+    # definition INSIDE PRD-006.  For a definition placed in an ALLOWED file,
+    # nothing catches it, because ALLOWED suppresses the only check that looks
+    # there (check 8).
+    #
+    # This limitation is PRE-EXISTING and applies to every entry in ALLOWED, not
+    # to the PRD-008 entry alone.  Measured, not asserted: ADR-0021 -- committed,
+    # unmodified, allow-listed since before PRD-008 existed -- carries SEVEN
+    # lines matching the `table` definition shape (its section 4 mapping rows,
+    # `| `ATT-CFG-005` | ... |`), and this gate still exits 0.  ADR-0022, -0023,
+    # -0025, -0027, -0028 and -0034 carry such rows too.  Those rows are
+    # citations in table form, so widening this guard to all of ALLOWED would
+    # raise six or seven FALSE positives and is NOT done here; the general
+    # limitation is raised as a defect for the gate's owner rather than
+    # "fixed" by making the gate noisy.
+    #
+    # What IS done: the entry this session added is held to a HIGHER standard
+    # than the precedent it follows.  PRD-008 is exempted from check 8 as a
+    # CITER, so it is asserted here to define NOTHING -- measured at 0 lines in
+    # both definition shapes.  If a future edit adds a real definition to
+    # PRD-008, this fails, whereas the bare ALLOWED entry alone would not.
+    NO_DEFINITION = (
+        os.path.join("docs", "30-product", "revenue-finance",
+                     "PRD-008_REVENUE-AND-FINANCE.md"),
+    )
+    for rel in NO_DEFINITION:
+        path = os.path.join(ROOT, rel)
+        if not os.path.isfile(path):
+            continue
+        bad = []
+        for ln, line in enumerate(
+                open(path, encoding="utf-8").read().split("\n"), 1):
+            if prose.match(line) or table.match(line):
+                bad.append("%s:%d" % (rel, ln))
+        if bad:
+            fail("%s is exempted from the collision check as a CITER of "
+                 "PRD-006, but it DEFINES ATT-* identifier(s) at %s — a "
+                 "citation is not a collision, but a definition is"
+                 % (rel, bad[:10]))
+        else:
+            notes.append("note: %s exempted as a citer; verified to define 0 "
+                         "ATT-* identifiers in either definition shape"
+                         % os.path.basename(rel))
+
     # ---- Report -------------------------------------------------------------
     print("PRD-006 traceability — computed, not asserted")
     print("-" * 70)

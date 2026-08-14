@@ -138,6 +138,35 @@ analogous is exactly the judgement reserved to the ARB.
 - It does **not** decide the null-shift case.
 - It is **`Proposed`** and binds nothing.
 
+## 8. The contract shape the Product Owner requires — proposed, not created
+
+> **A later Product Owner instruction specifies what the resulting contract should provide.** It is recorded here as
+> the **required shape** of whatever mechanism an accepting authority selects. **This creates no edge, no event, no
+> port and no read model**, and BC Map §7 L292 continues to govern: an edge absent from its table does not exist.
+
+| Field | Requirement | Note |
+|---|---|---|
+| student / member reference | The subject of the lookup | `StudentRecordId` — already the only student identifier `BC-03` holds |
+| **booked shift — NULLABLE** | The nullability is **load-bearing, not an oversight** | `SEAT-FR-046` (frozen `PRD-007`) makes it nullable; null now maps to an authorised status, **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** (`D-20`) |
+| effective start / end | The window verified presence is compared against | Per-student, **never** branch opening hours |
+| tenant / branch context | Isolation | `ATT-BR-017`, and `ATT-INV-010`'s tenant qualifier |
+
+**The prohibitions are unchanged and are restated because the instruction restates them.** The shift **MUST NOT** be
+taken from branch opening hours, a guessed shift, the current time window, or default branch hours. *"If the
+architecture currently lacks an authorized `BC-04` → Attendance data path: DO NOT silently add it."*
+
+### 8.1 What `D-20` changed here, and what it did not
+
+**Changed:** the null case now has a name. This ADR previously recorded (§3.2) that the null-shift outcome had no
+authorised status; `D-20` supplies one, so §7's *"does not decide the null-shift case"* is superseded **as to the
+status name only**.
+
+**Not changed — and this is the important half:** the **data path remains absent**. A status that names the null case
+does not tell `BC-03` whether the case obtains. **Distinguishing "no booking" from "booking, wrong window" still
+requires reading the booking**, which is exactly what no edge provides. So `ATT-GAP-002a` stays 🔴 **OPEN**, this ADR
+stays **`Proposed`**, and the two new statuses are **specified but not evaluable**. Recording that plainly is
+preferable to letting a resolved vocabulary imply a resolved dependency.
+
 ---
 
 *End of `ADR-0029` — `Proposed`.*

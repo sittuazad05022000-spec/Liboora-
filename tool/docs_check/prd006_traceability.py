@@ -455,6 +455,16 @@ def main():
     # failure -- i.e. the maintenance and the cause are disclosed together rather
     # than the second being left for a later commit to inherit.
     #
+    # ADR-0031 is listed on the same reasoning again.  It proposes the Rank 4
+    # register amendment that D-18's tolerance configuration would require, and
+    # an ADR whose entire subject is "which ATT-CFG and ATT-AC records must
+    # change" cannot avoid naming those registers, nor ATT-NFR-010, which is the
+    # rule that makes a new configurable also require a new criterion.  It
+    # DEFINES nothing, adds no register number, amends no Rank 1-4 document and
+    # remains Proposed, so no verdict printed by this script changes.  As with
+    # ADR-0030, the entry was added after this gate reported the failure, in the
+    # same session that created the file -- cause and fix disclosed together.
+    #
     # This failure was NOT pre-existing at the module's own baseline: it was
     # introduced by commit 3982993, which added ADR-0024..ADR-0028 without the
     # corresponding maintenance.  It is reported as such rather than presented as
@@ -483,6 +493,7 @@ def main():
         "ADR-0028-android-background-presence-detection.md",
         "ADR-0029-student-shift-visibility-for-attendance.md",
         "ADR-0030-device-account-resolution-for-attendance.md",
+        "ADR-0031-attendance-presence-tolerance-configuration.md",
     )
 
     def outside(hits):

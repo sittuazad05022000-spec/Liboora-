@@ -6,8 +6,8 @@
 | **Module** | Attendance Management (Master PRD §8 module **8**) |
 | **Bounded context** | **`BC-03` Attendance** — `[CORE]`, Library Management domain |
 | **Aggregate owned** | `AttendanceDay` *(BC Map §8 — one student-day, **not** one punch)* |
-| **Version** | **v1.6 — DRAFT** |
-| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **Not frozen, not ranked, not admitted to any baseline.** Stage 3 architecture alignment and Stage 4 requirements review have both been *performed* and both returned **⚠️ CONDITIONAL**; a conditional verdict is not a pass, so **no stage is claimed passed**. Stage 4 was **re-run for v1.4** because this document changed, and its verdict remains **⚠️ CONDITIONAL** — `ATT-GAP-017` no longer supplies the condition, but others do. **Stage 4 MUST be re-run for v1.6 and has not been**: v1.5 added §10A and v1.6 adds §10A.4a, §10A.7a and §10A.7b, so the previous review does not cover them. **Stage 7 is not entered and no freeze is claimed**: `ADR-0021`…`ADR-0030` are all **`Proposed`**, decision **D-9** is unresolved, no admitting ADR exists, and `DOCUMENTATION_BASELINE.md` §3 confers no rank on this document. **Eighteen decisions remain outstanding, of which two have closed on measured evidence** — `R-1`…`R-20` in [`PRD-006_PO_DECISION_RESOLUTION_RECORD.md`](./PRD-006_PO_DECISION_RESOLUTION_RECORD.md) §5 and §5.2. **Two of them (`R-19`, `R-20`) exist because a Product Owner decision met a constraint the Product Owner does not control.** See [`PRD-006_ARCHITECTURE_ALIGNMENT.md`](./PRD-006_ARCHITECTURE_ALIGNMENT.md), [`PRD-006_REQUIREMENTS_REVIEW.md`](./PRD-006_REQUIREMENTS_REVIEW.md) and [`PRD-006_STAGE4_FINDINGS_CORRECTION.md`](./PRD-006_STAGE4_FINDINGS_CORRECTION.md). No ADR has been raised and none is claimed |
+| **Version** | **v1.7 — DRAFT** |
+| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **Not frozen, not ranked, not admitted to any baseline.** Stage 3 architecture alignment and Stage 4 requirements review have both been *performed* and both returned **⚠️ CONDITIONAL**; a conditional verdict is not a pass, so **no stage is claimed passed**. Stage 4 was **re-run for v1.4** because this document changed, and its verdict remains **⚠️ CONDITIONAL** — `ATT-GAP-017` no longer supplies the condition, but others do. **Stage 4 MUST be re-run for v1.7 and has not been**: v1.5 added §10A, v1.6 added §10A.4a, §10A.7a and §10A.7b, and v1.7 adds two status values, §10A.12 and the §10A.4a worked-example table, so the previous review does not cover them. **Stage 7 is not entered and no freeze is claimed**: `ADR-0021`…`ADR-0031` are all **`Proposed`**, decision **D-9** is unresolved, no admitting ADR exists, and `DOCUMENTATION_BASELINE.md` §3 confers no rank on this document. **Seventeen decisions remain outstanding of the twenty raised, and three have closed on evidence rather than on assertion** — `R-1`…`R-20` in [`PRD-006_PO_DECISION_RESOLUTION_RECORD.md`](./PRD-006_PO_DECISION_RESOLUTION_RECORD.md) §5 and §5.2. **`R-20` closes because the Product Owner exercised the authority that created the constraint** (`D-20`, two new status values); **`R-11` and `R-13` closed on measurement.** **`R-19` remains open and is the reason no acceptance criterion can currently verify the 30-minute tolerance** — it needs two Rank 4 register amendments (`ATT-CFG` **and** `ATT-AC`) that belong to the Architecture Owner, framed in `ADR-0031` (`Proposed`). **`R-15` is narrowed but not closed** by `D-21`. See [`PRD-006_ARCHITECTURE_ALIGNMENT.md`](./PRD-006_ARCHITECTURE_ALIGNMENT.md), [`PRD-006_REQUIREMENTS_REVIEW.md`](./PRD-006_REQUIREMENTS_REVIEW.md) and [`PRD-006_STAGE4_FINDINGS_CORRECTION.md`](./PRD-006_STAGE4_FINDINGS_CORRECTION.md). No ADR has been raised and none is claimed |
 | **Date** | 2026-08-04 |
 | **Release** | **V1** |
 | **Baseline** | Written against `BASELINE-2026-08-04-E`. **Not admitted to it** |
@@ -769,36 +769,54 @@ may be described as spoofing-resistant while it is open.**
 > **No rule in this section creates a new `ATT-*` identifier.** Each one is stated under, and constrained by, an
 > existing requirement that already carries the obligation. The mapping is explicit in §10A.9.
 
-### 10A.1 The status vocabulary — exactly seven strings, fixed
+### 10A.1 The status vocabulary — nine strings, the last two added by Product Owner decision `D-20`
 
-**`D-10`…`D-16` fix these seven strings.** The Product Owner instruction is *"Do not invent alternative status
-names."* This document therefore **MUST NOT** introduce an eighth, a synonym, an abbreviation or a localised
-variant as a stored status value.
+**`D-10`…`D-16` fixed the first seven. `D-20` adds exactly two more, and the addition is a Product Owner act
+recorded as such — not an inference from need.** The original instruction *"Do not invent alternative status names"*
+prohibited **this document** from inventing them; it did not prohibit the **Product Owner** from authorising more.
+The later instruction does so explicitly: *"Add only the minimum additional status required by the approved product
+decisions… Because this changes the exact status set, record the required Product Owner decision/governance
+explicitly. Do not silently claim the status table is frozen until the authority accepts it."*
 
-| # | Situation | Status |
-|---|---|---|
-| 1 | Correct shift **and** verified presence | **`VERIFIED PRESENCE`** |
-| 2 | Verified presence outside the student's booked shift | **`SCHEDULE MISMATCH`** |
-| 3 | All valid registered devices disconnected for more than 5 minutes | **`SESSION ENDED`** |
-| 4 | A proper exit cannot be reliably verified | **`INCOMPLETE / EXIT NOT VERIFIED`** |
-| 5 | A device or account cannot be identified | **`UNKNOWN DEVICE / UNVERIFIED PRESENCE`** |
-| 6 | An unknown person manually verified as a member | **`VERIFIED MEMBER`** |
-| 7 | An unknown person not verified | **`UNVERIFIED — NO ATTENDANCE`** |
+| # | Situation | Status | Source |
+|---|---|---|---|
+| 1 | Correct shift **and** verified presence inside the booked window | **`VERIFIED PRESENCE`** | `D-10`…`D-16` |
+| 2 | Verified presence outside the student's booked shift, **a booking existing** | **`SCHEDULE MISMATCH`** | `D-10`…`D-16` |
+| 3 | A qualifying exit event closed the session (§10A.4a) | **`SESSION ENDED`** | `D-10`…`D-16` |
+| 4 | A proper exit cannot be reliably verified | **`INCOMPLETE / EXIT NOT VERIFIED`** | `D-10`…`D-16` |
+| 5 | A device or account cannot be identified | **`UNKNOWN DEVICE / UNVERIFIED PRESENCE`** | `D-10`…`D-16` |
+| 6 | An unknown person manually verified as a member | **`VERIFIED MEMBER`** | `D-10`…`D-16` |
+| 7 | An unknown person not verified | **`UNVERIFIED — NO ATTENDANCE`** | `D-10`…`D-16` |
+| **8** | **Verified network presence by a student with NO booked shift** | **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** | **`D-20`** |
+| **9** | **Verified presence continuing beyond the booked shift + configured tolerance** | **`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`** | **`D-20`** |
 
-**One gap in the vocabulary is disclosed rather than filled.** `SEAT-FR-046` makes a `SeatAllocation`'s shift
-reference **nullable**, so a student may hold a verified presence with **no** booked shift. The seven strings
-contain no value for that case, and this document **MUST NOT** invent an eighth or silently fold the case into
-either 1 or 2 — see `ADR-0029` §3.2. It is a Product Owner decision that has not been made.
+**Rows 8 and 9 are STORED status values, not derived labels.** An earlier draft of this section carried three of the
+requested names as *derived windows* over an existing status, on the reasoning that the vocabulary was closed at
+seven. **`D-20` supersedes that treatment for these two**, and the change is disclosed rather than quietly
+substituted: what was a computed dimension is now a stored value, because the authority that closed the table has
+reopened it for exactly two additions and no more.
 
-> **⛔ FOUR FURTHER NAMES WERE REQUESTED AND ARE NOT STORED AS STATUS VALUES — Product Owner decision required.**
-> A later Product Owner instruction names `SHIFT TIME ENDED / TOLERANCE PERIOD`,
-> `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`, `SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE` and
-> `NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING`, while the **same** authority's earlier instruction — *"Do not
-> invent alternative status names"* — closes this table at seven. The same instruction resolves the conflict it
-> creates: *"Do not silently invent a final status string if the existing seven-status registry forbids adding one.
-> If a new status is necessary, mark it as a Product Owner decision required and explain why."* **It is marked, not
-> resolved.** §10A.7b states exactly what each name needs and which of them a second, derived dimension can carry
-> without an eighth stored value. **No eighth stored status value is created by this document.**
+**Row 8 exists because Wi-Fi verification proves network presence, not entitlement.** `SEAT-FR-046` makes a
+`SeatAllocation`'s shift reference **nullable**, so a student may hold verified network presence with no booked
+shift. Folding that into row 1 would certify presence against a shift nobody booked; folding it into row 2 would
+tell a student they missed a booking that never existed. **Both are prohibited** — *"Do NOT hide this state inside
+`VERIFIED PRESENCE` or `SCHEDULE MISMATCH`."*
+
+**Row 9 exists because silence after the tolerance window is not acceptance.** *"This must NOT silently remain
+`VERIFIED PRESENCE`."*
+
+> **✅ MEASURED: rows 8 and 9 require NO Rank 4 amendment, and this was tested rather than assumed.** Both rows were
+> injected and the Stage 5 gate re-run: it returned **PASS, exit 0**, with dangling references 0 and orphan criteria
+> 0. `grep` for the existing status strings in `TRACEABILITY_MATRIX.md` returns **0** — **status strings are not
+> registered identifiers in any Rank 4 document**, so the constraint on them is governance (whose vocabulary is it)
+> and **not** register arithmetic. This is the opposite of `D-18`'s configurable, which **does** collide with §2F
+> (§10A.7a). The two were tested separately and gave different answers; neither result was carried over to the other.
+>
+> **What still needs authority.** Nothing in the gate blocks these strings, but **`ATT-FR-081`'s state resolution,
+> the §25 signal set and the §30 acceptance subsections all describe outcomes in terms of the seven.** Extending
+> those descriptions is done in place below. **No `ATT-*` identifier is added for either status**, because
+> `ATT-CFG`/`ATT-AC` growth is blocked by `R-8`/`R-19` — so rows 8 and 9 are specified and their **configuration**
+> is not registrable. That asymmetry is real and is reported, not smoothed over.
 
 ### 10A.2 One account, one session — the multi-device rule
 
@@ -925,6 +943,32 @@ informed that the exit could not be verified, as a fact under `ATT-FR-148`.
 **A gap in observations remains, in every row above, NOT evidence of presence and NOT a fraud signal.** `R-13` is
 resolved in one direction only: an **observed** loss may end a session; an **unobserved** silence may not end one
 and may not extend one either. Only verified presence counts (§10A.6).
+
+**The FINAL qualifying disconnect is the exit — not the first one.** Where a session contains several observed
+losses, each followed by a reconnect inside the 5 minutes, **none of the intermediate losses is an exit**. The exit
+event is the **last** qualifying disconnect, evaluated against the booked/tolerance window of §10A.7a. Stated
+explicitly because taking the first disconnect would truncate a session the student never left.
+
+**Three facts that are NOT automatically identical, and MUST NOT be stored as one field:**
+
+| Fact | What it is | What it is not |
+|---|---|---|
+| **Attendance exit event** | The configured exit the product recognises — here, the final qualifying Wi-Fi disconnect | Not a physical observation |
+| **Verified presence end** | The end of the measured verified interval | Not a claim the student then left |
+| **Physical exit certainty** | Only ever established by a human act — check-out, Manual entry, §18 correction | **Never** derived from a network event |
+
+**Worked examples — normative, and each is a case a reader might otherwise resolve differently.**
+Shift 06:00–10:00, tolerance 30 min, grace 5 min throughout.
+
+| # | Observations | Result |
+|---|---|---|
+| **1** | connect 05:50 · disconnect 10:10 | Presence **allowed** (inside 05:30–10:30). **Study Hours = 06:00–10:00 only = 4 h.** 05:50–06:00 and 10:00–10:10 count **nothing**. Configured Wi-Fi exit = **10:10** *if* the exit rule qualifies |
+| **2** | 06:00 connect · 07:00 disconnect · 08:00 reconnect · 10:00 disconnect | **07:00 is NOT the final exit.** The 08:00 reconnect continues the same session. **10:00 is the final qualifying disconnect.** Note the 07:00→08:00 gap exceeded the 5-minute grace, so it is **not** verified presence and **does not** count toward Study Hours — but the day is one attendance record, never two |
+| **3** | 06:00 connect · 09:20 disconnect · 09:23 reconnect | Reconnect inside grace ⇒ **SAME session · no exit · no new attendance record · no double-count.** Verified presence is continuous across the 3 minutes |
+| **4** | 06:00 connect · 09:20 disconnect · no reconnect | After the grace the session is **non-recoverable**. If the configured Wi-Fi exit method qualifies, **`SESSION ENDED`** with exit fact *Wi-Fi-based exit detected*. If it does not qualify, **`INCOMPLETE / EXIT NOT VERIFIED`**. **Under no circumstance is "the student physically exited at 09:20" asserted** |
+| **5** | No booked shift · Wi-Fi verified | **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** (§10A.1 row 8). **Not** `VERIFIED PRESENCE` |
+| **6** | Shift 06:00–10:00 · connected 19:00 | **Not** normal `VERIFIED PRESENCE`. Row 9 or row 2 per this table's precedence |
+| **7** | Phone A 06:00–08:00 · Phone B 06:30–10:00 | **ONE** logical session · union **06:00–10:00** · **4 hours** — **not** 2 sessions, **not** 6 h, **not** 8 h. **No grace begins at 08:00**, because B still holds presence |
 
 **This subsection adds no `ATT-*` identifier.** It is `ATT-BR-030`, `ATT-BR-031`, `ATT-FR-083` and `ATT-FR-088`
 applied to a new trigger, and §10A.9 maps it.
@@ -1079,38 +1123,40 @@ withheld, it is presence that falls outside the booked shift the figure is *abou
 > independently implementable**, so this adds no new gap number; a nineteenth `ATT-GAP` number would fail §2F for
 > the same reason.
 
-### 10A.7b Out-of-shift presence, and the student with no booking at all
+### 10A.7b Out-of-shift presence, overstay, and the student with no booking at all
 
-**Two situations must not be collapsed into one another, and the difference is whether a booking exists.**
+**Superseded reasoning is disclosed, not overwritten.** An earlier draft of this subsection argued that three of the
+four requested state names could be carried as **derived windows** without an eighth stored status, because §10A.1
+was closed at seven. **`D-20` reopens the table for exactly two additions**, so two of those three are now **stored
+status values** (§10A.1 rows 8 and 9). The earlier reasoning was sound under the constraint that then applied; the
+constraint changed by decision of the authority that set it, and this note records the change rather than presenting
+the new text as if it had always said this.
 
-| Situation | Required treatment | Notify |
+| Situation | Status | Notify |
 |---|---|---|
-| Booked 06:00–10:00; verified at **18:00** — far outside both the shift and its tolerance | **MUST NOT** be normal `VERIFIED PRESENCE`. Treated as **out-of-shift presence**, the `SCHEDULE MISMATCH` case of §10A.7 | student **and** authorised staff |
-| The student has **NO booked shift at all** (`SEAT-FR-046` makes the shift reference **nullable**) | **MUST NOT** be classified as `SCHEDULE MISMATCH`. A mismatch asserts a booking exists and was missed; here none exists, and reporting one would be a false statement about the student | **Product Owner decision required** — see below |
+| Booked 06:00–10:00; verified presence **inside** 06:00–10:00 | **`VERIFIED PRESENCE`** | — |
+| Booked 06:00–10:00; verified at **19:00** — outside the shift **and** outside tolerance | **`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`** (row 9) or **`SCHEDULE MISMATCH`** (row 2) per §10A.4a's precedence — **never** normal `VERIFIED PRESENCE` | student · Owner · Manager |
+| Presence continuing past booked end **+ tolerance** (after 10:30) | **`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`** | student · Owner · Manager |
+| Student has **NO booked shift at all** (`SEAT-FR-046` shift reference **nullable**) | **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** (row 8) | explicit, auditable review — §10A.12 |
 
-**Why the second row cannot simply be given a name.** §10A.1 closes the stored status vocabulary at seven on the
-Product Owner's own instruction, and the four names a later instruction supplies —
-`SHIFT TIME ENDED / TOLERANCE PERIOD`, `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`,
-`SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE`, `NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING` — would make eight, nine,
-ten and eleven. The instruction that supplies them also governs the collision: *"Do not silently invent a final
-status string if the existing seven-status registry forbids adding one."*
+**Why row 8 is not a variant of anything.** *"Wi-Fi verification proves network presence only. It does NOT prove
+that the student has an authorized booked shift."* Two placements were considered and both are prohibited:
 
-**What is resolved without an eighth stored value, and what is not:**
+- **Into `VERIFIED PRESENCE`** — would certify presence against a booked shift that does not exist, and would feed
+  Study Hours a window with no start and no end to be measured against.
+- **Into `SCHEDULE MISMATCH`** — would state to the student, to the Owner and to the Manager that a booking was
+  missed. **No booking existed**, so the statement is false about a person. `ATT-NFR-005` requires failure signals to
+  be *distinguishable*; a false one is worse than an unhelpful one.
 
-| Requested name | Resolution here | Needs a Product Owner decision |
-|---|---|---|
-| `SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE` | **Resolved.** It is `SCHEDULE MISMATCH` (row 2 of §10A.1) with the reason *out-of-shift presence* carried in the existing distinguishable-reason channel `ATT-NFR-005` uses. **No new stored value** | **No** |
-| `SHIFT TIME ENDED / TOLERANCE PERIOD` | **Resolved as a WINDOW, not a status.** §10A.7a's table makes it a property of *when* presence falls relative to the booked shift — a second, derived dimension over the same session. The stored status stays one of the seven; the window is computed, and it is what the alert is *about* | **No** |
-| `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW` | **Resolved the same way** — a derived window, not a stored status | **No** |
-| **`NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING`** | **NOT RESOLVED. This one genuinely needs an eighth value.** It is not a window over a booked shift, because there is no booked shift to be a window over; and it is not a reason under `SCHEDULE MISMATCH`, because that status asserts the booking the case lacks. Folding it into `VERIFIED PRESENCE` would silently certify presence against a shift nobody booked; folding it into `SCHEDULE MISMATCH` would report a mismatch that did not occur | **YES — Product Owner** |
+**Branch opening hours remain refused as a substitute for a booking**, in this subsection as in §10A.7. *"Do not
+silently treat branch opening hours as the student's booked shift."*
 
-**The decision required, stated so it is answerable.** Either (i) authorise an **eighth** stored status value for
-presence without a booking, which reopens §10A.1's closure and needs a Rank 4 register amendment for whatever
-identifiers carry it; or (ii) rule that presence without a booking is **not admissible** for Wi-Fi Presence at all,
-so no status is needed; or (iii) rule that it is carried as a **nullable-shift qualifier** on an existing status,
-naming which one and accepting that the status alone no longer tells the whole story. **This document selects
-none of the three.** `ADR-0029` §3.2 already records the underlying ambiguity; the product half of it is now
-explicit, bounded and assigned.
+> **⛔ STILL BLOCKED, and the status decision does not unblock it.** Rows 8 and 9 are now authorised **names**, but
+> distinguishing row 8 from rows 1/2/9 requires knowing **whether a booking exists** — and `BC-03` still has no
+> authorised input carrying the booked shift (`ATT-GAP-002a`, `ADR-0029` `Proposed`). **A status the system cannot
+> evaluate is specified, not implementable.** `D-20` resolved the vocabulary question; it did not create a data path,
+> and this document **MUST NOT** invent one. Distinguishing row 9 additionally needs the tolerance value, whose
+> configuration registration is blocked by `R-19` (§10A.7a).
 
 ### 10A.8 Security — three claims this document never makes
 
@@ -1150,6 +1196,10 @@ any register** — the reason is in the resolution record §3.2.
 | Tenant isolation of every fact above | `ATT-BR-017`, `ATT-NFR-006`, `ATT-INV-006` | `ATT-AC-147` |
 | Manual verification of an unknown person | §13, `ATT-BR-038`, `ATT-FR-110`…`116` | §30.13, §30.17 |
 | The smartphone-less student is unaffected | `ATT-BR-008`, `ATT-NFR-014` | §30.5 |
+| Statuses 8 and 9 (§10A.1) are emitted as **facts**, never as channels or templates | `ATT-FR-148`, `ATT-FR-129`…`133`, `ATT-NFR-005` | §25's signal table |
+| The no-booking case is an **explicit, auditable review item**, not a silent pass | `ATT-FR-129`…`133`, `ATT-FR-134`, `ATT-BR-017` | `ATT-AC-147` |
+| Location Verification (§10A.12) is configured, tenant-scoped, audited, and grants nothing else | `ATT-FR-038`, `ATT-BR-017`, `ATT-FR-118` | `ATT-AC-147`, `ATT-AC-169` |
+| A denied location permission does **not** destroy attendance capability, and fails visibly | `ATT-BR-008`, `ATT-NFR-014`, `ATT-FR-036`, `ATT-NFR-005` | §30.5, `ATT-AC-033` |
 
 ### 10A.10 The student experience — nine steps, and what is not promised
 
@@ -1212,6 +1262,36 @@ the anti-cheating protections of §19.3 · the audit rules of §21 · the correc
 **`ATT-BR-007` is preserved verbatim**: a Wi-Fi condition applies **only** to `ATTENDANCE_MODE_FIXED_QR_WIFI`, and
 `ATT-XC-011` continues to forbid a verification pipeline or chain. **No existing mode is reinterpreted to perform
 the new behaviour** — that is the specific failure `D-10` prohibits, and §7.1a records that it is not done.
+
+### 10A.12 Location Verification is OPTIONAL, and defaults to OFF — `D-21`
+
+**Product Owner decision.** Location Verification **MUST NOT** be mandatory for Wi-Fi Presence. It is a per-library
+option, **default OFF**, configurable by **Owner and Manager** under the same authorisation, tenant-isolation and
+audit rules as every other setting (`ATT-FR-038`, `ATT-BR-017`, `BC-18`). **No unrelated permission is granted, and
+no role is defined** — `ATT-FR-118` still forbids defining one.
+
+**When enabled, what it is and is not:**
+
+- It is an **additional verification signal**, never the sole identity proof (`ATT-XC-014` unchanged).
+- The student **MUST** be informed appropriately.
+- **A denied location permission MUST NOT destroy all attendance capability.** The other six modes remain available
+  (`ATT-BR-008` — no smartphone is required to attend at all), and the failure **MUST** be distinguishable rather than
+  silent (`ATT-NFR-005`, `ATT-FR-036` — no silent downgrade).
+
+**No Android permission is asserted as a fact by this document.** `ACCESS_FINE_LOCATION` and
+`ACCESS_BACKGROUND_LOCATION` are **NOT** added as mandatory permissions, and **MUST NOT** be forced on every student.
+The order of reasoning is fixed by the decision itself: *"First establish whether the chosen Wi-Fi verification
+mechanism actually requires location."* That is `ADR-0027`'s question (`R-15`), and until it is answered any
+permission is a **conditional dependency of a mechanism that has not been selected** — not a requirement of this
+capability. `ATT-FR-044` remains the only OS-permission line in this document, and it concerns mode 4.
+
+> **This decision materially changes `ADR-0027`'s comparison, and the change is in the product's favour.** §6A.1's
+> case against Option A rested largely on its forcing a location prompt on every student. With Location Verification
+> **optional and default OFF**, a mechanism that *requires* location becomes correspondingly less attractive — the
+> permission cost can no longer be presented as unavoidable, because the product has declined to make it so.
+> **`R-15` is now bounded rather than open-ended**: Security must still determine whether a candidate mechanism needs
+> location, but the answer no longer decides whether students are prompted by default. **It does not select a
+> mechanism, and `ADR-0027` remains `Proposed`.**
 
 ---
 
@@ -2117,11 +2197,25 @@ The following outcomes **MUST** be distinguishable to the actor who caused them,
 | **Unknown device on the authorized network — `UNKNOWN DEVICE / UNVERIFIED PRESENCE`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.3 — Owner/Manager review item |
 | **Exit could not be verified — `INCOMPLETE / EXIT NOT VERIFIED`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, `ATT-BR-030`, §10A.5 — student informed; no end time fabricated |
 | **Shift time ended — tolerance period entered** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7a — student **and** authorised staff; a **window** fact, not a status change; **blocked with `ATT-GAP-002a`** |
-| **Shift overstay — presence outside the booked window** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7a — student **and** authorised staff; **MUST NOT** be emitted as normal `VERIFIED PRESENCE`; **blocked with `ATT-GAP-002a`** |
-| **Presence with no booked shift** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.7b — **Product Owner decision required**; **MUST NOT** be emitted as `SCHEDULE MISMATCH` |
+| **`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.1 row 9 — **student · Owner · Manager** (`D-20`); **MUST NOT** be emitted as normal `VERIFIED PRESENCE`; **blocked with `ATT-GAP-002a`** |
+| **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.1 row 8 (`D-20`) — an **explicit, auditable** review item under `ATT-FR-129`…`133`; **MUST NOT** be emitted as `SCHEDULE MISMATCH` or `VERIFIED PRESENCE`; **blocked with `ATT-GAP-002a`** |
+| **Location Verification unavailable or denied, where enabled** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, `ATT-NFR-005`, `ATT-FR-036`, §10A.12 — distinguishable, **never** a silent downgrade; other modes remain available |
 | **Wi-Fi-based exit detected (distinct from a physically verified exit)** | **Wi-Fi Presence (§10A)** | `ATT-FR-148`, §10A.4a — the two **MUST** be distinguishable to the reader |
 
-**These rows are outcomes of §10A, and they add no `ATT-*` identifier.** Each is emitted as a **fact** under
+**These rows are outcomes of §10A, and they add no `ATT-*` identifier.** **Four situations are named here as
+explicitly NOT notification-worthy**, because an over-alerting product is a failure mode of its own:
+
+| Situation | Required behaviour |
+|---|---|
+| A reconnect **within** the 5-minute grace (Example 3) | **NO alert.** Nothing happened that concerns the student — same session, no exit, no lost time |
+| An ordinary short Wi-Fi loss inside the grace | **NO alarmist notification.** A dropped radio is not an incident |
+| Presence in the 05:30–06:00 early-arrival window | No alert is required; the presence is simply not counted |
+| An observation gap later filled by reconciliation | **NO retrospective alarm** — the gap was a platform artefact, not a student act (§10A.4a) |
+
+**No cooldown, frequency, quiet-hour rule, retry count or escalation ladder is stated for any row above, and none may
+be invented.** `X-04` and `LIB-16.5` place channel, template and dispatch with `BC-22`; `ATT-FR-148` restricts this
+module to emitting **facts** over `E-23`. **Notification delivery remains separate from the attendance fact**, and
+the Product Owner withheld every interval explicitly. Each is emitted as a **fact** under
 `ATT-FR-148` and each carries a distinguishable reason under `ATT-NFR-005`. **No notification frequency, cooldown,
 quiet-hour rule or escalation interval is stated for any of them, and none may be invented** — `X-04` and
 `LIB-16.5` place channel, template and dispatch with `BC-22`, and Product Owner decisions `D-10`…`D-16` withheld

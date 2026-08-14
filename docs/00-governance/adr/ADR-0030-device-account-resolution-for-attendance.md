@@ -106,6 +106,25 @@ between O-3 and O-1. **This is not a recommendation.**
 6. Security sign-off, because the subject is Authentication data.
 7. Whether the `Unknown` device category and `UNKNOWN DEVICE / UNVERIFIED PRESENCE` are the same condition.
 
+## 6A. The six points Security must validate
+
+> **Named by the Product Owner.** Each is stated with what the existing rules already supply, so the deciding
+> authority validates the delta rather than the whole surface.
+
+| # | Security must validate | Already supplied | The delta Security must rule on |
+|---|---|---|---|
+| **1** | **Tenant isolation** | `ATT-BR-017` (backend-enforced), `ATT-INV-010`'s tenant qualifier | That a device registered via one library cannot resolve as valid in another — noting `ATT-INV-010` deliberately permits one person to hold open presence at two libraries, so the check is per-tenant, **not** global exclusivity |
+| **2** | **Account ownership** | `AUTH-6.32` — the device belongs to the **account**, not the platform or any library | That the resolution asserts only *this device belongs to this account*, and confers no library-side authority over the device (`AUTH-6.33`) |
+| **3** | **Revoked device handling** | `AUTH-6.38` (removal terminates every session, revokes trust), `AUTH-6.39` (treated as unknown on next use) | **How a revocation invalidates in-flight presence.** A device removed mid-session **MUST NOT** continue producing valid presence — and the resulting session state is `INCOMPLETE / EXIT NOT VERIFIED` under `PRD-006` §10A.4a, **not** a fabricated exit at the revocation instant |
+| **4** | **Device lifecycle** | `AUTH-6.31` (created on first successful auth), `AUTH-6.40` (`CFG-8` = 10 max), `AUTH-6.41` (no silent eviction) | That Attendance's *valid registered device* and Authentication's **Trusted / Registered / Unknown** categories are reconciled explicitly, rather than assumed equivalent — see §2 |
+| **5** | **Minimum data exposure** | `AUTH-6.43` (no factor, challenge or session secret) | That the payload is limited to §4 and that **enumeration is impossible by construction**. This is the point most likely to be eroded by convenience, and §4 states it as an absolute |
+| **6** | **Auditability** | `ATT-FR-129`…`133`, `E-20` to `BC-24` | Whether each resolution is itself an audited event, or only its failures — and if the former, that the audit record does not reintroduce the exposure §4 excludes |
+
+**One asymmetry deserves the authority's attention.** Attendance needs the resolution **most** in exactly the case
+Authentication is **least** able to serve it: an observation queued offline and replayed later through `E-24`, when no
+live session exists. **O-3 (resolution inside the authenticated session) is elegant and may not cover that case** —
+which is why §5 flags it rather than recommending it.
+
 ## 7. What this ADR explicitly does not do
 
 - It does **not** create, name or number an edge, event, port, API or read model.

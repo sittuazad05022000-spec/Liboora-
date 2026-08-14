@@ -200,6 +200,60 @@ The reasoning, kept to what has been measured:
 — that sufficient device-observable evidence exists **without** any location permission — would remove A's largest
 cost and reopen it on cost grounds alone. That question is Security's, is unresolved, and is **not** assumed here.
 
+## 6B. The sealed verification boundary, and the eight-dimension analysis requested
+
+**The boundary, as the Product Owner states it:**
+
+```
+networkEvidence + tenant  ->  [ Wi-Fi Verification Layer ]  ->  VALID / INVALID
+```
+
+**Everything about the mechanism lives behind that boundary.** `PRD-006` names no identifier, and this ADR names
+none. **SSID is not identity**: *"SSID alone MUST NEVER be human identity proof."* A copied network name **MUST NOT**
+produce valid presence.
+
+**A material change since §6A was written.** `D-21` makes **Location Verification optional and default OFF**
+(`PRD-006` §10A.12). §6A.1's case against Option A rested substantially on its forcing a location prompt on every
+student; that cost can no longer be presented as unavoidable, because the product has declined to make location
+mandatory. **The recommendation below is restated under the new decision rather than left standing on a premise that
+has moved.**
+
+| # | Dimension | **A** device-observable only | **B** device + library-side corroboration | **C** cryptographic challenge |
+|---|---|---|---|---|
+| **1** | **Replay resistance** | **Weak.** Evidence is a description; a description can be recorded and re-presented | **Moderate.** Corroboration is bounded in time and place, so a replay must also be corroborated | **Strong by construction.** Freshness is the mechanism's purpose |
+| **2** | **Off-site spoofing** | **Highest exposure.** This is the copied-network-name attack, and A is the option least able to resist it | **Reduced** — the library side must also have seen the session | **Lowest** — a captured answer is useless for the next challenge |
+| **3** | **Privacy** | Depends on whether the evidence describes the student's radio surroundings. If it does, it is **disproportionate** to taking attendance | **Better** — the evidence concerns the library's own network | **Best** — a proof of interaction reveals least; `AUTH-6.43` easiest to honour |
+| **4** | **Android permission impact** | **Conditional, and now less decisive.** If the evidence is location-gated it needs a runtime permission — but `D-21` means that is a **property of the mechanism**, not a product default. A mechanism needing location becomes *less attractive*, not *mandatory* | **Can be designed to avoid the gate** — an exchange with a reachable endpoint is not a description of the radio environment | **Same as B, for the same reason** |
+| **5** | **Library operational cost** | **Lowest.** Nothing to deploy or keep online | **Medium.** A component per branch; its downtime becomes an attendance incident | **Highest.** Key provisioning, rotation, revocation, recovery |
+| **6** | **Multi-tenant isolation** | Enforced only in the backend comparison against `ATT-CFG-008`; the evidence itself carries no tenant binding | **Stronger** — corroboration is intrinsically per-library | **Strongest** — key material is per-tenant by construction, so cross-tenant validity is impossible rather than merely rejected |
+| **7** | **Failure behaviour** | Fails **open-ish**: a hostile client controls its own report, so failures are hard to distinguish from lies | Fails **closed** when the library component is down — availability becomes an attendance risk, and `ATT-FR-036`'s no-silent-downgrade rule then matters most | Fails **closed**, plus a compromised-key incident path that must be specified before use |
+| **8** | **Auditability** | Weakest — an unverifiable claim logged faithfully is still an unverifiable claim | **Good** — two independent records to reconcile | **Best** — a verifiable proof is auditable after the fact |
+
+### 6B.1 Recommendation — restated under `D-21`, and still NOT an accepted decision
+
+The Product Owner's own direction: *"V1: Prefer the stronger library-side corroboration approach if Architecture +
+Security confirm operational feasibility. Future direction: cryptographic challenge/replay-resistant mechanism.
+But: DO NOT mark this recommendation as Accepted Architecture decision."*
+
+**Recommendation on the record: OPTION B for V1, conditional on Architecture + Security confirming operational
+feasibility; OPTION C as the stated future direction; OPTION A not recommended as a sufficient basis for automatic
+attendance.**
+
+**This is a recommendation, not a decision. `ADR-0027` remains `Proposed`** until the Architecture owner and Security
+Platform approve. `PRD_OWNERSHIP_MODEL.md` §5 reserves that approval, and it is not claimed here.
+
+**The two conditions that must be confirmed before B can be adopted, stated so they are answerable:**
+
+1. **Operational feasibility per branch** — dimension 5 and dimension 7 together. If a library component's downtime
+   silently blocks attendance, `ATT-FR-036` requires the failure to be distinguishable, and the product needs a
+   fallback the six existing modes already provide (`ATT-BR-008`).
+2. **That B's evidence does not itself require location** — dimension 4, i.e. **`R-15`**. If it does, B inherits the
+   cost `D-21` was written to avoid, and the comparison changes again.
+
+**What would overturn this recommendation:** a Security finding that a device-observable mechanism exists which is
+**both** location-free **and** replay-resistant. That would collapse the gap between A and B and make A viable on
+cost. It is **not** assumed, and no such mechanism is named in this ADR.
+
 ## 7. Consequences
 
 - **If accepted:** `ATT-XC-015` is amended in `PRD-006` to point at this decision instead of excluding the topic; `ATT-GAP-007` closes; R-10's definition unblocks duplicate prevention and the multi-AP handoff rule.

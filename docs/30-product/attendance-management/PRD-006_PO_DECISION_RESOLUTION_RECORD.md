@@ -58,6 +58,43 @@ recorded in `PRD-006` **§10A.4a** as a six-row precedence table whose ordering 
 **`D-19` collides with §10A.1's seven-string closure, and only three of the four requested names can be resolved
 without an eighth stored value.** See §3.7.
 
+### 1.0b Two more Product Owner decisions — `D-20`, `D-21`
+
+| ID | Decision | **Answer as given** | Constraints |
+|---|---|---|---|
+| **`D-20`** | The status set | **The table gains exactly TWO statuses**: **`NO BOOKED SHIFT / PRESENCE UNASSIGNED`** and **`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`** | *"Add only the minimum additional status required."* *"Do NOT hide this state inside `VERIFIED PRESENCE` or `SCHEDULE MISMATCH`."* *"Because this changes the exact status set, record the required Product Owner decision/governance explicitly. Do not silently claim the status table is frozen until the authority accepts it."* Overstay notifies **student · Owner · Manager** |
+| **`D-21`** | Location Verification | **OPTIONAL. Default OFF.** Owner + Manager configurable per library | *"It MUST NOT be mandatory."* Not the sole identity proof · student informed · **denied permission MUST NOT destroy all attendance capability** · tenant-scoped and audited · *"Do NOT automatically add `ACCESS_FINE_LOCATION` or `ACCESS_BACKGROUND_LOCATION` as mandatory permissions. First establish whether the chosen Wi-Fi verification mechanism actually requires location"* |
+
+**`D-20` resolves `R-20` and supersedes part of this record's own §3.7.** §3.7 concluded that three of four requested
+names could be carried as *derived windows* and one needed a PO decision. That reasoning was correct **under the
+closure then in force**; `D-20` reopens the table for exactly two additions, so two of those names are now **stored
+status values**. **The superseded reasoning is left visible in §3.7 rather than rewritten**, because a record that
+edits away its own earlier position is no longer a record.
+
+**`D-21` bounds `R-15` without answering it, and it changes an ADR recommendation.** `ADR-0027` §6A.1's case against
+Option A rested substantially on Option A forcing a location prompt on every student. With location **optional and
+default OFF**, that cost is no longer unavoidable. §6B.1 restates the recommendation under the new premise instead of
+leaving the old one standing.
+
+> **A measurement that reversed an expectation, recorded because it changed the outcome.** Before applying `D-20`,
+> both new status strings were injected into §10A.1 and the Stage 5 gate re-run. **It returned PASS, exit 0.** A
+> `grep` for the existing status strings in `TRACEABILITY_MATRIX.md` returns **0** — **status strings are not
+> registered identifiers in any Rank 4 document.** So unlike `D-18`'s configurable, the two new statuses need **no**
+> Rank 4 amendment. **Two superficially identical-looking additions produced opposite verdicts**, which is why each
+> was probed separately rather than one result generalised to the other.
+
+### 1.0c What `D-20` does NOT unblock — stated because it is the most likely misreading
+
+The two new statuses are **authorised names**. They are **not evaluable behaviour.** Distinguishing
+`NO BOOKED SHIFT / PRESENCE UNASSIGNED` from `VERIFIED PRESENCE`, `SCHEDULE MISMATCH` or
+`SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW` requires knowing **whether a booking exists and what its window
+is** — and `BC-03` still has **no authorised input carrying the booked shift** (`ATT-GAP-002a`, `ADR-0029`
+`Proposed`). `SHIFT OVERSTAY` additionally requires the tolerance value, whose registration is blocked by `R-19`
+(`ADR-0031`, `Proposed`).
+
+**So the vocabulary question is closed and the data question is not.** A reader who sees nine statuses and concludes
+the shift logic is implementable would be wrong, and `PRD-006` §10A.7b says so at the point of use.
+
 ### 1.1 The status vocabulary, as fixed by the Product Owner
 
 Seven strings, given exactly. *"Do not invent alternative status names."*

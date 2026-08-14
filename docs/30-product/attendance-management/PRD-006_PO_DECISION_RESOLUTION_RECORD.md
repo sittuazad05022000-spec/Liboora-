@@ -38,6 +38,26 @@ part of the decision and is reproduced, not summarised away.
 | **D7** | *(not answered — see §5)* | — | — |
 | **D8** | V1 scope | **A — all three** | Wi-Fi Presence · Automatic Attendance · Study Hours / session-duration capability |
 
+### 1.0a Three FURTHER Product Owner decisions — `D-17`, `D-18`, `D-19`
+
+A later instruction supplied three more decisions. They are recorded on the same terms: the attached constraints are
+part of each decision.
+
+| ID | Decision | **Answer as given** | Constraints attached by the Product Owner |
+|---|---|---|---|
+| **`D-17`** | Is a Wi-Fi disconnect an acceptable exit method? | **YES — Liboora may treat Wi-Fi disconnect as a configured/approved exit method for Wi-Fi Presence** | It **MUST NOT** claim the disconnect instant was *"necessarily the exact physical moment the student walked out."* The recorded event must distinguish **"Wi-Fi-based exit detected"** from **"physically verified exit."** *"Do not silently collapse all cases into SESSION ENDED."* Where no valid exit evidence exists — killed, force-stopped, permissions revoked — the outcome stays **`INCOMPLETE / EXIT NOT VERIFIED`** and *"NEVER fabricate an exit timestamp"* |
+| **`D-18`** | Default shift tolerance | **30 MINUTES** — *"the only new numeric value authorized"* | Configurable by **Owner AND Manager**, tenant/library scoped, every change auditable under existing audit rules. Applies on **BOTH sides**. Study Hours count **only** verified presence inside the booked shift. *"Do NOT invent another numeric tolerance. Do NOT invent notification cooldown/frequency"* |
+| **`D-19`** | Presence far outside the shift, and the no-booking case | Out-of-shift ⇒ the `SCHEDULE MISMATCH` case, notify student + authorised staff. **No booking at all ⇒ NOT `SCHEDULE MISMATCH`** — a distinct product state | *"Do not silently invent a final status string if the existing seven-status registry forbids adding one. If a new status is necessary, mark it as a Product Owner decision required and explain why"* |
+
+**`D-17` resolves CONFLICT 16 and `R-13`.** Both were raised by this work's own earlier reviews; the resolution is
+recorded in `PRD-006` **§10A.4a** as a six-row precedence table whose ordering places *unobserved silence* **above**
+*elapsed time*, so that a killed process can never become a clean `SESSION ENDED`.
+
+**`D-18` collides with a Rank 4 register, and the collision was measured rather than predicted.** See §3.6.
+
+**`D-19` collides with §10A.1's seven-string closure, and only three of the four requested names can be resolved
+without an eighth stored value.** See §3.7.
+
 ### 1.1 The status vocabulary, as fixed by the Product Owner
 
 Seven strings, given exactly. *"Do not invent alternative status names."*
@@ -209,6 +229,64 @@ unrelated parent would be dishonest labelling. Where neither is available, the q
 
 ---
 
+### 3.6 FINDING F — `D-18`'s 30-minute tolerance cannot be registered as a configurable value
+
+**Measured, not assumed. The probe was run, the transcript is below, and the probe was removed.**
+
+§16.3's configurable register ends at **`ATT-CFG-024`**, and `TRACEABILITY_MATRIX.md` §2F — **Rank 4** — fixes
+`ATT-CFG-*` at **24**. Finding B proved §2F cross-checks all ten registers using `ATT-BR`; whether it bit on
+`ATT-CFG` specifically was **not** proven then, so it was tested rather than inferred. A twenty-fifth row was
+injected into §16.3 and the Stage 5 gate re-run:
+
+```
+CFG          25     25   ATT-CFG-001 … ATT-CFG-025
+dangling references        : 0
+FAIL — 5 problem(s):
+  * section 0.3 declares ATT-CFG-* as 24 ending 024; computed 25 ending 025
+  * ATT-NFR-010 requires every obligation to carry a criterion; 1 uncovered: ['ATT-CFG-025']
+  * section 2F registers ATT-CFG-* as 24 (001..024); computed 25 (001..025)
+```
+
+**Three consequences follow, and the third was not anticipated.** First, the module's own §0.3 declaration fails.
+Second, §2F fails against a document this PRD has no authority to amend. Third — and this is the one the probe
+surfaced rather than reasoning — a new configurable **also** requires a new acceptance criterion, because
+`ATT-NFR-010` demands every obligation carry one, and `ATT-AC-*` is likewise fixed at **213**. So `D-18` needs
+**two** Rank 4 amendments, not one.
+
+**How it is handled.** The 30-minute tolerance is written into `PRD-006` §10A.7a as a **product rule** with its
+value, authority, scope, auditability and its four-window behaviour table all binding as product intent. What is
+**not** done is registering it as `ATT-CFG-*`. It is carried under the existing **`ATT-GAP-002a`** blocker rather
+than a new gap number — because a tolerance measured against a booked shift that `BC-03` cannot read is not
+independently implementable, and because a nineteenth `ATT-GAP` number would fail §2F for the same reason
+Finding B established. **This is `R-8` again, now with a second dependent.**
+
+The probe row was reverted before any other edit, and the gate returned to **exit 0** before work continued.
+
+### 3.7 FINDING G — three of `D-19`'s four requested names need no eighth status; one genuinely does
+
+The later instruction names four states while the earlier one closes the vocabulary at seven. **The same authority
+issued both**, and the later instruction supplies the tie-break: *"mark it as a Product Owner decision required and
+explain why."* Each name was tested against the existing structure rather than accepted or refused as a group.
+
+| Requested name | Can it be carried without an eighth **stored** value? | Mechanism |
+|---|---|---|
+| `SCHEDULE MISMATCH / OUT-OF-SHIFT PRESENCE` | **Yes** | It **is** `SCHEDULE MISMATCH`, with *out-of-shift* as the distinguishable reason `ATT-NFR-005` already requires |
+| `SHIFT TIME ENDED / TOLERANCE PERIOD` | **Yes** | A **derived window** over the booked shift (§10A.7a), not a stored status. It is what the alert is *about* |
+| `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW` | **Yes** | The same — a derived window |
+| **`NO BOOKED SHIFT / PRESENCE WITHOUT BOOKING`** | **NO** | It is not a window over a booked shift, because there is no booked shift; and it cannot be a reason under `SCHEDULE MISMATCH`, because that status **asserts** the booking the case lacks |
+
+**Why the fourth cannot be quietly placed.** Folding it into `VERIFIED PRESENCE` would certify presence against a
+shift nobody booked. Folding it into `SCHEDULE MISMATCH` would state, to the student and to staff, that a booking was
+missed when none existed — a false statement about a person. Both are silent inventions of the kind the instruction
+forbids. **It is therefore marked as a Product Owner decision required**, with three answerable options set out in
+`PRD-006` §10A.7b, and **none selected here**.
+
+This is the same nullable-shift ambiguity `ADR-0029` §3.2 already records at the architecture layer. **The product
+half of it is now explicit, bounded and assigned to a named authority** — which is what the governing instruction
+asks for in place of a resolution.
+
+---
+
 ## 4. Conflict 14 — `SCHEDULE MISMATCH` has no authorised input
 
 The Product Owner requires every verified presence to be compared with *"the student's booked library schedule"*.
@@ -256,7 +334,30 @@ freeze pass."*
 | **R-9** | Is `BC-26` a consumer of `attendance.*`? BC Map §9 says yes, §7 declares no edge | Architecture Owner | `ATT-GAP-003` | Study Hours delivery under D2 = C |
 | **R-10** | **D-9** — does a CONDITIONAL Stage 3/4 verdict permit entry to Stage 7? | Architecture Owner | `ADR-0021` §5 | Any freeze |
 
-**None of these is answered by this record, and none is answered by a Product Owner decision.**
+**None of `R-1`…`R-10` is answered by this record, and none is answered by a Product Owner decision.**
+
+### 5.2 `R-11`…`R-20` — later decisions, and the three that have since closed
+
+Opened by subsequent architecture reviews of the same capability. **Status is stated per row, and two rows record a
+blocker this work itself raised and then retired on evidence.**
+
+| # | Decision required | Authority | Status |
+|---|---|---|---|
+| **`R-11`** | Does the 5-minute rule require a V1 scheduler, given `Job Runtime` is **V2**? | Architecture Owner | 🟢 **RESOLVED — no.** `SEAT-FR-116` (frozen `PRD-007`) **already requires** `BC-03`'s open-session set to be *recomputable*. A derived predicate satisfies it; a timer is not needed. **A blocker raised by this work and withdrawn on measurement** |
+| **`R-12`** | Ratify the derived-state model for presence sessions | Architecture Owner | 🔴 Open — but `R-11` shows it is the *sanctioned* model, not a workaround |
+| **`R-13`** | Does an observation **gap** end a session? | **Product Owner** | 🟢 **RESOLVED by `D-17`.** An **observed** loss may end one; **unobserved silence** may not, and may not extend one either. §10A.4a row 2 |
+| **`R-14`** | Accept that no mandatory foreground service is required, at the cost of more `INCOMPLETE / EXIT NOT VERIFIED` outcomes | Product Owner | 🔴 Open |
+| **`R-15`** | **Does network evidence force `ACCESS_FINE_LOCATION`?** | Security Platform | 🔴 Open — **upstream of `ADR-0027`'s option choice**, and §6A.1 names it as the strongest argument against Option A |
+| **`R-16`** | A staleness bound for derived session state | Architecture Owner | 🔴 Open — blocked by `ATT-GAP-017a` (`ATT-NFR-003` forbids a latency figure) |
+| **`R-17`** | **How does `BC-03` resolve an observed device to a student?** No `BC-18` → `BC-03` edge exists | Architecture Owner + Security | 🔴 Open — **now framed by `ADR-0030` (new, `Proposed`)**, which specifies the minimum payload and **prohibits enumeration** |
+| **`R-18`** | Silent push as a wake source | Architecture Owner | 🔴 Open — and **not needed** by the derived-state model |
+| **`R-19`** | **Amendment of §2F's `ATT-CFG` and `ATT-AC` counts, so `D-18`'s tolerance can be registered** | Architecture Owner | 🔴 Open — **a second dependent of `R-8`**; §3.6 |
+| **`R-20`** | **Is an eighth stored status value authorised for presence without a booking?** | **Product Owner** | 🔴 Open — three options in `PRD-006` §10A.7b, **none selected**; §3.7 |
+
+**Two rows are now green, and both closed on measured evidence rather than assertion** — `R-11` against a frozen
+Rank 3 requirement, `R-13` by a Product Owner decision. **The remaining eight are open, and not one is answered
+here.** `R-19` and `R-20` are new, and both exist because a Product Owner decision met a constraint the Product
+Owner does not control.
 
 ### 5.1 D7 was not answered
 

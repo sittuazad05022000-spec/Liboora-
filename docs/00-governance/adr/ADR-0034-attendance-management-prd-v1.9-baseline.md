@@ -77,7 +77,7 @@ edits on admission are its *Status*, *Baseline*, *Rank* and *ADRs applied* metad
 **Specifically preserved:** the 5-minute grace · the 30-minute Owner/Manager-configurable tolerance · final
 qualifying Wi-Fi disconnect = attendance exit · no exit inference from absence or process death · multi-device OR
 presence · optional Location Verification **default OFF** · the no-booking and overstay statuses · **four** Seat
-Card states (⚪ NOT ATTENDED · 🟢 PRESENT · 🟠 ATTENDED·PRESENCE UNVERIFIED · 🔵 ATTENDED·LEFT) · manual attendance
+Card presence renderings composed at read time (this ADR deliberately does **not** re-enumerate them: the enumeration *“⚪ NOT ATTENDED · 🟢 PRESENT · 🟠 ATTENDED·PRESENCE UNVERIFIED · 🔵 ATTENDED·LEFT”* appeared in an earlier draft of this line and is **withdrawn as unsourced** — the frozen PRD names those labels zero times, its §23.4a lists six requested renderings, and [`ADR-0032`](ADR-0032-attendance-presence-visibility-to-seating.md) **L304** records `ATTENDED · LEFT` as **still blocked**; see `GCP-12` in [`DOCUMENTATION_BASELINE.md`](../DOCUMENTATION_BASELINE.md) §6. The authoritative list is the PRD's own §23.4a and §30.20, which this ADR admits by reference rather than restating) · manual attendance
 ≠ verified presence · Seat allocation ≠ presence · Seat Card read-time composition · the Seat Card never reading
 raw Wi-Fi or device state · **exactly four** attendance events, no fifth, and no overload of the existing
 check-out event.

@@ -15,7 +15,7 @@
 | **Consumes** | `BC-06` Library Policy (`E-06`) · `BC-02` Membership (`E-07`) · `BC-01` Enrollment (`E-09`) · `BC-21` Entitlement (`E-17`) · `BC-19` Tenancy (`E-18`) · `BC-25` Configuration (`E-19`) |
 | **Publishes to** | `BC-02` Membership (`E-10`) · `BC-24` Audit Trail (`E-20`) · `BC-22` Notification Delivery (`E-23`) |
 | **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0015` **Accepted** (Rank 2) · `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN**, Library PRD v1.1 **FROZEN** (Rank 3) · **BC Map v1.7**, Module Dependency Matrix v1.3 (Rank 4) · Enterprise Architecture v2.1 (Rank 6, **descriptive only**) |
-| **Blocking governance gaps** | **6** — `FEE-GAP-001`, `002`, `003`, `004`, `005`, `010`. See §37 |
+| **Blocking governance gaps** | **5 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`) · **10 block Freeze** (all except `FEE-GAP-008`, `010`). Measured from §37, not asserted |
 | **Recommendation** | **REQUIRES CORRECTIONS — GOVERNANCE BLOCKED on 6 gaps.** See §K of the covering report |
 
 > ### ⚠️ Read this before treating any statement here as settled
@@ -59,9 +59,9 @@ Measured by `grep -rhoE "\bFEE-[A-Z]+-[0-9]+" docs/ | sort -u | wc -l` → `0`. 
 | `FEE-EVT-*` | Domain event published by `BC-05` | **3** | `FEE-EVT-001` … `FEE-EVT-003` |
 | `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **16** | `FEE-XC-001` … `FEE-XC-016` |
 | `FEE-PO-*` | Port / integration obligation | **8** | `FEE-PO-001` … `FEE-PO-008` |
-| `FEE-AC-*` | Acceptance criterion | **64** | `FEE-AC-001` … `FEE-AC-064` |
+| `FEE-AC-*` | Acceptance criterion | **70** | `FEE-AC-001` … `FEE-AC-070` |
 | `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **12** | `FEE-GAP-001` … `FEE-GAP-012` |
-| **Total** | | **194** | |
+| **Total** | | **200** | |
 
 **Obligation-bearing** = 58 + 24 + 9 + 3 + 16 + 8 = **118**. `FEE-AC-*` are *verified by* tests and
 `FEE-GAP-*` are *open questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*`
@@ -805,11 +805,26 @@ inventing them.
 
 Financial facts available for consumption, **each traced to the BC Map's own event table**:
 
-| Fact | Event | BC Map consumers (L420–422) |
-|---|---|---|
-| A due was raised | `fee.FeeDueRaised` | `BC-22`, `BC-26`, `BC-28` — *"Reminder + revenue analytics"* |
-| A payment was received | `fee.FeePaymentReceived` | `BC-02`, `BC-26`, `BC-24`, `BC-22` |
-| A refund was issued | `fee.RefundIssued` | `BC-26`, `BC-24` — **⛔ tier disputed, `FEE-GAP-001`** |
+| ID | Fact | Event | BC Map consumers (L420–422) |
+|---|---|---|---|
+| `FEE-EVT-001` | A due was raised | `fee.FeeDueRaised` | `BC-22`, `BC-26`, `BC-28` — *"Reminder + revenue analytics"* |
+| `FEE-EVT-002` | A payment was received | `fee.FeePaymentReceived` | `BC-02`, `BC-26`, `BC-24`, `BC-22` |
+| `FEE-EVT-003` | A refund was issued | `fee.RefundIssued` | `BC-26`, `BC-24` — **⛔ tier disputed, `FEE-GAP-001`** |
+
+The three events are **normative register entries**, not prose:
+
+`FEE-EVT-001` — `BC-05` **MUST** publish `fee.FeeDueRaised` when an obligation is created, through the
+transactional outbox (`FEE-PO-008`), carrying tenant, student reference, amount and due date. Verified by
+`FEE-AC-062`, `FEE-AC-065`.
+
+`FEE-EVT-002` — `BC-05` **MUST** publish `fee.FeePaymentReceived` **only** when a payment reaches
+`CONFIRMED` (§29.2). It **MUST NOT** be published for a `PENDING` payment (`FEE-AC-034`) and **MUST NOT**
+be published twice for one idempotency key (`FEE-AC-039`). This is the event `E-10` carries to `BC-02`.
+Verified by `FEE-AC-034`, `FEE-AC-039`, `FEE-AC-062`.
+
+`FEE-EVT-003` — **⛔ BLOCKED.** `fee.RefundIssued` appears in the BC Map's `BC-05` row (L422), but its
+release tier is disputed (`FEE-GAP-001`). Its payload is **not** specified here. Verified by
+`FEE-AC-062` only (the count constraint), deliberately not by a behavioural criterion.
 
 `FEE-BR-025`*(reserved — see note)* — **not allocated.** *Due reminder* and *overdue* notifications, and
 a *payment failed* notification, are **not** backed by any event in the BC Map's `BC-05` row. The brief
@@ -1056,7 +1071,7 @@ Deterministic outcomes. Rows marked ⛔ cannot be resolved without a gap decisio
 
 ## 35. Acceptance Criteria
 
-**64 criteria, `FEE-AC-001` … `FEE-AC-064`.** Each is *verified by* a test; none is an obligation.
+**70 criteria, `FEE-AC-001` … `FEE-AC-070`.** Each is *verified by* a test; none is an obligation.
 **None is proven** — no test exists, no task file exists. Per `SID-4.56`, every one **is currently unmet**.
 
 ### 35.1 Fee structure (`FEE-AC-001`…`006`)
@@ -1171,6 +1186,20 @@ Deterministic outcomes. Rows marked ⛔ cannot be resolved without a gap decisio
 | `FEE-AC-063` | No table, projection or metric contains both `BC-05` and `BC-20` money |
 | `FEE-AC-064` | `BC-05` publishes financial facts and defines no metric formula |
 
+### 35.13 Ports, outbox & boundary enforcement (`FEE-AC-065`…`070`)
+
+*Added during the adversarial self-review. §36.1 previously asserted coverage that the criteria did not
+supply; these six close the arithmetic honestly rather than by re-wording the claim.*
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-065` | Every `fee.*` event is written to the outbox **inside** the same DB transaction as the state change, and is never published from application code after commit |
+| `FEE-AC-066` | A `fee.*` event redelivered with the same `eventId` causes no second state change in any consumer path owned here |
+| `FEE-AC-067` | No code path in `BC-05` references a payment-vendor name, credential or SDK symbol |
+| `FEE-AC-068` | Online payment execution is reachable only through the Business Platform port; no direct `BC-31` call exists |
+| `FEE-AC-069` | A due date is computed only via the `E-06` `HolidayCalendar` port; no local calendar table exists |
+| `FEE-AC-070` | A manually created `FeeDue` records actor and reason and emits an audit fact |
+
 **Not covered by any criterion, deliberately:** refunds (⛔ `FEE-GAP-001`), webhook reconciliation
 (⛔ `FEE-GAP-002`), offline cash capture (⛔ `FEE-GAP-002`(b)), bank transfer (⛔ `FEE-GAP-003`),
 due-date arithmetic (⛔ `FEE-GAP-006`). **Writing criteria for undecided behaviour would be fabricating
@@ -1182,18 +1211,151 @@ verification.**
 
 ### 36.1 Coverage
 
-| Register | Count | Traced to an AC |
-|---|---|---|
-| `FEE-FR-*` | 58 | 53 — **5 are ⛔ BLOCKED stubs** (`FEE-FR-028`, `042`, and the three deferred numbers) |
-| `FEE-BR-*` | 24 | 24 |
-| `FEE-INV-*` | 9 | 9 |
-| `FEE-EVT-*` | 3 | 3 (`FEE-AC-062`) |
-| `FEE-XC-*` | 16 | 16 |
-| `FEE-PO-*` | 8 | 8 |
-| **Obligation-bearing total** | **118** | **113 = 95.8%** |
+> **Self-review correction.** The first draft of this section asserted *"113 = 95.8%"* while the criteria
+> tables in §35 contained **no requirement back-links at all** — the figure was therefore not measurable
+> and not true. It is replaced below by an explicit per-identifier mapping. The defect and its correction
+> are recorded in the changelog (§41) and in finding **J-2** of the covering report.
 
-**This does not meet the 100% bar** that `PRD-006` cleared (285/285). The shortfall is **entirely** the
-blocked requirements, and it is reported rather than closed by writing criteria for undecided behaviour.
+**Forward trace — every obligation-bearing identifier to its verifying criterion:**
+
+*One row per identifier — deliberately not collapsed into ranges, so that a future `prd008_traceability.py` can verify it mechanically.*
+
+| Requirement | Verified by | Note |
+|---|---|---|
+| `FEE-FR-001` | `FEE-AC-001` |  |
+| `FEE-FR-002` | `FEE-AC-001`, `FEE-AC-005` |  |
+| `FEE-FR-003` | `FEE-AC-002` |  |
+| `FEE-FR-004` | `FEE-AC-003`, `FEE-AC-004` |  |
+| `FEE-FR-005` | `FEE-AC-008`, `FEE-AC-009` |  |
+| `FEE-FR-006` | `FEE-AC-011` |  |
+| `FEE-FR-007` | `FEE-AC-012`, `FEE-AC-013` |  |
+| `FEE-FR-008` | `FEE-AC-017`, `FEE-AC-028` |  |
+| `FEE-FR-009` | `FEE-AC-015` |  |
+| `FEE-FR-010` | `FEE-AC-014` |  |
+| `FEE-FR-011` | `FEE-AC-016` |  |
+| `FEE-FR-012` | `FEE-AC-070` |  |
+| `FEE-FR-013` | `FEE-AC-019` |  |
+| `FEE-FR-014` | `FEE-AC-069` |  |
+| `FEE-FR-015` | `FEE-AC-057` |  |
+| `FEE-FR-016` | `FEE-AC-044` |  |
+| `FEE-FR-017` | `FEE-AC-042` |  |
+| `FEE-FR-018` | `FEE-AC-043` |  |
+| `FEE-FR-019` | `FEE-AC-028` |  |
+| `FEE-FR-020` | `FEE-AC-033`, `FEE-AC-053` |  |
+| `FEE-FR-021` | `FEE-AC-029` |  |
+| `FEE-FR-022` | `FEE-AC-025` |  |
+| `FEE-FR-023` | `FEE-AC-025` |  |
+| `FEE-FR-024` | `FEE-AC-026` |  |
+| `FEE-FR-025` | `FEE-AC-027` |  |
+| `FEE-FR-026` | `FEE-AC-032` |  |
+| `FEE-FR-027` | `FEE-AC-033`, `FEE-AC-034` |  |
+| `FEE-FR-028` | **⛔ none** | BLOCKED — `FEE-GAP-002` |
+| `FEE-FR-029` | `FEE-AC-037` |  |
+| `FEE-FR-030` | `FEE-AC-037`, `FEE-AC-038` |  |
+| `FEE-FR-031` | `FEE-AC-040` |  |
+| `FEE-FR-032` | `FEE-AC-041` |  |
+| `FEE-FR-033` | `FEE-AC-045` |  |
+| `FEE-FR-034` | `FEE-AC-047` |  |
+| `FEE-FR-035` | `FEE-AC-050`, `FEE-AC-056` |  |
+| `FEE-FR-036` | `FEE-AC-046` |  |
+| `FEE-FR-037` | `FEE-AC-048` |  |
+| `FEE-FR-038` | `FEE-AC-049` |  |
+| `FEE-FR-039` | `FEE-AC-049` |  |
+| `FEE-FR-040` | `FEE-AC-050` |  |
+| `FEE-FR-041` | `FEE-AC-030` |  |
+| `FEE-FR-042` | **⛔ none** | BLOCKED — `FEE-GAP-001` |
+| `FEE-FR-043` | `FEE-AC-048` |  |
+| `FEE-FR-044` | `FEE-AC-055` |  |
+| `FEE-FR-045` | `FEE-AC-053`, `FEE-AC-054` |  |
+| `FEE-FR-046` | `FEE-AC-059` |  |
+| `FEE-FR-047` | `FEE-AC-053` |  |
+| `FEE-FR-048` | `FEE-AC-020`, `FEE-AC-021` |  |
+| `FEE-FR-049` | `FEE-AC-055` |  |
+| `FEE-FR-050` | `FEE-AC-056` |  |
+| `FEE-FR-051` | `FEE-AC-055` |  |
+| `FEE-FR-052` | `FEE-AC-064` |  |
+| `FEE-FR-053` | `FEE-AC-031`, `FEE-AC-060` |  |
+| `FEE-FR-054` | `FEE-AC-031` |  |
+| `FEE-FR-055` | `FEE-AC-058` |  |
+| `FEE-FR-056` | `FEE-AC-030` |  |
+| `FEE-FR-057` | `FEE-AC-060` |  |
+| `FEE-FR-058` | `FEE-AC-060` |  |
+| `FEE-BR-001` | `FEE-AC-068` |  |
+| `FEE-BR-002` | `FEE-AC-063` |  |
+| `FEE-BR-003` | `FEE-AC-063` |  |
+| `FEE-BR-004` | `FEE-AC-006` |  |
+| `FEE-BR-005` | `FEE-AC-007`, `FEE-AC-010` |  |
+| `FEE-BR-006` | `FEE-AC-008`, `FEE-AC-009` |  |
+| `FEE-BR-007` | **⛔ none** | BLOCKED — `FEE-GAP-006` |
+| `FEE-BR-008` | `FEE-AC-044` |  |
+| `FEE-BR-009` | `FEE-AC-045`, `FEE-AC-046` |  |
+| `FEE-BR-010` | `FEE-AC-025` |  |
+| `FEE-BR-011` | `FEE-AC-026` |  |
+| `FEE-BR-012` | `FEE-AC-027`, `FEE-AC-032` |  |
+| `FEE-BR-013` | `FEE-AC-024` |  |
+| `FEE-BR-014` | `FEE-AC-032` |  |
+| `FEE-BR-015` | `FEE-AC-035` |  |
+| `FEE-BR-016` | `FEE-AC-040`, `FEE-AC-041` |  |
+| `FEE-BR-017` | `FEE-AC-052` |  |
+| `FEE-BR-018` | `FEE-AC-051` |  |
+| `FEE-BR-019` | **⛔ none** | BLOCKED — `FEE-GAP-001` |
+| `FEE-BR-020` | `FEE-AC-048` |  |
+| `FEE-BR-021` | `FEE-AC-054` |  |
+| `FEE-BR-022` | `FEE-AC-021` |  |
+| `FEE-BR-023` | `FEE-AC-064` |  |
+| `FEE-BR-024` | `FEE-AC-063` |  |
+| `FEE-INV-001` | `FEE-AC-005` |  |
+| `FEE-INV-002` | `FEE-AC-007`, `FEE-AC-010` |  |
+| `FEE-INV-003` | `FEE-AC-002`, `FEE-AC-017` |  |
+| `FEE-INV-004` | `FEE-AC-057` |  |
+| `FEE-INV-005` | `FEE-AC-037`, `FEE-AC-040` |  |
+| `FEE-INV-006` | `FEE-AC-047` |  |
+| `FEE-INV-007` | `FEE-AC-051` |  |
+| `FEE-INV-008` | `FEE-AC-055` |  |
+| `FEE-INV-009` | `FEE-AC-053`, `FEE-AC-054` |  |
+| `FEE-EVT-001` | `FEE-AC-062`, `FEE-AC-065` |  |
+| `FEE-EVT-002` | `FEE-AC-034`, `FEE-AC-039`, `FEE-AC-066` |  |
+| `FEE-EVT-003` | `FEE-AC-062` | count only — behaviour ⛔ `FEE-GAP-001` |
+| `FEE-XC-001` | `FEE-AC-063` |  |
+| `FEE-XC-002` | `FEE-AC-063` |  |
+| `FEE-XC-003` | `FEE-AC-012`, `FEE-AC-016` |  |
+| `FEE-XC-004` | `FEE-AC-024` |  |
+| `FEE-XC-005` | `FEE-AC-067` |  |
+| `FEE-XC-006` | `FEE-AC-067` |  |
+| `FEE-XC-007` | `FEE-AC-047` |  |
+| `FEE-XC-008` | `FEE-AC-047`, `FEE-AC-048` |  |
+| `FEE-XC-009` | `FEE-AC-054` |  |
+| `FEE-XC-010` | `FEE-AC-017` |  |
+| `FEE-XC-011` | `FEE-AC-055` |  |
+| `FEE-XC-012` | `FEE-AC-064` |  |
+| `FEE-XC-013` | `FEE-AC-064` |  |
+| `FEE-XC-014` | `FEE-AC-061` |  |
+| `FEE-XC-015` | `FEE-AC-030` |  |
+| `FEE-XC-016` | `FEE-AC-060` |  |
+| `FEE-PO-001` | `FEE-AC-068` |  |
+| `FEE-PO-002` | `FEE-AC-030` |  |
+| `FEE-PO-003` | `FEE-AC-018`, `FEE-AC-060` |  |
+| `FEE-PO-004` | `FEE-AC-062` |  |
+| `FEE-PO-005` | `FEE-AC-064` |  |
+| `FEE-PO-006` | `FEE-AC-036` |  |
+| `FEE-PO-007` | `FEE-AC-035` |  |
+| `FEE-PO-008` | `FEE-AC-065`, `FEE-AC-066` |  |
+
+**Measured coverage:**
+
+| Register | Allocated | Traced | Untraced (all ⛔ BLOCKED) |
+|---|---|---|---|
+| `FEE-FR-*` | 58 | 56 | `FEE-FR-028`, `FEE-FR-042` |
+| `FEE-BR-*` | 24 | 22 | `FEE-BR-007`, `FEE-BR-019` |
+| `FEE-INV-*` | 9 | 9 | — |
+| `FEE-EVT-*` | 3 | 3 | — *(`FEE-EVT-003` count-only)* |
+| `FEE-XC-*` | 16 | 16 | — |
+| `FEE-PO-*` | 8 | 8 | — |
+| **Total** | **118** | **114** | **4 = 96.6%** |
+
+**This does not meet the 100% bar** that `PRD-006` cleared (285/285). The shortfall is **exactly** the four
+requirements whose behaviour is governed by an unresolved gap. Writing criteria for undecided behaviour
+would be fabricating verification, so the shortfall is reported, not closed.
 
 ### 36.2 Upstream traceability
 
@@ -1222,7 +1384,9 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 ## 37. Governance Gap Ledger
 
-**12 gaps. 6 block Stage 4. 6 block Freeze.** None is resolved by assumption.
+**12 gaps. 5 block Stage 4. 10 block Freeze.** None is resolved by assumption. *(These two counts were
+stated inconsistently in the first draft — `6/6` here and `6/9` in §39. Both were wrong; the values below
+are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-review finding **J-3**.)*
 
 ### `FEE-GAP-001` — Is Refund V1 or V2?
 | Field | Value |
@@ -1392,7 +1556,7 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 | `FEE-RSK-07` | Cross-tenant financial leakage | **Critical** | `FEE-FR-057`/`058`, `FEE-XC-016`, fail-loud tenancy |
 | `FEE-RSK-08` | Gateway vendor leaks into domain code | Medium | `FEE-XC-005`/`006`, Dependency Matrix `X-03` |
 | `FEE-RSK-09` | Audit obligations unenforceable (`X-10` not implemented) | Medium | Disclosed in §24; `D-09` |
-| `FEE-RSK-10` | Building to this draft as if approved | **Critical** | This header; 6 blocking gaps |
+| `FEE-RSK-10` | Building to this draft as if approved | **Critical** | This header; 5 Stage-4-blocking gaps |
 
 ---
 
@@ -1413,7 +1577,7 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 | `FEE-GAP-011` | Retention | Product Owner + Security | — | ✅ |
 | `FEE-GAP-012` | Registry / `BC-26` / report tier / gate | Governance + Architecture + Product | — | ✅ |
 
-**6 block Stage 4. 9 block Freeze.**
+**5 block Stage 4. 10 block Freeze.** *(Corrected during self-review — see §37.)*
 
 ---
 
@@ -1442,7 +1606,7 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 | Version | Date | Change |
 |---|---|---|
-| **v0.1** | *(this draft)* | **First draft. Stage 2 only.** Created from Rank 1–6 sources: Master PRD v1.7, `ADR-0015` (**Accepted**), BC Map v1.7, Module Dependency Matrix v1.3, frozen `PRD-004` v1.2 / `PRD-005` v1.4 / Library PRD v1.1, `PRD_REGISTRY.md`, `PRD_OWNERSHIP_MODEL.md`, `PRD_LIFECYCLE.md`, `PRD_DEPENDENCY_GRAPH.md`, `PRODUCT_IMPLEMENTATION_ROADMAP.md`, `PRD_GAP_ANALYSIS.md`, Enterprise Architecture v2.1 (Rank 6, descriptive). Registers `FEE-*` opened after a measured collision check (0 pre-existing occurrences): 58 FR, 24 BR, 9 INV, 3 EVT, 16 XC, 8 PO, 64 AC, 12 GAP = **194 identifiers**, 118 obligation-bearing. **No `FEE-CFG-*` register opened** — no source approves any range. **No requirement, event, edge, endpoint, table, schema, vendor contract or configuration range was invented.** **12 governance gaps recorded; 6 block Stage 4, 9 block Freeze.** `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is **unchanged** by this document. No other PRD, ADR, ranked document or source file was modified. |
+| **v0.1** | *(this draft)* | **First draft. Stage 2 only.** Created from Rank 1–6 sources: Master PRD v1.7, `ADR-0015` (**Accepted**), BC Map v1.7, Module Dependency Matrix v1.3, frozen `PRD-004` v1.2 / `PRD-005` v1.4 / Library PRD v1.1, `PRD_REGISTRY.md`, `PRD_OWNERSHIP_MODEL.md`, `PRD_LIFECYCLE.md`, `PRD_DEPENDENCY_GRAPH.md`, `PRODUCT_IMPLEMENTATION_ROADMAP.md`, `PRD_GAP_ANALYSIS.md`, Enterprise Architecture v2.1 (Rank 6, descriptive). Registers `FEE-*` opened after a measured collision check (0 pre-existing occurrences): 58 FR, 24 BR, 9 INV, 3 EVT, 16 XC, 8 PO, 70 AC, 12 GAP = **200 identifiers**, 118 obligation-bearing. During the mandatory adversarial self-review two defects in this draft were found and corrected before issue: (a) §36.1 claimed *"113 = 95.8%"* traceability while the §35 criteria carried no requirement back-links — replaced with a measured per-identifier matrix showing **114/118 = 96.6%**; (b) `FEE-EVT-001`/`002`/`003` were declared in §0.2 but never defined normatively — now defined in §26. Six criteria (`FEE-AC-065`…`070`) were added to close coverage that the earlier percentage had merely asserted. **No `FEE-CFG-*` register opened** — no source approves any range. **No requirement, event, edge, endpoint, table, schema, vendor contract or configuration range was invented.** **12 governance gaps recorded; 5 block Stage 4, 10 block Freeze** (measured from the ledger rows; the first draft stated these inconsistently). `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is **unchanged** by this document. No other PRD, ADR, ranked document or source file was modified. |
 
 ---
 

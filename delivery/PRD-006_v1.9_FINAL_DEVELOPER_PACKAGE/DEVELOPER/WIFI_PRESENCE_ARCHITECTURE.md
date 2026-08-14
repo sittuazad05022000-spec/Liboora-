@@ -1,6 +1,6 @@
 # WIFI_PRESENCE_ARCHITECTURE — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §10A (**FROZEN**).
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §10A (**FROZEN**).
 
 ---
 

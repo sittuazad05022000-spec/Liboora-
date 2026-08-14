@@ -1,6 +1,6 @@
 # EVENT_CONTRACTS — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §22 (**FROZEN**) · BC Map §9.
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §22 (**FROZEN**) · BC Map §9.
 
 ---
 

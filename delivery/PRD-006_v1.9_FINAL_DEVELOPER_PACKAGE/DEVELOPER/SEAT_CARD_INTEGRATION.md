@@ -1,6 +1,6 @@
 # SEAT_CARD_INTEGRATION — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §23, §23.4a, §30.20 (**FROZEN**) · [`../ADR/ADR-0032`](../ADR/ADR-0032-attendance-presence-visibility-to-seating.md) (**`Accepted`**, `O-5`) · [`../ADR/ADR-0033`](../ADR/ADR-0033-e27-core-cluster-edge-allowlist.md) (**`Accepted`**, `O-C`) · frozen `PRD-007` `SEAT-FR-041`/`103`/`104`/`105`/`106`/`108`/`115`/`116`.
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §23, §23.4a, §30.20 (**FROZEN**) · [`../ADR/ADR-0032`](../ADR/ADR-0032-attendance-presence-visibility-to-seating.md) (**`Accepted`**, `O-5`) · [`../ADR/ADR-0033`](../ADR/ADR-0033-e27-core-cluster-edge-allowlist.md) (**`Accepted`**, `O-C`) · frozen `PRD-007` `SEAT-FR-041`/`103`/`104`/`105`/`106`/`108`/`115`/`116`.
 
 > ⚠️ **Read §3 before writing any code.** Two accepted ADRs and two frozen PRDs
 > disagree on the *transport*, and the disagreement is real rather than a reading

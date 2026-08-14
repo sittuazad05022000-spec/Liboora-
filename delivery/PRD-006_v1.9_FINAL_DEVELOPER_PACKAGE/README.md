@@ -190,7 +190,7 @@ These are **open by record**, not by omission. Do not close them by guessing.
 3. [`DEVELOPER/DOMAIN_RULES.md`](./DEVELOPER/DOMAIN_RULES.md) and
    [`ATTENDANCE_STATE_MACHINE.md`](./DEVELOPER/ATTENDANCE_STATE_MACHINE.md) — the two you cannot skip.
 4. [`ADR/ADR-0034`](./ADR/ADR-0034-attendance-management-prd-v1.9-baseline.md), then
-   [`PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](./PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) **§10A** in full.
+   [`PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](./PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) **§10A** in full.
 5. The remaining `DEVELOPER/` documents as your work touches them.
 
 **When a developer document and the frozen PRD disagree, the frozen PRD wins,

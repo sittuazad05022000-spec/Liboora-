@@ -1,6 +1,6 @@
 # ANDROID_BACKGROUND_BEHAVIOUR — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §10A.4, §10A.5, §10A.10 (**FROZEN**) · `ADR-0028` (**`Proposed`** — see §7).
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §10A.4, §10A.5, §10A.10 (**FROZEN**) · `ADR-0028` (**`Proposed`** — see §7).
 
 ---
 

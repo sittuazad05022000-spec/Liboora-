@@ -1,6 +1,6 @@
 # ATTENDANCE_HISTORY — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §10A.5, §10A.6, §18, §21, §24, §26 (**FROZEN**).
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §10A.5, §10A.6, §18, §21, §24, §26 (**FROZEN**).
 
 ---
 

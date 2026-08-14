@@ -1,6 +1,6 @@
 # ATTENDANCE_STATE_MACHINE — PRD-006 Attendance Management v1.9
 
-**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) §10A.1, §10A.2, §10A.4, §10A.4a, §10A.5 (**FROZEN**).
+**Derived document.** Authority: [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) §10A.1, §10A.2, §10A.4, §10A.4a, §10A.5 (**FROZEN**).
 
 > **This is the highest-risk logic in the module.** Four of the five "rules that
 > bite first" live here. Read §3 (grace) and §4 (exit precedence) before writing

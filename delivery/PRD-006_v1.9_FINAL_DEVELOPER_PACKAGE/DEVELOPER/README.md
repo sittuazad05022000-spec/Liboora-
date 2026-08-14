@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Source of truth** | [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT.md) — **FROZEN v1.9** |
+| **Source of truth** | [`../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md`](../PRD/PRD-006_ATTENDANCE-MANAGEMENT_v1.9_FROZEN.md) — **FROZEN v1.9** |
 | **Admitting decision** | [`../ADR/ADR-0034-...`](../ADR/ADR-0034-attendance-management-prd-v1.9-baseline.md) — **`Accepted`** |
 | **Authority of these 15 documents** | **Derived. Zero.** They restate and reorganise; they never add |
 

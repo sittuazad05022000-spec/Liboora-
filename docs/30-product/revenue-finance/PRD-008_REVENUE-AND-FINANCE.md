@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-05` Fee & Collection** |
 | **Classification** | `[CORE]` — Library Management cluster |
 | **Release** | **V1** |
-| **Version** | **v0.3 — DRAFT** |
+| **Version** | **v0.4 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** Status is *conferred* by admission to the baseline, never claimed by a document about itself; [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.1 still records `PRD-008` as **`PLANNED`** and **this document does not change that row**. Moving `PLANNED` → `DRAFT` is a registry act requiring the Governance Owner. |
 | **Baseline** | Written **against** `BASELINE-2026-08-05-A`. **Not admitted to it.** |
 | **Precedence rank if admitted** | Rank 3 (module PRD), the rank `PRD-004`…`PRD-007` hold |
@@ -15,7 +15,7 @@
 | **Consumes** | `BC-06` Library Policy (`E-06`) · `BC-02` Membership (`E-07`) · `BC-01` Enrollment (`E-09`) · `BC-21` Entitlement (`E-17`) · `BC-19` Tenancy (`E-18`) · `BC-25` Configuration (`E-19`) |
 | **Publishes to** | `BC-02` Membership (`E-10`) · `BC-24` Audit Trail (`E-20`) · `BC-22` Notification Delivery (`E-23`) |
 | **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0015` **Accepted** (Rank 2) · `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN**, Library PRD v1.1 **FROZEN** (Rank 3) · **BC Map v1.7**, Module Dependency Matrix v1.3 (Rank 4) · Enterprise Architecture v2.1 (Rank 6, **descriptive only**) |
-| **Blocking governance gaps** | **13 gaps.** **5 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`) · **10 block Freeze** (all except `FEE-GAP-008`, `010`, `013`). **`FEE-GAP-013` is PARTLY RESOLVED at v0.3** — its ownership question (a1) and duration-guarantee question (e) are **closed by measurement**; its remaining parts, including the **new term-deduction conflict (f)**, block the requested *renewal-protection feature*, **not** this PRD. Measured from §37, not asserted |
+| **Blocking governance gaps** | **15 gaps.** **5 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`) · **10 block Freeze** (all except `FEE-GAP-008`, `010`, `013`). **`FEE-GAP-013` is PARTLY RESOLVED at v0.3** — its ownership question (a1) and duration-guarantee question (e) are **closed by measurement**; its remaining parts, including the **new term-deduction conflict (f)**, block the requested *renewal-protection feature*, **not** this PRD. **Two gaps were added at v0.4** — `FEE-GAP-014` (platform commission / settlement has no owning document; it is `BC-20`'s money, not `BC-05`'s) and `FEE-GAP-015` (`Platform Owner / Super Admin` is not a registered role). **Neither blocks Stage 4 nor Freeze of this PRD**, because `BC-05` owns neither subject; both block the *features* that need them. Measured from §37, not asserted |
 | **Recommendation** | **REQUIRES CORRECTIONS — GOVERNANCE BLOCKED.** See §K of the covering report |
 
 > ### ⚠️ Read this before treating any statement here as settled
@@ -53,17 +53,17 @@ Measured by `grep -rhoE "\bFEE-[A-Z]+-[0-9]+" docs/ | sort -u | wc -l` → `0`. 
 
 | Register | Meaning | Count | Range |
 |---|---|---|---|
-| `FEE-FR-*` | Functional requirement | **59** | `FEE-FR-001` … `FEE-FR-059` |
-| `FEE-BR-*` | Business rule | **27** | `FEE-BR-001` … `FEE-BR-027` |
-| `FEE-INV-*` | Invariant | **9** | `FEE-INV-001` … `FEE-INV-009` |
+| `FEE-FR-*` | Functional requirement | **62** | `FEE-FR-001` … `FEE-FR-062` |
+| `FEE-BR-*` | Business rule | **28** | `FEE-BR-001` … `FEE-BR-028` |
+| `FEE-INV-*` | Invariant | **10** | `FEE-INV-001` … `FEE-INV-010` |
 | `FEE-EVT-*` | Domain event published by `BC-05` | **3** | `FEE-EVT-001` … `FEE-EVT-003` |
-| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **21** | `FEE-XC-001` … `FEE-XC-021` |
+| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **22** | `FEE-XC-001` … `FEE-XC-022` |
 | `FEE-PO-*` | Port / integration obligation | **8** | `FEE-PO-001` … `FEE-PO-008` |
-| `FEE-AC-*` | Acceptance criterion | **78** | `FEE-AC-001` … `FEE-AC-078` |
-| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **13** | `FEE-GAP-001` … `FEE-GAP-013` |
-| **Total** | | **218** | |
+| `FEE-AC-*` | Acceptance criterion | **83** | `FEE-AC-001` … `FEE-AC-083` |
+| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **15** | `FEE-GAP-001` … `FEE-GAP-015` |
+| **Total** | | **231** | |
 
-**Obligation-bearing** = 59 + 27 + 9 + 3 + 21 + 8 = **127**. `FEE-AC-*` are *verified by* tests and
+**Obligation-bearing** = 62 + 28 + 10 + 3 + 22 + 8 = **133**. `FEE-AC-*` are *verified by* tests and
 `FEE-GAP-*` are *open questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*`
 and `ATT-GAP-*`.
 
@@ -71,6 +71,12 @@ and `ATT-GAP-*`.
 > which *"no allowed range has been approved"*. The same restraint applies here: **no `FEE-CFG-*`
 > register exists**, because no source document approves a single default, range or authority for any
 > finance configurable. Creating one would be inventing configuration ranges. See `FEE-GAP-007`.
+>
+> **This restraint is re-applied at v0.4 to the platform commission rate.** A **3% default** is a
+> product decision, but it is a **`BC-20`** value (money *library → LIBOORA*), and the only closed
+> configuration register available — frozen `PRD-002` §16.1 `LCFG-1`…`LCFG-10` — is *library*-scoped
+> and contains no percentage row. **No `FEE-CFG-*` row was added and no range was invented.**
+> See §42 and `FEE-GAP-014`.
 
 ---
 
@@ -145,7 +151,7 @@ each other or leaking to another library.
 | `NG-5` | Split payments | EA L1401 **(V3)** |
 | `NG-6` | Proration engine, dunning, credit/debit notes | EA L1415–1419 **(V2)** |
 | `NG-7` | Revenue recognition | EA L1417 **(V3)** |
-| `NG-8` | Cash reconciliation *as a reconciliation feature* | EA L827 **(V2)** — see §42 note in §34 |
+| `NG-8` | Cash reconciliation *as a reconciliation feature* | EA L827 **(V2)** — see the `NG-4`/`NG-8` note below, and §34 |
 | `NG-9` | Payment retry, multiple gateways | EA L1409–1410 **(V2/V3)** |
 | `NG-10` | SaaS subscription revenue | `BC-20` owns it — `MP-GBR-24` |
 | `NG-11` | A general ledger, chart of accounts, journal entries, double-entry bookkeeping | **No source document contains any of these.** Inventing them would be ERP bloat |
@@ -834,6 +840,29 @@ two **MAY** share a gateway reference.
 `FEE-BR-016` — Enforcement of payment-side duplicate protection is **this module's responsibility**, as
 frozen `MM-BR-005` explicitly assigns it here.
 
+### 15.1 Snapshot immutability of a confirmed payment *(added v0.4)*
+
+`FEE-FR-060` — When a payment is recorded `CONFIRMED`, the financial record **MUST** preserve, as an
+**immutable snapshot**, the gross amount, the transaction reference, the confirming actor, the payment
+method and the confirmation timestamp. These values **MUST NOT** be recomputed from inputs that may
+later change.
+`FEE-INV-010` — A `CONFIRMED` financial record's snapshot fields **MUST NOT** change for any reason,
+including a later change to any configuration value, at platform level or library level.
+`FEE-BR-028` — A configuration change **MUST** apply only to transactions confirmed **after** it takes
+effect. Retroactive application to an already-confirmed transaction is prohibited.
+
+> **These three extend a principle this module already holds**, rather than introducing a new one:
+> `FEE-INV-002` already fixes a `FeeDue` amount to its creation snapshot *"for life"* and `FEE-INV-006`
+> already forbids an issued receipt from changing. `FEE-FR-060` states the same discipline for the
+> **payment** record, and `FEE-BR-028` states the *non-retroactivity* that the Master Product decision
+> requires of a rate change.
+>
+> **What `FEE-FR-060` deliberately does NOT include: a commission rate, a gateway charge or a tax
+> line.** All three are money *library → LIBOORA* or a V3 concern, and `MP-GBR-24` (**Rank 1**) forbids
+> `BC-05` and `BC-20` sharing *"a model, a table or a metric"*. Adding a commission column to a
+> `BC-05` record would perform that merger **in the schema**, which is where it matters, not merely in a
+> report. See §42 and `FEE-GAP-014`.
+
 ---
 
 ## 16. Receipts
@@ -853,6 +882,20 @@ by editing or deleting (`MP-GBR-12`).
 
 Per the brief: *"define only states supported by authoritative sources."* The sources support exactly one
 positive state and no lifecycle beyond it — see §29.4.
+
+---
+
+### 16.1 Unbundled student-facing breakdown *(added v0.4)*
+
+`FEE-FR-062` — Where a payment breakdown is shown to a student, **each component this module owns**
+— the membership/fee amount, any discount applied, and the amount paid — **MUST** be itemised
+separately and **MUST NOT** be collapsed into a single undifferentiated charge.
+
+> **Scope limit, stated rather than left implicit.** `BC-05` may itemise only the components it owns.
+> A **platform commission** line, a **gateway/provider charge** line and a **tax/GST** line are
+> **not** among them: the first two are `BC-20`'s (BC Map L129 gives `BC-20` the gateway) and tax is
+> **V3** (`NG-2`, EA L828–829). This module therefore **MUST NOT** display, compute or store them,
+> and `FEE-AC-083` verifies their **absence**. No percentage, rate or formula is invented here.
 
 ---
 
@@ -1117,7 +1160,7 @@ fifth or sixth `fee.*` event is created here.
 > attendance events … no fifth event"*. A *"payment failed"* notification would require a new event and
 > therefore an ADR and a BC Map amendment — neither exists.
 
-`FEE-XC-017`*(reserved — not allocated; §32 register closes at `FEE-XC-016`)*
+`FEE-XC-017` — Publishing a fourth `fee.*` event. *(Allocated in v0.2; was reserved at v0.1.)*
 
 ---
 
@@ -1151,6 +1194,18 @@ financial write strategy."*
 *(`FEE-FR-059` and `FEE-BR-026` were placeholders in v0.1; both are allocated in v0.2 — see §11.3.)*
 
 Instead, two obligations that need **no** new architecture:
+
+`FEE-FR-061` — A **cash** payment **MUST NOT** reach `CONFIRMED` except by a **server-side** recording of
+an authorised staff action. Where connectivity is absent, the collection attempt **MUST** yield **no**
+confirmed financial record, **no** receipt and **no** membership activation.
+`FEE-XC-022` — Creating, queueing, mirroring or synchronising **any** financial write while offline.
+
+> `FEE-FR-061` makes explicit, for cash, what `FEE-BR-010` already implies by verifying a cash payment
+> *"at the moment of recording"*, and it is stated as an **exclusion** (`FEE-XC-022`) rather than a
+> configurable so that an offline mode cannot be switched on later without amending this register.
+> It is consistent with the architecture rather than merely with intent: **`E-24` grants the
+> offline-sync edge to `BC-03` Attendance only** (BC Map L333), and `BC-05` has no such edge
+> (`FEE-GAP-002`(b)).
 
 `FEE-PO-006` — Online payment **MUST NOT** be treated as successful because the device is offline or the
 confirmation could not be fetched. Absence of confirmation is **not** confirmation. *(This is the direct
@@ -1260,6 +1315,7 @@ No state table is written. Tier unresolved (`FEE-GAP-001`).
 | `FEE-BR-025` | No notification event beyond the three `fee.*` facts | 26 |
 | `FEE-BR-026` | No financial penalty persists beyond its own membership | 11.3.3 |
 | `FEE-BR-027` | A renewal inside a protection window carries no adverse marker | 11.3.3 |
+| `FEE-BR-028` | A configuration change is never retroactive to a confirmed transaction | 15.1 |
 
 ---
 
@@ -1276,6 +1332,7 @@ No state table is written. Tier unresolved (`FEE-GAP-001`).
 | `FEE-INV-007` | Discount ≤ original; payable ≥ 0 | BC Map L374 |
 | `FEE-INV-008` | Financial history is append-only | `MP-GBR-12` |
 | `FEE-INV-009` | `balance = Σ dues − Σ receipts`, never stored independently | BC Map L374 verbatim |
+| `FEE-INV-010` | A `CONFIRMED` record's snapshot fields never change, including under a config change | `MP-GBR-12`; §15.1 |
 
 ---
 
@@ -1313,6 +1370,13 @@ not tolerate a second ledger elsewhere either.
 | `FEE-XC-019` | Expose this tenant's financial records — transactions, payment details, receipts, discounts, balances, staff notes, reasons for leaving — to any other library or tenant |
 | `FEE-XC-020` | Determine, shorten or extend a membership's duration |
 | `FEE-XC-021` | Compute, store, consume or publish any risk score, fraud score, trust score, blacklist, watchlist or cross-library punishment; or label a student *cheater*, *fraud*, *abuser* or *high risk* |
+
+**Platform-commission exclusions** — added in v0.4, specified in §42:
+
+| ID | This module MUST NOT… |
+|---|---|
+| `FEE-XC-022` | Create, queue, mirror or synchronise **any** financial write while offline |
+| — | *(Also already excluded: `FEE-XC-001` bars reading, writing or aggregating `BC-20` revenue, and `FEE-XC-002` bars reporting "revenue" that mixes the two. A platform commission, a settlement balance, a net-off and a gateway charge are all `BC-20`'s — no new exclusion is needed to keep them out, and none was invented.)* |
 
 ---
 
@@ -1365,7 +1429,7 @@ Deterministic outcomes. Rows marked ⛔ cannot be resolved without a gap decisio
 
 ## 35. Acceptance Criteria
 
-**70 criteria, `FEE-AC-001` … `FEE-AC-070`.** Each is *verified by* a test; none is an obligation.
+**83 criteria, `FEE-AC-001` … `FEE-AC-083`.** Each is *verified by* a test; none is an obligation.
 **None is proven** — no test exists, no task file exists. Per `SID-4.56`, every one **is currently unmet**.
 
 ### 35.1 Fee structure (`FEE-AC-001`…`006`)
@@ -1516,6 +1580,24 @@ honestly execute. See §11.3 and `FEE-GAP-013`.*
 > refuses elsewhere. What `BC-05` *can* guarantee is the negative: it discloses nothing (`FEE-AC-075`,
 > `FEE-AC-076`).
 
+### 35.15 Commission boundary, snapshot immutability & offline cash (`FEE-AC-079`…`083`) *(added v0.4)*
+
+*Verifies the parts of the Master Product decision that are lawfully `BC-05`'s. Three of the five are
+**negative** criteria — they assert that something does **not** appear — which is the only honest way to
+verify a boundary this module must not cross.*
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-079` | A `CONFIRMED` financial record's gross amount, transaction reference, confirming actor, payment method and timestamp are unchanged after any configuration value is altered |
+| `FEE-AC-080` | A configuration change applies to a transaction confirmed after it takes effect, and to no transaction confirmed before |
+| `FEE-AC-081` | With no connectivity, a staff cash-collection attempt produces no `CONFIRMED` record, no receipt and no membership activation |
+| `FEE-AC-082` | No financial write is queued, mirrored or synchronised while offline; a repeated cash submission with the same idempotency key yields one confirmed payment |
+| `FEE-AC-083` | A student-facing breakdown itemises membership/fee amount, discounts and amount paid separately, and shows no platform-commission, gateway or tax line |
+
+> **`FEE-AC-083` is deliberately a negative criterion.** It requires the **absence** of a commission,
+> gateway and tax line, because those three belong to `BC-20` and V3. A criterion asserting their
+> presence would need a rate this repository does not contain — see `FEE-GAP-014`.
+
 **Not covered by any criterion, deliberately:** refunds (⛔ `FEE-GAP-001`), webhook reconciliation
 (⛔ `FEE-GAP-002`), offline cash capture (⛔ `FEE-GAP-002`(b)), bank transfer (⛔ `FEE-GAP-003`),
 due-date arithmetic (⛔ `FEE-GAP-006`). **Writing criteria for undecided behaviour would be fabricating
@@ -1665,18 +1747,28 @@ verification.**
 | `FEE-XC-019` | `FEE-AC-075` |  |
 | `FEE-XC-020` | `FEE-AC-073` |  |
 | `FEE-XC-021` | `FEE-AC-076` |  |
+| `FEE-FR-060` | `FEE-AC-079` | added v0.4 |
+| `FEE-FR-061` | `FEE-AC-081` | added v0.4 |
+| `FEE-FR-062` | `FEE-AC-083` | added v0.4 |
+| `FEE-INV-010` | `FEE-AC-079` | added v0.4 |
+| `FEE-BR-028` | `FEE-AC-080` | added v0.4 |
+| `FEE-XC-022` | `FEE-AC-081`, `FEE-AC-082` | added v0.4 |
 
 **Measured coverage:**
 
 | Register | Allocated | Traced | Untraced (all ⛔ BLOCKED) |
 |---|---|---|---|
-| `FEE-FR-*` | 59 | 57 | `FEE-FR-028`, `FEE-FR-042` |
-| `FEE-BR-*` | 27 | 25 | `FEE-BR-007`, `FEE-BR-019` |
-| `FEE-INV-*` | 9 | 9 | — |
+| `FEE-FR-*` | 62 | 60 | `FEE-FR-028`, `FEE-FR-042` |
+| `FEE-BR-*` | 28 | 26 | `FEE-BR-007`, `FEE-BR-019` |
+| `FEE-INV-*` | 10 | 10 | — |
 | `FEE-EVT-*` | 3 | 3 | — *(`FEE-EVT-003` count-only)* |
-| `FEE-XC-*` | 21 | 21 | — |
+| `FEE-XC-*` | 22 | 22 | — |
 | `FEE-PO-*` | 8 | 8 | — |
-| **Total** | **127** | **123** | **4 = 96.9%** |
+| **Total** | **133** | **129** | **4 = 97.0%** |
+
+*The v0.4 additions moved the ratio from 123/127 to **129/133** — the six new obligations each carry a
+criterion, so the **untraced set is unchanged at exactly four**. The percentage rose because the
+denominator grew with fully-traced rows, not because anything previously untraced was closed.*
 
 **This does not meet the 100% bar** that `PRD-006` cleared (285/285). The shortfall is **exactly** the four
 requirements whose behaviour is governed by an unresolved gap. Writing criteria for undecided behaviour
@@ -1715,10 +1807,13 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 ## 37. Governance Gap Ledger
 
-**13 gaps. 5 block Stage 4. 10 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
+**15 gaps. 5 block Stage 4. 10 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
 not this PRD — see its Freeze row)*. None is resolved by assumption. *(These two counts were
 stated inconsistently in the first draft — `6/6` here and `6/9` in §39. Both were wrong; the values below
 are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-review finding **J-3**.)*
+
+*`FEE-GAP-014` and `FEE-GAP-015` were added at v0.4. **Neither changes the two counts above**, because
+`BC-05` owns neither subject: each blocks the feature that needs it, not this PRD.*
 
 ### `FEE-GAP-001` — Is Refund V1 or V2?
 | Field | Value |
@@ -1894,6 +1989,36 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 
 ---
 
+### `FEE-GAP-014` — Platform commission, settlement and platform revenue have no owning document
+
+| Field | Value |
+|---|---|
+| **Question** | Which document specifies the **3% default platform commission**, its per-transaction application, the library **settlement balance**, **net-off** against future collections, and the Owner/Manager settlement view — given that all five are money **library → LIBOORA** and therefore `BC-20`'s, and that `BC-20`'s PRD (`PRD-022`) is `PLANNED` and does not exist? |
+| **Conflict or absence** | **Absence, not conflict.** Measured: `commission` = **13 occurrences, 0 financial** (all the English verb); `platform fee`, `revenue share`, `payout`, `net settlement` = **0 each**; an approved `3%` default = **0**. No source approves a commission rate, a settlement aggregate, a net-off rule or a payout rail. Separately, **no `BC-05` ↔ `BC-20` edge exists** — `BC-05` has exactly `E-06`, `E-07`, `E-09`, `E-10` — and BC Map §7 L292 holds that *"if an edge is not in this table, it does not exist"* |
+| **Impact** | The commission model **cannot be specified in this PRD at all**, and not because of a missing detail: `MP-GBR-24` (**Rank 1**) forbids `BC-05` and `BC-20` sharing *"a model, a table or a metric"*. Specifying it here would merge LIBOORA's revenue into a library's fee ledger — the precise failure `PRD_REGISTRY.md` L341 describes as collapsing *"`FeePayment` into `SubscriptionCharge`"*. The **immutable-snapshot**, **server-confirmed-cash**, **no-offline-write** and **unbundled-breakdown** parts of the decision ARE specified here (§34.4), because those are `BC-05`'s own |
+| **Owner** | **`BC-20` owner** (settlement model, commission arithmetic, revenue recognition) · **Architecture Owner** (any `BC-05` ↔ `BC-20` edge, and the gateway-charge path through `E-25`) · **Governance Owner** (opening `PRD-022`) · **Product Owner** (whether a commission line may appear in a student-facing breakdown at all) |
+| **Authority** | **REQUIRES THE `BC-20` OWNER + REQUIRES ARCHITECTURE OWNER + REQUIRES GOVERNANCE OWNER.** An ADR is required for the edge. **No ADR is authored here.** `PGA-05` already records `PRD-022` as one of the *"nine module PRDs named in v1.0 and never written"* |
+| **Status** | **OPEN — BLOCKED, correctly, on a context boundary this PRD may not cross** |
+| **Stage 4** | **Does not block this PRD.** `BC-05` owns none of the blocked parts, and the six obligations it does own (`FEE-FR-060`…`062`, `FEE-INV-010`, `FEE-BR-028`, `FEE-XC-022`) are fully specified and carry `FEE-AC-079`…`083` |
+| **Freeze** | **BLOCKS the commission *feature*, not this PRD.** Freezing `PRD-008` would not make the feature buildable; only `PRD-022` can |
+| **Recommended** | **1.** Open `PRD-022` (SaaS Billing, `BC-20`) and specify commission, settlement, net-off and payout there, with the 3% default recorded as the Product Owner's decision. **2.** Route the `BC-05` → `BC-20` transaction-fact path through an ADR **before** either PRD depends on it; do not assume a direct edge, since `E-25` shows `BC-20` reaching external rails through `BC-31`. **3.** Keep gateway charges on `BC-20`'s side of that boundary. **4.** Do NOT add a commission field to any `BC-05` aggregate in the interim |
+
+### `FEE-GAP-015` — `Platform Owner / Super Admin` is not a registered role, and the platform-role register is closed
+
+| Field | Value |
+|---|---|
+| **Question** | Under which authority does the **Platform Owner / Super Admin** role exist, who may create and revoke **Platform Admin** accounts, and which registered role may change a **platform-level** configuration value such as the commission rate or the renewal-protection window? |
+| **Conflict or absence** | **Conflict with an authoritative document.** `PRD-001` Authentication v2 (**PRODUCTION-READY — AUTHORITATIVE**), `prd-v2/07` L79: *"Platform roles. **Two, closed:** `PR-1` Platform Administrator and `PR-2` Platform Support."* Measured: `grep -rniE 'Platform Owner|Super Admin' docs/30-product/authentication/` → **0 hits**. A third platform role therefore contradicts a closed register. `AUTH-7.10` (*"no role inheritance"*) means such a role would inherit nothing and must be enumerated; `AUTH-7.13` and `XC-7.13` bar any platform role from tenant business data without elevation |
+| **Impact** | The decision's §3 (*"Platform Owner creates Platform Admin accounts … can revoke access"*), §5 and §10 (*"Platform Owner / authorized Platform Admin can change"*) all rest on an unregistered role. **No `BC-05` requirement depends on it** — `FEE-XC-014` forbids this module from creating a role or inferring permission from dashboard visibility, and BC Map L127 places roles, permissions and policy decisions in `BC-18` — so this PRD is unaffected; but the configuration-authority questions in `FEE-GAP-007` and `FEE-GAP-013`(a2) cannot close until the role exists |
+| **Owner** | **`PRD-001` owner** (the platform-role register) · **`BC-18` owner** (permission enumeration, provisioning path, revocation) · **`BC-25` owner / `PRD-023`** (where a platform-level configuration value lives) |
+| **Authority** | **REQUIRES THE `PRD-001` OWNER.** Opening a closed register in an authoritative document requires an ADR by that owner. **No ADR is authored here, and `PRD-001` is not modified** |
+| **Status** | **OPEN** |
+| **Stage 4** | Does not block — no `FEE-*` identifier references the role |
+| **Freeze** | **Does not block this PRD**; blocks any platform-level configurable, including the two the decision names |
+| **Recommended** | **1.** Decide whether Platform Owner is a **third platform role** (amend *"Two, closed"* by ADR) or an **enumerated permission set held by a `PR-1` account** (no register change — the cheaper option, and consistent with `AUTH-7.10`'s rejection of inheritance). **2.** Specify provisioning as server-side only, never public signup, with `BC-24` audit capturing actor, role, timestamp and before/after value. **3.** Only then place the commission rate and the renewal-protection window in the configuration register the `BC-25` owner nominates |
+
+---
+
 ## 38. Risks
 
 | ID | Risk | Severity | Mitigation |
@@ -1928,11 +2053,13 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | `FEE-GAP-011` | Retention | Product Owner + Security | — | ✅ |
 | `FEE-GAP-012` | Registry / `BC-26` / report tier / gate | Governance + Architecture + Product | — | ✅ |
 | `FEE-GAP-013` | **Partly resolved.** Remaining: protection window + configurability; usage-history store; **term deduction (f)**; cross-tenant read edge; previous-library disclosure | Product Owner + `BC-02`/`BC-06`/`BC-10` owners + Architecture + Security | — | — |
+| `FEE-GAP-014` | Platform commission %, settlement balance, net-off, gateway charge, settlement view — **all `BC-20`**; `PRD-022` does not exist | `BC-20` owner + Architecture + Governance + Product | — | — |
+| `FEE-GAP-015` | Is `Platform Owner / Super Admin` a third platform role, or a permission set on a `PR-1`? Platform-config authority | `PRD-001` owner + `BC-18` + `BC-25` | — | — |
 
 **5 block Stage 4. 10 block Freeze.** *(Corrected during self-review — see §37.)*
 
-`FEE-GAP-013` blocks **neither** Stage 4 nor Freeze of *this* PRD, because `BC-05` owns none of its blocked
-parts. It blocks the **feature**. Building the renewal-protection window, the term deduction, or the
+`FEE-GAP-013`, `FEE-GAP-014` and `FEE-GAP-015` block **neither** Stage 4 nor Freeze of *this* PRD, because
+`BC-05` owns none of their blocked parts. They block the **features**. Building the renewal-protection window, the term deduction, or the
 cross-library indicator requires **four ADRs by four owners** — see §37.
 
 ---
@@ -1952,7 +2079,9 @@ cross-library indicator requires **four ADRs by four owners** — see §37.
 9. No online payment succeeded on a client signal alone.
 10. `BC-05` defined no metric formula and holds no reporting store.
 11. Exactly **three** `fee.*` events exist.
-12. **All twelve gaps are closed by their named authority** — six before Stage 4.
+12. **All fifteen gaps are closed by their named authority** — five before Stage 4.
+13. No `BC-05` record, report or breakdown ever carried a platform-commission, settlement or gateway
+    field — the `MP-GBR-24` boundary held in the **schema**, not only in the UI.
 
 **None is currently met.** No implementation exists; `FROZEN`/`VERIFIED` are not claimed.
 
@@ -1962,10 +2091,169 @@ cross-library indicator requires **four ADRs by four owners** — see §37.
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.4** | *(this draft)* | **MASTER PRODUCT + APP ARCHITECTURE DECISION APPLIED — the part `BC-05` owns is specified; the platform-commission model is REFUSED and routed, because it is `BC-20`'s money.** **Measured first, as always:** `commission` across `docs/` = **13 occurrences, 0 financial** (every one the English verb — *"commissioned an analysis"*, `SeatDecommissioned`); `platform fee`, `revenue share`, `payout`, `net settlement`, `take rate` = **0 each**; an approved `3%` default = **0**; `settlement` = 4 hits, all this document's own *"partial settlement"* (`FEE-XC-004`, excluded). **Decisive authority:** `MP-GBR-24` (Master PRD **L362**, **Rank 1**) — *"Money owed by a **student to the library** (`BC-05`) is a different concept from money owed by a **library to LIBOORA** (`BC-20`). They **must never share a model, a table or a metric**"* — reinforced by BC Map L100/L129, `PRD_REGISTRY.md` L341 (merging *"would collapse `FeePayment` into `SubscriptionCharge`"*) and `MP-SM-06`. A platform commission is money *library → LIBOORA*; therefore **seven of the twelve requested elements** (the 3% rate, its configuration authority, the settlement balance, the net-off, the settlement dashboard, the gateway-charge line, the tax line) are **routed to `BC-20`/`PRD-022`/V3 by `FEE-GAP-014`, not specified here**. Also measured: **no `BC-05` ↔ `BC-20` edge exists** (`BC-05` has exactly `E-06`, `E-07`, `E-09`, `E-10`; BC Map §7 L292 — *"if an edge is not in this table, it does not exist"*) and **`PRD-022` does not exist** (`PGA-05`: one of *"nine module PRDs named in v1.0 and never written"*). **Six obligations added — only what this module lawfully owns:** `FEE-FR-060` + `FEE-INV-010` + `FEE-BR-028` (§15.1 — immutable confirmed-payment snapshot; a config change is **never retroactive**), `FEE-FR-061` + `FEE-XC-022` (§28.1 — cash confirmed **only** by server-side recording; **no offline financial write**, consistent with `E-24` granting offline sync to `BC-03` **only**), and `FEE-FR-062` (§16.1 — unbundled student-facing breakdown of the components `BC-05` owns). **`FEE-FR-060` deliberately carries no commission, gateway or tax field**: adding one would perform the `MP-GBR-24` merger **in the schema**, which is where it counts. **Four requested behaviours were NOT given new identifiers because they already exist** — client-side success is never financial truth (`FEE-BR-014`, `FEE-AC-032`), idempotent cash submission (`FEE-FR-029`/`030`, `FEE-INV-005`), offline blocked (`FEE-PO-006`, §28.1), collecting actor recorded (`FEE-FR-022`/`023`). Creating IDs to restate them would have inflated traceability, which the decision's own §18 forbids. **Second conflict found, with an authoritative document:** the decision makes **Platform Owner / Super Admin** the highest authority, but `PRD-001` Authentication v2 (**PRODUCTION-READY — AUTHORITATIVE**), `prd-v2/07` **L79**, declares platform roles *"**Two, closed:** `PR-1` Platform Administrator and `PR-2` Platform Support"* and `grep -rniE 'Platform Owner|Super Admin' docs/30-product/authentication/` returns **0 hits** — recorded as **`FEE-GAP-015`**, which recommends the cheaper resolution (an enumerated permission set on a `PR-1` account, needing no register change) alongside the ADR route. **Renewal protection at V1:** §42.6 records that the decision resolves the configuration *level* as platform-level, but frozen `PRD-002` §16.1 `LCFG-1`…`LCFG-10` is **library**-scoped with no percentage or window row, so the value still has no home — `FEE-GAP-013`(a2) stands, now also routed to the `BC-25` owner. **No `FEE-CFG-*` register was opened and no range, maximum or default was invented**, exactly as the decision's §10 instructs. The term-deduction prohibition (five frozen `MM-FR-*` + `MM-XC-012` **V2**), the seat-ownership boundary (`BC-04`) and the cross-library prohibition (`SID-4.19`'s **capability** bar) are all **unchanged and now explicitly confirmed by the decision itself**. **Three PRE-EXISTING defects fixed** while verifying anchors, none of them introduced here: (i) `NG-8` pointed at *"§42 note in §34"* — **§42 did not exist** at the time (the file ended at §41); (ii) §35's preamble still claimed *"70 criteria … `FEE-AC-070`"* though the register held **78**; (iii) §26 still described `FEE-XC-017` as *"reserved — not allocated"* though v0.2 allocated it. **The new section is numbered §42, not §34**, because `## 34. Edge Cases` already existed — verified by reading the heading list before writing, not after. Registers now 62 FR / 28 BR / 10 INV / 3 EVT / 22 XC / 8 PO / 83 AC / 15 GAP = **231 identifiers**, 133 obligation-bearing, traceability **129/133 = 97.0%** — the **untraced set is unchanged at exactly four**; the ratio rose only because six fully-traced obligations were added. **No frozen document was modified. No ADR was authored or accepted. No edge, endpoint, schema, gateway contract, tax rate, gateway percentage, commission rate or configuration range was invented. `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is unchanged.** |
 | **v0.3** | *(this draft)* | **`FEE-GAP-013` GOVERNANCE RESOLUTION — two questions closed by measurement, six left blocked with named authorities, and one new frozen-document conflict discovered. No `FEE-*` requirement was added, altered or removed; no event, edge, API, schema or configuration range was created.** §11.3 was rewritten (§11.3.1–§11.3.10) and `FEE-GAP-013` restructured into sub-questions (a1), (a2), (b)–(g). **Resolved:** *(a1)* the policy owner is **`BC-06` Library Policy** — BC Map L101 makes it *"the rule **source**"* and `PRD_REGISTRY.md` **L422** maps `BC-06` → **`PRD-002`** (`FROZEN` v1.1, uncontested); the ownership is a **three-way split already in the architecture** — `BC-06` owns the rule, `BC-02` the term effect (BC Map L97), `BC-04` the seat effect (`MM-FR-112`, `SEAT-FR-155`) — and **`BC-05` owns none of it**. *(e)* the *"full configured duration"* guarantee is **`BC-02`'s**, already given by frozen `MM-FR-086` (target plan's **current** `durationDays`) and `MM-FR-081` (renewal from `Expired` *"without limit of elapsed time"*), not `BC-05`'s (`FEE-XC-020`). **Blocked, with the blocker quoted:** *(a2)* the 3-day window is unsourced (0 occurrences repo-wide), **conflicts with the only recorded recommendation of 24h** (Master PRD L673, BC Map L540 — itself *"Open"*, and `PRD-005` §7.4 holds that a recommendation inside an open question *"is not a decision"*), and is forbidden from extending entitlement by frozen `MM-FR-111`; **configurability has no register** — `BC-06`'s configurables are the closed table `PRD-002` §16.1 `LCFG-1`…`LCFG-10` in a **`FROZEN`** document with no protection-window row, and `E-19` supplies typed accessors, not authority that a value exists, so **no `FEE-CFG-*` register was opened** (requirement 11). *(f) — the new requirement, and the sharpest finding:* the instruction to **deduct the 3 protected days from the new membership duration** *"according to the approved membership policy"* is **contradicted by the approved policy**. Five frozen `PRD-005` requirements forbid it — `MM-FR-086`, `MM-FR-057` (a closed formula), **`MM-FR-058`** (a **pure function** that *"**MUST NOT** depend on the current clock"*), `MM-FR-057a` (*"**The single permitted re-derivation, and the only one**"*) — and it **is** proration, classified `MM-XC-012` **V2** with ownership question `Q-06` / `MM-GAP-002` still **OPEN**. Under `MP-CON-08` this is *"a **defect to be raised**, not a choice to be made"*, so it is raised, not specified. *(c)/(d)* the cross-library indicator has **no lawful V1 form**: `ID-2` is **CI-enforced** (`banned_symbols`, `tool/module_dependencies.yaml` L216–218), `ID-3` forbids resolving which library a person attends, and — decisively — **`SID-4.19`** forbids `BC-10` from being *"**capable** of answering"* that question, reinforced by `SID-INV-8`, `SID-INT-12`, `SID-4.22`, `SID-4.23` and `SID-5.8` (**`membership state`** *"**SHALL NEVER** exist"* in `BC-10`). **This defeats even the request's own preferred design** — a minimal `PersonId`-keyed projection with the library name omitted — because a non-empty result still discloses enrollment elsewhere, and the prohibition is on the **capability**, not the field. **Recommendation: the cross-library indicator is V2, not V1 and not removed**, matching the EA tier for `Multiple Library Memberships`; the only lawful door for a future design is `ID-3`'s *"unless the person explicitly published it"* — explicit consent — which needs a consent owner (`BC-18`), a lawful basis, a revocation path and a registered edge, **none of which exist and none of which this PRD may create**. *(g)* the *"student remains and requests protection"* path is unsourced; the **voluntary-departure** half of requirement 5 is already the frozen model (`MM-FR-079`, `MM-XC-011` **V2**). **Four distinct ADRs by four distinct owners** would be required to build the feature; **none was authored** (requirement 10). Registers **unchanged** at 59 FR / 27 BR / 9 INV / 3 EVT / 21 XC / 8 PO / 78 AC / 13 GAP = **218 identifiers**, 127 obligation-bearing, traceability **123/127 = 96.9%** — because the resolution added governance findings, not requirements. **No frozen document was modified:** `PRD-002`, `PRD-004`, `PRD-005`, `PRD-007` remain `FROZEN` and `PRD-003` untouched; `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is unchanged. **No fraud system, risk score, blacklist, watchlist or cross-library punishment was created**, and `FEE-XC-019` / `FEE-XC-021` remain **unconditional**. |
 | **v0.2** | *(this draft)* | **Cross-library renewal-protection history added — as prohibitions plus a blocker, not as a feature.** Measured first: `grep -rniE "renewal.protect|protection period|protection window"` over `docs/` returns **0 occurrences**, so the concept is **unsourced**. The nearest concept, *grace period*, is owned by **`BC-06`** (BC Map L101) with its decision `Q-01`/`MM-GAP-001` still **OPEN**, and frozen `PRD-005` `MM-FR-111` forbids a V1 grace period extending entitlement. EA L1368 `Grace Periods (V2)` is a **different** concept (Entitlement Service, `BC-21`). Cross-library read is barred by **`ID-2`** (`StudentRecordId` never leaves its tenant) and **`ID-3`** (global contexts must not resolve which library a person attends), with `Multiple Library Memberships` at **V2** and `Cross Library Membership` **Future**. Therefore: specified only what is lawfully `BC-05`'s — `FEE-FR-059` (new obligation priced solely from its own `E-07` `priceSnapshot`), `FEE-BR-026` (no penalty persists beyond its membership), `FEE-BR-027` (renewal inside a window carries no adverse marker), and `FEE-XC-018`…`021` (no ownership of protection history, no cross-tenant financial disclosure, no duration authority, **no risk score / fraud label / blacklist / cross-library punishment**). Added `FEE-AC-071`…`078` for scenarios A–H, with **`FEE-AC-074` explicitly recorded as not verifiable in `BC-05`** rather than given a criterion this module could not execute. Added **`FEE-GAP-013`** routing the blocked parts to the Architecture Owner, Product Owner, Security and the `BC-02` owner. Also allocated the four v0.1 reserved placeholders (`FEE-FR-059`, `FEE-BR-025`/`026`, `FEE-XC-017`). Registers now 59 FR / 27 BR / 9 INV / 3 EVT / 21 XC / 8 PO / 78 AC / 13 GAP = **218 identifiers**, 127 obligation-bearing, traceability **123/127 = 96.9%**. **No frozen document was modified**; `PRD-005` and `PRD-004` remain FROZEN and any protection-history field there requires an ADR by their owners. **No fraud system, risk score, blacklist or cross-library punishment was created.** |
 | **v0.1** | *(this draft)* | **First draft. Stage 2 only.** Created from Rank 1–6 sources: Master PRD v1.7, `ADR-0015` (**Accepted**), BC Map v1.7, Module Dependency Matrix v1.3, frozen `PRD-004` v1.2 / `PRD-005` v1.4 / Library PRD v1.1, `PRD_REGISTRY.md`, `PRD_OWNERSHIP_MODEL.md`, `PRD_LIFECYCLE.md`, `PRD_DEPENDENCY_GRAPH.md`, `PRODUCT_IMPLEMENTATION_ROADMAP.md`, `PRD_GAP_ANALYSIS.md`, Enterprise Architecture v2.1 (Rank 6, descriptive). Registers `FEE-*` opened after a measured collision check (0 pre-existing occurrences): 58 FR, 24 BR, 9 INV, 3 EVT, 16 XC, 8 PO, 70 AC, 12 GAP = **200 identifiers**, 118 obligation-bearing. During the mandatory adversarial self-review two defects in this draft were found and corrected before issue: (a) §36.1 claimed *"113 = 95.8%"* traceability while the §35 criteria carried no requirement back-links — replaced with a measured per-identifier matrix showing **114/118 = 96.6%**; (b) `FEE-EVT-001`/`002`/`003` were declared in §0.2 but never defined normatively — now defined in §26. Six criteria (`FEE-AC-065`…`070`) were added to close coverage that the earlier percentage had merely asserted. **No `FEE-CFG-*` register opened** — no source approves any range. **No requirement, event, edge, endpoint, table, schema, vendor contract or configuration range was invented.** **12 governance gaps recorded; 5 block Stage 4, 10 block Freeze** (measured from the ledger rows; the first draft stated these inconsistently). `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is **unchanged** by this document. No other PRD, ADR, ranked document or source file was modified. |
 
 ---
 
-*End of `PRD-008_REVENUE-AND-FINANCE.md` **v0.3 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*
+---
+
+## 42. Platform Commission & Settlement — ⛔ NOT `BC-05`'s TO OWN
+
+> **This section records a V1 product decision and refuses to implement the part of it that
+> `BC-05` does not own.** The Master Product + App Architecture Decision sets a **3% default
+> platform commission**, configurable by **Platform Owner / Platform Admin**, with an
+> **immutable per-transaction rate snapshot**, plus **server-confirmed-only cash** and a
+> **transparent unbundled breakdown**. Its §5 also states the boundary itself:
+> *"Platform commission, platform settlement and LIBOORA platform revenue belong to the platform
+> billing/financial context, not the student fee ledger."* This section holds that line.
+
+### 42.1 The Rank 1 rule that decides ownership
+
+`MP-GBR-24` (Master PRD L362, **Rank 1**) is exact:
+
+> *"Money owed by a **student to the library** (`BC-05`) is a different concept from money owed by
+> a **library to LIBOORA** (`BC-20`). They **must never share a model, a table or a metric**."*
+
+Reinforced at four further sites, none of them this document's to amend:
+
+| Source | Rank | What it says |
+|---|---|---|
+| BC Map **L100** | 4 | `BC-05` Fee & Collection owns *"money owed by a **student to the library**"* |
+| BC Map **L129** | 4 | `BC-20` Subscription & Billing owns *"money owed by a **library to LIBOORA**: plans, subscriptions, invoices, **gateway**, dunning, revenue recognition"* |
+| `PRD_REGISTRY.md` **L341** | 2 | *"`BC-05` is money **student → library**; `BC-20` is money **library → LIBOORA**. Merging them would collapse `FeePayment` into `SubscriptionCharge` and put a library's revenue in the same aggregate as LIBOORA's"* |
+| `PRD_REGISTRY.md` **L427** | 2 | `BC-20` → **`PRD-022`**, uncontested |
+| `MP-SM-06` (L658) | 1 | A revenue metric *"**must state whether it means `BC-05` student fees or `BC-20` SaaS revenue**"* |
+
+A platform commission is money **library → LIBOORA**. Therefore **every commission, settlement and
+platform-revenue obligation in the decision belongs to `BC-20` / `PRD-022`, not to this PRD.**
+
+### 42.2 What was measured before anything was written
+
+| Search | Result |
+|---|---|
+| `commission` across `docs/` | **13 hits, 0 financial.** Every one is the English verb — *"commissioned an analysis"*, *"whoever the owner commissions"*, `SeatDecommissioned`. **No commission rule exists anywhere in the repository** |
+| `platform fee` · `revenue share` · `payout` · `net settlement` · `take rate` | **0 occurrences each** |
+| `settlement` | **4 hits, all this document's own** *"partial settlement"* — `FEE-XC-004` **excludes** it from V1 |
+| `3%` as an approved default | **0** |
+| A `BC-05` ↔ `BC-20` edge in BC Map §7 | **NONE.** `BC-05` has exactly four edges — `E-06`, `E-07`, `E-09`, `E-10` — and none touches `BC-20` |
+| Gateway ownership | **`BC-20`**, reaching vendors through **`E-25` → `BC-31`**. `BC-05` has no gateway path at all (`FEE-GAP-002`) |
+| Commission configuration range | **Not approved.** `LCFG-1`…`LCFG-10` (frozen `PRD-002` §16.1) contains no percentage row; §0.2 declares **no `FEE-CFG-*` register** |
+| Tax / GST rate | **V3.** EA L828–829, L1427–1429; `NG-2` already excludes it |
+
+BC Map §7 L292 governs the missing edge: *"**If an edge is not in this table, it does not exist** and
+adding it requires an ADR."*
+
+### 42.3 Disposition — three destinations, none of them invention
+
+| # | Decision element | Destination | Why |
+|---|---|---|---|
+| 1 | 3% default commission rate | ⛔ **`BC-20` / `PRD-022`** — `FEE-GAP-014` | `MP-GBR-24`; `PRD-022` is `PLANNED` and **does not exist** (verified: no file) |
+| 2 | Platform Owner / Platform Admin configures it | ⛔ **`BC-20` + `BC-18` + `BC-25`** — `FEE-GAP-014`, `FEE-GAP-015` | Configuration authority is not `BC-05`'s; and **`Platform Owner` is not a registered role** (§42.5) |
+| 3 | Commission recorded against a library settlement balance | ⛔ **`BC-20`** — `FEE-GAP-014` | Would be a **new financial aggregate** in the wrong context |
+| 4 | Net-off of outstanding commission against future collections | ⛔ **`BC-20`** — `FEE-GAP-014` | Requires a settlement mechanism **no source approves**; would also need the absent `BC-05`↔`BC-20` edge |
+| 5 | Owner/Manager settlement dashboard (gross · commission · gateway · net · outstanding) | ⛔ **`BC-20`**, surfaced via `BC-26` — `FEE-GAP-014` | Mixed-context read model. `MP-GBR-36`: *"No dashboard may define its own metric formula"* |
+| 6 | Gateway/provider charges shown separately | ⛔ **`BC-20` via `E-25`** — `FEE-GAP-014` | Gateway is `BC-20`'s by BC Map L129 |
+| 7 | Tax / GST line | ⛔ **V3** — already excluded by `NG-2` | No rate invented |
+| 8 | **Immutable rate snapshot on a confirmed transaction** | ✅ **specified here** — `FEE-FR-060`, `FEE-INV-010`, `FEE-BR-028` | The *immutability principle* over a financial record `BC-05` already owns |
+| 9 | **No offline financial write; cash confirmed server-side only** | ✅ **specified here** — `FEE-FR-061`, `FEE-XC-022` | Strengthens `FEE-BR-010`/`FEE-PO-006`, which exist |
+| 10 | **Client-side success is never financial truth** | ✅ **already specified** — `FEE-BR-014`, `FEE-FR-026`/`027`, `FEE-AC-032` | No new identifier needed |
+| 11 | **Idempotent cash submission** | ✅ **already specified** — `FEE-FR-029`/`030`, `FEE-INV-005` | No new identifier needed |
+| 12 | **Unbundled student-facing breakdown** | ✅ **partly here** — `FEE-FR-062`; commission line ⛔ `FEE-GAP-014` | `BC-05` may render its **own** components; it may not render `BC-20`'s |
+
+Items 10 and 11 are recorded as **already satisfied**. No identifier was created to restate them —
+`FEE-GAP-012` warns against exactly that, and the decision's §12 requires *"do not create IDs merely
+to make traceability appear complete"*.
+
+### 42.4 What `BC-05` does specify — six new obligations, and only six
+
+**The six obligations are defined once, at their register's own site — not restated here.** Restating a
+normative requirement would create a second definition of the same identifier, which is precisely the
+collision discipline this PRD enforces elsewhere. This is the index:
+
+| ID | Register | Defined at | Verified by |
+|---|---|---|---|
+| `FEE-FR-060` | Functional | **§15.1** — immutable confirmed-payment snapshot | `FEE-AC-079` |
+| `FEE-INV-010` | Invariant | **§15.1** — snapshot fields never change | `FEE-AC-079` |
+| `FEE-BR-028` | Business rule | **§15.1** — a config change is never retroactive | `FEE-AC-080` |
+| `FEE-FR-061` | Functional | **§28.1** — cash confirmed only server-side | `FEE-AC-081` |
+| `FEE-XC-022` | Exclusion | **§28.1** — no offline financial write of any kind | `FEE-AC-081`, `FEE-AC-082` |
+| `FEE-FR-062` | Functional | **§16.1** — unbundled student-facing breakdown | `FEE-AC-083` |
+
+> **`FEE-FR-060` deliberately does not name a commission rate, a gateway charge or a tax line.**
+> Those three components are `BC-20`'s. A snapshot field for a value this context may not compute
+> would be the *"shared model"* `MP-GBR-24` forbids — the merger happens in the schema, not in the UI.
+> `FEE-XC-022` is stated as an exclusion rather than a configurable so that no offline mode can be
+> switched on later without amending this register. It is consistent with `E-24`, which grants the
+> offline-sync edge to **`BC-03` Attendance only** (BC Map L333) — the decision's §7 *"NO OFFLINE
+> FINANCIAL WRITE in V1"* and its instruction not to mix offline attendance with offline finance are
+> therefore both honoured by architecture, not merely by intent.
+
+### 42.5 `Platform Owner` is not a registered role — and the register is closed
+
+The decision names six roles and makes **Platform Owner / Super Admin** the highest authority, able to
+create and revoke Platform Admin accounts. Measured against `PRD-001` Authentication v2
+(**PRODUCTION-READY — AUTHORITATIVE**), `prd-v2/07` **L79**:
+
+> *"Platform roles. **Two, closed:** `PR-1` Platform Administrator and `PR-2` Platform Support."*
+
+| Decision role | Registered? | Finding |
+|---|---|---|
+| Student · Reception · Manager · Library Owner | ✅ | Library roles, `AUTH-7.14` — scoped to exactly one library |
+| **Platform Admin** | ✅ `PR-1` | Exists. Assigned by another Platform Administrator (`prd-v2/07` L251) |
+| **Platform Owner / Super Admin** | ❌ **NOT REGISTERED** | `grep -rniE 'Platform Owner|Super Admin' docs/30-product/authentication/` → **0 hits.** Adding a third platform role contradicts *"Two, closed"* |
+
+Two further rules constrain it, and both survive this PRD unchanged:
+
+* `AUTH-7.13` — *"Platform roles **MUST NOT** grant any permission over tenant business data."*
+* `AUTH-7.10` (`AP-7`) — *"**No role inheritance.**"* So a Platform Owner would not inherit Platform
+  Admin's permissions, nor Library Owner's; each must be enumerated.
+* `XC-7.13` — a Platform Administrator reading tenant data without elevation is **refused**:
+  *"Platform authority does not extend to tenant contents."*
+
+**Consequence for this PRD.** The decision's §5 *"Platform Owner / authorized Platform Admin can
+change the commission percentage"* and §10 *"Platform Owner / authorized Platform Admin can change the
+renewal-protection period"* both name an **unregistered** role, and both concern configuration
+`BC-05` does not own. Neither is specified here. Both are routed by **`FEE-GAP-015`** to the
+`PRD-001` owner, who alone may open the closed platform-role register.
+
+`BC-05`'s own position is already correct and is re-affirmed, not changed: `FEE-XC-014` forbids this module from creating a role or
+inferring permission from dashboard visibility, and `FEE-FR-053` requires every financial write to be
+authorised against the acting role **and** tenant scope, so the decision's §17 *"Never trust the client for role,
+permissions, commission configuration … UI hiding alone is NOT security"* is satisfied for this
+module by an existing exclusion rather than a new requirement.
+
+### 42.6 Renewal protection at V1 — what changes, and what still cannot
+
+The decision makes renewal protection **V1** and sets the window at **3 days, Platform-level**,
+changing two things relative to v0.3's analysis and leaving the rest exactly as measured:
+
+| Element | v0.3 finding | Effect of this decision |
+|---|---|---|
+| Configuration **level** | Unresolved between library and platform | **Resolved as a product decision: platform-level.** But `PRD-002` §16.1 `LCFG-*` is a *library* register, so the value has **no home**; the decision's §10 anticipates this and forbids silently adding a row → **`FEE-GAP-013`(a2)** stands, now routed additionally to the `BC-25` configuration owner |
+| **Seat** protection during the window | `BC-04`'s (`SEAT-FR-155`) | **Unchanged.** Decision §14 confirms it: *"`BC-05` must not create its own seat allocation system"* — held by `FEE-XC-020` and by `BC-05` having no seat edge |
+| **Term deduction** for protection days used | ⛔ Forbidden by five frozen `MM-FR-*`; **is** proration (`MM-XC-012`, V2) | **Unchanged and now explicitly accepted by the decision** — §11: *"Do NOT silently implement this as membership-term subtraction if existing frozen `BC-02` rules classify such behaviour as proration"* → `FEE-GAP-013`(f) stands, ADR required |
+| **Cross-library** indicator | ⛔ `SID-4.19` capability bar; recommended V2 | **Unchanged and confirmed by the decision** — §13: *"If the architecture does not authorize a cross-library indicator: do NOT build it, record it as a governance/V2 dependency"* |
+| **No punishment / no scoring** | `FEE-XC-021`, `FEE-BR-027` | **Unchanged.** Decision §9 and §13 restate the same prohibition in the same terms |
+
+**Net effect on this PRD: none of the five moves into `BC-05`.** The window's *value* is `BC-06`/`BC-25`
+configuration, its *seat* effect is `BC-04`'s, its *term* effect is `BC-02`'s, and its *history* is
+`BC-02`'s (`FEE-XC-018`). What `BC-05` owes — that non-renewal creates no financial penalty and no
+retroactive charge — is already carried by `FEE-FR-059`, `FEE-BR-026` and `FEE-AC-078`.
+
+### 42.7 One app, six UIs — no effect on this register, recorded so the absence is deliberate
+
+The decision's §1, §2, §15 and §16 fix **one Flutter application** with role-scoped UI and
+extraction-ready feature modules. This is a **client-architecture** decision. It creates no
+`BC-05` obligation, and this PRD adds none: `PRD-008` specifies financial *facts*, and
+`FEE-XC-014` already forbids this module from creating a role or inferring permission from visibility. The single
+consequence worth recording is a **prohibition already in force** — `FEE-XC-016` forbids any
+cross-tenant financial read, write, aggregate or export, so a Platform Admin UI compiled into the
+same binary as the Reception UI still cannot reach another tenant's financial records. Bundle-size
+and deferred-loading targets belong to the implementation task register, not to a requirements PRD.
+
+---
+
+*End of `PRD-008_REVENUE-AND-FINANCE.md` **v0.4 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*

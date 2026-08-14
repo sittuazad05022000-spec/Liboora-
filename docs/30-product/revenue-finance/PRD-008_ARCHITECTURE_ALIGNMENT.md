@@ -556,7 +556,53 @@ nothing."* And: *"A rejected finding must be recorded as rejected, with its reas
 | Roles or permissions invented | **None** — `PR-1` used as it already exists |
 | Registry or baseline updated | **None** — `PRD-008` remains `PLANNED`; status is conferred at Stage 7 |
 | Source code modified | **None** — zero Dart files touched |
-| Gates weakened | **None** — the only tooling change was correcting `/tmp/verify008.py`'s hardcoded `v0.5` expectation to `v0.6`, which **tightens** the check against the current document |
+| Gates weakened | **None** — the only tooling change was correcting `/tmp/verify008.py`'s hardcoded `v0.5` expectation to `v0.6`, which **tightens** the check against the current document. **No gate allow-list was widened** (see the disclosure below) |
+
+### 11.1 ⚠ Disclosed side-effect — this pass added two files to a pre-existing gate finding
+
+`prd007_traceability.py` fails (exit **1**) on, among other things, *"bare `SEAT-` substring found outside the
+module"*. Measured across this pass rather than assumed:
+
+| Measurement | Value |
+|---|---|
+| Offending files at baseline `3d98330` | **24** |
+| Offending files at this HEAD | **26** |
+| **Added** | `ADR-0035-bc-05-payment-gateway-path.md` · `PRD-008_ARCHITECTURE_ALIGNMENT.md` |
+| Removed | none |
+| Gate **exit code** | **1 → 1 — unchanged** |
+
+**Cause.** Both documents quote Accepted `ADR-0033` §3 **verbatim**, and that sentence contains the token
+`SEAT-FR-104`. The quotation is load-bearing — it is the precedent on which `AA-R2′` and `ADR-0035` `D-1` rest
+(§3.4, §10) — so paraphrasing it to dodge a substring match would weaken the evidence to flatter a checker.
+
+**Why nothing was changed to clear it.** The gate's own comment states the allow-list is *"deliberately
+enumerated file by file rather than widened … so a stray `SEAT-` in any other governance document still
+fails the run"*, and that **a citation is not a collision** — *"a collision would be another register
+DEFINING a `SEAT-` identifier, which the duplicate-definition and form checks above still catch."* Verified:
+**neither document defines any `SEAT-*` identifier**; each contains exactly one *citation*. Adding either file
+to `ALLOWED` would be **gate weakening** and is refused. **Disclosed here for the Architecture Owner rather
+than silenced.**
+
+### 11.2 Gate results — each run independently, exit code captured immediately
+
+| Gate | Exit | Baseline | Verdict |
+|---|---|---|---|
+| `prd004_traceability.py` | **1** | 1 | Unchanged — 13 untraced `SM-*`, 94.6% |
+| `prd005_task_coverage.py` | **0** | 0 | PASS — 223/223 |
+| `prd005_traceability.py` | **1** | 1 | Unchanged — 60.1% under the strict rule |
+| `prd006_task_coverage.py` | **0** | 0 | PASS — 285/285 |
+| `prd006_traceability.py` | **0** | 0 | PASS — and independently re-verified *"`PRD-008` … defines 0 `ATT-*` identifiers"* |
+| `prd007_task_coverage.py` | **0** | 0 | PASS — 443/443 |
+| `prd007_traceability.py` | **1** | 1 | Unchanged exit code; offender set 24 → 26, disclosed in §11.1 |
+| `check_module_boundaries.dart` | **1** | 1 | Unchanged — 12 `ADR-0012` debts, red by design |
+| `/tmp/verify008.py` (PRD-008 internal) | **0** | 72/3 | **75 passed, 0 failed** after the checker's `v0.5` expectation was corrected to `v0.6` |
+
+> **The boundary gate corroborates the central finding independently of any document.**
+> `check_module_boundaries.dart`, reading `tool/module_dependencies.yaml`, prints for `domain/library →
+> platform/business`: *"Declared ports `platform/business:entitlement` and **`:payment_intent` are already
+> correct**."* The port this record relies on is affirmed by the **machine-checked** form of the architecture,
+> not only by the prose form. What the gate flags there is a *concrete-class injection* debt under `ADR-0012` —
+> **the port itself is not in question.**
 | Verdict relabelled | **No** — still ⛔ **NOT ALIGNED, 5 of 6** |
 
 ---

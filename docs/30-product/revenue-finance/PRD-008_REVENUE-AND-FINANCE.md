@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-05` Fee & Collection** |
 | **Classification** | `[CORE]` — Library Management cluster |
 | **Release** | **V1** |
-| **Version** | **v0.1 — DRAFT** |
+| **Version** | **v0.2 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** Status is *conferred* by admission to the baseline, never claimed by a document about itself; [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.1 still records `PRD-008` as **`PLANNED`** and **this document does not change that row**. Moving `PLANNED` → `DRAFT` is a registry act requiring the Governance Owner. |
 | **Baseline** | Written **against** `BASELINE-2026-08-05-A`. **Not admitted to it.** |
 | **Precedence rank if admitted** | Rank 3 (module PRD), the rank `PRD-004`…`PRD-007` hold |
@@ -15,8 +15,8 @@
 | **Consumes** | `BC-06` Library Policy (`E-06`) · `BC-02` Membership (`E-07`) · `BC-01` Enrollment (`E-09`) · `BC-21` Entitlement (`E-17`) · `BC-19` Tenancy (`E-18`) · `BC-25` Configuration (`E-19`) |
 | **Publishes to** | `BC-02` Membership (`E-10`) · `BC-24` Audit Trail (`E-20`) · `BC-22` Notification Delivery (`E-23`) |
 | **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0015` **Accepted** (Rank 2) · `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN**, Library PRD v1.1 **FROZEN** (Rank 3) · **BC Map v1.7**, Module Dependency Matrix v1.3 (Rank 4) · Enterprise Architecture v2.1 (Rank 6, **descriptive only**) |
-| **Blocking governance gaps** | **5 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`) · **10 block Freeze** (all except `FEE-GAP-008`, `010`). Measured from §37, not asserted |
-| **Recommendation** | **REQUIRES CORRECTIONS — GOVERNANCE BLOCKED on 6 gaps.** See §K of the covering report |
+| **Blocking governance gaps** | **13 gaps.** **5 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`) · **10 block Freeze** (all except `FEE-GAP-008`, `010`, `013`). `FEE-GAP-013` blocks the requested **cross-library renewal-protection indicator**, not this PRD. Measured from §37, not asserted |
+| **Recommendation** | **REQUIRES CORRECTIONS — GOVERNANCE BLOCKED.** See §K of the covering report |
 
 > ### ⚠️ Read this before treating any statement here as settled
 >
@@ -53,17 +53,17 @@ Measured by `grep -rhoE "\bFEE-[A-Z]+-[0-9]+" docs/ | sort -u | wc -l` → `0`. 
 
 | Register | Meaning | Count | Range |
 |---|---|---|---|
-| `FEE-FR-*` | Functional requirement | **58** | `FEE-FR-001` … `FEE-FR-058` |
-| `FEE-BR-*` | Business rule | **24** | `FEE-BR-001` … `FEE-BR-024` |
+| `FEE-FR-*` | Functional requirement | **59** | `FEE-FR-001` … `FEE-FR-059` |
+| `FEE-BR-*` | Business rule | **27** | `FEE-BR-001` … `FEE-BR-027` |
 | `FEE-INV-*` | Invariant | **9** | `FEE-INV-001` … `FEE-INV-009` |
 | `FEE-EVT-*` | Domain event published by `BC-05` | **3** | `FEE-EVT-001` … `FEE-EVT-003` |
-| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **16** | `FEE-XC-001` … `FEE-XC-016` |
+| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **21** | `FEE-XC-001` … `FEE-XC-021` |
 | `FEE-PO-*` | Port / integration obligation | **8** | `FEE-PO-001` … `FEE-PO-008` |
-| `FEE-AC-*` | Acceptance criterion | **70** | `FEE-AC-001` … `FEE-AC-070` |
-| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **12** | `FEE-GAP-001` … `FEE-GAP-012` |
-| **Total** | | **200** | |
+| `FEE-AC-*` | Acceptance criterion | **78** | `FEE-AC-001` … `FEE-AC-078` |
+| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **13** | `FEE-GAP-001` … `FEE-GAP-013` |
+| **Total** | | **218** | |
 
-**Obligation-bearing** = 58 + 24 + 9 + 3 + 16 + 8 = **118**. `FEE-AC-*` are *verified by* tests and
+**Obligation-bearing** = 59 + 27 + 9 + 3 + 21 + 8 = **127**. `FEE-AC-*` are *verified by* tests and
 `FEE-GAP-*` are *open questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*`
 and `ATT-GAP-*`.
 
@@ -403,6 +403,121 @@ source document** and **MUST NOT** be invented here. See **`FEE-GAP-006`**.
 outstanding dues, and **MUST** block the archival with a **domain error** if any remain. This is the
 verbatim `E-09` contract.
 `FEE-INV-004` — A student **MUST NOT** be archivable while `outstanding balance > 0`.
+
+### 11.3 Renewal-protection history and the cross-library status indicator
+
+> **⛔ MOSTLY BLOCKED — `FEE-GAP-013`. Read this before implementing anything in this subsection.**
+> A requirement was raised for a *renewal-protection period* whose usage is retained in membership history
+> and surfaced to a second library as a limited status indicator. **The measured position is that this
+> concept does not exist in any authoritative source, and that `BC-05` is not its owner.** What follows is
+> therefore split into (a) the small part that is lawfully `BC-05`'s and is specified, and (b) the larger
+> part that is blocked and routed to named owners. Nothing here is approved.
+
+#### 11.3.1 What the sources actually say — measured, not assumed
+
+| Probe | Result |
+|---|---|
+| `grep -rniE "renewal.protect\|protection period\|protection window"` over `docs/` | **0 occurrences** |
+| Nearest existing concept | **Grace period** — owned by **`BC-06` Library Policy**, BC Map L101: *"working hours, holidays, attendance rules, seat rules, **grace periods**"* |
+| Is its duration decided? | **No.** `Q-01` / `MM-GAP-001` is **OPEN**. Master PRD L673 *"Open — recommendation: configurable, default 24h"*. BC Map L540 scopes it to *"`BC-02`→`BC-04` event handler semantics"* |
+| Frozen `PRD-005` `MM-FR-111` | *"V1 **MUST NOT** implement a grace period that extends entitlement beyond `endDate`"* — and §7.4: *"A recommendation inside an open question is not a decision"* |
+| EA L1368 `Grace Periods (V2)` | Sits under **Entitlement Service** (`BC-21`, SaaS quota) — **a different concept**, not student membership |
+| Cross-library membership tier | `Multiple Library Memberships` **V2** (EA L911); `Cross Library Membership` **Future** (EA L735); `Membership History` **V2** (EA L734) |
+| Cross-tenant read edge for membership status | **None exists.** `E-13` (`BC-01`→`BC-10`, `ACL`) is *"**the only bridge between the two worlds**"* and carries *identity core fields*, not membership history |
+
+**Two binding identity rules make the cross-library read unlawful as currently registered:**
+
+- **`ID-2`** — *"`StudentRecordId` **never** leaves its tenant. It must not appear in any Global Student
+  context, event or index."* One human at three libraries has **three** `StudentRecordId`s.
+- **`ID-3`** — global contexts *"**must not be able to resolve which library a person attends** unless the
+  person explicitly published it."*
+
+The example indicator in the request includes *"Previous library"*. Under `ID-3` that field discloses
+**which library a person attends**, which is precisely what `ID-3` forbids absent explicit publication by
+the person. The request itself says *"[where disclosure is permitted]"* — measured answer: **no source
+currently permits it.** BC Map L510 also names a cross-tenant leak via a capability context *"the single
+highest-severity failure mode in the entire architecture."*
+
+#### 11.3.2 Ownership determination *(requirement 8)*
+
+| Concern | Correct owner | Basis |
+|---|---|---|
+| Global student identity (`PersonId`) | **`BC-10` Global Person Identity** | BC Map L114 — organisation-neutral, *"holds no `tenantId`, no `StudentRecordId`"* |
+| Library-specific membership | **`BC-02` Membership** *(`PRD-005`, **FROZEN**)* | BC Map L97 — *"the commercial right-to-use"* |
+| Library Member Directory | **`BC-01` Enrollment** *(read composition)* | Master PRD L155 |
+| Financial facts | **`BC-05`** — this PRD | BC Map L100 |
+| **Renewal-protection policy** (whether one exists, its length) | **`BC-06` Library Policy** | BC Map L101 owns grace periods as the rule **source** |
+| **Renewal-protection usage history** (that it was used, and the outcome) | **`BC-02` Membership** | It is a membership-lifecycle fact. `MM-FR-084` already records `renewedFromMembershipId` on the membership |
+| **Cross-library authorized read projection** | **⛔ UNOWNED — no context, no edge, no PRD** | `FEE-GAP-013`, routed to the **Architecture Owner** |
+
+**`BC-05` is not the owner of renewal-protection history.** It owns money owed by a student to *this*
+library. `FEE-XC-018` below makes that refusal explicit rather than leaving it implied.
+
+#### 11.3.3 What `BC-05` does specify — the financial no-carry-forward rule
+
+This is the one part of the request that is unambiguously financial, and it is supported by frozen Rank 3
+text, so it is specified here without a gap.
+
+`FEE-FR-059` — A new `FeeDue` raised for a membership at **any** library **MUST** be computed solely from
+the `priceSnapshot` carried on the originating `E-07` event for **that** membership. It **MUST NOT** be
+reduced, surcharged, prorated or otherwise adjusted by reference to a previous membership's
+renewal-protection usage, at this library or any other. *(Authority: frozen `MM-FR-088` — the renewal
+amount *"**MUST NOT** be copied from the source membership's snapshot"*; `MM-FR-084` — renewal creates a
+**new** membership with *"a fresh price snapshot"*; `MM-FR-081` — renewal from `Expired` is permitted
+*"without limit of elapsed time"*.)*
+
+`FEE-BR-026` — **No financial penalty may persist beyond the membership it arose on.** There is no
+carry-forward deduction, no residual debit and no reduced-duration charge derived from an earlier
+protection period. Requirement 5's *"old 3-day deduction MUST NOT carry forward"* is, on the financial
+side, satisfied by `FEE-FR-059` plus `FEE-INV-002` (a `FeeDue` amount equals the snapshot taken at
+creation, forever). **Membership *duration* is `BC-02`'s to guarantee, not `BC-05`'s** — see
+`FEE-XC-020`.
+
+`FEE-XC-018` — Owning, storing or being the system of record for renewal-protection usage history.
+*(Owner is `BC-02`; policy owner is `BC-06`.)*
+
+`FEE-XC-019` — Exposing, to any other library or tenant, **any** financial record of this tenant —
+transactions, payment details, receipts, discounts, outstanding balances, staff notes or reasons for
+leaving. This is `FEE-FR-058` and `FEE-XC-016` applied to the cross-library case, and it is
+**unconditional**: it holds even if a cross-library membership-status read is later authorised.
+*(Requirement 6.)*
+
+`FEE-XC-020` — Determining, shortening or extending a membership's duration. `BC-05` raises and settles
+obligations; entitlement length is `BC-02`'s (`MM-FR-084`) under `BC-06` policy. Requirement 5's *"future
+membership in another library receives its full configured duration"* is therefore **not a `BC-05`
+guarantee** and is recorded as such in `FEE-GAP-013`.
+
+`FEE-XC-021` — Computing, storing, consuming or publishing any risk score, fraud score, trust score,
+blacklist entry, watchlist, or cross-library punishment; and applying any label of *cheater*, *fraud*,
+*abuser* or *high risk* to a student. **Use of a renewal-protection period is legitimate product
+behaviour and is not evidence of misconduct.** No such system is created by this PRD, and `BC-05`
+**MUST NOT** consume one if another context later creates one. *(Requirements 3 and 7.)*
+
+> **Why `FEE-XC-021` is a prohibition and not a feature.** The request explicitly forbids a fraud system,
+> a risk score, a blacklist and cross-library punishment. Writing a prohibition costs nothing and is
+> enforceable in review; writing a *"fraud detection"* capability would invent an unsupported privacy and
+> fraud model. Note also that `BC-13` **Trust & Safety** exists in the architecture for abuse handling —
+> so even a legitimate future need would not land in `BC-05`.
+
+`FEE-BR-027` — Where a student **did** renew within a protection window, the financial record is an
+ordinary settled obligation and a receipt. It **MUST NOT** carry any adverse marker, flag or derived
+negative signal. *(Requirement 4.)*
+
+#### 11.3.4 What is blocked, and to whom it is routed
+
+| Requested behaviour | Disposition | Owner |
+|---|---|---|
+| A renewal-protection period exists at all, and its length | ⛔ **BLOCKED** — `Q-01`/`MM-GAP-001` open; `MM-FR-111` forbids V1 entitlement extension | **`BC-06`** policy + Product Owner |
+| Protection usage retained in membership history *(req 1)* | ⛔ **BLOCKED** — `BC-02` is FROZEN at v1.4 and contains no such field; `Membership History` is **V2** | **Architecture Owner** + `BC-02` owner |
+| Library B staff see a limited indicator *(req 2)* | ⛔ **BLOCKED** — no cross-tenant read edge; `Multiple Library Memberships` is **V2** | **Architecture Owner** |
+| *"Previous library"* named in the indicator | ⛔ **BLOCKED — additionally a privacy question** — `ID-3` forbids resolving which library a person attends absent explicit publication | **Security** + Privacy + `BC-10` owner |
+| Full configured duration at Library B *(req 5)* | ⛔ **not `BC-05`'s** — routed | **`BC-02`** owner |
+| Historical record auditable after expiry *(req 5, scenario G)* | **Partly specified** — `BC-05`'s own financial history is append-only (`FEE-INV-008`, `FEE-FR-051`); the *protection* record is `BC-02`'s | `BC-02` owner |
+| Minimum-disclosure principle *(req 6)* | **Specified as a prohibition** — `FEE-XC-019` | this PRD |
+| No labelling, no risk score, no blacklist *(req 3, 7)* | **Specified as a prohibition** — `FEE-XC-021` | this PRD |
+
+**No frozen document was modified.** `PRD-005` v1.4 (`BC-02`) and `PRD-004` v1.2 (`BC-01`) are FROZEN;
+adding a protection-history field to either requires an ADR by their owners, not an edit from here.
 
 ---
 
@@ -866,8 +981,7 @@ tension is recorded as part of **`FEE-GAP-012`** for the Architecture Owner. No 
 `BC-05` has **no declared offline write path**. The brief is explicit: *"Do NOT invent an offline
 financial write strategy."*
 
-`FEE-FR-059`*(not allocated — register closes at `FEE-FR-058`)*
-`FEE-BR-026`*(not allocated — register closes at `FEE-BR-024`)*
+*(`FEE-FR-059` and `FEE-BR-026` were placeholders in v0.1; both are allocated in v0.2 — see §11.3.)*
 
 Instead, two obligations that need **no** new architecture:
 
@@ -976,6 +1090,9 @@ No state table is written. Tier unresolved (`FEE-GAP-001`).
 | `FEE-BR-022` | No timer owns overdue status | 20 |
 | `FEE-BR-023` | No self-defined metric formula | 22 |
 | `FEE-BR-024` | "Revenue" must state which money it means | 22.1 |
+| `FEE-BR-025` | No notification event beyond the three `fee.*` facts | 26 |
+| `FEE-BR-026` | No financial penalty persists beyond its own membership | 11.3.3 |
+| `FEE-BR-027` | A renewal inside a protection window carries no adverse marker | 11.3.3 |
 
 ---
 
@@ -1019,6 +1136,16 @@ No state table is written. Tier unresolved (`FEE-GAP-001`).
 **Also excluded by Rank 4 Dependency Matrix L167** (`LIBRARY MANAGEMENT → INTEGRATION` = `✖`): direct
 integration access. And by `MM-XC-004`'s mirror: this module is the **only** ledger holder, so it must
 not tolerate a second ledger elsewhere either.
+
+**Renewal-protection exclusions** — added in v0.2, specified in §11.3.3:
+
+| ID | This module MUST NOT… |
+|---|---|
+| `FEE-XC-017` | Publish a fourth `fee.*` event *(allocated in v0.2; was reserved)* |
+| `FEE-XC-018` | Own or be the system of record for renewal-protection usage history *(owner: `BC-02`; policy: `BC-06`)* |
+| `FEE-XC-019` | Expose this tenant's financial records — transactions, payment details, receipts, discounts, balances, staff notes, reasons for leaving — to any other library or tenant |
+| `FEE-XC-020` | Determine, shorten or extend a membership's duration |
+| `FEE-XC-021` | Compute, store, consume or publish any risk score, fraud score, trust score, blacklist, watchlist or cross-library punishment; or label a student *cheater*, *fraud*, *abuser* or *high risk* |
 
 ---
 
@@ -1200,6 +1327,28 @@ supply; these six close the arithmetic honestly rather than by re-wording the cl
 | `FEE-AC-069` | A due date is computed only via the `E-06` `HolidayCalendar` port; no local calendar table exists |
 | `FEE-AC-070` | A manually created `FeeDue` records actor and reason and emits an audit fact |
 
+### 35.14 Renewal-protection history — financial side only (`FEE-AC-071`…`078`)
+
+*Maps the eight requested scenarios A–H. Each row states **which** of them `BC-05` can actually verify.
+Where a scenario is not `BC-05`'s, that is stated rather than covered by a criterion this module could not
+honestly execute. See §11.3 and `FEE-GAP-013`.*
+
+| ID | Scenario | Criterion | `BC-05`-testable? |
+|---|---|---|---|
+| `FEE-AC-071` | **A** — used protection, then renewed | The renewal produces an ordinary `FeeDue` and, once paid, an ordinary receipt, with **no** adverse marker, flag or derived negative field on any financial record | **Yes** |
+| `FEE-AC-072` | **B** — used protection, did not renew | `BC-05`'s financial history for the lapsed membership remains intact and append-only; **no** financial penalty record is created by the lapse | **Yes** — but the *protection* history record itself is `BC-02`'s (⛔) |
+| `FEE-AC-073` | **C** — joins another library a month later | The new `FeeDue` equals the `priceSnapshot` on that library's own `E-07` event, with **no** deduction, surcharge or proration referencing any earlier protection usage | **Yes** for the amount. **Membership *duration* is `BC-02`'s** (⛔ `FEE-XC-020`) |
+| `FEE-AC-074` | **D** — Library B sees only the authorized indicator | ⛔ **Cannot be verified here** — no cross-tenant read exists to test. `BC-05` exposes **nothing**; asserted negatively by `FEE-AC-076` | **No** — Architecture Owner |
+| `FEE-AC-075` | **E** — Library B cannot see Library A's financial details | A query executed in tenant B returns **no** transaction, payment, receipt, discount, balance or note belonging to tenant A, for **every** financial read path | **Yes** — this is the strongest guarantee in the section |
+| `FEE-AC-076` | **F** — never labelled | **No** field, enum, projection, event payload, report or API response produced by `BC-05` contains a risk score, fraud flag, blacklist membership, or the terms *cheater*, *fraud*, *abuser* or *high risk*; and none is derivable from protection usage | **Yes** |
+| `FEE-AC-077` | **G** — record auditable after the window expires | `BC-05`'s financial entries for the affected membership remain readable and unmodified after expiry; no purge path exists (`FEE-XC-011`) | **Yes** for financial entries; protection record is `BC-02`'s (⛔) |
+| `FEE-AC-078` | **H** — old protection event cannot affect a future membership | Given any prior protection usage, the amount of a later membership's `FeeDue` is **bit-identical** to the amount computed with no prior usage at all | **Yes** |
+
+> **`FEE-AC-074` is deliberately recorded as not-verifiable-here.** Writing a passing criterion for a
+> cross-library read that has no registered edge would be exactly the fabricated verification this document
+> refuses elsewhere. What `BC-05` *can* guarantee is the negative: it discloses nothing (`FEE-AC-075`,
+> `FEE-AC-076`).
+
 **Not covered by any criterion, deliberately:** refunds (⛔ `FEE-GAP-001`), webhook reconciliation
 (⛔ `FEE-GAP-002`), offline cash capture (⛔ `FEE-GAP-002`(b)), bank transfer (⛔ `FEE-GAP-003`),
 due-date arithmetic (⛔ `FEE-GAP-006`). **Writing criteria for undecided behaviour would be fabricating
@@ -1340,22 +1489,37 @@ verification.**
 | `FEE-PO-006` | `FEE-AC-036` |  |
 | `FEE-PO-007` | `FEE-AC-035` |  |
 | `FEE-PO-008` | `FEE-AC-065`, `FEE-AC-066` |  |
+| `FEE-FR-059` | `FEE-AC-073`, `FEE-AC-078` |  |
+| `FEE-BR-025` | `FEE-AC-062` | reserved-then-allocated: notification restraint |
+| `FEE-BR-026` | `FEE-AC-073`, `FEE-AC-078` |  |
+| `FEE-BR-027` | `FEE-AC-071` |  |
+| `FEE-XC-017` | `FEE-AC-062` | reserved-then-allocated: no fourth event |
+| `FEE-XC-018` | `FEE-AC-072`, `FEE-AC-077` |  |
+| `FEE-XC-019` | `FEE-AC-075` |  |
+| `FEE-XC-020` | `FEE-AC-073` |  |
+| `FEE-XC-021` | `FEE-AC-076` |  |
 
 **Measured coverage:**
 
 | Register | Allocated | Traced | Untraced (all ⛔ BLOCKED) |
 |---|---|---|---|
-| `FEE-FR-*` | 58 | 56 | `FEE-FR-028`, `FEE-FR-042` |
-| `FEE-BR-*` | 24 | 22 | `FEE-BR-007`, `FEE-BR-019` |
+| `FEE-FR-*` | 59 | 57 | `FEE-FR-028`, `FEE-FR-042` |
+| `FEE-BR-*` | 27 | 25 | `FEE-BR-007`, `FEE-BR-019` |
 | `FEE-INV-*` | 9 | 9 | — |
 | `FEE-EVT-*` | 3 | 3 | — *(`FEE-EVT-003` count-only)* |
-| `FEE-XC-*` | 16 | 16 | — |
+| `FEE-XC-*` | 21 | 21 | — |
 | `FEE-PO-*` | 8 | 8 | — |
-| **Total** | **118** | **114** | **4 = 96.6%** |
+| **Total** | **127** | **123** | **4 = 96.9%** |
 
 **This does not meet the 100% bar** that `PRD-006` cleared (285/285). The shortfall is **exactly** the four
 requirements whose behaviour is governed by an unresolved gap. Writing criteria for undecided behaviour
 would be fabricating verification, so the shortfall is reported, not closed.
+
+**Renewal-protection note.** `FEE-AC-074` (scenario D — *Library B sees the authorized indicator*) is
+recorded in §35.14 as **not verifiable in `BC-05`**, because no cross-tenant read edge exists to exercise.
+It is therefore **not** counted as coverage of any `BC-05` obligation — the obligations it would have
+covered are `FEE-XC-018`…`021`, which are instead verified by the *negative* criteria `FEE-AC-075` and
+`FEE-AC-076`. See `FEE-GAP-013`.
 
 ### 36.2 Upstream traceability
 
@@ -1384,7 +1548,8 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 ## 37. Governance Gap Ledger
 
-**12 gaps. 5 block Stage 4. 10 block Freeze.** None is resolved by assumption. *(These two counts were
+**13 gaps. 5 block Stage 4. 10 block Freeze** *(`FEE-GAP-013` blocks the requested cross-library feature,
+not this PRD — see its Freeze row)*. None is resolved by assumption. *(These two counts were
 stated inconsistently in the first draft — `6/6` here and `6/9` in §39. Both were wrong; the values below
 are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-review finding **J-3**.)*
 
@@ -1541,6 +1706,19 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Freeze** | **BLOCKS** — `PRD-006` could not freeze without gates at exit 0 |
 | **Recommended** | Registry update by the Governance Owner; write `prd008_traceability.py` before Stage 5; follow the `MM-GAP-010` precedent for `BC-26` — **do not list it as a publish target** until an edge exists |
 
+### `FEE-GAP-013` — Renewal-protection history and cross-library status disclosure
+| Field | Value |
+|---|---|
+| **Questions** | (a) Does a **renewal-protection period** exist as a product concept at all, and who owns its length? (b) Where is **protection-usage history** stored, given `BC-02` is FROZEN with no such field and `Membership History` is EA-**V2**? (c) By what **registered edge** may Library B read a membership-status signal owned by Library A's tenant? (d) May the indicator name the **previous library**, given `ID-3`? (e) Who guarantees requirement 5's *"full configured duration"* at Library B? |
+| **Conflict or absence** | **Absence, then conflict.** *Absence:* `grep -rniE "renewal.protect\|protection period\|protection window"` over `docs/` = **0 occurrences** — the concept is unsourced. *Conflict:* the nearest concept, **grace period**, is owned by `BC-06` (BC Map L101) but its decision `Q-01`/`MM-GAP-001` is **OPEN**, and frozen `PRD-005` `MM-FR-111` states V1 *"**MUST NOT** implement a grace period that extends entitlement beyond `endDate`"*. Separately, EA L1368 `Grace Periods (V2)` is a **different** concept (Entitlement Service, `BC-21`). For cross-library read: `ID-2` *"`StudentRecordId` **never** leaves its tenant"*; `ID-3` global contexts *"must not be able to resolve which library a person attends unless the person explicitly published it"*; `E-13` is *"the only bridge between the two worlds"* and carries identity core fields, not membership history; `Multiple Library Memberships` is EA-**V2** and `Cross Library Membership` **Future** |
+| **Impact** | Requirements 1, 2 and the *"Previous library"* field of the requested indicator are **not implementable in V1** as the architecture currently stands. Attempting them would require: inventing a policy concept (`BC-06`), amending a **FROZEN** PRD (`BC-02`), and creating an **unregistered cross-tenant read** — which BC Map L510 calls *"the single highest-severity failure mode in the entire architecture."* Requirement 5's duration guarantee lands on `BC-02`, not `BC-05` |
+| **Owner** | **Architecture Owner** (c, and the `BC-02` amendment route for b) · **Product Owner** (a, and the `BC-06` policy) · **Security + Privacy** (d) · **`BC-02` owner** (e) |
+| **Authority** | **REQUIRES ARCHITECTURE OWNER + REQUIRES PRODUCT OWNER + REQUIRES SECURITY** |
+| **Status** | **BLOCKED** |
+| **Stage 4** | Does not block **this** PRD — `BC-05`'s own obligations (`FEE-FR-059`, `FEE-BR-026`, `FEE-BR-027`, `FEE-XC-018`…`021`) are fully specified and testable without any of these answers |
+| **Freeze** | **BLOCKS** the requested *feature*, **not** this PRD — because `BC-05` correctly owns none of the blocked parts. Freezing `PRD-008` with the prohibitions in place is coherent; shipping the indicator is not |
+| **Recommended** | **Do not build the cross-library indicator in V1.** Route (a) to the Product Owner with `BC-06` as policy owner; route (b) to the `BC-02` owner as a **post-freeze ADR**, since `Membership History` is already V2; route (c) to the Architecture Owner to decide whether an authorised, `PersonId`-keyed, minimum-disclosure **status projection** is registered as a numbered edge — noting it must satisfy `ID-2` by carrying **no** `StudentRecordId`; route (d) to Security, with the recommendation that the *previous library name* be **omitted** unless the person explicitly published it per `ID-3`. Meanwhile the **prohibitions** in §11.3.3 stand and require no approval to honour |
+
 ---
 
 ## 38. Risks
@@ -1606,6 +1784,7 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.2** | *(this draft)* | **Cross-library renewal-protection history added — as prohibitions plus a blocker, not as a feature.** Measured first: `grep -rniE "renewal.protect|protection period|protection window"` over `docs/` returns **0 occurrences**, so the concept is **unsourced**. The nearest concept, *grace period*, is owned by **`BC-06`** (BC Map L101) with its decision `Q-01`/`MM-GAP-001` still **OPEN**, and frozen `PRD-005` `MM-FR-111` forbids a V1 grace period extending entitlement. EA L1368 `Grace Periods (V2)` is a **different** concept (Entitlement Service, `BC-21`). Cross-library read is barred by **`ID-2`** (`StudentRecordId` never leaves its tenant) and **`ID-3`** (global contexts must not resolve which library a person attends), with `Multiple Library Memberships` at **V2** and `Cross Library Membership` **Future**. Therefore: specified only what is lawfully `BC-05`'s — `FEE-FR-059` (new obligation priced solely from its own `E-07` `priceSnapshot`), `FEE-BR-026` (no penalty persists beyond its membership), `FEE-BR-027` (renewal inside a window carries no adverse marker), and `FEE-XC-018`…`021` (no ownership of protection history, no cross-tenant financial disclosure, no duration authority, **no risk score / fraud label / blacklist / cross-library punishment**). Added `FEE-AC-071`…`078` for scenarios A–H, with **`FEE-AC-074` explicitly recorded as not verifiable in `BC-05`** rather than given a criterion this module could not execute. Added **`FEE-GAP-013`** routing the blocked parts to the Architecture Owner, Product Owner, Security and the `BC-02` owner. Also allocated the four v0.1 reserved placeholders (`FEE-FR-059`, `FEE-BR-025`/`026`, `FEE-XC-017`). Registers now 59 FR / 27 BR / 9 INV / 3 EVT / 21 XC / 8 PO / 78 AC / 13 GAP = **218 identifiers**, 127 obligation-bearing, traceability **123/127 = 96.9%**. **No frozen document was modified**; `PRD-005` and `PRD-004` remain FROZEN and any protection-history field there requires an ADR by their owners. **No fraud system, risk score, blacklist or cross-library punishment was created.** |
 | **v0.1** | *(this draft)* | **First draft. Stage 2 only.** Created from Rank 1–6 sources: Master PRD v1.7, `ADR-0015` (**Accepted**), BC Map v1.7, Module Dependency Matrix v1.3, frozen `PRD-004` v1.2 / `PRD-005` v1.4 / Library PRD v1.1, `PRD_REGISTRY.md`, `PRD_OWNERSHIP_MODEL.md`, `PRD_LIFECYCLE.md`, `PRD_DEPENDENCY_GRAPH.md`, `PRODUCT_IMPLEMENTATION_ROADMAP.md`, `PRD_GAP_ANALYSIS.md`, Enterprise Architecture v2.1 (Rank 6, descriptive). Registers `FEE-*` opened after a measured collision check (0 pre-existing occurrences): 58 FR, 24 BR, 9 INV, 3 EVT, 16 XC, 8 PO, 70 AC, 12 GAP = **200 identifiers**, 118 obligation-bearing. During the mandatory adversarial self-review two defects in this draft were found and corrected before issue: (a) §36.1 claimed *"113 = 95.8%"* traceability while the §35 criteria carried no requirement back-links — replaced with a measured per-identifier matrix showing **114/118 = 96.6%**; (b) `FEE-EVT-001`/`002`/`003` were declared in §0.2 but never defined normatively — now defined in §26. Six criteria (`FEE-AC-065`…`070`) were added to close coverage that the earlier percentage had merely asserted. **No `FEE-CFG-*` register opened** — no source approves any range. **No requirement, event, edge, endpoint, table, schema, vendor contract or configuration range was invented.** **12 governance gaps recorded; 5 block Stage 4, 10 block Freeze** (measured from the ledger rows; the first draft stated these inconsistently). `PRD_REGISTRY.md`'s `PLANNED` row for `PRD-008` is **unchanged** by this document. No other PRD, ADR, ranked document or source file was modified. |
 
 ---

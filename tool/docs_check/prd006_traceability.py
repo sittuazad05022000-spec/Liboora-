@@ -494,6 +494,15 @@ def main():
         "ADR-0029-student-shift-visibility-for-attendance.md",
         "ADR-0030-device-account-resolution-for-attendance.md",
         "ADR-0031-attendance-presence-tolerance-configuration.md",
+        # ADR-0032 frames how BC-03's presence state reaches BC-04's seat card.
+        # It cannot state the blocker without naming the four obligations that
+        # close the event surface (ATT-FR-134, ATT-AC-117, ATT-NFR-010 and the
+        # ATT-EVT-* register) nor the two that forbid the shortcuts
+        # (ATT-BR-045, ATT-FR-140).  Listed by NAME, not by directory glob,
+        # on the DOCUMENTATION_BASELINE.md L298 precedent -- a citation is not
+        # a collision.  Added AFTER the gate reported the failure, in the same
+        # session that created the file: cause and fix disclosed together.
+        "ADR-0032-attendance-presence-visibility-to-seating.md",
     )
 
     def outside(hits):

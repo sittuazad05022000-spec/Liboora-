@@ -373,7 +373,7 @@ freeze pass."*
 
 **None of `R-1`…`R-10` is answered by this record, and none is answered by a Product Owner decision.**
 
-### 5.2 `R-11`…`R-20` — later decisions, and the three that have since closed
+### 5.2 `R-11`…`R-21` — later decisions, and the three that have since closed
 
 Opened by subsequent architecture reviews of the same capability. **Status is stated per row, and three rows have
 closed — two of them a blocker this work itself raised and then retired on evidence, and one because the authority
@@ -391,6 +391,7 @@ that created the constraint chose to lift it.**
 | **`R-18`** | Silent push as a wake source | Architecture Owner | 🔴 Open — and **not needed** by the derived-state model |
 | **`R-19`** | **Amendment of §2F's `ATT-CFG` and `ATT-AC` counts, so `D-18`'s tolerance can be registered** | Architecture Owner | 🔴 **Open, and now the single most consequential open row.** **A second dependent of `R-8`**; §3.6. Framed by **`ADR-0031`** (new, `Proposed`), which names the **five documents an accepting decision must amend, two of them Rank 4**. **While it is open, NO acceptance criterion verifies the 30-minute tolerance** — the value is stated as a product rule and is unregistered, so Stage 5 traces nothing to it. That is a real gap, not a formality |
 | **`R-20`** | **Is an eighth stored status value authorised for presence without a booking?** | **Product Owner** | 🟢 **RESOLVED by `D-20` — and the answer was TWO, not one.** `NO BOOKED SHIFT / PRESENCE UNASSIGNED` **and** `SHIFT OVERSTAY / PRESENCE OUTSIDE BOOKED WINDOW`, both **stored** values. **This row closed because the authority that set the seven-string closure lifted it, not because the analysis changed.** Measured consequence: the two strings needed **no** Rank 4 amendment (§1.0b) — **the opposite of `R-19`**. **The vocabulary is settled; the data path is not** — see §1.0c |
+| **`R-21`** | **How does authoritative student presence reach the Seat Card at six-state fidelity?** | Architecture Owner + Seat Management product owner | 🔴 **Open — newly raised, and the blocker is measured not predicted.** `SEAT-FR-103`'s occupancy field is **binary**; `E-08` carries only two check transitions, so grace / outside-window / overstay / no-booking have **no carrier**. A fifth event failed the gate **five** ways. Framed by **`ADR-0032`** (new, `Proposed`) with **four** options, **none selected**; `ATT-GAP-002b`. **Half the requirement needed nothing** — frozen `SEAT-FR-041`/`103`/`104`/`105`/`106` already guarantee the allocation-vs-presence separation |
 
 **Three rows are now green, and each closed for a different reason — the reasons are not interchangeable.** `R-11`
 closed against a **frozen Rank 3 requirement** (`SEAT-FR-116`); `R-13` closed by a **Product Owner decision** on
@@ -398,7 +399,7 @@ behaviour (`D-17`); `R-20` closed because the **Product Owner lifted a constrain
 (`D-20`). Only the first is evidence about the system; the other two are exercises of authority, and recording them
 as though they were the same kind of fact would overstate how much has been *discovered*.
 
-**Seven rows remain open, and not one is answered here.** `R-19` is the load-bearing one: it is the only open row
+**Eight rows remain open, and not one is answered here.** `R-19` is the load-bearing one: it is the only open row
 that currently prevents an approved numeric value from being verifiable. `R-15` has been **narrowed** by `D-21`
 without being closed — narrowing is progress, and it is not resolution.
 
@@ -408,6 +409,27 @@ without being closed — narrowing is progress, and it is not resolution.
 > theirs to lift, and they lifted it. `R-19`'s constraint is a **Rank 4 register** and is genuinely not theirs. **The
 > two blockers looked symmetrical and were not**, and the asymmetry was established by probing each one separately
 > rather than by reasoning from the first to the second.
+
+> **FINDING H — three similar-looking additions, three different verdicts, and the third was not inferred.**
+> Across this engagement three things were added to `PRD-006` that all *looked* like the same governance question:
+> a **configuration row** (v1.6), two **status strings** (v1.7) and an **event** (v1.8). The results were not the same
+> and were not predictable from one another:
+>
+> | Addition | Probe result | Rank 4 amendment needed? |
+> |---|---|---|
+> | A 25th `ATT-CFG` row | **FAIL — 5 problems**, incl. an `ATT-NFR-010` coverage failure | **YES — two** (`ATT-CFG` and `ATT-AC`) → `R-19` |
+> | Two status strings | **PASS, exit 0**; `grep` over the matrix = **0** | **NO** — status strings are not registered identifiers |
+> | A 5th `ATT-EVT` event | **FAIL — 5 problems**, a *different* five | **YES — two** (`ATT-EVT` count and an `ATT-AC`) → `R-21` |
+>
+> **Each was probed separately.** Had the status-string PASS been generalised, the event would have been reported as
+> free and the seat-card requirement wrongly declared implementable. Had the configuration FAIL been generalised, the
+> two statuses would have been wrongly reported as Rank-4-blocked and `D-20` would have looked unimplementable when it
+> was not. **Both generalisations were available and both would have produced a confidently wrong report.**
+>
+> **The distinguishing rule, stated now that three data points exist:** the §2F cross-check binds **registered
+> identifiers**, and a *suffixed successor* (`ATT-GAP-002a`, `ATT-GAP-002b`) costs no register slot while a *new
+> number in any register* costs an amendment. **Status strings are not identifiers at all.** That rule was derived
+> from the measurements, not assumed before them.
 
 ### 5.1 D7 was not answered
 

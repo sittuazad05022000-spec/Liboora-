@@ -4,8 +4,8 @@
 |---|---|
 | **Raised by** | Freeze-readiness verification for `PRD-006` v1.9, **after** Stage 4 returned **A** |
 | **Severity** | 🟠 **MEDIUM — documentation-level conflict between two Rank 4 documents.** No code check fails and no runtime behaviour is implicated. **It is not CRITICAL, and it is not nothing** |
-| **Effect on freeze** | ⛔ **`PRD-006` is NOT freeze-ready, and this finding is one of the reasons.** §5 lists the others, which are larger |
-| **Status** | 🔴 **OPEN — deferred with a reason and an owner** (Architecture Owner). **Deliberately NOT fixed by me**, for the reason in §4 |
+| **Effect on freeze** | ✅ **RESOLVED — this finding no longer blocks the freeze, and it was resolved by *withdrawing* the edge, not by permitting it.** `PRD-006` v1.9 is **`FROZEN`** at Rank 3 under `BASELINE-2026-08-05-A`. *This row read ⛔ "`PRD-006` is NOT freeze-ready, and this finding is one of the reasons"*, which was true when written; see §7 |
+| **Status** | ✅ **CLOSED 2026-08-05 by [`ADR-0033`](../../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md), option `O-C` — `E-27` is WITHDRAWN.** *This row read 🔴 "OPEN — deferred with a reason and an owner (Architecture Owner). **Deliberately NOT fixed by me**"*, and that was the correct posture at the time: the owner named in that row is exactly the authority that later decided it. **§4 — "Why I did not fix it" — is preserved unaltered**, because the reasoning it records was sound and is the reason this ended in a ruling rather than in a quiet edit |
 | **Date** | 2026-08-05 |
 
 > **Why this document exists at all.** Stage 4 passed, and the instruction was to complete freeze readiness *only*
@@ -94,12 +94,33 @@ that are governance, not timidity:
 | Field | Value |
 |---|---|
 | **Conflict** | `E-27` is an intra-Core-Library-cluster edge outside the Rank 4 allow-list `E-01`…`E-10` |
-| **Reason for deferral** | Resolving it requires a **Rank 4 amendment to `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` (v1.3) and `tool/module_dependencies.yaml`**, which needs an **ADR naming that document first**. `ADR-0032` does not name it. The remedy also has **two defensible shapes** (extend the list, or renumber into the reserved band) and choosing between them is an owner's call |
+| **Reason for deferral** *(as recorded on 2026-08-05, preserved)* | Resolving it requires a **Rank 4 amendment to `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` (v1.3) and `tool/module_dependencies.yaml`**, which needs an **ADR naming that document first**. `ADR-0032` does not name it. The remedy also has **two defensible shapes** (extend the list, or renumber into the reserved band) and choosing between them is an owner's call |
 | **Owner** | **Architecture Owner** |
 | **Blocks** | **Nothing at runtime and no gate.** It blocks **clean freeze readiness** for `PRD-006`, because a freeze row should not be conferred while two Rank 4 documents contradict each other about an edge the PRD depends on |
 | **Suggested route** | A new ADR — *"the Core Library cluster's internal edge allow-list admits the presence read projection"* — amending the Matrix header, L89, L202 and the manifest, in baseline §7 order |
 
 **This satisfies the Stage 4 gate's own standard** — *"conflicts closed **or explicitly deferred with a reason and
+
+---
+
+## 7. Resolution — `ADR-0033`, option `O-C`: the edge was withdrawn, not admitted
+
+| Field | Value |
+|---|---|
+| **Resolved** | **2026-08-05**, by [`ADR-0033`](../../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md), **`Accepted`** under **Architecture Owner** authority **conferred directly by the human principal** — recorded as a conferral, **not** as an ARB meeting, with no quorum, attendee list or Security review asserted |
+| **Option selected** | **`O-C` — withdraw `E-27`.** `LIBOORA_BOUNDED_CONTEXT_MAP.md` → **v1.7**, removing the `E-27` row and its explanatory note. The edge set is once more `E-01`…`E-26` |
+| **Option rejected** | **`O-A` — add `E-27` to the allow-list.** Rejected **in writing** in `ADR-0033` §5, because its only effect would have been to make a documentation contradiction disappear. That is the precise failure mode §4 of this document warned about |
+| **The Dependency Matrix was NOT amended** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` stands **byte-unchanged** at `sha256… 9895d244494372af`. **This is the decisive point, and it inverts §5's own "Suggested route":** §5 assumed the fix required a Rank 4 amendment to the Matrix, L89, L202 and the manifest. It did not. **Withdrawing the edge restored compliance with the law that already existed**, so no Rank 4 law needed changing at all — the cheapest correct fix was the one that touched the *newer* document, not the older one |
+| **Why the edge was never needed** | Frozen **Rank 3** `SEAT-FR-104` already requires the Seat Card to compose holder data **at read time from `BC-01`** — and **no `BC-01` → `BC-04` edge has ever existed** in the BC Map. Read-time composition across a context boundary is therefore an **already-ratified pattern that needs no numbered edge**, corroborated by `PRD-007` §3's three further no-edge consumptions. `E-27` documented a transport that governance had already blessed without one |
+| **Mechanically verified** | BC Map edge rows measured at **26**, *identical to the pre-`ADR-0032` count*; the neighbouring `E-08` row **byte-identical** (`md5 34dc906540c90ed447003348e52f5f39`) to prove the deletion did not disturb its surroundings |
+| **`ADR-0032` was NOT demoted** | Its status is unchanged at **`Accepted`** and was never altered at any point. Its substantive decision `O-5` — presence reaches the Seat Card as a **read-time projection** — **stands**; only its *transport* was withdrawn, and its ⚠ CHALLENGED notices became ✅ RESOLVED |
+| **What is still open** | **`ATT-GAP-002a` and `SEAT-GAP-009` remain OPEN**, both with the Architecture Owner. §5's rows above correctly noted that each runs in the **opposite direction** to `E-27`, so **withdrawing `E-27` neither closes nor worsens them.** A freeze supplies documents; it answers no questions |
+
+> **§1–§6 above are preserved exactly as written on 2026-08-05, including the "Suggested route" that this resolution did not take.**
+> That is deliberate. The record is more useful showing a correct diagnosis paired with an *incorrect* proposed remedy than it would be
+> silently rewritten to look prescient — and the gap between them is the finding worth keeping: **§4 was right that the conflict must
+> not be fixed by whoever noticed it, and §5 was wrong about what the fix would cost.** Asking the owner is what surfaced the cheaper,
+> more conservative option that a self-authorised fix would never have found.
 an owner**"* — which is why Stage 4's **A** stands. **Stage 4 was never the gate this finding threatens; Stage 7 is.**
 
 ---
@@ -108,4 +129,5 @@ an owner**"* — which is why Stage 4's **A** stands. **Stage 4 was never the ga
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-05 | **RESOLVED by `ADR-0033`, option `O-C` — `E-27` WITHDRAWN.** Header *Status* and *Effect on freeze* rows updated, both quoting what they previously said; **§7 added** with the full resolution. **§1–§6 are unaltered**, including §4 *"Why I did not fix it"* and §5's *"Suggested route"*, which proposed amending the Dependency Matrix — **a route the resolution did not take, because the Matrix needed no amendment at all.** Preserved rather than corrected, because a diagnosis that was right paired with a remedy that was wrong is the most informative part of this record. |
 | **v1.0** | 2026-08-05 | Created during freeze-readiness verification for `PRD-006` v1.9. Records that **`E-27`, added by `Accepted` `ADR-0032`, sits outside the Rank 4 Core Library cluster allow-list `E-01`…`E-10`** — and that **`E-27` is the only edge above `E-10` with both endpoints inside that cluster**, so no precedent covers it. Severity assessed **MEDIUM and no higher**: measured that the edge IDs are **not** mechanically enforced (`check_module_boundaries.dart` collects context names only), that the collected set is **unchanged**, and that gate 3's **9** failures are the pre-existing `ADR-0012` ones. **Deliberately left unfixed**, because `ADR-0032` does not name the Dependency Matrix in its `Amends` row and a Rank 4 change requires an ADR **before** it. Deferred to the **Architecture Owner** with a reason, which is what the Stage 4 gate requires — so **Stage 4's A stands** while **freeze readiness does not**. |

@@ -2003,19 +2003,19 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Freeze** | **BLOCKS the commission *feature*, not this PRD.** Freezing `PRD-008` would not make the feature buildable; only `PRD-022` can |
 | **Recommended** | **1.** Open `PRD-022` (SaaS Billing, `BC-20`) and specify commission, settlement, net-off and payout there, with the 3% default recorded as the Product Owner's decision. **2.** Route the `BC-05` → `BC-20` transaction-fact path through an ADR **before** either PRD depends on it; do not assume a direct edge, since `E-25` shows `BC-20` reaching external rails through `BC-31`. **3.** Keep gateway charges on `BC-20`'s side of that boundary. **4.** Do NOT add a commission field to any `BC-05` aggregate in the interim |
 
-### `FEE-GAP-015` — `Platform Owner / Super Admin` is not a registered role, and the platform-role register is closed
+### `FEE-GAP-015` — Platform-configuration authority: `PR-1` exists; the permission and the register do not
 
 | Field | Value |
 |---|---|
-| **Question** | Under which authority does the **Platform Owner / Super Admin** role exist, who may create and revoke **Platform Admin** accounts, and which registered role may change a **platform-level** configuration value such as the commission rate or the renewal-protection window? |
-| **Conflict or absence** | **Conflict with an authoritative document.** `PRD-001` Authentication v2 (**PRODUCTION-READY — AUTHORITATIVE**), `prd-v2/07` L79: *"Platform roles. **Two, closed:** `PR-1` Platform Administrator and `PR-2` Platform Support."* Measured: `grep -rniE 'Platform Owner|Super Admin' docs/30-product/authentication/` → **0 hits**. A third platform role therefore contradicts a closed register. `AUTH-7.10` (*"no role inheritance"*) means such a role would inherit nothing and must be enumerated; `AUTH-7.13` and `XC-7.13` bar any platform role from tenant business data without elevation |
-| **Impact** | The decision's §3 (*"Platform Owner creates Platform Admin accounts … can revoke access"*), §5 and §10 (*"Platform Owner / authorized Platform Admin can change"*) all rest on an unregistered role. **No `BC-05` requirement depends on it** — `FEE-XC-014` forbids this module from creating a role or inferring permission from dashboard visibility, and BC Map L127 places roles, permissions and policy decisions in `BC-18` — so this PRD is unaffected; but the configuration-authority questions in `FEE-GAP-007` and `FEE-GAP-013`(a2) cannot close until the role exists |
-| **Owner** | **`PRD-001` owner** (the platform-role register) · **`BC-18` owner** (permission enumeration, provisioning path, revocation) · **`BC-25` owner / `PRD-023`** (where a platform-level configuration value lives) |
-| **Authority** | **REQUIRES THE `PRD-001` OWNER.** Opening a closed register in an authoritative document requires an ADR by that owner. **No ADR is authored here, and `PRD-001` is not modified** |
-| **Status** | **OPEN** |
-| **Stage 4** | Does not block — no `FEE-*` identifier references the role |
-| **Freeze** | **Does not block this PRD**; blocks any platform-level configurable, including the two the decision names |
-| **Recommended** | **1.** Decide whether Platform Owner is a **third platform role** (amend *"Two, closed"* by ADR) or an **enumerated permission set held by a `PR-1` account** (no register change — the cheaper option, and consistent with `AUTH-7.10`'s rejection of inheritance). **2.** Specify provisioning as server-side only, never public signup, with `BC-24` audit capturing actor, role, timestamp and before/after value. **3.** Only then place the commission rate and the renewal-protection window in the configuration register the `BC-25` owner nominates |
+| **Question** | Which registered role may change a **platform-level** configuration value — such as the commission rate or the renewal-protection window — and by which **named permission**, in which **register**? |
+| **Conflict or absence** | **Absence, not conflict — and the role half is now CLOSED.** **(a) ✅ CLOSED — the role exists.** `PRD-001` Authentication v2 (**PRODUCTION-READY — AUTHORITATIVE**, Rank 3), `prd-v2/02` **L123-127** defines **`PR-1` Platform Administrator** with Purpose *"Operate and secure the platform: provision and suspend tenants, **manage platform configuration**, administer platform-level security"* and Scope *"Platform-wide, for **platform-level objects only** — tenants as entities, **platform configuration**, platform role assignments"*. **Changing a platform-level configuration value is therefore already inside `PR-1`'s defined scope; no new role is required and none is proposed.** `AUTH-2.6` (assignment only by another Platform Administrator), `AUTH-7.49` (invite-only, *"no self-service path may exist"*) and `AUTH-2.7` (every assignment emits an event) supply the provisioning and audit path the product intent asks for. **(b) ⛔ OPEN — the permission is not enumerated.** `AUTH-7.22` *"The permission catalogue **MUST** be closed. A permission not declared in it cannot be granted, requested or evaluated"*, `AUTH-7.67` and `AP-3` (*"absence of an explicit grant is refusal"*). Measured: chapter 7 declares the catalogue closed and gives **categories** (`Platform` — *"Provisioning a tenant; platform configuration"*) and **scope classes**, but **enumerates no permission identifier anywhere in `docs/`**. So the *capability* is in scope for `PR-1` while the *named grant* that `AUTH-7.4`/`AUTH-7.32` require does not yet exist. **(c) ⛔ OPEN — no register holds the value.** The authoritative configuration registry is `CONFIGURATION_GUIDE.md` v1.1 (Rank 7), governing exactly `CFG-1`…`CFG-12` (Authentication), `LCFG-1`…`LCFG-13` (Library) and `ICFG-1`…`ICFG-10` (Invitation) — **35 parameters, none a commission rate, none a protection window, none platform-scoped-commercial**; measured `grep -ni 'commission\|percent\|renewal'` over that guide → **0 parameter rows**. Its §5 is decisive: *"Adding a parameter — **A PRD amendment**; the specification declares what is configurable, this guide does not"*, and it *"cannot change the envelope"*. **(d) ⚠ CONSTRAINT — `AUTH-7.64`**: *"No role **MAY** grant the ability to modify the policy that constrains it"*, so the grant must be enumerated as configuration authority, not as policy authority |
+| **Impact** | **Reduced from the v0.4 statement, which was wrong on the role.** The product intent — *"`PR-1` / authorized platform authority CAN change it; Owner, Manager, Reception and Student CANNOT"* — is **already expressible** in the existing role model: `PR-1` holds platform configuration in scope, and `AUTH-7.13` plus `AUTH-7.61` already bar every **tenant** role (`TR-1` Owner, `TR-2` Manager, `TR-3` Reception, `TR-4` Student, `TR-5` Parent) from platform-level objects, so the four prohibitions need **no new rule at all** — they are consequences of `AUTH-7.14` scoping a library role to exactly one library. What is missing is narrower than v0.4 claimed: a **named permission** in the closed catalogue and a **parameter row** in a register. **No `BC-05` requirement depends on either** — `FEE-XC-014` forbids this module from creating a role or inferring permission from dashboard visibility, `FEE-FR-053` requires every financial write to be authorised against acting role and tenant scope, and BC Map L127 places roles, permissions and policy decisions in `BC-18` — so this PRD is unaffected; but the configuration-authority questions in `FEE-GAP-007` and `FEE-GAP-013`(a2) still cannot close until (b) and (c) are answered |
+| **Owner** | **(b) `BC-18` owner / `PRD-001` owner** — enumerating a permission in the closed catalogue · **(c) `BC-25` owner / `PRD-023`** *(`PRD_REGISTRY.md` L327, L424 — `PLANNED`, unwritten)* **+ the owner of the PRD that declares the parameter**, since `CONFIGURATION_GUIDE.md` §5 requires *a PRD amendment* to add one · **Product Owner** for the 3% and 3-day values themselves |
+| **Authority** | **(a) NONE REQUIRED — resolved by measurement against the existing model.** **(b) REQUIRES THE `BC-18` / `PRD-001` OWNER** — adding to a catalogue an authoritative Rank 3 document declares closed is an amendment to that document. **(c) REQUIRES A PRD AMENDMENT** per `CONFIGURATION_GUIDE.md` §5, plus an ADR if any range is to be stated. **No ADR is authored here; `PRD-001` and `CONFIGURATION_GUIDE.md` are not modified; no permission identifier, parameter identifier, minimum, maximum or range is invented** |
+| **Status** | **PARTLY RESOLVED — (a) CLOSED by measurement; (b), (c) OPEN; (d) is a standing constraint** |
+| **Stage 4** | Does not block — no `FEE-*` identifier references a platform role or a platform configurable |
+| **Freeze** | **Does not block this PRD**; blocks any platform-level configurable, including the commission rate and the renewal-protection window |
+| **Recommended** | **1. Do NOT create a third platform role.** *"Two, closed"* stands; `PR-1`'s own Purpose and Scope already cover platform configuration, and `AUTH-7.10` means a new role would inherit nothing and have to be enumerated anyway — strictly more work for no capability. Any *"Platform Owner / Founder"* concept should be modelled as **governance authority over `PR-1` assignment** (which `AUTH-2.6` already vests in another Platform Administrator), not as an authentication role. **2.** Enumerate one **named permission** in the closed catalogue at **Platform** scope — e.g. update of a platform configuration value — granted to `PR-1` and to no tenant role, honouring `AUTH-7.24` (actions granted independently) and `AUTH-7.64`. **3.** Add the two parameters by **PRD amendment** to whichever PRD declares them (`PRD-023` for `BC-25`, or the owning module PRD), each with a default and a range, then record the values in `CONFIGURATION_GUIDE.md`. **The product intent — default 3% and default 3 days — is preserved here as intent, not enacted as configuration**; `PRD-006`'s `ADR-0031` precedent applies, where *"a twenty-fifth configuration row was refused rather than invented"*. **4.** Audit is already required — `AUTH-7.71` (*every policy change emits an event*) and `AUTH-7.40` (*auditable, attributable, reversible*) — so item M of the product intent needs no new rule |
 
 ---
 
@@ -2191,33 +2191,59 @@ collision discipline this PRD enforces elsewhere. This is the index:
 > FINANCIAL WRITE in V1"* and its instruction not to mix offline attendance with offline finance are
 > therefore both honoured by architecture, not merely by intent.
 
-### 42.5 `Platform Owner` is not a registered role — and the register is closed
+### 42.5 Platform-configuration authority — `PR-1` is the registered role, and it already covers this
 
-The decision names six roles and makes **Platform Owner / Super Admin** the highest authority, able to
-create and revoke Platform Admin accounts. Measured against `PRD-001` Authentication v2
-(**PRODUCTION-READY — AUTHORITATIVE**), `prd-v2/07` **L79**:
+> **Correction to v0.4.** The v0.4 text of this subsection was headed *"`Platform Owner` is not a registered
+> role"* and framed the whole question as a conflict with a closed register. **That framing was wrong in its
+> emphasis and is withdrawn.** The operative question was never *"does a Platform Owner exist?"* but *"which
+> **registered** role may change a platform configuration value?"* — and that question has an answer in an
+> authoritative document, which v0.4 did not measure. The corrected finding is below; the changelog records the
+> retraction rather than hiding it.
 
-> *"Platform roles. **Two, closed:** `PR-1` Platform Administrator and `PR-2` Platform Support."*
+Measured against `PRD-001` Authentication v2 (**PRODUCTION-READY — AUTHORITATIVE**, Rank 3), `prd-v2/02`
+**L123-127**, the `PR-1` Platform Administrator definition:
 
-| Decision role | Registered? | Finding |
-|---|---|---|
-| Student · Reception · Manager · Library Owner | ✅ | Library roles, `AUTH-7.14` — scoped to exactly one library |
-| **Platform Admin** | ✅ `PR-1` | Exists. Assigned by another Platform Administrator (`prd-v2/07` L251) |
-| **Platform Owner / Super Admin** | ❌ **NOT REGISTERED** | `grep -rniE 'Platform Owner|Super Admin' docs/30-product/authentication/` → **0 hits.** Adding a third platform role contradicts *"Two, closed"* |
+> | **Purpose** | Operate and secure the platform: provision and suspend tenants, **manage platform
+> configuration**, administer platform-level security |
+> | **Scope** | Platform-wide, for **platform-level objects only** — tenants as entities, **platform
+> configuration**, platform role assignments |
 
-Two further rules constrain it, and both survive this PRD unchanged:
+**Managing platform configuration is inside `PR-1`'s defined purpose and its defined scope.** No new role is
+needed, none is proposed, and *"Two, closed"* (`prd-v2/07` L79) stands untouched.
 
-* `AUTH-7.13` — *"Platform roles **MUST NOT** grant any permission over tenant business data."*
-* `AUTH-7.10` (`AP-7`) — *"**No role inheritance.**"* So a Platform Owner would not inherit Platform
-  Admin's permissions, nor Library Owner's; each must be enumerated.
-* `XC-7.13` — a Platform Administrator reading tenant data without elevation is **refused**:
-  *"Platform authority does not extend to tenant contents."*
+| Product-intent actor | Registered as | May change a platform configuration value? | Authority |
+|---|---|---|---|
+| Platform Administrator | ✅ **`PR-1`** | **Yes — already in scope** | `prd-v2/02` L123-127 |
+| Platform Support | ✅ **`PR-2`** | No — read-only metadata, no standing tenant access | `prd-v2/02` L131-135 |
+| Library Owner | ✅ `TR-1` | **No** | `AUTH-7.14` — scoped to exactly one library |
+| Library Manager | ✅ `TR-2` | **No** | `AUTH-7.14`; *"cannot alter library-level commercial configuration"* |
+| Reception | ✅ `TR-3` | **No** | `AUTH-7.14`; financial visibility **None** (`prd-v2/02` §2.4.1) |
+| Student | ✅ `TR-4` | **No** | `AUTH-7.14`; own records only |
+| Parent | ✅ `TR-5` | **No** | `AUTH-7.14`; read-only, linked students only |
 
-**Consequence for this PRD.** The decision's §5 *"Platform Owner / authorized Platform Admin can
-change the commission percentage"* and §10 *"Platform Owner / authorized Platform Admin can change the
-renewal-protection period"* both name an **unregistered** role, and both concern configuration
-`BC-05` does not own. Neither is specified here. Both are routed by **`FEE-GAP-015`** to the
-`PRD-001` owner, who alone may open the closed platform-role register.
+**The four prohibitions the product intent asks for require no new rule.** `AUTH-7.13` and `AUTH-7.61` bar
+platform authority from tenant data and, symmetrically, `AUTH-7.14` scopes every library role to one library —
+a tenant role therefore cannot reach a platform-level object at all. *"Owner / Manager / Reception / Student
+MUST NOT change it"* is already a consequence of the frozen model.
+
+**What is genuinely missing is narrower, and it is two things, not a role.**
+
+| # | Missing | Source that makes it missing | Owner |
+|---|---|---|---|
+| **(b)** | A **named permission** in the closed catalogue | `AUTH-7.22` *"a permission not declared in it cannot be granted, requested or evaluated"*; `AP-3` deny-by-default. Chapter 7 gives categories and scopes but **enumerates no permission identifier** | `BC-18` / `PRD-001` owner |
+| **(c)** | A **parameter row** for the rate and the window | `CONFIGURATION_GUIDE.md` v1.1 governs 35 parameters (`CFG-1`…`CFG-12`, `LCFG-1`…`LCFG-13`, `ICFG-1`…`ICFG-10`); **none is a commission rate or a protection window**, and §5 requires *"a PRD amendment"* to add one | `BC-25` / `PRD-023` owner + the declaring PRD's owner |
+
+One further rule constrains any eventual grant, and is recorded so it is not discovered late:
+
+* `AUTH-7.64` — *"No role **MAY** grant the ability to modify the policy that constrains it."* The grant must
+  be enumerated as **configuration** authority, never as authority over the permission model itself.
+
+**Consequence for this PRD: none, and that is the point.** Both values sit outside `BC-05`. `FEE-XC-014`
+forbids this module from creating a role or inferring permission from dashboard visibility, and `FEE-FR-053`
+requires every financial write to be authorised against the acting role **and** tenant scope — so the product
+intent's *"never trust the client for role, permissions, commission configuration; UI hiding alone is NOT
+security"* is satisfied for this module by an existing exclusion rather than a new requirement. `FEE-GAP-015`
+carries (b) and (c) to their owners with the role question **closed**.
 
 `BC-05`'s own position is already correct and is re-affirmed, not changed: `FEE-XC-014` forbids this module from creating a role or
 inferring permission from dashboard visibility, and `FEE-FR-053` requires every financial write to be

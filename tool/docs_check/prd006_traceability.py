@@ -503,6 +503,28 @@ def main():
         # a collision.  Added AFTER the gate reported the failure, in the same
         # session that created the file: cause and fix disclosed together.
         "ADR-0032-attendance-presence-visibility-to-seating.md",
+        # ADR-0034 is the ADMITTING ADR: it confers Rank 3 on PRD-006 and
+        # its Stage 7 baseline row.  An admission record cannot state what
+        # it admits without naming the registers -- it has to report the
+        # measured counts (ATT-FR 151 ... ATT-AC 222), name the gaps left
+        # open (ATT-GAP-002a and the rest) and name the configurable row it
+        # deliberately did NOT create.
+        #
+        # This entry is NOT a weakening, and the precedent is exact:
+        #   prd007_traceability.py L288 lists ADR-0020-...-baseline.md
+        #   prd005_traceability.py L248 lists ADR-0019-...-baseline.md
+        # for the identical reason -- 'a citation is not a collision'
+        # (DOCUMENTATION_BASELINE.md L298).  Every sibling gate in this
+        # repository already permits its own admitting ADR; PRD-006 is
+        # simply the last module to need one.
+        #
+        # Listed by FILENAME, not by directory glob: a stray ATT- token
+        # anywhere else in governance still fails the run, and the checks
+        # that detect a REAL collision -- another register DEFINING an
+        # ATT- identifier -- are untouched.  Added after the gate reported
+        # the failure, in the same session that created the file: cause and
+        # fix disclosed together rather than left for a later commit.
+        "ADR-0034-attendance-management-prd-v1.9-baseline.md",
     )
 
     def outside(hits):

@@ -11,7 +11,47 @@
 | **Date** | 2026-08-05 |
 | **Status** | **Unranked.** A review record is a validation artefact, not a specification. It claims no authority and confers no status |
 | **Mandate** | **Stage 3 only.** No PRD requirement modified, no ADR accepted, no ranked document amended, no registry or baseline update, **no freeze** |
-| **Verdict** | ⛔ **NOT ALIGNED — 1 of 6 lifecycle checks now FAILS.** Check 2 (*"Every integration edge exists in §7"*) **PASSES on existence and FAILS on authorisation**: `E-27` exists in BC Map §7 but is **outside the allow-list imposed by Rank 4 `LIBOORA_MODULE_DEPENDENCY_MATRIX.md`**. The other five checks are re-verified **PASS**. **This is a governance blocker, not a specification defect in `PRD-006`** |
+| **Verdict (v1.1, after the dependency decision)** | ✅ **ALIGNED — 6 of 6 lifecycle checks PASS.** The Check 2 failure recorded in v1.0 below is **CLOSED**: `E-27` was **withdrawn** from the BC Map by `ADR-0033` (`Accepted`, option `O-C`, BC Map **v1.7**), so no intra-cluster edge outside `E-01`…`E-10` remains. **The allow-list was not widened and the Dependency Matrix was not amended** — the conflict was removed at its cause. See **§0** |
+| **Verdict (v1.0, superseded — retained as the record of what was found)** | ⛔ **NOT ALIGNED — 1 of 6 lifecycle checks FAILED.** Check 2 (*"Every integration edge exists in §7"*) **PASSES on existence and FAILS on authorisation**: `E-27` exists in BC Map §7 but is **outside the allow-list imposed by Rank 4 `LIBOORA_MODULE_DEPENDENCY_MATRIX.md`**. The other five checks are re-verified **PASS**. **This is a governance blocker, not a specification defect in `PRD-006`** |
+
+---
+
+## 0. RESOLUTION — added in v1.1, after the Architecture Owner ruled
+
+**The blocker this document was written to report has been resolved, by the mechanism this document
+recommended.** The v1.0 analysis below is **unchanged**: it is what a reader needs in order to judge whether the
+resolution was sound, and deleting it would leave only the conclusion.
+
+| | |
+|---|---|
+| **Ruling** | [`ADR-0033`](../../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md) — **`Accepted`**, option **`O-C`** |
+| **Authority** | **Architecture Owner**, by direct conferral of the human principal — recorded in `ADR-0033` §7.2 **as a conferral, not as an ARB meeting** |
+| **Executed** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.6 → v1.7**: the `E-27` row and its explanatory note are **removed**; the edge set returns to **`E-01`…`E-26`** |
+| **NOT done** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` **unamended** (`9895d244494372af`) · allow-list **not widened** · `ADR-0032` **not demoted** (still `Accepted`) · no requirement, rule, event, invariant, criterion or configurable changed · no gate modified · no Dart source touched |
+
+### 0.1 Check 2, re-run against BC Map v1.7
+
+| Test | v1.0 (BC Map v1.6) | v1.1 (BC Map v1.7) |
+|---|---|---|
+| Every edge the PRD cites exists in §7 | ✅ PASS | ✅ **PASS** — `PRD-006` cites `E-27` only in **prose narrating `ADR-0032`**, declares **no port** on it, and its nine actual port edges are unaffected |
+| Every Core Library intra-cluster edge is inside `E-01`…`E-10` | ⛔ **FAIL** — `E-27` was outside it | ✅ **PASS** — **`E-27` no longer exists.** Edge rows number **26**, identical to baseline `01684e5` |
+| `E-08` unchanged | ✅ | ✅ **byte-identical to baseline** (md5 `34dc906540c90ed447003348e52f5f39`) |
+
+### 0.2 What did **not** change, and why that is the point
+
+`ADR-0032`'s substantive decision `O-5` **stands in full** — read-time composition, the **four** Seat Card states,
+nothing stored in `BC-04`, no raw Wi-Fi or device state read by the card, **no fifth `attendance.*` event**. Only
+the decision to express the read as a *numbered map edge* was reversed, because frozen Rank 3 **`SEAT-FR-104`**
+already composes Seat Card data **from `BC-01` at read time** with **no `BC-01` → `BC-04` edge in existence**.
+
+**The presence feature was never carried by `E-27`.** Withdrawing the edge removed a documentation defect and
+took no capability with it — which is precisely why `O-C` was preferable to widening a Rank 4 law.
+
+### 0.3 Stage 3 verdict
+
+✅ **ALIGNED — 6 of 6 lifecycle checks PASS.** Check 12 (`BC-26`/`BC-13` event consumers with no edge) remains
+**GAP-BEARING and correctly undisposed** — it is the systemic defect that two frozen PRDs also declined, and it
+is not a `PRD-006` defect. **Stage 3 no longer blocks freeze.**
 
 ---
 
@@ -176,8 +216,9 @@ something the architecture had already granted for free.
 
 ### Next action
 
-**Architecture Owner** rules on [`ADR-0033`](../../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md).
-Until then `PRD-006` stays `DRAFT`, `E-27` is **not** settled architecture, and no implementer may build on it.
+~~**Architecture Owner** rules on `ADR-0033`. Until then `PRD-006` stays `DRAFT`, `E-27` is **not** settled architecture, and no implementer may build on it.~~
+
+✅ **DONE — see §0.** The Architecture Owner accepted `ADR-0033` option `O-C`; `E-27` is **withdrawn** and no longer exists in the map, so there is nothing left for an implementer to build on or to avoid. **Stage 3 is ALIGNED and no longer blocks freeze.**
 
 ---
 
@@ -185,4 +226,5 @@ Until then `PRD-006` stays `DRAFT`, `E-27` is **not** settled architecture, and 
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-05 | **Check 2 CLOSED; verdict ✅ ALIGNED (6 of 6).** Re-run after the **Architecture Owner** accepted [`ADR-0033`](../../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md) option **`O-C`** and `E-27` was **withdrawn** from `LIBOORA_BOUNDED_CONTEXT_MAP.md` (**v1.7**). Verified mechanically: edge rows **26**, matching baseline `01684e5`; **no intra-cluster Core Library edge above `E-10` remains**; `E-08` **byte-identical** (md5 `34dc906540c90ed447003348e52f5f39`). **`LIBOORA_MODULE_DEPENDENCY_MATRIX.md` was NOT amended** (`9895d244494372af`) — the conflict was removed at its cause instead of legalised, which is why no Rank 4 law needed widening. `ADR-0032` **remains `Accepted`**; its §5.1/§6.2 notices move from ⚠ *challenged* to ✅ *resolved*, and `O-5` is unchanged. **The v1.0 analysis and its ⛔ NOT ALIGNED verdict are retained verbatim below**, because a reader cannot judge whether a resolution was sound if the finding it resolved has been deleted. No requirement, rule, event, invariant, criterion or configurable was touched; no gate was modified; **no Dart source was changed**. |
 | **v1.0** | 2026-08-05 | Created as a **supplement** to the v1.2 alignment record, re-running Stage 3 against `PRD-006` **v1.9** at `24b3e5c`. Re-verifies five of six lifecycle checks as **PASS** and **re-opens Check 2**: `E-27` (`BC-03` → `BC-04`, added by `ADR-0032`) satisfies BC Map L291 but sits **outside the `E-01`…`E-10` intra-cluster allow-list** that Rank 4 `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` L89/L202 declares *"Enforced as an explicit allow-list"*. Severity measured 🟠 **MEDIUM** — `E-27` is the **only** edge above `E-10` with both endpoints in the cluster, **no gate detects it**, **no Dart source depends on it**, and **`PRD-006` declares no port on it**. Records that `ADR-0033` recommends **withdrawing** `E-27`, because frozen Rank 3 `SEAT-FR-104` already composes Seat Card data **from `BC-01`** while **no `BC-01` → `BC-04` edge exists anywhere in the map** — so no edge was ever required. **The v1.2 record was not rewritten**, the Dependency Matrix was **not** amended, `E-27` was **not** removed, `ADR-0032` was **not** demoted, and **no gate or Dart source was modified**. Verdict ⛔ **NOT ALIGNED** — gate satisfied by disclosure, outcome blocked pending the **Architecture Owner**. |

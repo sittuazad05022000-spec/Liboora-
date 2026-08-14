@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Proposed** — *"Under consideration; not binding"* (`ADR-INDEX.md` status vocabulary). **Deliberately NOT `Accepted`.** §7 states exactly whose acceptance is required and why I cannot supply it |
+| **Status** | **Accepted** — *"In force. Binding on all implementation"* (`ADR-INDEX.md` status vocabulary). **Option `O-C` selected — `E-27` is WITHDRAWN.** Accepted **2026-08-05** by **direct conferral of Architecture Owner authority by the human principal of this engagement**, on the identical basis recorded in `ADR-0032` §5.2 and with the identical disclosure of what is *not* claimed — see **§7**, which was rewritten on acceptance rather than deleted, so a later reader can see this ADR was `Proposed` first and what changed |
 | **Date** | 2026-08-05 |
 | **Raised by** | Freeze-readiness verification for `PRD-006` v1.9 — [`PRD-006_E27_CLUSTER_EDGE_CONFLICT.md`](../../30-product/attendance-management/PRD-006_E27_CLUSTER_EDGE_CONFLICT.md) |
-| **Decision required from** | **Architecture Owner** |
-| **Supersedes / amends** | Nothing yet. **If accepted**, it amends `ADR-0032` §5.1/§6.2 and reverses one row of `LIBOORA_BOUNDED_CONTEXT_MAP.md` v1.6 |
+| **Decision by** | **Architecture Owner** — authority conferred directly by the human principal, **not an ARB meeting**. No quorum, attendee list, sign-off date or Security review is asserted |
+| **Supersedes / amends** | **`LIBOORA_BOUNDED_CONTEXT_MAP.md` §7.1 → v1.7** (Rank 4 — **removes edge `E-27`** and its explanatory note; **no other edge, context, aggregate, invariant, event, identity rule or tenancy model is touched**) · **`ADR-0032` §5.1/§6.2** (its `E-27` *transport* is withdrawn; its substantive decision `O-5` **stands unchanged**, and its status remains **`Accepted`**). **`LIBOORA_MODULE_DEPENDENCY_MATRIX.md` is NOT amended** — see §4.2 and §5.1: withdrawing `E-27` restores compliance with the existing allow-list, so the Rank 4 law needs no change at all. That is the decisive argument for `O-C` over `O-A` |
 | **Governs** | `E-27`, `BC-03` → `BC-04`, the Core Library cluster allow-list, `PRD-006` freeze readiness |
 
 > **This ADR argues against a change I myself made under a conferred authority one turn ago.** `ADR-0032` is
@@ -152,24 +152,56 @@ the PRD depends on.
 
 ---
 
-## 7. Why this ADR is `Proposed` and not `Accepted`
+## 7. Authority — how this ADR moved from `Proposed` to `Accepted`
 
-**The `ADR-0032` conferral does not extend here.** That authority was conferred for a specific act — resolving how
-presence reaches the Seat Card. This decision is different in kind: it would **reverse** a published Rank 4 edge and
-**overrule** an already-`Accepted` ADR's chosen mechanism. Treating a conferral for one act as a standing licence to
-reverse Rank 4 documents is the over-reach the conferral did not grant.
+**This section is rewritten, not deleted.** It previously read *"Why this ADR is `Proposed` and not `Accepted`"* and
+argued that the `ADR-0032` conferral did not extend this far. **That argument was correct when written and is
+preserved below**, because an ADR that erases its own hesitation leaves a reader unable to tell a considered
+acceptance from a rubber stamp.
 
-| Required to accept | Present? |
+### 7.1 What the earlier version said, and why it was right to say it
+
+> *"The `ADR-0032` conferral does not extend here. That authority was conferred for a specific act — resolving how
+> presence reaches the Seat Card. This decision is different in kind: it would **reverse** a published Rank 4 edge
+> and **overrule** an already-`Accepted` ADR's chosen mechanism. Treating a conferral for one act as a standing
+> licence to reverse Rank 4 documents is the over-reach the conferral did not grant."*
+
+That reasoning stands. **A conferral for one act is not a standing licence**, and this ADR was deliberately held at
+`Proposed` through a full freeze-readiness review, a Stage 3 re-run and a final independent review that returned
+verdict **B — READY EXCEPT GOVERNANCE** precisely *because* this ruling was missing.
+
+### 7.2 The ruling that was subsequently given
+
+**A second, explicit conferral was made by the human principal of this engagement**, directing that *"`ADR-0033` ke
+`E-27`/`O-C` ruling ko Architecture Owner authority ke according resolve karo"* and that, if `O-C` is accepted, the
+`E-27` withdrawal be *"formally recorded"* with the BC Map updated *"only according to authorised governance
+precedent"*. **That instruction is the authority, and it is the only authority claimed.** It is a *separate* act of
+conferral from the one recorded in `ADR-0032` §5.2 — which is exactly what §7's earlier version said would be
+required.
+
+The same instruction re-stated the constraints this ADR must continue to honour, and each is honoured:
+
+| Constraint given with the authority | Honoured how |
 |---|---|
-| **Architecture Owner** decision to withdraw `E-27` and amend `ADR-0032` | ❌ **Not given** |
-| Confirmation that `SEAT-FR-104`'s pattern is the intended carrier | ❌ Not given |
-| Seat Management product owner awareness (`SEAT-FR-103` note text changes) | ❌ Not given |
+| *"`E-27` ko sirf gate pass karane ke liye allow-list me mat add karo"* | **`O-A` remains rejected.** The allow-list is untouched; `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` keeps hash `9895d244494372af` |
+| *"BC Map/Dependency Matrix ko sirf authorised governance precedent ke according update karo"* | The BC Map is amended **by this ADR, which names it in its `Amends` row**, ADR-first per `DOCUMENTATION_BASELINE.md` §7. The Dependency Matrix is **not** amended, because `O-C` needs no change to it |
+| *"`ADR-0032` ko consistent rakho; bina authority ke `Accepted` status change mat karo"* | `ADR-0032` **remains `Accepted`**. Only its `E-27` *transport* is withdrawn; `O-5` stands. Its §5.1/§6.2 notices are updated from *challenged* to *resolved* |
+| *"Frozen/Rank-1–4 requirements silently modify mat karo"* | **No requirement is modified.** `SEAT-FR-103`…`SEAT-FR-107` are untouched; the BC Map edit removes one row this ADR names explicitly |
 
-**What is NOT claimed:** no ARB meeting was held, minuted or attended · no Architecture Owner has ruled on this ADR ·
-no Product Owner has approved it · **this ADR binds nothing while `Proposed`.**
+### 7.3 What is still NOT claimed
 
-**Consequence, stated plainly: `PRD-006` cannot be frozen.** Not because a gate is red, but because a Rank 4
-contradiction is open and its only lawful resolutions both need an authority I do not hold.
+| Not claimed |
+|---|
+| **No ARB meeting was held, minuted or attended.** No quorum, attendee list or sign-off date is asserted |
+| **No Security review and no Principal Enterprise Architect approval** is claimed |
+| **No Seat Management product-owner signature** is claimed. `SEAT-FR-103`…`SEAT-FR-107` are **not modified by this ADR**, so no frozen Rank 3 text changes on acceptance — which is why this residual is smaller here than in `ADR-0032` §8, but it is still recorded rather than omitted |
+| **This acceptance does not by itself freeze `PRD-006`.** *"Freeze is **conferred, not claimed**"* — Stage 7 remains a separate act requiring an admitting ADR and a `DOCUMENTATION_BASELINE.md` §3 row |
+
+### 7.4 Consequence
+
+**The Rank 4 contradiction is closed by removal, not by permission.** After this ADR executes, every edge in the
+Core Library cluster is once again inside `E-01`…`E-10`, and the allow-list that was never mechanically enforced
+is nonetheless factually satisfied. `PRD-006`'s architecture-alignment blocker is cleared.
 
 ---
 
@@ -177,4 +209,5 @@ contradiction is open and its only lawful resolutions both need an authority I d
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-05 | **`Accepted` — option `O-C` selected; `E-27` is WITHDRAWN.** Authority is a **second, explicit conferral of Architecture Owner authority by the human principal**, distinct from the `ADR-0032` §5.2 conferral and recorded as a conferral rather than dressed up as an ARB ruling. §7 was **rewritten rather than deleted**: it now quotes verbatim the argument for staying `Proposed`, because an ADR that erases its own hesitation cannot be distinguished from a rubber stamp. **Executes on `LIBOORA_BOUNDED_CONTEXT_MAP.md` → v1.7** by removing the `E-27` row and its note — one row and one note, no other edge touched, `E-08` byte-identical. **`LIBOORA_MODULE_DEPENDENCY_MATRIX.md` remains UNAMENDED at `9895d244494372af`** — the point of `O-C` is that withdrawing the edge restores compliance with the existing Rank 4 law, so no Rank 4 law needed widening. **`ADR-0032` keeps status `Accepted`**; its §5.1/§6.2 notices move from ⚠ *challenged* to ✅ *resolved*, and its substantive decision `O-5` — read-time composition, four card states, nothing stored, no fifth event — is **unchanged**. **No requirement, rule, event, invariant, criterion or configurable in any PRD was added, removed, renumbered or reworded; no gate was modified; no Dart source was touched.** |
 | **v1.0** | 2026-08-05 | Created by the `E-27` investigation ordered for freeze readiness. **Finds that `E-27` was never architecturally required**: frozen Rank 3 `SEAT-FR-104` already obliges `BC-04` to compose data **from `BC-01` at read time** while **no `BC-01` → `BC-04` edge exists**, and `PRD-007` §3 records three further no-edge consumptions — the same pattern `PRD-006` itself used to close its second gap row. **Recommends `O-C`: withdraw `E-27`** rather than widen the Rank 4 allow-list (`O-A`, rejected because its only effect would be to erase a contradiction, which the instruction forbids) or renumber into a full band (`O-B`). Records that `ADR-0032` **cannot** authorise a Dependency Matrix amendment because it does not name that document, and that amending it anyway would be a silent Rank 4 modification. **Left `Proposed`: the Architecture Owner has not ruled, and no ARB met.** |

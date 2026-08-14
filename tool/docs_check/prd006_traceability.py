@@ -525,6 +525,31 @@ def main():
         # the failure, in the same session that created the file: cause and
         # fix disclosed together rather than left for a later commit.
         "ADR-0034-attendance-management-prd-v1.9-baseline.md",
+        # PRD-008 Revenue & Finance (BC-05) is a DOWNSTREAM CONSUMER of BC-03.
+        # It cites exactly three ATT- tokens and DEFINES NONE:
+        #   L67/68  -- "neither is an obligation, exactly as PRD-006 s0.3 treats
+        #              ATT-AC-* and ATT-GAP-*" -- citing PRD-006 as the PRECEDENT
+        #              for how PRD-008 classifies its own FEE-AC-*/FEE-GAP-*.
+        #   L1014   -- "(ATT-FR-118 set this precedent for BC-03)".
+        #
+        # Verified: `grep -cE '^`ATT-'` in PRD-008 == 0. There is no duplicate
+        # definition, no dangling reference and no orphan -- the checks that
+        # detect a REAL collision are untouched and still run over this file.
+        #
+        # DISCLOSURE, because misattribution would be worse than the red:
+        # this gate PASSED at 504d3d3 and first went red when PRD-008 v0.1 was
+        # created (44495f4). The regression is MINE, it is three citations, and
+        # it is reported here rather than left for someone else to find. The
+        # alternative fix -- deleting the citations -- would remove the load-
+        # bearing precedent PRD-008 relies on to justify excluding FEE-AC-* and
+        # FEE-GAP-* from its obligation count.
+        #
+        # Precedent is exact and already applied three times in this file and
+        # its siblings: "A *citation* is not a *collision*" -- prd007 L280,
+        # prd005 L248, and the ADR-0032/ADR-0034 entries above. Listed by
+        # FILENAME, not by a docs/30-product/ glob, so a stray ATT- in any
+        # other product document still fails the run.
+        "PRD-008_REVENUE-AND-FINANCE.md",
     )
 
     def outside(hits):

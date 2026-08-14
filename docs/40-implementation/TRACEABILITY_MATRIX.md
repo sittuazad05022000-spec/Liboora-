@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.7 |
+| **Version** | v1.8 |
 | **Status** | Active — updated with every requirement implemented |
 | **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** |
 | **Baseline** | **BASELINE-2026-08-04-D** |
 | **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** · **Attendance Management PRD v1.3 (`PRD-006`, `DRAFT`)** |
-| **ADRs applied** | `ADR-0001` … **`ADR-0018`** |
+| **ADRs applied** | `ADR-0001` … **`ADR-0018`**, **`ADR-0020`**, **`ADR-0032`** |
 
 ---
 
@@ -422,13 +422,13 @@ operation, and does not correspond to `PO-n` in §2A or `SPO-n` in §2B.
 | `ATT-PO-n` | **Port** — what it consumes, and from whom | **14** | `ATT-PO-001` … `ATT-PO-014` | §5.2, §5.3, §27.1 |
 | `ATT-CFG-n` | Configurable value | **24** | `ATT-CFG-001` … `ATT-CFG-024` | §16.3 |
 | `ATT-NFR-n` | Non-functional requirement | **14** | `ATT-NFR-001` … `ATT-NFR-014` | §15.4, §27 |
-| `ATT-AC-n` | Acceptance criterion | **213** | `ATT-AC-001` … `ATT-AC-213` | §§30.1–30.19 |
+| `ATT-AC-n` | Acceptance criterion | **222** | `ATT-AC-001` … `ATT-AC-222` | §§30.1–30.20 |
 | `ATT-GAP-n` | **Open question — not a requirement** | **18** | `ATT-GAP-001` … `ATT-GAP-018` | §32.1 |
 
-**Total Attendance Management identifiers: 516**, of which **285 carry obligation**, **213 are `ATT-AC-*`
+**Total Attendance Management identifiers: 525**, of which **285 carry obligation**, **222 are `ATT-AC-*`
 acceptance criteria** and **18 are `ATT-GAP-*` open questions carrying no authority**. The `ATT-GAP-*` register's
-18 numbers carry **21 rows**: `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are **suffixed successors declared
-up front in §0.3**, following the `MM-GAP-006a`/`007a`/`010a` precedent §2D records for the frozen `PRD-005`. The
+18 numbers carry **23 rows**: `ATT-GAP-002a`, `ATT-GAP-002b`, `ATT-GAP-008a`, `ATT-GAP-016a` and `ATT-GAP-017a` are
+**suffixed successors declared up front in §0.3**, following the `MM-GAP-006a`/`007a`/`010a` precedent §2D records for the frozen `PRD-005`. The
 numeric range `001…018` remains contiguous — a suffix is an addition to a declared number, never a break in the
 sequence — and both figures, 18 and 21, are checked separately. Across the whole document these identifiers are
 referenced **1,262** times, resolving to **519** distinct identifiers (516 numbers plus the 3 suffixed rows), with
@@ -544,7 +544,7 @@ them do:
 | `ATT-BR-*` | 39 | 6 | 45 | **BOTH** |
 | `ATT-PO-*` | 5 | 9 | 14 | **BOTH** |
 | `ATT-INV-*`, `ATT-XC-*`, `ATT-NFR-*` | 12, 21, 15 | 0 | 48 | prose only |
-| `ATT-EVT-*`, `ATT-CFG-*`, `ATT-AC-*`, `ATT-GAP-*` | 0 | 4, 24, 213, 21 | 262 | table only |
+| `ATT-EVT-*`, `ATT-CFG-*`, `ATT-AC-*`, `ATT-GAP-*` | 0 | 4, 24, 222, 23 | 273 | table only |
 
 The table-form definitions of `ATT-FR-*`, `ATT-BR-*` and `ATT-PO-*` sit in ordinary content sections — §8.3, §9.3,
 §10.3, §11.3, §12.2, §5.2, §5.3, §27.1 — **not** in an index, and are genuine definitions. So **form alone cannot

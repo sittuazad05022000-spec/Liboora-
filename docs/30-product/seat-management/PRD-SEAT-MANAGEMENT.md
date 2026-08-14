@@ -6,8 +6,8 @@
 | **Module** | Seat Management (Master PRD §8 module **7**) |
 | **Bounded context** | **`BC-04` Seating** — `[CORE]`, Library Management domain |
 | **Aggregates owned** | `SeatAllocation` · `SeatLayout` *(BC Map §8)* |
-| **Version** | **v1.0** |
-| **Status** | **`FROZEN`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 7**. Admitted to the documentation baseline by [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md). **Frozen, not `VERIFIED`** — Stage 9 requires implementation evidence that does not yet exist |
+| **Version** | **v1.1** |
+| **Status** | **`FROZEN`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 7**. Admitted to the documentation baseline by [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md). **Frozen, not `VERIFIED`** — Stage 9 requires implementation evidence that does not yet exist. **Amended once since admission, non-silently and ADR-first**: v1.1 applies [`ADR-0032`](../../00-governance/adr/ADR-0032-attendance-presence-visibility-to-seating.md) to `SEAT-FR-103`'s presence field only. **The freeze is not lifted** — an amendment executed through §7's procedure is not a thaw, and the baseline row conferring Rank 3 is unchanged |
 | **Date** | 2026-08-04 |
 | **Release** | **V1** |
 | **Baseline** | Written against `BASELINE-2026-08-04-D`; **admitted to `BASELINE-2026-08-04-E`** |
@@ -839,7 +839,35 @@ is permitted to **no one** (`SEAT-BR-014`, `SEAT-XC-004`). These two must never 
 `SEAT-FR-103` — Selecting a seat **MUST** present a seat card showing: seat number · zone and floor · category ·
 type (`Fixed`/`Flexible`) · derived `SeatState` · lock flag when set · maintenance detail when in maintenance ·
 current holder (staff view only) · shift · allocation `validFrom`/`validUntil` · membership status and expiry ·
-occupancy (present / not present) · available actions.
+**student presence** · **shift-conformance badge when applicable** · available actions.
+
+**`SEAT-FR-103` presence field — amended by [`ADR-0032`](../../00-governance/adr/ADR-0032-attendance-presence-visibility-to-seating.md) (§6.1), option `O-5`.** The field previously read
+*"occupancy (present / not present)"*. It is widened **in fidelity only** — one field, still one field — because a
+two-valued field cannot represent a student who is inside an approved grace period, and rendering that student as
+`not present` would be false. **The card MUST show presence in four states, and allocation and presence MUST remain
+two independent axes that are never collapsed into one field:**
+
+| Presence state | Meaning |
+|---|---|
+| 🟢 **`PRESENT`** | Currently verified present, with a *Presence Since* time |
+| 🔵 **`ATTENDED · LEFT`** | Attended today **and** a recorded exit exists; not present now |
+| 🟠 **`PRESENCE UNVERIFIED`** | Attendance exists but current presence cannot be verified — **including every manually recorded attendance** |
+| ⚪ **`NOT ATTENDED`** | No attendance today. **This is a different fact from `PRESENCE UNVERIFIED` and MUST NOT be merged with it** |
+
+**A shift-conformance badge is a SEPARATE field on a second axis.** A student present beyond the booked window plus
+tolerance renders **🟢 `PRESENT` and a separate ⚠ `OVERSTAY` badge**. The badge **MUST NOT** replace, recolour or
+suppress the presence indicator, and presence **MUST NOT** be downgraded because of overstay — presence and
+shift-conformance are two facts, and one field cannot carry two facts.
+
+**Nothing else about this card changes, and three prohibitions are restated because widening a field invites them:**
+`SEAT-FR-104` still governs — presence is **composed at read time** and **MUST NOT be stored** on the seat or the
+allocation; `SEAT-FR-105`/`SEAT-FR-106` still govern the as-of label and visible degradation; and this module **MUST
+NOT** read raw Wi-Fi or any network observation, **MUST NOT** perform presence verification (`SEAT-FR-108` assigns it
+to `BC-03`), and **MUST NOT** infer a presence state from the *absence* of an event. Presence arrives over
+**`E-27`** (BC Map §7.1) and over nothing else. **`SEAT-FR-041` is unchanged**: *"`Occupied` means allocated, not
+physically present"* — the occupancy/allocation semantics of every other requirement in this document are untouched,
+and **`SEAT-FR-109` is NOT amended** (`ADR-0032` §5.4 records why an earlier reading that it needed amendment was
+wrong and withdrawn).
 
 `SEAT-FR-104` — The holder's name, membership status and membership expiry on the card **MUST** be **composed at
 read time** from `BC-01` and the `E-02` projection. They **MUST NOT** be stored on the seat or the allocation
@@ -2857,6 +2885,7 @@ records changes to **this document** after it was issued.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-05 | **One requirement's field list widened in fidelity. `FROZEN` retained; Rank 3 unchanged; the baseline row that confers it is untouched.** Applies [`ADR-0032`](../../00-governance/adr/ADR-0032-attendance-presence-visibility-to-seating.md), **`Accepted`**, option **`O-5`**, written **before** this document was touched per [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §7 step 1. **Scope: `SEAT-FR-103`'s occupancy field cell, and nothing else.** It read *"occupancy (present / not present)"* and now carries **four presence states** — 🟢 `PRESENT` · 🔵 `ATTENDED · LEFT` · 🟠 `PRESENCE UNVERIFIED` · ⚪ `NOT ATTENDED` — plus a **separate** shift-conformance badge on a second axis. **Why:** `PRD-006` §23.4a requires the Seat Card to show current student presence beside seat allocation, and a two-valued field cannot represent a student inside an approved 5-minute grace period; rendering that student `not present` would be **false**, and rendering an overstaying student as ordinary `PRESENT` with no badge would suppress the one case the Product Owner asked to be alerted about. **Why this is minimal:** the field list in `SEAT-FR-103` contains **no** *"only"*, *"exactly"* or *"no other"* — unlike its neighbour `SEAT-FR-107`, which does — so the enumeration was never closed; and the pattern is one this document **already ratifies**, since `SEAT-FR-104` already requires cross-context card values to be *"composed at read time"* and to be *"**MUST NOT** be stored on the seat"*. **`SEAT-FR-109` is deliberately NOT amended** — `ADR-0032` §5.4 records that an earlier reading, which held that `SEAT-FR-109` forces a manually recorded attendance to render as verified presence, **conflated a seat's `physically occupied` utilisation flag with a student's current verified presence and is withdrawn**; `SEAT-FR-041`'s *"`Occupied` means allocated, not physically present"* already separates them. **What is NOT changed:** no requirement added, removed, renumbered or reworded other than the cell named above; **`SEAT-FR-*` stays 304** and all **683 identifiers**, **226 `SEAT-AC-*`**, four `SEAT-EVT-*` and ten registers are unchanged, so `TRACEABILITY_MATRIX.md` §2E is **not** amended; `SEAT-FR-041`, `SEAT-FR-104`, `SEAT-FR-105`, `SEAT-FR-106`, `SEAT-FR-107`, `SEAT-FR-108`, `SEAT-FR-109`, `SEAT-FR-114`, `SEAT-FR-115`, `SEAT-FR-116`, `SEAT-XC-007`, `SEAT-BR-020` and `SEAT-BR-036` are **untouched**; no event added (the four `SEAT-EVT-*` closed by `SEAT-FR-206` are unchanged), no aggregate, invariant, exclusion, protected operation or configurable changed. **This module still performs no presence verification** — `SEAT-FR-108` leaves that with `BC-03` — **reads no raw Wi-Fi**, and **MUST NOT** infer presence from the absence of an event; presence arrives solely over new edge **`E-27`** (BC Map **v1.6** §7.1, a *read projection*, carrying **no event**). **All fourteen `SEAT-GAP-*` remain OPEN**, and **`SEAT-GAP-009` is expressly NOT closed** by `E-27`: that gap asks about a `BC-04` → `BC-03` read and `E-27` runs the **opposite** direction. **Still `FROZEN`, not `VERIFIED`**: 0 of 100 tasks and 0 of 226 acceptance criteria are proven by a test, and `SEAT-NFR-011` holds that a rule that cannot be checked is treated as unmet. **`ADR-0032` §8.1 discloses a genuine residual** — no Seat Management product-owner signature is claimed on this amendment, and no ARB meeting is asserted. |
 | **v1.0** | 2026-08-04 | **`FROZEN` — admitted to the documentation baseline by [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md) at Rank 3 as the authoritative specification for `BC-04` Seating**, under `BASELINE-2026-08-04-E`. Completed [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 7. **No requirement, business rule, invariant, event, exclusion, protected operation, configurable, acceptance criterion, register, gap or scope statement was added, removed, renumbered or reworded on admission** — the only edits are the four lifecycle metadata rows in the header table (*Status*, *Baseline*, *Rank*, *Authorities applied*) and this section. All **683 identifiers** across ten registers, all **226 `SEAT-AC-*`**, the four `SEAT-EVT-*` closed by `SEAT-FR-206`, and all **14 `SEAT-GAP-*`** are unchanged and were re-verified at exit 0 by `tool/docs_check/prd007_traceability.py` immediately before admission. **The version is preserved at v1.0** — freeze confers status, not a renumbering (the `PRD-003`-at-v1.0, `PRD-004`-at-v1.2 and `PRD-005`-at-v1.4 precedents). **Freeze is conferred by the baseline row, not by this table**: per [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §2.1 no PRD in this repository declares its own status, and the *Status* row above cites `ADR-0020` rather than asserting freeze on this document's own authority. **`FROZEN` is not `VERIFIED`** — **0 of 100 implementation tasks** (`IMPL-500`…`IMPL-599`) and **0 of 226 acceptance criteria** are proven by a test, and `SEAT-NFR-011` (quoting `SID-4.56`) holds that a rule that cannot be checked SHALL be treated as unmet. **All fourteen gaps remain OPEN and are not ratified by admission**; `SEAT-BR-045` forbids resolving any of them by implementation choice. **After this point any business-rule change requires an ADR → version increment → changelog → baseline update, in that order** (`PRD_LIFECYCLE.md` Stage 7). |
 
 ---

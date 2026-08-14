@@ -7,8 +7,10 @@
 | **Why re-run** | v1.5–v1.9 changed the document after the last review. `PRD_LIFECYCLE.md` requires the stage to cover the bytes it judges, and the previous re-review judged **v1.4** |
 | **Method** | Each of the six checks re-run against the **v1.9 bytes**, with the evidence command or line reference recorded next to it. Counts are **computed by the gate scripts**, not restated from prose |
 | **Date** | 2026-08-05 |
-| **Verdict** | ✅ **A — PASSED**, with **three explicitly deferred conflicts**, each carrying a **reason and a named owner** as the Stage 4 gate requires. **6 of 6 checks PASS.** §5 states what this verdict does *not* license |
+| **Verdict** | ✅ **A — PASSED**, with **four explicitly deferred conflicts**, each carrying a **reason and a named owner** as the Stage 4 gate requires. **6 of 6 checks PASS.** §5 states what this verdict does *not* license |
 
+> **A fourth conflict was found AFTER this verdict was reached, and the verdict was re-examined rather than defended.** During freeze-readiness checking, `E-27` turned out to sit outside a **Rank 4** intra-cluster edge allow-list (§4, row 4). **It does not overturn this A**, and the reason is the gate's own wording: a conflict may be *"explicitly deferred with a reason and an owner"*, which it now is. **It does block freeze readiness**, and that is recorded in its own document rather than softened here. *A finding that arrives inconveniently late is still a finding.*
+>
 > **This verdict is an upgrade from ⚠️ CONDITIONAL, and the upgrade needs justifying rather than asserting — so §2
 > does it check by check and §3 addresses the objection head-on.** The previous verdict was CONDITIONAL, and my own
 > prior assessment (CB12) reasoned that open gaps held the condition open. **That reasoning was wrong on the
@@ -75,13 +77,14 @@ owner and a stated reason **satisfies** the gate by its own words.
 
 ---
 
-## 4. The three deferred conflicts — each with a reason and a named owner
+## 4. The four deferred conflicts — each with a reason and a named owner
 
 | Conflict | Reason for deferral | Owner |
 |---|---|---|
 | **`ATT-GAP-002a`** — `BC-03` has no authorised input carrying a student's **booked shift** | No edge supplies it; `E-27` runs the **other** direction. Inventing a `BC-04`/`BC-06` → `BC-03` read would create an edge the BC Map does not have, which L292 forbids without an ADR. Consequence stated plainly: the **two shift-relative renderings** and the whole `SCHEDULE MISMATCH` axis are **specified but not evaluable** | **Architecture Owner** — framed by `ADR-0029` (**`Proposed`**) |
 | **The tolerance's configurability** (the open half of `R-19`) | A twenty-fifth `ATT-CFG` row requires a **default and an allowed range**; **no range has been approved by the Product Owner**, and inventing one would corrupt the specification while passing every gate. The tolerance therefore stands as a **fixed product rule**, which **no requirement contradicts** | **Product Owner** — framed by `ADR-0031` (**`Proposed`**) |
 | **`SEAT-GAP-009`** — may `BC-03` read `BC-04`'s allocation? | **Opposite direction** to `E-27`; closing it on this ADR would be a **false closure**. Untouched and still open | **Architecture Owner** (`PRD-007`) |
+| **`E-27` versus the Core Library cluster allow-list** — **found after this verdict was reached, and added here rather than filed quietly** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` (Rank 4) L89/L202 permits **only** `E-01`…`E-10` as intra-cluster edges, *"not 'anything within the cluster'"* — and `E-27` is `BC-03` → `BC-04`, both cluster members. Fixing it needs an ADR that **names the Dependency Matrix**, which `ADR-0032` does not. Measured as **documentation-level**: the edge IDs are not mechanically enforced and **no** code check fails on it. Full analysis: [`PRD-006_E27_CLUSTER_EDGE_CONFLICT.md`](./PRD-006_E27_CLUSTER_EDGE_CONFLICT.md) | **Architecture Owner** |
 
 **Sixteen further `ATT-GAP-*` rows remain open and are already carried with owners in §32** — unchanged by v1.9 and
 not re-litigated here.
@@ -95,6 +98,7 @@ not re-litigated here.
 * **It does not claim the Seat Card requirement ships whole.** §23.4a asked for **six** renderings; **four** are now buildable. **The four-of-six shortfall is a real shortfall and is recorded as one**, not rounded up — see §4 row 1.
 * **It does not claim any Product Owner, ARB, Security or reviewer approval** beyond what is written: `ADR-0032`'s authority is a **conferral by the human principal**, recorded as such in its §5.2.
 * **It does not resolve `D-9`.**
+* **It does not clear `PRD-006` for freeze, and one blocker was found by this very exercise** — the `E-27` cluster-edge conflict in §4. **Stage 4 and freeze readiness are different questions**, and answering the first does not answer the second.
 
 ---
 

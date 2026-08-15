@@ -1,16 +1,16 @@
-# `PRD-008` Revenue & Finance v0.6 — Stage 3 Architecture Alignment Record
+# `PRD-008` Revenue & Finance v0.7 — Stage 3 Architecture Alignment Record
 
 | Field | Value |
 |---|---|
 | **Stage** | **Stage 3 — Architecture Review** ([`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) §Stage 3) |
-| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v0.6 `DRAFT`** |
+| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v0.7 `DRAFT`** |
 | **Gate addressed by** | This document — *"a written alignment record naming every conflict and its disposition"* |
 | **Worked examples followed** | [`PRD-007_ARCHITECTURE_ALIGNMENT.md`](../seat-management/PRD-007_ARCHITECTURE_ALIGNMENT.md) · [`LIBRARY_PRD_ALIGNMENT.md`](../library/LIBRARY_PRD_ALIGNMENT.md) · [`STUDENT_IDENTITY_ALIGNMENT.md`](../student-identity/STUDENT_IDENTITY_ALIGNMENT.md) |
-| **Reviewed at** | `3d98330` — **second pass**. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
-| **PRD hash at review** | `d6bb63d9ec83927bd21596fc0e7cabf8e24e1716a803af8bb0679da61b3664c8` — re-measured at v0.6, 2,316 lines *(prior record cited `3f91476a…` at v0.5; that hash is now stale and is retained only in the change note)* |
-| **Companion ADR** | [`ADR-0035`](../../00-governance/adr/ADR-0035-bc-05-payment-gateway-path.md) — **`PROPOSED`, not accepted.** Binds nothing |
+| **Reviewed at** | `ebf2440` — **third pass** (v0.7). The second pass was written at `3d98330` against v0.6; its §3.5.4 *"narrows the decision without taking it"* is **now superseded** — the decision **has been taken** and recorded (§3.5.5). The first pass was written at `61e6950` against v0.5. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
+| **PRD hash at review** | `b4113817693dd57166854e7b7d22c9409f46cbe7cd723d2586ce1069ed5d6d94` — re-measured at **v0.7, 2,350 lines** *(the v0.6 hash `d6bb63d9…` at 2,316 lines and the v0.5 hash `3f91476a…` are now stale and are retained only in the change notes)* |
+| **Companion ADR** | [`ADR-0035`](../../00-governance/adr/ADR-0035-bc-05-payment-gateway-path.md) — **`PROPOSED`, not accepted.** Its `D-2` is now **DECIDED and recorded** (`O-3`), but a recorded decision in a `PROPOSED` ADR **is not in force and binds nothing**. **It was not self-accepted:** conferred Architecture Owner authority permits *recording* the decision; marking it `Accepted` was expressly withheld |
 | **Mandate** | **Stage 3 only.** No PRD requirement added or changed by this record, **no ADR accepted**, no ranked document touched, no registry or baseline update, **no freeze**. Stages 4–7 not started |
-| **Verdict** | ⛔ **NOT ALIGNED — 5 of 6 checks PASS, 1 check BLOCKED.** Check 2 remains **BLOCKED**, but for a **narrower and now precisely-named reason** than the first pass gave: the *transport* by which `BC-05` may reach gateway capability is **already authorised** and needs no edge; the *counterparty* — which bounded context executes a **student → library** payment — is **undeclared**. 0 conflicts created by this PRD · **4** pre-existing defects raised, not chosen (§9.1) · 15 gaps, **4** blocking (§9.3) · **7** findings rejected with reasons, **1 of them superseding a prior rejection** (§10) |
+| **Verdict** | ⛔ **NOT ALIGNED — 5 of 6 checks PASS, 1 check BLOCKED.** The verdict is unchanged but its **reason has changed twice over**. The *transport* was closed at v0.6 (already authorised, no edge needed). The *counterparty* is **closed at v0.7**: `ADR-0035` `D-2` decides **`O-3`** — payment execution is a **Business Platform capability, not a new bounded context** — passing the architecture's own **`AR-1`** test on all four criteria, with the context count staying **31**. **Check 2 nevertheless stays ⛔ BLOCKED, now for exactly two reasons, both stated rather than smoothed over:** **(i)** **`FEE-GAP-016`** — no source at any rank declares an owner for **inbound webhook transport**, so server-side confirmation still cannot be specified; and **(ii)** the deciding ADR is **`PROPOSED`**, so `D-2` is **recorded, not in force**. A gate does not pass on a decision that is not yet in force. 0 conflicts created by this PRD · **4** pre-existing defects raised, not chosen (§9.1) · **16** gaps, **6** blocking Stage 4 (§9.3) · **7** findings rejected with reasons (§10) |
 
 > **Why this record still says NOT ALIGNED after resolving half the blocker — and why that is the honest outcome.**
 >
@@ -332,9 +332,77 @@ ownership. **No webhook schema, endpoint or provider behaviour was invented** to
 > which `O-3`'s admissibility depends (§3.6); **(ii)** **row 6 has no candidate at any rank** — no source names an
 > owner for webhook ingress, and `O-3` does not supply one.
 >
-> **`ADR-0035` therefore stays `PROPOSED` and check 2 stays ⛔ BLOCKED.** The decision is now materially
-> smaller — *"confirm `O-3`, and name an owner for webhook ingress"* — but it is still a decision, and Stage 3
-> alignment is not the act that takes it.
+> **⚠ SUPERSEDED AT v0.7 — point (i) is now resolved, point (ii) is not.** See §3.5.5. Point (i) dissolved on
+> **scope**, not on override. Point (ii) became **`FEE-GAP-016`**. This note is retained unedited so the record
+> shows what was known **before** the decision was taken.
+
+### 3.5.5 The `D-2` decision — `O-3`, taken under conferred authority *(added at v0.7)*
+
+**Authority.** `PRD_OWNERSHIP_MODEL.md` §2.2 vests in the **Architecture Owner** *"Boundaries, ranks, permitted
+edges, precedence … ADR approval; any Rank 1–5 document change"* — the same authority that carried
+`ADR-0012`, `ADR-0013` and `ADR-0033`. The decision below is **recorded** under that authority. **It is not
+accepted**, because acceptance was expressly withheld.
+
+**The test was applied before the conclusion was drawn.** `O-3`'s intuitive support was Accepted `ADR-0013`
+(*"a capability context is owned by its platform"*). Measured, **that precedent does not reach this case**: its
+Decision (L94–128) resolves ownership only for `BC-19`/`BC-25`/`BC-29` — contexts that **already hold `BC-`
+identifiers** — and `grep -iE "no bounded context|owns no aggregate|without a bounded context"` over it returns
+**0 matches**. It never contemplates a capability with **no** context. **That limit is recorded in `ADR-0035`
+§5.2.2 so a future reader cannot over-read it.**
+
+**The governing authority is `AR-1`** (`ARCHITECTURE_RULINGS.md` L23–37; BC Map **L86** and **L558**): a
+capability is **not** a context when it owns *"no aggregate, no invariant and no business state"* and
+*"delegates every domain operation."*
+
+| `AR-1` criterion | Measured | Evidence |
+|---|---|---|
+| Owns an aggregate? | **No** | `FeeLedger` is `BC-05`'s — BC Map **L374** |
+| Owns an invariant? | **No** | `FEE-INV-005`, `FEE-BR-016`, frozen `MM-BR-005` → all `BC-05` |
+| Owns business state? | **No** | BC Map L374 · L202 · `MP-GBR-24` |
+| Delegates every domain operation? | **Yes** | intent ← `BC-05` · vendor → `BC-31` · confirmation → `BC-05` |
+
+**All four criteria pass, so `AR-1` does not merely permit `O-3` — it requires it**: a capability with this
+profile **must not** become a context. Outcome precedent is `PRD_REGISTRY.md` **L355**, where the same test
+produced *"no `BC-32` was created and the context count remains 31."*
+
+**The Rank 1 tension (§3.6) dissolves by scope — and neither Rank 1 statement is amended, weakened or
+reinterpreted.** `MASTER_PRD.md` **L232** sits inside **§10 Technology Stack**, whose own preamble declares its
+subject to be *"capabilities with abstractions, with vendors recorded as candidate implementations behind
+ports"*, and whose columns are *Capability / Architectural owner / Abstraction that must exist / Candidate
+implementation (V1) / Approved in EA v2.1?*. **It is a vendor-abstraction table.** **L362** `MP-GBR-24` governs
+the **financial model**. Read to their own declared scopes, they do not collide — so §3.6 requires **no**
+override, **no** precedence ruling and **no** amendment. *(§3.6 is retained as written: the tension was real as
+posed, and the resolution is a narrowing of scope, not a discovery that the disclosure was wrong.)*
+
+**What the decision does NOT do.** It creates **no** bounded context and **no** `BC-` identifier · adds **no**
+`E-*` edge · moves **no** aggregate · changes **no** Matrix or BC Map cell · gives `BC-20` **no** role in
+student money · brings the **3% commission** no closer to `FeePayment` · and does **not** modify
+`tool/module_dependencies.yaml`. On that last point specifically: the minimum `provides_ports:` declaration
+`platform/business` would need is written into `ADR-0035` **as a proposal only**, because **applying** it is an
+implementation act that requires acceptance first.
+
+### 3.5.6 ⛔ Webhook ingress — NOT resolved, and not pretended to be *(added at v0.7)*
+
+Resolving *who executes* exposed a narrower question that **no source at any rank answers**:
+
+| Probe | Result |
+|---|---|
+| BC Map — `grep -c "webhook"` | **0** |
+| BC Map — `grep -c "inbound"` | **0** |
+| `BC-31` scope, BC Map **L140** | *"Owns **outbound** third-party contracts…"* — **outbound only** |
+| EA **L165** | *"Integration Platform = outbound adapters, **API Platform = inbound adapters**"* |
+| Does `API Platform` hold a `BC-` id? | **No** — diagram band L223 and a single OHS at L358 only |
+| Is the EA able to confer it? | **No** — `DOCUMENTATION_BASELINE.md` **L139**: *"Descriptive — must follow the PRDs, never lead them"* |
+
+**`BC-31` must not be assumed to own inbound**, and the one source that *describes* an inbound owner cannot
+**confer** ownership. Recorded as **`FEE-GAP-016`**, with only the **minimum shape** of the required amendment:
+a `provides_ports:` declaration on an **existing `platform/integration` capability** — **preferred over a new
+bounded context**, per `AR-1`. **No endpoint, payload, signature scheme, retry policy, vendor contract,
+permission or configuration identifier was invented.**
+
+> **A webhook MUST NOT directly mutate `BC-05` truth.** Receiving a provider callback is **transport**;
+> financial truth remains `BC-05`'s, written only by its own verification step. The gap concerns **who receives**,
+> never **who decides**.
 
 ### 3.6 ⚠ **RAISED — a Rank 1 internal contradiction, disclosed and not resolved**
 
@@ -378,16 +446,32 @@ no consumer edge. It does **not** claim `BC-26` Analytics as a subscriber, avoid
 defect where BC Map §9 names consumers §7 denies. **No webhook schema, vendor contract, endpoint, gateway payload
 or provider name appears anywhere in the PRD** — re-verified by scan at v0.6.
 
-### 3.9 Result — ⛔ **BLOCKED**
+### 3.9 Result — ⛔ **BLOCKED** *(two reasons remain, both narrower than at v0.6)*
 
-Nine declared edges verified present. The gateway *transport* is **authorised and requires no edge** (§3.3–3.4).
-The gateway *counterparty* is **undeclared** (§3.5), and Rank 1 bars the obvious candidate.
-Online payment execution, server-side verification and reconciliation therefore **still cannot be specified**.
-Offline financial capture via `BC-30` remains **wholly** unresolved — `E-24` is `BC-03` → `BC-30` only.
+Nine declared edges verified present. Three of the four questions this check once carried are now closed:
 
-**Owner: Architecture Owner.** Tracked as **`FEE-GAP-002`**, now recorded in the PRD as
-**`PARTLY RESOLVED`** — *(a) transport CLOSED by measurement · (b) counterparty OPEN and BLOCKING ·
-(c) offline-sync path OPEN.*
+| Question | v0.5 | v0.6 | v0.7 |
+|---|---|---|---|
+| **(a)** Transport — lawful route to gateway capability | ⛔ assumed missing | ✅ **CLOSED** — already authorised, no edge needed | ✅ closed |
+| **(b)** Counterparty — who *executes* a student→library payment | ⛔ open | ⛔ open | ✅ **CLOSED** — `ADR-0035` `D-2` = `O-3`, a Business Platform **capability** (§3.5.5) |
+| **(c)** Offline financial write via `BC-30` | ⛔ open | ⛔ open | ⛔ **OPEN** — `E-24` is `BC-03` → `BC-30` only; **untouched this pass** |
+| **(d)** Inbound webhook transport owner | *not yet asked* | *surfaced* | ⛔ **OPEN** — **`FEE-GAP-016`** (§3.5.6) |
+
+**The lawful path is now fully named, with no new numbered edge:**
+`BC-05` raises intent → `domain/library` → **`business.payment_intent`** port → `platform/business` **executes**
+→ **`platform/integration:payment_gateway`** port (manifest L409) → `BC-31` → external provider. **Every hop was
+already declared**; the decision named the executor, it did not create a route.
+
+**Why the check still fails, stated without softening.** **(i)** `FEE-GAP-016` — with no declared inbound owner,
+server-side confirmation and webhook reconciliation **cannot be specified**. **(ii)** `ADR-0035` is
+**`PROPOSED`**, so `D-2` is **recorded, not in force**; a gate must not pass on a decision that does not yet
+bind. **(iii)** `FEE-GAP-002`(c) offline capture is still open.
+
+**Owner: Architecture Owner.** Tracked as **`FEE-GAP-002`** — *(a) CLOSED · (b) CLOSED at v0.7, recorded not in
+force · (c) **OPEN and blocking***  — and **`FEE-GAP-016`** *(new, blocking)*.
+
+> **This check is one decision-in-force and one capability declaration away from PASS**, which is materially
+> closer than v0.6 — but *closer* is not *passed*, and this record does not relabel it.
 
 ---
 
@@ -571,7 +655,7 @@ documents* that this PRD surfaces.
 > own verdict on its own say-so. That restraint is `ADR-0033` §7.1: *"A conferral for one act is not a standing
 > licence."*
 
-### 9.3 Gaps — 15, with Stage 3 impact stated individually
+### 9.3 Gaps — 16, with Stage 3 impact stated individually *(15 → 16 at v0.7: `FEE-GAP-016` added)*
 
 | Gap | Blocks Stage 3? | Class | Owner |
 |---|---|---|---|

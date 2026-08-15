@@ -500,6 +500,48 @@ on the `D-2` outcome. Recommended once `D-2` is settled: remove the `E-25` citat
 
 ---
 
+
+### 5.6 The minimum manifest declaration — recorded as a **PROPOSAL ONLY**, not applied
+
+`D-2` decides *who executes*. The machine-checked manifest, however, still does not **say so**: measured at
+this HEAD, `provides_ports:` is used by **exactly two** modules — `domain/person` (L188) and
+`platform/identity` (L442) — and **`platform/business` (L405–L416) declares none** (§3.3). So the callee of
+`business.payment_intent` is undeclared **in the source the lint rule actually reads**, not merely in prose.
+
+**This ADR does not fix that, and the distinction is deliberate.** Deciding an architecture is a *governance*
+act; editing `tool/module_dependencies.yaml` is an **implementation** act that changes what CI enforces.
+Performing the second while this ADR is `PROPOSED` would enact an unaccepted decision. **`tool/module_dependencies.yaml`
+was therefore NOT modified by this pass** — verified by hash in §9.
+
+**What follows is the minimum shape such a declaration would take, using only keys already present in the
+manifest schema** (`name:`, `consumers:`, `constraint:` — exactly as `platform/identity` L442–L452 uses them).
+It is offered so the approving authority can see the *whole* cost of `O-3` before accepting it:
+
+```yaml
+# PROPOSAL ONLY -- NOT APPLIED. Requires acceptance of ADR-0035 D-2 first.
+platform/business:                     # existing block, L405-L416
+  provides_ports:                      # key does not currently exist on this module
+    - name: payment_intent
+      consumers: [domain/library]
+      constraint: "executes a student-to-library payment; owns no FeeLedger, no FeeDue,
+                   no FeePayment and no financial invariant; confirmation is BC-05's"
+```
+
+**Three properties of this shape matter, and each is a restraint rather than a grant:**
+
+| Property | Why it is written this way |
+|---|---|
+| `consumers: [domain/library]` — **not** `[*]` | `AR-1` permits a capability, not a general-purpose rail. Only `BC-05`'s module has a declared need |
+| The `constraint:` **denies** ownership rather than granting capability | It is the `MP-GBR-24` boundary expressed where CI can see it. `platform/identity`'s `account_directory` constraint uses the same denying form |
+| **No new module block, and no new port name** | `platform/integration:payment_gateway` already exists (L409) and `payment_intent` is already the name used at Matrix L196 and `X-03` L352. **Nothing is invented — an existing name is given an existing owner** |
+
+> **`FEE-GAP-016` needs the same treatment and does NOT get it here.** The inbound owner would require a
+> `provides_ports:` entry on **`platform/integration`** — and measured, **there is no `platform/integration:`
+> module block in the manifest at all** (`grep -n "^platform/integration:"` → **rc=1**; it appears only in the
+> rank list at L40 and as a port *target*). Creating that block is a larger act than adding a key, and
+> **no port name, endpoint, payload, signature scheme or retry policy is proposed for it**, because none exists
+> in any source to copy. That is precisely why `FEE-GAP-016` is a **gap awaiting a decision** and not a
+> proposal awaiting application.
 ## 6. Options for `D-2` — **`O-3` SELECTED** *(this table records the choice as offered; the decision is §5.2)*
 
 | # | Option | For | Against |
@@ -575,7 +617,9 @@ allow-list must be widened substantially — a far larger change than this ADR p
 | 2 | `sha256sum LIBOORA_MODULE_DEPENDENCY_MATRIX.md \| cut -c1-16` | **`9895d244494372af`**, unchanged |
 | 3 | `sha256sum LIBOORA_BOUNDED_CONTEXT_MAP.md \| cut -c1-16` | **`81518f1bb251218b`**, unchanged |
 | 4 | `git diff --name-only -- lib test pubspec.yaml android web \| wc -l` | **0** |
-| 5 | This ADR's Status row | **`PROPOSED`** |
+| 5 | This ADR's Status row | **`PROPOSED`** — decided, **not** accepted |
+| 6 | `sha256sum tool/module_dependencies.yaml \| cut -c1-16` | **`22e40ac3fe080387`**, unchanged — §5.6 is a **proposal**, not an application |
+| 7 | `grep -c "^platform/integration:" tool/module_dependencies.yaml` | **0** — the block still does not exist; `FEE-GAP-016` is therefore a real gap, not an oversight |
 
 ---
 
@@ -583,4 +627,5 @@ allow-list must be widened substantially — a far larger change than this ADR p
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-08-15 | **`D-2` DECIDED — `O-3`: payment execution is a Business Platform **capability**, not a new bounded context. Recorded under conferred Architecture Owner authority; **NOT self-accepted** — Status stays `PROPOSED`.** The decision was **tested before it was taken**. The intuitive precedent, Accepted `ADR-0013` (*capability contexts are owned by their platform*), was measured and **rejected as the authority**: its Decision (L94–128) only ever resolves ownership for `BC-19`/`BC-25`/`BC-29`, contexts that **already hold `BC-` identifiers**, and it contains **0 matches** for BC-less language. **That limit is now recorded in §5.2.2** so a later reader cannot over-read it. The governing authority is **`AR-1`** (`ARCHITECTURE_RULINGS.md` L23–37; BC Map L86/L558), whose four criteria were each measured and **all four pass** — no aggregate (`FeeLedger` is `BC-05`'s, L374), no invariant (`FEE-INV-005`/`FEE-BR-016`/frozen `MM-BR-005`), no business state, full delegation — so `AR-1` does not merely permit `O-3`, it **requires** it. Outcome precedent: `PRD_REGISTRY.md` L355, *"no `BC-32` was created … the context count remains 31"*. **`O-2` refused** on Rank 1 `MP-GBR-24`, now also **CI-enforced** by the rank-0 kernel's `banned_symbols` (`class Payment ` → *"FeePayment (BC-05) or SubscriptionCharge (BC-20)"*); **`O-1` refused** on `AR-1`. **The Rank 1 tension is dissolved by scope, and neither statement is amended, weakened or reinterpreted:** `MASTER_PRD.md` L232 sits in **§10 Technology Stack**, whose preamble declares its subject to be *"capabilities with abstractions, with vendors recorded as candidate implementations behind ports"* — a **vendor-abstraction** table — while L362 `MP-GBR-24` governs the **financial model**. Adds §5.3 (**11-row ownership table**, every row carrying its own authority), §5.3.1 (**six concepts held apart** — transport, execution, verification, financial truth, settlement, webhook reconciliation — with a *"may it write `FeeLedger`?"* column), §5.3.2 (cash: *"staff recording cash ≠ LIBOORA receiving money"*; the **3% stays wholly outside `FeePayment`**), §5.4 (**the lawful path in 6 steps with no new numbered edge** — every hop was already declared, incl. `platform/business` → `platform/integration:payment_gateway` at manifest L409), §5.5 (**`D-4` webhook ingress — NOT resolved**, recorded as **`FEE-GAP-016`**) and §5.6 (**the minimum `provides_ports:` declaration, as a PROPOSAL ONLY**). **Webhook ingress is not pretended to be settled:** BC Map `webhook`/`inbound` = **0**; `BC-31` L140 is **outbound** only; EA L165 names an *"API Platform"* for inbound adapters, but that band **holds no `BC-` identifier** and the EA is **descriptive** (`DOCUMENTATION_BASELINE.md` L139), so it **describes** an owner it cannot **confer**. **`BC-31` is not assumed to own inbound.** **What this version does NOT do:** it does not accept itself; creates no bounded context and no `BC-` id; adds no `E-*` edge; changes no Matrix or BC Map cell; moves no aggregate; gives `BC-20` no role in student money; and **does not modify `tool/module_dependencies.yaml`** — §5.6's declaration is a **proposal**, because applying it is an implementation act requiring acceptance first (manifest hash verified unchanged in §9). §6's original *"no recommendation"* options table is **preserved verbatim** with a resolution note, so the record shows what was offered **before** the choice. **No endpoint, payload, signature scheme, retry policy, vendor contract, permission or configuration identifier was invented. No frozen or ranked document was modified. No gate was weakened.** |
 | **v1.0** | 2026-08-05 | Created by the `FEE-GAP-002` investigation ordered for `PRD-008` Stage 3. **Finds the blocker is two questions, not one.** The **transport** (a) is already authorised — Dependency Matrix **L196** declares `business.payment_intent` in `library_management`'s ports inside the section the Matrix itself calls *"the normative form"*; **L167** forbids the direct route and names this one; the matrix cell `LIB → BUS` is `◇` (verified by **mechanical 19/19 column alignment**, not by eye); `X-03` **L352** prescribes the port by name; and Accepted **`ADR-0012` L86** already records `domain/library → platform/business :payment_intent` as a correctly-directed declared port. The **counterparty** (b) is genuinely undeclared: `platform/business` holds only `BC-20` and `BC-21`, **`MP-GBR-24` (Rank 1) bars `BC-20` from student money**, and `PaymentIntent` appears **0 times** in the whole of `docs/`. Also finds that **14 of `library_management`'s 17 declared ports have no usable numbered edge**, so requiring one here would invalidate thirteen other lawful dependencies — consistent with Accepted **`ADR-0033`**, which held that BC Map L292 *"governs edges"* and does not require one for every cross-boundary dependency. Discloses a **Rank 1 internal tension** (`MASTER_PRD.md` L232 vs `MP-GBR-24` L362) and **raises it rather than choosing**, per `DOCUMENTATION_BASELINE.md` §4. Recommends correcting `D-14`'s mis-attribution of `E-25` — a citation defect of the class `ADR-0015` fixed — but **does not execute it**. **Three options for the counterparty are presented and none is recommended.** **No edge added, no allow-list widened, no context created, no aggregate/contract/webhook/endpoint/table defined, no ranked document amended, no Dart source touched.** **Left `PROPOSED`: no conferral of Architecture Owner authority was given, and `D-2` is a question only that authority can answer.** |

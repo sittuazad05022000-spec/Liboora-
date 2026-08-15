@@ -48,7 +48,11 @@ governance findings all terminated here** and could not be resolved anywhere els
 | **Total** | | **70** | |
 
 **Obligation-bearing** = 18 + 9 + 5 + 11 = **43**. `SAAS-AC-*` are *verified by* tests and `SAAS-GAP-*` are *open
-questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*` and `ATT-GAP-*`.
+questions*; neither is an obligation, on the same principle `PRD-006` §0.3 applies to its own acceptance and
+gap registers. *(That precedent is cited by section rather than by quoting Attendance's identifiers:
+`tool/docs_check/prd006_traceability.py` fails any Attendance-prefixed token found outside that module and
+its enumerated allow-list, and it is right to do so. Widening a gate so this document could quote a foreign
+register would be the wrong direction, so the citation was rephrased instead.)*
 
 > **No configuration register is declared.** `CONFIGURATION_GUIDE.md` §5 states that *"Adding a parameter"* requires
 > *"a **PRD amendment** — the specification declares what is configurable, this guide does not."* This document

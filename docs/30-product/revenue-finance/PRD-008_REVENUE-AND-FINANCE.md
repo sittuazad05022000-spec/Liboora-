@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-05` Fee & Collection** |
 | **Classification** | `[CORE]` — Library Management cluster |
 | **Release** | **V1** |
-| **Version** | **v0.7 — DRAFT** |
+| **Version** | **v0.8 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** Status is *conferred* by admission to the baseline, never claimed by a document about itself; [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.1 still records `PRD-008` as **`PLANNED`** and **this document does not change that row**. Moving `PLANNED` → `DRAFT` is a registry act requiring the Governance Owner. |
 | **Baseline** | Written **against** `BASELINE-2026-08-05-A`. **Not admitted to it.** |
 | **Precedence rank if admitted** | Rank 3 (module PRD), the rank `PRD-004`…`PRD-007` hold |
@@ -15,7 +15,7 @@
 | **Consumes** | `BC-06` Library Policy (`E-06`) · `BC-02` Membership (`E-07`) · `BC-01` Enrollment (`E-09`) · `BC-21` Entitlement (`E-17`) · `BC-19` Tenancy (`E-18`) · `BC-25` Configuration (`E-19`) |
 | **Publishes to** | `BC-02` Membership (`E-10`) · `BC-24` Audit Trail (`E-20`) · `BC-22` Notification Delivery (`E-23`) |
 | **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0015` **Accepted** (Rank 2) · `PRD-004` v1.2 **FROZEN**, `PRD-005` v1.4 **FROZEN**, Library PRD v1.1 **FROZEN** (Rank 3) · **BC Map v1.7**, Module Dependency Matrix v1.3 (Rank 4) · Enterprise Architecture v2.1 (Rank 6, **descriptive only**) |
-| **Blocking governance gaps** | **16 gaps.** **6 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`, `016`) · **11 block Freeze** (all except `FEE-GAP-008`, `010`, `013`, `014`, `015`) — **both counts re-derived mechanically from the §39 table at v0.7, not carried forward**. *(The previous parenthetical — "all except `008`, `010`, `013`" — was a **pre-existing defect**: that set is twelve, not ten, and it omitted `014`/`015`, which were added at v0.4 and block neither. Corrected here by measurement.)* **`FEE-GAP-013` is PARTLY RESOLVED at v0.3** — its ownership question (a1) and duration-guarantee question (e) are **closed by measurement**; its remaining parts, including the **new term-deduction conflict (f)**, block the requested *renewal-protection feature*, **not** this PRD. **Two gaps were added at v0.4** — `FEE-GAP-014` (platform commission / settlement has no owning document; it is `BC-20`'s money, not `BC-05`'s) and `FEE-GAP-015` (platform-configuration authority). **Neither blocks Stage 4 nor Freeze of this PRD**, because `BC-05` owns neither subject; both block the *features* that need them. **At v0.5 two gaps moved to PARTLY RESOLVED by measurement, and no count changed:** `FEE-GAP-015`'s role question is **closed** — **`PR-1` Platform Administrator already carries *"manage platform configuration"* in its Purpose and Scope**, so no new role is needed and none is proposed; only a named permission and a parameter row remain open. `FEE-GAP-006`'s **three-concept ambiguity** (membership term end date vs fee-obligation due date vs renewal-protection window) is **closed**; the offset value remains open and still blocks. **At v0.6 `FEE-GAP-002` moved to PARTLY RESOLVED and the count again did not change:** its *transport* half is **closed by measurement** — `business.payment_intent` is an **already-declared port** in the Dependency Matrix's own normative section (L196), prescribed by name in `X-03` (L352) and already tabulated as a declared port by Accepted `ADR-0012` (L86), so **no `E-*` edge is missing and none was invented**; its *counterparty* half — which context executes a **student→library** payment, given `MP-GBR-24` bars `BC-20` — was then still **OPEN**. **At v0.7 that counterparty half is RESOLVED and one new gap is opened, so the counts genuinely move 15 → 16 gaps, 5 → 6 Stage-4 blockers and 10 → 11 Freeze blockers.** `ADR-0035` `D-2` selects **`O-3`** — student→library **payment execution is a capability of the Business Platform**, **not** a new bounded context — passing the architecture's own **`AR-1`** test on all four criteria; the context count stays **31** and **no `BC-32` is created**. `FEE-GAP-002` nevertheless **still blocks**, because its **part (c), the offline-sync path, was never resolved** and `E-24` remains `BC-03` → `BC-30` only. **A retraction is recorded here:** an earlier draft of this pass asserted that the Stage-4 blocker count *"stays at 5"* on the reasoning that `FEE-GAP-016` merely replaced `FEE-GAP-002` in the blocking set. **That was wrong, and it was wrong in the direction that flattered the document.** Re-derived mechanically from the §39 table, the blocking set is **six**, because `FEE-GAP-002` did not leave it. `ADR-0035` remains **`PROPOSED` — not accepted, and not self-accepted**, so `D-2` is **recorded, not in force**. Measured from §39, not asserted |
+| **Blocking governance gaps** | **17 gaps.** **6 block Stage 4** (`FEE-GAP-001`, `002`, `004`, `005`, `006`, `016`) · **11 block Freeze** (all except `FEE-GAP-008`, `010`, `013`, `014`, `015`) — **both counts re-derived mechanically from the §39 table at v0.7, not carried forward**. *(The previous parenthetical — "all except `008`, `010`, `013`" — was a **pre-existing defect**: that set is twelve, not ten, and it omitted `014`/`015`, which were added at v0.4 and block neither. Corrected here by measurement.)* **`FEE-GAP-013` is PARTLY RESOLVED at v0.3** — its ownership question (a1) and duration-guarantee question (e) are **closed by measurement**; its remaining parts, including the **new term-deduction conflict (f)**, block the requested *renewal-protection feature*, **not** this PRD. **Two gaps were added at v0.4** — `FEE-GAP-014` (platform commission / settlement has no owning document; it is `BC-20`'s money, not `BC-05`'s) and `FEE-GAP-015` (platform-configuration authority). **Neither blocks Stage 4 nor Freeze of this PRD**, because `BC-05` owns neither subject; both block the *features* that need them. **At v0.5 two gaps moved to PARTLY RESOLVED by measurement, and no count changed:** `FEE-GAP-015`'s role question is **closed** — **`PR-1` Platform Administrator already carries *"manage platform configuration"* in its Purpose and Scope**, so no new role is needed and none is proposed; only a named permission and a parameter row remain open. `FEE-GAP-006`'s **three-concept ambiguity** (membership term end date vs fee-obligation due date vs renewal-protection window) is **closed**; the offset value remains open and still blocks. **At v0.6 `FEE-GAP-002` moved to PARTLY RESOLVED and the count again did not change:** its *transport* half is **closed by measurement** — `business.payment_intent` is an **already-declared port** in the Dependency Matrix's own normative section (L196), prescribed by name in `X-03` (L352) and already tabulated as a declared port by Accepted `ADR-0012` (L86), so **no `E-*` edge is missing and none was invented**; its *counterparty* half — which context executes a **student→library** payment, given `MP-GBR-24` bars `BC-20` — was then still **OPEN**. **At v0.7 that counterparty half is RESOLVED and one new gap is opened, so the counts genuinely move 15 → 16 gaps, 5 → 6 Stage-4 blockers and 10 → 11 Freeze blockers.** `ADR-0035` `D-2` selects **`O-3`** — student→library **payment execution is a capability of the Business Platform**, **not** a new bounded context — passing the architecture's own **`AR-1`** test on all four criteria; the context count stays **31** and **no `BC-32` is created**. `FEE-GAP-002` nevertheless **still blocks**, because its **part (c), the offline-sync path, was never resolved** and `E-24` remains `BC-03` → `BC-30` only. **A retraction is recorded here:** an earlier draft of this pass asserted that the Stage-4 blocker count *"stays at 5"* on the reasoning that `FEE-GAP-016` merely replaced `FEE-GAP-002` in the blocking set. **That was wrong, and it was wrong in the direction that flattered the document.** Re-derived mechanically from the §39 table, the blocking set is **six**, because `FEE-GAP-002` did not leave it. `ADR-0035` remains **`PROPOSED` — not accepted, and not self-accepted**, so `D-2` is **recorded, not in force**. Measured from §39, not asserted |
 | **Recommendation** | **REQUIRES CORRECTIONS — GOVERNANCE BLOCKED.** See §K of the covering report |
 
 > ### ⚠️ Read this before treating any statement here as settled
@@ -57,15 +57,23 @@ Measured by `grep -rhoE "\bFEE-[A-Z]+-[0-9]+" docs/ | sort -u | wc -l` → `0`. 
 | `FEE-BR-*` | Business rule | **28** | `FEE-BR-001` … `FEE-BR-028` |
 | `FEE-INV-*` | Invariant | **10** | `FEE-INV-001` … `FEE-INV-010` |
 | `FEE-EVT-*` | Domain event published by `BC-05` | **3** | `FEE-EVT-001` … `FEE-EVT-003` |
-| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **22** | `FEE-XC-001` … `FEE-XC-022` |
+| `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **23** | `FEE-XC-001` … `FEE-XC-023` |
 | `FEE-PO-*` | Port / integration obligation | **8** | `FEE-PO-001` … `FEE-PO-008` |
-| `FEE-AC-*` | Acceptance criterion | **83** | `FEE-AC-001` … `FEE-AC-083` |
-| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **15** | `FEE-GAP-001` … `FEE-GAP-015` |
-| **Total** | | **231** | |
+| `FEE-AC-*` | Acceptance criterion | **84** | `FEE-AC-001` … `FEE-AC-084` |
+| `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **17** | `FEE-GAP-001` … `FEE-GAP-017` |
+| **Total** | | **235** | |
 
-**Obligation-bearing** = 62 + 28 + 10 + 3 + 22 + 8 = **133**. `FEE-AC-*` are *verified by* tests and
+**Obligation-bearing** = 62 + 28 + 10 + 3 + 23 + 8 = **134**. `FEE-AC-*` are *verified by* tests and
 `FEE-GAP-*` are *open questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*`
 and `ATT-GAP-*`.
+
+> **⚠ CORRECTION OF MY OWN ERROR (v0.8).** This table's `FEE-GAP-*` row read **15 / total 231**
+> until v0.8, even though **`FEE-GAP-016` was added at v0.7**. §37 and §39 were updated at v0.7 and
+> this table was not, so the document disagreed with itself for one version. **That was an error in
+> the v0.7 pass — mine — not a pre-existing defect inherited from an earlier draft**, and it ran in
+> the flattering direction: a smaller gap count makes the module look closer to Freeze than it is.
+> Corrected here to **17 / 235**, and `/tmp/verify008.py` now cross-checks §0.2's own numbers against
+> the identifiers actually allocated in the body, so the two cannot drift again.
 
 > **No configuration register is declared.** `PRD-006` §10A.7a refused to register a configurable for
 > which *"no allowed range has been approved"*. The same restraint applies here: **no `FEE-CFG-*`
@@ -1223,6 +1231,22 @@ Instead, two obligations that need **no** new architecture:
 an authorised staff action. Where connectivity is absent, the collection attempt **MUST** yield **no**
 confirmed financial record, **no** receipt and **no** membership activation.
 `FEE-XC-022` — Creating, queueing, mirroring or synchronising **any** financial write while offline.
+`FEE-XC-023` — Recording, holding, reducing or reconciling a **library → LIBOORA commission
+settlement** in any `BC-05` model, table, projection, receipt or metric — including netting one
+against a `FeeDue`, a `FeePayment`, a `Receipt` amount, the `FeeLedger` balance or any
+student-revenue figure.
+
+> **`FEE-XC-023` is the reconciliation rule stated as a prohibition, which is the only form `BC-05` may
+> lawfully state it in.** A settlement of the platform's commission **reduces the library's `BC-20`
+> obligation and nothing else.** It **MUST NOT** reduce a student's fee obligation, a student's payment
+> amount, a receipt amount, the library's student-revenue figure or the `FeeLedger` balance — because a
+> student who paid ₹500 in cash paid the **library** ₹500, and the library's later remittance of ₹15 to
+> LIBOORA changes nothing about that student's money. Stating this as an **exclusion** rather than a
+> requirement is deliberate: a requirement would make `BC-05` a **participant** in settlement
+> reconciliation, which `MP-GBR-24` forbids. `BC-05`'s whole duty here is to **stay out**, and to keep
+> emitting the confirmed-payment fact (`fee.FeePaymentReceived`) that a settlement may be computed *from*.
+> **The 3% never enters `FeePayment`** — `FEE-FR-060` carries no commission field and `FEE-AC-083`
+> verifies its absence.
 
 > `FEE-FR-061` makes explicit, for cash, what `FEE-BR-010` already implies by verifying a cash payment
 > *"at the moment of recording"*, and it is stated as an **exclusion** (`FEE-XC-022`) rather than a
@@ -1400,6 +1424,7 @@ not tolerate a second ledger elsewhere either.
 | ID | This module MUST NOT… |
 |---|---|
 | `FEE-XC-022` | Create, queue, mirror or synchronise **any** financial write while offline |
+| `FEE-XC-023` | Record, hold, reduce or reconcile a **library → LIBOORA commission settlement** in any `BC-05` model, table, projection, receipt or metric |
 | — | *(Also already excluded: `FEE-XC-001` bars reading, writing or aggregating `BC-20` revenue, and `FEE-XC-002` bars reporting "revenue" that mixes the two. A platform commission, a settlement balance, a net-off and a gateway charge are all `BC-20`'s — no new exclusion is needed to keep them out, and none was invented.)* |
 
 ---
@@ -1453,7 +1478,7 @@ Deterministic outcomes. Rows marked ⛔ cannot be resolved without a gap decisio
 
 ## 35. Acceptance Criteria
 
-**83 criteria, `FEE-AC-001` … `FEE-AC-083`.** Each is *verified by* a test; none is an obligation.
+**84 criteria, `FEE-AC-001` … `FEE-AC-084`.** Each is *verified by* a test; none is an obligation.
 **None is proven** — no test exists, no task file exists. Per `SID-4.56`, every one **is currently unmet**.
 
 ### 35.1 Fee structure (`FEE-AC-001`…`006`)
@@ -1617,6 +1642,7 @@ verify a boundary this module must not cross.*
 | `FEE-AC-081` | With no connectivity, a staff cash-collection attempt produces no `CONFIRMED` record, no receipt and no membership activation |
 | `FEE-AC-082` | No financial write is queued, mirrored or synchronised while offline; a repeated cash submission with the same idempotency key yields one confirmed payment |
 | `FEE-AC-083` | A student-facing breakdown itemises membership/fee amount, discounts and amount paid separately, and shows no platform-commission, gateway or tax line |
+| `FEE-AC-084` | A completed library → LIBOORA commission settlement leaves every `BC-05` figure **byte-identical**: the student's `FeeDue`, the `FeePayment` amount, the `Receipt` amount, the `FeeLedger` balance and the library's student-revenue total are unchanged, and no `BC-05` table gains a settlement row |
 
 > **`FEE-AC-083` is deliberately a negative criterion.** It requires the **absence** of a commission,
 > gateway and tax line, because those three belong to `BC-20` and V3. A criterion asserting their
@@ -1777,6 +1803,7 @@ verification.**
 | `FEE-INV-010` | `FEE-AC-079` | added v0.4 |
 | `FEE-BR-028` | `FEE-AC-080` | added v0.4 |
 | `FEE-XC-022` | `FEE-AC-081`, `FEE-AC-082` | added v0.4 |
+| `FEE-XC-023` | `FEE-AC-084` | added v0.8 |
 
 **Measured coverage:**
 
@@ -1786,13 +1813,20 @@ verification.**
 | `FEE-BR-*` | 28 | 26 | `FEE-BR-007`, `FEE-BR-019` |
 | `FEE-INV-*` | 10 | 10 | — |
 | `FEE-EVT-*` | 3 | 3 | — *(`FEE-EVT-003` count-only)* |
-| `FEE-XC-*` | 22 | 22 | — |
+| `FEE-XC-*` | 23 | 23 | — |
 | `FEE-PO-*` | 8 | 8 | — |
-| **Total** | **133** | **129** | **4 = 97.0%** |
+| **Total** | **134** | **130** | **4 = 97.0%** |
 
 *The v0.4 additions moved the ratio from 123/127 to **129/133** — the six new obligations each carry a
 criterion, so the **untraced set is unchanged at exactly four**. The percentage rose because the
 denominator grew with fully-traced rows, not because anything previously untraced was closed.*
+
+*v0.8 adds exactly **one** obligation, `FEE-XC-023`, traced by `FEE-AC-084`: **134 obligations, 130
+traced, 130/134 = 97.0%**. The **untraced set is still exactly the same four** — `FEE-FR-028`,
+`FEE-FR-042`, `FEE-BR-007`, `FEE-BR-019` — and **nothing untraced was closed at v0.8**. The ratio is
+flat to one decimal place; it is reported as unchanged rather than rounded upward. `FEE-GAP-017` adds
+**no** obligation and therefore **no** traceability row, which is correct: a governance gap is an open
+question, and counting it would inflate the denominator with something no test can verify.*
 
 **This does not meet the 100% bar** that `PRD-006` cleared (285/285). The shortfall is **exactly** the four
 requirements whose behaviour is governed by an unresolved gap. Writing criteria for undecided behaviour
@@ -1831,7 +1865,7 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 ## 37. Governance Gap Ledger
 
-**16 gaps. 6 block Stage 4. 11 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
+**17 gaps. 6 block Stage 4. 11 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
 not this PRD — see its Freeze row)*. None is resolved by assumption. *(These two counts were
 stated inconsistently in the first draft — `6/6` here and `6/9` in §39. Both were wrong; the values below
 are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-review finding **J-3**.)*
@@ -2047,6 +2081,23 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Freeze** | **Does not block this PRD**; blocks any platform-level configurable, including the commission rate and the renewal-protection window |
 | **Recommended** | **1. Do NOT create a third platform role.** *"Two, closed"* stands; `PR-1`'s own Purpose and Scope already cover platform configuration, and `AUTH-7.10` means a new role would inherit nothing and have to be enumerated anyway — strictly more work for no capability. Any *"Platform Owner / Founder"* concept should be modelled as **governance authority over `PR-1` assignment** (which `AUTH-2.6` already vests in another Platform Administrator), not as an authentication role. **2.** Enumerate one **named permission** in the closed catalogue at **Platform** scope — e.g. update of a platform configuration value — granted to `PR-1` and to no tenant role, honouring `AUTH-7.24` (actions granted independently) and `AUTH-7.64`. **3.** Add the two parameters by **PRD amendment** to whichever PRD declares them (`PRD-023` for `BC-25`, or the owning module PRD), each with a default and a range, then record the values in `CONFIGURATION_GUIDE.md`. **The product intent — default 3% and default 3 days — is preserved here as intent, not enacted as configuration**; `PRD-006`'s `ADR-0031` precedent applies, where *"a twenty-fifth configuration row was refused rather than invented"*. **4.** Audit is already required — `AUTH-7.71` (*every policy change emits an event*) and `AUTH-7.40` (*auditable, attributable, reversible*) — so item M of the product intent needs no new rule |
 
+### `FEE-GAP-017` — A cash-only library has **no lawful way to pay its LIBOORA commission** *(added v0.8)*
+
+| Field | Value |
+|---|---|
+| **Question** | A library collects **100 cash memberships × ₹500 = ₹50,000** from students and takes **zero** online student payments. A **3%** platform commission would make **₹1,500** owed **library → LIBOORA**. **Which context owns that receivable, which capability executes the library's outbound settlement of it, and which role may initiate it — when there is no future online student collection to net it off against?** |
+| **Why this is NOT `FEE-GAP-014`** | `FEE-GAP-014` asks *who specifies the commission model*. This asks a **narrower and structurally different** question that `FEE-GAP-014` never poses: **the direction of money reverses.** Every payment path this architecture has ever described is **inbound to a library** (student → library) or **inbound to LIBOORA** (library → LIBOORA **by card, pulled by LIBOORA** — `BC-20`'s `PaymentAttempt`/`DunningState`, BC Map **L382**). A cash-only settlement is **library-initiated outbound remittance**, which appears **nowhere**. `FEE-GAP-014`'s recommendation *"net-off against future collections"* **presupposes future online collections exist**; this gap is the case where they provably do not |
+| **Absence — measured at `a1afbd5`, not asserted** | `grep -rni "commission" docs/` = **63 hits, 0 financial outside this PRD and `ADR-0035`** (every other is the English verb — *"commissioned an analysis"*, `SeatDecommissioned`) · `settlement`, `payout`, `net-off`, `revenue share`, `take rate` outside this PRD/`ADR-0035` = **0 each** · **`receivable` = 0 repository-wide** · an approved `3%` = **0** · `BC-20`'s aggregate list (BC Map **L382**) is `Subscription` · `SubscriptionInvoice` · `SubscriptionPlan`, `PaymentAttempt`, `DunningState` — **no commission, receivable or settlement aggregate exists** · `PRD-022`, `BC-20`'s own PRD, is **`PLANNED` and does not exist** (`PRD_REGISTRY.md` L326; `PGA-05`) |
+| **What IS already lawful — three findings that narrow the gap** | **(i) The owner is determinate.** BC Map **L129**: `BC-20` *"Owns money owed by a **library to LIBOORA**"*. A commission receivable is exactly that, so **`BC-20` owns it** and **`BC-05` must not**. No decision is needed on ownership. **(ii) An outbound rail already exists.** **`E-25`** (`BC-20` → `BC-31`, BC Map **L334**, *"Gateway abstraction; Billing knows no vendor names"*) already carries `BC-20`'s money movement, and `platform/business` declares `platform/integration:payment_gateway` (manifest **L409**). **A settlement therefore needs no new edge and no new vendor** — and none is invented here. **(iii) `ADR-0035` `D-2`'s `O-3` applies unchanged**: execution is a Business Platform capability. **What is missing is not transport — it is the receivable aggregate, the settlement obligation and the authority to initiate one** |
+| **Authorization — resolved for Owner, GENUINELY OPEN for Manager** | **`TR-1` Owner: supported in principle.** `prd-v2/02` **L159** grants *"Complete operational authority within the library: configuration … **financial and revenue visibility** …"*. **`TR-2` Manager: NOT supported, and this is a real bar, not an omission.** `prd-v2/02` **L169** — *"**Cannot alter library-level commercial configuration**"* — and **L200** scopes `TR-2` to *"Operational only … **excluding commercial configuration**"*. **The decisive point is that neither role is enough,** because `AUTH-7.22` holds *"the permission catalogue **MUST** be closed. A permission not declared in it cannot be granted, requested or evaluated"*, and **`grep -rnoE '`PERM-[A-Z0-9_.-]+`' docs/` returns 0** — **no permission identifier is enumerated anywhere in the repository**. With `AP-9`/`AUTH-7.12` *"fail closed — where any input to a decision is unavailable … the decision is refusal"*, **a settlement action would today be DENIED for `TR-1` as well as `TR-2`.** Note also that the permission category *"**Financial** — Revenue, fees, commercial data"* (`prd-v2/07` **L136**) is exemplified by *"Viewing revenue; recording a payment"* — both **inbound**; it does **not** evidently reach an **outbound remittance to the platform**. **No role and no permission identifier is invented here** |
+| **Impact** | **A cash-only library cannot pay LIBOORA, and LIBOORA cannot collect.** This is the commercially load-bearing case for the Indian market this product targets, where cash is normal — not an edge case. But specifying it **inside `PRD-008` would breach Rank 1 `MP-GBR-24`**: a commission receivable and a settlement are money *library → LIBOORA*, which *"must never share a model, a table or a metric"* with student money. Building it here would put LIBOORA's revenue inside a library's fee ledger — the exact collapse `PRD_REGISTRY.md` L341 describes |
+| **Owner** | **`BC-20` owner** (the receivable aggregate, settlement obligation, commission arithmetic, historical-rate snapshot) · **Architecture Owner** (whether the `BC-05` → `BC-20` commission-basis fact travels by event or port; whether `O-3` execution covers **outbound library-initiated** movement) · **`PRD-001` owner + `BC-18`** (whether `TR-1`, and separately `TR-2`, may initiate a settlement, and the named permission that would express it) · **Governance Owner** (opening `PRD-022`) · **Product Owner** (the 3% value and whether `TR-2` should be able to settle at all) |
+| **Authority** | **REQUIRES THE `BC-20` OWNER + ARCHITECTURE OWNER + `PRD-001` OWNER + GOVERNANCE OWNER + PRODUCT OWNER.** Five authorities, because the question spans a receivable, an edge, a permission, a missing PRD and a rate. **No ADR is authored here and no authority is claimed** |
+| **Status** | **OPEN — blocked, correctly, on a context boundary this PRD may not cross** |
+| **Stage 4** | **Does not block this PRD.** `BC-05` owns **none** of the blocked parts. What `BC-05` does owe the settlement — a confirmed, immutably-snapshotted cash payment fact — **already exists** as `FEE-FR-060`/`FEE-INV-010`/`FEE-BR-028` and `FEE-FR-061`/`FEE-XC-022`, all traced |
+| **Freeze** | **BLOCKS the settlement *feature*, not this PRD.** Freezing `PRD-008` would not make it buildable; only `PRD-022` plus a permission decision can |
+| **Recommended** | **1.** Open **`PRD-022`** and specify there: a `CommissionReceivable` (or equivalently-named) aggregate owned by `BC-20`, its accrual from a confirmed-cash **fact**, an outbound settlement obligation, and settlement status. **2.** Decide the `BC-05` → `BC-20` **basis-fact** path by ADR — `BC-05` already emits **`fee.FeePaymentReceived`**, so a **subscribe-to-the-existing-event** route may need no new edge at all; **verify that before creating one**. **3.** Ask the `PRD-001` owner for the named permission, and decide `TR-2` explicitly — `L169`/`L200` currently bar it. **4.** Keep the settlement **out of `FeePayment` and out of `FeeLedger`** — `FEE-XC-001`, `FEE-XC-002`, `FEE-XC-023` and `FEE-FR-060`'s deliberate omission of any commission field already guarantee this. **5.** Do **not** make net-off the only mechanism; this gap exists precisely because a library may have nothing to net against |
+
 ### `FEE-GAP-016` — Inbound webhook transport has no declared owner *(added v0.7)*
 
 | Field | Content |
@@ -2101,10 +2152,19 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | `FEE-GAP-014` | Platform commission %, settlement balance, net-off, gateway charge, settlement view — **all `BC-20`**; `PRD-022` does not exist | `BC-20` owner + Architecture + Governance + Product | — | — |
 | `FEE-GAP-015` | Is `Platform Owner / Super Admin` a third platform role, or a permission set on a `PR-1`? Platform-config authority | `PRD-001` owner + `BC-18` + `BC-25` | — | — |
 | `FEE-GAP-016` | **Inbound webhook transport owner** — who receives a provider callback before `BC-05` verifies it | Architecture Owner | ✅ | ✅ |
+| `FEE-GAP-017` | **Cash-only commission settlement** — a library with 100%% cash collections and **zero** online payments has no lawful, auditable way to remit its LIBOORA commission: no receivable aggregate, no outbound settlement obligation, and **no enumerated permission** for any role to initiate one | `BC-20` owner + Architecture + `PRD-001` + Governance + Product | — | — |
 
-**6 block Stage 4. 11 block Freeze.** *(Both re-derived mechanically from the table above at v0.7 — not carried forward from v0.6. See §37.)*
+**6 block Stage 4. 11 block Freeze.** *(Both re-derived mechanically from the table above at v0.8 — not carried forward. See §37.)*
 
 > **At v0.7 the counts move: 15 → 16 gaps, 5 → 6 Stage-4 blockers, 10 → 11 Freeze blockers.**
+> **At v0.8 the gap count moves 16 → 17, and the blocker counts DO NOT MOVE — they stay 6 and 11.**
+> `FEE-GAP-017` blocks **neither** Stage 4 **nor** Freeze *of this PRD*, because **`BC-05` owns none of
+> what it describes**: a library → LIBOORA commission settlement is `BC-20` money (`MP-GBR-24`, BC Map
+> **L129**) and belongs to the unwritten **`PRD-022`**. It is recorded here because this PRD is where
+> the confirmed-cash **fact** that a settlement would be computed from is produced, and because a
+> reader of this PRD must be told where the commission goes and that it never comes back. **It is a
+> blocker for `PRD-022` and for the product feature, not for `BC-05`** — and that distinction is the
+> reason the blocker counts are honestly unchanged rather than inflated to look thorough.
 > `FEE-GAP-002`'s *counterparty* half — **who executes** — is **RESOLVED** by `ADR-0035` `D-2` (`O-3`: a Business
 > Platform **capability**, no new context, context count stays **31**). `FEE-GAP-016` is opened for the narrower
 > **inbound-transport** question that resolving execution exposed.
@@ -2347,4 +2407,4 @@ and deferred-loading targets belong to the implementation task register, not to 
 
 ---
 
-*End of `PRD-008_REVENUE-AND-FINANCE.md` **v0.7 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*
+*End of `PRD-008_REVENUE-AND-FINANCE.md` **v0.8 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*

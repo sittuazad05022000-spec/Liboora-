@@ -2,10 +2,10 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **PROPOSED** — *"Recorded, not in force"* (`ADR-INDEX.md` status vocabulary). **This ADR is not self-accepted.** It records a finding and asks one question of the **Architecture Owner**. Nothing below binds any implementation until that authority rules — see **§7** |
+| **Status** | **ACCEPTED** — *"In force. Binding on all implementation"* (`ADR-INDEX.md` status vocabulary). **ACCEPTED by direct conferral of Architecture Owner authority by the human principal**, on the identical basis and with the identical disclosure as `ADR-0032` §5.2 and `ADR-0033`: **no ARB quorum, attendee list, sign-off date or Security review is asserted.** Superseded status text, retained so the record of what kept it `Proposed` stays readable per Process step 3: *"**PROPOSED** — Recorded, not in force. **This ADR is not self-accepted.** It records a finding and asks one question of the **Architecture Owner**."* The conferral is recorded at **§7.2**; **§7.1 is retained verbatim** and still states the objection that kept this ADR `Proposed`. **`D-4` is answered by the same conferral — see §5.5b.** |
 | **Date** | 2026-08-05 |
 | **Raised by** | Stage 3 re-review of `PRD-008` Revenue & Finance — blocker `FEE-GAP-002`, recorded in [`PRD-008_ARCHITECTURE_ALIGNMENT.md`](../../30-product/revenue-finance/PRD-008_ARCHITECTURE_ALIGNMENT.md) §3 |
-| **Decision by** | **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` §2.2) — **not yet given** |
+| **Decision by** | **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` §2.2) — **GIVEN 2026-08-05 by direct conferral.** Decisions applied: `D-1` **ratified** · `D-2` **ratified as `O-3`** · `D-4` **answered — inbound payment webhook is an existing Business Platform capability** (§5.5b) · `D-3` **authorised as a correction, not executed here** |
 | **Supersedes / amends** | **Nothing.** No ranked document is amended by this ADR. **No edge is added. No allow-list is widened. No bounded context is created. No aggregate, contract, webhook schema, endpoint or table is defined.** The one corrective act it *recommends* (§5.3) is to a **Rank 5 derived, explicitly non-normative** document |
 | **Governs** | `BC-05` → payment gateway transport · the `business.payment_intent` port · **student-payment execution ownership (`D-2`)** · `D-14` · `FEE-GAP-002` |
 
@@ -533,6 +533,99 @@ it supports is a statement that the architecture *names no context*, which remai
 
 ---
 
+### 5.5b `D-4` — **ANSWERED 2026-08-05 by conferral: inbound payment webhook is an existing Business Platform capability**
+
+**`D-4` is closed. It was closed by an authority, not by measurement** — which is exactly what §5.5 said would be
+required, and it is worth quoting that sentence again now that it has been satisfied rather than defeated:
+
+> *"**No amount of further measurement will produce this answer** — it does not exist in the repository, and
+> inventing it is precisely what this ADR must not do."*
+
+That statement was and remains correct. Nothing in §5.5 or §5.5a is withdrawn. What has changed is not the
+evidence but the **existence of a decision**, supplied by the only party able to supply it.
+
+**The decision, as given:** *"Inbound payment webhook = existing Business Platform capability. Do not create a new
+BC or invent an endpoint/schema."*
+
+#### What this resolves
+
+| Question | Before | Now |
+|---|---|---|
+| Is inbound ingress a **new bounded context**? | `AR-1` refused `BC-32`, but no owner was named | ✅ **No.** Confirmed by the same authority. Count remains **31 (23 in V1)** |
+| **Which existing capability** owns it? | ⛔ Undeclared — the half `AR-1` structurally could not answer | ✅ **The Business Platform** (`platform/business`, rank 6) — the **same** capability `D-2`/`O-3` already selected for payment execution |
+| Does `BC-31` own inbound? | ⛔ Unknown; BC Map **L140** scopes it to *"Owns outbound third-party contracts, credentials, retries, idempotent delivery."* | ✅ **No.** `BC-31` remains **outbound**. Its scope is **unchanged and unwidened** |
+| Does `BC-05` lose anything? | — | ✅ **No.** `BC-05` keeps payment intent, the **verification obligation** and student financial truth (`FEE-BR-016`, `FEE-INV-005`, `MP-GBR-24`) |
+
+#### Why this is the coherent answer, and not merely an available one
+
+**It places ingress with execution.** `D-2` already put student→library **payment execution** in the Business
+Platform. An inbound confirmation is the *return leg of the very call the same capability makes outbound*. Splitting
+the outbound request from the inbound confirmation across two owners would have been the architecturally worse
+answer, and no ranked document asked for it.
+
+**It passes `AR-1` in the same way `O-3` did** — and this matters, because the test is what refused `BC-32`:
+
+| `AR-1` criterion | Inbound ingress | Source |
+|---|---|---|
+| Owns an aggregate? | **No** — `FeeLedger` is `BC-05`'s | BC Map **L374** |
+| Owns an invariant? | **No** — idempotency and server-side confirmation are `BC-05`'s | `FEE-INV-005`, `FEE-BR-016` |
+| Owns business state? | **No** — an inbound message is **evidence, never instruction** | `FEE-BR-014` |
+| Delegates all domain operations? | **Yes** — it hands a fact to `BC-05` to verify | §5.5 |
+
+A capability with that profile is precisely what `AR-1` says must **not** become a context. So the conferral and the
+Rank 4 ruling agree; no ruling was bent to fit.
+
+#### ⚠ The `§5.5a` precedent, honoured rather than quietly reversed
+
+§5.5a records a prior pass that offered **`LIBOORA_ENTERPRISE_ARCHITECTURE.md` L1407** (*"Webhook Reconciliation
+(V1)"*, nested under L1403 *"Payment Gateway (V1)"*, inside L1352 *"BUSINESS PLATFORM (V1)"*) as the owner, and was
+**overturned** — not because the line says the wrong thing, but because the EA is *"Descriptive — must follow the
+PRDs, never lead them"* (`DOCUMENTATION_BASELINE.md` **L139**) and therefore **cannot confer ownership**.
+
+**That reasoning stands, and is not withdrawn here.** The distinction is exact and must not be blurred by anyone
+reading this later:
+
+| | |
+|---|---|
+| What L1407 could do | **Describe** a placement, and evidence that the placement is not novel |
+| What L1407 could **not** do | **Confer** it. A descriptive document cannot create ownership |
+| What has now happened | The **Architecture Owner has conferred** the placement L1407 describes |
+
+So the conferred answer and the descriptive line **coincide** — and the coincidence is corroboration, **not** the
+grounds. Had they conflicted, the conferral would still have won and the EA would have needed correcting. **This
+subsection is therefore not the §5.5a claim being re-run and accepted at the second attempt;** it is a decision from
+an authority that §5.5a explicitly said was the only thing that would do.
+
+#### What `D-4` does **NOT** do — the boundary of the conferral, stated as constraints on future authors
+
+The instruction accompanying the decision was *"do not create a new BC or invent an endpoint/schema."* Recorded as
+prohibitions so no later pass mistakes this subsection for a licence:
+
+| Not done | Why |
+|---|---|
+| No `BC-32`, and no `BC-` identifier of any number | `AR-1`; count stays **31 (23 in V1)** |
+| **No endpoint, URL, path or route** | Explicitly excluded by the decision |
+| **No webhook payload schema, field list or content type** | Same |
+| **No signature algorithm, header name, secret-rotation or replay-window value** | Same. `FEE-BR-016` requires server-side confirmation; **how** is unspecified and stays so |
+| No new numbered edge, and no widening of the `E-01`…`E-10` allow-list | `D-1` needed none; ingress needs none |
+| No change to `BC-31`'s scope | It stays **outbound** (BC Map L140) |
+| No retry policy, timeout, or dead-letter behaviour | Not conferred |
+| No named gateway provider | None appears in this ADR |
+| No amendment to any Rank 1–4 document | The *Supersedes / amends* row still reads **Nothing** |
+
+#### What remains open after `D-4`
+
+**`D-4` closing does not make check 2 pass, and this ADR will not claim that it does.** `PRD-008`'s Stage 3 check 2
+recorded **three** reasons for its ⛔ (`PRD-008_ARCHITECTURE_ALIGNMENT.md` **L465–468**): *(i)* `FEE-GAP-016`,
+*(ii)* this ADR being `PROPOSED`, and *(iii)* **`FEE-GAP-002`(c), offline financial capture.** The conferral answers
+*(i)* and *(ii)*. **It says nothing about *(iii)*** — `E-24` is `BC-03` → `BC-30` only, and no decision has been
+given on how `BC-05` queues an offline financial write.
+
+**Therefore: `FEE-GAP-016` is RESOLVED; `FEE-GAP-002` remains OPEN on part (c); check 2 remains ⛔ BLOCKED for one
+reason instead of three.** That is progress, and overstating it would destroy the value of recording it.
+
+---
+
 ### 5.3 `D-3` — `D-14` mis-attributes `E-25` and should be corrected
 
 `PRD_DEPENDENCY_GRAPH.md` **L116** reads `| D-14 | PRD-008/PRD-020 | PRD-019 BC-31 Integration | API | E-25 |`.
@@ -610,7 +703,16 @@ the chosen option, since `PRD-008` cannot specify server-side confirmation witho
 
 ---
 
-## 7. Authority — why this ADR is `PROPOSED`
+## 7. Authority — ACCEPTED by conferral; the objection that kept it `Proposed` is retained
+
+**This section was rewritten on acceptance rather than deleted**, on the `ADR-0033` precedent, whose change-history
+row records that its own §7 *"was rewritten on acceptance rather than deleted, so §7.1 still quotes verbatim the
+argument that 'the conferral does not extend here' which kept it `Proposed` the day before."* The same discipline
+applies here: **§7.1 below is the original text, unedited.** A reader must be able to see what the objection was, and
+that it was answered rather than removed.
+
+### 7.1 The original objection, retained verbatim — *(superseded by §7.2, not withdrawn)*
+
 
 `D-1` recognises an authorisation that four ranked documents already grant, and a reader may reasonably ask why it
 needs an ADR at all. **The answer is that recognising it changes a Stage 3 verdict, and a document should not
@@ -635,6 +737,46 @@ Architecture Owner can close.
 
 **What the Architecture Owner is asked to do:** ratify or reject `D-1`; decide `D-2` from §6 (or otherwise); and
 authorise the `D-3` correction.
+
+---
+
+### 7.2 The conferral, recorded
+
+**On 2026-08-05 the human principal, acting as Architecture Owner, conferred authority for this decision directly**,
+in the same manner and with the same disclosure as `ADR-0032` §5.2 and `ADR-0033` §7.2:
+
+> **No ARB was convened. No quorum, attendee list, sign-off date or Security review is asserted.**
+
+That disclosure is not a formality. It is recorded because a later reader is entitled to know the *quality* of the
+authority behind an `Accepted` status, and because `ADR-0033` established that concealing it would be the defect.
+
+**What was conferred, mapped onto what §7.1 asked for:**
+
+| §7.1 asked | Conferred | Recorded at |
+|---|---|---|
+| *"ratify or reject `D-1`"* | ✅ **Ratified.** *"BC-05 owns payment intent, verification obligation and student financial truth"* | §5.1 |
+| *"decide `D-2` from §6 (or otherwise)"* | ✅ **`O-3`.** *"Payment execution = Business Platform capability; DO NOT create BC-32"* | §5.2 |
+| *"authorise the `D-3` correction"* | ✅ **Authorised** — and deliberately **not executed here** (Rank 5 `PRD_DEPENDENCY_GRAPH.md` is untouched; a Rank 5 edit belongs in its own commit, and this ADR's *amends* row must stay **Nothing**) | §5.3 |
+| *(not asked — §5.5 held it unanswerable without an authority)* | ✅ **`D-4` answered:** inbound webhook = existing Business Platform capability | **§5.5b** |
+
+**The claim table from §7.1, re-stated at acceptance.** Every row is answered, and **two are deliberately still `No`:**
+
+| Claim | Status now |
+|---|---|
+| `D-1` binds implementation | ✅ **Yes** — Accepted |
+| `D-2` is decided | ✅ **Yes** — `O-3` |
+| `D-4` is decided | ✅ **Yes** — §5.5b. `FEE-GAP-016` **RESOLVED** |
+| `D-3` is executed | ❌ **Still no.** *Authorised*, not executed. `PRD_DEPENDENCY_GRAPH.md` remains untouched |
+| Any ranked document is amended | ❌ **Still none.** The *Supersedes / amends* row is unchanged |
+| `PRD-008` Stage 3 may be declared ALIGNED | ❌ **Still NO** — and this is the important one. Check 2 stays ⛔ on **`FEE-GAP-002`(c)**, offline financial capture, on which **no decision was given**. Two of its three stated reasons are gone; the third is untouched |
+| `FEE-GAP-002` may be closed | ❌ **No.** (a) and (b) are closed; **(c) remains OPEN and blocking** |
+| A new bounded context exists | ❌ **No.** **31 (23 in V1)**, unchanged. `BC-32` is refused twice over — by `AR-1` and by the conferral |
+| An endpoint, schema, signature scheme or provider is defined | ❌ **No.** Explicitly excluded by the decision (§5.5b) |
+
+**What acceptance does not license.** This conferral covers `D-1`, `D-2`, `D-3`'s authorisation and `D-4`. It is
+**not** a standing grant — `ADR-0033` §7.1's *"A conferral for one act is not a standing licence"* is quoted here
+deliberately, because it now applies to *this* ADR's future readers. Any further decision on the payment surface,
+including offline capture, settlement execution and the permission catalogue, **requires its own conferral.**
 
 ---
 
@@ -677,6 +819,7 @@ allow-list must be widened substantially — a far larger change than this ADR p
 
 | Version | Date | Change |
 |---|---|---|
+| **v2.0** | 2026-08-05 | **ACCEPTED. `Proposed` → `Accepted` by direct conferral of Architecture Owner authority by the human principal — no ARB quorum, attendee list, sign-off date or Security review asserted, disclosed on the `ADR-0032` §5.2 / `ADR-0033` precedent.** **Four decisions land.** `D-1` **ratified** — `business.payment_intent` is the authorised transport and needs no numbered edge. `D-2` **ratified as `O-3`** — payment execution is a **Business Platform capability**, not a context; **`BC-32` is refused**, now twice over, by `AR-1` and by the conferral; count stays **31 (23 in V1)**. `D-3` **authorised but deliberately NOT executed** — Rank 5 `PRD_DEPENDENCY_GRAPH.md` stands byte-untouched, so the *Supersedes / amends* row still reads **Nothing**. **`D-4` ANSWERED in new §5.5b** — *inbound payment webhook is an existing Business Platform capability*, which **resolves `FEE-GAP-016`**. **§5.5's central sentence is vindicated, not contradicted:** it held that *"no amount of further measurement will produce this answer"*, and the answer duly arrived from an **authority**, not from more grepping — so §5.5 and §5.5a are **retained unedited**. **The §5.5a precedent is honoured rather than quietly reversed:** §5.5b states explicitly that EA **L1407** could *describe* the placement but never *confer* it (`DOCUMENTATION_BASELINE.md` L139, *"Descriptive — must follow the PRDs, never lead them"*), that the conferred answer and the descriptive line merely **coincide**, and that the coincidence is **corroboration, not grounds** — had they conflicted the conferral would still have won. **§7 was rewritten on acceptance rather than deleted**, on the `ADR-0033` precedent: **§7.1 retains the original objection verbatim**, including *"`D-2` is in any case a genuine open question that only the Architecture Owner can close"*, and §7.2 records the conferral that removed it. **Three things are deliberately still ❌.** (i) **`PRD-008` Stage 3 check 2 does NOT pass** — it recorded **three** reasons (ALIGNMENT L465–468) and the conferral answers only **two**; **`FEE-GAP-002`(c), offline financial capture via `BC-30`, was not decided and `E-24` is still `BC-03` → `BC-30` only**. A gate that went green here would be green on a decision nobody made. (ii) **`FEE-GAP-002` is NOT closed** — (a)/(b) closed, **(c) OPEN and blocking**. (iii) **No endpoint, URL, payload schema, field list, signature algorithm, header, replay window, retry policy or gateway provider is defined**, per the decision's own *"do not invent an endpoint/schema"*; `FEE-BR-016` still requires server-side confirmation and **how** remains unspecified. **`BC-31` stays outbound** (BC Map L140, unwidened); **`BC-05` keeps** payment intent, the verification obligation and student financial truth. **No ranked document amended, no edge added, no allow-list widened, no aggregate moved, no permission identifier minted, no context created, no Dart source touched.** The conferral is **not a standing licence** (`ADR-0033` §7.1) — offline capture, settlement execution and the permission catalogue each need their own. |
 | **v1.2** | 2026-08-05 | **`D-4` re-measured; still OPEN; a claim of novelty overturned.** New §5.5a records that a governance pass believed it had found the missing webhook-ingress owner at EA **L1407** and that **§3.4 of this ADR had already measured and disposed of exactly that line** — the EA is descriptive by baseline designation and cannot confer ownership. **Nothing is closed:** `D-4` remains OPEN, `FEE-GAP-016` remains open, Stage 3 check 2 remains ⛔ BLOCKED, and this ADR remains **`PROPOSED`** and **not self-accepted**. Newly measured and recorded as *narrowing*, not answering: the manifest already declares `platform/business` → `platform/integration:payment_gateway` (**L409**) while `platform/integration` has **no module block** (**L40** is a rank entry only), so the minimum amendment is a declaration on an **existing** capability rather than a new module or edge — **stated as a proposal and deliberately not written, named or adopted**. A citation defect is recorded, not fixed: `PRD-008` **L799** cites *"EA L1408"* where the line is **L1407**. **Nothing invented:** no bounded context, no `BC-32`, no dependency edge, no port name, no endpoint, no webhook schema, no provider payload, no signature algorithm, no retry policy, no table, no queue, no vendor contract. No frozen document, BC Map, Dependency Matrix or manifest was modified; no ADR was accepted. |
 | **v1.1** | 2026-08-15 | **`D-2` DECIDED — `O-3`: payment execution is a Business Platform **capability**, not a new bounded context. Recorded under conferred Architecture Owner authority; **NOT self-accepted** — Status stays `PROPOSED`.** The decision was **tested before it was taken**. The intuitive precedent, Accepted `ADR-0013` (*capability contexts are owned by their platform*), was measured and **rejected as the authority**: its Decision (L94–128) only ever resolves ownership for `BC-19`/`BC-25`/`BC-29`, contexts that **already hold `BC-` identifiers**, and it contains **0 matches** for BC-less language. **That limit is now recorded in §5.2.2** so a later reader cannot over-read it. The governing authority is **`AR-1`** (`ARCHITECTURE_RULINGS.md` L23–37; BC Map L86/L558), whose four criteria were each measured and **all four pass** — no aggregate (`FeeLedger` is `BC-05`'s, L374), no invariant (`FEE-INV-005`/`FEE-BR-016`/frozen `MM-BR-005`), no business state, full delegation — so `AR-1` does not merely permit `O-3`, it **requires** it. Outcome precedent: `PRD_REGISTRY.md` L355, *"no `BC-32` was created … the context count remains 31"*. **`O-2` refused** on Rank 1 `MP-GBR-24`, now also **CI-enforced** by the rank-0 kernel's `banned_symbols` (`class Payment ` → *"FeePayment (BC-05) or SubscriptionCharge (BC-20)"*); **`O-1` refused** on `AR-1`. **The Rank 1 tension is dissolved by scope, and neither statement is amended, weakened or reinterpreted:** `MASTER_PRD.md` L232 sits in **§10 Technology Stack**, whose preamble declares its subject to be *"capabilities with abstractions, with vendors recorded as candidate implementations behind ports"* — a **vendor-abstraction** table — while L362 `MP-GBR-24` governs the **financial model**. Adds §5.3 (**11-row ownership table**, every row carrying its own authority), §5.3.1 (**six concepts held apart** — transport, execution, verification, financial truth, settlement, webhook reconciliation — with a *"may it write `FeeLedger`?"* column), §5.3.2 (cash: *"staff recording cash ≠ LIBOORA receiving money"*; the **3% stays wholly outside `FeePayment`**), §5.4 (**the lawful path in 6 steps with no new numbered edge** — every hop was already declared, incl. `platform/business` → `platform/integration:payment_gateway` at manifest L409), §5.5 (**`D-4` webhook ingress — NOT resolved**, recorded as **`FEE-GAP-016`**) and §5.6 (**the minimum `provides_ports:` declaration, as a PROPOSAL ONLY**). **Webhook ingress is not pretended to be settled:** BC Map `webhook`/`inbound` = **0**; `BC-31` L140 is **outbound** only; EA L165 names an *"API Platform"* for inbound adapters, but that band **holds no `BC-` identifier** and the EA is **descriptive** (`DOCUMENTATION_BASELINE.md` L139), so it **describes** an owner it cannot **confer**. **`BC-31` is not assumed to own inbound.** **What this version does NOT do:** it does not accept itself; creates no bounded context and no `BC-` id; adds no `E-*` edge; changes no Matrix or BC Map cell; moves no aggregate; gives `BC-20` no role in student money; and **does not modify `tool/module_dependencies.yaml`** — §5.6's declaration is a **proposal**, because applying it is an implementation act requiring acceptance first (manifest hash verified unchanged in §9). §6's original *"no recommendation"* options table is **preserved verbatim** with a resolution note, so the record shows what was offered **before** the choice. **No endpoint, payload, signature scheme, retry policy, vendor contract, permission or configuration identifier was invented. No frozen or ranked document was modified. No gate was weakened.** |
 | **v1.0** | 2026-08-05 | Created by the `FEE-GAP-002` investigation ordered for `PRD-008` Stage 3. **Finds the blocker is two questions, not one.** The **transport** (a) is already authorised — Dependency Matrix **L196** declares `business.payment_intent` in `library_management`'s ports inside the section the Matrix itself calls *"the normative form"*; **L167** forbids the direct route and names this one; the matrix cell `LIB → BUS` is `◇` (verified by **mechanical 19/19 column alignment**, not by eye); `X-03` **L352** prescribes the port by name; and Accepted **`ADR-0012` L86** already records `domain/library → platform/business :payment_intent` as a correctly-directed declared port. The **counterparty** (b) is genuinely undeclared: `platform/business` holds only `BC-20` and `BC-21`, **`MP-GBR-24` (Rank 1) bars `BC-20` from student money**, and `PaymentIntent` appears **0 times** in the whole of `docs/`. Also finds that **14 of `library_management`'s 17 declared ports have no usable numbered edge**, so requiring one here would invalidate thirteen other lawful dependencies — consistent with Accepted **`ADR-0033`**, which held that BC Map L292 *"governs edges"* and does not require one for every cross-boundary dependency. Discloses a **Rank 1 internal tension** (`MASTER_PRD.md` L232 vs `MP-GBR-24` L362) and **raises it rather than choosing**, per `DOCUMENTATION_BASELINE.md` §4. Recommends correcting `D-14`'s mis-attribution of `E-25` — a citation defect of the class `ADR-0015` fixed — but **does not execute it**. **Three options for the counterparty are presented and none is recommended.** **No edge added, no allow-list widened, no context created, no aggregate/contract/webhook/endpoint/table defined, no ranked document amended, no Dart source touched.** **Left `PROPOSED`: no conferral of Architecture Owner authority was given, and `D-2` is a question only that authority can answer.** |

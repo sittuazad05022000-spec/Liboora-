@@ -4,13 +4,13 @@
 |---|---|
 | **PRD** | `PRD-022` |
 | **Bounded context** | **`BC-20` Subscription & Billing** — `[GENERIC]`, Business layer, **V1** |
-| **Version** | **v0.1 — DRAFT** |
+| **Version** | **v0.2 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** |
 | **Authorised by** | `MASTER_PRD.md` **L169** — §8 **module 17**, *"SaaS Billing \| `BC-20` Subscription & Billing \| `[GENERIC]` \| V1"* · `PRD_REGISTRY.md` **L326** (`PRD-022`, `V1`, `PLANNED`) · `PRD_REGISTRY.md` **L427** (§6: `BC-20` → `PRD-022`, **not contested**) |
 | **Identifier prefix** | `SAAS-*` — collision-checked against every existing register before use (`PRD_LIFECYCLE.md` §5 rule 2). Measured **0** pre-existing `SAAS-*` identifiers repository-wide |
 | **Owns money** | **Library → LIBOORA only.** Every obligation in this document is money a **library owes LIBOORA** |
 | **Owns NO student money** | This document defines **no** student fee, payment, receipt or ledger. That is `BC-05`/`PRD-008` |
-| **Blocking governance gaps** | **6 gaps.** **6 block Stage 4** · **6 block Freeze** — see §12 |
+| **Blocking governance gaps** | **7 gaps.** **7 block Stage 4** · **7 block Freeze** — see §12 |
 
 ---
 
@@ -39,15 +39,15 @@ governance findings all terminated here** and could not be resolved anywhere els
 
 | Register | Meaning | Count | Range |
 |---|---|---|---|
-| `SAAS-FR-*` | Functional requirement | **18** | `SAAS-FR-001` … `SAAS-FR-018` |
-| `SAAS-BR-*` | Business rule | **9** | `SAAS-BR-001` … `SAAS-BR-009` |
-| `SAAS-INV-*` | Invariant | **5** | `SAAS-INV-001` … `SAAS-INV-005` |
-| `SAAS-XC-*` | Explicit exclusion — what this module MUST NOT do | **11** | `SAAS-XC-001` … `SAAS-XC-011` |
-| `SAAS-AC-*` | Acceptance criterion | **21** | `SAAS-AC-001` … `SAAS-AC-021` |
-| `SAAS-GAP-*` | Governance gap / open question — **not a requirement** | **6** | `SAAS-GAP-001` … `SAAS-GAP-006` |
-| **Total** | | **70** | |
+| `SAAS-FR-*` | Functional requirement | **28** | `SAAS-FR-001` … `SAAS-FR-028` |
+| `SAAS-BR-*` | Business rule | **13** | `SAAS-BR-001` … `SAAS-BR-013` |
+| `SAAS-INV-*` | Invariant | **8** | `SAAS-INV-001` … `SAAS-INV-008` |
+| `SAAS-XC-*` | Explicit exclusion — what this module MUST NOT do | **15** | `SAAS-XC-001` … `SAAS-XC-015` |
+| `SAAS-AC-*` | Acceptance criterion | **31** | `SAAS-AC-001` … `SAAS-AC-031` |
+| `SAAS-GAP-*` | Governance gap / open question — **not a requirement** | **7** | `SAAS-GAP-001` … `SAAS-GAP-007` |
+| **Total** | | **102** | |
 
-**Obligation-bearing** = 18 + 9 + 5 + 11 = **43**. `SAAS-AC-*` are *verified by* tests and `SAAS-GAP-*` are *open
+**Obligation-bearing** = 28 + 13 + 8 + 15 = **64**. `SAAS-AC-*` are *verified by* tests and `SAAS-GAP-*` are *open
 questions*; neither is an obligation, on the same principle `PRD-006` §0.3 applies to its own acceptance and
 gap registers. *(That precedent is cited by section rather than by quoting Attendance's identifiers:
 `tool/docs_check/prd006_traceability.py` fails any Attendance-prefixed token found outside that module and
@@ -257,6 +257,124 @@ to its pre-settlement value, and no `BC-05` table has gained a row.
 
 ---
 
+## 6A. Billing period and the calendar due date
+
+**Product decision applied:** the Platform Charge is due on a **configurable calendar day, default the 15th of every
+month** — **not** 15 days after each individual payment.
+
+> **The wrong implementation is the one that reads most naturally, so it is prohibited first.** *"Payment received,
+> so this charge is due in 15 days"* produces a **separate due date per student payment**. A library taking 100
+> payments across August would owe 100 obligations on up to 100 different dates, each with its own dunning clock.
+> That is not a billing cycle; it is 100 micro-invoices. `SAAS-XC-012` forbids it explicitly.
+
+### 6A.1 The billing period boundary — stated explicitly, because the brief requires it
+
+`SAAS-FR-019` — The platform **MUST** group accrued Platform Charge obligations into a **billing period**. A billing
+period is a **closed inclusive interval of calendar dates** in the tenant's timezone.
+
+`SAAS-FR-020` — A billing period **MUST** be bounded by consecutive occurrences of the configured **due day**, such
+that the period **ends on the day before** the due day and **begins on the due day of the preceding month**. With the
+default due day of the **15th**, the period is **`[15th of month M, 14th of month M+1]`**, and the charges accrued in
+it fall due on the **15th of month M+1**.
+
+`SAAS-FR-021` — An obligation **MUST** be assigned to the billing period containing its **accrual date**, and that
+assignment **MUST** be immutable once made.
+
+`SAAS-INV-006` — Every accrued obligation belongs to **exactly one** billing period. No obligation is unassigned, and
+none appears in two.
+
+`SAAS-BR-010` — Worked example, normative. Due day = **15th**. A student pays on **3 August**, another on **8
+August**, another on **17 August** and another on **27 August**:
+
+| Payment date | Billing period | Falls due |
+|---|---|---|
+| 3 August | `[15 Jul, 14 Aug]` | **15 August** |
+| 8 August | `[15 Jul, 14 Aug]` | **15 August** |
+| 17 August | `[15 Aug, 14 Sep]` | **15 September** |
+| 27 August | `[15 Aug, 14 Sep]` | **15 September** |
+
+**Charges accumulate into the period. They do not each start a 15-day clock.** The 3 August and 8 August charges
+share one due date; the 17 August and 27 August charges share the next.
+
+`SAAS-XC-012` — Deriving a due date as *"accrual date + 15 days"*, or as any fixed offset from an individual student
+payment. **A due date is a property of the billing period, never of a single payment.**
+
+> **Why the boundary is stated as an explicit formula rather than left to implementation.** The brief requires that
+> *"the exact billing-period boundary MUST be explicitly defined."* Two plausible readings exist — a period ending
+> **on** the due day, or ending **the day before** it — and they disagree about which period a payment made *on the
+> 15th* belongs to. `SAAS-FR-020` resolves it: the due day **opens** a period and closes the previous one, so a
+> payment on 15 August is in `[15 Aug, 14 Sep]` and is **not** due that same morning. A charge accruing hours before
+> its own due date would otherwise be instantly overdue.
+>
+> **Month-end is deliberately not assumed.** The brief says *"do NOT assume month-end."* The 15th is the **default**
+> for a configurable day, and nothing here derives a boundary from the last day of a month.
+
+### 6A.2 Due days that do not exist in every month
+
+`SAAS-GAP-007` — **A configured due day above 28 has no defined behaviour in February.** If the due day is
+configurable across the full range 1-31, then days 29, 30 and 31 do not occur in every month, and this document
+**does not decide** whether such a period ends early, rolls forward, or whether the range is simply capped at 28.
+Frozen `PRD-005` `MM-FR-059` avoids the identical problem by using **day arithmetic only** — *"there is **no** 'same
+day next month' rule and therefore no undefined 31 → 30 February case"* — but a calendar **due day** is exactly a
+*"same day next month"* rule, so that escape is unavailable here. **Recorded rather than guessed**, and it is the
+reason `SAAS-FR-022` declares no range. See §12.
+
+### 6A.3 Changing the due day — no silent retroactive movement
+
+`SAAS-FR-022` — The due day **MUST** be a **platform-scoped configurable value** with a default of the **15th**,
+changeable only by an authorised platform actor (`PR-1`) through the authorised platform configuration mechanism. A
+Library Owner (`TR-1`), a Library Manager (`TR-2`) and every other tenant actor **MUST NOT** be able to change it.
+
+`SAAS-FR-023` — A change to the due day **MUST NOT** alter the due date of any **already-generated** statement, and
+**MUST NOT** alter the billing-period assignment of any already-accrued obligation. It applies to periods beginning
+**after** the change becomes effective.
+
+`SAAS-FR-024` — A change to the due day **MUST NOT** reset, clear, recompute or discharge any Outstanding Platform
+Charge. Outstanding balances survive a configuration change untouched.
+
+`SAAS-INV-007` — For every generated statement, `dueDate` is **immutable** once generated.
+
+`SAAS-XC-013` — Retroactively moving the due date of a historical obligation or statement, **including by a Platform
+Administrator**, and **including** as an incidental effect of changing the configured day.
+
+`SAAS-XC-014` — Resetting or zeroing an outstanding balance as a side effect of a due-day change.
+
+> **`SAAS-FR-024` and `SAAS-XC-014` exist because the brief asks for them explicitly** — *"do NOT reset outstanding
+> when the date changes."* They are separated from `SAAS-FR-023` deliberately: `SAAS-FR-023` protects the **date**,
+> `SAAS-FR-024` protects the **money**. An implementation that regenerated statements on a configuration change could
+> satisfy the first and violate the second.
+>
+> **The non-retroactivity principle is not invented here.** Frozen `PRD-005` `MM-FR-064` already holds that a
+> timezone change *"**MUST NOT** retroactively alter the `startDate` or `endDate` of any existing membership"*, and
+> `SAAS-BR-009` already applies the same rule to the trial duration. `SAAS-FR-023` is the third application of an
+> established principle, not a new one.
+
+### 6A.4 The statement — what every billing period must preserve
+
+`SAAS-FR-025` — For each billing period in which a library accrued at least one obligation, the platform **MUST**
+generate a **statement** preserving, at minimum: the **billing period** boundaries; the **rate applied**; the
+**charge amount**; the **generation date**; the **due date**; the **status**; and the **settlement history** against
+it.
+
+`SAAS-INV-008` — A statement's billing period, rate, amount, generation date and due date are **immutable** once
+generated. A correction is a **new** record referencing the original; nothing is edited in place.
+
+`SAAS-BR-011` — A statement **MUST** preserve the **rate applied per obligation**, not a single period-level rate. If
+the rate changes mid-period, obligations either side of the change keep their own rates (`SAAS-FR-005`,
+`SAAS-INV-002`) and the statement total is their sum, **not** the period's collection total times the current rate.
+
+`SAAS-XC-015` — Recomputing a historical statement's total from the **current** configured rate.
+
+> **`SAAS-BR-011` is where historical-rate immutability and billing periods interact, and where a plausible
+> implementation breaks both.** A statement that stores one `rateApplied` for the period, then displays
+> `collections × rate`, is simpler and wrong: it silently restates every obligation accrued before a rate change.
+> `SAAS-INV-002` already forbids the arithmetic; `SAAS-BR-011` forbids the **statement shape** that invites it.
+
+**No schema is defined.** `SAAS-FR-025` states the facts a statement must **preserve**, not the tables, columns or
+types that preserve them — the same restraint `SAAS-FR-015` applies to audit records.
+
+---
+
 ## 7. Cash-only settlement — a first-class V1 requirement
 
 **The scenario, restated as the requirement it is:** a library takes **100 memberships × ₹500 = ₹50,000** entirely in
@@ -303,6 +421,117 @@ abstraction can carry that direction is an **architecture** question, not a prod
 
 `SAAS-GAP-003` — **Library-initiated outbound remittance has no described shape on the existing rail.** Recorded for
 the Architecture Owner. See §12.
+
+---
+
+## 7A. The library's Platform Charge view
+
+`SAAS-FR-026` — An authorised library actor **MUST** be able to see, for their own library: the **Platform Charge**;
+the **billing period** it belongs to; the **outstanding** amount; the **due date**; the amount already **paid**; the
+**settlement status**; and the **settlement history**.
+
+`SAAS-FR-027` — Every figure presented **MUST** be the **server-derived** value. A client **MUST NOT** compute,
+recompute or adjust any Platform Charge, outstanding balance or due date for display.
+
+`SAAS-FR-028` — The view **MUST** be fully populated for a library whose student collections are **100% cash** and
+whose online collections are **zero**. No figure may be blank, zero-by-default, or unavailable because no online
+payment exists.
+
+`SAAS-BR-012` — The view **MUST NOT** present a student-facing figure: no student's dues, balance, receipt amount or
+`FeeLedger` balance appears on it, and no Platform Charge appears on any student-facing surface (`SAAS-XC-003`).
+
+`SAAS-AC-022` — For a library with 100 confirmed cash collections and zero online collections, all seven facts in
+`SAAS-FR-026` are present and non-empty.
+
+`SAAS-AC-023` — A client-side alteration of a displayed outstanding figure does not change the server-derived value,
+and a settlement submitted against the altered figure is rejected (`SAAS-AC-004`).
+
+> **`SAAS-FR-028` is the requirement most likely to be satisfied on paper and broken in practice.** A view built from
+> an online-payments feed shows a cash-only library **zeros**, or an empty state reading *"no transactions"* — while
+> the library genuinely owes ₹1,500. The figures must derive from **confirmed collections** (`SAAS-FR-002`),
+> irrespective of the channel the collection arrived through, which is also why `SAAS-AC-022` is written against the
+> cash-only library rather than a mixed one. **The harder case is the acceptance test.**
+
+> **No screen, layout, route, widget or navigation entry is specified.** `SAAS-FR-026` states the facts that must be
+> **available to an authorised actor**; where they appear is an application concern. The **authorisation** for viewing
+> is `SAAS-FR-007`'s and remains subject to the same closed-catalogue problem as everything else in §9 — **viewing**
+> is supportable under `TR-1`'s *"financial and revenue visibility"* (`prd-v2/02` **L159**), which **settlement** is
+> not. That asymmetry is deliberate and is not smoothed over.
+
+---
+
+## 7B. The two load tests, worked
+
+**Neither test is hypothetical.** Both are arithmetic over the requirements above, recorded so that an implementation
+can be checked against them and so that a future pass cannot quietly reintroduce an online-payment assumption.
+
+### 7B.1 Test 1 — the 100%-cash library
+
+**Setup:** 100 memberships × **₹500**, **all cash**, all confirmed server-side per `SAAS-FR-002`. Rate **3%**. Due day
+**15th**. All collections accrue in one billing period.
+
+| Quantity | Value | Derived from |
+|---|---|---|
+| Student → library revenue (`BC-05`) | **₹50,000** | `BC-05` truth. **Not this document's figure** |
+| Online student payments | **₹0** | — |
+| Platform Charge per collection | **₹15** | `SAAS-BR-002` — ₹500 × 3% |
+| Platform Charge obligation total | **₹1,500** | `SAAS-FR-006` — 100 × ₹15 |
+| Settled | **₹0** | no settlement yet |
+| **Outstanding Platform Charge** | **₹1,500** | `SAAS-FR-006` — accrued less verified settlements |
+| Due | **15th of the following month** | `SAAS-FR-020`, `SAAS-BR-010` |
+| Lawful settlement path exists | **Yes** | `SAAS-FR-009` — settlement **MUST NOT** depend on any online student payment |
+| Net-off available | **Not applicable** — and not required | `SAAS-BR-005` — net-off **MUST NOT** be the only mechanism |
+
+`SAAS-AC-024` — With 100 confirmed cash collections of ₹500 and **zero** online collections: student revenue reads
+**₹50,000**, the Platform Charge obligation reads **₹1,500**, online collections read **₹0**, outstanding reads
+**₹1,500**, and a settlement path is available that reads no online-collection figure.
+
+**What the test proves, and what it does not.** It proves the **obligation is created and tracked** without any online
+payment, and that the outstanding figure is correct and payable. It does **not** prove the money can be moved: the
+rail direction is `SAAS-GAP-003` and the authority is `SAAS-GAP-004`. **Both remain open, and this test does not close
+them.**
+
+### 7B.2 Test 2 — the mixed library
+
+**Setup:** 100 memberships × **₹500** = **₹50,000**. **60 cash**, **40 online**. Rate **3%**.
+
+| Quantity | Value | Note |
+|---|---|---|
+| Student → library revenue | **₹50,000** | one figure, **not** split by channel |
+| Cash collections | **₹30,000** (60 × ₹500) | `BC-05` |
+| Online collections | **₹20,000** (40 × ₹500) | `BC-05` |
+| Platform Charge — cash-originated | **₹900** (60 × ₹15) | `SAAS-FR-002` |
+| Platform Charge — online-originated | **₹600** (40 × ₹15) | `SAAS-FR-002` |
+| **Total obligation** | **₹1,500** | **identical to Test 1** |
+| Outstanding | **₹1,500** | `SAAS-FR-006` |
+
+`SAAS-AC-025` — For an identical collection total, the Platform Charge obligation is **₹1,500** whether collections
+are 100% cash, 100% online, or any mixture. The **channel does not change the charge**.
+
+`SAAS-BR-013` — The Platform Charge **MUST** be computed identically for a confirmed cash collection and a confirmed
+online collection. Channel **MUST NOT** be an input to the rate, the amount, the billing period or the due date.
+
+`SAAS-AC-026` — In a mixed library, a settlement is available that does **not** require net-off, and net-off — where
+the authorised arrangement supports it — is available for the online portion **only as an option**, never as the sole
+mechanism (`SAAS-BR-005`).
+
+**The two truths stay separate throughout.** In both tests:
+
+| | Student → library | Library → LIBOORA |
+|---|---|---|
+| Amount | ₹50,000 | ₹1,500 |
+| Owner | `BC-05` / `PRD-008` | `BC-20` / this document |
+| Model, table, ledger, metric | **separate** | **separate** |
+| Effect of settling ₹1,500 | **none — byte-identical** (`SAAS-AC-001`) | outstanding → ₹0 |
+
+`SAAS-AC-027` — After settling ₹1,500 in either test, the student-revenue figure still reads **₹50,000**, every
+`FeeLedger` balance is unchanged, and no receipt amount has moved.
+
+> **Why Test 2 is not simply Test 1 with different inputs.** A design that nets the Platform Charge off online
+> collections produces the *same* ₹1,500 total and *looks* correct here — while being unable to serve Test 1 at all.
+> Running both is what exposes that: **identical totals, different mechanisms, and only one of the two mechanisms
+> works for every library.** `SAAS-BR-013` states the invariance as a rule so that a channel-sensitive computation is
+> a specification violation rather than a discovered surprise.
 
 ---
 
@@ -446,12 +675,29 @@ a **platform-level** value; both attempts fail closed.
 > **The renewal-protection window is listed here as tenant-level and is specified nowhere in this document.** It is
 > `BC-02`/`BC-06`/`BC-25` territory and is tracked by `PRD-008`'s `FEE-GAP-013`. Listing it in this table records the
 > **category boundary**, which the brief asks for, without claiming the parameter.
+>
+> **⚠ Amended at v0.2 — the scope claim above was too loose in one respect.** The **3-day renewal protection** window
+> is now known to turn on **`Q-01`** — *"does an expired membership release the seat immediately, at end-of-day, or
+> after a grace period?"* — whose owners are the **Architecture Owner and the `BC-04` owner**, not `BC-25`. `BC-25`
+> enters **only if** the window is made configurable, which
+> [`ADR-0036`](../../00-governance/adr/ADR-0036-three-day-renewal-protection-q01.md) (`PROPOSED`) deliberately does
+> **not** propose: `CONFIGURATION_GUIDE.md` §5 requires *"an ADR **and** a PRD amendment"* to promote a structural
+> fact to configurable, and no `SEAT-CFG-*` identifier exists for it.
+>
+> **The row is otherwise correct and is retained:** the window is **not** a platform-level parameter, it is **not**
+> this document's to specify, and `PR-1` has no authority over it. **`SAAS-AC-005` is unaffected.** What is corrected
+> is only the naming of the deciding authority — recorded rather than quietly restated, because `PRD-008` §39.2 made
+> the *opposite* error about the same requirement and had to be retracted at its v1.0.
+>
+> **This document does not specify a protection window, does not allocate an identifier for one, and does not price
+> one.** The window computes no money, so no Platform Charge, statement, billing period or due date is affected by
+> it — which is why it changes nothing in §§4-7B.
 
 ---
 
 ## 12. Governance gap ledger
 
-**6 gaps. 6 block Stage 4. 6 block Freeze.** None is closed by a plausible solution; each names an authority.
+**7 gaps. 7 block Stage 4. 7 block Freeze.** None is closed by a plausible solution; each names an authority.
 
 ### `SAAS-GAP-001` — Platform Charge eligibility base
 
@@ -513,6 +759,18 @@ a **platform-level** value; both attempts fail closed.
 | **Classification** | **REQUIRES ARCHITECTURE OWNER** |
 | **Blocks** | Stage 4 ✅ · Freeze ✅ |
 
+### `SAAS-GAP-007` — A configured due day above 28 has no defined February behaviour
+
+| Field | Value |
+|---|---|
+| **Question** | If the due day is configurable, what happens when the configured day (29, 30, 31) does not occur in a month? Does the period end early, roll forward, or is the range capped at 28? |
+| **Why it is not decided here** | It is a **calendar-semantics** decision with customer-visible consequences for the due date, and `SAAS-GAP-002` already records that **no configurable range is declared** for any value in this document. Frozen `PRD-005` `MM-FR-059` sidesteps the identical problem by using *"day arithmetic alone"* so that *"there is **no** 'same day next month' rule"* — but a calendar **due day** is precisely such a rule, so that escape does not transfer |
+| **Classification** | **REQUIRES PRODUCT OWNER** (+ `BC-25` for the range) |
+| **Blocks** | Stage 4 ✅ · Freeze ✅ |
+
+> **The safe default is already in force and costs nothing:** the **15th** occurs in every month, so the V1 default is
+> unaffected. The gap blocks only the *configurability* of days 29-31, which nothing yet requires.
+
 ### 12.1 Gap summary
 
 | Gap | Subject | Authority | Blocks Stage 4 | Blocks Freeze |
@@ -523,8 +781,9 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-GAP-004` | Settlement permission for any role | Authorization Owner + Product Owner | ✅ | ✅ |
 | `SAAS-GAP-005` | Trial eligibility identity | Architecture Owner + `PRD-001` | ✅ | ✅ |
 | `SAAS-GAP-006` | Stage 3 not performed | Architecture Owner | ✅ | ✅ |
+| `SAAS-GAP-007` | Due day above 28 in February | Product Owner + `BC-25` | ✅ | ✅ |
 
-**6 gaps. 6 block Stage 4. 6 block Freeze.**
+**7 gaps. 7 block Stage 4. 7 block Freeze.**
 
 > **Every gap blocks, and that is the honest result of a first draft rather than a pessimistic one.** A V1 module
 > whose central action cannot be authorised by any existing role, whose configurable values have no registered
@@ -535,7 +794,7 @@ a **platform-level** value; both attempts fail closed.
 
 ## 13. Acceptance criteria
 
-**21 criteria, `SAAS-AC-001` … `SAAS-AC-021`.** Each is *verified by* a test; none is an obligation.
+**31 criteria, `SAAS-AC-001` … `SAAS-AC-031`.** Each is *verified by* a test; none is an obligation.
 
 | ID | Criterion |
 |---|---|
@@ -560,6 +819,16 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-AC-019` | A `TR-2` Manager settlement attempt is refused while `SAAS-GAP-004` is open |
 | `SAAS-AC-020` | A settlement audit record cannot be modified or deleted; a correction appears as a new record referencing the original |
 | `SAAS-AC-021` | No student-facing surface displays a Platform Charge, subscription or settlement figure |
+| `SAAS-AC-022` | For a library with 100 confirmed cash collections and zero online collections, all seven `SAAS-FR-026` facts are present and non-empty |
+| `SAAS-AC-023` | A client-side alteration of a displayed outstanding figure does not change the server-derived value, and a settlement against it is rejected |
+| `SAAS-AC-024` | 100 cash collections of ₹500, zero online: revenue ₹50,000 · obligation ₹1,500 · online ₹0 · outstanding ₹1,500 · a settlement path reads no online figure |
+| `SAAS-AC-025` | An identical collection total yields ₹1,500 whether 100% cash, 100% online, or mixed |
+| `SAAS-AC-026` | In a mixed library a settlement is available that does not require net-off |
+| `SAAS-AC-027` | After settling ₹1,500, student revenue still reads ₹50,000, every `FeeLedger` balance is unchanged, and no receipt amount moved |
+| `SAAS-AC-028` | Charges accrued on 3 and 8 August share one due date; charges accrued on 17 and 27 August share the next; no charge is due 15 days after its own payment |
+| `SAAS-AC-029` | Every accrued obligation belongs to exactly one billing period |
+| `SAAS-AC-030` | Changing the configured due day leaves every already-generated statement's due date, every billing-period assignment and every outstanding balance unchanged |
+| `SAAS-AC-031` | A statement whose period spans a rate change totals the sum of per-obligation amounts, not collections × current rate |
 
 ---
 
@@ -587,6 +856,16 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-FR-016` | `SAAS-AC-018` | |
 | `SAAS-FR-017` | — | ⛔ **UNTRACED** — no range declared; blocked on `SAAS-GAP-002` |
 | `SAAS-FR-018` | `SAAS-AC-003` | |
+| `SAAS-FR-019` | `SAAS-AC-029` | |
+| `SAAS-FR-020` | `SAAS-AC-028` | |
+| `SAAS-FR-021` | `SAAS-AC-029` | |
+| `SAAS-FR-022` | — | ⛔ **UNTRACED** — no range declared; blocked on `SAAS-GAP-002` and `SAAS-GAP-007` |
+| `SAAS-FR-023` | `SAAS-AC-030` | |
+| `SAAS-FR-024` | `SAAS-AC-030` | |
+| `SAAS-FR-025` | `SAAS-AC-031` | |
+| `SAAS-FR-026` | `SAAS-AC-022` | |
+| `SAAS-FR-027` | `SAAS-AC-023` | |
+| `SAAS-FR-028` | `SAAS-AC-022` | |
 | `SAAS-BR-001` | — | ⛔ **UNTRACED** — a terminology rule; verified by review, not by test |
 | `SAAS-BR-002` | `SAAS-AC-006`, `SAAS-AC-007` | |
 | `SAAS-BR-003` | `SAAS-AC-008` | |
@@ -596,11 +875,18 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-BR-007` | `SAAS-AC-019` | |
 | `SAAS-BR-008` | `SAAS-AC-018` | |
 | `SAAS-BR-009` | — | ⛔ **UNTRACED** — blocked on `SAAS-GAP-005` trial identity |
+| `SAAS-BR-010` | `SAAS-AC-028` | |
+| `SAAS-BR-011` | `SAAS-AC-031` | |
+| `SAAS-BR-012` | `SAAS-AC-021` | |
+| `SAAS-BR-013` | `SAAS-AC-025` | |
 | `SAAS-INV-001` | `SAAS-AC-008` | |
 | `SAAS-INV-002` | `SAAS-AC-008`, `SAAS-AC-009` | |
 | `SAAS-INV-003` | `SAAS-AC-017` | |
 | `SAAS-INV-004` | `SAAS-AC-013` | |
 | `SAAS-INV-005` | `SAAS-AC-020` | |
+| `SAAS-INV-006` | `SAAS-AC-029` | |
+| `SAAS-INV-007` | `SAAS-AC-030` | |
+| `SAAS-INV-008` | `SAAS-AC-031` | |
 | `SAAS-XC-001` | `SAAS-AC-001` | |
 | `SAAS-XC-002` | `SAAS-AC-001` | |
 | `SAAS-XC-003` | `SAAS-AC-021` | |
@@ -612,19 +898,26 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-XC-009` | `SAAS-AC-016` | |
 | `SAAS-XC-010` | `SAAS-AC-001` | |
 | `SAAS-XC-011` | `SAAS-AC-014` | |
+| `SAAS-XC-012` | `SAAS-AC-028` | |
+| `SAAS-XC-013` | `SAAS-AC-030` | |
+| `SAAS-XC-014` | `SAAS-AC-030` | |
+| `SAAS-XC-015` | `SAAS-AC-031` | |
 
 **Measured coverage:**
 
 | Register | Allocated | Traced | Untraced (all ⛔ BLOCKED or review-verified) |
 |---|---|---|---|
-| `SAAS-FR-*` | 18 | 14 | `SAAS-FR-007`, `SAAS-FR-010`, `SAAS-FR-011`, `SAAS-FR-017` |
-| `SAAS-BR-*` | 9 | 7 | `SAAS-BR-001`, `SAAS-BR-009` |
-| `SAAS-INV-*` | 5 | 5 | — |
-| `SAAS-XC-*` | 11 | 10 | `SAAS-XC-006` |
-| **Total** | **43** | **36** | **7 = 83.7%** |
+| `SAAS-FR-*` | 28 | 23 | `SAAS-FR-007`, `SAAS-FR-010`, `SAAS-FR-011`, `SAAS-FR-017`, `SAAS-FR-022` |
+| `SAAS-BR-*` | 13 | 11 | `SAAS-BR-001`, `SAAS-BR-009` |
+| `SAAS-INV-*` | 8 | 8 | — |
+| `SAAS-XC-*` | 15 | 14 | `SAAS-XC-006` |
+| **Total** | **64** | **56** | **8 = 87.5%** |
 
 **This does not meet the 100% bar** that `PRD-006` cleared (285/285), and it is not presented as if it might.
-**Four** of the seven are blocked on named gaps; **three** (`SAAS-BR-001`, `SAAS-XC-006`, and the review half of
+**At v0.2 coverage moved from 36/43 = 83.7% to 56/64 = 87.5%** — it rose because the eleven new obligations
+arrived with criteria attached, and **one new untraced obligation** (`SAAS-FR-022`, the due-day configurable) was
+added rather than hidden, because `SAAS-GAP-007` blocks it.
+**Five** of the 8 are blocked on named gaps; **three** (`SAAS-BR-001`, `SAAS-XC-006`, and the review half of
 `SAAS-FR-007`) are prohibitions on documentation and terminology that a runtime test cannot verify. Manufacturing
 criteria for those would raise the percentage without raising the assurance — the same inflation this repository has
 refused before.
@@ -635,8 +928,9 @@ refused before.
 
 | Version | Date | Change |
 |---|---|---|
-| **v0.1** | *(this draft)* | **First draft. Stage 2 only.** Created to give `BC-20` the PRD it has been registered for since the register was created, and to be the lawful home for three findings that terminated outside their own module: **`FEE-GAP-014`** (the platform charge has no owning document), **`FEE-GAP-017`** (a cash-only library has no lawful way to pay) and the unspecified **SaaS free trial**. **Authorisation checked before authoring, not assumed:** Master PRD **L169** §8 module 17, `PRD_REGISTRY.md` **L326** (`V1`, `PLANNED`) and **L427** (§6, `BC-20` → `PRD-022`, uncontested) — and the registry's own §4.3 note names `BC-20` **module 17** *as the precedent* it used to register `PRD-023`, so authoring this applies an established mechanism rather than a new one. **Prefix collision-checked** per `PRD_LIFECYCLE.md` §5 rule 2: `SAAS-*` measured **0** pre-existing identifiers. **Terminology decision applied:** *Platform Charge* replaces *commission* in all new text — measured **0** pre-existing occurrences of *Platform Charge*, and the financial sense of *commission* confined to **three non-frozen** documents (`PRD-008`, its alignment record, `ADR-0035`), every other occurrence in the repository being the English verb. **The transition is forward-only and no historical text was rewritten** — editing the vocabulary of a decision record destroys the ability to audit what was known when, and **no frozen document uses the financial sense at all**. **Product decisions applied:** Platform Charge default **3%** (`SAAS-FR-001`), free trial default **14 days** (`SAAS-FR-017`), historical-rate immutability (`SAAS-FR-005`, `SAAS-BR-003`, `SAAS-INV-002` — ₹15 stays ₹15 when the rate becomes 2.5%), cash-only settlement as a **first-class V1 requirement** (`SAAS-FR-009`) with net-off explicitly **not** the only mechanism (`SAAS-BR-005`), three settlement states, server-side verification only (`SAAS-FR-013`), idempotency (`SAAS-FR-014`), and eight-fact auditability (`SAAS-FR-015`). **The `MP-GBR-24` boundary is stated as mirror-image prohibitions** (`SAAS-XC-001`…`004`, `SAAS-XC-010`) so that both sides of the boundary forbid the crossing rather than only `BC-05`. **Nothing was invented:** no bounded context, no `BC-32`, no dependency edge, no port, no endpoint, no webhook schema, no signature algorithm, no retry policy, no database schema, no queue, no payment provider, no settlement rail, no bank-account structure, no UPI flow, no tax rate, no gateway charge, no permission identifier, no role, no configuration identifier and no configurable range. **The hardest finding is recorded rather than solved:** `AUTH-7.22` closes the permission catalogue, **0** `PERM-*` identifiers exist repository-wide, and `AP-9` fails closed — so a settlement is refused **for `TR-1` Owner too**, not merely for `TR-2` Manager, and `X-13` makes naming a permission here *"a security defect that passes its own tests."* **Six gaps, all six blocking Stage 4 and Freeze**, each with a named authority. **Traceability reported honestly at 36/43 = 83.7%**, below the 100% bar, with four blocked on gaps and three verifiable only by review. **Stage 3 has NOT been performed** (`SAAS-GAP-006`) and this document is **NOT frozen and NOT approved**. No frozen document, BC Map, Dependency Matrix, Traceability Matrix or module manifest was modified; no ADR was authored or accepted; no Dart source was touched. |
+| **v0.2** | 2026-08-05 | **Billing period, calendar due date, the library view and the two load tests specified; the renewal-protection authority corrected.** Registers move **70 → 102**: `SAAS-FR-*` 18 → **28**, `SAAS-BR-*` 9 → **13**, `SAAS-INV-*` 5 → **8**, `SAAS-XC-*` 11 → **15**, `SAAS-AC-*` 21 → **31**, `SAAS-GAP-*` 6 → **7**; obligation-bearing 43 → **64**; traceability **56/64 = 87.5%** (up from 83.7%, and **every figure recomputed from the document rather than incremented by hand**). **New §6A defines the billing period explicitly, as the brief requires:** a closed inclusive interval bounded by consecutive due days — `[15th of M, 14th of M+1]` at the default — with `SAAS-XC-012` **forbidding** the natural-but-wrong *"accrual date + 15 days"* derivation, which would give a 100-payment month up to 100 separate due dates. **The boundary ambiguity is resolved rather than left open:** the due day **opens** a period and closes the previous one, so a payment on the 15th is not due the same morning. **Month-end is not assumed.** Due day is **platform-scoped, default the 15th, `PR-1` only** (`SAAS-FR-022`), and a change is **non-retroactive in two separate ways** — `SAAS-FR-023` protects the **date**, `SAAS-FR-024` the **money**, because an implementation could satisfy one and violate the other; `SAAS-XC-013`/`SAAS-XC-014` state both as exclusions. The non-retroactivity principle is the **third** application of frozen `MM-FR-064`'s, not a new one. **`SAAS-FR-025` defines the statement's preserved facts** — period, rate, amount, generation date, due date, status, settlement history — with `SAAS-BR-011` forbidding a **period-level rate**, the statement shape that would silently restate obligations accrued before a rate change. **New §7A** gives the library view all seven required facts, **server-derived only**, and `SAAS-FR-028` requires it to be **fully populated for a 100%-cash library** — the case an online-payments feed renders as zeros. **New §7B works both load tests as arithmetic:** 100% cash → ₹50,000 revenue, ₹1,500 obligation, ₹0 online, ₹1,500 outstanding, lawful path independent of any future online collection; mixed 60/40 → the **identical** ₹1,500, with `SAAS-BR-013` making channel-invariance a rule so a channel-sensitive computation is a violation rather than a surprise. **What the tests do NOT prove is stated**: the rail direction (`SAAS-GAP-003`) and the authority (`SAAS-GAP-004`) stay open. **One correction, declared:** §11's note named `BC-25` as the renewal-protection authority; the deciding question is **`Q-01`**, owned by the **Architecture Owner + `BC-04` owner**, with `BC-25` involved only if the window is made configurable — which **`ADR-0036`** (`PROPOSED`) deliberately does not propose, since `CONFIGURATION_GUIDE.md` §5 requires *"an ADR **and** a PRD amendment"* and no `SEAT-CFG-*` exists. The rest of the row was right and is retained. **One new gap, `SAAS-GAP-007`** — a due day above 28 has no defined February behaviour; the **15th default is unaffected**, so the gap blocks only configurability. **7 gaps, all 7 blocking Stage 4 and Freeze.** **Nothing invented:** no bounded context (still **31**), no `CFG-*`/`LCFG-*`/`ICFG-*`/`SEAT-CFG-*` identifier, no permission, no role, no schema, no table, no screen, no route, no provider, no rail, no endpoint, no configurable **range**. **Nothing closed:** all six prior gaps remain open, Stage 3 is still not performed (`SAAS-GAP-006`), and this document is **NOT frozen and NOT approved**. No frozen document, BC Map, Dependency Matrix, Traceability Matrix or module manifest was modified; no ADR was accepted; no Dart source was touched. |
+| **v0.1** | *(the first draft)* | **First draft. Stage 2 only.** Created to give `BC-20` the PRD it has been registered for since the register was created, and to be the lawful home for three findings that terminated outside their own module: **`FEE-GAP-014`** (the platform charge has no owning document), **`FEE-GAP-017`** (a cash-only library has no lawful way to pay) and the unspecified **SaaS free trial**. **Authorisation checked before authoring, not assumed:** Master PRD **L169** §8 module 17, `PRD_REGISTRY.md` **L326** (`V1`, `PLANNED`) and **L427** (§6, `BC-20` → `PRD-022`, uncontested) — and the registry's own §4.3 note names `BC-20` **module 17** *as the precedent* it used to register `PRD-023`, so authoring this applies an established mechanism rather than a new one. **Prefix collision-checked** per `PRD_LIFECYCLE.md` §5 rule 2: `SAAS-*` measured **0** pre-existing identifiers. **Terminology decision applied:** *Platform Charge* replaces *commission* in all new text — measured **0** pre-existing occurrences of *Platform Charge*, and the financial sense of *commission* confined to **three non-frozen** documents (`PRD-008`, its alignment record, `ADR-0035`), every other occurrence in the repository being the English verb. **The transition is forward-only and no historical text was rewritten** — editing the vocabulary of a decision record destroys the ability to audit what was known when, and **no frozen document uses the financial sense at all**. **Product decisions applied:** Platform Charge default **3%** (`SAAS-FR-001`), free trial default **14 days** (`SAAS-FR-017`), historical-rate immutability (`SAAS-FR-005`, `SAAS-BR-003`, `SAAS-INV-002` — ₹15 stays ₹15 when the rate becomes 2.5%), cash-only settlement as a **first-class V1 requirement** (`SAAS-FR-009`) with net-off explicitly **not** the only mechanism (`SAAS-BR-005`), three settlement states, server-side verification only (`SAAS-FR-013`), idempotency (`SAAS-FR-014`), and eight-fact auditability (`SAAS-FR-015`). **The `MP-GBR-24` boundary is stated as mirror-image prohibitions** (`SAAS-XC-001`…`004`, `SAAS-XC-010`) so that both sides of the boundary forbid the crossing rather than only `BC-05`. **Nothing was invented:** no bounded context, no `BC-32`, no dependency edge, no port, no endpoint, no webhook schema, no signature algorithm, no retry policy, no database schema, no queue, no payment provider, no settlement rail, no bank-account structure, no UPI flow, no tax rate, no gateway charge, no permission identifier, no role, no configuration identifier and no configurable range. **The hardest finding is recorded rather than solved:** `AUTH-7.22` closes the permission catalogue, **0** `PERM-*` identifiers exist repository-wide, and `AP-9` fails closed — so a settlement is refused **for `TR-1` Owner too**, not merely for `TR-2` Manager, and `X-13` makes naming a permission here *"a security defect that passes its own tests."* **Six gaps, all six blocking Stage 4 and Freeze**, each with a named authority. **Traceability reported honestly at 36/43 = 83.7%**, below the 100% bar, with four blocked on gaps and three verifiable only by review. **Stage 3 has NOT been performed** (`SAAS-GAP-006`) and this document is **NOT frozen and NOT approved**. No frozen document, BC Map, Dependency Matrix, Traceability Matrix or module manifest was modified; no ADR was authored or accepted; no Dart source was touched. |
 
 ---
 
-*End of `PRD-022_SAAS-BILLING.md` **v0.1 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*
+*End of `PRD-022_SAAS-BILLING.md` **v0.2 — DRAFT**. Not frozen. Not approved. Not architecture-reviewed.*

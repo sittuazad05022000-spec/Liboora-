@@ -1,16 +1,16 @@
-# `PRD-008` Revenue & Finance v0.9 — Stage 3 Architecture Alignment Record
+# `PRD-008` Revenue & Finance v1.0 — Stage 3 Architecture Alignment Record
 
 | Field | Value |
 |---|---|
 | **Stage** | **Stage 3 — Architecture Review** ([`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) §Stage 3) |
-| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v0.9 `DRAFT`** |
+| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v1.0 `DRAFT`** |
 | **Gate addressed by** | This document — *"a written alignment record naming every conflict and its disposition"* |
 | **Worked examples followed** | [`PRD-007_ARCHITECTURE_ALIGNMENT.md`](../seat-management/PRD-007_ARCHITECTURE_ALIGNMENT.md) · [`LIBRARY_PRD_ALIGNMENT.md`](../library/LIBRARY_PRD_ALIGNMENT.md) · [`STUDENT_IDENTITY_ALIGNMENT.md`](../student-identity/STUDENT_IDENTITY_ALIGNMENT.md) |
-| **Reviewed at** | `914c543` — **fifth pass** (v0.9). The fifth pass re-measured the PRD after a **documentation-only** revision that added **no identifier**: a terminology note (`LIBOORA PLATFORM CHARGE` owned by `PRD-022`), two gap rows amended to record that a **home now exists while the question stays OPEN**, and two new subsections (§39.1 gap reconciliation, §39.2 frozen-rule findings). **The verdict is unchanged, and so is the reason.** Nothing in this revision touches an integration edge, a context boundary, an authorisation decision or tenant isolation, so **no check could change state**; see §9.3b. `407203e` — **fourth pass** (v0.8). The fourth pass reviewed the CB28 addition (`FEE-XC-023`, `FEE-AC-084`, `FEE-GAP-017`) and **did not change the verdict**; see §9.3a. The third pass was written at `ebf2440` (v0.7). The second pass was written at `3d98330` against v0.6; its §3.5.4 *"narrows the decision without taking it"* is **now superseded** — the decision **has been taken** and recorded (§3.5.5). The first pass was written at `61e6950` against v0.5. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
-| **PRD hash at review** | `dd4dc89ed52a7184fb784c57a491c3803747d3db4eccc4d8e31ccb3cbd2b219a` — re-measured at **v0.9, 2,481 lines** *(the v0.8 hash `9f650ade…` at 2,411 lines is superseded)*. Earlier: `9f650ade436204ae52c0d58d3783756a1a86454bbe0b74f7e25ccd73d25fe006` at **v0.8, 2,411 lines** *(the v0.7 hash `b4113817…` at 2,350 lines is superseded)*. Earlier: **v0.7, 2,350 lines** *(the v0.6 hash `d6bb63d9…` at 2,316 lines and the v0.5 hash `3f91476a…` are now stale and are retained only in the change notes)* |
+| **Reviewed at** | `01a6da8` — **sixth pass** (v1.0). The sixth pass re-measured the PRD after a **documentation-only correction** that added **no identifier**: §39.2's v0.9 finding — that frozen rules *"forbid"* 3-day renewal protection — was **retracted and corrected**, because it conflated V1-forbidden **money arithmetic** and **entitlement extension** with the genuinely **open** question of **seat-release timing** (`Q-01`). **The verdict is unchanged.** A correction to a finding about *another module's* frozen rules cannot move a `BC-05` Stage 3 check: it touches no integration edge, no context boundary, no authorisation decision and no tenant isolation. See §9.3c. `914c543` — **fifth pass** (v0.9). The fifth pass re-measured the PRD after a **documentation-only** revision that added **no identifier**: a terminology note (`LIBOORA PLATFORM CHARGE` owned by `PRD-022`), two gap rows amended to record that a **home now exists while the question stays OPEN**, and two new subsections (§39.1 gap reconciliation, §39.2 frozen-rule findings). **The verdict is unchanged, and so is the reason.** Nothing in this revision touches an integration edge, a context boundary, an authorisation decision or tenant isolation, so **no check could change state**; see §9.3b. `407203e` — **fourth pass** (v0.8). The fourth pass reviewed the CB28 addition (`FEE-XC-023`, `FEE-AC-084`, `FEE-GAP-017`) and **did not change the verdict**; see §9.3a. The third pass was written at `ebf2440` (v0.7). The second pass was written at `3d98330` against v0.6; its §3.5.4 *"narrows the decision without taking it"* is **now superseded** — the decision **has been taken** and recorded (§3.5.5). The first pass was written at `61e6950` against v0.5. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
+| **PRD hash at review** | `b3d5110824e3efb0588825aaf34890c650ea39f5f85c17d1eafecdebae300ea8` — re-measured at **v1.0, 2,512 lines** *(the v0.9 hash `dd4dc89e…` at 2,481 lines is superseded)*. Earlier: `dd4dc89ed52a7184fb784c57a491c3803747d3db4eccc4d8e31ccb3cbd2b219a` at **v0.9, 2,481 lines** *(the v0.8 hash `9f650ade…` at 2,411 lines is superseded)*. Earlier: `9f650ade436204ae52c0d58d3783756a1a86454bbe0b74f7e25ccd73d25fe006` at **v0.8, 2,411 lines** *(the v0.7 hash `b4113817…` at 2,350 lines is superseded)*. Earlier: **v0.7, 2,350 lines** *(the v0.6 hash `d6bb63d9…` at 2,316 lines and the v0.5 hash `3f91476a…` are now stale and are retained only in the change notes)* |
 | **Companion ADR** | [`ADR-0035`](../../00-governance/adr/ADR-0035-bc-05-payment-gateway-path.md) — **`PROPOSED`, not accepted.** Its `D-2` is now **DECIDED and recorded** (`O-3`), but a recorded decision in a `PROPOSED` ADR **is not in force and binds nothing**. **It was not self-accepted:** conferred Architecture Owner authority permits *recording* the decision; marking it `Accepted` was expressly withheld |
 | **Mandate** | **Stage 3 only.** No PRD requirement added or changed by this record, **no ADR accepted**, no ranked document touched, no registry or baseline update, **no freeze**. Stages 4–7 not started |
-| **Verdict** | ⛔ **NOT ALIGNED — 5 of 6 checks PASS, 1 check BLOCKED.** The verdict is unchanged but its **reason has changed twice over**. The *transport* was closed at v0.6 (already authorised, no edge needed). The *counterparty* is **closed at v0.7**: `ADR-0035` `D-2` decides **`O-3`** — payment execution is a **Business Platform capability, not a new bounded context** — passing the architecture's own **`AR-1`** test on all four criteria, with the context count staying **31**. **Check 2 nevertheless stays ⛔ BLOCKED, now for exactly two reasons, both stated rather than smoothed over:** **(i)** **`FEE-GAP-016`** — no source at any rank declares an owner for **inbound webhook transport**, so server-side confirmation still cannot be specified; and **(ii)** the deciding ADR is **`PROPOSED`**, so `D-2` is **recorded, not in force**. A gate does not pass on a decision that is not yet in force. 0 conflicts created by this PRD · **4** pre-existing defects raised, not chosen (§9.1) · **17** gaps, **6** blocking Stage 4 (§9.3) *(this figure read **16** from v0.7 through v0.8 while §9.3 correctly listed **17** — a stale count in this record, corrected at v0.9; the blocker count was always **6** and does not move)* · **7** findings rejected with reasons (§10) |
+| **Verdict** | ⛔ **NOT ALIGNED — 5 of 6 checks PASS, 1 check BLOCKED.** The verdict is unchanged but its **reason has changed twice over**. The *transport* was closed at v0.6 (already authorised, no edge needed). The *counterparty* is **closed at v0.7**: `ADR-0035` `D-2` decides **`O-3`** — payment execution is a **Business Platform capability, not a new bounded context** — passing the architecture's own **`AR-1`** test on all four criteria, with the context count staying **31**. **Check 2 nevertheless stays ⛔ BLOCKED, now for exactly two reasons, both stated rather than smoothed over:** **(i)** **`FEE-GAP-016`** — no source at any rank declares an owner for **inbound webhook transport**, so server-side confirmation still cannot be specified; and **(ii)** the deciding ADR is **`PROPOSED`**, so `D-2` is **recorded, not in force**. A gate does not pass on a decision that is not yet in force. 0 conflicts created by this PRD · **4** pre-existing defects raised, not chosen (§9.1) · **17** gaps, **6** blocking Stage 4 (§9.3) *(this figure read **16** from v0.7 through v0.8 while §9.3 correctly listed **17** — a stale count in this record, corrected at v0.9; the blocker count was always **6** and does not move)* · **7** findings rejected with reasons (§10). **At v1.0 an eighth finding is rejected — one of this review's own (§10.8):** the v0.9 reading that frozen Membership rules *"forbid"* renewal protection is **withdrawn**; the blocker is `Q-01`, an open question, and `ADR-0036` records the corrected position. **No check state, gap count or blocker count moves** — 17 gaps, 6 blocking Stage 4, 11 blocking Freeze, exactly as at v0.9 |
 
 > **Why this record still says NOT ALIGNED after resolving half the blocker — and why that is the honest outcome.**
 >
@@ -711,6 +711,29 @@ cannot be audited*. **Neither affects the verdict**, and the Stage-4 blocker cou
 
 **Check 2 remains ⛔ BLOCKED on `FEE-GAP-002`(b)/(c) and `FEE-GAP-016`, and Stage 4 must not start.**
 
+#### 9.3c Why the v1.0 correction does **not** change the verdict *(added v1.0)*
+
+The v1.0 revision **retracted a finding rather than adding one**, which is a case this record has not previously had
+to assess. Measured the same way as §9.3a and §9.3b:
+
+| What v1.0 changed | Could it move a Stage 3 check? | Measured effect |
+|---|---|---|
+| §39.2 heading and framing: *"what the frozen rules already forbid"* → *"what the frozen rules constrain, and the finding this section got wrong"* | **No** | A claim about **`BC-02`/`BC-04`** frozen rules. Stage 3 checks `BC-05`'s alignment; `PRD-008` owns neither rule |
+| The `SeatHold` row corrected: no such aggregate exists, but **none is needed** because `SEAT-BR-024` already retains the allocation | **No** | Concerns `BC-04` seating. No `BC-05` edge, aggregate or boundary is involved |
+| Closing note: the `SeatHold` half withdrawn, the `Q-01` half retained | **No** | Narrows a statement about another module's blocker |
+| Changelog v1.0 row; header/footer version | **No** | Metadata |
+| **`FEE-GAP-013` status** | **No** | **Still OPEN.** It never blocked `BC-05`'s Stage 4 or Freeze (it blocks the *feature*), and it still does not |
+
+**Nothing in this revision touches an integration edge, a context boundary, an authorisation decision or tenant
+isolation, so no check could change state.** Check 2 remains ⛔ **BLOCKED** for the two unchanged reasons:
+`FEE-GAP-016` (inbound webhook transport has no declared owner) and `ADR-0035` being `PROPOSED` rather than in force.
+
+> **A correction is not progress, and this record must not present it as such.** It would be easy to read *"a
+> blocker was found to be softer than we thought"* as movement toward alignment. It is not. What changed is that a
+> **wrong** statement in `PRD-008` became a **right** one; the architecture is exactly as unaligned as it was, and
+> `ADR-0036` — which carries the corrected position — is **`PROPOSED`, not accepted**, so it cannot be counted
+> either. **`ADR-0036` does not appear in this record's *Authorities applied* row** for that reason.
+
 ## 10. Rejected findings — recorded as rejected, with reasons
 
 Per Stage 3: *"A review that records only accepted findings is indistinguishable from a review that found
@@ -827,4 +850,23 @@ resolving `MP-GBR-24` (`AA-R7`).
 
 ---
 
-*End of `PRD-008_ARCHITECTURE_ALIGNMENT.md` — Stage 3 record for `PRD-008` v0.9 `DRAFT`, **fifth pass** at `914c543`. Not an approval. (This footer read *"v0.6 `DRAFT`, second pass at `3d98330`"* from v0.6 through v0.8 — a stale footer carried across three revisions, corrected at v0.9.)*
+### 10.8 Rejected — this review's own v0.9 finding that renewal protection is forbidden *(added v1.0)*
+
+| Field | Value |
+|---|---|
+| **The finding, as made at v0.9** | §39.2 of the PRD, written in this review's fifth pass, was titled *"what the frozen rules already **forbid**"* and concluded that 3-day renewal protection *"MUST NOT be implemented in V1"* and that a protected seat *"has no owning model"* |
+| **Why it was rejected** | It read `MM-XC-012`, `MM-FR-100` and `MM-FR-111` as one prohibition. They are three different ones. **Money arithmetic** is V1-forbidden and **not needed**. **Entitlement extension** is V1-forbidden and **not conferred**. **Seat-release timing** is neither — it is `Q-01`, **open**, and frozen `PRD-005` **L820-823** says so in those words: `Q-01` *"is about **seat release** timing …, **not** about extending membership validity"* |
+| **What proved it wrong** | Frozen `PRD-007` **L1166-1172**: that PRD is *"written to be correct under any resolution"* of `Q-01`, *"because the release action becomes a policy-driven trigger over an already-flagged allocation rather than a redesign."* And `SEAT-BR-024` **already retains** the allocation, so the *"no owning model"* premise was false — the model is `SeatAllocation`, unchanged |
+| **How it was found** | By reading the surrounding prose rather than the identifier lines. The decisive evidence sits **900 lines** from the requirement, in `PRD-005` §24.3's *"Where my recommendation lost to an existing decision"* table — a location no grep for `MM-FR-111` would surface |
+| **Disposition** | Corrected in the PRD at **v1.0**, with the superseded wording **quoted as evidence** rather than deleted. Recorded in full by **`ADR-0036`** (`PROPOSED`). **No gap closed, no count moved, no verdict changed** |
+
+> **This is the second time this review has had to reject one of its own findings** — the first was the v0.8 blocker
+> count retracted from *"stays at 5"* to **6**. Both errors ran in a self-flattering direction: the first made
+> closing a question look free, the second made a hard product requirement look impossible, which is the more
+> comfortable conclusion for a reviewer to reach. **Recording them in the *Rejected findings* section, alongside
+> findings rejected from elsewhere, is deliberate.** A review that only rejects other people's conclusions is not
+> auditing itself.
+
+---
+
+*End of `PRD-008_ARCHITECTURE_ALIGNMENT.md` — Stage 3 record for `PRD-008` v1.0 `DRAFT`, **sixth pass** at `01a6da8`. Not an approval. (This footer read *"v0.6 `DRAFT`, second pass at `3d98330`"* from v0.6 through v0.8 — a stale footer carried across three revisions, corrected at v0.9.)*

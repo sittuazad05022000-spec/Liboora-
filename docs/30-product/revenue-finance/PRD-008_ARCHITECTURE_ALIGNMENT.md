@@ -718,14 +718,14 @@ that *relocates* questions can easily be mistaken for one that *answers* them.
 | `FEE-GAP-014` and `FEE-GAP-017` amended to record that **`PRD-022` now exists** (`DRAFT` v0.1) | **No** | A gap with a named owner is still an **open** gap. `PRD-022` carries **6 of 6** blocking gaps of its own, so the questions moved to a lawful home and **none was answered** |
 | §39.1 — all 17 gaps reconciled into the nine mandated categories | **No** | Classification, not resolution. It records that **`FEE-GAP-004` is measurably worse** (it now also blocks `PRD-022` `SAAS-GAP-001`) and that `FEE-GAP-016` is **unchanged** |
 | §39.2 — frozen `MM-XC-012` / `MM-FR-100` / `MM-FR-111` measured as **forbidding** the requested 3-day term deduction | **No** | Narrows `FEE-GAP-013` from *undecided* to *forbidden in V1 without an amendment*. A narrowing is not a resolution, and **no frozen document was modified** |
-| `ADR-0035` §5.5a re-measures the inbound-webhook question | **No** | The ADR remains **`PROPOSED`**, `D-4` remains **OPEN**, `FEE-GAP-016` remains the cause of check 2 being ⛔ BLOCKED |
+| `ADR-0035` §5.5a re-measures the inbound-webhook question *(⚠ every clause of this cell was overtaken at v1.1 — §9.3d; retained as the dated v0.9 measurement)* | **No** | The ADR remains **`PROPOSED`**, `D-4` remains **OPEN**, `FEE-GAP-016` remains the cause of check 2 being ⛔ BLOCKED |
 
 **Two of the fifth pass's findings are corrections to *this* record, not to the PRD:** the verdict row had carried a
 stale gap count of **16** since v0.7, and the footer had claimed **v0.6, second pass** since v0.6. Both are fixed
 above, and both are **declared rather than quietly overwritten**, because *a record that silently repairs itself
 cannot be audited*. **Neither affects the verdict**, and the Stage-4 blocker count remains **6**.
 
-**Check 2 remains ⛔ BLOCKED on `FEE-GAP-002`(b)/(c) and `FEE-GAP-016`, and Stage 4 must not start.**
+**Check 2 remains ⛔ BLOCKED on `FEE-GAP-002`(b)/(c) and `FEE-GAP-016`, and Stage 4 must not start.** *⚠ **Superseded in its reasons at v1.1 — see §9.3d — and retained unedited, because this is a dated v0.9 finding and rewriting it would make it describe a day it did not describe.** The **directive is still in force**: Stage 4 must not start. What no longer holds is the list of causes — `FEE-GAP-016` is **RESOLVED** and `FEE-GAP-002`(b) is **in force**, so the single live cause is **`FEE-GAP-002`(c)**. A reader acting on this line today would reach the **right conclusion by the wrong route**, which is exactly why the correction is pointed to rather than pasted over.*
 
 #### 9.3c Why the v1.0 correction does **not** change the verdict *(added v1.0)*
 
@@ -743,6 +743,7 @@ to assess. Measured the same way as §9.3a and §9.3b:
 **Nothing in this revision touches an integration edge, a context boundary, an authorisation decision or tenant
 isolation, so no check could change state.** Check 2 remains ⛔ **BLOCKED** for the two unchanged reasons:
 `FEE-GAP-016` (inbound webhook transport has no declared owner) and `ADR-0035` being `PROPOSED` rather than in force.
+*⚠ **Both of those reasons were removed at v1.1 by conferral — see §9.3d — and this sentence is retained unedited as the dated v1.0 finding it is.** `FEE-GAP-016` is **RESOLVED** and `ADR-0035` is **`ACCEPTED`**, so **neither** cause named here survives. Check 2 nevertheless **still fails**, on a third cause this sentence never listed — `FEE-GAP-002`(c) — which is the strongest available evidence that this record's habit of counting reasons was itself unreliable, and the reason §3 now carries an explicit three-reason disposition table instead of a prose count.*
 
 > **A correction is not progress, and this record must not present it as such.** It would be easy to read *"a
 > blocker was found to be softer than we thought"* as movement toward alignment. It is not. What changed is that a

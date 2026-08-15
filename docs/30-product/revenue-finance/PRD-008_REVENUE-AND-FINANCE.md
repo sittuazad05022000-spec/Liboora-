@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-05` Fee & Collection** |
 | **Classification** | `[CORE]` — Library Management cluster |
 | **Release** | **V1** |
-| **Version** | **v1.4 — DRAFT** *(still DRAFT, and **Stage 4 was NOT run — for the fourth consecutive version**. At v1.4 **four Product-Owner decisions arrived and NOT ONE COUNT MOVED**: `FEE-GAP-001` V1 refund scope (confirmed-only, immutable original, separate operation, **full refund only**, cash server-recorded), `FEE-GAP-004` V1 fee types (four revenue types plus **Security Deposit as a refundable liability, NOT revenue**), `FEE-GAP-005` **append-only** financial correction, and `FEE-GAP-006` **due-date offset = 0 days**. All four are recorded in **`ADR-0039`**, which is **`PROPOSED` and deliberately NOT self-accepted**. **The counts stand at 5 Stage-4 blockers and 10 Freeze blockers**, re-derived at v1.4 by reading every one of the 17 gap blocks’ own `Stage 4` and `Freeze` field — not carried forward. ⛔ **THE LOAD-BEARING SENTENCE OF THIS ROW: A DECISION IS NOT A SPECIFICATION.** Four obligations — **`FEE-FR-028`** (L1717), **`FEE-FR-042`** (L1731), **`FEE-BR-007`** (L1754) and **`FEE-BR-019`** (L1766) — still carry **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 still fails. Deciding a policy does not make the requirement that must express it testable, and **no `FEE-*` requirement text, state value, event, enum, permission or configuration row was written at v1.4**. ⛔ **ONE OFFERED DECISION WAS REFUSED AND REPORTED AS A CONFLICT, NOT APPLIED.** A webhook contract routing *“Payment Gateway → existing **`platform/integration`** capability → verification → `BC-05`”* was offered for `FEE-GAP-002`. **Four of its five clauses match what is already decided** (no `BC-32`; transport/evidence only; `BC-05` remains financial source of truth; verification precedes recording) and are recorded as confirmations. **The fifth — the routing owner — contradicts `ACCEPTED` `ADR-0035` §5.5b (L536)**, which binds *“inbound payment webhook = existing **Business Platform** capability”* (`platform/business`, rank 6). `tool/module_dependencies.yaml` **L406**/**L409** show these are **distinct modules in a caller → callee relation**, not synonyms. Per the standing rule that *“a conflict is a defect — do not choose, raise it”*, it is **escalated to the Architecture Owner and NOT worked around**; `tool/module_dependencies.yaml` is **byte-unchanged**. ⚠ **A pre-existing defect disclosed rather than silently repaired:** §41’s changelog table ends at **v1.0** and has **no v1.1, v1.2, v1.3 or v1.4 row** — those versions recorded their narrative in this Version row instead. **This pass does not fabricate the three missing rows**, because writing changelog history for versions it did not perform would invent a record. The omission is logged here for the document owner. **Nothing was closed, deleted, renumbered or inflated; no gap is marked RESOLVED; no frozen document was modified; no `ACCEPTED` ADR was altered; no `BC-32`, edge, endpoint, schema, provider, role, permission or configuration identifier was invented; no gate was weakened; no Dart source was touched.** *Superseded Version text retained verbatim below:* **v1.3 — DRAFT** *(still DRAFT, and **Stage 4 was NOT run**. At v1.3 exactly one thing changed and it was **not** a blocker: `ADR-0035` `D-3`, already recorded **✅ Authorised / ❌ not executed** in that ADR's own acceptance table, was **executed** — a false `E-25` citation was removed from Rank 5 `PRD_DEPENDENCY_GRAPH.md`. **Removing a false citation is not resolving a gap.** **The counts therefore do NOT move: 5 gaps still block Stage 4 and 10 still block Freeze**, re-derived at v1.3 by reading every one of the 17 gap blocks' own `Stage 4` and `Freeze` fields, not carried forward. The four remaining Stage-4 blockers (`FEE-GAP-001`, `004`, `005`, `006`) and `FEE-GAP-002` lack a **product decision**, not evidence, and are routed by **`ADR-0038`** (`PROPOSED`) to the Product Owner and the Architecture Owner. **`ADR-0038` is deliberately not self-accepted.** ⛔ **Stage 4 was not run, and the reason is measured:** `PRD_LIFECYCLE.md` **L108–L120** check 1 requires every requirement be testable, and **four obligations — `FEE-FR-028`, `FEE-FR-042`, `FEE-BR-019`, `FEE-BR-007` — carry `⛔ none` acceptance criteria**. The gate's *“explicitly deferred with a reason and an owner”* clause does **not** rescue them, because this PRD **asserts** those obligations while marking them `⛔ BLOCKED` — a PRD cannot assert an obligation and defer its testability in the same breath. **Nothing was closed by documentation alone.** *Superseded text retained verbatim below:* **v1.2 — DRAFT** *(still DRAFT. At v1.2 this PRD's Stage 3 alignment record reaches ✅ **ALIGNED 6/6** for the first time — and **Stage 3 is not Stage 4, and alignment is not a freeze**. **5 gaps still block Stage 4** and **10 still block Freeze**, so the lifecycle stage does not advance. Superseded: v1.1 read "the conferral resolved one gap, it did not complete a lifecycle stage" — still true, and now true of a second conferral)* |
+| **Version** | **v1.5 — DRAFT** *(still DRAFT — **and this is the first version at which the Stage 4 gate was actually RUN, and PASSED on all six of its checks.** Read the next two sentences together or this row will be misread. **What moved: Stage-4 blockers 5 → 0.** **What did NOT move: Freeze blockers 10 → 10, membership identical, and NOT ONE of the 17 gaps is marked RESOLVED.** ✅ **THE LOAD-BEARING MECHANISM, because the flattering reading would be that v1.5 simply declared the blockers gone:** v1.4 recorded four Product-Owner decisions and correctly refused to decrement anything, on the stated principle that **a decision is not a specification**. v1.5 performs the missing half — it **converts those four recorded decisions into requirement text and acceptance criteria**, which is the act `PRD_LIFECYCLE.md` **L108–L120** check 1 actually tests. Four obligations that carried **⛔ no acceptance criterion** at v1.4 — **`FEE-FR-028`**, **`FEE-FR-042`**, **`FEE-BR-007`**, **`FEE-BR-019`** — now carry criteria; **`FEE-EVT-003`** has its behaviour specified while its **payload remains expressly unspecified**, labelled a deliberate partial rather than passed off as complete. **`FEE-AC-085`…`FEE-AC-098` (14 new criteria) were added; the obligation count is UNCHANGED at 134 — no new requirement, business rule, invariant, event, exclusion, permission, state value, enum or configuration identifier was created.** Registers: acceptance criteria **84 → 98**, register total **235 → 249**, traceability **134/134 = 100%**. ✅ **THE `FEE-GAP-002` OWNERSHIP CONFLICT REPORTED AT v1.4 IS NOW AUTHORITATIVELY CLOSED — BY DETERMINATION, NOT BY SUBSTITUTION.** It was routed to the **Architecture Owner**, who **UPHELD `ACCEPTED` `ADR-0035` §5.5b UNCHANGED**: inbound webhook ingress is owned by **`platform/business`**. Recorded in **`ACCEPTED` `ADR-0040` §1**. **The `platform/integration` reading offered at v1.4 is NOT adopted**, and the evidence that favoured it is preserved rather than buried — `ADR-0035` **L442** did propose an inbound adapter within `platform/integration`, but §5.5b **superseded** L442 and **a superseded proposal is not authority**. §5.5b’s reasoning was **re-tested against the manifest rather than taken on trust**: **L406** declares `platform/business` at rank 6 and **L409** declares `ports: [platform/integration:payment_gateway]`, a **caller → callee** relation. **`tool/module_dependencies.yaml` is byte-unchanged; no `BC-32`; no `E-*` edge; no `provides_ports:` entry.** ✅ **A FINDING WAS REQUIRED, NOT MERELY A DECISION, AND IT IS THE REASON `FEE-FR-028` COULD BECOME TESTABLE AT ALL.** `ADR-0040` §2 established **by measurement** that **no document may currently author the webhook wire contract**: `PRD-022`’s own **`SAAS-XC-006`** (L157-158) bars **`BC-20`** from naming a *“webhook schema”*; **`PRD-019`** — `BC-31`’s PRD — is **`PLANNED` and does not exist** (`PRD_REGISTRY.md` **L309**); this document forbids itself the same at **§14.1**; and §5.5b forbids *“invent[ing] an endpoint/schema”*. **Four candidate authors, all barred.** So `FEE-FR-028`’s criteria test **`BC-05`’s OWN verification obligation**, which §5.5b expressly left with `BC-05`, in the **already-established shape of `FEE-AC-032`/`033`/`034`** — and **not one of `FEE-AC-085`…`089` names an endpoint, URL, payload field, signature algorithm, header, replay window, retry policy or provider.** ⚠ **A DEFECT OF THIS DOCUMENT’S OWN, FOUND AT v1.5 AND DISCLOSED RATHER THAN QUIETLY REPAIRED.** Stage 4 check 4 — *“every acceptance criterion maps to a requirement”* — runs **criterion → requirement**, the opposite direction from check 1, and **had never once been measured in this document’s history**. It found **three genuine orphan criteria**: **`FEE-AC-022`**, **`FEE-AC-023`** and **`FEE-AC-074`**. They are now mapped, each to an obligation that **already** asserted the rule the criterion tests, so **no requirement was invented and no criterion was reworded to fit**. The first orphan probe run was itself **wrong** — it reported 204 traceability rows against 134 obligations because its pattern swept unrelated tables — and **both the error and its correction are recorded in §36.1a** rather than presented as a clean result. ⛔ **WHAT DID *NOT* HAPPEN, STATED BECAUSE EVERY INCENTIVE RUNS THE OTHER WAY:** **no gap is marked RESOLVED**; **the Freeze count does not move**; **`FEE-GAP-002`’s wire contract is still unwritten**; and `FEE-GAP-004`’s decided fee-type taxonomy is **deliberately NOT written as an enumeration**, because `FEE-FR-006` requires a configurable value through `E-19` and a hard-coded list would **contradict this PRD’s own requirement**. Stage 4 clears for the contract limb only because its gate permits a conflict to be *“explicitly deferred **with a reason and an owner**”*, and that limb now has both — owner: the **`BC-31` owner once `PRD-019` exists**; reason: `ADR-0040` §2. **Freeze has no such clause, which is precisely why Freeze still blocks at 10.** The Freeze set was re-derived by reading all 17 blocks’ own fields and taking each field’s **leading declared verdict**; a naive pattern match returns **13** because `FEE-GAP-013`/`014`/`017` each say *“BLOCKS the … **feature**, not this PRD”* — **10 is right and the pattern is wrong**, re-checked at v1.5 rather than inherited. ⚠ **`FEE-GAP-002`(c) and `ADR-0037` were NOT reopened**: physical cash may be received offline, but financial recording remains online and server-authoritative with **no offline write, queue or sync**. ⚠ **The pre-existing §41 changelog defect disclosed at v1.4 is STILL NOT fabricated:** §41’s table ends at **v1.0** and has no v1.1–v1.5 row. **v1.5 does not invent five rows of history it did not perform.** **Nothing was closed, deleted, renumbered or inflated; no frozen document was modified; no `ACCEPTED` ADR was altered; no checker was weakened; no `BC-32`, edge, endpoint, schema, signature algorithm, provider, role, permission or configuration identifier was invented; no Dart source was touched.*) *Superseded Version text retained verbatim below:* **v1.4 — DRAFT** *(still DRAFT, and **Stage 4 was NOT run — for the fourth consecutive version**. At v1.4 **four Product-Owner decisions arrived and NOT ONE COUNT MOVED**: `FEE-GAP-001` V1 refund scope (confirmed-only, immutable original, separate operation, **full refund only**, cash server-recorded), `FEE-GAP-004` V1 fee types (four revenue types plus **Security Deposit as a refundable liability, NOT revenue**), `FEE-GAP-005` **append-only** financial correction, and `FEE-GAP-006` **due-date offset = 0 days**. All four are recorded in **`ADR-0039`**, which is **`PROPOSED` and deliberately NOT self-accepted**. **The counts stand at 5 Stage-4 blockers and 10 Freeze blockers**, re-derived at v1.4 by reading every one of the 17 gap blocks’ own `Stage 4` and `Freeze` field — not carried forward. ⛔ **THE LOAD-BEARING SENTENCE OF THIS ROW: A DECISION IS NOT A SPECIFICATION.** Four obligations — **`FEE-FR-028`** (L1717), **`FEE-FR-042`** (L1731), **`FEE-BR-007`** (L1754) and **`FEE-BR-019`** (L1766) — still carry **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 still fails. Deciding a policy does not make the requirement that must express it testable, and **no `FEE-*` requirement text, state value, event, enum, permission or configuration row was written at v1.4**. ⛔ **ONE OFFERED DECISION WAS REFUSED AND REPORTED AS A CONFLICT, NOT APPLIED.** A webhook contract routing *“Payment Gateway → existing **`platform/integration`** capability → verification → `BC-05`”* was offered for `FEE-GAP-002`. **Four of its five clauses match what is already decided** (no `BC-32`; transport/evidence only; `BC-05` remains financial source of truth; verification precedes recording) and are recorded as confirmations. **The fifth — the routing owner — contradicts `ACCEPTED` `ADR-0035` §5.5b (L536)**, which binds *“inbound payment webhook = existing **Business Platform** capability”* (`platform/business`, rank 6). `tool/module_dependencies.yaml` **L406**/**L409** show these are **distinct modules in a caller → callee relation**, not synonyms. Per the standing rule that *“a conflict is a defect — do not choose, raise it”*, it is **escalated to the Architecture Owner and NOT worked around**; `tool/module_dependencies.yaml` is **byte-unchanged**. ⚠ **A pre-existing defect disclosed rather than silently repaired:** §41’s changelog table ends at **v1.0** and has **no v1.1, v1.2, v1.3 or v1.4 row** — those versions recorded their narrative in this Version row instead. **This pass does not fabricate the three missing rows**, because writing changelog history for versions it did not perform would invent a record. The omission is logged here for the document owner. **Nothing was closed, deleted, renumbered or inflated; no gap is marked RESOLVED; no frozen document was modified; no `ACCEPTED` ADR was altered; no `BC-32`, edge, endpoint, schema, provider, role, permission or configuration identifier was invented; no gate was weakened; no Dart source was touched.** *Superseded Version text retained verbatim below:* **v1.3 — DRAFT** *(still DRAFT, and **Stage 4 was NOT run**. At v1.3 exactly one thing changed and it was **not** a blocker: `ADR-0035` `D-3`, already recorded **✅ Authorised / ❌ not executed** in that ADR's own acceptance table, was **executed** — a false `E-25` citation was removed from Rank 5 `PRD_DEPENDENCY_GRAPH.md`. **Removing a false citation is not resolving a gap.** **The counts therefore do NOT move: 5 gaps still block Stage 4 and 10 still block Freeze**, re-derived at v1.3 by reading every one of the 17 gap blocks' own `Stage 4` and `Freeze` fields, not carried forward. The four remaining Stage-4 blockers (`FEE-GAP-001`, `004`, `005`, `006`) and `FEE-GAP-002` lack a **product decision**, not evidence, and are routed by **`ADR-0038`** (`PROPOSED`) to the Product Owner and the Architecture Owner. **`ADR-0038` is deliberately not self-accepted.** ⛔ **Stage 4 was not run, and the reason is measured:** `PRD_LIFECYCLE.md` **L108–L120** check 1 requires every requirement be testable, and **four obligations — `FEE-FR-028`, `FEE-FR-042`, `FEE-BR-019`, `FEE-BR-007` — carry `⛔ none` acceptance criteria**. The gate's *“explicitly deferred with a reason and an owner”* clause does **not** rescue them, because this PRD **asserts** those obligations while marking them `⛔ BLOCKED` — a PRD cannot assert an obligation and defer its testability in the same breath. **Nothing was closed by documentation alone.** *Superseded text retained verbatim below:* **v1.2 — DRAFT** *(still DRAFT. At v1.2 this PRD's Stage 3 alignment record reaches ✅ **ALIGNED 6/6** for the first time — and **Stage 3 is not Stage 4, and alignment is not a freeze**. **5 gaps still block Stage 4** and **10 still block Freeze**, so the lifecycle stage does not advance. Superseded: v1.1 read "the conferral resolved one gap, it did not complete a lifecycle stage" — still true, and now true of a second conferral)* |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** Status is *conferred* by admission to the baseline, never claimed by a document about itself; [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.1 still records `PRD-008` as **`PLANNED`** and **this document does not change that row**. Moving `PLANNED` → `DRAFT` is a registry act requiring the Governance Owner. |
 | **Baseline** | Written **against** `BASELINE-2026-08-05-A`. **Not admitted to it.** |
 | **Precedence rank if admitted** | Rank 3 (module PRD), the rank `PRD-004`…`PRD-007` hold |
@@ -59,9 +59,16 @@ Measured by `grep -rhoE "\bFEE-[A-Z]+-[0-9]+" docs/ | sort -u | wc -l` → `0`. 
 | `FEE-EVT-*` | Domain event published by `BC-05` | **3** | `FEE-EVT-001` … `FEE-EVT-003` |
 | `FEE-XC-*` | Explicit exclusion — what this module MUST NOT do | **23** | `FEE-XC-001` … `FEE-XC-023` |
 | `FEE-PO-*` | Port / integration obligation | **8** | `FEE-PO-001` … `FEE-PO-008` |
-| `FEE-AC-*` | Acceptance criterion | **84** | `FEE-AC-001` … `FEE-AC-084` |
+| `FEE-AC-*` | Acceptance criterion | **98** | `FEE-AC-001` … `FEE-AC-098` | *(was **84** / `…FEE-AC-084` before v1.5 added `FEE-AC-085`…`098`; the range is **contiguous** and was re-derived by reading the declared rows, not by adding 14)*
 | `FEE-GAP-*` | Governance gap / open question — **not a requirement** | **17** | `FEE-GAP-001` … `FEE-GAP-017` |
-| **Total** | | **235** | |
+| **Total** | | **249** | | *(was **235**; **+14** acceptance criteria at v1.5 and **no** new obligation — see the note below, which is the load-bearing part of this table)*
+
+> **⚠ THE OBLIGATION COUNT DID NOT MOVE AT v1.5, AND THAT IS THE POINT.** v1.5 converted four already-recorded
+> decisions into **testable requirement text** and added **14 acceptance criteria** — it added **no new
+> functional requirement, business rule, invariant, event, exclusion or port**, and **no new configurable**.
+> `FEE-FR-028`, `FEE-FR-042`, `FEE-BR-007`, `FEE-BR-019` and `FEE-EVT-003` **already existed**; what changed is
+> that they now say something a test can execute. **Inventing new obligations to look thorough would have been
+> the failure mode**, since the instruction was explicit: *"Do not invent additional business rules."*
 
 **Obligation-bearing** = 62 + 28 + 10 + 3 + 23 + 8 = **134**. `FEE-AC-*` are *verified by* tests and
 `FEE-GAP-*` are *open questions*; neither is an obligation, exactly as `PRD-006` §0.3 treats `ATT-AC-*`
@@ -201,17 +208,17 @@ each other or leaking to another library.
 | Cash payment | EA L1396 · BC Map L202 *"cash/UPI collected from a student at reception"* | V1 |
 | UPI payment | EA L1397 · BC Map L202 | V1 |
 | Card payment | EA L1398 | V1 |
-| Online payment | EA L1395 | V1 — **⛔ partly BLOCKED, `FEE-GAP-002`** |
+| Online payment | EA L1395 | V1 — ✅ **verification obligation specified at v1.5** (`FEE-FR-028`); wire contract still open |
 | Payment idempotency | EA L1399 · `MP-GBR-18` · BC Map L478 | V1 |
-| Payment verification | EA L1407 | V1 — **⛔ partly BLOCKED, `FEE-GAP-002`** |
-| Webhook reconciliation | EA L1408 | V1 — **⛔ BLOCKED, `FEE-GAP-002`** |
+| Payment verification | EA L1407 | V1 — ✅ **specified at v1.5** (`FEE-FR-028`, `FEE-AC-085`…`089`) |
+| Webhook reconciliation | EA L1408 | V1 — ⚠ **partly specified at v1.5**: `BC-05`'s **verification and reconciliation behaviour** is specified (`FEE-FR-028`, `FEE-AC-085`…`089`); the **wire contract** is still open and owned by the **`BC-31` owner once `PRD-019` exists** (`ADR-0040` §2/§4) |
 | Invoice generation | EA L1413 | V1 |
 | Receipt generation | EA L1414 | V1 |
 | Discounts | EA L823 · BC Map L374 *"discount requires an authorised approver role"* | V1 |
 | Financial history | BC Map L100 (implied by ledger) | V1 |
 | Outstanding / overdue dues | BC Map L374 balance rule | V1 |
 | Financial reports | EA L1424 `Financial Reports (V1)` | V1 — as **read models**, §22 |
-| Refunds | **CONFLICT** — BC Map L100/L374/L422 vs EA L823 | **⛔ BLOCKED, `FEE-GAP-001`** |
+| Refunds | **CONFLICT** — BC Map L100/L374/L422 vs EA L823 | V1 — ✅ **specified at v1.5, full refund only** (`FEE-FR-042`, `FEE-BR-019`, `FEE-AC-090`…`095`). ⚠ **The Rank 6 EA still reads V2 and is NOT edited here** — `MP-CON-08` makes that an **Architecture Owner** correction |
 | Bank transfer | **NO SOURCE** | **⛔ BLOCKED, `FEE-GAP-003`** |
 
 ### 6.2 Requested in the brief but absent from every source
@@ -422,11 +429,28 @@ reason via `E-20`. **⛔ Scope of "other approved charges" is `FEE-GAP-004`.**
 `FEE-FR-013` — A `FeeDue` **MUST** carry a due date.
 `FEE-FR-014` — Due-date computation **MUST** consult `BC-06`'s `HolidayCalendar` through `E-06`, whose
 declared purpose is *"proration and freeze-day computation"*.
-`FEE-BR-007` — The due-date **rule** (offset, grace, calendar arithmetic) is **not specified in any
-source document** and **MUST NOT** be invented here. See **`FEE-GAP-006`**.
+`FEE-BR-007` — **✅ SPECIFIED at v1.5. The V1 due-date offset is `0` days.** The due date carried by a
+`FeeDue` (`FEE-FR-013`) **is** the due date used by every rule and read model in this module; this module
+**MUST NOT** apply any offset, grace period or additional calendar arithmetic to it, and **MUST NOT** derive
+a due date by adding or subtracting days from the configured value. A non-zero offset or any grace period is
+**out of V1 scope** and requires a **separately governed decision** before it may exist.
 
-> `PRD-006` set the precedent: it refused to invent the periodic-check interval and wrote *"Do not
-> invent the periodic-check interval"* rather than pick a plausible number.
+> **`0` chosen explicitly is not `0` defaulted silently, and that distinction is the whole reason this is
+> lawful.** `PRD-006` §10A.4 requires a temporal rule to be *"not derived, inferred, or defaulted"*. The
+> superseded text of this rule read verbatim: *"The due-date **rule** (offset, grace, calendar arithmetic) is
+> **not specified in any source document** and **MUST NOT** be invented here. See **`FEE-GAP-006`**."* — and
+> it was correct while no value had been decided. The value is now decided (`ADR-0039` §6), so the refusal is
+> replaced by the stated value rather than left standing as a stale blocker.
+>
+> **`MP-GBR-24` holds, and this is the subtle part.** Offset `0` imports **no value** from `PRD-022`'s
+> ratified **15th** settlement due day. That governs **library → LIBOORA** money (`BC-20`); this governs
+> **student → library** money (`BC-05`), and Rank 1 holds the two *"must never share a model, a table or a
+> metric"*. Had this rule read *"due on the 15th"* it would have been a Rank 1 violation. **It does not.**
+> `PRD-022`'s 15th is **untouched**.
+>
+> **No configurable is created.** Because the offset is fixed at `0` and not tenant-configurable, **no
+> `FEE-CFG-*` row is opened and no range is invented** — which also means Stage 4's *"every configurable has
+> a default and a range"* check acquires **no new obligation** here. `FEE-GAP-007` stands unchanged.
 
 ### 11.2 Enrollment archival interaction
 
@@ -811,7 +835,7 @@ state disagree. This is not invention: BC Map L465 mandates for the V1 fee/membe
 reconciliation queue for failures** — deliberately not hidden behind a fake atomic button"*, and frozen
 `MM-BR-004` requires the same queue on the membership side.
 
-### 14.1 ⛔ Webhook / gateway reconciliation — BLOCKED
+### 14.1 ⚠ Webhook / gateway reconciliation — `BC-05`'s obligation SPECIFIED at v1.5; the wire contract remains open *(heading superseded, retained verbatim: it read "⛔ Webhook / gateway reconciliation — BLOCKED")*
 
 EA L1408 lists *"Webhook Reconciliation (V1)"*. **The architecture gives `BC-05` a lawful *route* to
 gateway capability, but names no context at the far end of it.** Re-measured at v0.6 — the two
@@ -857,8 +881,31 @@ All three are recorded in **`ADR-0035`, which is `PROPOSED` and binds nothing.**
 **MUST NOT** call a gateway or hold a gateway credential.
 `FEE-XC-005` — Holding, reading or transmitting a payment-gateway credential.
 `FEE-XC-006` — Naming a payment vendor in domain code, an event payload, a table or an API contract.
-`FEE-FR-028` — **⛔ BLOCKED.** The webhook/reconciliation contract cannot be specified until
-`FEE-GAP-002` is resolved by the **Architecture Owner**.
+`FEE-FR-028` — **✅ SPECIFIED at v1.5 — as `BC-05`'s verification obligation, NOT as a wire contract.**
+On receipt of any inbound payment notification, this module **MUST** treat it as **evidence to be verified,
+never as an instruction to be obeyed** (`FEE-BR-014`), and **MUST**:
+(a) leave the payment in `PENDING` until **this module's own server-side verification** succeeds
+(`FEE-BR-016`);
+(b) settle **no** obligation, issue **no** receipt and publish **no** `fee.FeePaymentReceived` on the
+strength of the inbound message alone (`FEE-FR-027`, `FEE-EVT-002`);
+(c) yield **exactly one** confirmed payment however many times the same notification is delivered, enforced
+by the existing idempotency and gateway-reference uniqueness invariant (`FEE-INV-005`);
+(d) create **nothing** for a notification that matches no known payment, and instead surface it in the
+**reconciliation queue** (`FEE-FR-032`, `FEE-BR-015`).
+Ingress is owned by **`platform/business`** per **`ACCEPTED` `ADR-0035` §5.5b**, **upheld** by
+**`ACCEPTED` `ADR-0040` §1**.
+
+> **⛔ WHAT THIS REQUIREMENT STILL DOES NOT SPECIFY, AND WHY THAT IS CORRECT RATHER THAN INCOMPLETE.**
+> It names **no endpoint, URL or route · no payload schema or field name · no signature algorithm or header ·
+> no replay window · no retry policy · no provider.** `ADR-0040` §2 established **by measurement** that
+> **no document may currently author them**: `PRD-022`'s own **`SAAS-XC-006`** (L157-158) excludes `BC-20`
+> from *"naming a payment provider, endpoint, **webhook schema**, signature algorithm, retry policy"*;
+> **`PRD-019`**, the PRD of `BC-31` which `SAAS-XC-006` names as the owner of vendor knowledge, is
+> **`PLANNED` and does not exist** (`PRD_REGISTRY.md` L309); this document forbids itself the same at
+> **§14.1**; and `ADR-0035` §5.5b forbids *"invent[ing] an endpoint/schema"*. **What is specified above is
+> `BC-05`'s own behaviour, which `ADR-0035` §5.5b expressly left with `BC-05`** — *"`BC-05` keeps payment
+> intent, the **verification obligation** and student financial truth"*. The wire contract remains open,
+> owned by the **`BC-31` owner once `PRD-019` exists** (`FEE-GAP-002`, contract limb).
 
 > **No webhook schema, no provider contract and no endpoint is written in this document**, because the
 > brief forbids inventing them and no source supplies them. EA L1405 names *"Razorpay (V1)"* — but only
@@ -978,7 +1025,7 @@ precedent. The **authorised approver role** is the control the architecture actu
 
 ## 18. Refunds / Corrections
 
-### 18.1 ⛔ Refund tier — BLOCKED, `FEE-GAP-001`
+### 18.1 ✅ Refund tier — DECIDED V1 and SPECIFIED at v1.5 *(heading superseded, retained verbatim: it read "⛔ Refund tier — BLOCKED, `FEE-GAP-001`")*
 
 **The sources conflict, and this PRD does not choose.**
 
@@ -998,15 +1045,45 @@ precedent. The **authorised approver role** is the control the architecture actu
 frozen `PRD-005` L942's expectation of *"a refund decision by `BC-05`"* has **no V1 counterpart** —
 which is a cross-PRD hole, not a tidy deferral.
 
-**Authority required: Product Owner (tier) + Architecture Owner (BC Map event table).** Blocks Stage 4.
-Blocks Freeze.
+**Authority: Product Owner (tier) — ✅ GIVEN, recorded in `ADR-0039` §3. Architecture Owner (EA correction)
+— ⛔ STILL REQUIRED.** *Superseded text retained verbatim:* **"Authority required: Product Owner (tier) +
+Architecture Owner (BC Map event table). Blocks Stage 4. Blocks Freeze."*
+
+⚠ **A correction to that superseded line, made rather than inherited:** it named the *"BC Map event table"* as
+the artefact needing an Architecture Owner. **Re-measured, the BC Map is already correct** — **L422** publishes
+`fee.RefundIssued` and **L374** carries `RefundRecord` with *"refund ≤ received"*, both consistent with V1. **It
+is the Rank 6 EA (L823/L1409) that disagrees**, and `MP-CON-08` requires the **EA** to be corrected to match
+the higher rank, *"never the reverse"*. **No BC Map amendment is required or requested; the BC Map is
+byte-unchanged.**
 
 Accordingly:
 
-`FEE-FR-042` — **⛔ BLOCKED.** Refund behaviour is not specified pending `FEE-GAP-001`.
-`FEE-BR-019` — **If** refunds are V1, a refund **MUST** be a **compensating entry, never a mutation**
-(`MP-GBR-12`), and **MUST NOT** exceed the amount received (`refund ≤ received`, BC Map L374). *This rule
-is stated conditionally so that no reader mistakes it for an approved V1 obligation.*
+`FEE-FR-042` — **✅ SPECIFIED at v1.5.** A refund **MUST** be recorded as a **separate financial
+operation** against a **`CONFIRMED`** payment only, and **MUST** be **full** — equal to the confirmed
+amount received. This module **MUST NOT** record a refund against a `PENDING`, `FAILED` or `CANCELLED`
+payment, **MUST NOT** alter the original payment or receipt in any way, and **MUST** record actor, reason
+and timestamp. A **cash** refund is recorded by the **same server-authoritative path** as any other; there
+is **no** offline refund write, queue or sync (`ACCEPTED` `ADR-0037`; `FEE-FR-061`, `FEE-XC-022`).
+`FEE-BR-019` — **A refund MUST be a compensating entry, never a mutation** (`MP-GBR-12`), and **MUST NOT**
+exceed the amount received (`refund ≤ received`, BC Map L374). **V1 supports full refund only:** a refund
+amount **MUST** equal the confirmed payment amount, and any lesser amount **MUST** be rejected.
+
+> **This rule was stated *conditionally* until v1.4 and is now unconditional.** The superseded text read
+> verbatim: *"**If** refunds are V1, a refund **MUST** be a **compensating entry, never a mutation**
+> (`MP-GBR-12`), and **MUST NOT** exceed the amount received (`refund ≤ received`, BC Map L374). *This rule
+> is stated conditionally so that no reader mistakes it for an approved V1 obligation.*"* The condition is
+> discharged because the **tier is decided** (`ADR-0039` §3, upheld as product scope), so the hedge that
+> protected the reader from mistaking a conditional for an obligation now **obscures** an obligation instead.
+>
+> **Why "full refund only" is a restriction and not a gap.** Partial refund is **proration arithmetic**, and
+> frozen **`MM-XC-012`** places proration at **V2**. Rejecting a lesser amount therefore **avoids colliding
+> with a frozen V2 boundary** rather than deferring a decision — and `FEE-XC-008` already forbids
+> implementing refund as an edit or deletion *"under any tier"*.
+>
+> ⚠ **The Rank 6 EA still reads `Refunds (V2)` at L823/L1409, and that disagreement is NOT resolved here.**
+> `MP-CON-08` requires **the EA** to be corrected to match the higher-ranked BC Map, *"never the reverse"* —
+> an **Architecture Owner** act. This PRD states the Rank 4 position it is bound by and **raises** the
+> defect; it does not edit the EA. See `FEE-GAP-001`, whose Architecture-Owner limb remains open.
 `FEE-XC-008` — Implementing refund as an edit or deletion of a payment or receipt, under any tier.
 
 ### 18.2 Corrections and adjustments
@@ -1196,9 +1273,21 @@ transactional outbox (`FEE-PO-008`), carrying tenant, student reference, amount 
 be published twice for one idempotency key (`FEE-AC-039`). This is the event `E-10` carries to `BC-02`.
 Verified by `FEE-AC-034`, `FEE-AC-039`, `FEE-AC-062`.
 
-`FEE-EVT-003` — **⛔ BLOCKED.** `fee.RefundIssued` appears in the BC Map's `BC-05` row (L422), but its
-release tier is disputed (`FEE-GAP-001`). Its payload is **not** specified here. Verified by
-`FEE-AC-062` only (the count constraint), deliberately not by a behavioural criterion.
+`FEE-EVT-003` — **✅ BEHAVIOUR SPECIFIED at v1.5; payload still NOT specified.** `fee.RefundIssued`
+**MUST** be published **only** after a refund has been recorded per `FEE-FR-042`, **MUST NOT** be published
+for a refund that was rejected or never recorded, and **MUST NOT** be published more than once for one
+recorded refund. It is published to **`BC-26`, `BC-24`** exactly as BC Map **L422** already declares — **no
+new consumer, edge or event is introduced.**
+
+> **Its payload remains unspecified, deliberately.** The superseded text read verbatim: *"**⛔ BLOCKED.**
+> `fee.RefundIssued` appears in the BC Map's `BC-05` row (L422), but its release tier is disputed
+> (`FEE-GAP-001`). Its payload is **not** specified here. Verified by `FEE-AC-062` only (the count
+> constraint), deliberately not by a behavioural criterion."* **The tier half is discharged** — refund is V1
+> product scope (`ADR-0039` §3) — so a **behavioural** criterion is now honest where before it would have
+> been fabricated. **The payload half is not discharged:** no source specifies event field lists for
+> `BC-05`'s events, and inventing one would be exactly the schema invention this document refuses at §14.1.
+> **This is a deliberate partial specification, and it is labelled as one rather than presented as
+> complete.**
 
 `FEE-BR-025`*(reserved — see note)* — **not allocated.** *Due reminder* and *overdue* notifications, and
 a *payment failed* notification, are **not** backed by any event in the BC Map's `BC-05` row. The brief
@@ -1341,9 +1430,22 @@ state would contradict both. A wrongly issued receipt is addressed by a **compen
 (`FEE-FR-037`), not by a state change. The brief's instruction — *"define only states supported by
 authoritative sources"* — is followed literally.
 
-### 29.5 Refund — ⛔ BLOCKED
+### 29.5 Refund — ✅ V1 scope decided; **still no state table, and that is deliberate**
 
-No state table is written. Tier unresolved (`FEE-GAP-001`).
+*Superseded text retained verbatim:* **"### 29.5 Refund — ⛔ BLOCKED / No state table is written. Tier
+unresolved (`FEE-GAP-001`)."*
+
+**The tier is now decided (V1) and refund behaviour is specified at §18.1 — yet no refund state machine is
+written, because V1 refund has no lifecycle to model.** A refund is **recorded or rejected**: `FEE-FR-042`
+makes it a **single append-only compensating record** against a `CONFIRMED` payment, for the **full** amount,
+and `FEE-BR-019` forbids any lesser amount. There is therefore **no `PARTIALLY_REFUNDED`, no `REFUND_PENDING`
+and no `REFUND_REVERSED`** — each would require either partial arithmetic (**proration**, which frozen
+`MM-XC-012` places at **V2**) or a mutation of a financial record (**forbidden by Rank 1 `MP-GBR-12`**).
+
+**This follows §29.4's own precedent verbatim** — *"There is no second receipt state… a `VOID` or `CANCELLED`
+receipt state would contradict both"* — and the brief's instruction to *"define only states supported by
+authoritative sources"*. **A state table invented here would be a specification hole dressed as
+completeness.**
 
 ---
 
@@ -1665,10 +1767,73 @@ verify a boundary this module must not cross.*
 > gateway and tax line, because those three belong to `BC-20` and V3. A criterion asserting their
 > presence would need a rate this repository does not contain — see `FEE-GAP-014`.
 
-**Not covered by any criterion, deliberately:** refunds (⛔ `FEE-GAP-001`), webhook reconciliation
-(⛔ `FEE-GAP-002`), offline cash capture (⛔ `FEE-GAP-002`(b)), bank transfer (⛔ `FEE-GAP-003`),
-due-date arithmetic (⛔ `FEE-GAP-006`). **Writing criteria for undecided behaviour would be fabricating
+### 35.16 Inbound-notification verification, refunds, due-date offset and correction (`FEE-AC-085`…`FEE-AC-098`) *(added v1.5)*
+
+> **Every criterion below tests behaviour this module OWNS.** None names an endpoint, URL, payload field,
+> signature algorithm, header, replay window, retry policy or provider — because `ADR-0040` §2 established
+> that **no document may currently author them**. The shape is the one already used by `FEE-AC-032`/`033`/
+> `034` for the client-side-hint case: **the same rule — *evidence, never instruction* — applied to the
+> server-side inbound case.**
+
+**Inbound payment notification — `FEE-FR-028` (`ADR-0040` §2.2/§2.4)**
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-085` | An inbound payment notification **alone** does not move a payment out of `PENDING`; the payment leaves `PENDING` only after this module's own server-side verification succeeds |
+| `FEE-AC-086` | A payment whose inbound notification has not been verified settles **no** obligation and generates **no** receipt |
+| `FEE-AC-087` | A payment whose inbound notification has not been verified emits **no** `fee.FeePaymentReceived` |
+| `FEE-AC-088` | Delivering the **same** inbound notification any number of times yields **exactly one** confirmed payment, one receipt and one `fee.FeePaymentReceived` |
+| `FEE-AC-089` | An inbound notification that matches **no** known payment creates no payment, no receipt and no obligation settlement, and is surfaced in the reconciliation queue |
+
+**Refunds — `FEE-FR-042`, `FEE-BR-019`, `FEE-EVT-003` (`ADR-0039` §3)**
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-090` | A refund can be recorded against a `CONFIRMED` payment and appears as a **separate** financial record carrying actor, reason and timestamp |
+| `FEE-AC-091` | After a refund is recorded, the original payment and the original receipt are **byte-identical** to their pre-refund state — no field, amount, state or timestamp differs |
+| `FEE-AC-092` | A refund against a `PENDING`, `FAILED` or `CANCELLED` payment is **rejected** and creates no record |
+| `FEE-AC-093` | A refund for an amount **less than** the confirmed payment amount is **rejected**; a refund exceeding the amount received is **rejected** |
+| `FEE-AC-094` | Recording a refund publishes `fee.RefundIssued` exactly **once**; a rejected refund publishes **nothing** |
+| `FEE-AC-095` | A **cash** refund follows the same server-authoritative path: nothing is written, queued, mirrored or synchronised while offline |
+
+**Due-date offset — `FEE-BR-007` (`ADR-0039` §6)**
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-096` | An obligation's effective due date **equals** the due date recorded on the `FeeDue`, with **no** offset, grace period or added days applied by this module |
+| `FEE-AC-097` | `OVERDUE` is reported for an obligation whose recorded due date has passed, computed with offset `0`, reproducibly and with no scheduled job having run |
+
+**Append-only correction — `FEE-FR-043` (`ADR-0039` §5)**
+
+| ID | Criterion |
+|---|---|
+| `FEE-AC-098` | A correction to a financial record creates a **new** compensating record carrying actor, reason, timestamp and corrected state, and **no** API path edits or deletes the original |
+
+> **`FEE-AC-088` is the criterion that does the most work with the least invention.** It tests replay
+> protection — the property a webhook most needs — using **only** `FEE-INV-005`'s existing idempotency and
+> gateway-reference uniqueness invariant. It needs **no replay window, no signature and no schema**, because
+> *"the same notification delivered twice yields one payment"* is a statement about **`BC-05`'s own
+> behaviour**, which is exactly what `ADR-0035` §5.5b left with `BC-05`.
+
+> **`FEE-AC-091` is deliberately a byte-identity criterion rather than a prose one.** *"The original is
+> unchanged"* is verifiable only if it is stated as exact identity; **Rank 1 `MP-GBR-12`** requires a refund
+> to be *"a **compensating entry, never a mutation**"*, and a criterion weaker than byte-identity would let a
+> silent field update pass. The same technique is already used by `FEE-AC-084`.
+
+**Not covered by any criterion, deliberately:** the webhook **wire contract** — endpoint, payload schema,
+signature algorithm, header, replay window, retry policy, provider (⛔ `FEE-GAP-002`, contract limb; owner:
+**`BC-31` owner once `PRD-019` exists**), the **payload** of `fee.RefundIssued` (⛔ no source specifies event
+field lists), bank transfer (⛔ `FEE-GAP-003`), and cross-library protection disclosure
+(⛔ `FEE-GAP-013`, `FEE-AC-074`). **Writing criteria for undecided behaviour would be fabricating
 verification.**
+
+> *Superseded text retained verbatim, so the movement is legible:* **"Not covered by any criterion,
+> deliberately: refunds (⛔ `FEE-GAP-001`), webhook reconciliation (⛔ `FEE-GAP-002`), offline cash capture
+> (⛔ `FEE-GAP-002`(b)), bank transfer (⛔ `FEE-GAP-003`), due-date arithmetic (⛔ `FEE-GAP-006`)."*
+> **Three of those five are now covered** — refunds, inbound-notification verification and due-date
+> arithmetic. **Offline cash capture is not "now covered"; it was DISSOLVED** by `ACCEPTED` `ADR-0037`, and
+> `FEE-AC-081`/`082` already assert the prohibition — a distinction worth keeping, because a dissolved
+> question and a satisfied one are not the same thing.
 
 ---
 
@@ -1714,7 +1879,7 @@ verification.**
 | `FEE-FR-025` | `FEE-AC-027` |  |
 | `FEE-FR-026` | `FEE-AC-032` |  |
 | `FEE-FR-027` | `FEE-AC-033`, `FEE-AC-034` |  |
-| `FEE-FR-028` | **⛔ none** | BLOCKED — `FEE-GAP-002` |
+| `FEE-FR-028` | `FEE-AC-085`, `FEE-AC-086`, `FEE-AC-087`, `FEE-AC-088`, `FEE-AC-089` | added v1.5 — `BC-05` verification obligation (`ADR-0040`); **wire contract still open** |
 | `FEE-FR-029` | `FEE-AC-037` |  |
 | `FEE-FR-030` | `FEE-AC-037`, `FEE-AC-038` |  |
 | `FEE-FR-031` | `FEE-AC-040` |  |
@@ -1728,8 +1893,8 @@ verification.**
 | `FEE-FR-039` | `FEE-AC-049` |  |
 | `FEE-FR-040` | `FEE-AC-050` |  |
 | `FEE-FR-041` | `FEE-AC-030` |  |
-| `FEE-FR-042` | **⛔ none** | BLOCKED — `FEE-GAP-001` |
-| `FEE-FR-043` | `FEE-AC-048` |  |
+| `FEE-FR-042` | `FEE-AC-090`, `FEE-AC-091`, `FEE-AC-092`, `FEE-AC-093`, `FEE-AC-095` | added v1.5 |
+| `FEE-FR-043` | `FEE-AC-048`, `FEE-AC-098` | `FEE-AC-098` added v1.5 — append-only correction |
 | `FEE-FR-044` | `FEE-AC-055` |  |
 | `FEE-FR-045` | `FEE-AC-053`, `FEE-AC-054` |  |
 | `FEE-FR-046` | `FEE-AC-059` |  |
@@ -1751,19 +1916,19 @@ verification.**
 | `FEE-BR-004` | `FEE-AC-006` |  |
 | `FEE-BR-005` | `FEE-AC-007`, `FEE-AC-010` |  |
 | `FEE-BR-006` | `FEE-AC-008`, `FEE-AC-009` |  |
-| `FEE-BR-007` | **⛔ none** | BLOCKED — `FEE-GAP-006` |
+| `FEE-BR-007` | `FEE-AC-096`, `FEE-AC-097` | added v1.5 — offset `0` |
 | `FEE-BR-008` | `FEE-AC-044` |  |
 | `FEE-BR-009` | `FEE-AC-045`, `FEE-AC-046` |  |
 | `FEE-BR-010` | `FEE-AC-025` |  |
 | `FEE-BR-011` | `FEE-AC-026` |  |
 | `FEE-BR-012` | `FEE-AC-027`, `FEE-AC-032` |  |
-| `FEE-BR-013` | `FEE-AC-024` |  |
+| `FEE-BR-013` | `FEE-AC-022`, `FEE-AC-023`, `FEE-AC-024` | `FEE-AC-022`/`023` mapped v1.5 — see §36.1a |
 | `FEE-BR-014` | `FEE-AC-032` |  |
 | `FEE-BR-015` | `FEE-AC-035` |  |
 | `FEE-BR-016` | `FEE-AC-040`, `FEE-AC-041` |  |
 | `FEE-BR-017` | `FEE-AC-052` |  |
 | `FEE-BR-018` | `FEE-AC-051` |  |
-| `FEE-BR-019` | **⛔ none** | BLOCKED — `FEE-GAP-001` |
+| `FEE-BR-019` | `FEE-AC-091`, `FEE-AC-093` | added v1.5 — unconditional |
 | `FEE-BR-020` | `FEE-AC-048` |  |
 | `FEE-BR-021` | `FEE-AC-054` |  |
 | `FEE-BR-022` | `FEE-AC-021` |  |
@@ -1780,7 +1945,7 @@ verification.**
 | `FEE-INV-009` | `FEE-AC-053`, `FEE-AC-054` |  |
 | `FEE-EVT-001` | `FEE-AC-062`, `FEE-AC-065` |  |
 | `FEE-EVT-002` | `FEE-AC-034`, `FEE-AC-039`, `FEE-AC-066` |  |
-| `FEE-EVT-003` | `FEE-AC-062` | count only — behaviour ⛔ `FEE-GAP-001` |
+| `FEE-EVT-003` | `FEE-AC-062`, `FEE-AC-094` | behaviour added v1.5; **payload still unspecified** |
 | `FEE-XC-001` | `FEE-AC-063` |  |
 | `FEE-XC-002` | `FEE-AC-063` |  |
 | `FEE-XC-003` | `FEE-AC-012`, `FEE-AC-016` |  |
@@ -1811,7 +1976,7 @@ verification.**
 | `FEE-BR-027` | `FEE-AC-071` |  |
 | `FEE-XC-017` | `FEE-AC-062` | reserved-then-allocated: no fourth event |
 | `FEE-XC-018` | `FEE-AC-072`, `FEE-AC-077` |  |
-| `FEE-XC-019` | `FEE-AC-075` |  |
+| `FEE-XC-019` | `FEE-AC-074`, `FEE-AC-075` | `FEE-AC-074` mapped v1.5 — negative-assertion criterion, see §36.1a |
 | `FEE-XC-020` | `FEE-AC-073` |  |
 | `FEE-XC-021` | `FEE-AC-076` |  |
 | `FEE-FR-060` | `FEE-AC-079` | added v0.4 |
@@ -1824,6 +1989,18 @@ verification.**
 
 **Measured coverage:**
 
+| Register | Allocated | Traced | Untraced |
+|---|---|---|---|
+| `FEE-FR-*` | 62 | **62** | — *(was: `FEE-FR-028`, `FEE-FR-042`)* |
+| `FEE-BR-*` | 28 | **28** | — *(was: `FEE-BR-007`, `FEE-BR-019`)* |
+| `FEE-INV-*` | 10 | 10 | — |
+| `FEE-EVT-*` | 3 | 3 | — *(`FEE-EVT-003` now behavioural, **payload still unspecified**)* |
+| `FEE-XC-*` | 23 | 23 | — |
+| `FEE-PO-*` | 8 | 8 | — |
+| **Total** | **134** | **134** | **0 = 100.0%** |
+
+*Superseded coverage table retained verbatim, so the movement is legible rather than asserted:*
+
 | Register | Allocated | Traced | Untraced (all ⛔ BLOCKED) |
 |---|---|---|---|
 | `FEE-FR-*` | 62 | 60 | `FEE-FR-028`, `FEE-FR-042` |
@@ -1833,6 +2010,32 @@ verification.**
 | `FEE-XC-*` | 23 | 23 | — |
 | `FEE-PO-*` | 8 | 8 | — |
 | **Total** | **134** | **130** | **4 = 97.0%** |
+
+### 36.1a Three ORPHAN acceptance criteria found at v1.5 — a defect this document had not previously recorded
+
+**This was discovered by measurement during the v1.5 pass and is disclosed rather than quietly repaired.**
+`PRD_LIFECYCLE.md` Stage 4 check **4** requires *"every acceptance criterion maps to a requirement"*, with the
+failure named *"Orphan criterion"*. Measured mechanically over §36.1 alone — 134 obligation rows, 84 declared
+criteria — **81 criteria were cited and 3 were not**:
+
+| Orphan | Text | Now mapped to | Why that obligation and not a new one |
+|---|---|---|---|
+| `FEE-AC-022` | *`PAID` never returns to `DUE` or `OVERDUE`* | **`FEE-BR-013`** | `FEE-BR-013` states a `FeeDue` is *"settled **in full or not at all**"*; §29.1 lists `PAID → DUE` and `PAID → OVERDUE` under **Forbidden**. The criterion verifies exactly that settlement is terminal |
+| `FEE-AC-023` | *`CANCELLED` has no outgoing transition* | **`FEE-BR-013`** | Same rule and the same §29.1 **Forbidden** list (`CANCELLED → *`) |
+| `FEE-AC-074` | *Library B sees only the authorized indicator* — recorded **⛔ not verifiable in `BC-05`** | **`FEE-XC-019`** | `FEE-XC-019` forbids cross-tenant financial disclosure **unconditionally**; `FEE-AC-074`'s own row says it is *"asserted negatively by `FEE-AC-076`"*. Mapping it to the **exclusion** it negatively asserts is the honest mapping |
+
+⚠ **`FEE-AC-074` is still recorded as not-verifiable-in-`BC-05`, and mapping it changes nothing about that.**
+Its §35.14 row and the note beneath it are **unchanged**. What changes is only that it is no longer an
+**orphan** — it now maps to the exclusion it evidences. **No requirement was invented to adopt these three,
+and no criterion text was reworded**; each was mapped to an obligation that **already** asserted the rule it
+tests.
+
+**Why the earlier passes missed it.** Every prior pass measured the **untraced obligation** direction
+(*requirement → criterion*) and reported **4**. **Check 4 runs in the opposite direction**
+(*criterion → requirement*), and it had **never been measured**. A first attempt at measuring it returned
+**204 rows**, which was wrong — the pattern swept in the §35.x and §37 tables as well as §36.1; scoping the
+probe to §36.1's line range returned **exactly 134**, matching the declared obligation count. **The wrong
+answer was discarded rather than reconciled.**
 
 *The v0.4 additions moved the ratio from 123/127 to **129/133** — the six new obligations each carry a
 criterion, so the **untraced set is unchanged at exactly four**. The percentage rose because the
@@ -1882,7 +2085,13 @@ machine**. Recorded as part of `FEE-GAP-012`. No gate was weakened — none exis
 
 ## 37. Governance Gap Ledger
 
-**17 gaps. 5 block Stage 4. 10 block Freeze — re-derived at v1.4 by reading every one of the 17 blocks’ own `Stage 4` and `Freeze` field, and the counts do NOT move even though four decisions arrived.** The Stage-4 set is **`FEE-GAP-001`, `002`, `004`, `005`, `006`** = **five**; the Freeze set is those five plus `003`, `007`, `009`, `011`, `012` = **ten**. **Four Product-Owner decisions were recorded at v1.4** (`FEE-GAP-001` refund scope, `004` fee types, `005` append-only correction, `006` offset = 0) and **not one count decrements**, because **a decision is not a specification**: `FEE-FR-028`, `FEE-FR-042`, `FEE-BR-007` and `FEE-BR-019` all still carry **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 still fails. **This is the row most likely to be decremented in error, and it was checked for exactly that** — twice before, this document decremented or held a count for a flattering reason and had to retract it. *(A naive re-derivation of the Freeze set by pattern returns **13**; reading every `Freeze` field verbatim shows `FEE-GAP-013`/`014`/`017` each say “**BLOCKS the … feature, not this PRD**”. **10** is right and the pattern is wrong.)* *Superseded header text retained verbatim:* **17 gaps. 6 block Stage 4. 11 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
+**17 gaps. 0 block Stage 4. 10 block Freeze — re-derived at v1.5 by reading every one of the 17 blocks' own `Stage 4` and `Freeze` field, taking the LEADING declared verdict of each field rather than searching for the word "BLOCKS" anywhere inside it.** The Stage-4 set is now **empty**; the Freeze set is **`FEE-GAP-001`, `002`, `003`, `004`, `005`, `006`, `007`, `009`, `011`, `012`** = **ten**, unchanged in membership from v1.4.
+
+⚠ **THE STAGE-4 COUNT FELL 5 → 0 AT v1.5, AND THAT IS EXACTLY THE KIND OF MOVEMENT THIS DOCUMENT HAS TWICE HAD TO RETRACT — SO IT WAS DERIVED TWICE, BY TWO DIFFERENT METHODS, AND BOTH ARE REPORTED.** *Method 1 — gap fields:* each block's own `Stage 4` field, leading token only → **0**. *Method 2 — the underlying gate:* `PRD_LIFECYCLE.md` **L108–L120** check 1 requires every requirement testable; measured over §36.1's **134** obligation rows, **untraced = 0**, and check 4 (*every criterion maps to a requirement*) measured over the **98** declared criteria gives **orphans = 0**. **The two methods agree.**
+
+⛔ **WHAT DID *NOT* HAPPEN, STATED BECAUSE THE FLATTERING READING WOULD BE THAT IT DID:** **no gap is marked RESOLVED**, **the Freeze count does not move**, and **`FEE-GAP-002`'s wire contract is still unwritten**. Stage 4 clears because its gate permits a conflict to be *"explicitly deferred **with a reason and an owner**"*, and the contract limb now has both — owner: the **`BC-31` owner once `PRD-019` exists**; reason: `ADR-0040` §2 proves **no document may author it today**. **Freeze has no such clause, so Freeze still blocks.** *(A naive re-derivation of the Freeze set by pattern returns **13**; reading every `Freeze` field verbatim shows `FEE-GAP-013`/`014`/`017` each say "**BLOCKS the … feature, not this PRD**". **10 is right and the pattern is wrong** — the same trap this ledger recorded at v1.4, re-checked rather than inherited.)*
+
+*Superseded header text retained verbatim:* **17 gaps. 5 block Stage 4. 10 block Freeze — re-derived at v1.4 by reading every one of the 17 blocks’ own `Stage 4` and `Freeze` field, and the counts do NOT move even though four decisions arrived.** The Stage-4 set is **`FEE-GAP-001`, `002`, `004`, `005`, `006`** = **five**; the Freeze set is those five plus `003`, `007`, `009`, `011`, `012` = **ten**. **Four Product-Owner decisions were recorded at v1.4** (`FEE-GAP-001` refund scope, `004` fee types, `005` append-only correction, `006` offset = 0) and **not one count decrements**, because **a decision is not a specification**: `FEE-FR-028`, `FEE-FR-042`, `FEE-BR-007` and `FEE-BR-019` all still carry **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 still fails. **This is the row most likely to be decremented in error, and it was checked for exactly that** — twice before, this document decremented or held a count for a flattering reason and had to retract it. *(A naive re-derivation of the Freeze set by pattern returns **13**; reading every `Freeze` field verbatim shows `FEE-GAP-013`/`014`/`017` each say “**BLOCKS the … feature, not this PRD**”. **10** is right and the pattern is wrong.)* *Superseded header text retained verbatim:* **17 gaps. 6 block Stage 4. 11 block Freeze** *(`FEE-GAP-013` is **partly resolved** at v0.3 and blocks the requested feature,
 not this PRD — see its Freeze row)*. None is resolved by assumption. *(These two counts were
 stated inconsistently in the first draft — `6/6` here and `6/9` in §39. Both were wrong; the values below
 are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-review finding **J-3**.)*
@@ -1899,8 +2108,8 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Owner** | Product Owner — Library Domain |
 | **Authority** | **Product Owner** (tier) **+ Architecture Owner** (BC Map event table) |
 | **Status** | ✅ **PRODUCT SCOPE DECIDED at v1.4 — RECORDED IN `ADR-0039` §3, NOT SELF-ACCEPTED. ⛔ STILL BLOCKS STAGE 4 AND FREEZE.** The Product Owner has decided V1 refund scope: **only `confirmed` payments are refundable**; the original financial record is **immutable**; the refund is a **separate financial operation**; **V1 is full refund only**; and a **cash** refund must also be **server-recorded**. **Four of those five clauses are not new** — immutability and *“compensating entry, never a mutation”* are **Rank 1 `MP-GBR-12`** (`MASTER_PRD.md` **L353**), and server-recorded cash is already `ACCEPTED` **`ADR-0037`**; only *“full refund only”* is a genuinely new product choice. **The instruction’s own escape clause was tested, not assumed:** it permitted partial refund *“only if an existing authoritative source requires it”*, and `grep -rln "partial refund" docs/` returns **0** authoritative requirements — the only two hits are `ADR-0038` and this PRD’s own **recommendation** text, which is *“not a decision”* (`PRD-005` §7.4). The condition is therefore **measurably not triggered**, and full-refund-only additionally **avoids** proration, which frozen `MM-XC-012` places at **V2**. ⛔ **WHY THIS DOES NOT UNBLOCK EITHER GATE, stated plainly rather than left to inference:** (i) **a decision is not a specification** — `FEE-FR-042` (L1731) and `FEE-BR-019` (L1766) still carry **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 still fails; (ii) no `FEE-*` requirement, refund state table or `FEE-EVT-003` is written by this row, because writing them from a **`PROPOSED`** ADR would create a second divergable source of truth; (iii) the **Architecture Owner** half is untouched — the Rank 6 EA still reads `Refunds (V2)` at **L823**/**L1409** and `MP-CON-08` requires **the EA** to be corrected to match Rank 4, *“never the reverse”*. *Superseded Status text retained verbatim:* **OPEN — REQUIRES PRODUCT OWNER + REQUIRES ARCHITECTURE OWNER** |
-| **Stage 4** | **BLOCKS** |
-| **Freeze** | **BLOCKS** |
+| **Stage 4** | ✅ **DOES NOT BLOCK from v1.5.** The Stage-4 concern was `PRD_LIFECYCLE.md` check 1 — *"every requirement testable"* — and it is now satisfied by measurement: **`FEE-FR-042`** carries `FEE-AC-090`/`091`/`092`/`093`/`095`, **`FEE-BR-019`** carries `FEE-AC-091`/`093`, and **`FEE-EVT-003`** carries `FEE-AC-094`. `FEE-BR-019` is **no longer conditional** — the *"**If** refunds are V1"* hedge is removed and the superseded text is retained verbatim at §18.1. *Superseded field retained verbatim:* **BLOCKS** |
+| **Freeze** | ⛔ **STILL BLOCKS.** **This is not the same question as Stage 4 and is not decremented with it.** The Rank 6 EA still reads **`Refunds (V2)`** at **L823**/**L1409** while Rank 4 BC Map **L100**/**L374**/**L422** reads V1, and **`MP-CON-08`** requires the **EA** to be corrected to match the higher rank, *"never the reverse"*. That is an **Architecture Owner** act, **not performed here** — this PRD does not edit a Rank 6 document. **A PRD may be internally testable while an inter-document contradiction remains outstanding**, and freezing over one would freeze the contradiction in. *Superseded field retained verbatim:* **BLOCKS** |
 | **Precedence determination** *(mechanical, not a decision)* | **The conflict is not symmetrical, and it must not be settled by downgrading the higher rank.** `DOCUMENTATION_BASELINE.md` §4 places the **Bounded Context Map at Rank 4** and the **Enterprise Architecture at Rank 6**, marked *"**Descriptive only.** Update it to match 1–5; never the reverse"*; `MP-CON-08` (**Rank 1**) repeats it: *"the higher-ranked document wins and the Enterprise Architecture is updated to match — never the reverse. A disagreement is a **defect to be raised**, not a choice to be made."* Re-measured at HEAD: BC Map **L100** (`BC-05` *"owns … refunds"*, Release **V1**), **L374** (`RefundRecord` in the `FeeLedger` aggregate, invariant *"refund ≤ received"*), **L422** (`fee.RefundIssued` published to `BC-26`, `BC-24`) — versus EA **L823**/**L1408** only. Additionally **FROZEN Rank 3** `PRD-005` **L942** routes a real V1 flow into it: a payment received for a voided membership *"**MUST** be recorded and surfaced in the reconciliation queue for a refund decision by `BC-05`"*. **Therefore: recording refund as V2 in this PRD would (i) subordinate Rank 4 and Rank 1 to Rank 6, which `MP-CON-08` forbids, and (ii) leave a frozen Rank 3 requirement depending on a capability declared not to exist. This PRD does not make that downgrade.** |
 | **Recommended** | **Confirm refund IS V1** — the precedence determination above is mechanical; what requires the Product Owner is only the *scope* of V1 refund. Recommended minimum: owner-approved, compensating-entry-only (`MP-GBR-12` — financial records are immutable), `refund ≤ received` per BC Map L374, **no** partial-refund arithmetic (that is proration, and `MM-XC-012` places proration at V2). The **Architecture Owner** then corrects the EA to match per `MP-CON-08`. **No `FEE-*` requirement, state or event is written here on the strength of this recommendation** — `FEE-EVT-003` and the refund state table remain unwritten until the Product Owner decides, because a recommendation inside an open question *"is not a decision"* (`PRD-005` §7.4) |
 
@@ -1917,8 +2126,8 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Owner** | Architecture Owner *(for the Stage-4 remainder). **Limb (c) was closed by the PRODUCT OWNER, and the routing change is disclosed rather than quietly re-labelled.** Every prior pass routed (c) to the **Architecture Owner**, and that was **correct while the question was architectural** — it asked for an edge. The conferred decision changed the **kind** of question: *“through which edge does `BC-05` queue an offline write?”* is architectural, but *“does `BC-05` perform one at all?”* is **product scope**. Answering the second **removes** the first. `PRD_OWNERSHIP_MODEL.md` §2.2 gives the Architecture Owner authority over edges and boundaries; **there is no edge to rule on**, because the decision creates no traffic to carry.* |
 | **Authority** | **REQUIRES ARCHITECTURE OWNER** — to ratify `ADR-0035` `D-1` (transport, recognition of existing authority) and to decide `D-2` (counterparty). **A BC Map §7 amendment is *not* required and is *not* requested** |
 | **Status** | ✅ **RESOLVED for Stage 3 at v1.2 — (a) transport CLOSED by measurement (`ADR-0035` `D-1`); (b) counterparty CLOSED and IN FORCE (`ADR-0035` `D-2` = `O-3`); (c) offline-sync path **CLOSED — DISSOLVED, not routed** (`ADR-0037`, `ACCEPTED` by conferral of **Product Owner** authority).** **(c) is closed by denying its premise, not by declaring an edge.** The limb asked *through which declared edge `BC-05` **queues an offline financial write***. The conferred decision is that **`BC-05` never performs one**: cash payment is supported, but financial recording **MUST remain online/server-authoritative**, and the app **MUST NOT** perform an offline financial write, queue, local financial ledger or later sync. **A question of the form “which edge carries X?” is lawfully closed either by declaring the edge or by establishing that X does not occur** — this is the second, and it is the same shape as `ADR-0033`, which closed an edge conflict by **withdrawing `E-27`** rather than adding it to an allow-list. **No `BC-05` → `BC-30` edge was created and no `BC-32` was created**; `E-24` remains `BC-03` → `BC-30` only and the BC Map is byte-unchanged. **Nothing was specified to achieve this**: `FEE-FR-061` (server-side recording only; nothing confirmed offline) and `FEE-XC-022` (no offline write, queue, mirror or sync) **already said it**, verified by `FEE-AC-081`/`FEE-AC-082`, and neither is reworded. `MP-GBR-24` holds; idempotency is **strengthened**, because `FEE-FR-029` places the key at the **API edge** and removing the replay queue removes the failure mode `FEE-AC-082` guards. *Superseded Status text, retained so the movement is legible:* it read *"**PARTLY RESOLVED** … (c) offline-sync path **OPEN and BLOCKING**"*, and *"**(c) alone is now the whole reason this gap still blocks**"*. ⛔ **This closes the gap for Stage 3 ONLY.** The `Stage 4` field below is **deliberately left at BLOCKS** — closing a gap for one gate does not close it for another, and no decision was given on the Stage-4 concerns recorded in this block.** **(c) alone is now the whole reason this gap still blocks** — stated explicitly so the remaining blocker is not mistaken for the settled gateway question. `E-24` is `BC-03` → `BC-30` only; **no edge was added and none may be invented.** ⚠ **The acceptance of `ADR-0035` did NOT resolve (c), and nothing in the conferral addressed it.** The decisions given concerned payment execution, the inbound webhook, intent/verification ownership, gateway integration, settlement, rates, due days, cash-only settlement, trial length and renewal protection — **offline financial capture through `BC-30` was not among them.** This gap therefore **still BLOCKS Stage 4 and Freeze**. ⚠ **A correction made during this very pass, recorded rather than silently fixed:** a first draft of this row asserted *"the Stage-4 blocker count stays at **6**"* on the reasoning that `FEE-GAP-002` had not left the blocking set. **That was wrong.** `FEE-GAP-002` staying does not hold the count still — **`FEE-GAP-016` left**, so the count falls **6 → 5**. Re-derived mechanically from every gap block's own `Stage 4`/`Freeze`/`Blocks` field, the set is **`FEE-GAP-001`, `002`, `004`, `005`, `006`** = **five**. This is the exact mirror of the v0.7 defect this document already retracted, where a count was held still for the same kind of reason; **it is recorded here because a count that moves in the direction that flatters the document is the one that most needs checking** |
-| **Stage 4** | **BLOCKS** — *and at v1.3 the remaining cause is named, not merely asserted:* **`FEE-FR-028`**, the webhook/reconciliation contract, carries **⛔ no acceptance criterion**, so Stage 4’s *“every requirement testable”* check cannot pass. `ADR-0035` §5.5b decided **who** owns the inbound webhook and explicitly decided **no** *“endpoint, URL, payload schema, field list, signature algorithm, header, replay window, retry policy or gateway provider”*. **An owner is not a contract.** Authority: **Architecture Owner** (`ADR-0038` §5 item 6). *This field is **unchanged in verdict** from v1.2; only its stated cause is now measured rather than inherited.* ⛔ **AT v1.4 A CONFLICT IS REPORTED HERE, AND IT IS NOT RESOLVED — THIS IS THE MOST IMPORTANT ADDITION TO THIS BLOCK.** A webhook contract was **offered** by the Product Owner in the form *“Payment Gateway → existing **`platform/integration`** capability → verification → `BC-05`”*. **Four of its five clauses agree with what is already decided** and are recorded as confirmations, not new decisions: **no `BC-32`** is created; the webhook is **transport/evidence only**; **`BC-05` remains the financial source of truth**; and **verification precedes recording**. ⛔ **The fifth clause — the routing owner — contradicts an `ACCEPTED` ADR, and is therefore reported rather than applied.** **`ADR-0035` §5.5b (L536)**, whose Status row reads *“**ACCEPTED** … In force. Binding on all implementation”*, states that the *“inbound payment webhook = existing **Business Platform** capability”* — that is **`platform/business`, rank 6**, **not** `platform/integration`. **These are distinct declared modules, not synonyms:** `tool/module_dependencies.yaml` **L406** declares `platform/business` at rank 6 and **L409** declares `ports: [platform/integration:payment_gateway]` — a **caller → callee** relation, which is precisely why one cannot be substituted for the other. §5.5b’s own reasoning was *“it places ingress with execution … splitting the outbound request from the inbound confirmation across two owners would have been the architecturally worse answer”*. ⚠ **A nuance recorded because it cuts against this document’s own convenience:** `ADR-0035` **L442**, written **pre-conferral**, itself proposed *“a capability declaration naming an inbound-adapter owner within **`platform/integration`**”* — matching the offered clause exactly. But **§5.5b superseded L442**, and **a superseded proposal is not authority**; resurrecting it to make the instruction fit would be inventing a workaround. **No routing change is made, no module is re-declared, no `provides_ports:` entry is written, and `tool/module_dependencies.yaml` is byte-unchanged.** Escalated to the **Architecture Owner** as the only party who may reconcile the two, and recorded in **`ADR-0039` §2**. ⛔ **Even if the routing were settled today, this field would still read BLOCKS**, because §5.5b decided **who** owns ingress and expressly decided **no** *“endpoint, URL, payload schema, field list, signature algorithm, header, replay window, retry policy or gateway provider”* — so `FEE-FR-028` would still carry **⛔ no acceptance criterion**. **An owner is not a contract, and a conflict about the owner is not a contract either.** |
-| **Freeze** | **BLOCKS** |
+| **Stage 4** | ✅ **DOES NOT BLOCK from v1.5 — ownership limb CLOSED by determination; contract limb EXPLICITLY DEFERRED with a reason and an owner.** *The leading verdict of this field was **BLOCKS** through v1.4 and is superseded here; the whole of that text is retained verbatim below, beginning with the v1.3 cause:* **BLOCKS** — *and at v1.3 the remaining cause is named, not merely asserted:* **`FEE-FR-028`**, the webhook/reconciliation contract, carries **⛔ no acceptance criterion**, so Stage 4’s *“every requirement testable”* check cannot pass. `ADR-0035` §5.5b decided **who** owns the inbound webhook and explicitly decided **no** *“endpoint, URL, payload schema, field list, signature algorithm, header, replay window, retry policy or gateway provider”*. **An owner is not a contract.** Authority: **Architecture Owner** (`ADR-0038` §5 item 6). *This field is **unchanged in verdict** from v1.2; only its stated cause is now measured rather than inherited.* ⛔ **AT v1.4 A CONFLICT IS REPORTED HERE, AND IT IS NOT RESOLVED — THIS IS THE MOST IMPORTANT ADDITION TO THIS BLOCK.** A webhook contract was **offered** by the Product Owner in the form *“Payment Gateway → existing **`platform/integration`** capability → verification → `BC-05`”*. **Four of its five clauses agree with what is already decided** and are recorded as confirmations, not new decisions: **no `BC-32`** is created; the webhook is **transport/evidence only**; **`BC-05` remains the financial source of truth**; and **verification precedes recording**. ⛔ **The fifth clause — the routing owner — contradicts an `ACCEPTED` ADR, and is therefore reported rather than applied.** **`ADR-0035` §5.5b (L536)**, whose Status row reads *“**ACCEPTED** … In force. Binding on all implementation”*, states that the *“inbound payment webhook = existing **Business Platform** capability”* — that is **`platform/business`, rank 6**, **not** `platform/integration`. **These are distinct declared modules, not synonyms:** `tool/module_dependencies.yaml` **L406** declares `platform/business` at rank 6 and **L409** declares `ports: [platform/integration:payment_gateway]` — a **caller → callee** relation, which is precisely why one cannot be substituted for the other. §5.5b’s own reasoning was *“it places ingress with execution … splitting the outbound request from the inbound confirmation across two owners would have been the architecturally worse answer”*. ⚠ **A nuance recorded because it cuts against this document’s own convenience:** `ADR-0035` **L442**, written **pre-conferral**, itself proposed *“a capability declaration naming an inbound-adapter owner within **`platform/integration`**”* — matching the offered clause exactly. But **§5.5b superseded L442**, and **a superseded proposal is not authority**; resurrecting it to make the instruction fit would be inventing a workaround. **No routing change is made, no module is re-declared, no `provides_ports:` entry is written, and `tool/module_dependencies.yaml` is byte-unchanged.** Escalated to the **Architecture Owner** as the only party who may reconcile the two, and recorded in **`ADR-0039` §2**. ⛔ **Even if the routing were settled today, this field would still read BLOCKS**, because §5.5b decided **who** owns ingress and expressly decided **no** *“endpoint, URL, payload schema, field list, signature algorithm, header, replay window, retry policy or gateway provider”* — so `FEE-FR-028` would still carry **⛔ no acceptance criterion**. **An owner is not a contract, and a conflict about the owner is not a contract either.** ✅ **AT v1.5 THE OWNERSHIP CONFLICT IS AUTHORITATIVELY RESOLVED, AND THIS FIELD NOW READS DOES-NOT-BLOCK. BOTH HALVES OF THAT SENTENCE ARE LOAD-BEARING.** **(1) The conflict is closed by DETERMINATION, not by substitution.** It was routed to the **Architecture Owner**, who **UPHELD `ACCEPTED` `ADR-0035` §5.5b UNCHANGED**: ingress is owned by **`platform/business`**, recorded in **`ACCEPTED` `ADR-0040` §1**. **The `platform/integration` reading is NOT adopted and NOT recorded as a decision** — and the evidence that favoured it is preserved rather than buried: `ADR-0035` **L442**, written pre-conferral, itself proposed an inbound adapter *within* `platform/integration`, but §5.5b **superseded** L442 and **a superseded proposal is not authority** (`ADR-0040` §1.2). §5.5b's reasoning was **re-tested against the manifest, not taken on trust**: **L406** declares `platform/business` at rank 6 and **L409** declares `ports: [platform/integration:payment_gateway]`, a **caller → callee** relation — so naming the callee as the owner of the **return leg** of a call it does not initiate is exactly the split §5.5b rejected. **`tool/module_dependencies.yaml` is byte-unchanged; no `BC-32`; no `E-*` edge; no `provides_ports:` entry.** **(2) The Stage-4 concern is discharged WITHOUT a wire contract, which is the part that required a finding rather than a decision.** `ADR-0040` §2 established **by measurement** that **no document may currently author that contract**: `PRD-022`'s own **`SAAS-XC-006`** (L157-158) bars **`BC-20`** from *“naming a payment provider, endpoint, **webhook schema**, signature algorithm, retry policy”* and assigns vendor knowledge to **`BC-31`**; **`PRD-019`**, `BC-31`'s PRD, is **`PLANNED` and does not exist** (`PRD_REGISTRY.md` **L309**); this document forbids itself the same at **§14.1**; and §5.5b forbids *“invent[ing] an endpoint/schema”*. **Four candidate authors, all barred — so waiting for a contract before making `FEE-FR-028` testable would have meant waiting on a document that cannot yet be written.** **The resolution is that `FEE-FR-028` tests `BC-05`'s OWN verification obligation**, which §5.5b **expressly left with `BC-05`**: *“`BC-05` keeps payment intent, the **verification obligation** and student financial truth”*. `FEE-AC-085`…`089` now assert that an inbound notification alone does not leave `PENDING`, settles nothing, issues no receipt, emits no event, yields **exactly one** confirmed payment on replay (`FEE-INV-005`), and is **surfaced not applied** when it matches nothing. **Not one of them names an endpoint, URL, payload field, signature algorithm, header, replay window, retry policy or provider** — and the shape is **not invented**: `FEE-AC-032`/`033`/`034` already test the identical *evidence-never-instruction* rule (`FEE-BR-014`) for the **client-side-hint** case, so v1.5 **extends an established pattern to its sibling case**. ⚠ **WHAT IS STILL OPEN, STATED SO IT CANNOT BE MISREAD AS CLOSED:** the **wire contract** — endpoint, payload schema, signature algorithm, header, replay window, retry policy, provider — **remains unspecified**, owned by the **`BC-31` owner once `PRD-019` exists**. **This gap is therefore NOT marked RESOLVED**; its **ownership limb** is closed and its **contract limb** is **explicitly deferred with a reason and an owner**, which is the disposition `PRD_LIFECYCLE.md`'s Stage-4 gate permits. **Claiming full resolution because `ADR-0040` exists would be the precise defect the principal forbade.** *Superseded field retained verbatim below, so that the movement from BLOCKS to DOES-NOT-BLOCK is auditable rather than asserted:* |
+| **Freeze** | ⛔ **STILL BLOCKS — and this is NOT decremented alongside Stage 4, deliberately.** Stage 4 asks whether this PRD's own requirements are **testable**; Freeze asks whether the specification is **complete**. The **webhook wire contract is still unwritten** and cannot be written by any existing document (`ADR-0040` §2/§4), so freezing `PRD-008` now would freeze a **named, owned hole** into a baseline. **The owner is identified and the reason is stated — which satisfies Stage 4's deferral clause and fails Freeze's completeness bar, and those two verdicts are not in tension.** *Superseded field retained verbatim:* **BLOCKS** |
 | **Recommended** | **1.** Ratify **`ADR-0035` `D-1`** — this *recognises* an authorisation four ranked documents already grant; it grants nothing new. **2.** Decide **`D-2`** from the three options in `ADR-0035` §6 (`O-1` new context · `O-2` `BC-20` executes the rail but models no student money · `O-3` a platform capability owning no aggregate). **This PRD recommends none of the three** — each carries a real cost and `MP-GBR-24` is a Rank 1 rule whose interpretation is not this document's to settle. **3.** State who owns **webhook/verification receipt** under the chosen option; without it server-side confirmation cannot be specified. **4.** ~~Authorise the `D-14` correction (`ADR-0035` `D-3`).~~ ✅ **DONE at v1.3 — authorised 2026-08-05, EXECUTED 2026-08-15** by `ADR-0038` §2.1. `PRD_DEPENDENCY_GRAPH.md` L116’s false `E-25` citation is removed; measurement additionally showed the **`PRD-020` half is mis-cited on the same evidence** (`BC-13`’s only edge is `E-14`), disclosed rather than silently widened, and **no replacement edge is asserted** for `PRD-020`. `BC-05`’s route is the already-declared **port** `business.payment_intent`, not an edge. ⚠ **This removed a false citation, NOT a blocker** — see the `Stage 4` field, which is **unchanged at BLOCKS**. **Do not** widen the Core-cluster allow-list and **do not** add an `E-*` edge — `ADR-0033` refused exactly that, and §L196 makes it unnecessary |
 
 ### `FEE-GAP-003` — Bank transfer has no source
@@ -1943,7 +2152,7 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Owner** | Product Owner |
 | **Authority** | **REQUIRES PRODUCT OWNER** |
 | **Status** | ✅ **DECIDED at v1.4 — RECORDED IN `ADR-0039` §4, NOT SELF-ACCEPTED. ⛔ STILL BLOCKS STAGE 4 AND FREEZE.** V1 fee types are **Membership Fee**, **Renewal Fee**, **Registration / Admission Fee**, **Other approved library fee** — all revenue — and **Security Deposit**, which is ⛔ **NOT revenue** but a **refundable liability**. **This answers the exact question this block asked**, including the *“Decide `deposit` separately”* instruction in the `Recommended` row: the deposit is ruled a liability, which is what the `Impact` row said *“would change the ledger model”*. ✅ **It also discharges a cross-PRD dependency without closing another PRD’s gap** — `PRD-022` **L802** `SAAS-GAP-001` asks *“3% of what? … A rate without a base computes nothing”*, and a fee-type taxonomy that separates revenue from refundable liability supplies the missing **base**. `SAAS-GAP-001` is nevertheless **left OPEN**, because it is `PRD-022`’s to close and `FEE-XC-023` forbids this module from holding the Platform Charge at all; closing it here would be the precise ownership violation `FEE-XC-023` exists to prevent. **No `FEE-*` identifier, enum, configuration row or ledger account is created by this row** — measured: *“security deposit”* appears **2** times in `docs/`, neither as a `FEE-*` identifier. ⛔ **§22.1’s report still has no testable criterion**, so the `Stage 4` verdict below is **unchanged**: a dimension being *decided* is not the same as the report over it being *specified*. *Superseded Status text retained verbatim:* **OPEN** |
-| **Stage 4** | **BLOCKS** — §22.1 cites a report over an undefined dimension. *Verdict unchanged at v1.4: the dimension is now **decided** (`ADR-0039` §4) but §22.1’s report is still **unspecified**, and `ADR-0039` is **`PROPOSED`**.* |
+| **Stage 4** | ✅ **DOES NOT BLOCK from v1.5 — and the reason is narrower than it looks, so it is stated precisely.** The Stage-4 concern was that §22.1 cites *"Collection by fee type"*, a report **over a dimension this PRD does not define**. Re-measured at v1.5: **§22.1 assigns every one of those reports to `BC-26`**, and this PRD *"claims **no** report as a V1 deliverable of `BC-05`; it delivers **facts**"*. The **fact** `BC-05` owns is the obligation's fee-type value, already required by **`FEE-FR-006`** (*"a configurable value obtained through `E-19`, not a hard-coded enumeration"*) and traced by `FEE-AC-013`. **No `BC-05` requirement is left untestable by the report's absence**, because the report is not `BC-05`'s. ⚠ **What is NOT claimed:** the fee-type **taxonomy** decided in `ADR-0039` §4 (four revenue types + Security Deposit as a refundable **liability**) is **NOT written into this PRD as an enumeration**, deliberately — `FEE-FR-006` forbids a hard-coded list, so writing one would **contradict this PRD's own requirement**. The taxonomy is a **configuration value** supplied through `E-19`, and **no `FEE-CFG-*` register is opened** (`FEE-GAP-007`). *Superseded field retained verbatim:* **BLOCKS — §22.1 cites a report over an undefined dimension. *Verdict unchanged at v1.4: the dimension is now **decided** (`ADR-0039` §4) but §22.1’s report is still **unspecified**, and `ADR-0039` is **`PROPOSED`**.*** |
 | **Freeze** | **BLOCKS** |
 | **Recommended** | Approve a minimal V1 list. **Decide `deposit` separately** — if refundable it is not revenue and interacts with `FEE-GAP-001` |
 
@@ -1956,7 +2165,7 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Owner** | Product Owner + Architecture Owner |
 | **Authority** | **REQUIRES PRODUCT OWNER + REQUIRES ARCHITECTURE OWNER** |
 | **Status** | ✅ **DECIDED at v1.4 — RECORDED IN `ADR-0039` §5, NOT SELF-ACCEPTED. ⛔ STILL BLOCKS STAGE 4 AND FREEZE.** Financial corrections are **append-only**: the original record is **immutable**, and a correction or reversal **references the original** and records **actor, reason, timestamp and corrected state**. There is **no edit and no delete** of historical financial truth. ✅ **This rests on Rank 1 directly, and deliberately NOT on the analogy this block’s own `Recommended` row offered.** `MP-GBR-12` (`MASTER_PRD.md` **L353**) already states that *“a refund is a **compensating entry, never a mutation**”*, so append-only correction is a **restatement of Rank 1**, not a new rule. The `Recommended` row cited *“`BC-03`’s append-only correction model”* as support; `ADR-0038` measured that citation and warned it risks **re-inserting the *“except through approved workflows”* loophole that Rank 1 deliberately deleted** — recorded in this block’s own `Absence` row. **The decision therefore leans on `MP-GBR-12` and not on the analogy**, and the `CANCELLED`-plus-reissue shape the `Recommended` row proposed is **neither adopted nor rejected here**, because a state value is a `PRD-008` specification act. ⛔ **Why both gates still block:** `FEE-BR-007` (L1754) still carries **⛔ no acceptance criterion**; **no** `FEE-*` requirement, state value, permission or audit-field list is written by this row; and the **Architecture Owner** half of the `Authority` row — how an append-only correction is modelled against `FEE-BR-005`/`FEE-INV-002` immutability — is **not** answered by a product decision. *Superseded Status text retained verbatim:* **OPEN** |
-| **Stage 4** | **BLOCKS** — *verdict unchanged at v1.4; the cause is now named rather than inherited:* **`FEE-BR-007`** carries **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 cannot pass. The **policy** is decided (`ADR-0039` §5); the **obligation** is still untestable. |
+| **Stage 4** | ✅ **DOES NOT BLOCK from v1.5.** The named cause is discharged: the append-only correction obligation **`FEE-FR-043`** now carries **`FEE-AC-098`** (a correction creates a **new** compensating record with actor, reason, timestamp and corrected state, and **no** API path edits or deletes the original), and **`FEE-BR-007`** — cited in the superseded field below — carries `FEE-AC-096`/`097`. ✅ **The trap this block set for itself is still avoided:** `FEE-AC-098` rests on **`MP-GBR-12`** directly (*"a compensating entry, never a mutation"*) and **not** on the `BC-03` analogy `ADR-0038` warned would re-insert the *"except through approved workflows"* loophole Rank 1 deliberately deleted. **No `CANCELLED`-plus-reissue state value is created**, because `FEE-FR-043` already expresses the rule without one. *Superseded field retained verbatim:* **BLOCKS — *verdict unchanged at v1.4; the cause is now named rather than inherited:* **`FEE-BR-007`** carries **⛔ no acceptance criterion**, so `PRD_LIFECYCLE.md` **L108–L120** check 1 cannot pass. The **policy** is decided (`ADR-0039` §5); the **obligation** is still untestable.** |
 | **Freeze** | **BLOCKS** |
 | **Recommended** | Authorise `CANCELLED` + new obligation, both audited with actor and reason, as a **compensating pair** — consistent with `MP-GBR-12` and with `BC-03`'s append-only correction model |
 
@@ -1970,7 +2179,7 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | **Owner** | Product Owner *(policy)* + `BC-06` owner *(calendar semantics)* |
 | **Authority** | **REQUIRES PRODUCT OWNER** |
 | **Status** | ✅ **OFFSET VALUE NOW DECIDED at v1.4 — RECORDED IN `ADR-0039` §6, NOT SELF-ACCEPTED. ⛔ STILL BLOCKS STAGE 4 AND FREEZE.** **V1 due-date offset = 0 days.** The configured settlement due date **is** the actual due date; there is **no hidden `+N`-day calculation**. A future grace period or non-zero offset requires a **separately governed decision**. **This closes exactly the part this Status row left open — the value — and nothing else.** ✅ **The two traps this block set for itself were both measured, not stepped in.** (i) `PRD-006` §10A.4’s precedent requires a temporal rule to be *“not derived, inferred, or defaulted”*: **0 chosen explicitly is not 0 defaulted silently**, and the value is stated, not inherited. (ii) **`MP-GBR-24` holds.** Offset **0** imports **no value** from `PRD-022`’s ratified **15th** settlement due day — that governs **library → LIBOORA** money (`BC-20`), this governs **student → library** money (`BC-05`), and the two *“must never share a model, a table or a metric”*. Had the decision read *“due on the 15th”* it would have been a Rank 1 violation; **it does not, and that distinction is the whole reason this is safe**. `PRD-022`’s 15th is **preserved, untouched**. ⛔ **Why both gates still block:** no `FEE-*` requirement text is written, **no `CFG-*`/`FEE-CFG-*` configuration row is created** (`CONFIGURATION_GUIDE.md` §5 requires *“a PRD amendment”* to add one, and none is made here), and `FEE-AC-020`/`FEE-AC-021` therefore **remain non-deterministic** until `PRD-008` records the rule as a requirement. *Superseded Status text retained verbatim:* **PARTLY RESOLVED — the three-concept ambiguity is CLOSED by measurement; the offset value remains OPEN** |
-| **Stage 4** | **BLOCKS** — `FEE-AC-020`/`021` are still not deterministically implementable. *Verdict unchanged at v1.4: the **offset value** is decided (`ADR-0039` §6) but no requirement expresses it, so the acceptance criteria remain unimplementable. **A decided policy that no requirement states is not a testable requirement.*** |
+| **Stage 4** | ✅ **DOES NOT BLOCK from v1.5.** The named cause is discharged: **`FEE-BR-007`** now **states the value** — the V1 due-date offset is **`0` days**, the recorded due date **is** the effective due date, and this module **MUST NOT** apply any offset, grace period or added calendar arithmetic. `FEE-AC-096` tests exactly that equality and `FEE-AC-097` tests that `OVERDUE` is reproducible with offset `0` and no scheduled job — so **`FEE-AC-020`/`021` are now deterministically implementable**, which was the precise obstacle. ✅ **Both traps re-checked at v1.5, not assumed:** (i) **`0` is stated, not defaulted**, satisfying `PRD-006` §10A.4's *"not derived, inferred, or defaulted"*; (ii) **`MP-GBR-24` holds** — offset `0` imports **no value** from `PRD-022`'s ratified **15th**, which governs library → LIBOORA money, and `PRD-022` is **byte-unchanged**. **No configurable is created**, so Stage 4's *"every configurable has a default and a range"* check gains **no new obligation**. *Superseded field retained verbatim:* **BLOCKS — `FEE-AC-020`/`021` are still not deterministically implementable. *Verdict unchanged at v1.4: the **offset value** is decided (`ADR-0039` §6) but no requirement expresses it, so the acceptance criteria remain unimplementable. **A decided policy that no requirement states is not a testable requirement.**** |
 | **Freeze** | **BLOCKS** |
 | **Recommended** | Approve an explicit rule with a stated range, expressed as an offset from an **`BC-05`-owned** anchor — **not** as an adjustment to `endDate`, which `MM-FR-058` makes a clock-independent pure function that this module may not touch. **Do not** default it silently — `PRD-006` §10A.4 set the precedent that a temporal rule must be *"not derived, inferred, or defaulted"*, and `ADR-0031` set the precedent that a configuration row is **refused rather than invented** when no owner has approved a range |
 
@@ -2155,7 +2364,7 @@ are derived by reading the `Stage 4` and `Freeze` row of every gap block. Self-r
 | Gap | Decision needed | Owner | Blocks Stage 4 | Blocks Freeze |
 |---|---|---|---|---|
 | `FEE-GAP-001` | Refund V1 or V2 — **product scope DECIDED** (`ADR-0039` §3: confirmed-only, immutable original, separate operation, **full refund only**, cash server-recorded); the **Architecture Owner** half (Rank 6 EA still says `Refunds (V2)`) is untouched | Product Owner + Architecture Owner | ✅ | ✅ |
-| `FEE-GAP-002` | Gateway path + offline path — ⛔ **CONFLICT REPORTED, NOT RESOLVED** (`ADR-0039` §2): the offered routing names `platform/integration`, `ACCEPTED` `ADR-0035` §5.5b names `platform/business`. **Escalated, not worked around.** `FEE-FR-028` still has **⛔ no acceptance criterion** | Architecture Owner | ✅ | ✅ |
+| `FEE-GAP-002` | Gateway path + offline path — ✅ **OWNERSHIP CONFLICT RESOLVED at v1.5 by DETERMINATION** (`ACCEPTED` `ADR-0040` §1): **`ADR-0035` §5.5b is UPHELD UNCHANGED** — ingress is **`platform/business`**; the `platform/integration` reading is **not adopted**. `FEE-FR-028` now carries `FEE-AC-085`…`089`, testing **`BC-05`'s own verification obligation** with **no** endpoint, schema, signature, provider or retry policy. ⚠ **The wire contract remains open** — owner: **`BC-31` owner once `PRD-019` exists** (`ADR-0040` §2/§4). *Superseded row text retained verbatim:* ⛔ **CONFLICT REPORTED, NOT RESOLVED** (`ADR-0039` §2): the offered routing names `platform/integration`, `ACCEPTED` `ADR-0035` §5.5b names `platform/business`. **Escalated, not worked around.** `FEE-FR-028` still has **⛔ no acceptance criterion** | Architecture Owner | — | ✅ |
 | `FEE-GAP-003` | Bank transfer | Product Owner | — | ✅ |
 | `FEE-GAP-004` | Fee-type taxonomy (incl. deposit) — **DECIDED** (`ADR-0039` §4: membership, renewal, registration/admission, other approved fee = revenue; **Security Deposit = refundable liability, NOT revenue**). Supplies the **base** `PRD-022` `SAAS-GAP-001` needs, **without closing that gap** | Product Owner | ✅ | ✅ |
 | `FEE-GAP-005` | Obligation correction path — **DECIDED** (`ADR-0039` §5: **append-only**; original immutable; correction references the original with actor, reason, timestamp, corrected state). Rests on Rank 1 `MP-GBR-12`, **not** the `BC-03` analogy | Product Owner + Architecture Owner | ✅ | ✅ |

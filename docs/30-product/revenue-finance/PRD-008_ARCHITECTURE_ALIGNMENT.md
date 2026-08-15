@@ -1,13 +1,13 @@
-# `PRD-008` Revenue & Finance v0.7 — Stage 3 Architecture Alignment Record
+# `PRD-008` Revenue & Finance v0.8 — Stage 3 Architecture Alignment Record
 
 | Field | Value |
 |---|---|
 | **Stage** | **Stage 3 — Architecture Review** ([`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) §Stage 3) |
-| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v0.7 `DRAFT`** |
+| **Subject** | [`PRD-008_REVENUE-AND-FINANCE.md`](PRD-008_REVENUE-AND-FINANCE.md) — `PRD-008`, `BC-05` Fee & Collection, **v0.8 `DRAFT`** |
 | **Gate addressed by** | This document — *"a written alignment record naming every conflict and its disposition"* |
 | **Worked examples followed** | [`PRD-007_ARCHITECTURE_ALIGNMENT.md`](../seat-management/PRD-007_ARCHITECTURE_ALIGNMENT.md) · [`LIBRARY_PRD_ALIGNMENT.md`](../library/LIBRARY_PRD_ALIGNMENT.md) · [`STUDENT_IDENTITY_ALIGNMENT.md`](../student-identity/STUDENT_IDENTITY_ALIGNMENT.md) |
-| **Reviewed at** | `ebf2440` — **third pass** (v0.7). The second pass was written at `3d98330` against v0.6; its §3.5.4 *"narrows the decision without taking it"* is **now superseded** — the decision **has been taken** and recorded (§3.5.5). The first pass was written at `61e6950` against v0.5. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
-| **PRD hash at review** | `b4113817693dd57166854e7b7d22c9409f46cbe7cd723d2586ce1069ed5d6d94` — re-measured at **v0.7, 2,350 lines** *(the v0.6 hash `d6bb63d9…` at 2,316 lines and the v0.5 hash `3f91476a…` are now stale and are retained only in the change notes)* |
+| **Reviewed at** | `407203e` — **fourth pass** (v0.8). The fourth pass reviewed the CB28 addition (`FEE-XC-023`, `FEE-AC-084`, `FEE-GAP-017`) and **did not change the verdict**; see §9.3a. The third pass was written at `ebf2440` (v0.7). The second pass was written at `3d98330` against v0.6; its §3.5.4 *"narrows the decision without taking it"* is **now superseded** — the decision **has been taken** and recorded (§3.5.5). The first pass was written at `61e6950` against v0.5. The first pass was written at `61e6950` against v0.5 and its check-2 reasoning is **superseded in part** by §3 and §10 below |
+| **PRD hash at review** | `9f650ade436204ae52c0d58d3783756a1a86454bbe0b74f7e25ccd73d25fe006` — re-measured at **v0.8, 2,411 lines** *(the v0.7 hash `b4113817…` at 2,350 lines is superseded)*. Earlier: **v0.7, 2,350 lines** *(the v0.6 hash `d6bb63d9…` at 2,316 lines and the v0.5 hash `3f91476a…` are now stale and are retained only in the change notes)* |
 | **Companion ADR** | [`ADR-0035`](../../00-governance/adr/ADR-0035-bc-05-payment-gateway-path.md) — **`PROPOSED`, not accepted.** Its `D-2` is now **DECIDED and recorded** (`O-3`), but a recorded decision in a `PROPOSED` ADR **is not in force and binds nothing**. **It was not self-accepted:** conferred Architecture Owner authority permits *recording* the decision; marking it `Accepted` was expressly withheld |
 | **Mandate** | **Stage 3 only.** No PRD requirement added or changed by this record, **no ADR accepted**, no ranked document touched, no registry or baseline update, **no freeze**. Stages 4–7 not started |
 | **Verdict** | ⛔ **NOT ALIGNED — 5 of 6 checks PASS, 1 check BLOCKED.** The verdict is unchanged but its **reason has changed twice over**. The *transport* was closed at v0.6 (already authorised, no edge needed). The *counterparty* is **closed at v0.7**: `ADR-0035` `D-2` decides **`O-3`** — payment execution is a **Business Platform capability, not a new bounded context** — passing the architecture's own **`AR-1`** test on all four criteria, with the context count staying **31**. **Check 2 nevertheless stays ⛔ BLOCKED, now for exactly two reasons, both stated rather than smoothed over:** **(i)** **`FEE-GAP-016`** — no source at any rank declares an owner for **inbound webhook transport**, so server-side confirmation still cannot be specified; and **(ii)** the deciding ADR is **`PROPOSED`**, so `D-2` is **recorded, not in force**. A gate does not pass on a decision that is not yet in force. 0 conflicts created by this PRD · **4** pre-existing defects raised, not chosen (§9.1) · **16** gaps, **6** blocking Stage 4 (§9.3) · **7** findings rejected with reasons (§10) |
@@ -655,7 +655,7 @@ documents* that this PRD surfaces.
 > own verdict on its own say-so. That restraint is `ADR-0033` §7.1: *"A conferral for one act is not a standing
 > licence."*
 
-### 9.3 Gaps — 16, with Stage 3 impact stated individually *(15 → 16 at v0.7: `FEE-GAP-016` added)*
+### 9.3 Gaps — 17, with Stage 3 impact stated individually *(15 → 16 at v0.7: `FEE-GAP-016` added; 16 → 17 at v0.8: `FEE-GAP-017` added)*
 
 | Gap | Blocks Stage 3? | Class | Owner |
 |---|---|---|---|
@@ -666,6 +666,21 @@ documents* that this PRD surfaces.
 | `FEE-GAP-013` — renewal protection | No — `BC-05` owns none of the blocked parts | C + E | Product Owner, `BC-02`/`BC-06`, Architecture, Security |
 | `FEE-GAP-014` — commission has no owning document | No — it is `BC-20`'s subject | C | `BC-20` owner / Architecture Owner |
 | `FEE-GAP-015` — permission + parameter row | No — role question **CLOSED** by `PR-1`; remainder is outside `BC-05` | C | `BC-18`/`PRD-001`, `BC-25`/`PRD-023` |
+| **`FEE-GAP-017`** — library → LIBOORA commission settlement has no owning aggregate and no enumerated permission *(added v0.8)* | **No** — and this is a measured finding, not a convenience: **`BC-05` owns none of it.** Ownership of the receivable is **already determinate** (BC Map **L129**, `BC-20`), the outbound rail **already exists** (`E-25`, manifest **L409**), so nothing about `BC-05`'s boundary is in question. What is missing lives in **`BC-20`/`PRD-022`** (no commission or receivable aggregate — BC Map **L382**) and in **`PRD-001`** (no enumerated permission anywhere, so `AUTH-7.22` + `AP-9` fail-closed deny the action **even for `TR-1` Owner**) | C | `BC-20` owner / `PRD-022` author · `PRD-001` owner (permission) · Architecture Owner (basis-fact path) |
+
+#### 9.3a Why `FEE-GAP-017` does **not** change the verdict *(added v0.8)*
+
+The verdict stays ⛔ **NOT ALIGNED — 5 of 6**, and the **single** blocked check stays the same one (`FEE-GAP-002`(c) offline sync, plus the standing condition below). `FEE-GAP-017` is a **real and load-bearing product blocker** — a cash-only library genuinely cannot pay its ₹1,500 today — but it is **not a `BC-05` boundary defect**, and the distinction matters:
+
+| Question a Stage 3 check could ask | Answer measured at v0.8 | Effect on verdict |
+|---|---|---|
+| Does `BC-05` claim money it does not own? | **No.** `FEE-XC-023` forbids a settlement entering any `BC-05` model; `FEE-FR-060` carries no commission field | None — strengthens check 2 |
+| Is a new bounded context implied? | **No.** BC Map **L129** already assigns library → LIBOORA money to `BC-20` | None — no `BC-32` |
+| Is a new edge implied? | **No.** `E-25` (`BC-20 → BC-31`) already exists, and the basis fact may travel on the existing `fee.FeePaymentReceived` event | None — edge count stays **26** |
+| Is a register violated? | **No**, but only because nothing was minted: no permission identifier, no sixth tenant role, no third platform role | None |
+| Can the feature ship? | **No** — `PRD-022` does not exist and no permission is enumerated | **Blocks `PRD-022` and the product feature, not `BC-05`** |
+
+> **Recording this as a Stage 3 blocker would have been the flattering error in reverse** — it would make this record look stricter while mis-attributing another module's absence to `BC-05`. The honest statement is that **`BC-05` is aligned on this point and the platform is not yet capable of it.**
 
 **Standing condition (not a gap):** when `FEE-GAP-002`(b) is resolved, **tenant isolation across the payment rail
 must be re-reviewed** (§7.2). This record can pass check 6 on what exists; it cannot pre-approve what does not.

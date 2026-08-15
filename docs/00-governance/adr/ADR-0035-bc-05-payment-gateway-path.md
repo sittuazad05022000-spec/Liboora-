@@ -7,7 +7,7 @@
 | **Raised by** | Stage 3 re-review of `PRD-008` Revenue & Finance — blocker `FEE-GAP-002`, recorded in [`PRD-008_ARCHITECTURE_ALIGNMENT.md`](../../30-product/revenue-finance/PRD-008_ARCHITECTURE_ALIGNMENT.md) §3 |
 | **Decision by** | **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` §2.2) — **not yet given** |
 | **Supersedes / amends** | **Nothing.** No ranked document is amended by this ADR. **No edge is added. No allow-list is widened. No bounded context is created. No aggregate, contract, webhook schema, endpoint or table is defined.** The one corrective act it *recommends* (§5.3) is to a **Rank 5 derived, explicitly non-normative** document |
-| **Governs** | `BC-05` → payment gateway transport · the `business.payment_intent` port · `D-14` · `FEE-GAP-002` |
+| **Governs** | `BC-05` → payment gateway transport · the `business.payment_intent` port · **student-payment execution ownership (`D-2`)** · `D-14` · `FEE-GAP-002` |
 
 > **The question splits in two, and that is the whole finding.** Previous reviews asked *"does `BC-05` have a path
 > to the gateway?"* as a single question and answered **no**, because they searched for a numbered `E-` edge and
@@ -257,12 +257,203 @@ a new one being granted. **No `E-*` edge is created. No allow-list is widened. `
 `BC-05` continues to be forbidden from: naming a vendor, holding a gateway credential, calling `BC-31` directly, or
 knowing any gateway protocol detail (`X-03`, Matrix L167, `FEE-XC-005`, `FEE-XC-006`).
 
-### 5.2 `D-2` — The counterparty is **UNRESOLVED** and is the Architecture Owner's decision
+### 5.2 `D-2` — **DECIDED: `O-3`. Payment Execution is a Business Platform capability, not a new bounded context**
 
-Which context implements `payment_intent` for **student → library** money is **not** decided here. It cannot be
-`BC-20` without breaching `MP-GBR-24` (§3.1). **Three admissible resolutions are listed in §6; this ADR selects
-none**, and until one is selected, `PRD-008` **MUST NOT** specify the payment-execution contract, the verification
-mechanism, the webhook, or any endpoint.
+**Decision (Architecture Owner, acting as ARB).** **Student → library payment execution is a capability of the
+Business Platform (`platform/business`, rank 6). It is NOT a bounded context, it receives NO `BC-` identifier, and
+the context count remains 31.**
+
+`PRD_OWNERSHIP_MODEL.md` §2.2 vests *"boundaries, ranks, permitted edges, precedence"* and *"ADR approval; any
+Rank 1–5 document change"* in the **Architecture Owner**, convening as the **Architecture Review Board** — the same
+authority that decided `ADR-0012`, `ADR-0013` and `ADR-0033`. `D-2` is squarely a boundary question, so it is
+within that authority and no other.
+
+**This selects `O-3` from §6 and rejects `O-1` and `O-2`.** The three were presented without recommendation in the
+investigation phase; they are now decided, on the evidence below.
+
+#### 5.2.1 Why `O-3` is admissible — the `AR-1` test, applied and passed
+
+`AR-1` (Rank 4, authoritative, recorded at BC Map **L558** and applied at **L86**) is the architecture's own test
+for whether a capability needs a bounded context. A capability is **not** a context when it *"owns **no aggregate,
+no invariant and no business state**"* and *"delegates every domain operation to the owning module."* Applied here,
+measured rather than asserted:
+
+| `AR-1` criterion | Payment execution | Evidence |
+|---|---|---|
+| Owns an **aggregate**? | **No** — the aggregate is `FeeLedger`, and it is `BC-05`'s | BC Map **L374**: `BC-05` owns `FeeLedger` with `FeeDue`, `Receipt`, `Discount`, `RefundRecord`, `Money` |
+| Owns an **invariant**? | **No** — the payment invariants are `BC-05`'s | `FEE-INV-005` (no two confirmed payments share an idempotency key or a gateway reference) · `FEE-BR-016` · frozen `MM-BR-005`: *"**Enforcement of the payment side is `BC-05`'s**"* |
+| Owns **business state**? | **No** — confirmed financial truth is `BC-05`'s, exclusively | BC Map **L374** · `MP-GBR-24` · L202 (`FeePayment` vs `SubscriptionCharge`) |
+| **Delegates** every domain operation? | **Yes** | Intent from `BC-05` (§3.2 row 1); vendor protocol to `BC-31` (BC Map L140); confirmation back to `BC-05` (row 4) |
+
+**All four criteria are satisfied.** Payment execution is a *rail*: it moves money and returns a result. It decides
+nothing, remembers nothing, and owns no record. **On the architecture's own test it is precisely the kind of thing
+that must NOT be a bounded context.**
+
+Precedent is exact, not analogical. BC Map **L86** records that Library Discovery & Enrollment *"is likewise **not**
+a context … No `BC-` identifier is assigned; the context count remains 31."* `PRD_REGISTRY.md` **L355** applied the
+same test to the Library Member Directory and recorded *"**no `BC-32` was created** and the context count remains
+**31**."* **This decision is the third application of a settled rule, not a new rule.**
+
+#### 5.2.2 Why the Business Platform is the right home
+
+| Source | Rank | What it says |
+|---|---|---|
+| Dependency Matrix **L167** | 4 | `LIBRARY MANAGEMENT → INTEGRATION` = `✖`; *"Integration is reached **only via BUSINESS (payments)** or COMMUNICATION (messaging)"* |
+| Dependency Matrix **L196**, `X-03` **L352** | 4 | `business.payment_intent` declared in `library_management`'s `may_use_ports`; the remedy names it: *"Call `business.payment_intent` port"* |
+| Frozen `PRD-005` **L164** | 3 | *"Payment transaction, gateway, ledger, receipt, refund, reconciliation"* → *"`BC-05` / **Business Platform**"* — the **platform**, not `BC-20` |
+| EA **L122** | descriptive | Resolves the same duplication to *"**BUSINESS PLATFORM** (money movement) / Library (fee **domain intent**)"* — again naming no context |
+| EA **L74** | descriptive | Library payments are *"**domain intent** over Business Platform **rails**"* |
+| `tool/module_dependencies.yaml` **L409** | machine-checked | `platform/business` already declares `ports: [platform/integration:payment_gateway]` — **the onward hop exists** |
+
+Four ranked sources put money movement in the **Business Platform**; none puts it in a context. The two descriptive
+EA rows are used here only as **corroboration**, never as authority — `DOCUMENTATION_BASELINE.md` **L139** marks the
+EA *"Descriptive — must follow the PRDs, never lead them."*
+
+**`ADR-0013` is cited with an explicit limit.** Its ratio — *"a capability context is owned by the platform module
+that implements it"* — was decided for capabilities that **already had** a `BC-` identifier (`BC-19`, `BC-25`,
+`BC-29`). Measured, it never contemplates a capability with **no** context: `grep -i "no bounded context|owns no
+aggregate"` over `ADR-0013` returns **0**. It is therefore **adjacent precedent for platform-level ownership, and
+not the authority for BC-less-ness.** That authority is `AR-1`, applied in §5.2.1. Recording this limit matters: a
+future reader must not think `ADR-0013` decided more than it did.
+
+#### 5.2.3 What this decision does NOT do
+
+- It creates **no bounded context** and assigns **no `BC-` identifier**. Count stays **31**.
+- It creates **no numbered dependency edge**. The lawful path is the already-declared port chain (§5.4).
+- It makes **no change** to `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` or `LIBOORA_BOUNDED_CONTEXT_MAP.md`.
+- It moves **no aggregate, no invariant and no requirement**. `FeeLedger` stays in `BC-05`.
+- It gives `BC-20` **no role whatsoever** in student → library money (§5.2.4).
+- It defines **no endpoint, schema, webhook payload, vendor contract, permission ID or configuration identifier**.
+- It does **not** resolve webhook **ingress ownership** — that remains open as `FEE-GAP-016` (§5.5).
+
+#### 5.2.4 Why `BC-20` is NOT the executor — `O-2` rejected
+
+`MP-GBR-24` (**Rank 1**, `MASTER_PRD.md` L362) is binding: student→library money and library→LIBOORA money
+*"**must never share a model, a table or a metric.**"* `BC-20` is defined as *"money owed by a **library to
+LIBOORA**"* (BC Map L129). Making it the executor of a **student's** fee payment would put both financial domains in
+one context — the exact conflation Accepted **`ADR-0015`** exists to correct, which it called *"not merely wrong — it
+erases a distinction the map treats as **load-bearing**."*
+
+This is no longer only a prose rule. The rank-0 shared kernel `packages/liboora_contracts` carries `banned_symbols`
+including `class Payment ` with the message *"FeePayment (BC-05) or SubscriptionCharge (BC-20)"* — so
+`tool/check_module_boundaries.dart` **mechanically enforces** the split. `O-2` is refused.
+
+> **The Rank 1 tension of §3.6 is resolved by scope, not by overriding either statement.** `MASTER_PRD.md` L232
+> sits in **§10 Technology Stack**, whose subject its own preamble states is *"**capabilities with abstractions**,
+> with **vendors** recorded as candidate implementations behind ports"* — its columns are *Capability · Architectural
+> owner · Abstraction · Candidate implementation · Approved in EA?*. It is a **vendor-abstraction** table, and its
+> `Payments` row concerns which **SaaS** billing path reaches a gateway. `MP-GBR-24` governs the **financial model**.
+> Read to their own declared scopes the two do not collide, and **neither is amended, weakened or reinterpreted by
+> this decision.** No Rank 1 document is modified.
+
+#### 5.2.5 Why `BC-32` MUST NOT be created — `O-1` rejected
+
+`O-1` fails at the first `AR-1` criterion: a new context must own an aggregate, an invariant or business state, and
+payment execution owns **none** (§5.2.1) — rows 4 and 5 of §3.2 keep both in `BC-05`. Creating `BC-32` would
+therefore either (a) be an empty context, which `AR-1` forbids, or (b) require **moving `FeeLedger` out of `BC-05`**,
+which `MP-GBR-24` and BC Map L374 forbid. Both branches are barred.
+
+It would also contradict the standing instruction — the map *"has held **31** contexts since inception"* and
+prefers *"a smaller number of clear bounded contexts over unnecessary fragmentation"* — and would break the
+precedent of `PRD_REGISTRY.md` L355, which refused a `BC-32` on this same test. **`O-1` is refused. Should new
+evidence ever show payment execution owning an aggregate or an invariant of its own, `O-1` may be reopened; on the
+evidence measured at this HEAD it does not.**
+
+### 5.3 The ownership table, in force on acceptance
+
+Every row carries its authority. **Rows marked ⛔ are NOT decided by this ADR.**
+
+| Responsibility | Owner | Authority |
+|---|---|---|
+| **Payment Intent** | **`BC-05`** | BC Map **L100** · frozen `PRD-005` **L164** · EA L74 (*"domain intent"*) |
+| **Payment Financial Truth** | **`BC-05`**, exclusively | BC Map **L374** (`FeeLedger`) · `MP-GBR-24` (Rank 1) · L202 |
+| **Payment Verification** | **`BC-05`** | `MP-GBR-18` (Rank 1) · frozen `MM-BR-005` (Rank 3) · `FEE-INV-005` · `FEE-BR-016` |
+| **Payment Execution** | **Business Platform capability** — `platform/business`, rank 6. **No `BC-` id** | **§5.2** (this decision) · `AR-1` test passed · Matrix L167/L196 · `X-03` L352 · frozen `PRD-005` L164 |
+| **Gateway Integration** | **`BC-31`** | BC Map **L140** · manifest **L409** |
+| **External Gateway Contract** | **`BC-31`** | BC Map **L140** (*"outbound third-party contracts, credentials, retries"*) |
+| **Inbound Webhook Transport** | ⛔ **UNDECLARED** — must be an authorised `platform/integration` capability, owner not yet named | **`FEE-GAP-016`**, §5.5. BC Map has **0** `webhook`, **0** `inbound`; `BC-31` is outbound-only |
+| **Webhook Interpretation** | **`BC-05`** verification boundary | `FEE-BR-014` · `FEE-INV-005` · `FEE-BR-016` · frozen `MM-BR-005` |
+| **Platform Commission** | **`BC-20`** | `MP-GBR-24` · BC Map **L129** · `FEE-GAP-014` · `FEE-XC-001`/`FEE-XC-002` |
+| **Library → LIBOORA Settlement** | **`BC-20`** | `MP-GBR-24` · BC Map **L129** · `FEE-GAP-014` |
+| **Student → Library Money** | **`BC-05`**, exclusively | `MP-GBR-24` (Rank 1) · BC Map **L100**/**L374** · L202 |
+
+**The two money domains never meet.** Rows 1–3, 8 and 11 are `BC-05`. Rows 9–10 are `BC-20`. **No row is shared, and
+no model, table or metric spans them** — `MP-GBR-24` is preserved structurally, not merely asserted.
+
+### 5.3.1 Six concepts, held apart deliberately
+
+The blocker persisted for as long as these were treated as one thing. They are six, with **five different owners**:
+
+| Concept | Question it answers | Owner | May it write `FeeLedger`? |
+|---|---|---|---|
+| **Transport** | *By what lawful route does a request travel?* | The declared **ports** — `business.payment_intent`, then `platform/integration:payment_gateway` | **No.** A route is not an actor |
+| **Execution** | *Who interacts with the money rail?* | **Business Platform capability** (§5.2) | **No.** Owns no aggregate — that is why it needs no context |
+| **Verification** | *Did money actually move, proven server-side?* | **`BC-05`** | **Yes** — this is the only gate through which truth enters |
+| **Financial truth** | *What does the library's record say is owed and paid?* | **`BC-05`** (`FeeLedger`) | **It is** the truth |
+| **Settlement** | *What does the library owe LIBOORA?* | **`BC-20`** | **Never.** Different domain (`MP-GBR-24`) |
+| **Webhook reconciliation** | *Who receives the rail's asynchronous callback, and who believes it?* | Receipt ⛔ **undeclared** (`FEE-GAP-016`) · interpretation **`BC-05`** | **Not directly.** Only via verification |
+
+**The load-bearing separation is execution ≠ verification.** Executing a payment is an *attempt*; verifying it is a
+*finding*. Keeping them apart is what lets execution be a context-less rail while financial truth stays sovereign in
+`BC-05` — and it is why a webhook, which is transport, can never write a receipt.
+
+### 5.3.2 Cash — unchanged, and confirmed against this decision
+
+Cash never touches a rail, so the execution capability is **not** involved. `FEE-FR-061` and `FEE-XC-022` already
+require server-side recording with **no offline financial write** of any kind, consistent with `E-24` granting
+offline sync to `BC-03` **only**. This decision **adds nothing and relaxes nothing** here.
+
+**Staff recording cash ≠ LIBOORA receiving money.** That gap is a `BC-20` settlement obligation, and it stays
+outside `BC-05`'s model: `FEE-FR-060` deliberately carries **no commission, gateway or tax field**, because adding
+one would perform the `MP-GBR-24` merger in the schema, where it would actually bite. **The settlement mechanism is
+not invented here** — it remains `FEE-GAP-014`, routed to `BC-20`.
+
+### 5.4 The lawful path — no new edge is created
+
+The route was already fully authorised at every hop before this decision; §2 proved the first hop and the manifest
+declares the second. Stated end to end, with the authority for each step:
+
+| Step | From → To | Mechanism | Authority |
+|---|---|---|---|
+| 1 | `BC-05` → Business Platform | **`business.payment_intent` port** | Matrix **L196** (normative §6) · **L167** · `X-03` **L352** · Accepted `ADR-0012` **L86** |
+| 2 | Business Platform → `platform/integration` | **`platform/integration:payment_gateway` port** | `tool/module_dependencies.yaml` **L409** — already declared |
+| 3 | `BC-31` → payment provider | Outbound vendor contract | BC Map **L140** — *"owns **outbound** third-party contracts, credentials, retries"* |
+| 4 | Result returns inbound | ⛔ **transport owner undeclared** | `FEE-GAP-016` (§5.5) — **not resolved here** |
+| 5 | Verification of the result | `BC-05` verifies | `MP-GBR-18` · frozen `MM-BR-005` · `FEE-INV-005` · `FEE-BR-016` |
+| 6 | Confirmed `FeePayment` / `Receipt` | `BC-05` writes financial truth | BC Map **L374** · `MP-GBR-24` |
+
+**No `E-*` edge is added, and none is required.** Accepted `ADR-0033` settled that BC Map L292 *"**governs edges**…
+It does **not** state that every cross-context read must be an edge"*, and the measurement in §4.2 stands: **14 of
+`library_management`'s 17 declared ports have no usable numbered edge**, including `identity.policy_decision`.
+Requiring one here would invalidate thirteen lawful dependencies. **The Dependency Matrix is unamended.**
+
+`BC-05` remains forbidden from naming a vendor, holding a gateway credential, calling `BC-31` directly, or knowing
+any gateway protocol detail (`X-03`, Matrix L167, `FEE-XC-005`, `FEE-XC-006`). **Step 1 is a port call, not
+knowledge of a rail.**
+
+### 5.5 `D-4` — Webhook ingress ownership is **NOT** resolved, and is recorded as a governance gap
+
+The `D-2` investigation found that **inbound** transport has no owner anywhere in the architecture (§3.4):
+`grep -c "webhook"` and `grep -c "inbound"` over the Rank 4 BC Map both return **0**; `BC-31` is defined
+**outbound-only** (L140); and the component the EA nominates for inbound adapters — *"API Platform = inbound
+adapters"* (EA L165) — **holds no `BC-` identifier** and is not one of the 31 contexts.
+
+**This decision does not fill that gap, and deliberately so.** The minimum amendment that would be required is a
+**capability declaration naming an inbound-adapter owner within `platform/integration`** — the same shape as step 2
+above, preferring an existing platform capability over any new context, consistent with `AR-1` (a receiver that
+validates and forwards owns no aggregate). **But no authoritative source names that owner**, and this ADR will not
+invent one: no endpoint, no payload, no signature scheme, no vendor callback behaviour is written here.
+
+Recorded as **`FEE-GAP-016`** in `PRD-008` §37. **Consequence, stated plainly:** `PRD-008` **MUST NOT** specify the
+webhook contract or server-side confirmation *mechanism* until `FEE-GAP-016` is decided, and **Stage 3 check 2
+therefore remains ⛔ BLOCKED.** What changed is that the blocker is now **one narrow, well-specified question**
+instead of the whole payment architecture.
+
+**What is nonetheless already settled and needs no further decision:** a webhook is **transport**, so it may never
+write financial truth. `FEE-BR-014` already holds that client-side success is never financial truth; `FEE-INV-005`
+and `FEE-BR-016` already require idempotency and server-side verification in `BC-05`. **An inbound message is
+evidence to be verified, never an instruction to be obeyed** — and that rule exists today, independently of who
+owns the receiver.
 
 **What the `D-2` investigation added, without selecting.** Four of the six ownership rows in §3.2 are **closed by
 measurement** — payment intent, gateway integration, the payment-verification *obligation*, and student financial
@@ -309,7 +500,7 @@ on the `D-2` outcome. Recommended once `D-2` is settled: remove the `E-25` citat
 
 ---
 
-## 6. Options for `D-2` — presented, not chosen
+## 6. Options for `D-2` — **`O-3` SELECTED** *(this table records the choice as offered; the decision is §5.2)*
 
 | # | Option | For | Against |
 |---|---|---|---|
@@ -317,11 +508,12 @@ on the `D-2` outcome. Recommended once `D-2` is settled: remove the `E-25` citat
 | **O-2** | **`BC-20` implements the port but is barred from modelling student money** — it executes the rail only, holding no `FeeDue`, `Receipt` or student balance | No new context; `BC-20` already owns *"gateway"* and `PaymentAttempt` | Risks the `MP-GBR-24` breach in practice; needs an explicit, testable statement of what `BC-20` may **not** persist |
 | **O-3** | `payment_intent` is a **`platform/business` capability with no context of its own** — a rail, like `data.repository`, owning no aggregate | Matches how the other 13 no-edge ports already work; smallest change; `ADR-0013`'s *"a capability context is owned by its platform"* is adjacent precedent | The BC Map's aggregate table would carry no owner for gateway references; reconciliation ownership still needs naming |
 
-**No recommendation is offered.** Each has a real cost, and `MP-GBR-24` is a Rank 1 rule whose interpretation is not
-this document's to settle. *(The `D-2` investigation subsequently measured these three against the authoritative
-sources and recorded the result in §5.2: `O-2` is contradicted by Rank 1, `O-1` fails the `AR-1` test, and `O-3` is
-the only one no higher-ranked source contradicts. **That is a narrowing of the evidence, not a selection** — the
-table above still stands as written, and none of the three is chosen here.)* The Architecture Owner should also state **who owns webhook/verification receipt** under
+> **Resolution.** The table above is preserved **exactly as first written**, including its *"no recommendation"*
+> framing, so the record shows what was offered before the choice was made. **`O-3` is now SELECTED** by the
+> Architecture Owner in **§5.2**; `O-2` is refused on Rank 1 `MP-GBR-24` (§5.2.4) and `O-1` on the `AR-1` test
+> (§5.2.5). The *"Against"* cell for `O-3` above noted two costs; both are addressed rather than dismissed —
+> gateway-reference ownership stays with `BC-05` (`FEE-INV-005`, `FEE-BR-016`, frozen `MM-BR-005`), and
+> **reconciliation ownership is exactly what remains open**, recorded as `FEE-GAP-016` in §5.5. The Architecture Owner should also state **who owns webhook/verification receipt** under
 the chosen option, since `PRD-008` cannot specify server-side confirmation without it.
 
 ---

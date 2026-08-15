@@ -483,6 +483,56 @@ changed the shape of the remaining choice:
 > from *"who owns payments?"* to *"confirm `O-3`, and name an owner for webhook ingress"* — which is a materially
 > smaller and better-specified question, but still a decision, and still not this document's to take.
 
+### 5.5a `D-4` re-measured 2026-08-05 — the gap is unchanged, and one of my own findings was wrong
+
+**Why this subsection exists.** A governance pass re-opened `D-4` believing it had found an owner for webhook
+ingress that this ADR had missed: `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **L1407**, `Webhook Reconciliation (V1)`,
+nested under **L1403** `Payment Gateway (V1)`, inside **L1352** `BUSINESS PLATFORM (V1)` — descriptively symmetric
+with `O-3`, and therefore apparently the missing candidate for row 6.
+
+**That finding was not new, and the belief that it was is the error being recorded here.** §3.4 of *this document*
+already cites **L1407** verbatim and already disposes of it: *"the EA is marked in `DOCUMENTATION_BASELINE.md` as
+'Descriptive — must follow the PRDs, never lead them', so it records an intention and **cannot confer ownership**."*
+The re-measurement reproduced an existing measurement and briefly mistook it for a discovery. **`D-4` is therefore
+unchanged: still OPEN, still `FEE-GAP-016`, still Stage 3 check 2 ⛔ BLOCKED.** Nothing is closed by this subsection.
+
+> **This is recorded rather than quietly dropped because the failure mode is the dangerous one.** An agent that
+> re-derives a fact already in the record, and reports it as progress, manufactures the appearance of movement while
+> the blocking question stands untouched. The instruction *"never assume a previous report is authoritative without
+> re-measuring"* cuts both ways: re-measurement can also **overturn a claim of novelty**, and that outcome must be
+> reported with the same prominence as a genuine find.
+
+**What the re-measurement did establish, and it narrows the amendment rather than answering it.**
+
+| Measured 2026-08-05 | Result | Bearing on `D-4` |
+|---|---|---|
+| `platform/business` manifest block (`tool/module_dependencies.yaml` **L405-416**) | Exists; **L409** declares `ports: [platform/integration:payment_gateway]` | The **outbound** capability is already declared. `D-4` concerns the **return path**, which is not in this list |
+| A `platform/integration:` *module* block | **Absent.** The name appears only as a rank entry (**L40**, `platform/integration: 5`) and as the target of the port above | The minimum amendment is a **declaration on an existing capability**, not a new module and not a new edge |
+| `Webhook Reconciliation` repository-wide | **6 occurrences**, in the EA (L79, L1407), this ADR (§3.4 L203), `PRD-008` (L799, L2107) and the `PRD-008` alignment record (L316) | Every occurrence is either **descriptive** (EA) or a **record that the owner is missing**. None is a grant |
+| `BC-31` scope, verbatim (BC Map **L140**) | *"Owns **outbound** third-party contracts, credentials, retries, idempotent delivery"* | Unchanged. Inbound remains outside its stated scope, which is why `FEE-GAP-016` exists |
+
+**The minimum lawful amendment, stated as a proposal and not adopted.** *If* the Architecture Owner confirms `O-3`,
+the smallest declaration consistent with what is already in the manifest is **an inbound counterpart to the port
+that L409 already declares, owned by the same existing platform capability** — no new module, no new bounded
+context, no new dependency edge, and no `BC-` identifier. **This ADR does not write that declaration, does not name
+it, and does not assert that it is sufficient.** The port name, direction semantics, and whether an inbound
+declaration belongs in `ports` at all are manifest-schema questions this document has no authority to settle.
+
+**What remains forbidden regardless of who is named**, and this needs no further decision: a webhook is
+**transport**. `FEE-BR-014` (client success is never financial truth), `FEE-INV-005` and `FEE-BR-016` (server-side
+verification and idempotency in `BC-05`) already hold. **An inbound message is evidence to be verified, never an
+instruction to be obeyed** — so no webhook may establish financial truth without `BC-05` verification and
+idempotency, whoever owns the receiver.
+
+**A citation defect found while re-measuring, recorded and not silently corrected.** `PRD-008` **L799** reads
+*"EA L1408 lists 'Webhook Reconciliation (V1)'"*. The actual line is **L1407**; L1408 is `Refund Management (V2)`.
+This is the same class of defect as `D-3` and `ADR-0015` — a citation that drifted — and it is **not** fixed here,
+because `PRD-008` is the subject of this ADR's open question and editing its evidence mid-decision is precisely the
+move this document refuses elsewhere. Referred to `PRD-008`'s next revision. **It changes no verdict:** the sentence
+it supports is a statement that the architecture *names no context*, which remains true at either line number.
+
+---
+
 ### 5.3 `D-3` — `D-14` mis-attributes `E-25` and should be corrected
 
 `PRD_DEPENDENCY_GRAPH.md` **L116** reads `| D-14 | PRD-008/PRD-020 | PRD-019 BC-31 Integration | API | E-25 |`.
@@ -627,5 +677,6 @@ allow-list must be widened substantially — a far larger change than this ADR p
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-05 | **`D-4` re-measured; still OPEN; a claim of novelty overturned.** New §5.5a records that a governance pass believed it had found the missing webhook-ingress owner at EA **L1407** and that **§3.4 of this ADR had already measured and disposed of exactly that line** — the EA is descriptive by baseline designation and cannot confer ownership. **Nothing is closed:** `D-4` remains OPEN, `FEE-GAP-016` remains open, Stage 3 check 2 remains ⛔ BLOCKED, and this ADR remains **`PROPOSED`** and **not self-accepted**. Newly measured and recorded as *narrowing*, not answering: the manifest already declares `platform/business` → `platform/integration:payment_gateway` (**L409**) while `platform/integration` has **no module block** (**L40** is a rank entry only), so the minimum amendment is a declaration on an **existing** capability rather than a new module or edge — **stated as a proposal and deliberately not written, named or adopted**. A citation defect is recorded, not fixed: `PRD-008` **L799** cites *"EA L1408"* where the line is **L1407**. **Nothing invented:** no bounded context, no `BC-32`, no dependency edge, no port name, no endpoint, no webhook schema, no provider payload, no signature algorithm, no retry policy, no table, no queue, no vendor contract. No frozen document, BC Map, Dependency Matrix or manifest was modified; no ADR was accepted. |
 | **v1.1** | 2026-08-15 | **`D-2` DECIDED — `O-3`: payment execution is a Business Platform **capability**, not a new bounded context. Recorded under conferred Architecture Owner authority; **NOT self-accepted** — Status stays `PROPOSED`.** The decision was **tested before it was taken**. The intuitive precedent, Accepted `ADR-0013` (*capability contexts are owned by their platform*), was measured and **rejected as the authority**: its Decision (L94–128) only ever resolves ownership for `BC-19`/`BC-25`/`BC-29`, contexts that **already hold `BC-` identifiers**, and it contains **0 matches** for BC-less language. **That limit is now recorded in §5.2.2** so a later reader cannot over-read it. The governing authority is **`AR-1`** (`ARCHITECTURE_RULINGS.md` L23–37; BC Map L86/L558), whose four criteria were each measured and **all four pass** — no aggregate (`FeeLedger` is `BC-05`'s, L374), no invariant (`FEE-INV-005`/`FEE-BR-016`/frozen `MM-BR-005`), no business state, full delegation — so `AR-1` does not merely permit `O-3`, it **requires** it. Outcome precedent: `PRD_REGISTRY.md` L355, *"no `BC-32` was created … the context count remains 31"*. **`O-2` refused** on Rank 1 `MP-GBR-24`, now also **CI-enforced** by the rank-0 kernel's `banned_symbols` (`class Payment ` → *"FeePayment (BC-05) or SubscriptionCharge (BC-20)"*); **`O-1` refused** on `AR-1`. **The Rank 1 tension is dissolved by scope, and neither statement is amended, weakened or reinterpreted:** `MASTER_PRD.md` L232 sits in **§10 Technology Stack**, whose preamble declares its subject to be *"capabilities with abstractions, with vendors recorded as candidate implementations behind ports"* — a **vendor-abstraction** table — while L362 `MP-GBR-24` governs the **financial model**. Adds §5.3 (**11-row ownership table**, every row carrying its own authority), §5.3.1 (**six concepts held apart** — transport, execution, verification, financial truth, settlement, webhook reconciliation — with a *"may it write `FeeLedger`?"* column), §5.3.2 (cash: *"staff recording cash ≠ LIBOORA receiving money"*; the **3% stays wholly outside `FeePayment`**), §5.4 (**the lawful path in 6 steps with no new numbered edge** — every hop was already declared, incl. `platform/business` → `platform/integration:payment_gateway` at manifest L409), §5.5 (**`D-4` webhook ingress — NOT resolved**, recorded as **`FEE-GAP-016`**) and §5.6 (**the minimum `provides_ports:` declaration, as a PROPOSAL ONLY**). **Webhook ingress is not pretended to be settled:** BC Map `webhook`/`inbound` = **0**; `BC-31` L140 is **outbound** only; EA L165 names an *"API Platform"* for inbound adapters, but that band **holds no `BC-` identifier** and the EA is **descriptive** (`DOCUMENTATION_BASELINE.md` L139), so it **describes** an owner it cannot **confer**. **`BC-31` is not assumed to own inbound.** **What this version does NOT do:** it does not accept itself; creates no bounded context and no `BC-` id; adds no `E-*` edge; changes no Matrix or BC Map cell; moves no aggregate; gives `BC-20` no role in student money; and **does not modify `tool/module_dependencies.yaml`** — §5.6's declaration is a **proposal**, because applying it is an implementation act requiring acceptance first (manifest hash verified unchanged in §9). §6's original *"no recommendation"* options table is **preserved verbatim** with a resolution note, so the record shows what was offered **before** the choice. **No endpoint, payload, signature scheme, retry policy, vendor contract, permission or configuration identifier was invented. No frozen or ranked document was modified. No gate was weakened.** |
 | **v1.0** | 2026-08-05 | Created by the `FEE-GAP-002` investigation ordered for `PRD-008` Stage 3. **Finds the blocker is two questions, not one.** The **transport** (a) is already authorised — Dependency Matrix **L196** declares `business.payment_intent` in `library_management`'s ports inside the section the Matrix itself calls *"the normative form"*; **L167** forbids the direct route and names this one; the matrix cell `LIB → BUS` is `◇` (verified by **mechanical 19/19 column alignment**, not by eye); `X-03` **L352** prescribes the port by name; and Accepted **`ADR-0012` L86** already records `domain/library → platform/business :payment_intent` as a correctly-directed declared port. The **counterparty** (b) is genuinely undeclared: `platform/business` holds only `BC-20` and `BC-21`, **`MP-GBR-24` (Rank 1) bars `BC-20` from student money**, and `PaymentIntent` appears **0 times** in the whole of `docs/`. Also finds that **14 of `library_management`'s 17 declared ports have no usable numbered edge**, so requiring one here would invalidate thirteen other lawful dependencies — consistent with Accepted **`ADR-0033`**, which held that BC Map L292 *"governs edges"* and does not require one for every cross-boundary dependency. Discloses a **Rank 1 internal tension** (`MASTER_PRD.md` L232 vs `MP-GBR-24` L362) and **raises it rather than choosing**, per `DOCUMENTATION_BASELINE.md` §4. Recommends correcting `D-14`'s mis-attribution of `E-25` — a citation defect of the class `ADR-0015` fixed — but **does not execute it**. **Three options for the counterparty are presented and none is recommended.** **No edge added, no allow-list widened, no context created, no aggregate/contract/webhook/endpoint/table defined, no ranked document amended, no Dart source touched.** **Left `PROPOSED`: no conferral of Architecture Owner authority was given, and `D-2` is a question only that authority can answer.** |

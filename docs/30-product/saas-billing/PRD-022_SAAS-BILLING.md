@@ -4,13 +4,13 @@
 |---|---|
 | **PRD** | `PRD-022` |
 | **Bounded context** | **`BC-20` Subscription & Billing** — `[GENERIC]`, Business layer, **V1** |
-| **Version** | **v0.2 — DRAFT** |
+| **Version** | **v0.3 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). **NOT frozen. NOT approved. NOT architecture-reviewed.** |
 | **Authorised by** | `MASTER_PRD.md` **L169** — §8 **module 17**, *"SaaS Billing \| `BC-20` Subscription & Billing \| `[GENERIC]` \| V1"* · `PRD_REGISTRY.md` **L326** (`PRD-022`, `V1`, `PLANNED`) · `PRD_REGISTRY.md` **L427** (§6: `BC-20` → `PRD-022`, **not contested**) |
 | **Identifier prefix** | `SAAS-*` — collision-checked against every existing register before use (`PRD_LIFECYCLE.md` §5 rule 2). Measured **0** pre-existing `SAAS-*` identifiers repository-wide |
 | **Owns money** | **Library → LIBOORA only.** Every obligation in this document is money a **library owes LIBOORA** |
 | **Owns NO student money** | This document defines **no** student fee, payment, receipt or ledger. That is `BC-05`/`PRD-008` |
-| **Blocking governance gaps** | **7 gaps.** **7 block Stage 4** · **7 block Freeze** — see §12 |
+| **Blocking governance gaps** | **7 gaps.** **7 block Stage 4** · **7 block Freeze** — see §12. ✅ **At v0.3 the platform-charge and settlement DEFAULTS this document already carried were RATIFIED by direct conferral of authority by the human principal** — **3%** Platform Charge, future-only rate changes with **historical charges immutable**, settlement due day **15th** changeable among **10/15/25** for **future** periods with **existing obligations never moving**, **14-day** free trial, `BC-20`/`PRD-022` **confirmed as owner** of the Library → LIBOORA Platform Charge and settlement lifecycle, and **cash-only libraries MUST have an independent settlement method** (net-off may not be the only one). ⛔ **AND THE GAP COUNT DOES NOT MOVE: still 7 / 7 / 7.** Every one of those decisions ratifies a **value or an ownership** this document had already written down; **not one of them answers a question §12 asks.** §12 asks which *collections* accrue a charge (`SAAS-GAP-001`, still open on `FEE-GAP-004`'s taxonomy), what the *ranges* are and which register allocates their *identifiers* (`SAAS-GAP-002`), whether the `E-25` rail can carry a **library-initiated outbound push** at all (`SAAS-GAP-003`), which **enumerated permission** lets **any** role settle (`SAAS-GAP-004` — **0** `PERM-*` identifiers exist repository-wide, so the action **fails closed even for `TR-1`**), which identity anchors trial eligibility (`SAAS-GAP-005`), Stage 3 (`SAAS-GAP-006`, still not performed), and February behaviour for days 29–31 (`SAAS-GAP-007`). **A default being ratified is not a gap being closed, and this row refuses to convert one into the other.** See §12.2 |
 
 ---
 
@@ -783,12 +783,38 @@ a **platform-level** value; both attempts fail closed.
 | `SAAS-GAP-006` | Stage 3 not performed | Architecture Owner | ✅ | ✅ |
 | `SAAS-GAP-007` | Due day above 28 in February | Product Owner + `BC-25` | ✅ | ✅ |
 
-**7 gaps. 7 block Stage 4. 7 block Freeze.**
+**7 gaps. 7 block Stage 4. 7 block Freeze. Re-derived at v0.3 from each gap block's own `Blocks` row — unchanged.**
 
 > **Every gap blocks, and that is the honest result of a first draft rather than a pessimistic one.** A V1 module
 > whose central action cannot be authorised by any existing role, whose configurable values have no registered
 > identifiers, and whose settlement direction has no described shape is not close to implementable. Recording fewer
 > blockers would make this document look more finished than the platform is.
+
+---
+
+### 12.2 The v0.3 conferral — what it ratified, and why no gap closed *(added v0.3)*
+
+Six decisions were given that bear on this document. Each is mapped to the identifier it touches and to the gap it
+does **not** close. **The distinction being drawn throughout is between a *value* and a *mechanism*.**
+
+| Decision given | What it ratifies here | Gap it does **not** close |
+|---|---|---|
+| **Platform Charge = 3% default** | `SAAS-BR-001`'s default, already written | **`SAAS-GAP-001`** — 3% *of what*? The eligible collection base still depends on `PRD-008` `FEE-GAP-004`'s undecided fee-type taxonomy. **A rate without a base computes nothing** |
+| **Rate changes affect FUTURE transactions only; historical charges immutable** | The immutability this document already required | **`SAAS-GAP-002`** — still **no range**, **no minimum, no maximum**, and **no `CFG-*`/`LCFG-*`/`ICFG-*` identifier**. `CONFIGURATION_GUIDE.md` §5 requires *a PRD amendment* plus `BC-25` allocation, and neither is done here |
+| **Settlement due day = 15th; changeable among 10/15/25 for future periods; existing obligations never move** | The **15th** default and the never-move rule | **`SAAS-GAP-007`** is **narrowed to nothing, and it still blocks.** All of 10, 15 and 25 occur in **every month**, so the February problem cannot arise from this enumeration — but the gap asks what happens **if the day is configurable to 29–31**, and the decision **restricted the set without saying the set is closed**. ⚠ **This document does NOT read a three-value enumeration as a closed range**: `SAAS-GAP-002` records that **no range is declared for any value here**, and turning an example list into an invariant is exactly the inference `X-13` forbids |
+| **Free trial = 14 days default, Platform Owner/Admin configurable** | `SAAS-BR-011`'s 14-day default | **`SAAS-GAP-005`** — a duration is not an **identity**. Which authoritative identity anchors eligibility across tenant deletion and recreation is untouched, and `CFG-10` remains **Authentication's** parameter, not `BC-20`'s. **`SAAS-GAP-002`** also survives: *"configurable"* still has **no identifier and no range** |
+| **`BC-20`/`PRD-022` owns the Platform Charge and settlement lifecycle** | §1's ownership claim, and `PRD-008` `FEE-GAP-014`/`017` route here | **`SAAS-GAP-003`** — ownership of a lifecycle is not a **described shape** for the movement. Every flow BC Map **L382** describes is LIBOORA **pulling** (`PaymentAttempt`, `DunningState`); a library **pushing** appears nowhere, and whether `E-25` → `BC-31` may carry it is the **Architecture Owner's** to say. **No provider, endpoint, schema, bank-account structure, UPI flow, new edge, new port or new aggregate is invented here** |
+| **Cash-only libraries MUST have an independent settlement method; net-off cannot be the only one** | `SAAS-FR-009` recommendation 5, and `PRD-008` `FEE-GAP-017` recommendation 5 — **the same requirement stated in two documents, in the same direction, now decided** | **`SAAS-GAP-003` and `SAAS-GAP-004` together.** *"There must be an independent method"* is a **requirement to have a mechanism, not a mechanism.** And even once one exists, **`SAAS-GAP-004` denies it**: `AUTH-7.22` holds the permission catalogue **closed**, `grep -rnoE '`PERM-[A-Z0-9_.-]+`' docs/` returns **0**, and `AP-9` **fails closed** — so a settlement is refused for **`TR-1` Owner** as well as `TR-2`. **The mandate is now in force and remains unexecutable until a permission is enumerated** |
+
+> **The one thing that got harder, recorded because it would be easier to omit.** Decision 8 makes an independent
+> cash settlement **mandatory**, and `SAAS-GAP-004` shows **no role can perform it**. Before the conferral that was a
+> missing capability; now it is a **mandatory capability that fails closed**. **That is a worse position on paper and
+> a better one in fact** — an obligation with a named owner is auditable, while an unstated need is not — but this
+> document does not present the change as progress toward implementability.
+
+> **Not done here, deliberately:** no `SAAS-*` identifier added, renumbered or deleted · no gap closed, downgraded or
+> merged · no permission, parameter, range, endpoint, schema or provider invented · **Stage 3 still not performed**
+> (`SAAS-GAP-006`) · registry status unchanged · **not frozen** · no frozen document touched · no code written.
 
 ---
 

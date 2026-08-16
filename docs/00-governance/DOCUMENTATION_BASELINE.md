@@ -136,7 +136,7 @@ works.
 | `10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | **v1.7** | Authoritative — boundaries, ownership, edges. Identity Triad §4 amended by `ADR-0011`; edge `E-22` consumer list amended by `ADR-0016`; edge **`E-27` added by `ADR-0032`** (v1.6) and **withdrawn again by `ADR-0033`** (v1.7), so **the edge set is once more `E-01`…`E-26`** — verified mechanically at **26 edge rows, identical to the pre-`ADR-0032` count**, with the neighbouring `E-08` row byte-identical. Context count **31, unchanged**. *This cell read **v1.5** through the v1.6 bump as well; the omission is a pre-existing §7 step 3 drift, corrected here and logged as `GCP-11`* |
 | `10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **v1.3** | Authoritative — permitted and forbidden dependencies. Rank `R7.5` added by `ADR-0011`; enforcement coverage **12 of 12** per `ADR-0014` |
 | `10-architecture/ARCHITECTURE_RULINGS.md` | **v1.2** | Authoritative for `AR-1`, `AR-3`, `AR-4`; `AR-2`, `AR-5`, `AR-6`, `AR-7` promoted to ADRs. `AR-4` deferral lifted |
-| `10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` | **v2.1** | **Descriptive** — must follow the PRDs, never lead them |
+| `10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` | **v2.2** | **Descriptive** — must follow the PRDs, never lead them. *(Advanced **v2.1 → v2.2** on 2026-08-15 under `ACCEPTED` `ADR-0042` §4, per §7 step 3 — "this declaration is updated in the same commit". The EA changed by exactly **one token** — **L823** `Refunds (V2)` → `Refunds (V1)` — because Rank 4 `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L100** places refunds in `BC-05` at Release **V1**, **L374** makes `RefundRecord` a declared `FeeLedger` member and **L422** publishes `fee.RefundIssued`. This is the **Descriptive** rule in this very cell operating as designed: the lower-ranked document was updated to match the higher-ranked ones, never the reverse (`MP-CON-08`, `MASTER_PRD.md` **L519**). ⚠ **The baseline identifier is deliberately NOT changed** — §7 step 4 permits it only when a **Rank 1–3** document changes version, and the EA is **Rank 6**. ⚠ **A residual drift is disclosed rather than repaired:** `MP-CON-08` cites the EA by the literal string "v2.1" inside **Rank 1** `MASTER_PRD.md` (7 occurrences), which this bump makes stale. Editing Rank 1 as a side effect of a Rank 6 version bump is the silent amendment §7 step 1 and `PRD_LIFECYCLE.md` **L177** forbid, so it is **routed to the Architecture Owner as `Q-A6`** in `ADR-0042` §11 and left visible here.)* |
 
 ### 3.3 Product
 
@@ -218,7 +218,7 @@ When two documents disagree, the higher rank wins. This order is not negotiable 
 | **3** | **Attendance Management PRD v1.9** | Everything inside `BC-03` Attendance |
 | **4** | Bounded Context Map · Module Dependency Matrix | Boundaries, ownership, permitted edges |
 | **5** | Architecture Rulings `AR-1`, `AR-3`, `AR-4` | Domain classifications not promoted to ADRs |
-| **6** | Enterprise Architecture v2.1 | **Descriptive only.** Update it to match 1–5; never the reverse |
+| **6** | Enterprise Architecture v2.2 | **Descriptive only.** Update it to match 1–5; never the reverse. *(Version token advanced **v2.1 → v2.2** on 2026-08-15 — `ADR-0042` §4. The rule is unchanged; only the version it names moved, and it moved **because** this rule was applied: EA **L823** was updated to match Rank 4, not the reverse.)* |
 | **7** | Configuration Guide | Operating values within the envelope 1–3 define |
 
 **A conflict is a defect.** If you find one, do not choose — raise it. The precedence order tells you which
@@ -244,7 +244,7 @@ an authorization decision. That is not a precedence question; it is `X-13` and i
 | "The Library PRD" | `Library_PRD_v1.md` **v1.1** *together with* §14A, §14B and the Invitation Security Specification. All four, never one alone |
 | "Library" (unqualified) | **Ambiguous — do not use.** Say `TenantOrganisation` (the billing entity, `BC-19`) or `Branch` (the physical location with hours and seats, `BC-06`) |
 | "The BC Map" | `LIBOORA_BOUNDED_CONTEXT_MAP.md` **v1.5** |
-| "The EA" | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.1 |
+| "The EA" | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.2 *(v2.1 until 2026-08-15 — `ADR-0042` §4)* |
 
 ---
 

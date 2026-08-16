@@ -6,7 +6,7 @@
 | Field | Value |
 |---|---|
 | **Document** | LIBOORA Enterprise Architecture (Master) |
-| **Version** | `v2.1` |
+| **Version** | `v2.2` |
 | **Status** | Reviewed & Refined — Approved for Implementation |
 | **Last Updated** | 2026-08-02 |
 | **Reviewed By** | Principal Enterprise Architect · SaaS Platform Architect · DDD Expert · Cloud Architect · AI Platform Architect |
@@ -820,7 +820,7 @@ LAYER 2 — DOMAIN PLATFORMS
 │   ├── Fee Collection (V1)
 │   ├── Fee Structures (V1)                               ← NEW
 │   ├── Discounts (V1)
-│   ├── Refunds (V2)
+│   ├── Refunds (V1)
 │   ├── Expenses (V2)
 │   ├── Profit & Loss (V2)
 │   ├── Cash Flow (V2)
@@ -2446,6 +2446,31 @@ These rules are **normative**. Any change to this architecture must satisfy all 
 ---
 
 ## 11. Changelog
+
+### `v2.2` — 2026-08-15 — One version tag corrected to match Rank 4 (`MP-CON-08`)
+
+**One token changed. No platform added, removed or re-homed; no node added or lost; no capability renamed; no
+new dependency.** This document is **descriptive** and sits at **precedence rank 6**
+(`DOCUMENTATION_BASELINE.md` §4, `MP-CON-08`), so where it disagreed with a higher rank the rule is that
+**this document is corrected to match — never the reverse.**
+
+| Node | Was | Now | Authority |
+|---|---|---|---|
+| `Refunds` *(Layer 2 → LIBRARY MANAGEMENT PLATFORM → Revenue & Finance)* | V2 | **V1** | **Rank 4** `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L100** (`BC-05` owns refunds, row Release **V1**), **L374** (`RefundRecord` is a declared `FeeLedger` member with the invariant `refund ≤ received`), **L422** (`fee.RefundIssued` is a declared published event) · **Rank 3 FROZEN** `PRD-005` **L942** (*"a refund decision by `BC-05`"*) · Product Owner V1 refund scope recorded in **`ADR-0039` §3** and executed by **`ADR-0042`** |
+
+**Why this was a defect and not a choice.** Four higher-ranked statements — three of them in a **Rank 4**
+document and one in a **frozen Rank 3** PRD — already placed student-fee refunds in V1. This document alone
+said V2. `DOCUMENTATION_BASELINE.md` §4 states *"**A conflict is a defect.** If you find one, do not choose —
+raise it"*, and `MP-CON-08` states that the higher-ranked document wins **and this document is updated to
+match**. The correction therefore **records a decision made elsewhere**; it does not make one.
+
+**`Refund Management (V2)` at L1408 is deliberately NOT changed, and the distinction is measured, not
+assumed.** That node's parent is **`Payment Gateway (V1)`** inside **LAYER 4 — BUSINESS & ENGAGEMENT**, beside
+`Payment Gateway Abstraction (V1)`, `Razorpay (V1)` and `Webhook Reconciliation (V1)`. It describes a
+**gateway-side** refund capability owned by the Business Platform, which is a different question from whether
+`BC-05` may record a refund in its own ledger. **No Rank 1–4 document places gateway-executed refund in V1**,
+so changing it would be an invention rather than a correction. It is left standing and routed to the
+Architecture Owner in `ADR-0042` §6.
 
 ### `v2.1` — 2026-08-02 — Alignment with Authentication PRD v2.0
 

@@ -11,10 +11,12 @@
 | **Aggregate** | **`EntitlementSet`** — exactly one |
 | **Value objects** | `FeatureGate`, `UsageCounter`, `Limit` — exactly three |
 | **Version** | **v0.1** |
-| **Status** | **`DRAFT`** |
+| **Status** | **`FROZEN`** — conferred 2026-08-19 by `ACCEPTED` [`ADR-0052`](../../00-governance/adr/ADR-0052-entitlement-prd-v0.1-baseline.md) under **`BASELINE-2026-08-19-C`**. Status is **conferred by the `DOCUMENTATION_BASELINE.md` §3.3 row, not by this cell** — the cell records it |
 | **Date** | 2026-08-19 |
 | **Identifier prefix** | **`ENT-`** |
-| **Precedence rank sought** | Rank 3 (module PRD) — **not yet conferred** |
+| **Precedence rank** | **Rank 3 (module PRD) — CONFERRED** 2026-08-19 by `ADR-0052`, admitted at **v0.1**. ⚠ **The version is deliberately NOT incremented** — `ADR-0020` §4 item 2: *"Freeze confers status; it does not renumber"* |
+| **Freeze scope** | ⛔ **`FROZEN` is not `VERIFIED`.** **0 of 26** acceptance criteria are proven by a passing test and **0 of 30** `IMPL-1000`…`IMPL-1029` tasks are implemented. All **8 `ENT-GAP-*` remain OPEN**, and `D-014-01`…`D-014-06` are **unfixed code contradictions** carried to Stage 8. Any later change to a business rule here requires **ADR → version increment → changelog → baseline update, in that order** (`PRD_LIFECYCLE.md` L155–180) |
+| **Stage 7 record** | [`PRD-014_STAGE7_FREEZE.md`](PRD-014_STAGE7_FREEZE.md) |
 | **Rank 1 authority** | `MASTER_PRD.md` **§8.1 L191** — *"`BC-21` Entitlement \| Answers 'is this tenant allowed to do X, and how much is left?' Every paid gate depends on it."* |
 | **Rank 4 authority** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L130** (the context), **L383** (the aggregate and its one invariant), **L326** (`E-17`), **L435–437** (the events consumed) |
 | **Stage 1 record** | [`PRD-014_STAGE1_DISCOVERY.md`](PRD-014_STAGE1_DISCOVERY.md) — verdict **PASS** |

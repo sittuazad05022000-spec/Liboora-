@@ -141,30 +141,24 @@ def section(text, heading):
 # A definition is a line that OPENS with the identifier: bold prose, plain
 # prose, a table first cell, or a heading.  Hazard 1 above is why the bold
 # form comes first and why `**` is tolerated in the table form.
+#   prose : a BOLD identifier, an em-dash, then normative text.  The em-dash is
+#           load-bearing: it is what separates a definition from a sentence that
+#           merely ENDS with an identifier -- section 0.3 line 80 reads
+#           "Retention is recorded as **`AUD-GAP-001`**." and is not a definition.
+#   table : the identifier as the first cell, bold or plain.
+#   heading : reserved.  PRD-016 uses none, but PRD-008 and PRD-013 do, so the
+#           form is accepted rather than left silently unsupported.
 DEF_PATTERNS = [
-    r'^\*\*`AUD-([A-Z]+)-(\d+)`\*\*',
-    r'^`AUD-([A-Z]+)-(\d+)`',
+    r'^\*\*`AUD-([A-Z]+)-(\d+)`\*\*\s*(?:\u2014|--)\s*\S',
     r'^\|\s*\*{0,2}`AUD-([A-Z]+)-(\d+)`\*{0,2}\s*\|',
     r'^###\s+\*{0,2}`AUD-([A-Z]+)-(\d+)`',
 ]
-
-# Lines that OPEN with an identifier but are prose continuations, not
-# definitions.  Section 9's reverse-coverage paragraph and section 10's lead-in
-# wrap onto a line beginning with an identifier; counting those as definitions
-# would report three phantom duplicates.  The guard is a positive test for
-# sentence continuation, not a line-number exclusion, so it keeps working if the
-# document is re-flowed.
-CONTINUATION = re.compile(
-    r'^`AUD-[A-Z]+-\d+`(?:,|\s+and\b|\s+are\b|\s*…|\s*\.\.\.)'
-)
 
 
 def definition_sites(text):
     """register -> {number: [line numbers]}, definition sites only."""
     found = {}
     for lineno, line in enumerate(text.split('\n'), 1):
-        if CONTINUATION.match(line):
-            continue
         for pattern in DEF_PATTERNS:
             match = re.match(pattern, line)
             if match:

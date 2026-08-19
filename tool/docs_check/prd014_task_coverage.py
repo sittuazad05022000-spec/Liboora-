@@ -31,7 +31,12 @@ WHAT IT CHECKS
 8.  Every `D-014-*` code contradiction is covered by at least one task.
 9.  Cross-instrument agreement: the Class A total here must equal the figure
     `prd014_traceability.py` computes independently.  A disagreement means one of
-    the two is wrong, and the run fails rather than picking a winner.
+    the two is wrong, and the run fails rather than picking a winner.  The
+    sibling is EXECUTED and its number compared -- checking that the file merely
+    exists proved nothing and was corrected as `S6-C-01`.
+10. The acceptance harness claims a span equal to the number of `ENT-AC-*`
+    criteria the PRD actually defines, so a narrowed claim or a newly added 27th
+    criterion cannot pass unnoticed (`S6-C-02`).
 
 A NOTE ON THE PARSING STRATEGY, AND WHY IT IS A THIRD ONE
 ---------------------------------------------------------
@@ -52,6 +57,7 @@ No PRD content and no task content was changed to make this checker pass.
 
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -215,6 +221,8 @@ def main():
                  % (number, RANGE_START, RANGE_END))
 
     # ---- checks 4 and 6: cited obligations exist; no task claims none
+    cross_checked = None
+    bad_citations = []
     claimed = set()
     for number in numbers:
         discharges = rows[number][0]
@@ -226,6 +234,7 @@ def main():
         for identifier in cited:
             register = identifier.split('-')[1]
             if register in CLASS_A and identifier not in defined:
+                bad_citations.append((number, identifier))
                 fail('IMPL-%d cites %s, which is NOT defined in the PRD -- the '
                      'task would read as diligent while discharging nothing'
                      % (number, identifier))
@@ -268,10 +277,89 @@ def main():
                  % contradiction)
 
     # ---- check 9: cross-instrument agreement on the Class A total
+    #
+    # S6-C-01: this check previously called os.path.isfile() and stopped there,
+    # while the docstring promised that "the Class A total here must equal the
+    # figure prd014_traceability.py computes independently".  Asserting that a
+    # file EXISTS proves nothing about what it COMPUTES: the check would have
+    # passed unchanged even if the two instruments disagreed outright.  That is
+    # the same vacuous-check class caught at Stage 5 as S5-C-06 -- a test that
+    # can never fail is not a test.  It now actually runs the sibling and
+    # compares the number, and fails rather than picking a winner.
     sibling = os.path.join(ROOT, 'tool', 'docs_check', 'prd014_traceability.py')
     if not os.path.isfile(sibling):
         fail('prd014_traceability.py is absent; the Class A total cannot be '
              'cross-checked against an independent instrument')
+    else:
+        proc = subprocess.run([sys.executable, sibling], cwd=ROOT,
+                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        sibling_out = proc.stdout.decode('utf-8', 'replace')
+        if proc.returncode != 0:
+            fail('prd014_traceability.py exits %d; the Class A total cannot be '
+                 'cross-checked against a failing instrument' % proc.returncode)
+        found = re.search(r'Class A obligations\s*:?\s*(\d+)', sibling_out)
+        if found is None:
+            found = re.search(r'(\d+)\s*/\s*\d+\s*=\s*[\d.]+%', sibling_out)
+        if found is None:
+            fail('prd014_traceability.py printed no Class A total to compare '
+                 'against; the cross-instrument check would be vacuous')
+        elif int(found.group(1)) != len(defined):
+            fail('cross-instrument DISAGREEMENT on the Class A total: this '
+                 'script recomputes %d, prd014_traceability.py reports %d. '
+                 'One of the two is wrong; neither is preferred.'
+                 % (len(defined), int(found.group(1))))
+        else:
+            cross_checked = int(found.group(1))
+
+    # ---- check 10: the harness claim spans the criteria it says it spans
+    #
+    # S6-C-02: the harness exemption above accepts a task whose Discharges cell
+    # matches `All 26` or `ENT-AC`, so IMPL-1029 is allowed to claim zero Class A
+    # obligations.  That exemption is correct -- AC is not Class A -- but it was
+    # unverified: the cell asserts `ENT-AC-001`...`ENT-AC-026` while literally
+    # naming only the two endpoints, so a document that silently narrowed the
+    # span, or a PRD that grew a 27th criterion, would still have passed.
+    ac_defined = set(re.findall(r'(?<![A-Z])ENT-AC-\d+', prd))
+    harness = [n for n in numbers
+               if re.search(r'All 26|ENT-AC', rows[n][0])]
+    # S6-C-04: fail() RECORDS a problem and returns -- it does not exit -- so the
+    # original code fell through to harness[0] and died with an IndexError when
+    # no task claimed the criteria.  The run still exited 1, but a traceback is
+    # not a diagnosis: the reader loses the sentence that says what is wrong.
+    # Every dependent check is now guarded by the guard that precedes it.
+    if not harness:
+        fail('no task claims the ENT-AC-* acceptance criteria; the %d criteria '
+             'would have no owner at all' % len(ac_defined))
+        span = None
+        harness_row = []
+    else:
+        # S6-C-02 (refined): the span is stated in the harness task's DESCRIPTION
+        # column ("turns `ENT-AC-001`...`ENT-AC-026` into executing tests") while
+        # the Discharges column carries the summary form `All 26 ENT-AC-*`.
+        # Searching only the Discharges cell reported a missing span that is in
+        # fact present one column away -- the document was right and the check
+        # was looking in the wrong place.  The whole row is the claim, so the
+        # whole row is searched.
+        harness_row = [line for line in tasks.split('\n')
+                       if re.search(r'IMPL-%d\b' % harness[0], line)
+                       and re.search(r'All 26|ENT-AC', line)]
+        span = None
+        for line in harness_row:
+            span = re.search(r'ENT-AC-0*(\d+)\D+?ENT-AC-0*(\d+)', line)
+            if span:
+                break
+        if span is None:
+            fail('IMPL-%d claims the acceptance harness but names no ENT-AC span '
+                 'anywhere in its row, so the claim cannot be checked against '
+                 'the PRD' % harness[0])
+        else:
+            low, high = int(span.group(1)), int(span.group(2))
+            claimed_span = high - low + 1
+            if claimed_span != len(ac_defined):
+                fail('IMPL-%d claims ENT-AC-%03d..ENT-AC-%03d = %d criteria, but '
+                     'the PRD defines %d. A harness that under-claims leaves '
+                     'criteria unowned while reporting a full range.'
+                     % (harness[0], low, high, claimed_span, len(ac_defined)))
 
     # ---------------- report ----------------
     line = '-' * 70
@@ -291,8 +379,13 @@ def main():
     print('%-41s: %d' % ('obligations claimed by >=1 task', len(claimed)))
     print('%-41s: %d / %d = %.1f%%' % ('coverage', len(claimed), len(defined),
                                        100.0 * len(claimed) / max(len(defined), 1)))
-    print('%-41s: %d' % ('tasks claiming a non-existent obligation', 0
-                         if not problems else -1))
+    # S6-C-03: this line previously printed 0 or -1 inferred from whether ANY
+    # problem had been recorded, so an unrelated failure made it assert -1 tasks
+    # cite a non-existent obligation -- a number that is not a count of anything.
+    # It now reports the measured quantity, which is 0 by construction because
+    # check 4 fails the run on the first such citation.
+    print('%-41s: %d' % ('tasks claiming a non-existent obligation',
+                         len(bad_citations)))
     print('%-41s: %d of 6' % ('D-014-* contradictions covered',
                               sum(1 for c in CONTRADICTIONS if c in tasks)))
     print('%-41s: 0 of 26  (no implementation)' % 'criteria proven by a passing test')

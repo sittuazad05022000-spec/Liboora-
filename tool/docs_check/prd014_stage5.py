@@ -280,7 +280,14 @@ def matrix_rows(block):
         head = re.match(r'^\|\s*\*{0,2}`ENT-([A-Z]+)-\*`\*{0,2}\s*\|', line)
         if head is None:
             continue
-        cells = [c.strip() for c in line.strip('|').split('|')]
+        # S5-C-03: split on UNESCAPED pipes only.  Section 2K's `ENT-CFG-*` row
+        # quotes a grep alternation -- `entitlement\|BC-21\|quota` -- where `\|`
+        # is a correctly escaped literal pipe in GFM, not a cell boundary.  A
+        # naive split('|') shattered that row into 9 cells and read cells[2] as
+        # 'BC-21\', reporting "no parsable count" against a well-formed row and
+        # then, consequentially, "ENT-CFG-* has no row in section 2K" -- a false
+        # missing-register failure on a register that is present and correct.
+        cells = [c.strip() for c in re.split(r'(?<!\\)\|', line.strip().strip('|'))]
         if len(cells) < 4:
             fail('section 2K row for ENT-%s-* has too few columns' % head.group(1))
             continue
@@ -376,9 +383,21 @@ def main():
         if stem in registered_stems and section_2k(matrix) and stem not in block:
             fail('%s-* is registered elsewhere in the matrix, outside section 2K'
                  % stem)
-    if 'ENT' in registered_stems:
-        fail('a bare `ENT-*` stem is registered in the matrix; PRD-014 declares '
-             'eight sub-registers and no bare register')
+    # S5-C-04: a wildcard in PROSE is not a registered register.  Section 2K
+    # writes "the `ENT-*` prefixes" in its own opening sentence, in its coverage
+    # table ("Dangling `ENT-*` citations") and in its collision table -- exactly
+    # as section 2J writes `AUD-*` six times.  Treating that as a bare register
+    # declaration reported a collision produced by the section's own prose.  The
+    # baselined prd016_stage5.py L321 carries the identical exemption
+    # (`if stem != 'AUD'`), so this is the established reading, not a relaxation
+    # invented to pass.  What WOULD be a genuine defect is a bare `ENT-<n>`
+    # IDENTIFIER, which is a different shape and is tested instead.
+    bare = [line for line in matrix.split('\n')
+            if re.search(r'(?<![A-Z-])ENT-\d+', line)]
+    if bare:
+        fail('a bare `ENT-<n>` identifier appears in the matrix (%d line(s)); '
+             'PRD-014 declares eight sub-registers and no bare register, so '
+             'such a token belongs to no register' % len(bare))
 
     # ---- check 4b: the substring hazard, in both directions
     hazards = [
@@ -392,13 +411,36 @@ def main():
         if re.search(pattern, sample):
             fail('%s is reachable by a word-boundary search for %r -- %s, so '
                  'the two registers could be confused' % (sample, pattern, why))
-    # reverse direction: an unanchored ENT- search matches inside MANAGEMENT-
-    if not re.search(r'\bENT-FR-001\b', 'MANAGEMENT-ENT') and \
-            re.search(r'ENT-', 'MANAGEMENT-ENT-FR-001'):
-        # this is expected; assert the ANCHORED form does NOT match
-        if re.search(r'(?<![A-Z])ENT-', 'MANAGEMENT-ENT-FR-001'):
-            fail('an anchored ENT- search still matches inside MANAGEMENT- -- '
-                 'every scan in this pass would over-count')
+    # reverse direction: an unanchored ENT- search matches inside MANAGEMENT-.
+    #
+    # S5-C-05: the first sample here was 'MANAGEMENT-ENT-FR-001', which CONTAINS
+    # a genuine ENT-FR-001, so the anchored pattern matched it -- correctly --
+    # and the check reported a hazard that was really the sample being wrong.
+    # The hazard is `ENT-` as the TAIL OF AN ORDINARY WORD, so the samples must
+    # be real words from this repository that embed the letters without carrying
+    # an identifier.  Both directions are now asserted: the unanchored form MUST
+    # match (proving the hazard is live and the test is not vacuous) and the
+    # anchored form MUST NOT.
+    # S5-C-06: the first replacement decoy was 'PRD-MEMBERSHIP-MANAGEMENT',
+    # which ends in "ENT" with NO trailing hyphen and therefore does not embed
+    # "ENT-" at all -- so the vacuity guard added immediately above caught it and
+    # failed the run.  The guard working on its author's own bad input is the
+    # evidence that it is not decorative.  These three decoys are measured
+    # occurrences in this repository, not invented strings: 'MANAGEMENT-' appears
+    # 10 times, 'ALIGNMENT-RECORD' 3 times, 'MANAGEMENT-FR' twice.
+    decoys = ['PRD-MEMBERSHIP-MANAGEMENT-', 'PRD-014_ALIGNMENT-RECORD',
+              'SEAT-MANAGEMENT-FR']
+    for decoy in decoys:
+        if not re.search(r'ENT-', decoy):
+            fail('hazard test is vacuous: %r no longer embeds "ENT-", so it '
+                 'cannot demonstrate the over-counting risk' % decoy)
+        if re.search(r'(?<![A-Z])ENT-', decoy):
+            fail('an anchored ENT- search still matches inside %r -- every '
+                 'scan in this pass would over-count' % decoy)
+    # and the anchored form must still find the real thing
+    if not re.search(r'(?<![A-Z])ENT-', 'ENT-FR-001'):
+        fail('the anchored ENT- pattern no longer matches ENT-FR-001 -- it '
+             'would under-count every register')
 
     # ---- check 4c: outward definitions
     defined = set()

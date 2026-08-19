@@ -39,21 +39,43 @@ recorded reason to depart from. **MAY** is genuinely optional.
 Per the Stage 2 gate: *"its identifier registers declared **up front** with ranges — as `Student_Identity_PRD_v1.md`
 §0 does, publishing 'the ranges as a promise'."* Ranges are **contiguous**; a hole makes the published range false.
 
+Three **distinct classes** of identifier are published below, and they are counted separately. A reader counting
+"requirements" should use class A; the headline total is the sum of all three and is not a requirement count.
+
+**Class A — normative requirements and exclusions.** Obligations this module must satisfy.
+
 | Register | Range | Count | Section | Meaning |
 |---|---|---:|---|---|
-| `TEN-FR-001` … `TEN-FR-011` | contiguous | **11** | §3 | Functional requirements |
+| `TEN-FR-001` … `TEN-FR-011` | contiguous | **11** | §1–§3 | Functional requirements |
 | `TEN-FR-013` … `TEN-FR-015` | contiguous | **3** | §3 | Functional requirements (continued — `TEN-FR-012` retired, §9) |
-| `TEN-FR-018` … `TEN-FR-020` | contiguous | **3** | §3 | Functional requirements (continued — `TEN-FR-016`/`017` retired, §9) |
+| `TEN-FR-018` … `TEN-FR-021` | contiguous | **4** | §3, §6 | Functional requirements (continued — `TEN-FR-016`/`017` retired, §9) |
 | `TEN-BR-001` | single | **1** | §4 | Business rules (`TEN-BR-002`/`003` retired, §9) |
 | `TEN-BR-004` | single | **1** | §4 | Business rules |
 | `TEN-INV-001` … `TEN-INV-002` | contiguous | **2** | §5 | Domain invariants — always true (`TEN-INV-003`…`005` retired, §9) |
 | `TEN-EVT-001` … `TEN-EVT-002` | contiguous | **2** | §6 | Domain events — **closed at exactly two** |
 | `TEN-XC-001` … `TEN-XC-010` | contiguous | **10** | §7 | Exclusions — what **MUST be impossible** |
-| `TEN-AC-001` … `TEN-AC-002` | contiguous | **2** | §8 | Acceptance criteria (`TEN-AC-003`…`005` retired, §9) |
-| `TEN-AC-006` … `TEN-AC-008` | contiguous | **3** | §8 | Acceptance criteria (continued) |
-| `TEN-GAP-001` … `TEN-GAP-004` | contiguous | **4** | §10 | Open gaps — absent decisions owned elsewhere |
+| | | **34** | | **Class A total** |
 
-**Total defined: 42 identifiers. 12 retired permanently and never reused (§9).**
+**Class B — acceptance criteria.** Verification statements, not obligations. Each maps to at least one Class A
+identifier.
+
+| Register | Range | Count | Section | Meaning |
+|---|---|---:|---|---|
+| `TEN-AC-001` … `TEN-AC-002` | contiguous | **2** | §8 | Acceptance criteria (`TEN-AC-003`…`005` retired, §9) |
+| `TEN-AC-006` … `TEN-AC-016` | contiguous | **11** | §8 | Acceptance criteria (continued) |
+| | | **13** | | **Class B total** |
+
+**Class C — open-gap records.** Absent decisions owned elsewhere. These are **not** requirements and impose no
+obligation on this module.
+
+| Register | Range | Count | Section | Meaning |
+|---|---|---:|---|---|
+| `TEN-GAP-001` … `TEN-GAP-004` | contiguous | **4** | §10 | Open gaps — absent decisions owned elsewhere |
+| | | **4** | | **Class C total** |
+
+**Totals: Class A 34 · Class B 13 · Class C 4 — 51 identifiers defined. 12 retired permanently and never reused
+(§9).** `TEN-FR-021` and `TEN-AC-009`…`016` were added by the Stage 4 correction (changelog); no retired number was
+reused to do it, and no in-force identifier was renumbered.
 
 `TEN-CFG-*` is **declared empty.** Rank 7 [`CONFIGURATION_GUIDE.md`](../../20-configuration/CONFIGURATION_GUIDE.md)
 contains no tenancy, tier or residency parameter. Publishing a configurable without a default and a range would be
@@ -253,11 +275,17 @@ Bounded Context Map §9 L435, Rank 4, verbatim:
 
 **The register is closed at two.** No third event is published by this module.
 
-`TEN-FR-019` and the envelope contract apply to both: Bounded Context Map §9.1 L449–450 requires the envelope
-`eventId`, `eventType`, `schemaVersion`, `occurredAt`, `tenantId`, `actorId`, `correlationId`, `causationId`,
-`aggregateId`, `payload`, written via **Transactional Outbox** in the same DB transaction as the aggregate mutation,
-and states that *"`tenantId` is mandatory on every domain event. A consumer that processes an event without
-establishing tenant context must fail loudly, not default."*
+`TEN-FR-021` — Both events **MUST** carry the full event envelope of Bounded Context Map §9.1 L449–450 — `eventId`,
+`eventType`, `schemaVersion`, `occurredAt`, `tenantId`, `actorId`, `correlationId`, `causationId`, `aggregateId`,
+`payload` — with a non-null `tenantId`, written via **Transactional Outbox** in the same DB transaction as the
+aggregate mutation. Rank 4 §9.1 states that *"`tenantId` is mandatory on every domain event. A consumer that
+processes an event without establishing tenant context must fail loudly, not default"*; Rank 1 `MP-GBR-07` states the
+same obligation on the consuming side.
+
+> **Authority note.** An earlier draft of this section cited `TEN-FR-019` for the envelope. That was wrong:
+> `TEN-FR-019` governs **search index, cache key and vector namespace partitioning** (`MP-GBR-08`, `X-13`) and says
+> nothing about event envelopes. The envelope obligation derives from Bounded Context Map §9.1 and `MP-GBR-07`, and
+> is now carried by `TEN-FR-021` rather than left as unidentified normative prose.
 
 ### 6.1 No reinstatement event is invented
 
@@ -300,11 +328,27 @@ Per the Stage 4 standard: *"Every exclusion states what must be **impossible**. 
 |---|---|---|
 | `TEN-AC-001` | A tenant-scoped operation attempted with no resolved tenant context is refused, and the refusal is an error — not a default tenant and not null | `TEN-FR-010`, `TEN-FR-011` |
 | `TEN-AC-002` | Two concurrent requests for different tenants never observe each other's tenant context | `TEN-FR-014` |
-| `TEN-AC-006` | A write attempted against a suspended tenant is rejected | `TEN-BR-001`, `TEN-INV-001` |
-| `TEN-AC-007` | Each of the two published events carries a non-null `tenantId` in its envelope; a consumer processing one without establishing tenant context fails loudly | `TEN-EVT-001`, `TEN-EVT-002` |
+| `TEN-AC-006` | A write attempted against a suspended tenant is rejected | `TEN-BR-001` |
+| `TEN-AC-007` | Each of the two published events carries the full §9.1 envelope with a non-null `tenantId`, written via Transactional Outbox in the same transaction as the aggregate mutation; a consumer processing one without establishing tenant context fails loudly | `TEN-EVT-001`, `TEN-EVT-002`, `TEN-FR-021` |
 | `TEN-AC-008` | An attempt to write `TenantOrganisation`, `StaffAssignment`, an authorisation outcome, a credential, or subscription state from within `platform/tenancy` fails — statically or at runtime | `TEN-XC-001`…`006`, `TEN-XC-010` |
+| `TEN-AC-009` | An attempt to mutate the ID of an existing `Tenant` is rejected; the stored ID is unchanged after the attempt | `TEN-INV-001` |
+| `TEN-AC-010` | A second write of `ResidencyRegion` on a `Tenant` that already carries one is rejected, **whatever value is supplied**. The criterion is satisfiable without any permitted value set existing (`TEN-GAP-001`) | `TEN-INV-002` |
+| `TEN-AC-011` | A query, projection, cache read or index lookup issued under tenant A returns no row, reference or derived count belonging to tenant B. Attempting one is an error, not an empty result | `TEN-XC-007` |
+| `TEN-AC-012` | No state name, transition or state-machine definition for the tenant lifecycle appears in `platform/tenancy`; the module's only lifecycle surface is the `TenantLifecycleState` value it stores | `TEN-XC-008` |
+| `TEN-AC-013` | The set of domain event types published by `platform/tenancy` is exactly `{tenancy.TenantProvisioned, tenancy.TenantSuspended}`. Publishing any third type fails | `TEN-XC-009`, `TEN-EVT-001`, `TEN-EVT-002` |
+| `TEN-AC-014` | Every persisted row of a tenant-scoped context owned by this module carries a non-null `tenant_id`; a global-context row carries no `tenant_id` column at all | `TEN-FR-018` |
+| `TEN-AC-015` | Every cache key, index name and vector namespace emitted by this module contains the resolved `tenantId`. One constructed without it fails | `TEN-FR-019` |
+| `TEN-AC-016` | A change to a cache key, index name or vector namespace in this module cannot be accepted without a recorded security review against `MP-GBR-09` | `TEN-FR-020` |
 
-Every criterion above maps to a requirement in this document. There are **no orphan criteria**.
+Every criterion above maps to a requirement in this document. There are **no orphan criteria** and **no dangling
+citations**.
+
+**Reverse coverage.** Of the 24 normative requirements (`TEN-FR-*`, `TEN-BR-*`, `TEN-INV-*`, `TEN-EVT-*`) and 10
+exclusions, those still carrying no criterion are `TEN-FR-001`…`009`, `TEN-FR-013`, `TEN-FR-015` and `TEN-BR-004`.
+Each is a **structural or ownership statement** verified by the module's shape rather than by a runtime assertion —
+`TEN-FR-004`'s single aggregate root and `TEN-FR-007`'s absent entitlement types are observable in the type
+inventory, and `TEN-BR-004` is discharged by `TEN-AC-008`/`TEN-AC-011` between them. `TEN-XC-002`…`006` are covered
+collectively by `TEN-AC-008`'s range. This is recorded rather than left to be inferred.
 
 ---
 
@@ -424,4 +468,5 @@ Registry status remains **`PLANNED`**. Status is conferred by the lifecycle, nev
 
 | Version | Date | Change |
 |---|---|---|
-| v0.1 | 2026-08-19 | Initial Stage 2 draft. 42 identifiers defined across 8 registers; `TEN-CFG-*` declared empty; 12 identifiers retired permanently; 4 open gaps recorded with named owners; lifecycle state machine cited to frozen `LIB-8.1`…`8.8` rather than restated; event surface closed at the two registered events with no reinstatement event invented |
+| v0.1 | 2026-08-19 | Initial Stage 2 draft. Identifiers defined across 8 registers; `TEN-CFG-*` declared empty; 12 identifiers retired permanently; 4 open gaps recorded with named owners; lifecycle state machine cited to frozen `LIB-8.1`…`8.8` rather than restated; event surface closed at the two registered events with no reinstatement event invented |
+| v0.1 | 2026-08-19 | **Stage 4 correction — four findings applied, no version increment.** `RQ-1`: `TEN-AC-006` no longer cites `TEN-INV-001`, which it could not verify — ID immutability is now verified by new `TEN-AC-009`. `RQ-2`: acceptance coverage added for `TEN-XC-007`/`008`/`009`, `TEN-FR-018`/`019`/`020` and `TEN-INV-002` via `TEN-AC-009`…`016`, and residual uncovered requirements are now listed explicitly with the reason. `RQ-3`: §6's incorrect citation of `TEN-FR-019` for the event envelope replaced by new `TEN-FR-021`, carrying the Bounded Context Map §9.1 / `MP-GBR-07` obligation that had been unidentified prose; the error is recorded in an authority note rather than silently overwritten. `RQ-4`: §0.2 now counts requirements, acceptance criteria and gap records as three separate classes (34 · 13 · 4 = 51). **No in-force identifier renumbered; no retired identifier reused; no frozen document restated; no residency value asserted; version and status held at v0.1 `DRAFT` per `PRD-007_CORRECTION_RECORD.md` §5.6 — *"bumping either would be a claim this correction does not earn."*** |

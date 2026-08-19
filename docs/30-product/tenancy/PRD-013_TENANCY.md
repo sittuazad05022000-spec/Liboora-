@@ -4,8 +4,8 @@
 |---|---|
 | **PRD** | `PRD-013` |
 | **Module** | Tenancy |
-| **Version** | **v0.1** |
-| **Status** | **DRAFT** |
+| **Version** | **v0.1** — *preserved at freeze. [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md) §4 item 2: "Freeze confers status; it does not renumber" — admitted at the version that was verified* |
+| **Status** | **`FROZEN`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 7**. Admitted to the documentation baseline by [`ADR-0050`](../../00-governance/adr/ADR-0050-tenancy-prd-v0.1-baseline.md). **Frozen, not `VERIFIED`** — 0 of 30 tasks and 0 of 13 acceptance criteria are proven by a test |
 | **Owning bounded context** | **`BC-19` Tenancy** `[GENERIC]` — Shared Core |
 | **Product version** | **V1** |
 | **Owned aggregate** | **`Tenant` — and only `Tenant`** |
@@ -13,17 +13,21 @@
 | **Manifest port name** | `shared_core.tenant_context` |
 | **Shared-kernel declaration** | `liboora_contracts` (R0) — `TenantContext` interface and read-only accessor |
 | **Requirement prefix** | `TEN-` |
-| **Lifecycle stage** | **Stage 2 — Draft.** Stages 3, 4, 5, 6, 7 **not started** |
-| **Registry status** | `PLANNED` in [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) — **unchanged by this document** |
-| **Aligned to** | Master PRD (Rank 1) · `ADR-0003`, `ADR-0012`, `ADR-0013`, `ADR-0016` (Rank 2) · Library PRD v1.1 **FROZEN**, Authentication PRD v2.0 **FROZEN** (Rank 3) · Bounded Context Map v1.5, Module Dependency Matrix v1.3 (Rank 4) · Architecture Rulings (Rank 5) |
+| **Lifecycle stage** | **Stage 7 — Freeze.** Stages 1–7 passed; see §12. Stages 8 and 9 **not started** |
+| **Baseline** | Written against `BASELINE-2026-08-17-A`; **admitted to `BASELINE-2026-08-19-A`** |
+| **Rank** | **Rank 3** (module PRD) — conferred by [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3.3 and §4, **not claimed here** |
+| **Registry status** | **`FROZEN`** in [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.2 — conferred by `ADR-0050`, not by this document |
+| **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0003`, `ADR-0012`, `ADR-0013`, `ADR-0016`, **`ADR-0050`** (Rank 2) · Library PRD v1.1 **FROZEN**, Authentication PRD v2.0 **FROZEN** (Rank 3) · Bounded Context Map v1.5, Module Dependency Matrix v1.3 (Rank 4) · Architecture Rulings (Rank 5) |
 | **Date** | 2026-08-19 |
 | **Reviewed at** | `6837a7b8c53d7246d00a2c82058eac6c70763c38` |
 
-> **This document confers no status.** It is a Stage 2 draft. Per
-> [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) L41–42: *"A gate is not an opinion — if
-> the artefact does not exist, the stage has not been passed, however complete the work feels."* Nothing here is
-> registered in [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md), no registry row has been
-> altered, no baseline entry exists, and no architecture alignment record has been written.
+> **This document confers no status on itself.** Freeze is **conferred, not claimed** — the authority is the
+> baseline row created by [`ADR-0050`](../../00-governance/adr/ADR-0050-tenancy-prd-v0.1-baseline.md), not the
+> metadata above. Per [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) L41–42: *"A gate is
+> not an opinion — if the artefact does not exist, the stage has not been passed, however complete the work feels."*
+>
+> **`FROZEN` is not `VERIFIED`.** From `ADR-0050` forward, any business-rule change to this document requires an
+> **ADR → version increment → changelog → baseline update, in that order** (baseline §7).
 
 ---
 
@@ -446,21 +450,27 @@ observe. Owner: **Architecture Owner**. Instrument: an `ADR-0016`-style single-c
 
 ---
 
-## 12. Lifecycle position
+## 12. Lifecycle position — measured against the gates, not claimed
+
+Each row names the **artefact** that satisfies the gate. Per `PRD_LIFECYCLE.md` L41–42, *"A gate is not an opinion
+— if the artefact does not exist, the stage has not been passed."* Superseded verdicts are **quoted, not erased**,
+following the `PRD-019` §6 practice.
 
 | Stage | Status |
 |---|---|
-| 1 — Discovery | **Passed** — `BC-19` identified in the Bounded Context Map and not already owned in `PRD_REGISTRY.md` §6 |
-| 2 — Draft | **This document.** Version/status header present; identifier registers declared up front with contiguous ranges; normative language defined |
-| 3 — Architecture Review | **Not started.** No alignment record exists |
-| 4 — Requirements Review | **Not started** |
-| 5 — Traceability | **Not started.** No `TEN-*` prefix is registered in `TRACEABILITY_MATRIX.md`; no checker exists |
-| 6 — Implementation Tasks | **Not started.** No `IMPL-*` range is allocated or claimed |
-| 7 — Freeze | **Not started.** No `DOCUMENTATION_BASELINE.md` row exists |
-| 8 — Implementation | Not started |
-| 9 — Verification | Not started |
+| 1 — Discovery | ✅ **PASSED** — `BC-19` identified in the Bounded Context Map (L128) and not already owned in `PRD_REGISTRY.md` §6; the contest was resolved to `PRD-013` by `ADR-0013` (`PRD_REGISTRY.md` L447) |
+| 2 — Draft | ✅ **PASSED.** Version/status header present; identifier registers declared up front in §0.2 with ranges contiguous **over the declared set**; normative language defined |
+| 3 — Architecture Review | ✅ **PASSED — ALIGNED, 5 of 6 checks PASS, 1 CONDITIONAL.** Gate met by [`PRD-013_ARCHITECTURE_ALIGNMENT.md`](PRD-013_ARCHITECTURE_ALIGNMENT.md) (measured at `fcd99ff7…f97e`) **jointly with** [`PRD-013_ARCHITECTURE_ALIGNMENT_SUPPLEMENT.md`](PRD-013_ARCHITECTURE_ALIGNMENT_SUPPLEMENT.md), which re-measures all six checks at `688239cb…ba9c`. The condition is `H-1`, a pre-existing BC Map §7 capability→capability taxonomy gap affecting `BC-20`→`BC-21` identically, owned by the Architecture Owner and asserted by **no** requirement here. ⚠ *Superseded v0.1 statement, quoted: "**Not started.** No alignment record exists."* |
+| 4 — Requirements Review | ✅ **PASSED.** Four findings applied as `RQ-1`…`RQ-4` (see Changelog); all four `TEN-GAP-*` carry a reason and a named owner, which is the gate. ⚠ *Superseded v0.1 statement, quoted: "**Not started**."* |
+| 5 — Traceability | ✅ **PASSED — CONFERRED** by [`PRD-013_STAGE5_CONFERRAL.md`](PRD-013_STAGE5_CONFERRAL.md). `TEN-*` registered in [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) §2I; `tool/docs_check/prd013_traceability.py` and `prd013_stage5.py` both **exit 0**; 51 in force / 63 declared; **0** collisions in both directions. ⚠ *Superseded v0.1 statement, quoted: "**Not started.** No `TEN-*` prefix is registered in `TRACEABILITY_MATRIX.md`; no checker exists."* |
+| 6 — Implementation Tasks | ✅ **PASSED — verdict A, 13 of 13 gates**, recorded in [`PRD-013_STAGE6_IMPLEMENTATION_TASKS.md`](PRD-013_STAGE6_IMPLEMENTATION_TASKS.md). `IMPL-800`…`829` allocated by occupancy measurement; [`PRD-013_IMPLEMENTATION_TASKS.md`](../../40-implementation/tenancy/PRD-013_IMPLEMENTATION_TASKS.md) carries 30 tasks claiming **34/34 = 100.0%** of obligations; `prd013_task_coverage.py` **exit 0**. ⚠ *Superseded v0.1 statement, quoted: "**Not started.** No `IMPL-*` range is allocated or claimed."* |
+| 7 — Freeze | ✅ **PASSED — CONFERRED.** Gate met by the [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3.3 row at **Rank 3**, conferred by [`ADR-0050`](../../00-governance/adr/ADR-0050-tenancy-prd-v0.1-baseline.md) under **`BASELINE-2026-08-19-A`**. Recorded in [`PRD-013_STAGE7_FREEZE.md`](PRD-013_STAGE7_FREEZE.md). ⚠ *Superseded v0.1 statement, quoted: "**Not started.** No `DOCUMENTATION_BASELINE.md` row exists."* |
+| 8 — Implementation | ⛔ **NOT STARTED.** 0 of 30 tasks. Two known code defects against this specification are carried, **not fixed**: `D-013-01` (`Branch` declared in `platform/tenancy` though BC Map L210 assigns it to `BC-06`/`PRD-002`) and `D-013-02` (`MutableTenantContext` is not async-scoped, so `TEN-AC-002` is currently false of the code). Borne by `IMPL-801` and `IMPL-813`; see task document §4.1 and `ADR-0050` §3 |
+| 9 — Verification | ⛔ **NOT STARTED.** **0 of 13** `TEN-AC-*` are proven by a test; no test file matching `*tenan*` exists. `SID-4.56`: *"A rule that cannot be checked SHALL be treated as unmet"* |
 
-Registry status remains **`PLANNED`**. Status is conferred by the lifecycle, never claimed by the document.
+Registry status is **`FROZEN`**. **Status is conferred by the lifecycle, never claimed by the document** — this
+table *records* conferred verdicts and creates none of them. **`FROZEN` is not `VERIFIED`**: freeze fixes what this
+specification says, and says nothing about what the code does.
 
 ---
 
@@ -468,5 +478,6 @@ Registry status remains **`PLANNED`**. Status is conferred by the lifecycle, nev
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.1** | 2026-08-19 | **STAGE 7 FREEZE — admitted to the documentation baseline at Rank 3 by [`ADR-0050`](../../00-governance/adr/ADR-0050-tenancy-prd-v0.1-baseline.md) under `BASELINE-2026-08-19-A`. The version is DELIBERATELY NOT INCREMENTED.** `ADR-0020` §4 item 2: *"Freeze confers status; it does not renumber"* — `PRD-003` was admitted at v1.0, `PRD-004` at v1.2, `PRD-005` at v1.4, `PRD-008` at v1.7, **each at the version that was verified**, and every gate for this document measured v0.1 at `688239cb…ba9c`. `ADR-0020` §5 rejects renumbering at freeze explicitly. **No identifier is added, removed, renumbered or reworded** — 63 declared (51 in force + 12 retired), 13 criteria, 2 closed events, 4 open gaps, all unchanged; register counts FR 18 · BR 2 · INV 2 · EVT 2 · XC 10 · CFG 0 · AC 13 · GAP 4. **No business rule, requirement, exclusion or scope statement changes.** The edits are exactly the governance-required freeze metadata permitted by `ADR-0020` §4 item 3 — *Status* (`DRAFT` → **`FROZEN`**), *Baseline*, *Rank*, *Registry status*, *Authorities applied* and *Lifecycle stage* — plus **§12**, whose four *"Not started"* rows for Stages 3–6 were **false** against conferred verdicts and are corrected under `ADR-0050` §4.1 with every superseded statement **quoted rather than erased**, following `PRD-019` §6. **All four `TEN-GAP-*` are admitted OPEN and are not ratified.** ⚠ **`FROZEN` is not `VERIFIED`** — **0 of 30** tasks and **0 of 13** acceptance criteria are proven by a test, and two code defects (`D-013-01`, `D-013-02`) are carried as `IMPL-801`/`IMPL-813` rather than fixed, because Stage 7 has no authority to implement. From this entry forward, any business-rule change requires **ADR → version increment → changelog → baseline update, in that order** |
 | v0.1 | 2026-08-19 | Initial Stage 2 draft. Identifiers defined across 8 registers; `TEN-CFG-*` declared empty; 12 identifiers retired permanently; 4 open gaps recorded with named owners; lifecycle state machine cited to frozen `LIB-8.1`…`8.8` rather than restated; event surface closed at the two registered events with no reinstatement event invented |
 | v0.1 | 2026-08-19 | **Stage 4 correction — four findings applied, no version increment.** `RQ-1`: `TEN-AC-006` no longer cites `TEN-INV-001`, which it could not verify — ID immutability is now verified by new `TEN-AC-009`. `RQ-2`: acceptance coverage added for `TEN-XC-007`/`008`/`009`, `TEN-FR-018`/`019`/`020` and `TEN-INV-002` via `TEN-AC-009`…`016`, and residual uncovered requirements are now listed explicitly with the reason. `RQ-3`: §6's incorrect citation of `TEN-FR-019` for the event envelope replaced by new `TEN-FR-021`, carrying the Bounded Context Map §9.1 / `MP-GBR-07` obligation that had been unidentified prose; the error is recorded in an authority note rather than silently overwritten. `RQ-4`: §0.2 now counts requirements, acceptance criteria and gap records as three separate classes (34 · 13 · 4 = 51). **No in-force identifier renumbered; no retired identifier reused; no frozen document restated; no residency value asserted; version and status held at v0.1 `DRAFT` per `PRD-007_CORRECTION_RECORD.md` §5.6 — *"bumping either would be a claim this correction does not earn."*** |

@@ -5,19 +5,20 @@
 | **PRD** | `PRD-016` |
 | **Module** | Audit Trail |
 | **Version** | **v0.1** |
-| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 2. **This document confers no status on itself** |
+| **Status** | **`FROZEN`** — admitted to the documentation baseline at **Rank 3** on 2026-08-19 by [`ADR-0051`](../../00-governance/adr/ADR-0051-audit-trail-prd-v0.1-baseline.md), whose gate artefact is the row in [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) **§3.3**. ⚠ **`FROZEN`, not `VERIFIED`** — 0 of 30 tasks and **0 of 18** acceptance criteria are proven by a test. **This document still confers no status on itself**; the baseline §3.3 row does, and this field only records what was conferred elsewhere. *Superseded value retained verbatim:* **`DRAFT`** — `PRD_LIFECYCLE.md` Stage 2. **This document confers no status on itself** |
 | **Owning bounded context** | **`BC-24` Audit Trail** `[GENERIC]` — owning platform **Audit** |
 | **Product version** | **V1** |
 | **Owned aggregate** | **`AuditEntry` — and only `AuditEntry`** |
 | **Module path** | `platform/audit` (rank **5**) |
 | **Requirement prefix** | `AUD-` |
-| **Lifecycle stage** | See §12. Stages 8 and 9 **not started** |
-| **Baseline** | Written against **`BASELINE-2026-08-19-A`** |
-| **Rank** | Rank 3 is **conferred** by [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3, **not claimed here** |
-| **Registry status** | **`PLANNED`** in [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.2 until conferred otherwise |
-| **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0012`, `ADR-0014`, `ADR-0020`, `ADR-0049`, `ADR-0050` (Rank 2) · **Authentication PRD v2.0 `FROZEN`**, **Library PRD v1.1 `FROZEN`**, `PRD-006`, `PRD-013` v0.1 `FROZEN` (Rank 3) · Bounded Context Map v1.5, Module Dependency Matrix v1.3 (Rank 4) · Architecture Rulings (Rank 5) |
+| **Lifecycle stage** | **Stage 7 of 9 — Freeze, PASSED.** See §12. Stages 8 and 9 **not started** |
+| **Baseline** | **`BASELINE-2026-08-19-B`**, the identifier issued by this freeze. *Superseded value retained verbatim: written against **`BASELINE-2026-08-19-A`***. The identifier moved because a Rank 3 document changed version-status, per baseline §7 step 4 |
+| **Rank** | **Rank 3, conferred** by [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) **§3.3** and §4 (which now records **ten** module baselines), **not claimed here** |
+| **Registry status** | **`FROZEN`** in [`PRD_REGISTRY.md`](../../00-governance/prd-ecosystem/PRD_REGISTRY.md) §4.2 L306, the **second** PRD ever to leave `PLANNED` directly for `FROZEN`. *Superseded value retained verbatim:* **`PLANNED`** … until conferred otherwise |
+| **Authorities applied** | Master PRD v1.7 (Rank 1) · `ADR-0012`, `ADR-0014`, `ADR-0020`, `ADR-0049`, `ADR-0050`, **`ADR-0051`** (Rank 2) · **Authentication PRD v2.0 `FROZEN`**, **Library PRD v1.1 `FROZEN`**, `PRD-006`, `PRD-013` v0.1 `FROZEN` (Rank 3) · Bounded Context Map v1.5, Module Dependency Matrix v1.3 (Rank 4) · Architecture Rulings (Rank 5) |
 | **Date** | 2026-08-19 |
 | **Reviewed at** | `66fc263327aed5233f1449e2e8e800a24a39b68e` |
+| **Reviewed content hash** | `281f15e8de65dde8c8b5a5e8edda71f8e34eff07c7abc411698fbfc0f6f339be` — the sha256 of this **whole file as it stood immediately before the freeze**, and the hash cited by every one of the five gate records (Stages 1, 3, 4, 5, 6). That uniformity is why **no alignment supplement was required and none was written**, unlike `ADR-0049` and `ADR-0050`. ⚠ **It is no longer this file's hash and is not presented as one**: the freeze edited the header, §12 and §14, so the file now hashes to `304265691415a68564357c09161bfaf717a5ca70e9261adc62dbdeb7994c4e66`. **The invariant that survives the freeze is the specification itself**: the span **§0 *How to read* through §11 inclusive** — every requirement, rule, invariant, exclusion, criterion, gap and register — hashes to **`a4fee4df54ff8f17282d636b78ce97693245f8bd50a5c7adee8d5d114eb9d6cb`** both before and after, verified by extracting the span by section anchor in each version rather than by fixed line numbers, which the header's growth would have shifted |
 
 > **Freeze is conferred, not claimed.** Per `PRD_LIFECYCLE.md` L41–42: *"A gate is not an opinion — if the artefact
 > does not exist, the stage has not been passed, however complete the work feels."*
@@ -352,13 +353,21 @@ this document.**
 |---|---|---|
 | 1 — Discovery | A context in the BC Map, not already owned in registry §6 | ✅ **PASS** — [`PRD-016_STAGE1_DISCOVERY.md`](./PRD-016_STAGE1_DISCOVERY.md) |
 | 2 — Draft | A document with a version/status header and identifier registers declared up front with ranges | ✅ **This document** |
-| 3 — Architecture Review | A written alignment record naming every conflict and its disposition | ⏳ Next |
-| 4 — Requirements Review | Conflicts closed or explicitly deferred with a reason and an owner | ⏳ |
-| 5 — Traceability | Prefixes registered in `TRACEABILITY_MATRIX.md` §2, verified mechanically, zero collisions | ⏳ |
-| 6 — Implementation Tasks | An `IMPL-*` range allocated; every task traces to requirements | ⏳ |
-| 7 — Freeze | **A row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank** | ⏳ |
+| 3 — Architecture Review | A written alignment record naming every conflict and its disposition | ✅ **ALIGNED 6/6** — [`PRD-016_ARCHITECTURE_ALIGNMENT.md`](./PRD-016_ARCHITECTURE_ALIGNMENT.md), 9 findings **rejected with reasons recorded rather than deleted**, 3 deferred as `S3-A-01`…`03`. *Superseded value: ⏳ Next* |
+| 4 — Requirements Review | Conflicts closed or explicitly deferred with a reason and an owner | ✅ **PASS 6/6** — [`PRD-016_STAGE4_REQUIREMENTS_REVIEW.md`](./PRD-016_STAGE4_REQUIREMENTS_REVIEW.md), 4 findings rejected with reasons, 1 deferred as `S4-D-01` with a named owner. *Superseded value: ⏳* |
+| 5 — Traceability | Prefixes registered in `TRACEABILITY_MATRIX.md` §2, verified mechanically, zero collisions | ✅ **CONFERRED** — §2J of [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) **v1.14**, verified by **two independent committed checkers** (`prd016_traceability.py`, `prd016_stage5.py`), **0 collisions in both directions**, 0 orphans, 0 dangling; record at [`PRD-016_STAGE5_CONFERRAL.md`](./PRD-016_STAGE5_CONFERRAL.md). *Superseded value: ⏳* |
+| 6 — Implementation Tasks | An `IMPL-*` range allocated; every task traces to requirements | ✅ **A — PASS** — `IMPL-900`…`929` (30 tasks, 47 edges, chain depth 7), **35 of 35 obligations = 100.0%** claimed by a task, verified by `prd016_task_coverage.py`; 11 of 11 mutations caught. Range allocated **by measurement of 451 numbers, not read from the lifecycle table**, which is stale. Record at [`PRD-016_STAGE6_IMPLEMENTATION_TASKS.md`](./PRD-016_STAGE6_IMPLEMENTATION_TASKS.md). *Superseded value: ⏳* |
+| 7 — Freeze | **A row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank** | ✅ **PASSED — the gate artefact EXISTS**: the §3.3 specification row admitting this document at **Rank 3** under **`BASELINE-2026-08-19-B`**, conferred by [`ADR-0051`](../../00-governance/adr/ADR-0051-audit-trail-prd-v0.1-baseline.md), with the record at [`PRD-016_STAGE7_FREEZE.md`](./PRD-016_STAGE7_FREEZE.md) — **which confers nothing; the §3.3 row does.** *Superseded value: ⏳* |
 | 8 — Implementation | — | ⛔ **NOT STARTED** |
 | 9 — Verification | — | ⛔ **NOT STARTED** |
+
+> ⚠ **The five verdicts above were changed from `⏳` in the freeze commit, not before it, and not silently.** Each was **false** against artefacts
+> that already existed on disk; leaving them would have made this document contradict the baseline at the moment of admission. Every superseded
+> value is **quoted, not erased**, per `ADR-0050` §4.1 and `ADR-0051` §4.1.
+>
+> ⛔ **Stages 8 and 9 are NOT STARTED and this freeze does not begin them.** `FROZEN` ≠ `IMPLEMENTED` ≠ `VERIFIED`: **0 of 30** tasks are
+> implemented, **0 of 18** acceptance criteria are proven by a test, acceptance coverage stands at **27 of 35 = 77.1%** with the 8 uncovered
+> obligations named in §9, all **5 `AUD-GAP-*` remain OPEN**, and the 3 code contradictions `D-016-01`…`03` are carried into Stage 8 **unrepaired**.
 
 ---
 
@@ -385,4 +394,5 @@ Rank 7 — [`CONFIGURATION_GUIDE.md`](../../20-configuration/CONFIGURATION_GUIDE
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.1** *(unchanged)* | 2026-08-19 | **FROZEN at Rank 3** by [`ADR-0051`](../../00-governance/adr/ADR-0051-audit-trail-prd-v0.1-baseline.md), gate artefact = the `DOCUMENTATION_BASELINE.md` **§3.3** row, baseline identifier **`BASELINE-2026-08-19-B`**. ⚠ **The version is deliberately NOT moved.** `ADR-0020` §4 item 2 admits each document *"at the version that was verified"* and §5 rejects renumbering to mark a freeze: **Stage 7 confers status, not content.** Refusing the freeze because v0.x looks *"not release-ready"* was `PRD-013`'s Stage 7 blocker 1 and `ADR-0050` §5 **withdrew it as a rule this repository does not contain**; it is not revived here. **No requirement text, identifier, range, gap, default or exclusion was altered by the freeze** — the body still hashes to `281f15e8…f339be`, the bytes every one of the five gate records measured, which is why **no alignment supplement was required and none was written**. The only edits are the header's status/baseline/rank/registry fields, the five §12 verdicts (each with its superseded `⏳` **quoted, not erased**) and this row. `BC-24` is the **first CAPABILITY & GENERIC band context frozen** — measured, not inherited: BC Map **L271** reserves the FOUNDATIONAL band for `BC-18`/`BC-19`/`BC-25`, so `PRD-013`'s precedent phrase does not transfer, and of the capability band's **11** contexts none was owned by any previously frozen PRD. ⛔ **Nothing was fixed to make this pass**: all **5 `AUD-GAP-*` OPEN**, **0 of 30** tasks and **0 of 18** criteria tested, coverage **27/35 = 77.1%**, `D-016-01`…`03` carried to Stage 8 unmodified, and **no file under `lib/`, `packages/`, `test/` or `tool/` was touched** — so no gate was taught about this document in the same act that admitted it. Two **pre-existing** governance defects found while updating the registers that carried them were corrected and logged as **`GCP-18`** and **`GCP-19`** (`DOCUMENTATION_BASELINE.md` §6); `GCP-18` was found **by testing `ADR-0051`'s own claim that no such defect existed**, and the test falsified the claim. |
 | **v0.1** | 2026-08-19 | Created as the **Stage 2** draft for `PRD-016` Audit Trail (`BC-24`, aggregate `AuditEntry`, module `platform/audit` rank 5, prefix `AUD-`). Declared **58** identifiers across five populated registers with contiguous ranges published up front: `AUD-FR-001`…`016`, `AUD-BR-001`…`003`, `AUD-INV-001`…`004`, `AUD-XC-001`…`012`, `AUD-AC-001`…`018`, `AUD-GAP-001`…`005`. **`AUD-EVT-*` declared empty** — `BC-24` is a producer in **zero** BC Map §9 rows. **`AUD-CFG-*` not issued at all** — no Rank 1–7 authority supplies a default or bound, and an unbounded configurable is a specification hole. Every requirement cites existing authority rather than restating it; the audit **principles** remain `AU-1`…`AU-9` in the **frozen** Authentication PRD §10.4, and `AUTH-10.26` is the authority by which this module owns storage, retention and query. Recorded **5 gaps** owned elsewhere and **3 code contradictions** (`D-016-01`…`03`). **No retention period, jurisdiction, legal requirement, event, integration edge or configuration value was invented. No code modified. No identifier registered in the traceability matrix — that is Stage 5.** |

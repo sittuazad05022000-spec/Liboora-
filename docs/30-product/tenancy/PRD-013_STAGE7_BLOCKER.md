@@ -1,5 +1,37 @@
 # `PRD-013` Stage 7 — Freeze gate **NOT ENTERED**: blocker record
 
+> ## ⛔ SUPERSEDED — 2026-08-19. This record holds **no authority**.
+>
+> **Superseded by** [`ADR-0050`](../../00-governance/adr/ADR-0050-tenancy-prd-v0.1-baseline.md) **§5**, under `BASELINE-2026-08-19-A`. **`PRD-013` Tenancy is `FROZEN` at v0.1.** The Stage 7 gate — a row in `DOCUMENTATION_BASELINE.md` **§3.3** at **Rank 3** — was subsequently satisfied, and the freeze record is [`PRD-013_STAGE7_FREEZE.md`](PRD-013_STAGE7_FREEZE.md).
+>
+> **Nothing below this banner has been altered.** The body is preserved verbatim, including the verdict now known to be wrong, because a governance instrument that was wrong is more useful as evidence than as a deletion. `DOCUMENTATION_BASELINE.md` §3.3 records this file as *superseded, with no authority*.
+>
+> **The two blockers, and their actual dispositions:**
+>
+> | Blocker | Recorded below as | Actual disposition |
+> |---|---|---|
+> | **1** — §2: `PRD-013` is at **v0.1 `DRAFT`**, and freeze requires the Product Owner first to release it to a version | *"no conferral can cure"* | ⛔ **WITHDRAWN — not a repository rule.** See below |
+> | **2** — §3: §12's four *"Stages 3–6 Not started"* rows are false of the record | A blocker | ✅ **RESOLVED** — corrected under `ADR-0050` **§4.1**'s three converging authorities |
+>
+> ### ⛔ Why blocker 1 was wrong — the error named rather than removed
+>
+> Blocker 1 reasoned from a correctly **measured** fact — that **0** documents at a `v0.x` version had ever been admitted to the baseline — and treated that absence as a **prohibition**. It is history, not a rule. Two independent findings show the inference was invalid:
+>
+> 1. **No such rule exists to be breached.** `grep` over `docs/00-governance/` for five distinct phrasings of a versioning convention returns **zero** results.
+> 2. **The governing precedent points the other way.** [`ADR-0020`](../../00-governance/adr/ADR-0020-seat-management-prd-v1.0-baseline.md) **§4 item 2** holds that *"Freeze confers status; it does not renumber… each at the version that was verified"*, and its **§5** expressly **rejects** the option *"Renumber to v1.1 to mark the freeze"* on the ground that *"Stage 7 confers status, not content."*
+>
+> **So this blocker would have required the very act the governing precedent forbids** — and, being addressed to an authority the lifecycle does not call upon here, would have left `PRD-013` permanently unfreezable while awaiting an approval that was never needed.
+>
+> This is the failure class `ADR-0049` **§6.1** already names, where an instrument falsely reported a prerequisite unmet: *"Had that instrument been trusted, Stage 6 would have been reported permanently unreachable and this freeze wrongly refused."*
+>
+> ### ✅ What in this record remained sound and was re-used
+>
+> The **eight independent checks in §4** were correct and were re-verified rather than re-derived at freeze. §5's routing of open items to named owners was correct, and its request for an admission ADR was correct — `ADR-0050` is that ADR. The subject hash recorded here, `688239cb…f0f1ba9c`, is the hash every prior gate measured, and it is carried forward as the *"subject hash on entry"* of the freeze record.
+>
+> ### ⚠ What is still true below, and was **not** cured by the freeze
+>
+> `TEN-GAP-001`…`004` remain **OPEN**; `H-1` remains **CONDITIONAL**; **`D-013-01`** and **`D-013-02`** remain unfixed **code** defects carried to Stage 8 as `IMPL-801` and `IMPL-813`; **0 of 30** tasks and **0 of 13** acceptance criteria are proven by a test; and `PGA-08` is not cured — **`FROZEN` is not `VERIFIED`**. `D-013-01`, however, was **re-diagnosed** at freeze: `PRD-013` contains **0** occurrences of `Branch` at any casing, so it never claimed `BC-06`'s aggregate, and **no ADR was required or written**.
+
 | Field | Value |
 |---|---|
 | **Act** | 🛑 **BLOCKER RECORD** — this document performs no governance act. It records why Stage 7 was **not** attempted, so that the stop is auditable rather than silent |

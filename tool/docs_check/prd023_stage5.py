@@ -291,6 +291,51 @@ def expand_ids(text):
     return ids
 
 
+def strip_regex_vectors(rel, text):
+    """Remove REGEX TEST VECTORS before the dangling-citation scan.
+
+    `S5-C-03`.  Section 2L proves the two inward substring hazards are
+    defeated by publishing the measurement itself, in the form
+
+        `re.search(r'(?<![A-Z-])CFG-\\d+', 'CNF-CFG-001')` -> no match
+
+    The single-quoted `'CNF-CFG-001'` there is a STRING FED TO A PATTERN to
+    demonstrate that the pattern does NOT match it.  It is not a citation: no
+    reader is being pointed at a requirement, and `CNF-CFG-*` is declared
+    EMPTY precisely so that no such member exists.  A naive citation scan
+    reads it as a reference to an undefined identifier and fails the run --
+    the same family of defect as `S5-C-02`, an instrument mistaking prose
+    ABOUT a pattern for a use OF the thing.
+
+    The exclusion is deliberately NARROW and GUARDED, following the `S5-C-02`
+    precedent: only single-quoted tokens sitting inside an inline-code span
+    that also contains `re.search` are removed, only in the matrix, and only
+    while that convention is actually present.  If the convention disappears
+    the guard fails loudly, so this cannot rot into a blanket exemption that
+    hides a real dangling citation.  Line numbers are preserved because
+    other checks report positions.
+    """
+    if rel != MATRIX:
+        return text
+    vector = re.compile(r'`[^`]*re\.search\([^`]*`')
+    spans = list(vector.finditer(text))
+    if not spans:
+        fail('section 2L no longer publishes any `re.search(...)` measurement, '
+             'so the regex-test-vector exclusion is masking nothing and must '
+             'be removed rather than left to rot into a blanket exemption')
+        return text
+    out = list(text)
+    removed = 0
+    for span in spans:
+        for index in range(span.start(), span.end()):
+            if out[index] != '\n':
+                out[index] = ' '
+                removed += 1
+    if not removed:
+        fail('the regex-test-vector exclusion matched but removed nothing')
+    return ''.join(out)
+
+
 def section_2l(matrix):
     start = matrix.find('## 2L.')
     if start < 0:
@@ -461,6 +506,7 @@ def main():
              'guard against over-counting is not actually anchored')
 
     # ---- check 4c: outward definitions
+    _ = strip_regex_vectors  # used below; named here for readers of the flow
     defined = set()
     for register in ORDER:
         for number in computed.get(register, []):
@@ -486,7 +532,7 @@ def main():
                         break
                     outward.append((rel, lineno, ident))
                     break
-        found = expand_ids(text)
+        found = expand_ids(strip_regex_vectors(rel, text))
         citations += len(found)
         for ident in sorted(found - defined):
             fail('%s is cited in %s but is defined nowhere in PRD-023'

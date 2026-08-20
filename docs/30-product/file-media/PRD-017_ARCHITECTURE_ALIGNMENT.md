@@ -353,7 +353,7 @@ Owned ∩ Deferred = ∅. The blocked set is a subset of Owned that cannot yet b
 | R-3 | **Create a new edge `E-27` for `domain/social` → `BC-29`** | **Rejected.** Identical mode, mechanism and constraint to `E-22`. `ADR-0016` §3 option 2 rejected exactly this and set the precedent: *extend the consumer list* |
 | R-4 | **Declare the tenant-isolation conflict a `PRD-013` defect** | **Rejected.** `TEN-FR-018` and `TEN-AC-014` are frozen Rank 3 and **correct**; the conflict was in the *brief's wording*, not in `PRD-013`. Inverting precedence to accommodate a brief is `ADR-0016` §3 option 4's rejected shape |
 | R-5 | **Promote `BC-14` to V1 so sharing has a "content" owner** | **Rejected.** `BC-14` owns publishing rights and takedown (L118), not peer transfer. `BC-11`/`BC-12` are already V1, so promotion is unnecessary as well as out of scope |
-| R-6 | **Mint `FIL-EVT-001` for `ShareGranted` so audit has a path** | **Rejected.** `BC-29` is a producer in **0** BC Map §9 rows. `FIL-FR-082` already routes the fact through the **calling context** and `E-20`. Minting the event would assert a path L292 says does not exist |
+| R-6 | **Mint the first member of `FIL-EVT-*` for `ShareGranted` so audit has a path** | **Rejected.** `BC-29` is a producer in **0** BC Map §9 rows. `FIL-FR-082` already routes the fact through the **calling context** and `E-20`. Minting the event would assert a path L292 says does not exist. ⚠ Named **by kind, not by number**, corrected at Stage 5 (`S5-C-07`): writing the specific identifier here created a citation to an identifier this row exists to keep nonexistent |
 
 ---
 

@@ -520,17 +520,27 @@ def main():
     for rel, text in walk_markdown():
         files_scanned += 1
         owned = any(rel.startswith(d + os.sep) for d in OWNED_DIRS)
-        if owned:
-            continue
-        for line in text.split('\n'):
-            stripped = line.strip()
-            hit = (re.match(r'^`FIL-([A-Z]+)-(\d+)`\s*(?:\u2014|--)\s*\S',
-                            stripped)
-                   or re.match(r'^\|\s*\*{0,2}`FIL-([A-Z]+)-(\d+)`\*{0,2}\s*\|',
-                               stripped))
-            if hit:
-                outward.append('%s defines FIL-%s-%03d'
-                               % (rel, hit.group(1), int(hit.group(2))))
+        # S5-C-07.  This loop originally did `continue` on an owned file, which
+        # skipped BOTH halves of the check: the outward-DEFINITION scan (correct
+        # to skip -- the module is entitled to define its own identifiers) and
+        # the citation-RESOLUTION scan (wrong to skip -- a sibling artefact in
+        # the same directory can cite an identifier that does not exist, and
+        # nothing else in the repository would notice).  Only the definition
+        # scan is exempt now.  Found when this very conferral record cited
+        # FIL-EVT-001 six times and the gate passed anyway; the exemption was
+        # scoped by DIRECTORY when the thing it needed to excuse was a
+        # PARTICULAR KIND OF LINE.
+        if not owned:
+            for line in text.split('\n'):
+                stripped = line.strip()
+                hit = (re.match(r'^`FIL-([A-Z]+)-(\d+)`\s*(?:\u2014|--)\s*\S',
+                                stripped)
+                       or re.match(
+                           r'^\|\s*\*{0,2}`FIL-([A-Z]+)-(\d+)`\*{0,2}\s*\|',
+                           stripped))
+                if hit:
+                    outward.append('%s defines FIL-%s-%03d'
+                                   % (rel, hit.group(1), int(hit.group(2))))
         for ident in expand_ids(text):
             citations += 1
             if ident not in defined:

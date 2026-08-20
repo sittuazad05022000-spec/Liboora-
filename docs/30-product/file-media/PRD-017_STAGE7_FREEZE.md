@@ -10,7 +10,7 @@
 | **Baseline** | **`BASELINE-2026-08-20-B`** (supersedes `BASELINE-2026-08-20-A`) — the **second** suffix advance within a single day |
 | **Subject hash before** | `4ebf5d07ecbbdf43f57fa5a63676995f34faa81931fdba5b7bdb42bcfc03d4e8` |
 | **Subject hash after** | `c1bb22a7d066808485df0d3d8cf33c5472311a021a8372103e88dcfb7677d9bd` — **changed, and §3 says why** |
-| **Requirement body hash** | `9cb9ee4bf2075272cc7f564e503b9ff5f8c8d3d72dd1403c136ab2ed7915318b` — **identical before and after**, measured over L35–L1685, the span from the first `---` separator to the change-history heading |
+| **Requirement body hash** | ⚠ **CORRECTED — the finding stands, the figure was stale.** Originally published as `9cb9ee4bf2075272cc7f564e503b9ff5f8c8d3d72dd1403c136ab2ed7915318b` *"measured over L35–L1685"*. The **final validation re-derived the span by ANCHOR** — first `---` separator to `### 18.3 Change history` — rather than by the two literal line numbers, and measured **L37–L1685, span 1649 lines, `50c20e964b54f93d2b9511d62c760db2e37e9751d1de47c27a66b2c0b63e3bb0`**. That value is **byte-identical to the same anchored span in `ac6d13c`, the pre-freeze commit** (`BODY IDENTICAL: True`), so **the claim the row was making is true**: the freeze changed no requirement text. What was wrong was the *hardcoded offset* — `L35` began two lines above the separator, so the earlier digest covered two header lines as well as the body, and the pair it compared were consistent with each other but not with the span the row named. **The claim was verified; the number that expressed it was not recomputable from its own stated definition.** Both are shown so a reader can reproduce either. This is the **same defect class as the three stale gate-record hashes recorded in §3.1** — a hash citation outliving the bytes or bounds it was taken over — and it is recorded here rather than silently overwritten, under `GCP-22` |
 | **Date** | 2026-08-20 |
 | **Precedence** | **None.** This is a stage record. It reports a conferral made elsewhere and confers nothing itself |
 
@@ -73,7 +73,7 @@ review of bytes it never saw.
 | Scope | Before | After | Changed? |
 |---|---|---|---|
 | Whole file | `4ebf5d07…d4e8` | `c1bb22a7…d9bd` | **Yes** |
-| Requirement body, L35–L1685 | `9cb9ee4b…318b` | `9cb9ee4b…318b` | **No — byte-identical** |
+| Requirement body, **anchored span** (first `---` → `### 18.3`), measured **L37–L1685** | `50c20e96…3bb0` | `50c20e96…3bb0` | **No — byte-identical**, confirmed against `git show ac6d13c:<path>`. ⚠ The originally published pair `9cb9ee4b…318b` / `9cb9ee4b…318b` was taken over the **mis-stated** span `L35–L1685`; see the header row. The verdict in this column is unchanged by the correction |
 | Distinct `FIL-*` identifiers | 232 | 232 | No |
 | `FIL-FR` / `BR` / `INV` / `EVT` / `XC` / `CFG` / `AC` / `GAP` | 82 / 17 / 11 / 0 / 22 / 9 / 78 / 13 | 82 / 17 / 11 / 0 / 22 / 9 / 78 / 13 | No |
 | Class A obligations | 132 | 132 | No |
@@ -216,7 +216,7 @@ existed to obtain a figure by adding one to a previous figure, it was not used.
 | PRD identifiers | Two independent checkers, one parsing by **line form**, one by **scope position** | **232** — agreeing |
 | Class A / covered / coverage | Recomputed by both | **132** / **94** / **71.2%** |
 | `FIL-*` citations resolved | `prd017_stage5.py` outward sweep | **736** outside the module, **0** outward definitions, **0** dangling after §3.2's fix |
-| Requirement body integrity | sha256 of L35–L1685 before and after | **`9cb9ee4b…318b` both times** |
+| Requirement body integrity | sha256 of the **anchored** span (first `---` → `### 18.3`), re-derived at final validation instead of trusting the stored offsets — measured **L37–L1685** | **`50c20e96…3bb0` both times**, before (`ac6d13c`) and after. ⚠ Supersedes the stale figure `9cb9ee4b…318b`, which was correct as a *comparison* but was labelled with a span it did not cover |
 
 **Coverage is published at 71.2% and is not conflated with the 132/132 = 100.0% task figure.** They count different
 things: the first is criteria attached to obligations, the second is obligations claimed by tasks. The 38

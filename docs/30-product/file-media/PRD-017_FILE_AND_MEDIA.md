@@ -69,7 +69,7 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-AC-` | Acceptance criterion | **52** | `FIL-AC-001` … `FIL-AC-052` | Yes |
+| `FIL-AC-` | Acceptance criterion | **56** | `FIL-AC-001` … `FIL-AC-056` | Yes |
 | `FIL-CFG-` | Configurable parameter this module publishes | **9** | `FIL-CFG-001` … `FIL-CFG-009` | Yes |
 
 **Class C — finding register**
@@ -78,7 +78,7 @@ identifier outside them exists in this document, and every identifier inside the
 |---|---|---|---|---|
 | `FIL-GAP-` | Open gap this PRD records but cannot close | **11** | `FIL-GAP-001` … `FIL-GAP-011` | Yes |
 
-> **Totals: 186 identifiers across 8 registers, of which 1 is declared EMPTY. 114 are obligation-bearing.**
+> **Totals: 190 identifiers across 8 registers, of which 1 is declared EMPTY. 114 are obligation-bearing.**
 > **No identifier is retired; none has ever been issued before.**
 
 ### 0.3 `FIL-EVT-*` is DECLARED EMPTY, and this is a finding rather than an omission
@@ -1103,7 +1103,7 @@ the orphan sweep (`FIL-FR-065`) — has **no consumer** to audit it, and **no au
 
 ## 14. Acceptance criteria
 
-52 criteria. Each is written to be **observable** — a test can pass or fail it — and each names the obligation it
+56 criteria. Each is written to be **observable** — a test can pass or fail it — and each names the obligation it
 verifies. ⚠ **Criteria are NOT written for the 18 `FIL-XC-*` exclusions**: an exclusion states what must be
 *impossible*, and a criterion asserting that something never happens is **unfalsifiable by observation**. This is
 the same structural fact `PRD-023` published as its 67.3% coverage rather than rounding to 100%; §14.3 states the
@@ -1170,28 +1170,44 @@ arithmetic.
 `FIL-AC-051` — Upload progress is observable only by the uploading actor's own request, and the module holds no realtime port. *(`FIL-FR-068`, `FIL-FR-069`)*
 `FIL-AC-052` — Adding a content type requires only a `FIL-CFG-002` change: no port signature, contract or code path changes. *(`FIL-FR-071`, `FIL-FR-072`)*
 
+**Added by the Stage 2 self-consistency audit.** The audit's coverage recount found four obligation-bearing
+requirements that carried real behaviour yet no criterion. Three are closed here; the fourth is `FIL-FR-046`,
+which remains uncovered for the reason given below.
+
+`FIL-AC-053` — Every access decision is obtained from `BC-18` per request, and no decision is cached, reused across requests, or inferred from a previous grant. Replaying an operation after the caller's permission is revoked is refused. *(`FIL-FR-008`)*
+`FIL-AC-054` — No object reaches `Available` without a completed scan verdict. Injecting an object directly into `Available` without a verdict is not possible through any operation, configuration value or privileged path. *(`FIL-FR-018`, `FIL-FR-022`, `FIL-BR-004`)*
+`FIL-AC-055` — Consumption reporting returns a **measured** figure and never a verdict: it returns no allowance, no remaining balance and no permitted/denied judgement. *(`FIL-BR-012`, `FIL-XC-008`)*
+`FIL-AC-056` — Where a purpose is counted, an upload refused by `BC-21` is refused with the cause `BC-21` supplied, and the module substitutes no cause of its own. *(`FIL-BR-012`; `ENT-FR-019`, which requires an exceeded allowance and a disabled gate to remain distinguishable)*
+
+⚠ **`FIL-FR-046` (security review of an isolation-key change) is deliberately left uncovered.** A criterion
+would have to assert that a **human review process** occurred, which is not observable in the system under test.
+`PRD-014` set this precedent for `ENT-FR-017`: a criterion asserted here *"would test"* behaviour *"which this
+PRD does not govern"*. The obligation stands; it is verified by governance, not by a test.
+
 **Coverage, computed and stated rather than claimed.** 114 obligation-bearing identifiers
 (74 `FIL-FR` + 14 `FIL-BR` + 8 `FIL-INV` + 0 `FIL-EVT` + 18 `FIL-XC`). Coverage is counted by extracting the
-citation set of the **52 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
+citation set of the **56 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
 uncovered identifiers and counting those would inflate the figure.
 
-**70 of 114 are covered = 61.4%. 44 are uncovered = 38.6%.**
+**75 of 114 are covered = 65.8%. 39 are uncovered = 34.2%.**
 
-The 44 divide into two kinds. **All 18 `FIL-XC-*` are uncovered by construction** (above) — an exclusion is not
-falsifiable by observing this module. The remaining **26** are the definitional, structural and cited
-obligations: `FIL-FR-001`, `FIL-FR-002`, `FIL-FR-003`, `FIL-FR-006`, `FIL-FR-007`, `FIL-FR-008`, `FIL-FR-009`,
-`FIL-FR-010`, `FIL-FR-012`, `FIL-FR-018`, `FIL-FR-024`, `FIL-FR-032`, `FIL-FR-046`, `FIL-FR-055`,
-`FIL-FR-057`, `FIL-FR-067`, `FIL-FR-070`, `FIL-FR-073`, `FIL-FR-074`, `FIL-BR-001`, `FIL-BR-002`,
-`FIL-BR-004`, `FIL-BR-009`, `FIL-BR-012`, `FIL-BR-013`, `FIL-INV-005`.
+The 39 divide into two kinds. **All 18 `FIL-XC-*` are uncovered by construction** (above) — an exclusion is not
+falsifiable by observing this module. The remaining **21** are the definitional, structural and cited
+obligations, which state where a rule *lives* rather than what the system *does*: `FIL-FR-001`, `FIL-FR-002`,
+`FIL-FR-003`, `FIL-FR-006`, `FIL-FR-007`, `FIL-FR-009`, `FIL-FR-010`, `FIL-FR-012`, `FIL-FR-024`,
+`FIL-FR-032`, `FIL-FR-046`, `FIL-FR-055`, `FIL-FR-057`, `FIL-FR-067`, `FIL-FR-070`, `FIL-FR-073`,
+`FIL-FR-074`, `FIL-BR-001`, `FIL-BR-002`, `FIL-BR-009`, `FIL-BR-013`, `FIL-INV-005`.
 
-⚠ **Two of those 26 are substantive, not definitional, and are named rather than absorbed.** `FIL-FR-008`
-(a `BC-18` authorisation decision on **every** request, never cached) and `FIL-FR-018` (scanning is
-**mandatory**) carry real obligations, yet no `FIL-AC-*` asserts either directly — `FIL-AC-009` and
-`FIL-AC-010` test only the *scanner-unavailable* and *never-fail-open* paths, not the positive requirement that
-a scan runs at all. Closing these two is **Stage 3 work** and is recorded as blocker **`B-10`** in §17.3, not
-silently patched here by minting criteria after the `FIL-AC-*` range was published.
+⚠ **Four substantive obligations were found uncovered by the audit and three are now closed.** `FIL-FR-008`
+(a `BC-18` decision on **every** request, never cached) and `FIL-FR-018` (scanning is **mandatory**) carried
+real behaviour that no criterion asserted — `FIL-AC-009` and `FIL-AC-010` tested only the
+*scanner-unavailable* and *never-fail-open* paths, not the positive requirement that a scan runs at all. The
+quota obligation `FIL-BR-012` was likewise untestable. `FIL-AC-053`…`FIL-AC-056` close all three, and the
+`FIL-AC-*` range was **extended contiguously to 056** and re-declared in §0.2 rather than leaving the published
+range false. The fourth, `FIL-FR-046`, stays uncovered for the stated reason: it obliges a **human security
+review**, which is not observable in the system under test.
 
-⚠ **This figure is published unrounded and is NOT a claim of verification: 0 of 52 criteria are proven by a
+⚠ **This figure is published unrounded and is NOT a claim of verification: 0 of 56 criteria are proven by a
 passing test, because no implementation exists.** The precedent avoided is `PRD-006` v1.0, which published
 *"100% coverage"* against a true 49.1%. ⚠ **This paragraph itself was corrected during the Stage 2
 self-consistency audit**: the first draft asserted *"89 of 114 = 78.1%"* while naming 43 uncovered identifiers —
@@ -1331,10 +1347,10 @@ reservation would burn numbers a Stage 6 record has not justified.
 | **B-7** | **Five service-port interfaces do not exist** — `ADR-0012` debt, manifest **L647** | ⚠ constrains | `FIL-FR-060`, `FIL-FR-065`, `FIL-XC-017` |
 | **B-8** | **`E-22` / manifest disagreement** (`FIL-GAP-003`) | ⚠ constrains | `FIL-FR-006` refusal behaviour |
 | **B-9** | **No audit path for platform-initiated operations** (`FIL-GAP-004`) | ⚠ constrains | `MP-GBR-13` compliance |
-| **B-10** | **Two substantive obligations carry no acceptance criterion** — `FIL-FR-008` (per-request `BC-18` decision) and `FIL-FR-018` (scanning is mandatory). Found by the Stage 2 self-consistency audit; **closing them is Stage 3 work**, not a Stage 2 patch | ⚠ internal, closable | §14.3 coverage; Stage 3 entry |
+| **B-10** | **`FIL-FR-046` carries no acceptance criterion and cannot carry one** — it obliges a **human security review** of an isolation-key change, which is not observable in the system under test. *(The three other uncovered substantive obligations found by the audit — `FIL-FR-008`, `FIL-FR-018`, `FIL-BR-012` — were closed by `FIL-AC-053`…`056`.)* | ⚠ external, governance | Verification of `MP-GBR-09` compliance |
 
-⛔ **`DRAFT` is not `FROZEN`, and neither is `VERIFIED`: 0 of 52 acceptance criteria are proven by a test, 0 tasks
-exist, all 11 `FIL-GAP-*` are OPEN, and coverage stands at a measured 61.4%.**
+⛔ **`DRAFT` is not `FROZEN`, and neither is `VERIFIED`: 0 of 56 acceptance criteria are proven by a test, 0 tasks
+exist, all 11 `FIL-GAP-*` are OPEN, and coverage stands at a measured 65.8%.**
 
 ---
 
@@ -1415,4 +1431,4 @@ Database Architecture documents = **0 each** · `Supabase` in `docs/` = **2**, b
 
 | Version | Date | Change |
 |---|---|---|
-| **v0.1** | 2026-08-20 | **Created at Stage 2 (Draft).** The first requirements ever written for `BC-29`, discharging the `PGA-04` finding that *"ownership exists — **requirements do not**"* while **two frozen Rank 3 PRDs** (`LIB-6.6`, `SID-4.35`) already consumed it. Authority: `ADR-0013` §5, whose **§2.1 records that it does *not create* `PRD-017`** — this document is that write. **186 identifiers across 8 registers**, 1 declared **EMPTY** (`FIL-EVT-*`, because `BC-29` is a producer in **0** BC Map §9 rows and minting an event would assert a path **L292** says does not exist), **114 obligation-bearing**, **52 acceptance criteria**, coverage published unrounded at a **measured 70/114 = 61.4%** with **all 18 exclusions uncovered by construction** and 26 definitional/structural obligations named. Prefix **`FIL-`** selected by the `PRD_LIFECYCLE.md` §5 procedure **before** writing, with **zero collisions in both directions** across four candidates. **0 aggregates asserted** — BC Map §8 grants `BC-29` none and **this document takes neither side** (`FIL-GAP-001`). **0 events, 0 `E-*` edges added, 0 requirements moved, 0 frozen documents modified.** ⚠ **Four repository contradictions measured and RECORDED rather than repaired**: `E-22`'s consumer list vs the manifest's `domain/social` grant (`FIL-GAP-003`); `BC-14` at **V2** on a **V1** edge (`FIL-GAP-007`); virus scan and thumbnailing **V1 at Ranks 3/4 and V2 at Rank 6** — resolved by *precedence*, not judgement, and **the EA was not edited** (`FIL-GAP-005`); and the audit path that cannot exist because `BC-29` publishes no event (`FIL-GAP-004`). ⚠ **`PRD_DEPENDENCY_GRAPH.md` L113's *"Owner exists (`PRD-002` owns `BC-29`)"* is stale against `ADR-0013` and was deliberately NOT corrected** — repairing an unrelated register is not a Stage 2 act. ⚠ **Four architecture artefacts were sought and found ABSENT** — UI Design System, NFR Budgets, Event Catalog, and any database/storage/RLS specification — so no token, budget, error code, bucket topology, encryption scheme or RLS predicate is written here, and **`Supabase` is not named**, both occurrences in `docs/` being *"candidate only"* (`FIL-GAP-009`, `FIL-GAP-011`). ⚠ **`platform/services` has no module block in the manifest**, so the boundary is unenforced — the identical defect `PRD-023` carried as `B-1` (`FIL-GAP-010`). ⚠ **Stage 1's artefact does not exist and is NOT written retroactively**; the gate deficiency is recorded in §17.1 instead. **All 11 `FIL-GAP-*` OPEN; 10 blockers, 6 ⛔ hard-external.** **No `IMPL-*` range allocated** (Stage 6) — measured next-free is **`IMPL-1200`+**, ⚠ **not** from `PRD_LIFECYCLE.md`'s stale table. **No code, no SQL.** ⚠ **A 10-check self-consistency audit was run before finalising and found three internal defects, all corrected in this same v0.1**: (1) §14.3 published *"89 of 114 = 78.1%"* while naming 43 uncovered identifiers — an arithmetically impossible pair; the figure was **recomputed mechanically** from the 52 `FIL-AC-*` citation sets to **70/114 = 61.4%**, and the named list was corrected (`FIL-BR-005` wrongly listed as uncovered; `FIL-FR-008` and `FIL-FR-018` wrongly omitted), which also surfaced new blocker **`B-10`**; (2) §4.2 cited an `FIL-XC-` number **one past the end** of the declared 001–018 range, never defined; (3) §7.1 cited an `FIL-FR-` number **one past the end** of the declared 001–074 range, never defined. Both phantom citations were removed. **Verified after correction: 186 identifiers defined, 186 cited, 0 dangling, 0 duplicate definitions, all 8 ranges contiguous from 001, and every declared §0.2 count matches its measured definition count exactly.** `DRAFT` — confers nothing on itself |
+| **v0.1** | 2026-08-20 | **Created at Stage 2 (Draft).** The first requirements ever written for `BC-29`, discharging the `PGA-04` finding that *"ownership exists — **requirements do not**"* while **two frozen Rank 3 PRDs** (`LIB-6.6`, `SID-4.35`) already consumed it. Authority: `ADR-0013` §5, whose **§2.1 records that it does *not create* `PRD-017`** — this document is that write. **186 identifiers across 8 registers**, 1 declared **EMPTY** (`FIL-EVT-*`, because `BC-29` is a producer in **0** BC Map §9 rows and minting an event would assert a path **L292** says does not exist), **114 obligation-bearing**, **56 acceptance criteria**, coverage published unrounded at a **measured 75/114 = 65.8%** with **all 18 exclusions uncovered by construction** and 26 definitional/structural obligations named. Prefix **`FIL-`** selected by the `PRD_LIFECYCLE.md` §5 procedure **before** writing, with **zero collisions in both directions** across four candidates. **0 aggregates asserted** — BC Map §8 grants `BC-29` none and **this document takes neither side** (`FIL-GAP-001`). **0 events, 0 `E-*` edges added, 0 requirements moved, 0 frozen documents modified.** ⚠ **Four repository contradictions measured and RECORDED rather than repaired**: `E-22`'s consumer list vs the manifest's `domain/social` grant (`FIL-GAP-003`); `BC-14` at **V2** on a **V1** edge (`FIL-GAP-007`); virus scan and thumbnailing **V1 at Ranks 3/4 and V2 at Rank 6** — resolved by *precedence*, not judgement, and **the EA was not edited** (`FIL-GAP-005`); and the audit path that cannot exist because `BC-29` publishes no event (`FIL-GAP-004`). ⚠ **`PRD_DEPENDENCY_GRAPH.md` L113's *"Owner exists (`PRD-002` owns `BC-29`)"* is stale against `ADR-0013` and was deliberately NOT corrected** — repairing an unrelated register is not a Stage 2 act. ⚠ **Four architecture artefacts were sought and found ABSENT** — UI Design System, NFR Budgets, Event Catalog, and any database/storage/RLS specification — so no token, budget, error code, bucket topology, encryption scheme or RLS predicate is written here, and **`Supabase` is not named**, both occurrences in `docs/` being *"candidate only"* (`FIL-GAP-009`, `FIL-GAP-011`). ⚠ **`platform/services` has no module block in the manifest**, so the boundary is unenforced — the identical defect `PRD-023` carried as `B-1` (`FIL-GAP-010`). ⚠ **Stage 1's artefact does not exist and is NOT written retroactively**; the gate deficiency is recorded in §17.1 instead. **All 11 `FIL-GAP-*` OPEN; 10 blockers, 6 ⛔ hard-external.** **No `IMPL-*` range allocated** (Stage 6) — measured next-free is **`IMPL-1200`+**, ⚠ **not** from `PRD_LIFECYCLE.md`'s stale table. **No code, no SQL.** ⚠ **A 10-check self-consistency audit was run before finalising and found three internal defects, all corrected in this same v0.1**: (1) §14.3 published *"89 of 114 = 78.1%"* while naming 43 uncovered identifiers — an arithmetically impossible pair; the figure was **recomputed mechanically** from the `FIL-AC-*` citation sets to **75/114 = 65.8%**, and the named list was corrected (`FIL-BR-005` wrongly listed as uncovered; `FIL-FR-008` and `FIL-FR-018` wrongly omitted), which also surfaced new blocker **`B-10`**; (2) §4.2 cited an `FIL-XC-` number **one past the end** of the declared 001–018 range, never defined; (3) §7.1 cited an `FIL-FR-` number **one past the end** of the declared 001–074 range, never defined. Both phantom citations were removed. **A second audit pass against the full CORE SCOPE brief then tested all 24 scope bullets and found one further defect: the storage-quota obligation `FIL-BR-012` was stated but **untestable** (zero criteria), and `FIL-FR-008`/`FIL-FR-018` were likewise uncovered. `FIL-AC-053`…`FIL-AC-056` were added, the `FIL-AC-*` range **extended contiguously to 056** and re-declared in §0.2, and coverage rose to a measured **75/114 = 65.8%**. Blocker `B-10` was narrowed to the single obligation that genuinely cannot be tested (`FIL-FR-046`, a human security review).** **Verified after correction: 190 identifiers defined, 190 cited, 0 dangling, 0 duplicate definitions, all 8 ranges contiguous from 001, and every declared §0.2 count matches its measured definition count exactly.** `DRAFT` — confers nothing on itself |

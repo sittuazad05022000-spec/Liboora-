@@ -1510,7 +1510,21 @@ module from the `default_decision: deny`**, so this module's boundary is current
 
 ## 16. Open gaps and risks
 
-**11 gaps. All OPEN. None is resolved by this document, and none may be resolved by an implementation choice.**
+**13 gaps. All OPEN. None is resolved by this document, and none may be resolved by an implementation choice.**
+
+> ⚠ **Corrected at Stage 5 (`S5-D-01`).** This line read *"**11 gaps**"* while the table below carried **13** rows
+> and §0.2 declared **13** with the range `FIL-GAP-001` … `FIL-GAP-013`. `FIL-GAP-012` and `FIL-GAP-013` were added
+> **by the Stage 3 architecture alignment** — the `E-22` consumer omission and the peer-sharing isolation wording —
+> and the preamble count was not moved with them. **The same class of defect as `S4-D-06`**, found the same way: a
+> checker recomputed the register instead of reading the sentence. It is the *fourth* stale prose count in this
+> document's short history, which is why §0.2's table — not any sentence — is the authority, and why both Stage 5
+> checkers now recompute every published total rather than trust one. **A count written in prose is a claim, and it
+> decays every time the thing it counts changes.**
+>
+> ⚠ The rows were also **out of numeric order** — `012`, `013`, `011` — because `FIL-GAP-011` was appended after the
+> two Stage 3 additions. Reordered to `001`…`013`. Contiguity was never affected (both checkers verify the *set*,
+> not the row order), so this is legibility rather than correctness — but a register whose rows do not ascend
+> invites a reader to assume a number is missing.
 
 | ID | Gap | Severity | Owner | Evidence |
 |---|---|---|---|---|
@@ -1524,9 +1538,9 @@ module from the `default_decision: deny`**, so this module's boundary is current
 | **`FIL-GAP-008`** | **No authority supplies a retention period, soft-delete window or legal-hold trigger.** `MP-NFR-10` assigns them to SECURITY + DATA Governance. `FIL-CFG-006` is published with a range and **no default**, and `FIL-FR-052` makes the absence a startup refusal rather than a silent zero | **High** | SECURITY + DATA Governance | `MP-NFR-10`; the `AUD-GAP-001` precedent |
 | **`FIL-GAP-009`** | **No encryption, key-management or RLS specification exists at any rank**, and **no UI Design System and no NFR Budgets document exists** (`find` → 0 each). This document therefore states behaviour, not policy, and defines no token, algorithm or budget | **High** | SECURITY · UI Design System owner · NFR owner | §7.1, §7.2, §11, §12.2; `PRD-023` blockers `B-3`, `B-4` |
 | **`FIL-GAP-010`** | **`platform/services` has NO module block in `tool/module_dependencies.yaml`** — only a rank at **L33**. `check_module_boundaries.dart` **L778** exempts a blockless module from `default_decision: deny`, so this module's boundary is **unenforced**. `ADR-0012`'s debt at **L647** records that *"only the interfaces are missing"*, expiring **2027-03-31** | **High** | Architecture Owner | manifest; the `CNF-GAP-007` / `B-1` precedent |
+| **`FIL-GAP-011`** | **No database, storage or API-error architecture artefact exists.** `Supabase` appears in `docs/` twice, both *"Not named in EA — **candidate only**"*, and **L271** records that naming a vendor as a layer was corrected out. No Event Catalog and no error register exist. Bucket topology and error vocabulary are therefore **unspecifiable** here without inventing an authority | **Medium** | Architecture Owner | `MASTER_PRD.md` **L227**, **L228**, **L271**; `PRD-023` blocker `B-5` |
 | **`FIL-GAP-012`** | ⛔ **`E-22` does not list the sharing contexts, so V1 student-to-student sharing is specified but not servable.** `BC-11`/`BC-12`/`BC-13` are absent from `E-22`'s consumer list (BC Map **L331**) while the manifest **L242** grants `domain/social` the `files` port. Under `FIL-FR-006` the caller is refused. Widening needs an accepted ADR (**L292**); `ADR-0016` is the precedent shape and **this PRD does not write it** | **Blocking** | Architecture Owner | BC Map **L331**, **L292**; manifest **L242**; §2.6; `ADR-0016` |
 | **`FIL-GAP-013`** | **"Tenant/library membership isolation" cannot apply to peer sharing as worded.** BC Map **L488** makes `BC-11`→`BC-17` *"Global. No `tenantId`"* and `TEN-FR-018` forbids `tenant_id` in global contexts. If sharing must be confined to co-members of one library, that is `BC-11`'s eligibility rule for `PRD-021` to state, not a tenant predicate here | **High** | Product + `PRD-021` | §7.3; BC Map **L488**, **L114**; `TEN-FR-018`; `FIL-XC-019` |
-| **`FIL-GAP-011`** | **No database, storage or API-error architecture artefact exists.** `Supabase` appears in `docs/` twice, both *"Not named in EA — **candidate only**"*, and **L271** records that naming a vendor as a layer was corrected out. No Event Catalog and no error register exist. Bucket topology and error vocabulary are therefore **unspecifiable** here without inventing an authority | **Medium** | Architecture Owner | `MASTER_PRD.md` **L227**, **L228**, **L271**; `PRD-023` blocker `B-5` |
 
 ### 16.1 Risks
 

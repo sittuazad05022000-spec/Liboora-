@@ -654,8 +654,42 @@ def main():
     # dependency remains unresolved."  `FIL-GAP-012` -- E-22 does not list
     # BC-12 as a consumer -- is OPEN, and its openness is read FROM THE PRD, so
     # section 2M cannot exempt itself by simply not mentioning it.
-    gap_open = bool(re.search(
-        r'`FIL-GAP-012`[^\n]*\bOPEN\b', doc, re.I))
+    # `S5-C-05`.  The first form of this probe looked for `OPEN` on the SAME
+    # LINE as `FIL-GAP-012` and reported the check "vacuous" -- against a
+    # document that states openness CORRECTLY and more strongly, once for the
+    # whole register: section 16's preamble reads "13 gaps. All OPEN."  A
+    # per-row repetition of the word would have been WEAKER, because a row
+    # that silently lost its marker would then read as closed.
+    #
+    # The instrument was wrong and the document was right, for the fifth time
+    # in this module's history.  Two conditions are now required, and BOTH are
+    # about scope rather than pattern:
+    #   * section 16 declares the whole register OPEN, and its published count
+    #     equals the number of rows it actually carries -- so the blanket claim
+    #     cannot cover a row it does not know about (the defect that WAS real,
+    #     `S5-D-01`: the preamble said 11 while the table carried 13);
+    #   * `FIL-GAP-012` is one of those rows.
+    #
+    # A blanket claim is accepted only when its arithmetic is true -- the same
+    # rule `S5-C-01` established for the coverage class claim, applied to a
+    # different class claim.  Believing the first form would have pressured a
+    # correct document into repeating a word per row.
+    gap_block = ''
+    match = re.search(r'^## 16\.[^\n]*\n(.*?)(?=^## 17)', doc, re.M | re.S)
+    if match:
+        gap_block = match.group(1)
+    gap_rows = re.findall(r'^\|\s*\*{0,2}`FIL-GAP-(\d+)`\*{0,2}\s*\|',
+                          gap_block, re.M)
+    claimed = re.search(r'\*\*(\d+) gaps\.\s*All OPEN', gap_block)
+    gap_open = bool(
+        claimed
+        and int(claimed.group(1)) == len(gap_rows)
+        and '012' in gap_rows)
+    if claimed and int(claimed.group(1)) != len(gap_rows):
+        fail('section 16 claims %s gaps and All OPEN, but carries %d rows -- a '
+             'blanket openness claim cannot cover a row its own count does '
+             'not know about'
+             % (claimed.group(1), len(gap_rows)))
     if not gap_open:
         fail('check 10 is vacuous or the situation changed: FIL-GAP-012 is no '
              'longer recorded as OPEN in the PRD. If the E-22 consumer '
@@ -667,8 +701,19 @@ def main():
              'architecture alignment as clean/complete'),
             (r'\bStage 6\b[^\n]{0,40}\b(conferred|satisfied|complete)\b',
              'Stage 6'),
-            (r'\bFROZEN\b(?![^\n]{0,80}(not|never|cannot|does not))',
-             'FROZEN status'),
+            # `S5-C-06`.  A bare \bFROZEN\b scan cannot tell "PRD-001 is
+            # FROZEN" from "PRD-017 is FROZEN", and section 2M legitimately
+            # cites the former twice -- PRD-001 owns the occupied `CFG-n`
+            # register that makes this module's substring hazard sharp, and
+            # naming its frozen status is the whole point of the comparison.
+            # The first form of this rule fired on both, which would have
+            # pressured the removal of a load-bearing citation to satisfy a
+            # check about a different document's status.  The SUBJECT of the
+            # claim is what matters, so the pattern now requires PRD-017 or a
+            # first-person reference to this module within a short window.
+            (r'(?:PRD-017|this (?:module|document|PRD))[^\n]{0,60}\bFROZEN\b'
+             r'(?![^\n]{0,80}(?:not|never|cannot|does not|no row))',
+             'FROZEN status for PRD-017'),
         ]
         for pattern, what in overclaims:
             hit = re.search(pattern, block, re.I)

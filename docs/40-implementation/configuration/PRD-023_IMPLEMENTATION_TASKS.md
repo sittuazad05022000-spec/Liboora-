@@ -7,7 +7,7 @@
 | **Source PRD** | [`../../30-product/configuration/PRD-023_SETTINGS_AND_CONFIGURATION.md`](../../30-product/configuration/PRD-023_SETTINGS_AND_CONFIGURATION.md) v0.1 `DRAFT` |
 | **PRD hash** | `e97496083a76bfb0f45be9acae754050c374561b64734df5738dac7ff6399326` — **unchanged** by this document |
 | **Range allocated** | **`IMPL-1100` … `IMPL-1129`** — 30 tasks · `IMPL-1130`…`1199` declared growth reserve |
-| **Obligations claimed** | **113 of 113 = 100.0%** of Class A — every `CNF-FR-*`, `CNF-BR-*`, `CNF-INV-*`, `CNF-XC-*` |
+| **Obligations claimed** | **113 of 113 = 100.0%** of Class A — every `CNF-FR-*`, `CNF-BR-*`, `CNF-INV-*`, `CNF-XC-*`. **Computed** by [`../../../tool/docs_check/prd023_task_coverage.py`](../../../tool/docs_check/prd023_task_coverage.py), not asserted |
 | **Acceptance criteria proven** | ⛔ **0 of 59.** No implementation exists; `lib/platform/configuration/` does not exist |
 | **Stage** | 6 of 9. **Stage 8 is not started.** |
 | **Status of this document** | **Unranked.** Not admitted to `DOCUMENTATION_BASELINE.md` |
@@ -359,6 +359,36 @@ requirements**."*
 | `Priority`, `Blocks`, `Blocked by` per task | ✅ rule 3 — all 30 rows |
 | Traceability table | ✅ §6, rule 4 — task group → requirements → invariants → acceptance |
 
+### 11.1 The gate is measured, and was proven able to fail
+
+A third instrument, `tool/docs_check/prd023_task_coverage.py`, parses the **task document** — which neither of the
+Stage 5 checkers opens — and re-derives the PRD's obligation set itself rather than trusting a number either of them
+published. Nine checks: range declared in the header · contiguity with no duplicates · nothing outside the range,
+nothing reaching into `PRD-014`'s reserve, nothing claiming `IMPL-015`/`016` · every cited obligation exists · every
+Class A obligation claimed and the published figure reproduced · no task claiming nothing · rule-3 fields on every
+row · the rule-4 table non-vacuous · **both empty registers still empty**.
+
+⚠ **It failed this document on its first run, and the document was corrected rather than the figure.** The header
+published **113 of 113** while **`CNF-FR-059`** — no secret reference in any log, telemetry attribute, error message
+or audit payload — was claimed by **no task**. Publishing 113 when 112 was true would have been the `PRD-006` v1.0
+failure (*"100% coverage"* against a true 49.1%) reproduced in a new column, in the very document that names that
+failure in §6.2. `CNF-FR-059` is now discharged by `IMPL-1126`, where the emission prohibition belongs, and the
+recomputation reports **113 / 113**.
+
+**Mutation-tested: 7 injected, 7 caught.**
+
+| # | Injected defect | Caught |
+|---|---|---|
+| M12 | renumber a task outside the allocated range | ✅ hole **and** out-of-range, both reported |
+| M13 | reach into `IMPL-1030`…`1099`, `PRD-014`'s reserve | ✅ named as an **allocation rule 2** breach |
+| M14 | cite a non-existent `CNF-FR-099` | ✅ *"reads as diligent while discharging nothing"* |
+| M15 | drop an obligation, leaving it unclaimed | ✅ unclaimed **and** the published figure contradicted |
+| M16 | **mint a configurable** (`CNF-CFG-*`) in a task | ✅ caught twice — non-existent **and** the empty-register prohibition |
+| M17 | empty a `Priority` cell | ✅ **rule 3** |
+| M18 | duplicate a task number | ✅ **rule 1**, plus count and hole |
+
+The document was restored **byte-identical** after every mutation.
+
 ✅ **STAGE 6 — PASS.**
 
 ---
@@ -367,4 +397,4 @@ requirements**."*
 
 | Version | Date | Change |
 |---|---|---|
-| v1.0 | 2026-08-20 | Stage 6. Range `IMPL-1100`…`1129` allocated, 30 tasks in 3 waves, 113/113 Class A obligations claimed, `IMPL-1130`…`1199` declared growth reserve. **9 external blockers classified**, 5 of them ⛔ hard. 11 forbidden tasks enumerated. `IMPL-015`/`016` relationship stated without duplication or gap-closure |
+| v1.0 | 2026-08-20 | Stage 6. Range `IMPL-1100`…`1129` allocated, 30 tasks in 3 waves, 113/113 Class A obligations claimed, `IMPL-1130`…`1199` declared growth reserve. **9 external blockers classified**, 5 of them ⛔ hard. 11 forbidden tasks enumerated. `IMPL-015`/`016` relationship stated without duplication or gap-closure. Gate **measured** by a third committed checker, `prd023_task_coverage.py`, which **failed this document on its first run** over an unclaimed `CNF-FR-059` — corrected in the document, not the figure — and is **mutation-tested 7/7** |

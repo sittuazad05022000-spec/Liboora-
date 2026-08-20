@@ -54,9 +54,9 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---:|---|---|
-| `CNF-FR-` | Functional requirement | **67** | `CNF-FR-001` … `CNF-FR-067` | Yes |
-| `CNF-BR-` | Business rule | **12** | `CNF-BR-001` … `CNF-BR-012` | Yes |
-| `CNF-INV-` | Invariant — always true | **8** | `CNF-INV-001` … `CNF-INV-008` | Yes |
+| `CNF-FR-` | Functional requirement | **82** | `CNF-FR-001` … `CNF-FR-082` | Yes |
+| `CNF-BR-` | Business rule | **11** | `CNF-BR-001` … `CNF-BR-011` | Yes |
+| `CNF-INV-` | Invariant — always true | **4** | `CNF-INV-001` … `CNF-INV-004` | Yes |
 | `CNF-EVT-` | Domain event published by this context | **0** | **DECLARED EMPTY** — §0.3 | n/a |
 | `CNF-XC-` | Exclusion — a prohibition with a named owner elsewhere | **16** | `CNF-XC-001` … `CNF-XC-016` | Yes |
 
@@ -64,7 +64,7 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---:|---|---|
-| `CNF-AC-` | Acceptance criterion | **45** | `CNF-AC-001` … `CNF-AC-045` | Yes |
+| `CNF-AC-` | Acceptance criterion | **59** | `CNF-AC-001` … `CNF-AC-059` | Yes |
 | `CNF-CFG-` | Configurable parameter published **by this module** | **0** | **DECLARED EMPTY** — §0.3 | n/a |
 
 **Class C — finding register**
@@ -73,8 +73,17 @@ identifier outside them exists in this document, and every identifier inside the
 |---|---|---:|---|---|
 | `CNF-GAP-` | Open gap this PRD records but cannot close | **8** | `CNF-GAP-001` … `CNF-GAP-008` | Yes |
 
-**Totals: 156 identifiers across 8 registers, of which 2 are empty. 103 are obligation-bearing. None is
+**Totals: 180 identifiers across 8 registers, of which 2 are empty. 113 are obligation-bearing. None is
 retired; none has ever been issued before.**
+
+> **The counts above are the final ones, and they are not the ones this section was first written with.** The
+> registers were declared *before* the body was drafted, as `PRD_LIFECYCLE.md` L82 rule 2 requires — the first
+> declaration read `CNF-FR-` 67, `CNF-BR-` 12, `CNF-INV-` 8, `CNF-AC-` 45. Drafting §9–§13 moved four of them:
+> functional requirements rose to 82, acceptance criteria to 59, and business rules and invariants **fell** to 11
+> and 4 because obligations first imagined as separate rules resolved into requirements with criteria attached.
+> Rule 3 requires ranges *contiguous*, not *predicted*, so the ranges were closed to the delivered counts rather
+> than padded to the estimates. Every count here is `grep`-verified against the body; a range that ran ahead of
+> its register would make the published range false, which is the defect rule 3 exists to prevent.
 
 The last claim is mechanical. Before this document existed,
 `grep -rhoE '\bCNF-[A-Z0-9-]+' docs/ tool/ lib/ packages/ test/ | sort -u | wc -l` returned **0**, and the reverse
@@ -138,13 +147,15 @@ duplicated** — `SMCFG-1` **is** `LCFG-5`, consumed through `E-19`."*
 | The **104 configurable values** and every default, range and rationale | 8 PRDs, all **FROZEN** (§3.6) | **Cited, never restated.** `CNF-XC-001` |
 | `LCFG-1`…`LCFG-13` definitions | `PRD-002` — §16.1 (**1–10**) and §14B.9 (**11–13**) | Cited. `CNF-XC-002` |
 | `INV-1`…`INV-16` **statements** | `CONFIGURATION_GUIDE.md` §3 (Rank 7) | Cited. This module owns their **enforcement** (§5), not their text. `CNF-XC-003` |
-| Tenant lifecycle, `TenantContext`, tiers, residency | `BC-19` / `PRD-013` (**FROZEN**) | Consumed via `E-18`. `CNF-XC-004` |
-| Entitlement gates, quotas, `check(tenantId, feature, delta)` | `BC-21` / `PRD-014` (**FROZEN**) | Cited. `CNF-XC-005` |
-| Authorisation decisions, roles, sessions, credentials | `BC-18` | Consumed via `policy_decision`. `CNF-XC-006` |
-| Secret **material**, key management, rotation | **SECURITY** platform | `CNF-XC-007`, `CNF-XC-008` |
-| `LibraryBranding` **aggregate**; image **bytes** | `PRD-002`; `BC-29` / `PRD-017` | `CNF-XC-009`, `CNF-XC-010` |
-| `BranchPolicy`, working hours, holidays, attendance and seat rules | `BC-06` | `CNF-XC-011` |
-| Audit persistence, retention, query | `BC-24` / `PRD-016` (**FROZEN**) | Emitted to via `E-20`. `CNF-XC-012` |
+| Entitlement gates, quotas, `check(tenantId, feature, delta)` | `BC-21` / `PRD-014` (**FROZEN**) | Cited. `CNF-XC-004`, `CNF-XC-005` |
+| Authorisation decisions, roles, sessions, credentials | `BC-18` | **Never called** — `platform/configuration` is not a declared consumer of `policy_decision` (§1.3). `CNF-XC-006` |
+| `LibraryBranding` **aggregate**; image **bytes** | `PRD-002`; `BC-29` / `PRD-017` | `CNF-XC-007`, `CNF-XC-008` |
+| Secret **material**, key management, rotation | **SECURITY** platform | `CNF-XC-009` |
+| Audit persistence, retention, query | `BC-24` / `PRD-016` (**FROZEN**) | Emitted to via `E-20`. `CNF-XC-010` |
+| Tenant lifecycle, `TenantContext`, tiers, residency, partition mechanics | `BC-19` / `PRD-013` (**FROZEN**) | Consumed as an input, never owned. `CNF-XC-011`, `CNF-XC-012` |
+| `BranchPolicy`, working hours, holidays, attendance and seat rules | `BC-06` | `CNF-XC-013` |
+| Role definitions `TR-1`…`TR-5`, `PR-1`, `PR-2` and their authority | `PRD-001` (**FROZEN v2.0**) | Cited in §9. `CNF-XC-014` |
+| Design tokens, component library, accessibility targets | **UI Design System** (`MP-NFR-06`, `MP-NFR-08`) | Cited in §12. `CNF-XC-015`, `CNF-XC-016` |
 | The event delivery contract — outbox, at-least-once, envelope, ordering, replay | BC Map **§9.1** (Rank 4) | **Cited, not reproduced.** Vacuous here: `CNF-EVT-*` is empty |
 | Environment profile **values** (dev/staging/production) | `CONFIGURATION_GUIDE.md` §4 (Rank 7) | Cited. This module owns the **precedence** of an environment profile against a tenant override (§3.5) |
 | Tenant partitioning as a platform rule | `MP-GBR-06`…`MP-GBR-09` (Rank 1) | Cited. This module's obligations are §10 |
@@ -221,7 +232,7 @@ So the honest basis for §9 and §10 is **the manifest's closed-world rule, not 
   which is a far stronger guarantee than a rank inequality would have given.
 - BC Map **L271** independently forbids this band from depending on anything above it.
 
-**`CNF-XC-006`** rests on those three facts. What follows for §9 and §10 is unchanged in substance: permission
+The exclusion `CNF-XC-006` rests on those three facts. What follows for §9 and §10 is unchanged in substance: permission
 enforcement is a **caller obligation discharged at the boundary**, and scope identifiers are **inputs**
 (`CNF-FR-012`). What changes is the reason. Tenant scoping is specified as an explicit argument not because
 ambient context is unreachable — Matrix §8.3 shows it is reachable from R0 — but because a five-scope resolution
@@ -915,4 +926,518 @@ The module **SHALL NOT** retroactively alter a value already resolved.
 > configuration, and it is what keeps an audit record meaningful. **It does not import `effectiveFrom`** —
 > scheduled future-dated configuration is not in V1 scope and is not specified here.
 
+**`CNF-XC-013`** — The module **MUST NOT** own, define, version or evaluate `BranchPolicy`, working hours, holiday
+calendars, attendance rules or seat rules, and **MUST NOT** implement `effectiveFrom` versioning on their behalf.
+A policy value reaching this module is an ordinary configuration parameter declared by its owning PRD; the policy
+**aggregate** is not. *Owner: **`BC-06`** Library Policy (BC Map §8).*
+
 ---
+## 9. Permissions and write authority
+
+Configuration is the surface on which a role's authority is most visible. `PRD-001` (FROZEN v2.0) already states
+that authority for three of its five tenant roles in terms of configuration:
+
+| Role | Statement, verbatim from `PRD-001` §2 | Consequence for this module |
+|---|---|---|
+| **`TR-1` Owner** | *"Complete operational authority within the library: **configuration**, staff role assignment…"* | The only tenant role with unrestricted configuration write authority at its library |
+| **`TR-2` Manager** | *"**Cannot alter library-level commercial configuration.**"* | A partial writer — the restriction is by *subject*, not by scope |
+| **`TR-3` Reception** | *"**Cannot alter library configuration.** Explicitly denied revenue and financial data."* | Not a writer |
+| **`TR-4` Student** | Own records only | Not a writer |
+| **`TR-5` Parent** | Read-only, linked students | Not a writer |
+
+Three of five roles are defined partly by what they may *not* configure. That makes it tempting to encode the
+table above as logic in this module. **`CNF-XC-006` forbids it**, and §1.3 gives the mechanical reason:
+`platform/configuration` is not a declared consumer of `identity:policy_decision`, and under
+`default_decision: deny` an undeclared dependency is forbidden by omission. So §9 specifies **where the check
+happens and what this module may assume**, not how the check is computed.
+
+### 9.1 The write path
+
+**`CNF-FR-064`** — Every write **SHALL** be authorised before it reaches this module. The module **SHALL** treat an
+arriving write as already-authorised and **SHALL NOT** re-derive, second-guess, supplement or relax that decision.
+
+**`CNF-FR-065`** — The module **SHALL** require, as explicit arguments of a write, the **actor identifier** and the
+**scope identifiers** the write applies to. It **SHALL NOT** infer either.
+
+**`CNF-FR-066`** — The module **SHALL NOT** expose any write surface that can be reached without passing through
+the authorising boundary. There **SHALL** be no administrative, maintenance, seeding, migration or diagnostic path
+that writes a value without authorisation.
+
+> `CNF-FR-066` is the one that matters. `CNF-FR-064` describes the normal path, and normal paths are rarely the
+> breach. `CONFIGURATION_GUIDE.md` §4 rule 2 already establishes the house standard for exactly this class of
+> convenience: a development relaxation *"must never disable a control, never bypass OTP, and never introduce a
+> demo account… that is `MP-CON-11` and no environment profile can override it."* A seeding path that writes
+> configuration without authorisation is the same defect wearing different clothes.
+
+**`CNF-FR-067`** — A refused write **SHALL** leave stored configuration unchanged, **SHALL** be reported to the
+caller with a reason, and **SHALL NOT** be partially applied. *(`LIB-16.3`: an invalid value* "**MUST NOT** be
+partially applied"*; the same guarantee is owed to a refusal on authority as to a refusal on validity.)*
+
+### 9.2 What the module may and may not assume
+
+**`CNF-BR-008`** — Authority over a parameter **SHALL** be determined by the parameter's **owning PRD**, at the
+**scope** of the write, by `BC-18`. This module **SHALL NOT** hold a table of which role may write which parameter.
+
+> This is the same division `CNF-FR-003` already draws for classification and `CNF-FR-052` for flag declaration:
+> the owning PRD declares, this module resolves. A permission table here would be a fourth copy of an authority
+> model that `PRD-001` owns, `BC-18` evaluates and each owning PRD scopes — and the `TR-2` row is the proof that a
+> copy would be wrong within a release. *"Cannot alter library-level **commercial** configuration"* is a
+> restriction by subject matter. Only the owning PRD knows whether its parameter is commercial.
+
+**`CNF-BR-009`** — A tenant role **SHALL NOT** be capable of writing at scope 1 (platform default) or of affecting
+another tenant. *(`AUTH-2.9`, verbatim: "No tenant role, including Owner, MAY confer any platform-level
+permission."* Reinforces `CNF-FR-020` and §10.)*
+
+**`CNF-BR-010`** — Read authority **SHALL NOT** be assumed to follow write authority. A role that may read an
+effective value **MAY** be unable to write it, and the reverse **SHALL NOT** be inferred.
+
+> Worth stating because the natural implementation grants both together. `TR-3` Reception cannot alter library
+> configuration, yet Reception's screens plainly depend on resolved configuration to function. Collapsing the two
+> would either break Reception or grant it writes.
+
+**`CNF-XC-014`** — The module **MUST NOT** define, amend, extend, interpret or store the definition of any role,
+nor the authority attached to one. *Owner: **`PRD-001`** (FROZEN v2.0) for the definitions; **`BC-18`** for
+evaluation.*
+
+---
+
+## 10. Tenant isolation
+
+`MP-GBR-09` is unambiguous about the stakes: *"Cross-tenant leakage via a capability context is the single
+highest-severity failure mode in the architecture."* `BC-25` is a capability context, consumed by seven modules,
+holding a value for every tenant. It is precisely the shape that rule describes.
+
+### 10.1 The Rank 1 rules, and which ones bind here
+
+| Rule | Verbatim (`MASTER_PRD.md` L337–340) | Binds this module? |
+|---|---|---|
+| `MP-GBR-06` | *"Every request carries a resolved tenant context."* | **Yes** — `CNF-FR-013`, `CNF-FR-068` |
+| `MP-GBR-07` | *"Every emitted domain event carries tenant context. A consumer that processes an event without establishing tenant context **fails loudly, never defaults**."* | **Vacuously** — `CNF-EVT-*` is empty (§0.3) and the module consumes no event. The *"fails loudly, never defaults"* disposition still governs `CNF-FR-068` |
+| `MP-GBR-08` | *"Every search index and vector namespace is tenant-partitioned…"* | **Yes**, for any cache or index this module keeps — `CNF-FR-069` |
+| `MP-GBR-09` | *"A change to a cache key, index name or vector namespace is a **security-reviewable change**."* | **Yes** — `CNF-FR-070` |
+
+### 10.2 Tenant scope as an explicit argument
+
+**`CNF-FR-068`** — A read or write at tenant scope or below **SHALL** fail when the tenant identifier is absent.
+It **SHALL NOT** default to a tenant, **SHALL NOT** default to null, **SHALL NOT** fall back to the platform
+default, and **SHALL NOT** return an empty result.
+
+> The last clause is the one that gets lost. An empty result is not a safe failure — it is a silent one, and for a
+> configuration read it is worse than for most, because §3.4's `CNF-FR-024` guarantees every parameter has a
+> default, so "empty" is indistinguishable from "not overridden". Two FROZEN PRDs already fixed this disposition:
+> `TEN-FR-011` (*"Reading tenant context when it is unset **MUST** throw"*) and `PRD-016` `AUD-FR-015`
+> (a scope-less query *"**MUST NOT** return an empty result"*). `CNF-FR-068` is the same rule for this module.
+
+**`CNF-FR-069`** — Every cache key, index name, lookup key and internal namespace holding a tenant-scoped
+configuration value **SHALL** include the tenant identifier. A key that omits it **SHALL NOT** exist.
+*(`MP-GBR-08`; Matrix forbidden edge `X-13`, "Cache/index/vector key without tenantId".)*
+
+**`CNF-FR-070`** — A change to any such key or namespace **SHALL** be treated as a security-reviewable change.
+*(`MP-GBR-09`; the same posture `TEN-FR-020` records.)*
+
+> **Why an explicit argument rather than ambient context — the full argument promised in §3.2.**
+>
+> §1.3 disposes of the reason one would expect. Ambient `TenantContext` is *not* unreachable from rank 3: Matrix
+> §8.3 L403 states the interface *"and its read-only accessor live in `liboora_contracts` (**R0**)"* and is read at
+> **R2**, below this module. Availability is not the constraint.
+>
+> The constraint is **arity**. Resolution takes five scope identifiers (§3.1). An ambient carries one. A signature
+> that took the tenant ambiently and the other four explicitly would declare four inputs and hide the fifth — the
+> worst of both, and the one an architecture test cannot check. `PRD-014` settled the identical question for the
+> identical shape: `ENT-FR-014`, *"`tenantId` **SHALL** be an explicit argument of `check`, not an ambient value."*
+>
+> This does not weaken `MP-GBR-06`. That rule requires every request to **carry** a resolved tenant context; it
+> does not require every callee to read it ambiently. `TEN-FR-015`'s prohibition is narrower than it first appears
+> — it forbids tenant context as a **domain method** parameter, *"that would leak infrastructure into the domain
+> signature"* (Matrix §8.3). This is a platform port consumed through `E-19`, not a domain method. The leak
+> `TEN-FR-015` prevents cannot occur here, and `ENT-FR-014` is the standing precedent.
+
+**`CNF-INV-003`** — No resolution **SHALL** return a value stored against a tenant other than the one in the
+request. This holds for every scope, every cache state, and every failure path.
+
+**`CNF-INV-004`** — A configuration value written at tenant scope or below **SHALL NOT** be observable by any
+other tenant, by any route, including through a cache, an error message, a log line, a telemetry attribute or a
+validation failure reason.
+
+> `CNF-INV-004` names the routes deliberately. A validation reason is the likeliest leak in this module
+> specifically, because `CNF-FR-022` requires refusals to carry a **specific reason**, and a specific reason is
+> exactly where another tenant's value would appear if the invariant were stated loosely. Rejecting a value
+> because it *"exceeds the limit set for this library"* is safe; rejecting it because it *"conflicts with
+> `tenant-4417`'s value"* is a breach with a helpful tone.
+
+**`CNF-XC-011`** — The module **MUST NOT** create, define, resolve, validate, activate, suspend or delete a tenant,
+nor own the `TenantContext` interface or its propagation. *Owner: **`BC-19`** / `PRD-013` (FROZEN).*
+
+**`CNF-XC-012`** — The module **MUST NOT** define the platform's tenant-partitioning mechanism, row-level security
+model, or residency rules. It **consumes** them. *Owner: **`BC-19`** / `PRD-013` (FROZEN); `MP-GBR-06`…`09` at
+Rank 1.*
+
+### 10.3 The test that does not exist yet
+
+`tenant_isolation_test.dart` is one of the seven architecture tests Matrix §10.3 requires and **none of which
+exists** — `test/architecture/` contains only `boundary_checker_test.dart`. `SID-4.56` states the consequence:
+*"A rule that cannot be checked SHALL be treated as unmet."*
+
+Read literally, `CNF-INV-003` and `CNF-INV-004` are therefore **unmet on the day this PRD freezes**, and stating
+otherwise would be false. This is recorded as **`CNF-GAP-008`** and carried as a Stage 6 obligation. It does not
+block the freeze: the gap is repository-wide, predates this PRD, and affects every tenant-scoped context equally.
+What would be improper is freezing a tenancy-critical invariant while implying it is verified.
+
+---
+## 11. Observability
+
+`CONFIGURATION_GUIDE.md` §6 opens with the operating principle, and it is the right one to inherit: *"Each
+parameter must be observable in production, or you are operating blind on the value."* That guide then discharges
+the principle **per parameter** — a 12-row table naming what each of `CFG-1`, `CFG-3`, `LCFG-6`, `ICFG-7` and the
+rest must emit and when to alert.
+
+**This document does not extend that table, and `CNF-XC-001` is why.** Deciding what `LCFG-6` should alert on is a
+statement about `LCFG-6`, and `LCFG-6` belongs to `PRD-002`. What this module owes is the layer beneath: the
+**resolution machinery itself** must be observable, so that a wrong effective value can be distinguished from a
+wrong stored value.
+
+### 11.1 What this module emits
+
+**`CNF-FR-071`** — The module **SHALL** emit, for a resolution that fails, the parameter identifier, the scope
+identifiers supplied, and the failure cause. It **SHALL NOT** emit the resolved value.
+
+**`CNF-FR-072`** — The module **SHALL** emit, for a rejected write, the parameter identifier, the scope, the actor
+and the rejection reason class — distinguishing **invalid value** (§3.4), **unauthorised** (§9) and **invariant
+violation** (§5).
+
+> The three-way distinction is the point. All three present to an operator as "the setting would not save", and
+> they have nothing else in common: one is user error, one is a permissions misconfiguration, and one means a
+> cross-register invariant is broken and the fix is in another PRD's parameter. Collapsing them into a single
+> `config_write_failed` counter is the difference between a diagnosable system and a support ticket.
+
+**`CNF-FR-073`** — The module **SHALL** emit the outcome of startup invariant validation (§5) as a discrete signal,
+including the **count and identity** of every violated invariant, not merely a pass/fail.
+
+> Required by `CNF-FR-049` — *"report **all** violations, not just the first"* — which is unobservable if the
+> signal is boolean. `CONFIGURATION_GUIDE.md` §3's reason for the underlying rule applies verbatim to its
+> telemetry: *"A silently inconsistent security configuration is worse than a wrong one, because nobody notices."*
+
+**`CNF-FR-074`** — The module **SHALL** emit the **resolving scope** (`CNF-FR-018`) with resolution telemetry,
+so that a value can be attributed to the level that produced it.
+
+> This is what makes `LIB-16.2` — *"A library that has changed nothing **MUST** be fully operable"* — checkable in
+> production rather than only in test. A library reporting unexpected behaviour is answered by *which scope
+> produced this value*, and without `CNF-FR-074` that question requires a database session.
+
+**`CNF-FR-075`** — Emission **SHALL** be through the registered observability port. The module **SHALL NOT**
+maintain its own telemetry, log or metrics transport.
+
+**`CNF-BR-011`** — No emission **SHALL** contain a secret reference (`CNF-FR-059`), a resolved secret value, or a
+configuration value from a tenant other than the request's (`CNF-INV-004`).
+
+> §11 is where `CNF-INV-004` is most likely to be breached, because telemetry is written to be helpful and is
+> rarely reviewed as an egress path. `PRD-001`'s manifest assertion `ID-5` sets the house standard for exactly
+> this class — *"no event payload contains a mobile number, challenge value, session token or key material."*
+
+### 11.2 What this module does not emit
+
+**`CNF-XC-015`** — The module **MUST NOT** define per-parameter alert thresholds, alert routing, dashboards or
+retention for the 104 configurable values. *Owner: `CONFIGURATION_GUIDE.md` §6 (Rank 7) for the per-parameter
+table; the observability platform for transport and retention.*
+
+---
+
+## 12. UI/UX requirements
+
+Configuration is one of the few capabilities where the UI **is** the feature. A hierarchy that resolves correctly
+but renders as a flat form has not delivered `ADR-0017` §3.1 item 1 — the user cannot see whether a value is
+inherited or set, and therefore cannot reason about what changing it will do.
+
+**This section is not a proposal.** `MASTER_PRD.md` L500 and L502 place the UI Design System at **Rank 1**:
+`MP-NFR-06` Usability — *"Mobile-first, accessible, portrait-optimised"* — and `MP-NFR-08` Accessibility —
+*"WCAG-aligned targets defined in the UI Design System"*. Both name the **UI Design System** as owner. So §12
+states what a configuration surface must express; it does not design tokens, components or themes.
+
+### 12.1 Requirements the UI must express
+
+**`CNF-FR-076`** — A configuration surface **SHALL** distinguish, for every parameter shown, whether the displayed
+value is the **inherited** effective value or an **override set at the current scope**. The two **SHALL NOT** be
+visually identical.
+
+> The direct consequence of `CNF-FR-018`. Without this, `CNF-FR-019` — removal as a distinct operation — is
+> unreachable from the UI, because a user cannot ask to stop overriding a value they were never shown was
+> overridden.
+
+**`CNF-FR-077`** — Where a value is inherited, the surface **SHALL** identify the **scope it was inherited from**
+(`CNF-FR-018`).
+
+**`CNF-FR-078`** — A configuration surface **SHALL** offer **reset to inherited** as an operation distinct from
+setting a value, wherever an override exists at the current scope.
+
+> `CNF-FR-019` makes removal a distinct operation in the domain. `CNF-FR-078` is the obligation that it remain
+> distinct in the interface — otherwise "reset" is implemented as "type the parent's value", which produces an
+> override that merely happens to match, and silently pins the child against future changes to the parent.
+
+**`CNF-FR-079`** — A refused write **SHALL** present the specific reason (`CNF-FR-022`) against the field that
+caused it. A refusal **SHALL NOT** be presented as a generic failure.
+
+**`CNF-FR-080`** — A surface **SHALL** present a parameter's **declared range or permitted set** before a write is
+attempted, not only after a refusal.
+
+> `CNF-FR-024` guarantees every parameter has a range. A UI that withholds it until rejection converts a known
+> constraint into trial and error, on a mobile keyboard, under `MP-NFR-06`.
+
+**`CNF-FR-081`** — A parameter the current actor may read but not write (`CNF-BR-010`) **SHALL** be presented as
+**read-only**, not hidden and not presented as editable-then-refused.
+
+> The `TR-2` Manager row in §9 makes this concrete: a Manager sees library configuration and may change part of
+> it. Hiding the commercial parameters misrepresents the library's state; showing them as editable produces a
+> refusal after the effort. Read-only is the only honest rendering.
+
+**`CNF-FR-082`** — Configuration surfaces **SHALL** be portrait-optimised and **SHALL** meet the accessibility
+targets defined by the UI Design System. *(`MP-NFR-06`, `MP-NFR-08` — Rank 1.)*
+
+### 12.2 Reusable components this PRD requires
+
+Stated as **requirements on the Design System**, not as designs. Each exists because a requirement above cannot be
+satisfied by an ordinary form field.
+
+| Component | Must express | Driving requirement |
+|---|---|---|
+| **Inherited-value field** | Set-here vs inherited, and the source scope | `CNF-FR-076`, `CNF-FR-077` |
+| **Reset-to-inherited control** | Removal as an operation distinct from setting | `CNF-FR-078` |
+| **Range-bounded input** | The declared range, before submission | `CNF-FR-080` |
+| **Read-only parameter row** | Visible but not writable, without implying absence | `CNF-FR-081` |
+| **Field-level refusal** | The specific reason, against the field | `CNF-FR-079` |
+| **Scope selector** | Which of the populated scopes is being edited | `CNF-FR-009`, `CNF-FR-011` |
+
+**`CNF-XC-016`** — The module **MUST NOT** define design tokens, colour values, typography, spacing, component
+implementations or WCAG conformance levels. *Owner: **UI Design System** (`MP-NFR-06`, `MP-NFR-08`, Rank 1).*
+
+> **The governance position, recorded rather than resolved.** The UI Design System is a Rank-1 mandated V1
+> function, and it **does not exist as a document**. So `CNF-FR-082` and the table above name an owner that cannot
+> yet receive them. The same is true of the measurable targets: `MASTER_PRD.md` §24 L483 states *"the measurable
+> form lives in §25 and in the `NFR Budgets (V1)` document"*, `MP-DEP-08` registers that document, and L663
+> records that *"Targets are deliberately not set here; they belong to the Product Roadmap and NFR Budgets
+> documents."* **Neither document exists.** Both absences are recorded in §14 and neither is repaired here —
+> creating a Rank-1 artefact as a side effect of a Rank-3 PRD is precisely the overreach `ADR-0017` §5.3's first
+> risk anticipates.
+
+---
+## 13. Acceptance criteria
+
+Every criterion below is **observable** — it names a condition an implementation either satisfies or does not, and
+each traces to at least one Class A identifier. `PRD-013` §7 sets the standard this follows: criteria that restate
+a requirement in the same words verify nothing, so each is written as the **behaviour that would fail** if the
+requirement were absent.
+
+### 13.1 Terminology and classification (§2)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-001` | A parameter can be shown to carry exactly one classification — Setting or Configuration — and the classification is stated by its owning PRD, not by this module | `CNF-FR-001`, `CNF-FR-003` |
+| `CNF-AC-002` | No parameter is addressable by a name this module invented; every key is the owning PRD's identifier | `CNF-FR-006`, `CNF-FR-007` |
+| `CNF-AC-003` | A retired parameter identifier cannot be re-registered for a different parameter | `CNF-FR-008` |
+
+### 13.2 Hierarchy and resolution (§3)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-004` | Resolution of any registered parameter at any valid scope combination returns exactly one value, never zero and never a set | `CNF-FR-014`, `CNF-FR-015` |
+| `CNF-AC-005` | Two identical resolutions against unchanged stored state return identical values | `CNF-FR-016` |
+| `CNF-AC-006` | A parameter with an override at library scope and a different override at tenant scope resolves to the library value — not a merge, and not the tenant value | `CNF-FR-014`, `CNF-FR-017` |
+| `CNF-AC-007` | A collection-valued parameter overridden at a stronger scope returns **only** the stronger scope's collection; no element of the weaker collection survives | `CNF-FR-017` |
+| `CNF-AC-008` | A parameter with no override at any scope resolves to its declared default, and the system is fully operable in that state | `CNF-FR-014`, `LIB-16.2` |
+| `CNF-AC-009` | Every resolution reports the scope that produced the value, and the reported scope is the one that actually produced it | `CNF-FR-018` |
+| `CNF-AC-010` | Removing an override restores the inherited value; it does not write the inherited value as a new override at the same scope | `CNF-FR-019` |
+| `CNF-AC-011` | No API, role, actor, environment or maintenance path can write a value at scope 1 at runtime | `CNF-FR-020`, `CNF-BR-009` |
+| `CNF-AC-012` | The five scopes are not extensible at runtime; no sixth scope can be introduced without a specification change | `CNF-FR-010` |
+| `CNF-AC-013` | Scopes 4 and 5 are traversed by the algorithm and return no value, without error, when nothing is declared at them | `CNF-FR-011` |
+
+### 13.3 Validation (§3.4)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-014` | A write of a value outside the declared range is refused, with a reason naming the range, and stored state is unchanged | `CNF-FR-021`, `CNF-FR-022`, `CNF-FR-023` |
+| `CNF-AC-015` | A refused multi-value write applies none of its values | `CNF-FR-023`, `CNF-FR-067` |
+| `CNF-AC-016` | A parameter cannot be registered without both a declared default and a declared range | `CNF-FR-024` |
+| `CNF-AC-017` | No write path exists that skips validation — including seeding, migration and diagnostic paths | `CNF-FR-025`, `CNF-FR-066` |
+| `CNF-AC-018` | An out-of-range value is refused rather than clamped, coerced, rounded or replaced by the default | `CNF-FR-044` |
+
+### 13.4 Environment profiles (§3.5)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-019` | An environment profile value occupies scope 1 and is displaced by a tenant override, not the reverse | `CNF-FR-026`, `CNF-FR-027` |
+| `CNF-AC-020` | No environment profile introduces a scope, and no resolution consults an environment as a separate level | `CNF-FR-028` |
+| `CNF-AC-021` | A per-library parameter is not settable through an environment profile | `CNF-FR-029` |
+
+### 13.5 The `E-19` typed-accessor contract (§4)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-022` | The port is reachable only under its registered name, and the name matches `tool/module_dependencies.yaml` | `CNF-FR-031` |
+| `CNF-AC-023` | No surface accepts a parameter name as a runtime string; a search of the public API finds no `String`-keyed read | `CNF-FR-036`, `SID-4.47` |
+| `CNF-AC-024` | No generic accessor, map view, key enumeration or `getAll` exists on the port | `CNF-FR-037` |
+| `CNF-AC-025` | The full set of readable parameters is enumerable by static analysis, without executing the module | `CNF-FR-038` |
+| `CNF-AC-026` | Requesting a parameter with a missing required scope argument fails to compile, not at runtime | `CNF-FR-035`, `CNF-FR-042` |
+| `CNF-AC-027` | The declared return type admits no absent value; no caller needs a null check or a fallback literal | `CNF-FR-035` |
+| `CNF-AC-028` | A read attempted before configuration is loaded fails; it does not return a default | `CNF-FR-043` |
+| `CNF-AC-029` | No degraded, cached-stale or fail-open read mode exists on any path | `CNF-FR-045` |
+| `CNF-AC-030` | The interface is declared in `liboora_contracts` and no consumer imports the implementing module | `CNF-FR-039`, `CNF-FR-040` |
+
+### 13.6 Invariant enforcement (§5)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-031` | Startup validation runs before the first read is served, and no read is served while any invariant is unsatisfied | `CNF-FR-047`, `CNF-INV-001` |
+| `CNF-AC-032` | A single invariant violation prevents startup; the process does not continue in a reduced mode | `CNF-FR-048` |
+| `CNF-AC-033` | With three invariants violated, all three are reported in one startup report | `CNF-FR-049` |
+| `CNF-AC-034` | The enforced invariant set is exactly `INV-1`…`INV-16` — a test detects both a missing and an extra invariant | `CNF-INV-002` |
+| `CNF-AC-035` | Validation runs identically in development; no environment profile disables or relaxes it | `CNF-FR-050` |
+
+### 13.7 Feature flags (§6)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-036` | A flag is read through the same accessor style and resolution path as any other parameter; no flag-specific API exists | `CNF-FR-051`, `CNF-FR-053` |
+| `CNF-AC-037` | No percentage, cohort, ramp, variant, experiment or targeting-rule mechanism exists | `CNF-FR-054` |
+| `CNF-AC-038` | No flag read consults entitlement state, and the module makes no call to `business.entitlement` | `CNF-BR-001`, `CNF-XC-005` |
+| `CNF-AC-039` | No flag value can disable a security control, bypass authorisation, weaken a declared invariant or make a never-public field public | `CNF-BR-004`, `SID-4.48` |
+| `CNF-AC-040` | No flag value can suppress an audit emission | `CNF-BR-005` |
+
+### 13.8 Branding, secrets, audit, authority, isolation (§7–§10)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-041` | A branding image is held only as a `FileRef`; no image bytes are stored or served by this module | `CNF-FR-056`, `CNF-XC-008` |
+| `CNF-AC-042` | A secret-referencing parameter yields a reference, never material, and no resolution path returns material | `CNF-FR-057`, `CNF-FR-058` |
+| `CNF-AC-043` | No secret reference appears in any log, telemetry attribute, error message or audit payload | `CNF-FR-059`, `CNF-BR-011` |
+| `CNF-AC-044` | Every committed change produces an audit fact through `E-20`, and no second version history exists in this module | `CNF-FR-061`, `CNF-BR-006` |
+| `CNF-AC-045` | An already-resolved value is unaffected by a later change; no resolution is retroactively altered | `CNF-BR-007` |
+| `CNF-AC-046` | An unauthorised write is refused, leaves state unchanged, and is distinguishable in telemetry from an invalid value and from an invariant violation | `CNF-FR-064`, `CNF-FR-067`, `CNF-FR-072` |
+| `CNF-AC-047` | No write surface is reachable without passing the authorising boundary | `CNF-FR-066` |
+| `CNF-AC-048` | The module contains no table mapping roles to writable parameters | `CNF-BR-008`, `CNF-XC-014` |
+| `CNF-AC-049` | A read or write with an absent tenant identifier fails — it does not default, and does not return an empty result | `CNF-FR-068` |
+| `CNF-AC-050` | Every cache key and namespace holding a tenant-scoped value contains the tenant identifier; a key without one cannot be constructed | `CNF-FR-069` |
+| `CNF-AC-051` | No resolution, cache state or failure path returns a value belonging to another tenant | `CNF-INV-003` |
+| `CNF-AC-052` | No refusal reason, log line or telemetry attribute discloses another tenant's value | `CNF-INV-004`, `CNF-BR-011` |
+
+### 13.9 Observability and UI (§11–§12)
+
+| ID | Criterion | Traces to |
+|---|---|---|
+| `CNF-AC-053` | A failed resolution emits the parameter, the scopes supplied and the cause, and does not emit the value | `CNF-FR-071` |
+| `CNF-AC-054` | The startup validation signal carries the identity of every violated invariant, not a boolean | `CNF-FR-073` |
+| `CNF-AC-055` | Resolution telemetry carries the resolving scope | `CNF-FR-074` |
+| `CNF-AC-056` | A configuration surface renders an inherited value differently from an override set at the current scope, and names the source scope | `CNF-FR-076`, `CNF-FR-077` |
+| `CNF-AC-057` | Reset-to-inherited is offered as a distinct action wherever an override exists, and produces removal rather than an equal-valued override | `CNF-FR-078` |
+| `CNF-AC-058` | A parameter's range is visible before submission, and a refusal is shown against the field that caused it | `CNF-FR-079`, `CNF-FR-080` |
+| `CNF-AC-059` | A readable-but-not-writable parameter renders read-only — neither hidden nor editable-then-refused | `CNF-FR-081` |
+
+**Coverage.** 59 criteria. Class A identifiers with no criterion are the definitional and exclusion statements —
+`CNF-FR-002`, `CNF-FR-004`, `CNF-FR-005`, `CNF-FR-009`, `CNF-FR-012`, `CNF-FR-013`, `CNF-FR-030`, `CNF-FR-032`,
+`CNF-FR-033`, `CNF-FR-034`, `CNF-FR-041`, `CNF-FR-046`, `CNF-FR-052`, `CNF-FR-055`, `CNF-FR-060`, `CNF-FR-062`,
+`CNF-FR-063`, `CNF-FR-065`, `CNF-FR-070`, `CNF-FR-075`, `CNF-FR-082`, `CNF-BR-002`, `CNF-BR-003`, `CNF-BR-010`
+and `CNF-XC-001`…`CNF-XC-016`. `PRD-013` §7 established that this is acceptable *provided the uncovered set is
+named*, which it is here; Stage 4 must confirm each is genuinely definitional and not an untested obligation.
+
+---
+## 14. Open gaps
+
+Each entry is a question this document **raises and cannot close**. `DOCUMENTATION_BASELINE.md` §4 sets the
+discipline followed here: *"A conflict is a defect… do not choose — raise it."* None is repaired in this document;
+each names the stage or owner that must dispose of it.
+
+**This table is an index, not a second definition.** Where a gap was raised in the body — `CNF-GAP-001` at §1.4,
+`CNF-GAP-003` at §3.1, `CNF-GAP-004` at §4.4, `CNF-GAP-005` at §5, `CNF-GAP-006` at §7.2, `CNF-GAP-007` at §1.3,
+`CNF-GAP-008` at §10.3 — the body statement is the normative one and the row below summarises it. A gap is
+counted once.
+
+| ID | Gap | Evidence | Severity | Disposition owner |
+|---|---|---|---|---|
+| **`CNF-GAP-001`** | **Aggregate ownership is contested.** `Library_PRD_v1.md` L188 assigns `LibrarySettings` to `BC-25`; BC Map §8's 17-row aggregate table has **no `BC-25` row**. Two ranks disagree on whether this context owns an aggregate at all | Stage 1 `F-01`; §1.4 | **High** | **Stage 3.** Exactly three dispositions are permitted (§1.4); inventing a fourth is out of scope |
+| **`CNF-GAP-002`** | **Seven modules declare a dependency on a port no module provides.** `platform/configuration:settings` has 7 consumers and 0 providers | Stage 1 `M-08`/`M-09`; manifest L108, 182, 240, 280, 309, 336, 513 | **High** | **Stage 6** — closed by the implementation task that declares the provider |
+| **`CNF-GAP-003`** | **Scopes 4 and 5 are structurally present and functionally empty.** No PRD declares a value at branch or user scope; `branchId` does not exist as a column | §3.1; `LIB-2.2` | Medium | **Report-only.** Closes when a PRD declares a value at those scopes |
+| **`CNF-GAP-004`** | **Whether `settings` belongs on the shared-kernel port list is unstated.** Matrix §6.3 L336 enumerates kernel-declared ports; `settings` is not on it, yet `CNF-FR-039` requires the interface in `liboora_contracts` | §4.4; Matrix §6.3 L336 | Medium | **Stage 3** |
+| **`CNF-GAP-005`** | **`IMPL-015` validates `INV-1`…`INV-9`; the guide publishes `INV-1`…`INV-16`.** The seven omitted are exactly the seven that cross module boundaries | §5; `IMPLEMENTATION_ROADMAP.md`; `CONFIGURATION_GUIDE.md` §3 | **High** | **Stage 6** — `CNF-INV-002` makes the shortfall detectable |
+| **`CNF-GAP-006`** | **The EA places `Feature Flags` and `Secret Reference Resolution` at V2 while `ADR-0017` §3.1 assigns both to a V1 PRD.** Rank 2 and Rank 6 disagree | §7.2; EA `CONFIGURATION PLATFORM` tree; `ADR-0017` §3 | Medium | **Stage 3.** Rank 2 prevails on precedence; the EA is *"descriptive only"*. Recorded so the correction is deliberate |
+| **`CNF-GAP-007`** | **`platform/configuration` has no module block in `tool/module_dependencies.yaml`** — only a rank entry and seven inbound port references. Under `default_decision: deny` the module cannot lawfully declare any dependency | §1.3; manifest L31 | Medium | **Stage 6** |
+| **`CNF-GAP-008`** | **`tenant_isolation_test.dart` does not exist**, so `CNF-INV-003` and `CNF-INV-004` are unverifiable. `SID-4.56`: *"A rule that cannot be checked SHALL be treated as unmet"* | §10.3; Matrix §10.3; `test/architecture/` | **High** | **Stage 6.** Repository-wide, predates this PRD |
+
+### 14.1 Governance gaps recorded, outside this PRD's authority
+
+Neither is a `CNF-GAP-*`, because neither is about `BC-25`. Both are recorded because this document was obstructed
+by them and silence would make the obstruction invisible.
+
+| Missing artefact | Mandated by | Why it matters here |
+|---|---|---|
+| **UI Design System** | `MP-NFR-06`, `MP-NFR-08` — **Rank 1**, both naming it as owner | §12 states UI obligations against an owner that does not exist as a document |
+| **`NFR Budgets (V1)`** | `MASTER_PRD.md` §24 L483, `MP-DEP-08` L575, L609, L663 | §25 requires *measurable* NFR targets; L663 defers them to a document that does not exist, so no §12 or §11 obligation can be given a number |
+
+> Both are Rank-1 mandated V1 functions. Neither is created here: a Rank-3 PRD authoring a Rank-1 artefact is the
+> overreach `ADR-0017` §5.3's first risk names — *"read as inventing a PRD to fill a gap."* They belong to the
+> governance owner.
+
+---
+
+## 15. Consumed authority
+
+Every document this PRD depends on, and what it takes from each. Precedence per
+`DOCUMENTATION_BASELINE.md` §3.
+
+| Rank | Document | What is consumed |
+|---:|---|---|
+| 1 | `MASTER_PRD.md` | §8 module 18 registration (L170); `MP-GBR-06`…`09`; `MP-NFR-06`, `MP-NFR-08`; `MP-CON-11`; §24/§25 |
+| 2 | **`ADR-0017`** | **The governing authority.** §3 registration; §3.1's six owned items; §3.2's exclusions; §3.3; §4's rejected options; §5.3's risks |
+| 2 | `ADR-0013` | §5 `LibraryBranding` split; §7 as amended by `ADR-0017` |
+| 2 | `ADR-0012` | Laws `L1`…`L5`; §3.4 acknowledged debt |
+| 2 | `ADR-0011` | Rank 7.5 precedent for a rank introduced to keep `L2` literal |
+| 3 | `PRD-001` Authentication (FROZEN v2.0) | `CFG-1`…`CFG-12`; `TR-1`…`TR-5`; `PR-1`, `PR-2`; `AUTH-2.8`…`2.10` |
+| 3 | `PRD-002` Library (FROZEN v1.1) | §16 `LIB-16.1`…`16.9`; `LCFG-1`…`LCFG-13`; L188 `LibrarySettings` |
+| 3 | `PRD-003` Student Identity | `SCFG-1`…`11`; `SID-4.47`, `SID-4.48`, `SID-4.56` |
+| 3 | `PRD-004`…`PRD-008` | `SMCFG-*`, `MM-CFG-*`, `ATT-CFG-*`, `SEAT-CFG-*` registers (cited, never restated) |
+| 3 | `PRD-013` Tenancy (FROZEN) | `TEN-FR-010`…`020`; §0.4 three-names precedent; `TEN-CFG-*` empty-register precedent |
+| 3 | `PRD-014` Entitlement (FROZEN) | §4 `E-17` port template; `ENT-FR-014`, `ENT-FR-018`; `ENT-XC-008`; `ENT-GAP-002` |
+| 3 | `PRD-016` Audit Trail (FROZEN) | `AUD-FR-003`, `AUD-FR-012`, `AUD-FR-015`; `AUD-XC-001` |
+| 3 | Invitation Security Specification | `ICFG-1`…`ICFG-10` |
+| 4 | `LIBOORA_BOUNDED_CONTEXT_MAP.md` | L134 `BC-25`; L271 band; **L328 `E-19`**; `E-18`, `E-20`; §8 aggregates; §9 producers |
+| 4 | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | §3 ranks; **§8.3 ambient context**; §6.3 kernel ports; §10.3 tests; §10.4 gates; `X-13` |
+| 6 | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` | `CONFIGURATION PLATFORM` V1/V2/V3 bands — **descriptive only** |
+| 7 | **`CONFIGURATION_GUIDE.md`** | §2 registers; **§3 `INV-1`…`INV-16`**; §4 profiles; §5 change control; §6 observability |
+| — | `tool/module_dependencies.yaml` | Ranks; `default_decision: deny`; `settings` consumers; `policy_decision` consumer list |
+| — | `tool/check_module_boundaries.dart` | That rank ordering is checked **on imports only** (§1.3) |
+
+---
+
+## 16. Lifecycle position
+
+`PRD-023` is at **Stage 2 — Draft**. It is **not** frozen, and nothing in this document confers a rank.
+
+`PRD_LIFECYCLE.md` L76–86 states the Stage 2 gate: *"a document with a version/status header, and its identifier
+registers declared **up front** with ranges."* Measured against its four rules:
+
+| Rule | Requirement | State |
+|---|---|---|
+| 1 | Identifiers unique | ✅ 113 obligation-bearing identifiers, each defined once; verified mechanically (§0.2) |
+| 2 | Prefixes chosen against §5 **before** writing | ✅ `CNF-` selected at Stage 1 §6 against five candidates, collision-checked both directions |
+| 3 | Ranges contiguous | ✅ `CNF-FR-001`…`082`, `CNF-BR-001`…`011`, `CNF-INV-001`…`004`, `CNF-XC-001`…`016`, `CNF-AC-001`…`059` |
+| 4 | Normative language defined | ✅ §0.1, including *cited* |
+
+**What Stage 2 does not confer.** `PRD_LIFECYCLE.md` §6 assigns Stage 3 to the **architecture reviewer**, Stage 4
+to the **requirements reviewer**, Stage 5 to the **traceability owner** and Stage 7 to the **governance owner**.
+This document is the product owner's output only. Specifically outstanding:
+
+- **Stage 3** — the three-bucket ownership split, and disposition of `CNF-GAP-001`, `CNF-GAP-004`, `CNF-GAP-006`.
+- **Stage 4** — adversarial review, including against `ADR-0017` §5.3's two pre-registered Medium risks, and
+  confirmation that every uncovered Class A identifier named in §13 is genuinely definitional.
+- **Stage 5** — `CNF-` registration in `TRACEABILITY_MATRIX.md` §2, verified mechanically with zero collisions.
+- **Stage 6** — an `IMPL-*` range from `IMPL-1100`, closing `CNF-GAP-002`, `005`, `007`, `008`.
+- **Stage 7** — a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned rank. **Freeze is conferred, not claimed.**
+
+---
+
+## 17. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v0.1** | 2026-08-20 | Created at Stage 2 — Draft, discharging the registration `ADR-0017` §3 made on 2026-08-04. Specifies all six items `ADR-0017` §3.1 assigns to `BC-25`: the five-scope hierarchy (§3), feature flags (§6), branding values (§7.1), secret references (§7.2), the `E-19` typed-accessor contract (§4), and `LCFG-*` resolution semantics (§3.6, §4). Declares 8 registers up front, two of them (`CNF-EVT-*`, `CNF-CFG-*`) **deliberately empty with reasons**. **No requirement is moved into this PRD, and no frozen document is modified** — `ADR-0017` §3.2: *"This ADR moves no requirement."* Records 8 open gaps and 2 Rank-1 governance gaps without repairing any. Corrects an early internal error: the claim that rank 3 forbids reading tenancy or identity is **withdrawn** in §1.3 — the rank law is checked on imports only, and the true basis is the manifest's `default_decision: deny` together with `policy_decision`'s closed consumer list. |
+
+---
+
+*End of `PRD-023 — Settings & Configuration` v0.1 (Stage 2 — Draft).*

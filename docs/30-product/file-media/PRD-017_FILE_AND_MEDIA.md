@@ -59,26 +59,26 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-FR-` | Functional requirement | **74** | `FIL-FR-001` … `FIL-FR-074` | Yes |
-| `FIL-BR-` | Business rule | **14** | `FIL-BR-001` … `FIL-BR-014` | Yes |
-| `FIL-INV-` | Invariant | **8** | `FIL-INV-001` … `FIL-INV-008` | Yes |
+| `FIL-FR-` | Functional requirement | **82** | `FIL-FR-001` … `FIL-FR-082` | Yes |
+| `FIL-BR-` | Business rule | **17** | `FIL-BR-001` … `FIL-BR-017` | Yes |
+| `FIL-INV-` | Invariant | **11** | `FIL-INV-001` … `FIL-INV-011` | Yes |
 | `FIL-EVT-` | Domain event published by this context | **0** | **DECLARED EMPTY** — see §0.3 | n/a |
-| `FIL-XC-` | Exclusion — a prohibition with a named owner elsewhere | **18** | `FIL-XC-001` … `FIL-XC-018` | Yes |
+| `FIL-XC-` | Exclusion — a prohibition with a named owner elsewhere | **22** | `FIL-XC-001` … `FIL-XC-022` | Yes |
 
 **Class B — supporting registers**
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-AC-` | Acceptance criterion | **56** | `FIL-AC-001` … `FIL-AC-056` | Yes |
+| `FIL-AC-` | Acceptance criterion | **76** | `FIL-AC-001` … `FIL-AC-076` | Yes |
 | `FIL-CFG-` | Configurable parameter this module publishes | **9** | `FIL-CFG-001` … `FIL-CFG-009` | Yes |
 
 **Class C — finding register**
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-GAP-` | Open gap this PRD records but cannot close | **11** | `FIL-GAP-001` … `FIL-GAP-011` | Yes |
+| `FIL-GAP-` | Open gap this PRD records but cannot close | **13** | `FIL-GAP-001` … `FIL-GAP-013` | Yes |
 
-> **Totals: 190 identifiers across 8 registers, of which 1 is declared EMPTY. 114 are obligation-bearing.**
+> **Totals: 230 identifiers across 8 registers, of which 1 is declared EMPTY. 132 are obligation-bearing.**
 > **No identifier is retired; none has ever been issued before.**
 
 ### 0.3 `FIL-EVT-*` is DECLARED EMPTY, and this is a finding rather than an omission
@@ -327,6 +327,25 @@ see `FIL-GAP-010`.)*
 `FIL-XC-018` — The module **MUST NOT** define the platform's **client mutation queue, replay or conflict
 resolution**. *(Owner: `BC-30` Offline Sync — `PRD-018`, BC Map **L139**, edge `E-24`.)*
 
+`FIL-XC-019` — The module **MUST NOT** decide **whether two people may exchange anything**. It stores no
+friendship, no block, no rate limit and no `canMessage` result, and re-evaluates none of them. *(Owner: `BC-11`
+Social Graph — `PRD-021`. BC Map **L115**, **L320**, **L377**. `FIL-FR-076`.)*
+
+`FIL-XC-020` — The module **MUST NOT** define **message text, message ordering, delivery receipts, read receipts,
+presence, typing indicators or conversation membership**, and **MUST NOT** store the text of a message. A share
+grant is an access record, not a message. *(Owner: `BC-12` Messaging — `PRD-021`. BC Map **L116**, **L378**.
+`FIL-FR-075`.)*
+
+`FIL-XC-021` — The module **MUST NOT** implement **public sharing, anonymous sharing, share-by-link without a
+named recipient, or public discovery/search of shared files**. Every grant names exactly one recipient
+`PersonId`. *(`FIL-FR-075`, `FIL-FR-078`. No Rank 1–4 document requires public file sharing; the product
+instruction of 2026-08-20 excludes it explicitly. Discovery is `BC-23`'s — `FIL-XC-013`.)*
+
+`FIL-XC-022` — The module **MUST NOT** implement **abuse reporting, moderation, strikes or bans** over shared
+content, and **MUST NOT** decide that a share was inappropriate. *(Owner: `BC-13` Trust & Safety — BC Map
+**L117**, **L379**, and `E-14`'s enforcement fan-out. This module executes deletions it is instructed to make; it
+originates no moderation verdict.)*
+
 ### 2.4 Video and audio — the request asked "where V1 requires them", and the measured answer is *nowhere*
 
 The scope brief includes *"video/audio **where V1 requires them**"*. That conditional was tested rather than
@@ -382,6 +401,44 @@ added."* Widening requires an accepted ADR.)*
 > today even though the manifest grants it the port. That is the *specified* behaviour because the Rank 4 register
 > outranks the manifest — but it means **`domain/social`'s declared file access is currently unusable**, which is
 > a live defect in one of the two documents. Its owner is the **Architecture Owner**; `FIL-GAP-003`.
+
+### 2.6 Student-to-student sharing is a V1 capability, and what that costs
+
+**Product decision, recorded 2026-08-20: student-to-student sharing of study material is in V1 scope.** A student
+may send another eligible student a PDF, a photograph of handwritten notes, an assignment, a reference document,
+or a text message carrying study information. This subsection states what that requires of **this** module and,
+just as importantly, what it does **not** move here.
+
+**The capability needs no new bounded context and no V2 feature.** That is measured, not assumed:
+
+| Element | Owner | V1? | Evidence |
+|---|---|---|---|
+| Friendship / eligibility to contact | `BC-11` Social Graph — `PRD-021` | ✅ **V1** | BC Map **L115** |
+| Conversation, message, delivery, retention | `BC-12` Messaging — `PRD-021` | ✅ **V1** | BC Map **L116**, **L378** |
+| `canMessage(a, b)` at send time | `BC-11`, asked by `BC-12` | ✅ **V1** | BC Map **L320** (`E-16`), **L378** |
+| Abuse reports, moderation, blocks | `BC-13` Trust & Safety | ✅ **V1** | BC Map **L117** |
+| The **bytes** of a shared file | **`BC-29` — this module** | ✅ **V1** | `ADR-0013` §5 |
+| The **text** of a message | `BC-12` — **not this module** | ✅ **V1** | `FIL-XC-002` |
+
+⚠ **`BC-14` Content Sharing is *not* the owner of this capability and is not needed for it.** `BC-14` is **V2**
+(BC Map **L118**) and owns *"copyright and takedown"* over published user-generated content — a publishing and
+rights concern, not peer-to-peer transfer. Peer sharing rides `BC-11`/`BC-12`, both already **V1**. Nothing in
+this subsection promotes `BC-14`, and `FIL-GAP-007` is unchanged.
+
+⛔ **The blocker is `E-22`, and this document does not clear it.** `BC-11`, `BC-12` and `BC-13` are **absent from
+`E-22`'s consumer list** (§2.5), so under `FIL-FR-006` a `domain/social` caller is refused — *including* a
+student-to-student share. **The V1 product requirement is therefore specified here in full but is not servable
+until `E-22` lists the sharing context.** Widening a Rank 4 edge requires an accepted ADR (BC Map **L292**), and
+`ADR-0016` is the exact precedent: it amended *"the Consumer cell only. No edge added, no edge removed, no mode
+changed"* to admit `BC-10` for `SID-4.35`. **This PRD does not write that ADR** — a Stage 2 draft has no standing
+to amend a Rank 4 register, and `ADR-0013` §2.1 shows even an accepted ADR states plainly what it does not do.
+Recorded as **`FIL-GAP-012`**, severity **Blocking**, owner **Architecture Owner**, and as blocker **`B-11`**.
+
+**What this module adds for sharing is a purpose and a grant, not a social model.** `FIL-FR-004`'s three content
+classes already cover *"PDF notes, handwritten-note images, assignments, study material, reference documents"* —
+**no type widening is required**, and video/audio messaging stays excluded by `FIL-FR-005`. What is genuinely new
+is that an object must become readable by a **person who did not upload it**, which every requirement before this
+subsection assumed away. `FIL-FR-075`…`FIL-FR-082` specify exactly that and nothing more.
 
 ---
 
@@ -694,6 +751,50 @@ resolved by implementation choice is not resolved.)*
 that *"a configuration module publishing unbounded configurables would be self-refuting"* applies to its
 consumers too.)*
 
+### 4.11 Shared-object access — the infrastructure behind student-to-student sharing
+
+> **Scope note.** These requirements make an object readable by a person who did not upload it. They define
+> **no** friendship, conversation, message, delivery guarantee or eligibility rule — those stay with `PRD-021`
+> under `FIL-XC-001` and `FIL-XC-002`, which are unchanged. Every requirement here is subject to `FIL-FR-006`,
+> so none is servable until `E-22` lists the sharing context (`FIL-GAP-012`).
+
+`FIL-FR-075` — The module **SHALL** support a **share grant**: a record that a named **recipient** `PersonId` may
+read a named `FileRef`. A grant **SHALL** identify the `FileRef`, the granting actor, the recipient, the server
+time of grant, and its state. *(This is the whole of what sharing requires from a file capability: the bytes and
+the metadata already exist under `FIL-FR-013`…`FIL-FR-033`.)*
+
+`FIL-FR-076` — The module **SHALL NOT** decide **whether** a share is permitted. Eligibility **SHALL** be
+obtained from the calling context before the grant is requested, and the module **SHALL** record the decision
+reference it was given rather than re-deriving it. *(`FIL-XC-001`, `FIL-XC-002`, `FIL-XC-005`. `canMessage(a, b)`
+is evaluated by `BC-11` at send time — BC Map **L320**, **L378** — and a second evaluation here could disagree
+with the first, which is the defect Matrix `X-13` calls *"a security defect that passes its own tests"*.)*
+
+`FIL-FR-077` — A share grant **SHALL** convey **read access only**. A recipient **SHALL NOT** be able to replace,
+soft-delete, permanently delete, re-share, or alter the metadata of a shared object, and **SHALL NOT** become its
+owner. *(`FIL-FR-039` already restricts issued URLs to read; this extends the same rule to the grant itself.)*
+
+`FIL-FR-078` — A recipient's read **SHALL** be served only through a signed, expiring URL issued per request
+under `FIL-FR-035`…`FIL-FR-041`. A share grant **SHALL NOT** cause an object to become public, anonymously
+reachable, or discoverable by enumeration. *(`SID-3.20`; `FIL-FR-034` private-by-default; `FIL-XC-011`.)*
+
+`FIL-FR-079` — A share grant **SHALL** be **revocable** by the granting actor or by an actor `BC-18` authorises.
+On revocation the module **SHALL** immediately cease issuing new URLs to that recipient. Consistent with
+`FIL-FR-040`, revocation **SHALL NOT** be claimed to invalidate URLs already issued; the residual exposure
+**SHALL** be bounded by `FIL-CFG-004`. *(`FIL-BR-009` states this trade-off and its owner.)*
+
+`FIL-FR-080` — A share grant **SHALL NOT** survive the object it points at. Soft-deleting the object **SHALL**
+suspend every grant on it; permanent deletion **SHALL** remove them. A grant **SHALL NOT** be a reason to retain
+bytes past `FIL-CFG-006`. *(`FIL-INV-006`; `FIL-FR-058`. Retention authority stays with `FIL-GAP-008`.)*
+
+`FIL-FR-081` — Both parties to a share **SHALL** be in the **same isolation class** as the object
+(`FIL-FR-044`), and a grant **SHALL NOT** be the means by which an object crosses classes. A grant naming a
+recipient outside the object's class **SHALL** be refused as not-found. *(`FIL-FR-047`; `MP-GBR-03`. ⚠ See §7.3:
+the sharing contexts are **global**, not tenant-scoped, and that is stated rather than smoothed over.)*
+
+`FIL-FR-082` — Grant, revocation and first read by a recipient **SHALL** be auditable by the calling context in
+the same transaction as the operation that caused them. Consistent with `FIL-FR-062`, this module **SHALL NOT**
+publish an event to achieve it. *(`AUD-FR-008`; `MP-GBR-13`. The limits of this are `FIL-GAP-004`.)*
+
 ---
 
 ## 5. Business rules
@@ -739,6 +840,18 @@ Purpose is a routing and policy key, not a business fact.
 
 `FIL-BR-014` — An object whose scan verdict is *infected* is never recoverable by any operation. There is no
 override, quarantine-release or administrative approval path in V1. *(`FIL-FR-020`, `FIL-FR-021`.)*
+
+`FIL-BR-015` — **Sharing transfers access, never ownership.** The uploading actor remains the owner for the whole
+life of the object, and the number of recipients does not change who may replace or delete it. *(`FIL-FR-077`.)*
+
+`FIL-BR-016` — **Eligibility is asked, never inferred.** The existence of a prior share, a prior conversation or a
+prior successful read is **not** evidence that a further share is permitted. Each share is authorised on its own
+facts by the calling context. *(`FIL-FR-076`; `FIL-FR-008`, which forbids caching a decision; `MP-GBR-26`.)*
+
+`FIL-BR-017` — **A shared file follows the object, not the message.** If the calling context deletes a message,
+conversation or friendship, this module takes no action on the bytes; and if the object is deleted, no grant
+survives it. The two lifecycles are related only through `FIL-FR-080`. *(`FIL-XC-002` keeps message retention
+with `BC-12`; `FIL-INV-006` keeps derivative and grant removal with the object.)*
 
 ---
 
@@ -791,6 +904,16 @@ retention expiry. *(`FIL-FR-053`; `MP-GBR-13`.)*
 
 `FIL-INV-008` — A **global** object (`FIL-FR-044`) **MUST NOT** carry a `tenant_id`. *(`TEN-FR-018` —
 *"**Forbidden** in global contexts"*; BC Map **L114** — `BC-10` *"holds no `tenantId`"*.)*
+
+`FIL-INV-009` — A share grant **MUST** reference exactly one existing `FileRef` and exactly one recipient
+`PersonId`. A grant referencing a non-existent, soft-deleted or permanently deleted object **MUST NOT** be
+readable. *(`FIL-FR-075`, `FIL-FR-080`.)*
+
+`FIL-INV-010` — A share grant **MUST** be in exactly one state — `Active` or `Revoked` — at any instant, and
+`Revoked` **MUST** be terminal. *(`FIL-FR-079`; the same single-state discipline as `FIL-BR-003`.)*
+
+`FIL-INV-011` — A grant **MUST NOT** name the granting actor and the recipient as the same `PersonId`. Access to
+one's own object is ownership, not a grant. *(`FIL-BR-015`.)*
 
 ### 6.3 What the record must NOT contain
 
@@ -852,6 +975,37 @@ Therefore:
 name or Supabase Storage bucket policy is written here**, because no authority exists to write it against, and
 inventing one would bind the platform to a vendor `MP-CON-01`/`MP-CON-02` forbid naming.
 Recorded as **`FIL-GAP-009`** (security) and **`FIL-GAP-011`** (no database/storage architecture artefact).
+
+### 7.3 ⚠ Student-to-student sharing is **global**, not tenant-scoped, and the brief's wording must be corrected
+
+The product instruction asks for *"tenant/library membership isolation"* on peer sharing. **The repository says
+peer sharing is not tenant-scoped, and the instruction cannot be satisfied as literally worded.** Measured:
+
+| Evidence | What it says |
+|---|---|
+| BC Map **L488** | `BC-11`→`BC-17` Student Network is *"**Global.** No `tenantId`. Keyed on `PersonId`"* and *"Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"* |
+| BC Map **L114** | `BC-10` Global Person Identity *"holds no `tenantId`"* |
+| `TEN-FR-018` (FROZEN) | `tenant_id` is *"**Forbidden** in global contexts"* |
+
+A student is a **person** (`BC-10`, global) who may hold membership in more than one library. Friendship and
+messaging are keyed on `PersonId`, not on a tenant. Requiring a `tenant_id` on a peer share would therefore
+**violate frozen Rank 3 `TEN-FR-018` and Rank 4 rule `ID-2`** — the precise defect `FIL-FR-044`'s two isolation
+classes exist to prevent. Accordingly:
+
+- A shared study document is a **global-class** object (`FIL-FR-044`), isolated by an access decision keyed on
+  `PersonId` (`FIL-FR-081`), **not** by a tenant predicate.
+- **This is not weaker isolation, it is differently keyed.** `FIL-FR-047`'s not-found refusal, `FIL-FR-034`'s
+  private-by-default, `FIL-FR-078`'s signed-URL-only rule and `FIL-FR-081`'s same-class rule all still apply, and
+  `FIL-INV-008` forbids the object carrying a `tenant_id` at all.
+- **Tenant-scoped library documents remain tenant-scoped.** A student's Library Identification Photo
+  (`PRD-004`) and a library's logo (`LIB-6.6`) are tenant-class objects and are **not** shareable peer-to-peer by
+  this mechanism, because `FIL-FR-081` forbids a grant crossing classes.
+
+⚠ **If the product intent is genuinely that peer sharing must be confined to co-members of one library, that is a
+requirement on `BC-11`'s eligibility rule — `PRD-021`'s to state and `BC-11`'s to evaluate — not a tenant
+predicate on the bytes.** This module would then receive an eligibility decision that already accounts for it
+(`FIL-FR-076`) and would need no change. Recorded as **`FIL-GAP-013`**, owner **Product + `PRD-021`**, because
+resolving it here would mean this document writing a social-graph rule that `FIL-XC-019` forbids it from owning.
 
 ---
 
@@ -1103,8 +1257,8 @@ the orphan sweep (`FIL-FR-065`) — has **no consumer** to audit it, and **no au
 
 ## 14. Acceptance criteria
 
-56 criteria. Each is written to be **observable** — a test can pass or fail it — and each names the obligation it
-verifies. ⚠ **Criteria are NOT written for the 18 `FIL-XC-*` exclusions**: an exclusion states what must be
+76 criteria. Each is written to be **observable** — a test can pass or fail it — and each names the obligation it
+verifies. ⚠ **Criteria are NOT written for 18 of the 22 `FIL-XC-*` exclusions**: an exclusion states what must be
 *impossible*, and a criterion asserting that something never happens is **unfalsifiable by observation**. This is
 the same structural fact `PRD-023` published as its 67.3% coverage rather than rounding to 100%; §14.3 states the
 arithmetic.
@@ -1179,20 +1333,45 @@ which remains uncovered for the reason given below.
 `FIL-AC-055` — Consumption reporting returns a **measured** figure and never a verdict: it returns no allowance, no remaining balance and no permitted/denied judgement. *(`FIL-BR-012`, `FIL-XC-008`)*
 `FIL-AC-056` — Where a purpose is counted, an upload refused by `BC-21` is refused with the cause `BC-21` supplied, and the module substitutes no cause of its own. *(`FIL-BR-012`; `ENT-FR-019`, which requires an exceeded allowance and a disabled gate to remain distinguishable)*
 
+### 14.4 Shared-object access (student-to-student sharing)
+
+`FIL-AC-057` — A share grant records the `FileRef`, granting actor, recipient `PersonId`, server-assigned grant time and state; a grant missing any of these is refused. *(`FIL-FR-075`, `FIL-INV-009`)*
+`FIL-AC-058` — The module performs no eligibility evaluation of its own: with the calling context's decision reference absent, the grant is refused, and no friendship, block or `canMessage` result is read or stored. *(`FIL-FR-076`, `FIL-XC-019`)*
+`FIL-AC-059` — A recipient attempting to replace, soft-delete, permanently delete, re-share or edit metadata of a shared object is refused, and ownership is unchanged. *(`FIL-FR-077`, `FIL-BR-015`)*
+`FIL-AC-060` — A recipient's read is served only by a signed URL with a bounded lifetime; no grant makes an object publicly or anonymously reachable, and no unauthenticated request succeeds. *(`FIL-FR-078`, `FIL-XC-021`)*
+`FIL-AC-061` — After revocation, no new URL is issued to that recipient; the response is indistinguishable from not-found. *(`FIL-FR-079`, `FIL-FR-042`)*
+`FIL-AC-062` — Revocation is not claimed to invalidate an already-issued URL; the documented exposure equals the `FIL-CFG-004` lifetime and no longer. *(`FIL-FR-079`, `FIL-BR-009`)*
+`FIL-AC-063` — Soft-deleting an object suspends every grant on it; permanent deletion removes them. No grant is readable afterwards. *(`FIL-FR-080`, `FIL-INV-009`)*
+`FIL-AC-064` — An existing grant does not extend retention: the object is still purged at `FIL-CFG-006`. *(`FIL-FR-080`)*
+`FIL-AC-065` — A grant naming a recipient outside the object's isolation class is refused as not-found, and no object changes class through a grant. *(`FIL-FR-081`, `FIL-FR-047`)*
+`FIL-AC-066` — A shared global-class object carries **no** `tenant_id` at any point in the share flow. *(`FIL-FR-081`, `FIL-INV-008`, `TEN-FR-018`)*
+`FIL-AC-067` — A tenant-class object cannot be granted to a recipient by this mechanism. *(`FIL-FR-081`, §7.3)*
+`FIL-AC-068` — Grant, revocation and a recipient's first read are each recorded by the calling context in the same transaction, and this module publishes no event to achieve it. *(`FIL-FR-082`, `FIL-FR-062`)*
+`FIL-AC-069` — A prior share, conversation or successful read does not authorise a further share: each grant requires a fresh decision. *(`FIL-BR-016`, `FIL-FR-008`)*
+`FIL-AC-070` — Deleting a message, conversation or friendship in the calling context causes no change to stored bytes or metadata. *(`FIL-BR-017`, `FIL-XC-020`)*
+`FIL-AC-071` — A grant is `Active` or `Revoked` and never both; `Revoked` cannot return to `Active`. *(`FIL-INV-010`)*
+`FIL-AC-072` — A grant whose granting actor and recipient are the same `PersonId` is refused. *(`FIL-INV-011`)*
+`FIL-AC-073` — No message text is stored by this module: a share carries a `FileRef` and access facts only. *(`FIL-XC-020`)*
+`FIL-AC-074` — No share-by-link without a named recipient can be created, and no endpoint lists or searches shared files across recipients. *(`FIL-XC-021`)*
+`FIL-AC-075` — The module originates no moderation verdict: it exposes no abuse-report, strike or ban operation. *(`FIL-XC-022`)*
+`FIL-AC-076` — Video and audio remain refused for a shared object exactly as for any other upload. *(`FIL-FR-005`, `FIL-FR-016`)*
+
 ⚠ **`FIL-FR-046` (security review of an isolation-key change) is deliberately left uncovered.** A criterion
 would have to assert that a **human review process** occurred, which is not observable in the system under test.
 `PRD-014` set this precedent for `ENT-FR-017`: a criterion asserted here *"would test"* behaviour *"which this
 PRD does not govern"*. The obligation stands; it is verified by governance, not by a test.
 
 **Coverage, computed and stated rather than claimed.** 114 obligation-bearing identifiers
-(74 `FIL-FR` + 14 `FIL-BR` + 8 `FIL-INV` + 0 `FIL-EVT` + 18 `FIL-XC`). Coverage is counted by extracting the
-citation set of the **56 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
+(82 `FIL-FR` + 17 `FIL-BR` + 11 `FIL-INV` + 0 `FIL-EVT` + 22 `FIL-XC`). Coverage is counted by extracting the
+citation set of the **76 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
 uncovered identifiers and counting those would inflate the figure.
 
-**75 of 114 are covered = 65.8%. 39 are uncovered = 34.2%.**
+**94 of 132 are covered = 71.2%. 38 are uncovered = 28.8%.**
 
-The 39 divide into two kinds. **All 18 `FIL-XC-*` are uncovered by construction** (above) — an exclusion is not
-falsifiable by observing this module. The remaining **21** are the definitional, structural and cited
+The 38 divide into two kinds. **18 of the 22 `FIL-XC-*` are uncovered by construction** — an exclusion is not
+falsifiable by observing this module; the four sharing exclusions `FIL-XC-019`…`FIL-XC-022` are the exception,
+because each forbids a *behaviour a share flow could otherwise exhibit* and so is observable. The remaining
+**20** are the definitional, structural and cited
 obligations, which state where a rule *lives* rather than what the system *does*: `FIL-FR-001`, `FIL-FR-002`,
 `FIL-FR-003`, `FIL-FR-006`, `FIL-FR-007`, `FIL-FR-009`, `FIL-FR-010`, `FIL-FR-012`, `FIL-FR-024`,
 `FIL-FR-032`, `FIL-FR-046`, `FIL-FR-055`, `FIL-FR-057`, `FIL-FR-067`, `FIL-FR-070`, `FIL-FR-073`,
@@ -1207,7 +1386,7 @@ quota obligation `FIL-BR-012` was likewise untestable. `FIL-AC-053`…`FIL-AC-05
 range false. The fourth, `FIL-FR-046`, stays uncovered for the stated reason: it obliges a **human security
 review**, which is not observable in the system under test.
 
-⚠ **This figure is published unrounded and is NOT a claim of verification: 0 of 56 criteria are proven by a
+⚠ **This figure is published unrounded and is NOT a claim of verification: 0 of 76 criteria are proven by a
 passing test, because no implementation exists.** The precedent avoided is `PRD-006` v1.0, which published
 *"100% coverage"* against a true 49.1%. ⚠ **This paragraph itself was corrected during the Stage 2
 self-consistency audit**: the first draft asserted *"89 of 114 = 78.1%"* while naming 43 uncovered identifiers —
@@ -1250,7 +1429,7 @@ to have omitted `FIL-FR-008` and `FIL-FR-018`. See §18.3.
 | `BC-06` Library Policy (`PRD-002`) | `E-22` via `domain/library` **L110** | `LIB-6.6` logo and cover | **FROZEN** |
 | `BC-10` Global Person Identity (`PRD-003`) | `E-22` · manifest **L184** | `SID-3.19`, `SID-4.35` profile photo | **FROZEN** |
 | `BC-14` Content Sharing | `E-22` (BC Map **L331**) | — | ⚠ **V2**, holds no manifest module — `FIL-GAP-007` |
-| `domain/social` (`BC-11`/`12`/`13`) | manifest **L242** | — | ⛔ **Not on `E-22`** — refused by `FIL-FR-006`; `FIL-GAP-003` |
+| `domain/social` (`BC-11`/`12`/`13`) | manifest **L242** | **V1 student-to-student sharing** — §2.6, `FIL-FR-075`…`082` | ⛔ **Not on `E-22`** — refused by `FIL-FR-006`. **Blocks the V1 capability**; `FIL-GAP-003`, `FIL-GAP-012`, `B-11` |
 | `BC-03` Attendance | — | `ATT-FR-080` register-image workflow | ⛔ **Excluded** by `ATT-XC-004`; `ADR-0022` **Proposed**, undecided |
 
 ### 15.3 Ports this module consumes
@@ -1286,6 +1465,8 @@ module from the `default_decision: deny`**, so this module's boundary is current
 | **`FIL-GAP-008`** | **No authority supplies a retention period, soft-delete window or legal-hold trigger.** `MP-NFR-10` assigns them to SECURITY + DATA Governance. `FIL-CFG-006` is published with a range and **no default**, and `FIL-FR-052` makes the absence a startup refusal rather than a silent zero | **High** | SECURITY + DATA Governance | `MP-NFR-10`; the `AUD-GAP-001` precedent |
 | **`FIL-GAP-009`** | **No encryption, key-management or RLS specification exists at any rank**, and **no UI Design System and no NFR Budgets document exists** (`find` → 0 each). This document therefore states behaviour, not policy, and defines no token, algorithm or budget | **High** | SECURITY · UI Design System owner · NFR owner | §7.1, §7.2, §11, §12.2; `PRD-023` blockers `B-3`, `B-4` |
 | **`FIL-GAP-010`** | **`platform/services` has NO module block in `tool/module_dependencies.yaml`** — only a rank at **L33**. `check_module_boundaries.dart` **L778** exempts a blockless module from `default_decision: deny`, so this module's boundary is **unenforced**. `ADR-0012`'s debt at **L647** records that *"only the interfaces are missing"*, expiring **2027-03-31** | **High** | Architecture Owner | manifest; the `CNF-GAP-007` / `B-1` precedent |
+| **`FIL-GAP-012`** | ⛔ **`E-22` does not list the sharing contexts, so V1 student-to-student sharing is specified but not servable.** `BC-11`/`BC-12`/`BC-13` are absent from `E-22`'s consumer list (BC Map **L331**) while the manifest **L242** grants `domain/social` the `files` port. Under `FIL-FR-006` the caller is refused. Widening needs an accepted ADR (**L292**); `ADR-0016` is the precedent shape and **this PRD does not write it** | **Blocking** | Architecture Owner | BC Map **L331**, **L292**; manifest **L242**; §2.6; `ADR-0016` |
+| **`FIL-GAP-013`** | **"Tenant/library membership isolation" cannot apply to peer sharing as worded.** BC Map **L488** makes `BC-11`→`BC-17` *"Global. No `tenantId`"* and `TEN-FR-018` forbids `tenant_id` in global contexts. If sharing must be confined to co-members of one library, that is `BC-11`'s eligibility rule for `PRD-021` to state, not a tenant predicate here | **High** | Product + `PRD-021` | §7.3; BC Map **L488**, **L114**; `TEN-FR-018`; `FIL-XC-019` |
 | **`FIL-GAP-011`** | **No database, storage or API-error architecture artefact exists.** `Supabase` appears in `docs/` twice, both *"Not named in EA — **candidate only**"*, and **L271** records that naming a vendor as a layer was corrected out. No Event Catalog and no error register exist. Bucket topology and error vocabulary are therefore **unspecifiable** here without inventing an authority | **Medium** | Architecture Owner | `MASTER_PRD.md` **L227**, **L228**, **L271**; `PRD-023` blocker `B-5` |
 
 ### 16.1 Risks
@@ -1347,10 +1528,11 @@ reservation would burn numbers a Stage 6 record has not justified.
 | **B-7** | **Five service-port interfaces do not exist** — `ADR-0012` debt, manifest **L647** | ⚠ constrains | `FIL-FR-060`, `FIL-FR-065`, `FIL-XC-017` |
 | **B-8** | **`E-22` / manifest disagreement** (`FIL-GAP-003`) | ⚠ constrains | `FIL-FR-006` refusal behaviour |
 | **B-9** | **No audit path for platform-initiated operations** (`FIL-GAP-004`) | ⚠ constrains | `MP-GBR-13` compliance |
+| **B-11** | ⛔ **`E-22` omits `BC-11`/`BC-12`/`BC-13`** (`FIL-GAP-012`), so every requirement in §4.11 is refused by `FIL-FR-006` until an `ADR-0016`-shaped amendment lists the sharing context | ⛔ external, architecture | **All of V1 student-to-student sharing** |
 | **B-10** | **`FIL-FR-046` carries no acceptance criterion and cannot carry one** — it obliges a **human security review** of an isolation-key change, which is not observable in the system under test. *(The three other uncovered substantive obligations found by the audit — `FIL-FR-008`, `FIL-FR-018`, `FIL-BR-012` — were closed by `FIL-AC-053`…`056`.)* | ⚠ external, governance | Verification of `MP-GBR-09` compliance |
 
-⛔ **`DRAFT` is not `FROZEN`, and neither is `VERIFIED`: 0 of 56 acceptance criteria are proven by a test, 0 tasks
-exist, all 11 `FIL-GAP-*` are OPEN, and coverage stands at a measured 65.8%.**
+⛔ **`DRAFT` is not `FROZEN`, and neither is `VERIFIED`: 0 of 76 acceptance criteria are proven by a test, 0 tasks
+exist, all 13 `FIL-GAP-*` are OPEN, and coverage stands at a measured 71.2%.**
 
 ---
 
@@ -1373,11 +1555,12 @@ exist, all 11 `FIL-GAP-*` are OPEN, and coverage stands at a measured 65.8%.**
 | `FIL-FR-060`…`067`, `FIL-BR-011`/`014` | manifest **L112**/**L339**/**L647**; `ENT-FR-008`/`018`; `AUD-FR-009`/`012`; `MP-NFR-12`; BC Map §9 |
 | `FIL-FR-068`…`070` | manifest **L242-243**; BC Map (no realtime edge); `MP-NFR-09` |
 | `FIL-FR-071`…`074`, `FIL-BR-012` | `MP-CON-03`; `ENT-FR-017`; `PRD-023` Stage 4 gate; `SEAT-BR-045` discipline |
-| `FIL-XC-001`…`018` | Each names its owner inline in §2.3 |
+| `FIL-XC-001`…`022` | Each names its owner inline in §2.3; `019`…`022` name `BC-11`/`BC-12`/`BC-13` and the public-sharing prohibition |
 | `FIL-INV-001`…`008` | §6.2, each with its source |
 | `FIL-CFG-001`…`009` | §8.5, each with its reason; `E-19`; `FIL-XC-009` |
 | `FIL-AC-001`…`052` | §14, each naming the obligation it verifies |
-| `FIL-GAP-001`…`011` | §16, each with measured evidence |
+| `FIL-FR-075`…`082`, `FIL-BR-015`…`017`, `FIL-INV-009`…`011`, `FIL-XC-019`…`022` | **V1 student-to-student sharing** — product instruction 2026-08-20; BC Map **L115**/**L116**/**L117** (`BC-11`/`12`/`13` all **V1**), **L320** (`E-16` `canMessage`), **L378`**, **L488** (global band); `TEN-FR-018`; `SID-3.20`; `AUD-FR-008`; `ADR-0016` (the `E-22` precedent) |
+| `FIL-GAP-001`…`013` | §16, each with measured evidence |
 
 ### 18.2 The read-only audit this document was written from
 

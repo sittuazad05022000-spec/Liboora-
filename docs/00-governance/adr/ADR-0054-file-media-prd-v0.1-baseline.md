@@ -96,8 +96,8 @@ introduced zero new findings.** No file under `lib/`, `packages/`, `test/`, `web
 
 **`FIL-EVT-*` is admitted EMPTY, as a finding.** `BC-29` is a producer in **zero** BC Map §9 rows. Minting an
 event name would create an edge BC Map **L292** says *"does not exist"*. The temptation was concrete and is
-recorded rather than described in the abstract: the Stage 3 record's §8 row `R-6` proposed *"Mint `FIL-EVT-001` for
-`ShareGranted`"* and it was **rejected**. ⭐ **That rejected proposal then survived as a dangling citation for two
+recorded rather than described in the abstract: the Stage 3 record's §8 row `R-6` proposed minting **the first
+member of `FIL-EVT-*`** for `ShareGranted` and it was **rejected**. ⭐ **That rejected proposal then survived as a dangling citation for two
 stages** and was caught only at Stage 5 by a repaired checker (§8.1, drift 3) — so emptiness here is **enforced by
 a test**, not merely asserted: `prd017_stage5.py` check 7 requires `FIL-EVT-*` empty in registration **and in
 fact**.
@@ -312,9 +312,15 @@ in full because it is the most instructive failure of this whole pass: check 4c 
 the **entire file body** for anything in the module's own directory — so **citation resolution never ran inside
 `docs/30-product/file-media/`**. The exemption had been scoped by **directory** when the thing it needed to excuse
 was **a particular kind of line**. Splitting it so only the *definition* scan is exempt moved resolved citations
-**141 → 479** and immediately exposed **3 dangling citations**, one of which (`FIL-EVT-001` in the Stage 3 record's
-§8 row `R-6`) had been resident **since Stage 3** and had passed every checker every time. **Fixed in the
-instrument; the finding is retained rather than quietly absorbed.**
+**141 → 479** and immediately exposed **3 dangling citations**, one of which — a numbered `FIL-EVT-*` token in the
+Stage 3 record's §8 row `R-6`, naming an event the same row **rejected** — had been resident **since Stage 3** and
+had passed every checker every time. **Fixed in the instrument; the finding is retained rather than quietly
+absorbed.** ⚠ **And it recurred here.** The two sentences above originally reproduced that very token while
+explaining it, so this ADR spent its first draft committing the defect it was written to record — caught by the
+repaired checker on the Stage 7 re-run, which is exactly the outcome the repair was for. **The checker was right
+and the prose was fixed, not the rule**; both passages now name the register and the ordinal position instead of
+minting a number that resolves nowhere. Logged as the third occurrence of the author-introduced-phantom class
+after `PRD-023`'s four and this module's six at Stage 5.
 
 **Drift 4 — the Stage 5 conferral record cited a phantom identifier six times while both gates passed.** Found by
 an out-of-band `grep` against a claim just made in prose — **not** by either instrument. ⚠ **Two independent

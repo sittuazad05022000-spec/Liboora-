@@ -69,7 +69,7 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-AC-` | Acceptance criterion | **76** | `FIL-AC-001` … `FIL-AC-076` | Yes |
+| `FIL-AC-` | Acceptance criterion | **78** | `FIL-AC-001` … `FIL-AC-078` | Yes |
 | `FIL-CFG-` | Configurable parameter this module publishes | **9** | `FIL-CFG-001` … `FIL-CFG-009` | Yes |
 
 **Class C — finding register**
@@ -763,9 +763,12 @@ read a named `FileRef`. A grant **SHALL** identify the `FileRef`, the granting a
 time of grant, and its state. *(This is the whole of what sharing requires from a file capability: the bytes and
 the metadata already exist under `FIL-FR-013`…`FIL-FR-033`.)*
 
-`FIL-FR-076` — The module **SHALL NOT** decide **whether** a share is permitted. Eligibility **SHALL** be
-obtained from the calling context before the grant is requested, and the module **SHALL** record the decision
-reference it was given rather than re-deriving it. *(`FIL-XC-001`, `FIL-XC-002`, `FIL-XC-005`. `canMessage(a, b)`
+`FIL-FR-076` — The module **SHALL NOT** decide **whether** a share is permitted. The **calling context**
+**SHALL** have obtained the eligibility decision before requesting the grant, and **SHALL** supply a reference to
+it; the module **SHALL** record that reference rather than re-deriving it, and **SHALL** refuse a grant request
+that carries no decision reference. For student-to-student sharing the calling context is **`BC-12` Messaging**,
+which is the context `E-16` positions to ask `BC-11` for `canMessage(a, b)`; this module **SHALL NOT** ask
+`BC-11` itself. *(`FIL-XC-001`, `FIL-XC-002`, `FIL-XC-005`. `canMessage(a, b)`
 is evaluated by `BC-11` at send time — BC Map **L320**, **L378** — and a second evaluation here could disagree
 with the first, which is the defect Matrix `X-13` calls *"a security defect that passes its own tests"*.)*
 
@@ -782,9 +785,19 @@ On revocation the module **SHALL** immediately cease issuing new URLs to that re
 `FIL-FR-040`, revocation **SHALL NOT** be claimed to invalidate URLs already issued; the residual exposure
 **SHALL** be bounded by `FIL-CFG-004`. *(`FIL-BR-009` states this trade-off and its owner.)*
 
-`FIL-FR-080` — A share grant **SHALL NOT** survive the object it points at. Soft-deleting the object **SHALL**
-suspend every grant on it; permanent deletion **SHALL** remove them. A grant **SHALL NOT** be a reason to retain
-bytes past `FIL-CFG-006`. *(`FIL-INV-006`; `FIL-FR-058`. Retention authority stays with `FIL-GAP-008`.)*
+`FIL-FR-080` — A share grant **SHALL NOT** survive the object it points at. While the object is soft-deleted,
+every grant on it **SHALL** be unreadable **without any change to the grant's own state**; permanent deletion
+**SHALL** remove the grants. If the object is restored within `FIL-CFG-006`, grants still in `Active` **SHALL**
+become readable again and grants in `Revoked` **SHALL** remain unreadable. A grant **SHALL NOT** be a reason to
+retain bytes past `FIL-CFG-006`. *(`FIL-INV-006`; `FIL-FR-058`; `FIL-INV-009`, which already makes readability
+follow the object. Retention authority stays with `FIL-GAP-008`.)*
+
+> ⚠ **Corrected at Stage 4 (`S4-D-02`).** The first draft of this requirement said soft-delete *"**SHALL**
+> suspend every grant"*. `Suspended` is not one of the two states `FIL-INV-010` permits, and `Revoked` is
+> **terminal** there — so a suspended grant was either an undeclared third state or an irreversible one, and the
+> latter would have contradicted `FIL-BR-008`, which makes soft-delete **reversible within the retention
+> window**. The fix removes the phantom state instead of adding one: **readability follows the object**
+> (`FIL-INV-009`), and grant state is untouched by object lifecycle.
 
 `FIL-FR-081` — Both parties to a share **SHALL** be in the **same isolation class** as the object
 (`FIL-FR-044`), and a grant **SHALL NOT** be the means by which an object crosses classes. A grant naming a
@@ -1049,9 +1062,11 @@ consequence.
 
 ### 8.5 Configurables this module publishes
 
-Nine values, each with a **default and a range** as `FIL-FR-074` requires, resolved through
-`platform/configuration:settings` (`E-19`) and **owned as values by their scope owner, not by this module**
-(`FIL-XC-009`).
+Nine values, resolved through `platform/configuration:settings` (`E-19`) and **owned as values by their scope
+owner, not by this module** (`FIL-XC-009`). `FIL-FR-074` requires a declared **default and range** for each;
+**eight satisfy it and one does not** — `FIL-CFG-006` carries a range but no default, for the reason stated
+below. The exception is named here rather than in a footnote, because a subsection that opens by claiming all
+nine comply and then discloses an exception is internally contradictory.
 
 | ID | Configurable | Why it must be configurable |
 |---|---|---|
@@ -1341,7 +1356,7 @@ which remains uncovered for the reason given below.
 `FIL-AC-060` — A recipient's read is served only by a signed URL with a bounded lifetime; no grant makes an object publicly or anonymously reachable, and no unauthenticated request succeeds. *(`FIL-FR-078`, `FIL-XC-021`)*
 `FIL-AC-061` — After revocation, no new URL is issued to that recipient; the response is indistinguishable from not-found. *(`FIL-FR-079`, `FIL-FR-042`)*
 `FIL-AC-062` — Revocation is not claimed to invalidate an already-issued URL; the documented exposure equals the `FIL-CFG-004` lifetime and no longer. *(`FIL-FR-079`, `FIL-BR-009`)*
-`FIL-AC-063` — Soft-deleting an object suspends every grant on it; permanent deletion removes them. No grant is readable afterwards. *(`FIL-FR-080`, `FIL-INV-009`)*
+`FIL-AC-063` — While an object is soft-deleted no grant on it is readable, and each grant's recorded state is unchanged by the soft-delete; permanent deletion removes the grants. *(`FIL-FR-080`, `FIL-INV-009`)*
 `FIL-AC-064` — An existing grant does not extend retention: the object is still purged at `FIL-CFG-006`. *(`FIL-FR-080`)*
 `FIL-AC-065` — A grant naming a recipient outside the object's isolation class is refused as not-found, and no object changes class through a grant. *(`FIL-FR-081`, `FIL-FR-047`)*
 `FIL-AC-066` — A shared global-class object carries **no** `tenant_id` at any point in the share flow. *(`FIL-FR-081`, `FIL-INV-008`, `TEN-FR-018`)*
@@ -1355,6 +1370,14 @@ which remains uncovered for the reason given below.
 `FIL-AC-074` — No share-by-link without a named recipient can be created, and no endpoint lists or searches shared files across recipients. *(`FIL-XC-021`)*
 `FIL-AC-075` — The module originates no moderation verdict: it exposes no abuse-report, strike or ban operation. *(`FIL-XC-022`)*
 `FIL-AC-076` — Video and audio remain refused for a shared object exactly as for any other upload. *(`FIL-FR-005`, `FIL-FR-016`)*
+
+**Added by the Stage 4 requirements review.** The review corrected two sharing requirements and each correction
+introduced observable behaviour that no existing criterion asserted. Adding the criteria — rather than leaving the
+corrected text untested — is what keeps *"every requirement is testable"* true after a repair.
+
+`FIL-AC-077` — A grant request carrying no eligibility-decision reference is refused, and the refusal names the missing reference rather than any eligibility judgement of this module's own. *(`FIL-FR-076`, `FIL-XC-019`)*
+
+`FIL-AC-078` — An object restored from soft-delete within `FIL-CFG-006` again serves reads to grants that were `Active` at the time of deletion, and does not serve reads to grants that were `Revoked`. *(`FIL-FR-080`, `FIL-BR-008`, `FIL-INV-010`)*
 
 ⚠ **`FIL-FR-046` (security review of an isolation-key change) is deliberately left uncovered.** A criterion
 would have to assert that a **human review process** occurred, which is not observable in the system under test.

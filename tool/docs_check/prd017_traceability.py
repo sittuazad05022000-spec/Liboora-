@@ -383,11 +383,37 @@ def main():
                     fail('coverage prose claims %d covered exclusion(s) but '
                          '%d are measured covered'
                          % (claimed_exc, len(xc_exceptions)))
-            for ident in sorted(xc_exceptions):
-                if ident not in stated:
-                    fail('%s is covered by a criterion but the coverage prose '
-                         'does not name it as an exception, so the class claim '
-                         'about the remainder cannot be resolved' % ident)
+            # S5-C-04 (this stage): the first form named the exceptions against
+            # `stated`, which spans the whole 4000-char coverage block.  Mutant
+            # M11 removed `FIL-XC-008` from the EXCEPTION SENTENCE and still
+            # passed, because the identifier remains cited a few lines later in
+            # the "remaining 21" discussion.  A membership test over too wide a
+            # window cannot distinguish "named as an exception" from "mentioned
+            # nearby".
+            #
+            # The exception sentence is therefore delimited precisely -- from
+            # the "are the exception" marker to the "remaining" marker that
+            # begins the next claim -- and each covered exclusion must be named
+            # INSIDE it.  Scope, not pattern, was the defect.
+            exc_start = block.find('are the exception')
+            exc_end = block.find('The remaining', exc_start + 1)
+            if exc_start < 0 or exc_end < 0:
+                fail('the coverage prose makes a class claim about uncovered '
+                     'exclusions but its exception sentence cannot be '
+                     'delimited, so the claim cannot be resolved')
+            else:
+                exc_named = expand_ids(block[exc_start:exc_end])
+                for ident in sorted(xc_exceptions):
+                    if ident not in exc_named:
+                        fail('%s is covered by a criterion but is NOT named in '
+                             'the exception sentence, so the class claim about '
+                             'the remaining %d cannot be resolved'
+                             % (ident, len(xc_uncovered)))
+                for ident in sorted(exc_named & xc_all):
+                    if ident not in covered:
+                        fail('%s is named as a covered exception but no '
+                             'criterion cites it -- the exception list claims '
+                             'coverage that does not exist' % ident)
             # The class claim discharges the exclusions.  Everything else must
             # still be named individually.
             stated |= xc_uncovered

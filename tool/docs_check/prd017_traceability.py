@@ -519,6 +519,43 @@ def main():
     # narrower, it keeps the authoritative blockquote in scope, and check 10a
     # below asserts that the section-0.2 total is still reachable, so this
     # exclusion can never again hide it.
+    # `T-C-04` / v0.2.  A THIRD FORM OF THE SAME DEFECT, and the reasoning
+    # recorded above is what settled it rather than a fresh judgement.
+    #
+    # The v0.2 amendment made check 10 fail on this line, in the CHANGELOG:
+    #
+    #   | **v0.1** | ... | ... **232 identifiers across 8 registers** ... |
+    #
+    # 232 was TRUE OF v0.1.  The authoritative section-0.2 total already reads
+    # 277 and is verified below.  Two repairs were possible and only one is
+    # honest:
+    #   * edit the v0.1 row to 277 -- which would make a historical record
+    #     claim v0.1 measured counts IT NEVER HAD.  That is falsifying a
+    #     change history to satisfy an instrument;
+    #   * recognise that a SUPERSEDED changelog row is a dead claim in exactly
+    #     the sense S5-C-02 already established, and scope the live-claim scan
+    #     accordingly.
+    # The second is taken.  This is the same principle, third occurrence: the
+    # discriminator is LIVE vs DEAD, not blockquote vs prose vs table.
+    #
+    # The exclusion is deliberately NARROW, because S5-C-03 proved a broad one
+    # swallows the number that matters:
+    #   * ONLY rows of the changelog's `| **vX.Y** | date | ... |` shape;
+    #   * ONLY where the version differs from the CURRENT header version.
+    # So the row describing THE VERSION IN FORCE stays IN SCOPE and its counts
+    # must still be correct -- a v0.2 row misstating v0.2's totals still fails.
+    # Nothing outside the changelog is affected, and check 10a below still
+    # asserts the section-0.2 declaration remains reachable.
+    current_version = ''
+    header_version = re.search(r'^\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*',
+                               doc, re.M)
+    if header_version:
+        current_version = header_version.group(1)
+    else:
+        fail('the header Version cell could not be parsed, so a superseded '
+             'changelog row cannot be distinguished from the live one. '
+             'Refusing to guess: an unparseable version means the live-claim '
+             'scan cannot be scoped safely')
     total = sum(len(computed[r]) for r in ORDER)
     live_lines = []
     for line in doc.split('\n'):
@@ -526,6 +563,10 @@ def main():
         if stripped.startswith('>') and (
                 '\u26a0' in line or 'Corrected at Stage' in line or
                 'This paragraph read' in line or 'As first written' in line):
+            continue
+        changelog_row = re.match(r'\|\s*\*\*(v[\d.]+)\*\*\s*\|', stripped)
+        if (changelog_row and current_version
+                and changelog_row.group(1) != current_version):
             continue
         live_lines.append(line)
     live = '\n'.join(live_lines)

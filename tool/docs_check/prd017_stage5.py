@@ -733,16 +733,43 @@ def main():
     bc12_admitted = False
     bc_map_path = os.path.join(
         'docs', '10-architecture', 'LIBOORA_BOUNDED_CONTEXT_MAP.md')
+    # `S5-C-09`.  THE FIRST FORM OF THIS SOURCE VERIFICATION WAS VACUOUS, AND A
+    # MUTATION TEST -- NOT THE PASSING RUN -- IS WHAT PROVED IT.  It scanned the
+    # WHOLE LINE for `BC-12` on any table row mentioning both `E-22` and
+    # `BC-29`.  Three distinct lines in the map satisfy that:
+    #   * the E-22 edge row itself, whose CONTRACT cell carries the sentence
+    #     "`BC-12` added by ADR-0055" -- so the attribution alone matched;
+    #   * the v1.8 changelog row, which narrates the consumer-cell change;
+    #   * the v1.5 changelog row, which narrates the earlier BC-10 change.
+    # Deleting `BC-12` from the consumer cell therefore changed nothing: the
+    # mutant PASSED.  A guard that cannot fail is not a guard.
+    #
+    # This is the `S5-C-04` defect class recurring -- a membership test run over
+    # too wide a window.  SCOPE, NOT PATTERN, IS THE DEFECT AGAIN, for the
+    # second time in this file.  The fix is to parse the row into cells and
+    # interrogate exactly one of them:
+    #   field 1 must BE the edge id `E-22`  (excludes both changelog rows,
+    #                                        whose field 1 is a version);
+    #   field 3 must name the target `BC-29` (confirms the right edge);
+    #   field 2 -- the CONSUMER cell, and nothing else -- must list `BC-12`.
+    # The contract cell (field 6) is now deliberately out of scope, so an ADR
+    # attribution can never stand in for an actual grant.
     try:
         with open(bc_map_path, encoding='utf-8') as handle:
             for line in handle:
                 if 'E-22' not in line or not line.lstrip().startswith('|'):
                     continue
-                # The consumer cell is the one naming BC-29 as the target.
-                if 'BC-29' in line and re.search(
-                        r'`?BC-12`?', line):
+                cells = [c.strip().strip('*').strip('`').strip()
+                         for c in line.strip().strip('|').split('|')]
+                if len(cells) < 3:
+                    continue
+                if cells[0] != 'E-22' or 'BC-29' not in cells[2]:
+                    continue
+                # cells[1] is the consumer cell. Match a whole token so that a
+                # hypothetical `BC-120` could never satisfy a test for `BC-12`.
+                if re.search(r'\bBC-12\b', cells[1]):
                     bc12_admitted = True
-                    break
+                break
     except OSError:
         fail('check 10 cannot read %s, so a claim that the E-22 consumer '
              'question is resolved cannot be verified at its source'

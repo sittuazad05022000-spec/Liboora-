@@ -1,27 +1,40 @@
-# `PRD-017` Implementation Tasks — `IMPL-1200` … `IMPL-1254`
+# `PRD-017` Implementation Tasks — `IMPL-1200` … `IMPL-1260`
 
 | Field | Value |
 |---|---|
 | **Document** | `PRD-017_IMPLEMENTATION_TASKS.md` |
 | **Subject** | `docs/30-product/file-media/PRD-017_FILE_AND_MEDIA.md` — File & Media (`BC-29`), **v0.2 `FROZEN`** *(was v0.1 `DRAFT` when this document was first written; the PRD was frozen at Stage 7 and amended to v0.2 by `ADR-0056`. This cell is corrected because it describes the subject as it is now — leaving it would have made this document cite a version of its own subject that no longer exists)* |
 | **Stage** | **6 — Implementation tasks** (`PRD_LIFECYCLE.md` L135–146) |
-| **Range** | **`IMPL-1200` … `IMPL-1254`** — **55** tasks, contiguous. ⚠ *Advanced from 40 on 2026-08-20 by the `PRD-017` v0.2 amendment (`ADR-0056`): Wave 5 drew `IMPL-1240`…`IMPL-1254` out of the growth reserve, so the reserve narrows and **no existing task moves**.* |
-| **Growth reserve** | **`IMPL-1255` … `IMPL-1299`** — **45** remaining, reserved, not allocated. *Was `IMPL-1240`…`IMPL-1299` (60); 15 consumed by Wave 5* |
+| **Range** | **`IMPL-1200` … `IMPL-1260`** — **61** tasks, contiguous. ⚠ *Advanced from 55 on 2026-08-21 by `ADR-0058` and `ADR-0059`: Wave 6 drew `IMPL-1255`…`IMPL-1260` out of the growth reserve, so the reserve narrows and **no existing task moves**. Previously advanced from 40 on 2026-08-20 by the v0.2 amendment (`ADR-0056`), which drew `IMPL-1240`…`IMPL-1254`.* |
+| **Growth reserve** | **`IMPL-1261` … `IMPL-1299`** — **39** remaining, reserved, not allocated. *Was `IMPL-1255`…`IMPL-1299` (45); 6 consumed by Wave 6. Before that `IMPL-1240`…`IMPL-1299` (60); 15 consumed by Wave 5* |
 | **Date** | 2026-08-20 |
 | **Depends on** | Stage 5 conferral — inventory frozen at **232 identifiers, 132 obligation-bearing**; **advanced to 277 / 150 by the v0.2 amendment** (`ADR-0056`) |
 | **Verdict** | ✅ **Stage 6 gate satisfied** — range allocated, every task traces to requirements, every Class A obligation claimed |
-| **Application code written** | **None.** ⛔ See §1 |
+| **Application code written** | ⚠ **No longer none — and this cell is corrected rather than left standing.** Stage 6 itself wrote none, and §1 records that truthfully for Waves 1–5. **Wave 6 is different**: `ADR-0058` §4 and `ADR-0059` §4 each authorise a **port interface, one in-process adapter, its registration and an architecture test** — and nothing else. Measured: **2** port interfaces, **2** adapters, **1** registration site, **2** test suites. ⛔ Still **0** SQL, **0** API handlers, **0** Flutter UI, **0** `BC-29` module, **0** schema. See §5.6 |
 
 ---
 
 ## 1. The one thing this document is not
 
 **This document contains no application code, and creates none.** It is a numbered backlog with traceability. Every
-row names work to be done; no row is work done. `lib/`, `packages/`, `test/` and `pubspec.yaml` are untouched by this
-stage — measured, not asserted: `git status --short lib/ packages/ test/ web/ pubspec.yaml` → **0 lines**.
+row names work to be done; no row is work done.
 
 The instruction for this stage said so explicitly: *"Do not write application code."* A Stage 6 document that shipped
 a Dart file would have failed the stage while appearing to over-deliver.
+
+⚠ **The measurement that used to follow this paragraph no longer holds, and is corrected rather than repeated.** It
+read: *`lib/`, `packages/`, `test/` and `pubspec.yaml` are untouched by this stage — measured, not asserted:
+`git status --short lib/ packages/ test/ web/ pubspec.yaml` → 0 lines.* That was true of Stage 6 and remains true of
+Waves 1–5. It stopped being true on 2026-08-21, when `ADR-0058` §4 and `ADR-0059` §4 each authorised a **port
+interface, one in-process adapter, its registration and an architecture test** in order to discharge `FIL-XC-017`
+and `FIL-FR-006` — obligations that could not be discharged while the interfaces they name did not exist
+(manifest **L649**: *"only the interfaces are missing"*).
+
+**The distinction this section is actually about survives intact:** no row of this document is work done, and the
+code that exists was authorised by a named ADR for a named requirement, **not** by this backlog. ⛔ Still **0** SQL,
+**0** API handlers, **0** Flutter UI, **0** `BC-29` module, **0** schema, **0** production storage adapter. Leaving
+the original sentence in place would have made this document assert a measurement anyone could falsify in one
+command — the precise failure mode §3.3 was written to disclose.
 
 ---
 
@@ -80,14 +93,15 @@ and the predecessor's own published boundary. No allocated task anywhere holds i
 | **`IMPL-1220` … `IMPL-1229`** | **Wave 3 — tenant isolation, lifecycle, derivatives, failure, idempotency** | This document |
 | **`IMPL-1230` … `IMPL-1239`** | **Wave 4 — share grants, audit routing, extensibility, exclusions, testing** | This document |
 | **`IMPL-1240` … `IMPL-1254`** | **Wave 5 — media optimization: profiles, originals, documents, variants, processing lifecycle, tests** *(added by the v0.2 amendment, `ADR-0056`)* | This document |
-| `IMPL-1255` … `IMPL-1299` | **Reserved for `PRD-017` growth** — **45** remaining; **15** open `FIL-GAP-*` may require tasks. ⚠ *The reserve is doing exactly what §3.2 designed it for: Wave 5 added 15 tasks without renumbering a single existing one* | This document, unallocated |
+| **`IMPL-1255` … `IMPL-1260`** | **Wave 6 — consumed ports: job runtime and the `E-22` consumer guard** *(added 2026-08-21 by `ADR-0058` and `ADR-0059`)* | This document |
+| `IMPL-1261` … `IMPL-1299` | **Reserved for `PRD-017` growth** — **39** remaining; **13** open `FIL-GAP-*` may require tasks. ⚠ *The reserve is doing exactly what §3.2 designed it for: Wave 5 added 15 tasks and Wave 6 added 6, without renumbering a single existing one* | This document, unallocated |
 | `IMPL-1300` + | Unallocated | — |
 
-**55 tasks, `IMPL-1200` … `IMPL-1254`, contiguous with no gaps inside the allocated span** (verified mechanically after Wave 5 was added, and **re-verified after the wave grew twice** — `IMPL-1253` and `IMPL-1254` were each added to close a measured allocation hole, not planned). *Was 40 tasks to `IMPL-1239` before the v0.2 amendment.* Wave boundaries fall on
+**61 tasks, `IMPL-1200` … `IMPL-1260`, contiguous with no gaps inside the allocated span** (verified mechanically after Wave 6 was added; previously verified after Wave 5, and **re-verified after that wave grew twice** — `IMPL-1253` and `IMPL-1254` were each added to close a measured allocation hole, not planned). *Was 55 tasks to `IMPL-1254` before Wave 6; 40 to `IMPL-1239` before the v0.2 amendment.* Wave boundaries fall on
 round tens so a task added to a wave later does not force a renumber — rule 1 forbids reassignment, so slack must be
 designed in rather than found later.
 
-⚠ **This is the largest reserve any module has taken (60), and the largest task count (now 55).** Both follow from the
+⚠ **This is the largest reserve any module has taken (60), and the largest task count (now 61).** Both follow from the
 measured facts: **277 identifiers** at v0.2 — 232 when this reserve was sized — is the biggest register the matrix
 carries, and **15 gaps are OPEN** — more than any predecessor froze with. A 60-wide reserve is not generosity; it is
 the arithmetic of unresolved questions that may each need tasks. ⚠ *The sizing decision has now been **tested rather
@@ -110,8 +124,10 @@ have collided with four allocated ranges at once.**
 
 | Blocker | Effect | Tasks gated |
 |---|---|---|
-| **`B-11` / `FIL-GAP-012`** — ✅ **RESOLVED 2026-08-20 for the architecture question only.** `BC-12` Messaging **is now listed** in `E-22`'s Consumer cell (BC Map **v1.8**, L331), admitted by `ACCEPTED` [`ADR-0055`](../../00-governance/adr/ADR-0055-e22-consumer-list-includes-bc-12.md) after necessity was re-derived **per context** — `BC-11` Social Graph and `BC-13` Trust & Safety were tested and **NOT** admitted | ✅ **`IMPL-1230` … `IMPL-1236` are UNBLOCKED FOR EXECUTION**: the dependency they need is now recorded in the map, so building them no longer creates an edge that *"does not exist"*. ⛔ **Unblocked is not done.** None of the seven is implemented, and `B-2` still gates *proof* of completion for all **fifty-five** tasks. This row is deliberately **not deleted**, because a backlog that erases a resolved blocker loses the record of why seven tasks sat idle | `IMPL-1230` … `IMPL-1236` — **released** |
-| **`B-2`** — all **seven** `TRACEABILITY_MATRIX.md` §10.3 required architecture tests are missing | ⛔ **No** task can be *proven* complete by architecture test. Completion is claimable, not demonstrable | all **55** |
+| **`B-11` / `FIL-GAP-012`** — ✅ **RESOLVED 2026-08-20 for the architecture question only.** `BC-12` Messaging **is now listed** in `E-22`'s Consumer cell (BC Map **v1.8**, L331), admitted by `ACCEPTED` [`ADR-0055`](../../00-governance/adr/ADR-0055-e22-consumer-list-includes-bc-12.md) after necessity was re-derived **per context** — `BC-11` Social Graph and `BC-13` Trust & Safety were tested and **NOT** admitted | ✅ **`IMPL-1230` … `IMPL-1236` are UNBLOCKED FOR EXECUTION**: the dependency they need is now recorded in the map, so building them no longer creates an edge that *"does not exist"*. ⛔ **Unblocked is not done.** None of the seven is implemented, and `B-2` still gates *proof* of completion for all **fifty-five** tasks. This row is deliberately **not deleted**, because a backlog that erases a resolved blocker loses the record of why seven tasks sat idle. ⚠ *Superseded in part on 2026-08-21: the **implementation** half is now closed by `ADR-0059` (see the dedicated row below), and `B-2` is resolved. The sentence above is left as written because it was true when written.* | `IMPL-1230` … `IMPL-1236` — **released** |
+| **`B-2`** — ✅ **RESOLVED.** All **seven** `TRACEABILITY_MATRIX.md` §10.3 required architecture tests now exist, execute and are **mutation-proven**; the suite additionally carries the two Wave 6 suites. Measured `flutter test test/architecture/` → **`+230`, 0 `[E]`** | ✅ A task's completion can now be *demonstrated* rather than claimed — for the properties the suite actually covers. ⛔ **Resolved is not discharged.** These tests prove **architecture** conformance (boundaries, ports, tenancy, invariants, event schemas, projection rebuildability, the `E-22` consumer list, job deferral). They prove **nothing** about storage, SQL, signed URLs or API behaviour, because none of that exists. **0 of 96 `FIL-AC-*`** are proven against real storage. This row is deliberately **not deleted** — a backlog that erases a resolved blocker loses the record of why 55 tasks were unprovable | all **61** — **proof mechanism released; the tasks themselves remain not-done** |
+| **`FIL-GAP-015`** — ✅ **CLOSED 2026-08-21** by `ACCEPTED` [`ADR-0058`](../../00-governance/adr/ADR-0058-job-runtime-port-v1-media-processing.md). The blocker was a **conflation**, not a missing deployment: `FIL-XC-017` names the **declared port** `platform/services:job_runtime` (manifest **L338**), while the EA's *Job Runtime (V2)* and its five children are scaled **infrastructure**. V1 consumes the port through an in-process adapter | ✅ `IMPL-1250` is unblocked, and `IMPL-1255`…`1257` implement the port and adapter. ⚠ **`ADR-0058` §7 discloses that the V1 adapter is not suitable for multi-instance deployment** — a durable-queue adapter is a Phase 6 decision, not a defect in this one | `IMPL-1250`, `IMPL-1255` … `IMPL-1257` — **released** |
+| **`FIL-GAP-012` implementation half** — ✅ **CLOSED 2026-08-21** by `ACCEPTED` [`ADR-0059`](../../00-governance/adr/ADR-0059-e22-consumer-list-enforced-in-code.md). Same shape as `B-7`/`ADR-0012`, in the manifest's own words at **L649**: the `files` port was **declared** and *"only the interfaces are missing"*. `FIL-FR-006` is now enforced by a port that **refuses** an unlisted context, pinned to BC Map **L331** by a map-parsing architecture test | ✅ `IMPL-1230`…`1236` are unblocked in **implementation** as well as architecture; `IMPL-1258`…`1260` implement the guard and its test. ⚠ **`GCP-23` is made harmless at the code boundary, NOT repaired** — manifest **L242** remains module-grained and was deliberately not edited | `IMPL-1258` … `IMPL-1260` — **released** |
 | **`FIL-GAP-010`** — `tool/module_dependencies.yaml` has no `platform/services:` **block**, so this module's own outbound ports are undeclared | `IMPL-1200` must create it. Until then the boundary checker cannot see this module's dependencies at all | `IMPL-1200` |
 | **`BC-18`** authorization is **consumed, never defined** here | Every access decision is a call out. If `BC-18` cannot answer, this module **refuses** (`FIL-BR-011`) | `IMPL-1214` … `IMPL-1217` |
 | **Virus scanning** is a V1 obligation (`FIL-FR-018`) whose provider is unnamed | `IMPL-1207` specifies the *contract and the refusal semantics*, not a vendor. ⚠ The EA's `(V2)` token for virus scan is a **known contradiction**, deliberately not resolved here | `IMPL-1207`, `IMPL-1208` |
@@ -125,7 +141,7 @@ sit at ranks 5 (`domain/social`, L242) and 7.5 (`domain/person`), so every inbou
 
 ---
 
-## 5. The 55 tasks
+## 5. The 61 tasks
 
 **Reading rules.** `Blocks` and `Blocked by` are within this backlog unless a foreign identifier is named. `P0` =
 required before any other wave task can be trusted; `P1` = required for the module to function; `P2` = required for
@@ -312,6 +328,65 @@ designed is evidence for it, not a reason to edit it.
 
 ---
 
+### 5.6 Wave 6 — Consumed ports: job runtime and the `E-22` consumer guard (`IMPL-1255` … `IMPL-1260`)
+
+> **Added 2026-08-21 by `ADR-0058` and `ADR-0059`.** These **six** tasks come out of the **reserved**
+> `IMPL-1255` … `IMPL-1299` band declared in §3.2 — **no existing task was renumbered, resplit or reassigned**,
+> and `IMPL-1200` … `IMPL-1254` are byte-identical to their Wave 1–5 text.
+>
+> **Why this wave exists.** Two blockers were diagnosed as the *same* defect shape, and the manifest states it in
+> its own words at **L649**: *"five service ports are already declared (files, qr, idempotency, offline_sync,
+> clock); **only the interfaces are missing**."* `FIL-XC-017` requires this module to **consume**
+> `platform/services:job_runtime` and forbids it from operating a worker pool, queue, retry scheduler or cron;
+> `FIL-FR-006` requires it to refuse a caller absent from `E-22`. Neither obligation could be discharged because
+> neither port had an interface to consume. **`FIL-GAP-015`** was the first (`ADR-0058`), **`FIL-GAP-012`'s
+> implementation half** the second (`ADR-0059`).
+>
+> ⚠ **`FIL-GAP-015` was NOT resolved by building infrastructure.** The EA's *Job Runtime (V2)* and its five
+> children are scaled infrastructure and none of them is the thing `FIL-XC-017` names; the manifest's **L338**
+> `platform/services:job_runtime` is a **declared port**. Conflating the two would have made a V1 capability wait
+> on a V2 deployment. `ADR-0058` §3 records the distinction.
+>
+> **Scope:** the two consumed-port interfaces and their V1 in-process adapters. **Affected modules:**
+> `packages/liboora_contracts/lib/src/ports/`, `lib/platform/services/`, `lib/bootstrap/di.dart`.
+> **Security/tenant implications:** ⛔ **Neither port carries a tenant identifier, and that is a decision.**
+> `E-22` already serves the **global-class** consumer `BC-10` (BC Map §11; added by `ADR-0016`), so a mandatory
+> tenant parameter would be unsatisfiable there and would breach frozen `TEN-FR-018`. Tenancy stays with the
+> ambient `TenantContext`. **No `tenant_id` rule is created, relaxed or invented** (`ADR-0059` §3.6).
+> ⛔ **No ownership moved into `BC-29`**: `IMPL-1259` records an **opaque decision reference**, never a boolean,
+> so `FIL-XC-019`/`020`/`022` stand unamended and `X-13`'s re-derivation hazard cannot arise here.
+> **Test requirements:** **`IMPL-1260` is this wave's test task.** ⚠ Both suites were **mutation-proven**, and
+> mutation testing found two genuine defects that review and `flutter analyze` had both passed — see §5.6.1.
+
+| ID | Task | Discharges | Priority | Blocked by | Blocks |
+|---|---|---|---|---|---|
+| `IMPL-1255` | Declare the **`job_runtime` port interface** this module consumes — submit-with-outcome, an operation key, a retry budget and a deadline — in `packages/liboora_contracts`, so `FIL-XC-017`'s *"MUST consume `platform/services:job_runtime`"* has something to name. ⛔ No worker pool, queue, cron or retry scheduler is declared or implemented here | `FIL-XC-017` | **P0** | — | 1256, 1257, 1260 |
+| `IMPL-1256` | Provide the **V1 in-process adapter** for that port: accept work, return on **acceptance**, run it **off the caller's request path**, and expose a terminal outcome. ⚠ **Must not be an `async` method** — a Dart `async` body runs synchronously to its first suspension, so an `async` submit starts the work it exists to defer (`ADR-0058` §3.7) | `FIL-XC-017`, `FIL-FR-092` | **P0** | 1255 | 1250, 1260 |
+| `IMPL-1257` | Make submitted processing **idempotent under the operation key**, bound attempts by `FIL-CFG-014`, drive a run exceeding `FIL-CFG-015` to terminal `FAILED`, and surface a **typed reason code** that never carries the underlying exception text. ⛔ The adapter never schedules a retry beyond the caller's budget (`FIL-FR-093`) | `FIL-FR-093`, `FIL-FR-094`, `FIL-FR-095` | **P0** | 1256 | 1250, 1260 |
+| `IMPL-1258` | Declare the **`files` port interface** with an executable transcription of `E-22`'s consumer list, and **refuse** any bounded context the BC Map does not record. ⛔ **No widening surface** — no setter, no `allow()`, no `register()`, no constructor parameter: `FIL-FR-007` is enforced by the **shape** of the API, so a caller cannot widen what it cannot address | `FIL-FR-006`, `FIL-FR-007` | **P0** | — | 1259, 1260 |
+| `IMPL-1259` | Provide the V1 adapter for that port: refuse an unlisted context on **both** the read and the grant path, record a share grant against an **opaque eligibility decision reference** obtained from its owner, and make a replayed grant idempotent. ⛔ Never evaluate, store or interpret eligibility (`FIL-XC-019`); never hold message semantics or moderation state (`FIL-XC-020`, `FIL-XC-022`); a refusal must be **indistinguishable** for a known and an unknown object (`FIL-FR-094`) | `FIL-FR-006`, `FIL-FR-076`, `FIL-FR-094` | **P0** | 1258 | 1230, 1260 |
+| `IMPL-1260` | Build the **Wave 6 architecture tests**, which must validate the **actual architecture** rather than assert that a document contains a sentence: (a) parse `E-22`'s consumer cell out of `LIBOORA_BOUNDED_CONTEXT_MAP.md` and assert the executable set **equals** it in both directions, with a **vacuity guard** so an unparsed row cannot pass as agreement; (b) execute the adapters to prove deferral, idempotency, the deadline and leak-free refusal. ⚠ **Both suites must be mutation-proven** — a suite never observed failing is not evidence | `FIL-FR-006`, `FIL-FR-007`, `FIL-FR-093`, `FIL-FR-094`, `FIL-XC-017` | **P0** | 1255, 1256, 1257, 1258, 1259 | — |
+
+#### 5.6.1 Two defects mutation testing found, and what they cost to miss
+
+⚠ **Both defects passed review and `flutter analyze` cleanly.** Recording the defect class is cheaper than
+rediscovering it.
+
+| # | Defect | How it was found | Why it mattered |
+|---|---|---|---|
+| 1 | The job adapter's `submit` was declared `async`, so it ran the work it was supposed to defer **on the caller's stack** — measured `ran-before-await = true`, state already `running` | An **empirical probe written before the assertions**, rather than a test written to agree with `ADR-0058`'s claim | Media processing may run to the `FIL-CFG-015` **120 s** timeout. That whole window would have been held **inside the upload request** — satisfying `FIL-XC-017` in wording while defeating its purpose, and making `FIL-FR-092`'s `PROCESSING` state unobservable. `ADR-0058` §3.7 records the correction; the ADR was amended to **v1.1** rather than left claiming otherwise |
+| 2 | The `E-22` grant-path refusal was asserted with `throwsA(isA<DomainError>())`, which accepted **any** error. With the authorisation guard deleted, an unseeded fixture still threw `notFound`, so the test read a missing guard as a refusal | **Mutation M2 survived.** The mutation was applied deliberately and the suite stayed green | An unauthorised context reaching business logic is not a refusal. The assertion now pins `DomainErrorCode.forbidden` **and** seeds the object so `notFound` is unreachable — after which the same mutation is killed |
+
+⚠ **A third finding was a defect in a test's *method*, not in the code under test.** Two assertions scanned the
+port's whole source for foreign tokens and flagged its own doc comments — the `FIL-XC-022` row reading *"Abuse
+reports, moderation verdicts, strikes, bans | `BC-13`"*, and the `TEN-FR-018` note explaining why no tenant is
+taken. A substring scan cannot tell *"this API exposes moderation"* from *"this comment says moderation belongs
+elsewhere"*, and as written it **penalised the port for documenting its own exclusions**. The scans were narrowed
+to **declarations**, and three checks were added in the opposite direction — the citations must **still be
+present**, and the stripper must be proven **sound and non-vacuous**. The check was sharpened, not deleted.
+
+---
+
 ## 6. Traceability — task group → requirements → invariants → acceptance
 
 Required by allocation rule 4.
@@ -419,7 +494,7 @@ served before `BC-18` answers. **`IMPL-1230` cannot start at all** until `B-11` 
 
 ## 9. What this document does **not** claim
 
-- **It does not claim the module is implementable today.** ⚠ *`B-11` no longer blocks anything* — `ADR-0055` released `IMPL-1230`…`IMPL-1236` on 2026-08-20 — but **`B-2` still blocks *proof* of all 55**, and three Wave 5 tasks are not completable until `FIL-GAP-014` supplies the values they depend on. **0 of 55 are implemented.**
+- **It does not claim the module is implementable today.** ⚠ *`B-11` no longer blocks anything* — `ADR-0055` released `IMPL-1230`…`IMPL-1236` on 2026-08-20 for the architecture question, and `ADR-0059` closed the implementation half on 2026-08-21. **`B-2` is resolved** — the seven §10.3 tests exist and pass — so *proof by architecture test* is now available for architecture-level properties. ⛔ **That is not the same as the tasks being done.** Of the **61** tasks, **0** are implemented as production storage/API work; Wave 6's six describe the port and adapter work `ADR-0058`/`ADR-0059` authorised, and only those exist in code. **0 of 96 `FIL-AC-*`** are proven against real storage. Three Wave 5 tasks remain not completable until `FIL-GAP-014` supplies their values — ⚠ *`FIL-GAP-014` was closed by `ADR-0057` on 2026-08-20, which supplied 45 of 50 values; the three tasks are unblocked to the extent those values cover them.*
 - **It does not claim any obligation is verified.** Task coverage is allocation, not evidence (§6.2).
 - **It does not close a single `FIL-GAP-*`.** All **13** remain OPEN.
 - **It does not resolve the `E-22` consumer question**, and does not treat the manifest's `platform/services:files`
@@ -450,10 +525,10 @@ written but unprovable is **claimable, not done**.
 | Gate clause (`PRD_LIFECYCLE.md` L135–146) | State |
 |---|---|
 | An `IMPL-*` range is allocated | ✅ **`IMPL-1200` … `IMPL-1254`**, measured as free by two routes (§3.1); extended from `IMPL-1239` into the reserved band by the v0.2 amendment |
-| Every task traces to requirements | ✅ **55 of 55** cite ≥1 obligation; **0** cite a nonexistent one — re-measured after Wave 5, expanding range citations |
+| Every task traces to requirements | ✅ **61 of 61** cite ≥1 obligation; **0** cite a nonexistent one — re-measured after Wave 6, expanding range citations |
 | Rule 1 — never reuse a number | ✅ repository max was **1200**, held only as a boundary marker |
 | Rule 2 — leave growth room | ✅ **`IMPL-1255` … `IMPL-1299`** (45) reserved for **15** open gaps. ⚠ *The reserve was drawn on for the first time on 2026-08-20 — Wave 5 took 15 — and the design held: **zero existing tasks renumbered**, which is the outcome rule 1 exists to protect* |
-| Rule 3 — record Priority / Blocks / Blocked by | ✅ all three on all **55** rows |
+| Rule 3 — record Priority / Blocks / Blocked by | ✅ all three on all **61** rows |
 | Rule 4 — add a traceability table | ✅ §6, plus per-register coverage §6.1 |
 
 ✅ **Stage 6 gate satisfied.**
@@ -464,5 +539,6 @@ written but unprovable is **claimable, not done**.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-21 | **Wave 6 added by `ACCEPTED` `ADR-0058` and `ADR-0059`**, drawn entirely from the growth reserve: **`IMPL-1255`…`IMPL-1260`, 6 tasks — and ZERO existing tasks renumbered, resplit or reassigned.** ⚠ **That claim is measured, not asserted**: all 55 pre-existing `IMPL-*` definition rows were extracted from `git show HEAD:` and re-matched line-for-line against the current file — **55 present, 55 byte-identical, 0 removed, exactly 6 added**. Task count **55 → 61**; reserve **`IMPL-1255`…`1299` (45) → `IMPL-1261`…`1299` (39)**. Contiguity re-verified mechanically: **61 rows, span 1200–1260, zero gaps**. Traceability re-measured: **61 of 61** rows cite ≥1 obligation, **0** citations to an identifier `PRD-017` does not define. ⚠ **`FIL-GAP-015` CLOSED** (`ADR-0058`) — the blocker was a **conflation**, not missing infrastructure: `FIL-XC-017` names the **declared port** `platform/services:job_runtime` (manifest **L338**), while the EA's *Job Runtime (V2)* and its five children are scaled infrastructure. A V1 capability was waiting on a V2 deployment that it never needed. ⚠ **`FIL-GAP-012`'s implementation half CLOSED** (`ADR-0059`) — the same shape as `B-7`/`ADR-0012`, in the manifest's own words at **L649**: the `files` port was already declared and *"only the interfaces are missing"*. `FIL-FR-006` is now enforced by a port that refuses an unlisted context, pinned to BC Map **L331** by a **map-parsing** test, so neither the map nor the code can move alone. ⚠ **`B-2` RESOLVED** — all seven §10.3 tests exist and pass; `flutter test test/architecture/` measures **`+230`, 0 `[E]`**, full suite **`+287`, 0 `[E]`**. ⛔ **`B-2` resolved is not `VERIFIED`**: the suite proves architecture conformance, and **0 of 96 `FIL-AC-*`** are proven against real storage. ⚠ **TWO GENUINE DEFECTS were found by execution, not review, and both are disclosed in §5.6.1 rather than quietly fixed:** (1) the job adapter's `submit` was `async`, so a Dart body that runs synchronously to its first suspension **ran on the caller's stack** the work it existed to defer — which would have held the `FIL-CFG-015` **120 s** window *inside the upload request*, satisfying `FIL-XC-017` in wording while defeating it in effect; found by an **empirical probe written before the assertions**, fixed in the adapter, and `ADR-0058` **amended to v1.1** with a §3.7 disclosure rather than left claiming compliance it did not have; (2) the `E-22` grant-path refusal was asserted with `throwsA(isA<DomainError>())`, so **mutation M2 SURVIVED** — deleting the authorisation guard still threw `notFound` and the suite stayed green; the assertion now pins `forbidden` and seeds the object, after which the same mutation is killed. ⚠ **A third finding was a defect in a test's *method***: two source-wide substring scans flagged the port's own doc comments (the `FIL-XC-022` exclusion row, the `TEN-FR-018` note), **penalising the port for documenting its own exclusions**; the scans were narrowed to **declarations** and **three checks added in the opposite direction** — the citations must still be present and the stripper must be proven sound and non-vacuous. **The check was sharpened, not weakened.** ⛔ **Neither new port carries a tenant identifier** — `E-22` serves the global-class consumer `BC-10`, so a mandatory tenant parameter would breach frozen `TEN-FR-018`; **no `tenant_id` rule was created, relaxed or invented**. ⛔ **No ownership moved into `BC-29`** — grants record an **opaque decision reference**, never a boolean, so `FIL-XC-019`/`020`/`022` stand unamended. ⚠ **`GCP-23` made harmless at the code boundary, NOT repaired** — manifest **L242** stays module-grained and was deliberately not edited. ⚠ **The header's *"Application code written: None"* cell and §1's 0-lines measurement were CORRECTED rather than left standing** — they became false when the two ADRs authorised the ports; a document asserting a measurement anyone can falsify in one command is worse than one that discloses the change. **Still 0 SQL, 0 API handlers, 0 Flutter UI, 0 `BC-29` module, 0 schema.** **PRD-017 itself byte-identical; BC Map, EA and `tool/module_dependencies.yaml` untouched** |
 | **v1.1** | 2026-08-20 | **Wave 5 added by the `PRD-017` v0.2 amendment** (`ADR-0056`), drawn entirely from the growth reserve: **`IMPL-1240`…`IMPL-1254`, 15 tasks — and ZERO existing tasks renumbered, resplit or reassigned**, which is the outcome rule 1 exists to protect and the first real test of the 60-wide reserve §3.2 designed. Task count **40 → 55**; reserve **`IMPL-1240`…`1299` (60) → `IMPL-1255`…`1299` (45)**. ⚠ **`B-11` / `FIL-GAP-012` RELEASED for the architecture question only** by `ACCEPTED` `ADR-0055`: `IMPL-1230`…`IMPL-1236` move from ⛔ *blocked* to `Not started` and **nothing else changes** — *unblocked is not done*, none of the seven is implemented, `B-2` still gates *proof* of all 55, and the blocker rows in §4, §5.4 and §9 were **deliberately not deleted** so the record of why seven tasks sat idle survives. ⚠ **TWO allocation holes were found by measurement and each closed with a new task rather than a convenient citation:** (1) a scan of the 18 new v0.2 obligations against the `Discharges` cells returned **`FIL-FR-091` (serving variants) allocated to nothing** — appending it to `IMPL-1240` was rejected because generating and serving variants is *work*, not a property of derivative inheritance, so **`IMPL-1253`** was added; (2) a scan of every task row then returned **`FIL-AC-*` cited by ZERO Wave 5 tasks** — §6.1 attributed all acceptance criteria to `IMPL-1239`, whose row is scoped to the seven §10.3 architecture tests and `FIL-XC-001`…`022`, so writing *"96 by `IMPL-1239`"* would have been **false** and widening a Wave 4 task to absorb Wave 5 work was rejected; **`IMPL-1254`** was added instead. A misattributed prose reference (`IMPL-1248` where the entitlement work is `IMPL-1247`) was caught by the same cross-check. ⚠ **A THIRD defect surfaced and it PREDATES this amendment:** `IMPL-1239`'s `Discharges` cell cited `FIL-XC-001`…`022` and nothing else in **v1.0 as shipped**, so §6.1's *"78 AC claimed by `IMPL-1239`"* was a prose claim with **no allocation cell behind it** — the table asserted 100% AC coverage where the mechanism would have measured 0%. The cell now carries `FIL-AC-001`…`FIL-AC-078` explicitly; the defect is **disclosed in §6.1 rather than quietly absorbed**, because a pre-existing hole that a later pass silently fixes leaves no record that the original claim was unbacked. Counts **recomputed, not scaled**: invariants 11 → **13**, exclusions 22 → **23**, §6.1 per-register table refreshed from its stale v0.1 membership (82/17/11/22/132/78 → **95/19/13/23/150/96**), inventory 232 → **277**, task coverage 132/132 → **150 / 150 = 100.0%** *verified by expanding range citations* (a first per-identifier pass wrongly reported 132/150 because `FIL-XC-001`…`022` is cited as a range), AC coverage 71.2% → **74.7%**. Subject cell corrected to **v0.2 `FROZEN`**. ⚠ Three tasks (`IMPL-1242`, `1245`, `1252`) are **specified and startable but not completable** until `FIL-GAP-014` supplies `FIL-CFG-010`/`011`/`015`. ⛔ **The video/audio prohibition binds the whole wave** — `FIL-FR-005`, `FIL-XC-016`, `FIL-XC-023`; the V1 transcoding request was **refused** and recorded as `FIL-GAP-016`, and *"adaptive"* means adaptive across image and document characteristics, never across media types. **`IMPL-1237` deliberately NOT rewritten** — its existing configuration-extensibility rule already admits the six new `FIL-CFG-*` members. **No application code written; `lib/`, `packages/`, `test/`, `pubspec.yaml` still measure 0 changed lines** |
 | v1.0 | 2026-08-20 | Stage 6 allocated. **40 tasks, `IMPL-1200`…`IMPL-1239`**, range computed by repository-wide scan (max in use = 1200, a boundary marker only) and confirmed against `PRD-023_IMPLEMENTATION_TASKS.md` L89. **60-wide growth reserve** for 13 open gaps. All **132** Class A obligations claimed; **0** phantom citations. Sharing tasks limited to `FIL-FR-075`…`082` + `FIL-BR-015`…`017` + `FIL-INV-009`…`011` — **no `PRD-021` work created or duplicated**. `IMPL-1230`…`1236` marked ⛔ **blocked for execution** by `B-11`/`FIL-GAP-012`. **No application code written.** `PRD_LIFECYCLE.md` L147–153 staleness disclosed, not repaired |

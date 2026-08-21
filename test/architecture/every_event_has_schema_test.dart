@@ -66,7 +66,44 @@ const Set<String> _requiredEnvelopeFields = {
   'payload',
 };
 
-/// Imperative stems that would make a name a command rather than a fact.
+/// Irregular past participles that carry no `-ed` / `-en` suffix.
+///
+/// Needed because the convention is enforced on SHAPE, and `MessageSent` is as
+/// much a fact as `StudentEnrolled`.
+const Set<String> _irregularPastParticiples = {
+  'Sent',
+  'Taken',
+  'Frozen',
+  'Unfrozen',
+  'Held',
+  'Left',
+  'Kept',
+  'Lost',
+  'Made',
+  'Built',
+  'Found',
+  'Read',
+  'Set',
+  'Put',
+  'Won',
+};
+
+/// Event names §9 declares that contain no past-tense token, together with the
+/// reason §9 gives for the exception.
+///
+/// This is a DISCLOSURE list, not a bypass: the map's value must appear in §9
+/// near the event, and an entry here whose justification has vanished from §9
+/// will fail the test below. Adding a name here without a §9 justification is
+/// therefore not a way to silence the rule.
+const Map<String, String> _nonPastTenseWithStatedReason = {
+  // §9 annotates this row verbatim: "Reminder trigger (fact, not command)".
+  // It is a present-participle *state* — the membership IS expiring — which is
+  // a fact about the world, not an instruction to anybody.
+  'membership.MembershipExpiringSoon': 'fact, not command',
+};
+
+/// Bare imperative verbs. A local name that is EXACTLY one of these (or begins
+/// with one and has no past-tense token anywhere) is a command.
 ///
 /// BC Map §9 is explicit: "An event named as an imperative (`SendReminder`) is a
 /// command, belongs to Workflow, and must not enter the event bus as a domain
@@ -77,7 +114,6 @@ const List<String> _imperativeStems = [
   'Update',
   'Delete',
   'Assign',
-  'Release',
   'Notify',
   'Process',
   'Handle',
@@ -85,12 +121,30 @@ const List<String> _imperativeStems = [
   'Execute',
   'Apply',
   'Charge',
-  'Refund',
   'Revoke',
   'Grant',
   'Suspend',
   'Provision',
+  'Recompute',
+  'Purge',
+  'Rebuild',
 ];
+
+/// Splits `FeePaymentReceived` into `[Fee, Payment, Received]`.
+List<String> _pascalTokens(String s) =>
+    RegExp(r'[A-Z][a-z0-9]*').allMatches(s).map((m) => m.group(0)!).toList();
+
+/// True when any token in the local name is past-tense-shaped.
+///
+/// Shape, not vocabulary. `<Aggregate><PastTenseVerb>` means the verb may sit
+/// after a noun — `RefundIssued` is the noun "Refund" plus "Issued", which an
+/// implementation that only inspected the PREFIX would misread as the
+/// imperative "Refund".
+bool _hasPastTenseToken(String localName) => _pascalTokens(localName).any(
+      (t) =>
+          t.endsWith('ed') || t.endsWith('en') ||
+          _irregularPastParticiples.contains(t),
+    );
 
 /// A §9 event name that is **shorthand** in the table and whose full name
 /// differs from the literal backticked token.
@@ -165,7 +219,7 @@ Map<String, String> _raisedEventTypes() {
   final out = <String, String>{};
   final dir = Directory('lib');
   if (!dir.existsSync()) fail('Cannot find lib/.');
-  final shape = RegExp(r'''eventType:\s*'([^']+)'''');
+  final shape = RegExp(r"eventType:\s*'([^']+)'");
   for (final f in dir.listSync(recursive: true).whereType<File>()) {
     if (!f.path.endsWith('.dart')) continue;
     for (final m in shape.allMatches(f.readAsStringSync())) {
@@ -214,29 +268,114 @@ void main() {
       }
     });
 
-    test('no declared event is named as an imperative — events are facts', () {
+    test('every declared event name is past-tense-shaped — events are facts',
+        () {
+      // The rule is enforced on SHAPE across the whole local name, not on its
+      // first token. An earlier draft of this test checked whether the name
+      // STARTED with an imperative stem and produced a false positive on
+      // `fee.RefundIssued` — where "Refund" is the aggregate noun and "Issued"
+      // is the past-tense verb. Checking the prefix tests the wrong half of
+      // `<Aggregate><PastTenseVerb>`.
       final offenders = <String>[];
       for (final name in declared.keys) {
         final local = name.split('.').last;
-        for (final stem in _imperativeStems) {
-          if (!local.startsWith(stem)) continue;
-          // A past-tense form of the same stem is fine: "Created", "Updated",
-          // "Assigned", "Released", "Applied", "Revoked", "Suspended". The
-          // imperative is the bare stem or a present-tense continuation.
-          final rest = local.substring(stem.length);
-          final pastTense = rest.startsWith('d') || rest.startsWith('ed');
-          if (!pastTense && rest.isNotEmpty) offenders.add('$name (→ $stem)');
-        }
+        if (_hasPastTenseToken(local)) continue;
+        if (_nonPastTenseWithStatedReason.containsKey(name)) continue;
+        offenders.add(name);
       }
+
       expect(
         offenders,
         isEmpty,
         reason:
             '§9 forbids imperative event names: "an event named as an '
             'imperative is a command, belongs to Workflow, and must not enter '
-            'the event bus as a domain event". Offenders: '
+            'the event bus as a domain event". These declared names contain no '
+            'past-tense token and no recorded exception: '
             '${offenders.join(', ')}',
       );
+    });
+
+    test('no declared event is a BARE imperative verb', () {
+      // Catches the specific failure §9 names — `SendReminder` — which does
+      // contain no past-tense token and would already be caught above, but is
+      // asserted separately because the two rules have different repairs:
+      // a bare imperative must MOVE to Workflow, whereas a mis-tensed fact
+      // must be RENAMED.
+      final offenders = <String>[];
+      for (final name in declared.keys) {
+        final local = name.split('.').last;
+        if (_hasPastTenseToken(local)) continue;
+        final first = _pascalTokens(local).firstOrNull;
+        if (first != null && _imperativeStems.contains(first)) {
+          offenders.add('$name (imperative "$first" → belongs to Workflow)');
+        }
+      }
+      expect(
+        offenders,
+        isEmpty,
+        reason:
+            'A command must not enter the event bus as a domain event: '
+            '${offenders.join(', ')}',
+      );
+    });
+
+    test('each non-past-tense exception is justified by §9 itself', () {
+      // Prevents the exception map from becoming a silent bypass. The stated
+      // reason must actually appear in the BC Map, near the event, or the
+      // "exception" is this test file inventing an allowance.
+      expect(
+        _nonPastTenseWithStatedReason,
+        isNotEmpty,
+        reason:
+            'If §9 no longer contains a non-past-tense event name, delete the '
+            'exception map and the two tests that consult it.',
+      );
+
+      final bcMap = File(_bcMapPath).readAsStringSync();
+      for (final entry in _nonPastTenseWithStatedReason.entries) {
+        final localName = entry.key.split('.').last;
+        expect(
+          declared.containsKey(entry.key),
+          isTrue,
+          reason:
+              '${entry.key} is listed as an exception but is no longer '
+              'declared in §9. Remove the stale exception.',
+        );
+        expect(
+          bcMap,
+          contains(entry.value),
+          reason:
+              'The exception for ${entry.key} claims §9 justifies it with '
+              '"${entry.value}", but that text is not in $_bcMapPath. An '
+              'exception with no authority behind it is this test file '
+              'granting itself an allowance.',
+        );
+        // And the justification must sit on a line that mentions the event,
+        // not merely somewhere in a 700-line document. The event name appears
+        // on several lines (§9's declaring row, and the E-23 edge row that
+        // cites it as an example), so ALL mentions are considered and at least
+        // one must carry the justification.
+        final mentioning = bcMap
+            .split('\n')
+            .where((l) => l.contains(localName))
+            .toList();
+        expect(
+          mentioning,
+          isNotEmpty,
+          reason: '$localName is not mentioned anywhere in $_bcMapPath.',
+        );
+        expect(
+          mentioning.any((l) => l.contains(entry.value)),
+          isTrue,
+          reason:
+              'The justification "${entry.value}" for ${entry.key} was found '
+              'in $_bcMapPath but NOT on any line that mentions the event. It '
+              'must annotate the event it excuses, or the exception is '
+              'unsupported. Lines mentioning $localName:\n'
+              '${mentioning.map((l) => '  $l').join('\n')}',
+        );
+      }
     });
 
     test('DISCLOSED INCONSISTENCY — README says 30 events, §9 declares 43', () {

@@ -186,6 +186,12 @@ SCOPE_REGISTERS = {
     '### 4.9':  ['FR'],
     '### 4.10': ['FR'],
     '### 4.11': ['FR'],
+    # ADR-0056 (PRD-017 v0.2): media optimization. A NEW SCOPE, added because
+    # the document gained one -- not to make a failing check pass.  Omitting it
+    # would have made `definitions_by_scope` fail every FIL-FR-083..094 as
+    # "defined in a scope not entitled to define any register", which is the
+    # guard working correctly: a new register-bearing section must be declared.
+    '### 4.12': ['FR'],
     '## 5.':    ['BR'],
     '### 6.2':  ['INV'],
     '### 8.5':  ['CFG'],

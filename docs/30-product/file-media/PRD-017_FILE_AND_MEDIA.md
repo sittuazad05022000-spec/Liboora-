@@ -815,6 +815,94 @@ the sharing contexts are **global**, not tenant-scoped, and that is stated rathe
 the same transaction as the operation that caused them. Consistent with `FIL-FR-062`, this module **SHALL NOT**
 publish an event to achieve it. *(`AUD-FR-008`; `MP-GBR-13`. The limits of this are `FIL-GAP-004`.)*
 
+### 4.12 Media optimization — compression, derivatives and the processing lifecycle
+
+> **Added at v0.2 by `ACCEPTED` [`ADR-0056`](../../00-governance/adr/ADR-0056-file-media-v0.2-media-optimization.md).**
+> Authority for placing this at **V1** is BC Map **L138** (Rank 4, *"thumbnailing"*) plus the `MP-CON-08`
+> precedence ruling already recorded in `FIL-GAP-005`; the EA's **V2** placement at **L1877** is descriptive
+> (baseline **L139**) and is **not** treated as authority. ⛔ **Video and audio are NOT in scope** — `FIL-FR-005`
+> and `FIL-XC-016` stand unamended and `FIL-GAP-016` records the refused request.
+
+`FIL-FR-083` — The module **SHALL** produce an **optimized representation** of every accepted object whose
+content class permits it, as a **derivative** in the sense already fixed by `FIL-FR-055`…`FIL-FR-059`. An
+optimized representation is a derivative and inherits every rule that governs one: it **SHALL** inherit the
+original's access decision, tenant class and lifecycle state (`FIL-FR-056`), **SHALL** be regenerable and
+**SHALL NOT** be the sole copy of any byte (`FIL-FR-057`), and **SHALL** be deleted when the original is
+(`FIL-FR-058`). *(No new access, isolation or retention model is introduced by optimization — this requirement
+exists to say so normatively rather than leave it inferred.)*
+
+`FIL-FR-084` — The module **SHALL** classify each image object, before compressing it, as either
+**document-like** — handwritten notes, scanned or photographed study material, assignments, and other text-heavy
+images — or **photographic**, and **SHALL** select the compression profile for that class. The classification
+**SHALL** be recorded on the stored-object record (`FIL-INV-012`) so that a later regeneration reproduces the
+same decision. *(This is the requirement the product instruction's readability demand rests on. A single profile
+cannot serve both a logo photograph and a page of pencil handwriting.)*
+
+`FIL-FR-085` — For a **document-like** image the module **SHALL** apply a **document-aware profile** that
+(a) holds the encoder quality at or above the floor `FIL-CFG-010`, (b) applies **no chroma subsampling**, and
+(c) preserves the long-edge pixel dimension at or above `FIL-CFG-011`. Where the profile and a size ceiling
+cannot both be satisfied, the module **SHALL** preserve **readability** and **SHALL** refuse the upload with a
+typed error rather than emit an unreadable derivative. *(⚠ The floor and the minimum dimension have **no
+Rank 1–4 authority supplying a value** — `FIL-GAP-014`. The requirement is complete; the number is owed.)*
+
+`FIL-FR-086` — For a **photographic** image the module **SHALL** apply a **perceptual profile** bounded by
+`FIL-CFG-012`, and **SHALL** select the output encoding from the allow-list `FIL-CFG-013`. The module **SHALL
+NOT** enlarge an input, and **SHALL NOT** emit a derivative larger in bytes than its original — where
+optimization would not reduce size, the original **SHALL** be served and that outcome recorded.
+
+`FIL-FR-087` — Profile selection **SHALL** be **adaptive**, derived from **measured** properties of the input —
+content class, pixel dimensions, byte length, encoding and, where the class permits it, page or frame count —
+and **SHALL NOT** be supplied by the caller. A caller **MAY** request only the two choices `FIL-FR-088` and
+`FIL-FR-089` define. *(Adaptivity is specified generically so that admitting a further content class later is
+*"a configuration and entitlement change, not a redesign"* — the promise frozen `FIL-FR-071` and `FIL-FR-005`
+already make. It is **not** a video-transcoding requirement: see `FIL-XC-016`, unamended.)*
+
+`FIL-FR-088` — The module **SHALL** preserve the **original bytes** of every accepted object, unmodified and
+byte-exact, whenever any of the following holds: the purpose register (`FIL-CFG-001`) marks the purpose
+original-preserving; the object's content class has no lossy path (`FIL-BR-018`); a retention or audit
+obligation requires the original; or the sender **explicitly chose original-quality upload**. Optimization
+**SHALL NOT** replace or overwrite an original in any case. *(The sender's choice is an **entitlement**
+decision — see `FIL-FR-089`.)*
+
+`FIL-FR-089` — Whether an actor **may** choose original-quality upload, and any ceiling applying when they do,
+**SHALL** be an **entitlement decision consumed** over `E-19`/the entitlement port and **SHALL NOT** be decided
+by this module. Absent a decision, the module **SHALL** apply the optimizing default. *(`FIL-BR-001`'s
+consumed-permission rule; `FIL-XC-009`. This module offers the capability and enforces the answer; it does not
+own the policy.)*
+
+`FIL-FR-090` — For **PDF and non-executable office/text documents** the module **SHALL NOT** apply any lossy
+transformation, **SHALL NOT** re-encode embedded images, and **SHALL NOT** rasterize, downsample or flatten
+document content. It **MAY** apply only **lossless** container-level compression, and only where the output is
+byte-exactly decompressible to the input. *(`FIL-INV-012`; `FIL-BR-018`. `FIL-XC-015` already forbids rendering
+a preview — EA **L1878** places Document Preview at V3.)*
+
+`FIL-FR-091` — The module **SHALL** generate the bounded set of **serving variants** declared by `FIL-CFG-007`
+for objects whose class permits it, and **SHALL** serve a variant only through the same signed-URL and
+authorization path as an original (`FIL-FR-056`, `FIL-BR-009`). Variant selection **SHALL** be a function of the
+requested purpose and declared set, never of a caller-supplied dimension. *(`FIL-XC-014` — the module still
+**MUST NOT** operate a CDN or define a cache-invalidation topology.)*
+
+`FIL-FR-092` — Every accepted object **SHALL** traverse the explicit lifecycle
+**`RECEIVED` → `VALIDATING` → `PROCESSING` → `READY` | `FAILED`**, and its current state **SHALL** be readable
+by the calling context. `READY` and `FAILED` are the only **terminal** states. An object **SHALL** become
+readable to any consumer **only** in `READY` (`FIL-INV-013`). Validation — type, byte length, and the scan
+outcome that `FIL-FR-066` requires to fail closed — **SHALL** complete before `PROCESSING` begins. *(This is the
+`upload → validation → processing → ready/failure` lifecycle the instruction requires, stated as a state
+machine so that "incomplete" is a state rather than an absence.)*
+
+`FIL-FR-093` — Processing **SHALL** be **idempotent** under an operation key: a repeated or retried attempt for
+the same object and profile **SHALL NOT** produce a second stored derivative, a second audit fact, or a
+different result. A failed attempt **SHALL** be retryable up to the bound `FIL-CFG-014`, after which the object
+**SHALL** rest in `FAILED` with a typed, non-leaking reason. Retry **SHALL NOT** be scheduled by this module —
+`FIL-XC-017` requires `platform/services:job_runtime`. *(⚠ EA **L1865** places Job Runtime at **V2** while this
+requirement needs it at V1 — `FIL-GAP-015`.)*
+
+`FIL-FR-094` — The module **SHALL** expose **processing progress** for an in-flight object to the calling
+context — at minimum the current lifecycle state and, where the underlying operation reports it, a monotonic
+completion fraction — and **SHALL NOT** expose any storage path, worker identity, internal error text or
+byte-level detail through it. Progress for an object the caller may not read **SHALL** be indistinguishable
+from a non-existent object. *(`FIL-FR-050`'s not-found rule extends to progress; a progress endpoint that
+confirms existence is an enumeration oracle.)*
 ---
 
 ## 5. Business rules
@@ -872,6 +960,18 @@ facts by the calling context. *(`FIL-FR-076`; `FIL-FR-008`, which forbids cachin
 conversation or friendship, this module takes no action on the bytes; and if the object is deleted, no grant
 survives it. The two lifecycles are related only through `FIL-FR-080`. *(`FIL-XC-002` keeps message retention
 with `BC-12`; `FIL-INV-006` keeps derivative and grant removal with the object.)*
+
+
+`FIL-BR-018` — **A document has no lossy path.** For a PDF or non-executable office/text object the module
+applies **lossless** transformation only, and the stored bytes remain byte-exactly recoverable to the accepted
+input. Storage or bandwidth saving is **never** a reason to degrade a document. *(`FIL-FR-090`; `FIL-INV-012`.
+Added at v0.2 by `ADR-0056` §3.3 — this is an integrity rule, not a tunable, and it is deliberately **not** in
+`FIL-CFG-*`.)*
+
+`FIL-BR-019` — **Readability outranks size.** Where a compression profile and a size ceiling cannot both be
+satisfied for a **document-like** image, the module refuses the upload with a typed error and **never** emits a
+derivative below the readability floor. Study material that cannot be read has no value at any size. *(`FIL-FR-085`;
+`FIL-CFG-010`/`011`; `FIL-GAP-014` owes the values. Added at v0.2 by `ADR-0056` §3.4.)*
 
 ---
 

@@ -102,21 +102,54 @@ final class InProcessJobRuntime implements JobRuntime {
 
   final Clock _clock;
   final Map<String, JobOutcome> _outcomes = {};
+  final List<Future<void>> _inFlight = [];
 
-  /// Completed and in-flight work, exposed for the architecture suite to assert
-  /// that a submission is genuinely deferred rather than inlined.
+  /// Accepted work, terminal or not. Exposed so the architecture suite can
+  /// assert that a submission was *recorded* even though nothing has run yet.
   int get knownJobs => _outcomes.length;
 
   @override
   JobOutcome? outcome(JobKey key) => _outcomes[key.value];
 
+  /// Await every accepted job.
+  ///
+  /// Deliberately **not** on the [JobRuntime] port: a distributed V2 runtime
+  /// could not honour it. It exists because [submit] returns on *acceptance*,
+  /// so without a join point a test could only assert the pending state, and
+  /// graceful shutdown would have nothing to wait on.
+  Future<void> drain() async {
+    while (_inFlight.isNotEmpty) {
+      final batch = List<Future<void>>.of(_inFlight);
+      _inFlight.clear();
+      await Future.wait(batch);
+    }
+  }
+
+  /// Accepts work and returns; it does **not** await the work.
+  ///
+  /// Not an `async` method, and that is load-bearing. An `async` body runs
+  /// synchronously up to its first suspension, so an earlier draft of this
+  /// adapter began executing `work()` on the **caller's own stack** — a probe
+  /// observed the job already in [JobState.running] before the returned future
+  /// was awaited. A media job may run to the `FIL-CFG-015` timeout (120 s), so
+  /// that inlined the whole of processing into the upload request and broke this
+  /// port's own contract (*"Submit work to run off the caller's request path"*)
+  /// along with the reason `FIL-XC-017` requires a job runtime at all.
+  ///
+  /// `Future(...)` schedules through the event loop, so the first attempt cannot
+  /// begin until the caller yields. Completion still happens in **this process**
+  /// — that is the durability limit `ADR-0058` §7 discloses, and it is a
+  /// different property from where the work starts.
   @override
   Future<void> submit(
     JobKey key,
     Future<void> Function() work, {
     required int retryBudget,
     required Duration deadline,
-  }) async {
+  }) {
+    // Thrown synchronously: a caller who does not await `submit` would
+    // otherwise turn a programming error into an unhandled asynchronous error
+    // that surfaces nowhere near its cause.
     if (retryBudget < 1) {
       throw ArgumentError.value(
         retryBudget,
@@ -129,11 +162,26 @@ final class InProcessJobRuntime implements JobRuntime {
     // Idempotency (FIL-FR-093): a key already seen is never executed again, and
     // the first outcome stands. Checked BEFORE any attempt, so a duplicate
     // submission cannot produce a second derivative or a second audit fact.
-    if (_outcomes.containsKey(key.value)) return;
+    if (_outcomes.containsKey(key.value)) return Future<void>.value();
 
     _outcomes[key.value] =
         JobOutcome(key: key, state: JobState.pending, attempts: 0);
 
+    _inFlight.add(
+      Future<void>(() => _run(key, work, retryBudget, deadline)),
+    );
+    return Future<void>.value();
+  }
+
+  /// The attempt loop. Never throws: a failure becomes a terminal outcome with a
+  /// typed reason, because an escaping error here would be an unhandled
+  /// asynchronous error with no caller left to catch it.
+  Future<void> _run(
+    JobKey key,
+    Future<void> Function() work,
+    int retryBudget,
+    Duration deadline,
+  ) async {
     final startedAt = _clock.now();
     var attempts = 0;
     String? lastReason;

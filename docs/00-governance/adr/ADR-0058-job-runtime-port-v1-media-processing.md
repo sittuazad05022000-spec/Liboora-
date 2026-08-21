@@ -3,6 +3,7 @@
 | | |
 |---|---|
 | **Status** | `Accepted` |
+| **Version** | **v1.1** (see §9; v1.1 adds §3.7, a disclosed self-correction — the "off the request path" claim was falsified on execution and the adapter was fixed) |
 | **Date** | 2026-08-20 |
 | **Deciders** | **Architecture Owner** (the port/runtime distinction, the V1 adapter) · Configuration Owner (the timeout and retry values already set by `ADR-0057`) |
 | **Closes** | **`FIL-GAP-015`** |
@@ -71,7 +72,7 @@ The V1 adapter runs work **asynchronously in-process**, off the request path. It
 
 | Property | V1 in-process adapter | V2 Job Runtime |
 |---|---|---|
-| Off the request path | ✅ Required | ✅ |
+| Off the request path | ✅ Required — **and empirically verified, see §3.7** | ✅ |
 | Bounded retry under an operation key | ✅ | ✅ |
 | Deadline → terminal `FAILED` | ✅ | ✅ |
 | Survives process restart | ⛔ **No** | ✅ Durable queue |
@@ -112,6 +113,50 @@ Not the storage model, not the schema, not the API, not any Flutter surface. Not
 determination), not `FIL-GAP-016` (video — refused), not `FIL-GAP-012`'s implementation half (`ADR-0059`).
 The port carries **no** tenant identifier of its own: it inherits ambient `TenantContext`, so no tenancy rule is
 created, relaxed, or introduced into a global identity context.
+
+### 3.7 ⚠ DISCLOSED — "off the request path" was **asserted before it was measured**, and the first adapter did not satisfy it
+
+The §3.2 table above claims *"off the request path ✅"*. That claim was written **before** the adapter was executed, and
+when it was executed it was **false**.
+
+A probe submitted trivial work and inspected the runtime **before awaiting** the returned future:
+
+```
+PROBE ran-before-await     = true
+PROBE outcome-before-await = JobState.running
+```
+
+The work had already begun, and the job was already `running`, on the **caller's own stack**. The cause is a language
+detail, not a typo: a Dart `async` body executes **synchronously up to its first suspension point**, so a `submit`
+declared `async` starts the work it is supposed to defer. The adapter therefore violated the very sentence in its own
+port contract — *"Submit work to run off the caller's request path"* — while appearing correct in review and passing
+`flutter analyze` cleanly.
+
+**Why this mattered rather than being cosmetic.** Media processing may run to the `FIL-CFG-015` timeout (**120 s**,
+`ADR-0057` §2C.5). Inlined, that entire window is held **inside the upload request**. The result would have been an
+adapter that satisfied `FIL-XC-017` *in wording* — `BC-29` still operates no pool, queue, scheduler or cron — while
+defeating the reason the rule exists. It would also have made `FIL-FR-092`'s `PROCESSING` state unobservable: the
+caller could not see `PROCESSING` because the call had not returned yet.
+
+**Resolution.** `submit` is no longer `async`; it records acceptance, schedules the attempt loop through the event
+loop, and returns. Re-measured:
+
+```
+PROBE ran-after-submit-returned = false     state-after-submit = JobState.pending
+PROBE ran-after-drain           = true      state-after-drain  = JobState.succeeded
+```
+
+The behaviour is now pinned by an executing test (`test/architecture/job_runtime_port_test.dart`, *"submit returns
+BEFORE the work begins"*), and that test was **mutation-proven**: reinstating the inlined form turns it red. The
+`✅` in §3.2 is consequently a **measurement**, not an intention.
+
+**Two governance points are recorded, not glossed.** First, this is the second time in this phase that a claim of
+compliance survived review and was falsified only by execution — the first being the `ADR-0057` draft that minted
+identifiers into a FROZEN register and was caught by `prd017_stage5.py`. Second, it is direct evidence for the
+`B-2` requirement that architecture tests *"validate the actual architecture rather than merely asserting
+documentation text"*: a test that had read `FIL-XC-017` out of the PRD and checked the sentence was present would
+have passed against the defective adapter, because the defect was in **where the work ran**, not in what any
+document said.
 
 ---
 
@@ -197,3 +242,4 @@ No tenancy rule created or relaxed. No File & Media module, schema or API create
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-08-20 | Created `Accepted`. **Closes `FIL-GAP-015`** by identifying it as a **port-vs-runtime conflation** rather than a scheduling impossibility. The decisive measurement: **every child of EA "Job Runtime (V2)" — Background Jobs, Worker Pools, Queue Management, Retry & Backoff, Job Observability — is scaled *infrastructure*, and none of them is the *port*.** `FIL-XC-017` forbids `BC-29` from **operating** those and requires it to **consume** `platform/services:job_runtime`, which manifest **L338** already **declares**; so the V1 obligation is that the **interface exist**, which is precisely the `B-7` / `ADR-0012` shape the repository has already ruled on (*"five service ports are already declared … only the interfaces are missing"* → remedy: *"extract the interfaces"*). Authorises a `JobRuntime` **port** plus **one** in-process adapter following the existing `IdempotencyService` precedent in `platform/services`. ⛔ **No V2 infrastructure is built** — measured against the EA's own list: no worker pool, queue subsystem, distributed backoff, observability plane, cron, broker or daemon; **zero new packages, zero dependencies, zero deployment units.** ⚠ **The adapter's non-durability is disclosed in the port's own contract rather than discovered later**: a process restart loses in-flight work, and this is survivable **only** because FROZEN `FIL-FR-057` (a derivative is never the sole copy) and `FIL-FR-083` (regenerable) mean the worst case is reprocessing, never a lost original or a served partial — with `FIL-FR-095`'s `FIL-CFG-015` deadline guaranteeing no object sits non-terminal forever. **The V1 weakness lands exactly where the specification already has a recovery path**, which is why a lightweight adapter is defensible here and would not be for payments. ⚠ **A real operational limit is recorded as a consequence rather than omitted**: V1 media processing is **not suitable for multi-instance deployment** until a durable adapter or the V2 runtime arrives. ⚠ **A durable persisted-queue adapter was the closest rejected option** and is deliberately deferred to **Phase 6, with the storage design**, rather than decided ahead of it. **Retry stays the runtime's job** — `BC-29` submits only the bound from `FIL-CFG-014` (= 3, `ADR-0057` §2C.6) and never decides when an attempt happens, which is what keeps `FIL-XC-017` satisfied in substance and not merely in wording. **No requirement amended, no PRD touched, no EA edit** (it is descriptive and its V2 placement of the *subsystem* remains true), **no manifest edit** (L338 already declares the port), **no BC Map or matrix change, no baseline issued** (no Rank 1–3 version change). **0 tenancy rules created or relaxed — the port carries no tenant identifier and inherits ambient `TenantContext`. 0 File & Media modules, 0 schema, 0 SQL, 0 API, 0 Flutter code, 0 events minted, nothing verified.** |
+| **v1.1** | 2026-08-20 | ⚠ **Adds §3.7, a disclosed self-correction.** The §3.2 claim *"off the request path ✅"* was **asserted before it was measured**, and on execution it was **false**: a probe observed the submitted work already `running` on the **caller's own stack** before the returned future was awaited, because a Dart `async` body runs synchronously to its first suspension. The adapter thereby broke the sentence in its own port contract while reviewing cleanly and passing `flutter analyze`. Because media processing may run to the `FIL-CFG-015` window (**120 s**), the defect would have held that entire window **inside the upload request** — satisfying `FIL-XC-017` in wording while defeating its purpose — and would have made `FIL-FR-092`'s `PROCESSING` state unobservable. Fixed by making `submit` non-`async`: it records acceptance, schedules the attempt loop on the event loop, and returns. Re-measured `pending` on return and `succeeded` after drain, **pinned by an executing, mutation-proven test**, so the `✅` is now a measurement rather than an intention. **No decision in §4 changed and no requirement was touched**; the correction is to the adapter and to this record. Recorded as direct evidence for `B-2`'s requirement that architecture tests validate **actual architecture** rather than documentation text — a prose-checking test would have passed against the defective adapter. |

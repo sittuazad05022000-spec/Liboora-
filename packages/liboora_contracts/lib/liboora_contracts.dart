@@ -22,6 +22,7 @@ export 'src/events/domain_event.dart';
 
 // ── Universal ports ──────────────────────────────────────────
 export 'src/ports/clock.dart';
+export 'src/ports/file_access.dart';
 export 'src/ports/id_generator.dart';
 export 'src/ports/job_runtime.dart';
 export 'src/ports/person_identity_factory.dart';

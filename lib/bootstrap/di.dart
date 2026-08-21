@@ -40,6 +40,7 @@ final class AppContainer {
     required this.events,
     required this.entitlements,
     required this.idempotency,
+    required this.jobs,
     required this.sync,
     required this.audit,
     required this.analytics,
@@ -77,6 +78,17 @@ final class AppContainer {
   final EventBus events;
   final EntitlementService entitlements;
   final IdempotencyService idempotency;
+
+  /// The `platform/services:job_runtime` port declared at
+  /// `tool/module_dependencies.yaml` L338, which `FIL-XC-017` obliges the File
+  /// & Media module to consume rather than reimplement.
+  ///
+  /// Typed to the **port**, not to [InProcessJobRuntime], deliberately. The V1
+  /// adapter is in-process and does not survive a restart (`ADR-0058` §7); the
+  /// whole point of naming the abstraction here is that replacing it with a
+  /// durable queue stays a change to this file alone.
+  final JobRuntime jobs;
+
   final OfflineSyncEngine sync;
   final AuditTrail audit;
   final AnalyticsProjections analytics;
@@ -209,6 +221,10 @@ final class AppContainer {
     final events = EventBus(telemetry);
     final entitlements = EntitlementService(tenantContext);
     final idempotency = IdempotencyService(tenantContext);
+    // ADR-0058: the V1 adapter for the job_runtime port. Takes the clock so
+    // the FIL-FR-095 deadline is measured against injected time and a test can
+    // pin it, rather than reading the wall clock inside the adapter.
+    final JobRuntime jobs = InProcessJobRuntime(clock);
     final sync = OfflineSyncEngine();
     final audit = AuditTrail(ids);
     final analytics = AnalyticsProjections(clock)..register(events);
@@ -258,6 +274,7 @@ final class AppContainer {
       events: events,
       entitlements: entitlements,
       idempotency: idempotency,
+      jobs: jobs,
       sync: sync,
       audit: audit,
       analytics: analytics,

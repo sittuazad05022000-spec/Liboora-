@@ -50,14 +50,14 @@ not to extend them.
 |---|---|---|---|---|
 | `SECP-FR-NNN` | Functional security requirement | 82 | **2** | `083`…`084` |
 | `SECP-BR-NNN` | Business rule | 24 | **1** | `025` |
-| `SECP-AC-NNN` | Acceptance criterion | 123 | **4** | `124`…`127` |
+| `SECP-AC-NNN` | Acceptance criterion | 123 | **5** | `124`…`128` |
 | `SECP-GAP-NNN` | Gap / open question | 40 | **4** | `041`…`044` |
 | `SECP-TRC-NNN` | **Traceability record** *(new)* | — | **9** | `001`…`009` |
 | `SECP-DEP-NNN` | **External dependency** *(new)* | — | **7** | `001`…`007` |
 | `SECP-ADR-NNN` | **Required ADR** *(new)* | — | **5** | `001`…`005` |
 | `SECP-XC-`, `SECP-OWN-`, `SECP-OBJ-`, `SECP-PRN-`, `SECP-HRO-`, `SECP-SIG-`, `SECP-SEV-`, `SECP-TST-` | — | as measured | **0** | — |
 
-**Part 8 declares 32 identifiers. `PRD-012a` total: 426.**
+**Part 8 declares 33 identifiers. `PRD-012a` total: 427.**
 
 ### 0.4 Prefix collision check — three new registers
 
@@ -91,7 +91,7 @@ Every register was counted by measurement across `docs/30-product/security/`, no
 | `SECP-HRO-` | `001`…`012` | `012` | **12** | ✅ | 2 *(closed set)* |
 | `SECP-XC-` | `001`…`037` | `037` | **37** | ✅ | 1, 2, 3, 4, 5, 6, 7 |
 | `SECP-OWN-` | `001`…`030` | `030` | **30** | ✅ | 1, 2, 3, 4, 5, 6, 7 |
-| `SECP-AC-` | `001`…`127` | `127` | **127** | ✅ | 1, 2, 3, 4, 5, 6, 7, 8 |
+| `SECP-AC-` | `001`…`128` | `128` | **128** | ✅ | 1, 2, 3, 4, 5, 6, 7, 8 |
 | `SECP-GAP-` | `001`…`044` | `044` | **44** | ✅ | 1, 2, 3, 4, 5, 6, 7, 8 |
 | `SECP-SIG-` | `001`…`010` | `010` | **10** | ✅ | 5 *(closed set)* |
 | `SECP-SEV-` | `001`…`004` | `004` | **4** | ✅ | 5 *(closed set)* |
@@ -99,7 +99,7 @@ Every register was counted by measurement across `docs/30-product/security/`, no
 | `SECP-TRC-` | `001`…`009` | `009` | **9** | ✅ | 8 |
 | `SECP-DEP-` | `001`…`007` | `007` | **7** | ✅ | 8 |
 | `SECP-ADR-` | `001`…`005` | `005` | **5** | ✅ | 8 |
-| **TOTAL** | | | **426** | | |
+| **TOTAL** | | | **427** | | |
 
 `PRD_LIFECYCLE.md` §5 rule 4 requires contiguity — *"a gap makes the published range false."* **All fifteen registers
 are contiguous with no holes.**
@@ -115,8 +115,8 @@ are contiguous with no holes.**
 | Part 5 | **51** | `FR`, `BR`, `XC`, `OWN`, `AC`, `GAP`, `SIG`, `SEV` |
 | Part 6 | **43** | `FR`, `BR`, `XC`, `OWN`, `AC`, `GAP` |
 | Part 7 | **54** | `FR`, `BR`, `XC`, `OWN`, `AC`, `GAP`, `TST` |
-| Part 8 | **32** | `FR`, `BR`, `AC`, `GAP`, `TRC`, `DEP`, `ADR` |
-| **Total** | **426** | 15 registers |
+| Part 8 | **33** | `FR`, `BR`, `AC`, `GAP`, `TRC`, `DEP`, `ADR` |
+| **Total** | **427** | 15 registers |
 
 ### 1.3 Two counting rules that were applied, and why they matter
 
@@ -254,20 +254,24 @@ this document from choosing. It is raised as `SECP-ADR-002` and `SECP-DEP-001`.
 | Part 5 | 11 `FR` + 3 `BR` = **14** *(+3 `XC`, 2 `OWN`, 14 `SIG`/`SEV` bound)* | 14 | **0** |
 | Part 6 | 12 `FR` + 4 `BR` = **16** *(+4 `XC`, 3 `OWN` bound)* | 16 | **0** |
 | Part 7 | 13 `FR` + 3 `BR` = **16** *(+4 `XC`, 4 `OWN`, 8 `TST` bound)* | 17 | **0** |
-| Part 8 | 2 `FR` + 1 `BR` = **3** | 4 | **0** |
-| **Total** | **109 normative requirements** | **127 criteria** | **0** |
+| Part 8 | 2 `FR` + 1 `BR` = **3** | 5 | **0** |
+| **Total** | **109 normative requirements** | **128 criteria** | **0** |
 
 Every `SECP-FR-*` and `SECP-BR-*` is bound by at least one `SECP-AC-*` in its own Part's coverage table. Every
 `SECP-XC-*`, `SECP-OWN-*`, `SECP-HRO-*`, `SECP-SIG-*`, `SECP-SEV-*` and `SECP-TST-*` register entry is likewise bound.
 
-> ⚠ **One genuine coverage defect was found and fixed during Part 2's validation, and it is recorded, not smoothed
-> over.** `SECP-BR-008` had no criterion while Part 2 §15 claimed complete coverage. `SECP-AC-041` was added and the
-> counts corrected. A paragraph-aware check — rather than a line-based one — was required to find it; a line-based
-> check had also produced two **false** negatives on `SECP-BR-002`/`003`, whose criteria wrapped onto continuation
-> lines. Both facts are recorded so the method, not just the result, is auditable.
+> ⚠ **Two genuine coverage defects were found and fixed, and both are recorded, not smoothed over.** First,
+> `SECP-BR-008` had no criterion while Part 2 §15 claimed complete coverage; `SECP-AC-041` was added and the counts
+> corrected. Second, during Part 8's own validation `SECP-FR-084` was found unbound while this section already claimed
+> zero uncovered requirements; `SECP-AC-128` was added and every dependent count in §1.1, §1.2 and §5 corrected. The
+> second defect is the more instructive: it was introduced by the very document that asserts coverage, which is why
+> the assertion is only trustworthy once measured. A paragraph-aware check — rather than a line-based one — was
+> required to find both; a line-based check had also produced two **false** negatives on `SECP-BR-002`/`003`, whose
+> criteria wrapped onto continuation lines. All of this is recorded so the method, not just the result, is auditable.
 
 `SECP-AC-124` — Every `SECP-FR-*` and `SECP-BR-*` in Parts 1–8 appears in at least one coverage table, and the count
-of unbound normative requirements is **zero**, verified by a paragraph-aware check rather than a line-based one.
+of unbound normative requirements is **zero**, verified by a paragraph-aware check rather than a line-based one. The
+check is re-run after any amendment, because this criterion has already failed once against this document.
 
 `SECP-AC-125` — All fifteen registers in §1.1 are contiguous from `001` to their stated maximum, verified by
 measurement; the number of registers with a hole is **zero**.
@@ -278,6 +282,12 @@ measurement; the number of registers with a hole is **zero**.
 `SECP-AC-127` — No `SECP-*` identifier appears anywhere in the repository outside `docs/30-product/security/`, and no
 Part contains SQL, DDL, application code, a fenced code block, or a phrase from the prohibited-claims family
 (*hack-proof*, *unhackable*, *100% secure*, *fully secure*, *cannot be breached*).
+
+`SECP-AC-128` — For each of the eleven rows of the §3 ownership-deferral table, the cited Parts are inspected and
+found to state a citation plus a verification obligation, and **not** an ownership claim: no Part defines the
+deferred aggregate, context, parameter, event or record, and no Part declares an identifier in the `SECP-INV-*`,
+`SECP-EVT-*` or `SECP-CFG-*` registers. The number of rows where a Part specifies rather than cites is **zero**;
+any such row found is raised as a defect and not reconciled in place.
 
 ---
 
@@ -369,8 +379,8 @@ accepts an ADR. The next free governance number is **`ADR-0060`**, measured — 
 
 ### 9.1 What Parts 1–8 deliver
 
-- **426 identifiers** across **15 registers**, all contiguous, none renumbered.
-- **109 normative requirements**, each bound to at least one of **127 measurable criteria**; **zero uncovered**.
+- **427 identifiers** across **15 registers**, all contiguous, none renumbered.
+- **109 normative requirements**, each bound to at least one of **128 measurable criteria**; **zero uncovered**.
 - **37 exclusions** and **30 ownership boundaries**, deferring to 8 bounded contexts and 4 platforms.
 - **Four closed sets** — `SECP-HRO-*` (12 high-risk operations), `SECP-SIG-*` (10 signals), `SECP-SEV-*` (4
   severities), `SECP-TST-*` (8 test classes) — each with a default-refuse closure rule.
@@ -404,4 +414,4 @@ further ADR."*
 
 | Version | Date | Change |
 |---|---|---|
-| v0.8 | 2026-08-21 | Part 8 created; **`PRD-012a` Parts 1–8 complete**. 32 identifiers: `SECP-FR-083`…`084`, `SECP-BR-025`, `SECP-AC-124`…`127`, `SECP-GAP-041`…`044`, plus three new registers `SECP-TRC-001`…`009`, `SECP-DEP-001`…`007`, `SECP-ADR-001`…`005`, all broad-probe collision-checked before writing (§0.4). Verified by measurement: **426 identifiers, 15 registers, all contiguous**; **109 normative requirements, 127 criteria, zero uncovered**. `SECP-BR-025` codifies the two counting rules — citation-is-not-declaration, and **no Part may write an identifier it does not declare** — and §1.3 records that both were violated during authoring (two phantom placeholders, each one number past its Part's declared maximum, described in §1.3 without reproducing the tokens) and corrected before commit. Five ADRs identified as **requests, not decisions**; `ADR-0060` measured as next free but **not assigned**. `SECP-GAP-041`…`044` newly recorded, including the undeclared `platform/security` manifest block. No frozen document modified; no conflict resolved; no status conferred. |
+| v0.8 | 2026-08-21 | Part 8 created; **`PRD-012a` Parts 1–8 complete**. 33 identifiers: `SECP-FR-083`…`084`, `SECP-BR-025`, `SECP-AC-124`…`128`, `SECP-GAP-041`…`044`, plus three new registers `SECP-TRC-001`…`009`, `SECP-DEP-001`…`007`, `SECP-ADR-001`…`005`, all broad-probe collision-checked before writing (§0.4). Verified by measurement: **427 identifiers, 15 registers, all contiguous**; **109 normative requirements, 128 criteria, zero uncovered**. During Part 8's own validation `SECP-FR-084` was found unbound while §5 already claimed zero uncovered; `SECP-AC-128` was added and all dependent counts corrected (§5). `SECP-BR-025` codifies the two counting rules — citation-is-not-declaration, and **no Part may write an identifier it does not declare** — and §1.3 records that both were violated during authoring (two phantom placeholders, each one number past its Part's declared maximum, described in §1.3 without reproducing the tokens) and corrected before commit. Five ADRs identified as **requests, not decisions**; `ADR-0060` measured as next free but **not assigned**. `SECP-GAP-041`…`044` newly recorded, including the undeclared `platform/security` manifest block. No frozen document modified; no conflict resolved; no status conferred. |

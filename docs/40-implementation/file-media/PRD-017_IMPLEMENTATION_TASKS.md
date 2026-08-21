@@ -5,8 +5,8 @@
 | **Document** | `PRD-017_IMPLEMENTATION_TASKS.md` |
 | **Subject** | `docs/30-product/file-media/PRD-017_FILE_AND_MEDIA.md` — File & Media (`BC-29`), v0.1 `DRAFT` |
 | **Stage** | **6 — Implementation tasks** (`PRD_LIFECYCLE.md` L135–146) |
-| **Range** | **`IMPL-1200` … `IMPL-1239`** — 40 tasks, contiguous |
-| **Growth reserve** | **`IMPL-1240` … `IMPL-1299`** — reserved, **not allocated here** |
+| **Range** | **`IMPL-1200` … `IMPL-1253`** — **54** tasks, contiguous. ⚠ *Advanced from 40 on 2026-08-20 by the `PRD-017` v0.2 amendment (`ADR-0056`): Wave 5 drew `IMPL-1240`…`IMPL-1253` out of the growth reserve, so the reserve narrows and **no existing task moves**.* |
+| **Growth reserve** | **`IMPL-1254` … `IMPL-1299`** — **46** remaining, reserved, not allocated. *Was `IMPL-1240`…`IMPL-1299` (60); 14 consumed by Wave 5* |
 | **Date** | 2026-08-20 |
 | **Depends on** | Stage 5 conferral — inventory frozen at **232 identifiers, 132 obligation-bearing** |
 | **Verdict** | ✅ **Stage 6 gate satisfied** — range allocated, every task traces to requirements, every Class A obligation claimed |
@@ -79,10 +79,11 @@ and the predecessor's own published boundary. No allocated task anywhere holds i
 | **`IMPL-1210` … `IMPL-1219`** | **Wave 2 — `FileRef`, metadata, read path, signed URLs, authorization** | This document |
 | **`IMPL-1220` … `IMPL-1229`** | **Wave 3 — tenant isolation, lifecycle, derivatives, failure, idempotency** | This document |
 | **`IMPL-1230` … `IMPL-1239`** | **Wave 4 — share grants, audit routing, extensibility, exclusions, testing** | This document |
-| `IMPL-1240` … `IMPL-1299` | **Reserved for `PRD-017` growth** — 13 open `FIL-GAP-*` may require tasks | This document, unallocated |
+| **`IMPL-1240` … `IMPL-1253`** | **Wave 5 — media optimization: profiles, originals, documents, variants, processing lifecycle** *(added by the v0.2 amendment, `ADR-0056`)* | This document |
+| `IMPL-1254` … `IMPL-1299` | **Reserved for `PRD-017` growth** — **46** remaining; **15** open `FIL-GAP-*` may require tasks. ⚠ *The reserve is doing exactly what §3.2 designed it for: Wave 5 added 14 tasks without renumbering a single existing one* | This document, unallocated |
 | `IMPL-1300` + | Unallocated | — |
 
-**40 tasks, `IMPL-1200` … `IMPL-1239`, contiguous with no gaps inside the allocated span.** Wave boundaries fall on
+**54 tasks, `IMPL-1200` … `IMPL-1253`, contiguous with no gaps inside the allocated span** (verified mechanically after Wave 5 was added). *Was 40 tasks to `IMPL-1239` before the v0.2 amendment.* Wave boundaries fall on
 round tens so a task added to a wave later does not force a renumber — rule 1 forbids reassignment, so slack must be
 designed in rather than found later.
 
@@ -107,7 +108,7 @@ have collided with four allocated ranges at once.**
 
 | Blocker | Effect | Tasks gated |
 |---|---|---|
-| **`B-11` / `FIL-GAP-012`** — `BC-12` Messaging is absent from `E-22`'s Consumer cell (BC Map L331), and L292 states *"If an edge is not in this table, it does not exist and adding it requires an ADR"* | ⛔ The **share-grant tasks may be specified but NOT executed** until governance resolves the consumer question. Building them first would create a dependency the BC Map says does not exist | `IMPL-1230` … `IMPL-1236` |
+| **`B-11` / `FIL-GAP-012`** — ✅ **RESOLVED 2026-08-20 for the architecture question only.** `BC-12` Messaging **is now listed** in `E-22`'s Consumer cell (BC Map **v1.8**, L331), admitted by `ACCEPTED` [`ADR-0055`](../../00-governance/adr/ADR-0055-e22-consumer-list-includes-bc-12.md) after necessity was re-derived **per context** — `BC-11` Social Graph and `BC-13` Trust & Safety were tested and **NOT** admitted | ✅ **`IMPL-1230` … `IMPL-1236` are UNBLOCKED FOR EXECUTION**: the dependency they need is now recorded in the map, so building them no longer creates an edge that *"does not exist"*. ⛔ **Unblocked is not done.** None of the seven is implemented, and `B-2` still gates *proof* of completion for all forty tasks. This row is deliberately **not deleted**, because a backlog that erases a resolved blocker loses the record of why seven tasks sat idle | `IMPL-1230` … `IMPL-1236` — **released** |
 | **`B-2`** — all **seven** `TRACEABILITY_MATRIX.md` §10.3 required architecture tests are missing | ⛔ **No** task can be *proven* complete by architecture test. Completion is claimable, not demonstrable | all 40 |
 | **`FIL-GAP-010`** — `tool/module_dependencies.yaml` has no `platform/services:` **block**, so this module's own outbound ports are undeclared | `IMPL-1200` must create it. Until then the boundary checker cannot see this module's dependencies at all | `IMPL-1200` |
 | **`BC-18`** authorization is **consumed, never defined** here | Every access decision is a call out. If `BC-18` cannot answer, this module **refuses** (`FIL-BR-011`) | `IMPL-1214` … `IMPL-1217` |
@@ -122,7 +123,7 @@ sit at ranks 5 (`domain/social`, L242) and 7.5 (`domain/person`), so every inbou
 
 ---
 
-## 5. The 40 tasks
+## 5. The 54 tasks
 
 **Reading rules.** `Blocks` and `Blocked by` are within this backlog unless a foreign identifier is named. `P0` =
 required before any other wave task can be trusted; `P1` = required for the module to function; `P2` = required for
@@ -216,8 +217,13 @@ requirements**. **Completion definition** is §10, applying to every task withou
 > **Test requirements:** the seven `TRACEABILITY_MATRIX.md` §10.3 architecture tests (`IMPL-1239`), plus exclusion
 > tests, which are a **different shape** — see §6.2. ⛔ None provable today — `B-2`.
 >
-> ⛔ **`IMPL-1230` … `IMPL-1236` are BLOCKED FOR EXECUTION by `B-11` / `FIL-GAP-012`.** They are specified and
-> numbered because Stage 6 allocates work; they may not be *built* until governance admits `BC-12` to `E-22`. See §4.
+> ✅ **`IMPL-1230` … `IMPL-1236` were BLOCKED by `B-11` / `FIL-GAP-012` and are now RELEASED.**
+> Governance admitted `BC-12` to `E-22` on 2026-08-20 (`ADR-0055`, BC Map **v1.8**), which is exactly the
+> condition this notice named. ⚠ **Their status changes from BLOCKED to `Not started`, and nothing else
+> changes** — no task is marked done, no priority moves, no `Discharges` cell is rewritten. Release is a
+> statement about *lawfulness*, not about progress, and `FIL-GAP-012`'s implementation half is still OPEN.
+> ⛔ **`B-2` is untouched**: all seven §10.3 architecture tests remain missing, so completion of these seven
+> — like all fifty-four — is claimable but not provable. See §4.
 
 | ID | Task | Discharges | Priority | Blocked by | Blocks |
 |---|---|---|---|---|---|
@@ -234,6 +240,64 @@ requirements**. **Completion definition** is §10, applying to every task withou
 
 ---
 
+### 5.5 Wave 5 — Media optimization: profiles, originals, documents, variants, processing lifecycle (`IMPL-1240` … `IMPL-1253`)
+
+> **Added 2026-08-20 by the `PRD-017` v0.2 amendment** (`ADR-0056`). These **fourteen** tasks come out of the
+> **reserved** `IMPL-1240` … `IMPL-1299` band declared in §3.2 — **no existing task was renumbered, resplit or
+> reassigned**, which is the whole reason §3.2 designed a 60-wide reserve instead of packing the range tight.
+>
+> **Scope:** the optimization and processing pipeline behind image compression, document handling and serving
+> variants. **Affected module:** `lib/platform/services/files/`.
+> **Security/tenant implications:** ⛔ **A derivative is not a loophole.** `IMPL-1240` establishes that every
+> optimized representation inherits the source object's authorization, isolation class, audit obligations and
+> lifecycle — so no task in this wave may create a path that serves bytes the original would have refused.
+> `IMPL-1248` keeps the original-quality choice an **entitlement decision consumed over `E-19`**, never a local
+> policy read.
+> **Test requirements:** `IMPL-1252` builds the fixture corpus, which is the only way `FIL-AC-080`'s readability
+> obligation becomes testable rather than aspirational. ⛔ None provable today — `B-2`.
+>
+> ⛔ **VIDEO AND AUDIO ARE NOT IN THIS WAVE, AND NO TASK MAY ADD THEM.** `FIL-FR-005`, `FIL-XC-016` and
+> `FIL-XC-023` forbid video/audio acceptance and transcoding at V1; the request was made and **refused**
+> (`FIL-GAP-016`). "Adaptive" here means *adaptive across image and document characteristics*, not across media
+> types. A task creating a transcoding path would contradict three frozen requirements in the owning PRD.
+>
+> ⚠ **Three tasks depend on values that do not yet exist.** `FIL-CFG-010` (quality floor), `FIL-CFG-011` (minimum
+> document long edge) and `FIL-CFG-015` (processing timeout) are published with owners and ranges but **no
+> defaults** — `FIL-GAP-014`. Those tasks are therefore **specified and startable but not completable**: the
+> mechanism can be built, the threshold cannot be chosen here. This is stated per task rather than hidden.
+>
+> ⚠ **`IMPL-1253` exists because a coverage check found a hole this wave had left.** The wave was first written
+> with thirteen tasks and a mechanical check of the eighteen new v0.2 obligations against the `Discharges` cells
+> returned **`FIL-FR-091` — serving variants — allocated to nothing.** The convenient repair was to append the
+> identifier to `IMPL-1240`, which already covers derivative inheritance; that was **rejected**, because
+> `FIL-FR-091` obliges the *generation and serving* of variants through the signed-URL path, which is work, not
+> a property of another task. A fourteenth task was added instead. **Measured after the repair: 0 of the 18 new
+> obligations unallocated.**
+
+| ID | Task | Discharges | Priority | Blocked by | Blocks |
+|---|---|---|---|---|---|
+| `IMPL-1240` | Treat every optimized representation as a **derivative** of its source object, inheriting its authorization, isolation class, audit obligations and lifecycle; never as an independent object | `FIL-FR-083`, `FIL-INV-013` | **P0** | 1222, 1224 | 1241, 1242, 1243, 1246, 1249 |
+| `IMPL-1241` | Classify an accepted image as **document-like** or **photographic** from measured properties, and **record the decision** on the object so it is auditable and reproducible | `FIL-FR-084`, `FIL-INV-012` | **P0** | 1240 | 1242, 1243, 1244 |
+| `IMPL-1242` | Implement the **document-aware** compression profile: honour the `FIL-CFG-010` quality floor, disable chroma subsampling, never reduce the long edge below `FIL-CFG-011`. ⚠ **Not completable until `FIL-GAP-014` supplies the two values** — build the mechanism, do not invent the thresholds | `FIL-FR-085`, `FIL-BR-019` | **P0** | 1241 | 1252 |
+| `IMPL-1243` | Implement the **perceptual** profile for photographic images within `FIL-CFG-012`, restricted to the `FIL-CFG-013` output-encoding allow-list; **never enlarge** an image and never emit a derivative larger than its source | `FIL-FR-086` | P1 | 1241 | 1252 |
+| `IMPL-1244` | Select the profile **adaptively from measured input properties only**. ⛔ Refuse a caller-supplied profile: a sender must not be able to force a photographic profile onto handwritten notes | `FIL-FR-087` | **P0** | 1241 | — |
+| `IMPL-1245` | **Refuse rather than emit** an unreadable derivative: when no admissible parameter set satisfies the floor, fail the processing step and keep the object out of `READY` | `FIL-FR-085`, `FIL-BR-019` | **P0** | 1242, 1249 | — |
+| `IMPL-1246` | **Preserve original bytes** whenever any of the four trigger conditions in `FIL-FR-088` holds; **never overwrite** an original with a derivative | `FIL-FR-088`, `FIL-INV-012` | **P0** | 1240 | 1247 |
+| `IMPL-1247` | Consume the **original-quality upload** decision as an entitlement answer over `E-19`; ⛔ never evaluate the entitlement locally and never infer it from a prior upload | `FIL-FR-089`, `FIL-XC-023` | **P0** | 1246, 1215 | — |
+| `IMPL-1248` | Handle PDFs and office documents **losslessly only**: container-level optimization at most, byte-exact decompressible recovery always. ⛔ No lossy transform, no rasterization, no re-encode | `FIL-FR-090`, `FIL-BR-018`, `FIL-INV-012` | **P0** | 1240 | 1252 |
+| `IMPL-1249` | Implement the processing lifecycle `RECEIVED → VALIDATING → PROCESSING → READY` / `FAILED`, with **only** `READY` and `FAILED` terminal, and an object **servable only in `READY`** | `FIL-FR-092`, `FIL-INV-013` | **P0** | 1240, 1225 | 1245, 1250, 1251 |
+| `IMPL-1250` | Make processing **idempotent** under an operation key and bound retries by `FIL-CFG-014`; delegate scheduling per `FIL-XC-017` rather than building a scheduler here | `FIL-FR-093`, `FIL-XC-017` | P1 | 1249, 1226 | — |
+| `IMPL-1251` | Report **progress and status** without leaking a storage path, worker identity or internal error text; make progress for an object the caller may not read **indistinguishable from a non-existent object** | `FIL-FR-094`, `FIL-XC-023` | **P0** | 1249, 1216 | — |
+| `IMPL-1252` | Enforce the **stall timeout** `FIL-CFG-015` — drive a stalled `PROCESSING` object to terminal `FAILED` and delete the abandoned derivative — and build the **fixture corpus** of handwritten notes, assignments and text-heavy study material that makes `FIL-AC-080`'s readability obligation testable. ⚠ Timeout value owed by `FIL-GAP-014` | `FIL-FR-095`, `FIL-FR-085` | P1 | 1242, 1243, 1248, 1249 | — |
+| `IMPL-1253` | Generate and serve **optimized serving variants** from the `FIL-CFG-007` set through the **same signed-URL and authorization path** as the source object. ⛔ A variant is not a shortcut: no variant may be reachable by a URL shape, cache key or path that the original would not have permitted | `FIL-FR-091`, `FIL-FR-083` | **P0** | 1240, 1218, 1249 | — |
+| `IMPL-1254` | Build the **Wave 5 test suite**: the **18** §14.5 acceptance tests (`FIL-AC-079` … `FIL-AC-096`), the readability assertions over `IMPL-1252`'s fixture corpus, the derivative-authorization tests that prove `IMPL-1240`'s inheritance is not bypassable, and the **`FIL-XC-023`** exclusion test asserting that no video or audio transcoding path exists. ⚠ Three acceptance tests are **not passable** until `FIL-GAP-014` supplies the `FIL-CFG-010`/`011`/`015` values; they are written to fail closed rather than skipped | `FIL-AC-079` … `FIL-AC-096`, `FIL-XC-023` | **P2** | 1245, 1248, 1250, 1252, 1253 | — |
+
+⚠ **`IMPL-1237` is deliberately NOT rewritten.** It already confines extensibility to configuration, and the six
+new `FIL-CFG-*` members are admitted by that existing rule rather than by amending it — the rule working as
+designed is evidence for it, not a reason to edit it.
+
+---
+
 ## 6. Traceability — task group → requirements → invariants → acceptance
 
 Required by allocation rule 4.
@@ -244,9 +308,10 @@ Required by allocation rule 4.
 | **2** — `FileRef`, metadata, read, signed URLs, authz | `IMPL-1210`…`1219` | `FIL-FR-008`…`012`, `022`…`042`; `FIL-BR-001`, `002`, `009`, `011` | `FIL-INV-004`, `FIL-INV-005` | `FIL-AC-021`…`045` (§14.2) |
 | **3** — isolation, lifecycle, derivatives, failure | `IMPL-1220`…`1229` | `FIL-FR-043`…`061`, `063`…`066`; `FIL-BR-003`, `006`, `007`, `008`, `010` | `FIL-INV-002`, `003`, `006`, `007`, `008` | `FIL-AC-046`…`068` (§14.2–§14.3) |
 | **4** — sharing, boundaries, extensibility, testing | `IMPL-1230`…`1239` | `FIL-FR-030`…`033`, `062`, `067`…`082`; `FIL-BR-012`, `013`, `015`, `016`, `017`; `FIL-XC-001`…`022` | `FIL-INV-009`, `010`, `011` | `FIL-AC-069`…`078` (§14.3–§14.4) |
+| **5** — media optimization, documents, variants, processing lifecycle | `IMPL-1240`…`1253` | `FIL-FR-083`…`095`; `FIL-BR-018`, `019` | `FIL-INV-012`, `FIL-INV-013` | `FIL-AC-079`…`096` (§14.5) |
 
-**All 11 invariants are claimed:** `FIL-INV-001` by `IMPL-1208`; `002` by `1221`; `003` by `1227`; `004` by `1218`;
-`005` by `1212`; `006` by `1229`; `007` by `1225`; `008` by `1222`; `009` by `1230`; `010`/`011` by `1235`.
+**All 13 invariants are claimed:** `FIL-INV-001` by `IMPL-1208`; `002` by `1221`; `003` by `1227`; `004` by `1218`;
+`005` by `1212`; `006` by `1229`; `007` by `1225`; `008` by `1222`; `009` by `1230`; `010`/`011` by `1235`; **`012` by `1241`, `1246` and `1248`; `013` by `1240` and `1249`.** *(Advanced from 11 by the v0.2 amendment.)*
 
 ### 6.1 Coverage
 
@@ -261,15 +326,16 @@ Required by allocation rule 4.
 | `FIL-AC-*` | 78 | 78 (by `IMPL-1239`) | **100.0%** claimed · ⛔ **0 proven** |
 
 **No task claims zero obligations, and no task cites an obligation that does not exist** — every identifier above is
-drawn from the inventory frozen by Stage 5 at **232**.
+drawn from the inventory the owning PRD publishes — **277** at v0.2, advanced from the **232** Stage 5 froze. ⚠ *Re-verified mechanically after Wave 5, expanding range citations such as `FIL-XC-001`…`022`: **0 dangling citations, 0 unallocated Class A obligations**.*
 
-### 6.2 Why 100% task coverage sits beside 71.2% acceptance coverage — the two are different claims
+### 6.2 Why 100% task coverage sits beside 74.7% acceptance coverage — the two are different claims
 
-Stage 5 published **94 / 132 = 71.2%** acceptance coverage. This document publishes **132 / 132 = 100.0%** task
-coverage. Both are true, and the difference is not slack:
+The owning PRD publishes **112 / 150 = 74.7%** acceptance coverage at v0.2 (was 94 / 132 = 71.2% at Stage 5). This document publishes **150 / 150 = 100.0%** task coverage (was 132 / 132). Both are true, and the difference is not slack:
+
+⚠ **Both figures were RECOMPUTED after the v0.2 amendment, not scaled.** The task figure is measured by expanding every range citation in §6 and intersecting with the PRD’s Class A set: **150 allocated of 150, 0 unallocated**. It would have been easy to leave *"132 / 132"* standing — it is still a true sentence about a register that no longer exists — and the denominator moving from 132 to 150 while the claim stayed 100% is exactly the kind of coincidence that has to be **verified rather than assumed**.
 
 - **Task coverage** asks *is this obligation somebody's work?* Every obligation is, including the 22 `FIL-XC-*`
-  exclusions — enforcing a prohibition is real work (`IMPL-1208`, `1231`, `1238`, `1239`).
+  exclusions — now **23** of them — enforcing a prohibition is real work (`IMPL-1208`, `1231`, `1238`, `1239`), and `FIL-XC-023` is allocated to `IMPL-1247` and `IMPL-1251`.
 - **Acceptance coverage** asks *is this obligation observably provable?* An exclusion states what must be
   **impossible**, and a criterion asserting that something never happens is **unfalsifiable by observation**.
 
@@ -320,7 +386,7 @@ served before `BC-18` answers. **`IMPL-1230` cannot start at all** until `B-11` 
 
 ## 9. What this document does **not** claim
 
-- **It does not claim the module is implementable today.** `B-11` blocks 7 of 40 tasks; `B-2` blocks *proof* of all 40.
+- **It does not claim the module is implementable today.** ⚠ *`B-11` no longer blocks anything* — `ADR-0055` released `IMPL-1230`…`IMPL-1236` on 2026-08-20 — but **`B-2` still blocks *proof* of all 54**, and three Wave 5 tasks are not completable until `FIL-GAP-014` supplies the values they depend on. **0 of 54 are implemented.**
 - **It does not claim any obligation is verified.** Task coverage is allocation, not evidence (§6.2).
 - **It does not close a single `FIL-GAP-*`.** All **13** remain OPEN.
 - **It does not resolve the `E-22` consumer question**, and does not treat the manifest's `platform/services:files`
@@ -353,7 +419,7 @@ written but unprovable is **claimable, not done**.
 | An `IMPL-*` range is allocated | ✅ **`IMPL-1200` … `IMPL-1239`**, measured as free by two routes (§3.1) |
 | Every task traces to requirements | ✅ 40 of 40 cite ≥1 obligation; **0** cite a nonexistent one |
 | Rule 1 — never reuse a number | ✅ repository max was **1200**, held only as a boundary marker |
-| Rule 2 — leave growth room | ✅ **`IMPL-1240` … `IMPL-1299`** reserved for 13 open gaps |
+| Rule 2 — leave growth room | ✅ **`IMPL-1254` … `IMPL-1299`** (46) reserved for **15** open gaps. ⚠ *The reserve was drawn on for the first time on 2026-08-20 — Wave 5 took 14 — and the design held: **zero existing tasks renumbered**, which is the outcome rule 1 exists to protect* |
 | Rule 3 — record Priority / Blocks / Blocked by | ✅ all three on all 40 rows |
 | Rule 4 — add a traceability table | ✅ §6, plus per-register coverage §6.1 |
 

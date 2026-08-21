@@ -229,3 +229,92 @@ final class InProcessJobRuntime implements JobRuntime {
     );
   }
 }
+
+/// In-process adapter for the `files` port — the `E-22` boundary made
+/// executable (`ADR-0059`).
+///
+/// **What it is.** The enforcement point for frozen `FIL-FR-006` plus an
+/// in-memory reference table. Before this existed, `ADR-0055` had admitted
+/// `BC-12` to `E-22`'s consumer list and nothing in `lib/` refused anybody —
+/// the rule was authorised and specified but not *enforced*, which is exactly
+/// what `FIL-GAP-012`'s implementation half recorded.
+///
+/// **What it is NOT.** A storage backend. It holds no bytes, produces no
+/// derivative, and persists nothing across a restart. The storage model, the
+/// schema and the API are Phase 5-6 decisions and are deliberately not
+/// anticipated here (`ADR-0059` §3.7).
+///
+/// The consumer check is not reimplemented in this class: it delegates to
+/// [e22ConsumerContexts], the single transcription of BC Map L331, so a future
+/// durable adapter cannot accidentally enforce a different list.
+final class InProcessFileAccess implements FileAccess {
+  InProcessFileAccess();
+
+  /// Known objects. A `FileRef` is opaque, so this is a set of references, not
+  /// a path map — the port must not be able to expose a storage path
+  /// (`FIL-FR-094`, and `E-22`'s own contract: *"Domain holds a `FileRef`,
+  /// never bytes or a raw storage path"*).
+  final Set<String> _known = {};
+
+  /// Read grants, keyed by object then recipient. The stored value is the
+  /// eligibility **decision reference** — never a boolean, never a friendship
+  /// or `canMessage` fact, which `FIL-XC-019` forbids this module from holding.
+  final Map<String, Map<String, EligibilityDecisionRef>> _grants = {};
+
+  /// Test/seed affordance. Not on the port: registering an object is the
+  /// storage layer's business, and the port must not offer callers a way to
+  /// mint references.
+  void seed(FileRef ref) => _known.add(ref.value);
+
+  int get grantCount =>
+      _grants.values.fold(0, (sum, byRecipient) => sum + byRecipient.length);
+
+  @override
+  bool isPermittedConsumer(BoundedContextId context) =>
+      e22ConsumerContexts.contains(context.value);
+
+  /// Refuses without naming the edge, the consumer list, or the object.
+  ///
+  /// `FIL-FR-094` requires that a caller who may not read an object cannot
+  /// distinguish that from the object not existing. A message such as
+  /// "BC-11 is not on E-22's consumer list for file abc" would hand an
+  /// unauthorised caller both the topology and a confirmation of existence.
+  void _requirePermitted(BoundedContextId context) {
+    if (isPermittedConsumer(context)) return;
+    throw const DomainError(DomainErrorCode.forbidden, 'Not permitted.');
+  }
+
+  @override
+  FileRef? resolve(BoundedContextId context, FileRef ref) {
+    _requirePermitted(context);
+    // Permitted caller, unknown object: null rather than an error, so the
+    // absence of an object is not reported differently from the absence of
+    // permission (FIL-FR-094).
+    return _known.contains(ref.value) ? ref : null;
+  }
+
+  @override
+  void grantRead(
+    BoundedContextId context,
+    FileRef ref, {
+    required PersonId recipient,
+    required EligibilityDecisionRef decision,
+  }) {
+    _requirePermitted(context);
+    if (!_known.contains(ref.value)) {
+      throw const DomainError(DomainErrorCode.notFound, 'Unknown object.');
+    }
+    // Last-writer-wins on purpose: re-recording the same decision for the same
+    // recipient is idempotent, so a replayed share does not accumulate grants
+    // (FIL-FR-093's "no second audit fact" reasoning applied to access).
+    (_grants[ref.value] ??= {})[recipient.value] = decision;
+  }
+
+  /// The recorded decision behind a grant, or `null` if there is none.
+  ///
+  /// Returns the **reference**, not an interpretation of it: this module
+  /// records the decision and never evaluates eligibility (`FIL-FR-076`,
+  /// `FIL-XC-019`).
+  EligibilityDecisionRef? grantFor(FileRef ref, PersonId recipient) =>
+      _grants[ref.value]?[recipient.value];
+}

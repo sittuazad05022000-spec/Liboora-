@@ -41,6 +41,7 @@ final class AppContainer {
     required this.entitlements,
     required this.idempotency,
     required this.jobs,
+    required this.fileAccess,
     required this.sync,
     required this.audit,
     required this.analytics,
@@ -88,6 +89,15 @@ final class AppContainer {
   /// whole point of naming the abstraction here is that replacing it with a
   /// durable queue stays a change to this file alone.
   final JobRuntime jobs;
+
+  /// The `platform/services:files` port (manifest **L242**) — the `E-22`
+  /// boundary made executable by `ADR-0059`.
+  ///
+  /// Port-typed, so no consumer can reach past it to the in-memory adapter and
+  /// so replacing it with a storage-backed implementation stays a change to
+  /// this file. `FIL-FR-006` is enforced inside it: a caller whose bounded
+  /// context is absent from BC Map L331's consumer list is refused.
+  final FileAccess fileAccess;
 
   final OfflineSyncEngine sync;
   final AuditTrail audit;
@@ -225,6 +235,11 @@ final class AppContainer {
     // the FIL-FR-095 deadline is measured against injected time and a test can
     // pin it, rather than reading the wall clock inside the adapter.
     final JobRuntime jobs = InProcessJobRuntime(clock);
+    // ADR-0059: the E-22 enforcement point. Takes no tenant identifier — E-22
+    // already serves the global-class consumer BC-10 (ADR-0016), so a mandatory
+    // tenant parameter would be unsatisfiable there and would breach
+    // TEN-FR-018.
+    final FileAccess fileAccess = InProcessFileAccess();
     final sync = OfflineSyncEngine();
     final audit = AuditTrail(ids);
     final analytics = AnalyticsProjections(clock)..register(events);
@@ -275,6 +290,7 @@ final class AppContainer {
       entitlements: entitlements,
       idempotency: idempotency,
       jobs: jobs,
+      fileAccess: fileAccess,
       sync: sync,
       audit: audit,
       analytics: analytics,

@@ -246,7 +246,8 @@ The §31 Linked Documents table carries this row verbatim:
 | `PRD-009` | Analytics & Reports | **`BC-26` Analytics Read Model** | `[GENERIC]` | V1 | `PLANNED` | Dashboards (modules 10–12) |
 | `PRD-010` | Notifications & Communication | **`BC-22` Notification Delivery** | `[GENERIC]` | V1 | `PLANNED` | Every event-driven notice |
 | `PRD-011` | AI Super Assistant | **`BC-27` AI Assistance** | `[SUPPORTING]` | V1 | `PLANNED` | — |
-| `PRD-012` | Security & Automation | ⚠ **`SECURITY` platform + `BC-28` Workflow** | mixed | V1/V2 | `PLANNED` | — |
+| `PRD-012` | Security & Automation | ⚠ **`SECURITY` platform + `BC-28` Workflow** | mixed | V1/V2 | ⛔ **`RETIRED` — 2026-08-21.** Retired **on the day `PRD-012a` was opened**, exactly as §8 rule 1 and the note below prescribe; **the number is NOT reused.** This placeholder was never authored and never will be. *Prior status retained verbatim:* `PLANNED` | Split executed — see `PRD-012a` below |
+| **`PRD-012a`** | **Security Automation** | **SECURITY platform (rank 2)** | `[GENERIC]` | V1 | **`FROZEN`** — [`security/PRD-012a_SECURITY_AUTOMATION.md`](../../30-product/security/PRD-012a_SECURITY_AUTOMATION.md) + `PRD-012a_PART2…PART8_*.md` at **v0.8**, admitted by `ACCEPTED` [`ADR-0064`](../adr/ADR-0064-prd-012a-security-automation-v0.8-baseline.md) under **`BASELINE-2026-08-21-A`**, moved `PLANNED` → **`FROZEN`** by the **Governance Owner** on 2026-08-21 — the third PRD to go from `PLANNED` **directly** to `FROZEN` without passing through `DRAFT`-then-freeze. **Stage 1 `NOT APPLICABLE`** (`ADR-0060` — the gate is context-scoped and does not reach a platform-scoped specification); Stages 3 and 4 **CONFERRED** (⚠ Stage 3 **ALIGNED WITH ONE STRUCTURAL FINDING**, admitted as such and **not rounded to a clean PASS**; the finding *was* the no-`BC-nn` question and was routed rather than settled by its finder); **Stage 5 gate MET** by matrix **v1.18 §2N** (**427** identifiers / **15** registers / all contiguous / **0** collisions in four directions); Stage 6 **verdict A — PASS**, range `IMPL-1300`…`1359` with reserve `1360`…`1399`. ⚠⚠ **The first `FROZEN` PRD that owns NO bounded context** — the SECURITY platform gets none (`ADR-0060`), **31** contexts before and after, and **no `BC-32` was created to make the row look like the others**. Its Rank 3 scope is expressed as a **platform**, lawful on the measured precedent of the Library PRD's *domain*-scoped row. ⛔ **`FROZEN` is not `VERIFIED`** — **0 of 128** acceptance criteria and **0 of 60** tasks proven, **all 47 `SECP-GAP-*` OPEN**, and **0 lines of code**: `lib/platform/security` does not exist | Owns the security **policy**; every mechanism it constrains stays with its existing owner |
 
 > ⚠ **`PRD-012` must not be written as one PRD.** Master PRD §8 Correction 2 states: *"A single module name
 > spanning two owners at two ranks violates the Single Owner Rule (EA §10.1.1)."* Writing it as one document
@@ -257,8 +258,8 @@ The §31 Linked Documents table carries this row verbatim:
 >
 > | PRD ID | Name | Owner | Type | V | Status |
 > |---|---|---|---|---|---|
-> | `PRD-012a` | Security Automation | **SECURITY platform (rank 2)** | `[GENERIC]` | V1 | `PLANNED` |
-> | `PRD-012b` | Workflow Orchestration | **`BC-28` Workflow Orchestration** | `[SUPPORTING]` | V2 | `PLANNED` |
+> | `PRD-012a` | Security Automation | **SECURITY platform (rank 2)** | `[GENERIC]` | V1 | ✅ **`FROZEN` 2026-08-21 — no longer merely reserved.** Opened, authored as 8 Parts at v0.8, and admitted at Rank 3 by `ADR-0064`. **Now a registered row in §4.1 above**, not a reservation |
+> | `PRD-012b` | Workflow Orchestration | **`BC-28` Workflow Orchestration** | `[SUPPORTING]` | V2 | `PLANNED` — **still reserved and uncounted.** `ADR-0064` opens nothing here and confers nothing on it |
 >
 > The two differ in owner, rank **and** release version — which is precisely why one document cannot hold them.
 > `PRD-012` itself is retired on the day `PRD-012a` is opened; its number is **not** reused (§8 rule 1).
@@ -284,8 +285,17 @@ The §31 Linked Documents table carries this row verbatim:
 > - **No ranked document is amended.** Master PRD §8 Correction 2 already mandates the split; restating it here adds
 >   nothing to Rank 1 and takes nothing from it. This register and `PRD_OWNERSHIP_MODEL.md` are both **unranked**
 >   (absent from `DOCUMENTATION_BASELINE.md` §4), so this navigational confirmation needs no ADR.
-> - **`PRD-012` is not retired yet.** §8 rule 1 ties retirement to the day `PRD-012a` is *opened*. It has not been
->   opened, so `PRD-012` remains `PLANNED` and the summary counts in §7 are unchanged by this confirmation.
+> - ⛔ **SUPERSEDED 2026-08-21 — this clause is now FALSE and is retained rather than deleted.** It read:
+>   *"**`PRD-012` is not retired yet.** §8 rule 1 ties retirement to the day `PRD-012a` is *opened*. It has not been
+>   opened, so `PRD-012` remains `PLANNED` and the summary counts in §7 are unchanged by this confirmation."*
+>   **It was true when written and was falsified by the authoring of `PRD-012a` Parts 1–8**, which passed Stages 3–6
+>   and was admitted to the baseline at Rank 3 by `ACCEPTED` [`ADR-0064`](../adr/ADR-0064-prd-012a-security-automation-v0.8-baseline.md).
+>   `PRD-012a` is **opened** as a matter of fact, so §8 rule 1's condition is met: **`PRD-012` is RETIRED**, its
+>   number is **not** reused, and the §7 counts **do** move. This is the *derived-statement* defect class logged as
+>   `GCP-11`/`GCP-15`/`GCP-16`/`GCP-19`/`GCP-21`/`GCP-25` in `DOCUMENTATION_BASELINE.md` §6, here in its **registry**
+>   form — a statement left behind by a change to the thing it describes. Retained verbatim above because deleting it
+>   would hide that the retirement was *conditional and the condition was met*, rather than decided by this pass.
+>   Closes `SECP-GAP-012`.
 > - **No number is reused.** `012a`/`012b` are suffixed identifiers, not new sequence numbers; `PRD-013` onward are
 >   untouched.
 >

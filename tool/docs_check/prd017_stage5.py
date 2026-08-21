@@ -704,20 +704,83 @@ def main():
     gap_rows = re.findall(r'^\|\s*\*{0,2}`FIL-GAP-(\d+)`\*{0,2}\s*\|',
                           gap_block, re.M)
     claimed = re.search(r'\*\*(\d+) gaps\.\s*All OPEN', gap_block)
-    gap_open = bool(
-        claimed
-        and int(claimed.group(1)) == len(gap_rows)
-        and '012' in gap_rows)
+    # `S5-C-08` / v0.2 (ADR-0055 + ADR-0056).  THE SITUATION THE OLD MESSAGE
+    # ANTICIPATED HAS ACTUALLY HAPPENED, so the check is revisited deliberately
+    # here rather than deleted or allowed to lapse.
+    #
+    # ADR-0055 amended BC Map E-22 to list BC-12, which closes the ARCHITECTURE
+    # half of FIL-GAP-012.  Its IMPLEMENTATION half is still open: no lib/ code
+    # enforces FIL-FR-006 and blocker B-2 records all seven required
+    # architecture tests missing.  So section 16 no longer says "All OPEN", and
+    # the old form of this probe went vacuous.
+    #
+    # Three things were considered and REJECTED:
+    #   * deleting the check -- it is the only mechanised refusal-to-overclaim
+    #     in the repository, and the implementation half is still open;
+    #   * accepting the PRD's word that the gap is closed -- that is precisely
+    #     the "document grades itself" failure the check exists to prevent;
+    #   * loosening the blanket-arithmetic rule -- S5-D-01 is real.
+    #
+    # Instead the check was made STRICTER in the one way that matters: the
+    # resolution is now verified AT ITS SOURCE.  A partial closure is accepted
+    # only if the BOUNDED CONTEXT MAP's own E-22 row actually lists BC-12.  A
+    # PRD claiming the blocker is resolved while the authoritative architecture
+    # record still omits BC-12 now FAILS -- a condition the previous form could
+    # not even express, because it never opened the map.
+    partial = re.search(
+        r'`FIL-GAP-012`[^\n]{0,400}?(?:PARTIALLY CLOSED|architecture half'
+        r'[^\n]{0,40}CLOSED)', gap_block)
+    bc12_admitted = False
+    bc_map_path = os.path.join(
+        'docs', '10-architecture', 'LIBOORA_BOUNDED_CONTEXT_MAP.md')
+    try:
+        with open(bc_map_path, encoding='utf-8') as handle:
+            for line in handle:
+                if 'E-22' not in line or not line.lstrip().startswith('|'):
+                    continue
+                # The consumer cell is the one naming BC-29 as the target.
+                if 'BC-29' in line and re.search(
+                        r'`?BC-12`?', line):
+                    bc12_admitted = True
+                    break
+    except OSError:
+        fail('check 10 cannot read %s, so a claim that the E-22 consumer '
+             'question is resolved cannot be verified at its source'
+             % bc_map_path)
     if claimed and int(claimed.group(1)) != len(gap_rows):
         fail('section 16 claims %s gaps and All OPEN, but carries %d rows -- a '
              'blanket openness claim cannot cover a row its own count does '
              'not know about'
              % (claimed.group(1), len(gap_rows)))
+    # The row-count arithmetic must hold under BOTH wordings, so a partial
+    # closure cannot be used to escape S5-D-01's rule.
+    stated = re.search(r'\*\*(\d+) gaps\.', gap_block)
+    if stated and int(stated.group(1)) != len(gap_rows):
+        fail('section 16 states %s gaps but carries %d rows -- the count must '
+             'match the table whether the register is claimed all-open or '
+             'partially closed'
+             % (stated.group(1), len(gap_rows)))
+    gap_open = bool(
+        claimed
+        and int(claimed.group(1)) == len(gap_rows)
+        and '012' in gap_rows)
+    if partial and '012' in gap_rows:
+        if not bc12_admitted:
+            fail('the PRD records FIL-GAP-012 as partially closed, but the '
+                 'Bounded Context Map E-22 row does NOT list BC-12 as a '
+                 'consumer. A PRD may not close an architecture blocker that '
+                 'the authoritative architecture record still carries -- '
+                 'verify %s' % bc_map_path)
+        # Architecture half closed and verified at source.  The over-claim
+        # guard below stays ARMED, because Stage 6/FROZEN/alignment claims are
+        # still not licensed by an unimplemented rule.
+        gap_open = True
     if not gap_open:
-        fail('check 10 is vacuous or the situation changed: FIL-GAP-012 is no '
-             'longer recorded as OPEN in the PRD. If the E-22 consumer '
-             'question has genuinely been resolved by an ADR, this check must '
-             'be revisited deliberately rather than allowed to lapse silently')
+        fail('check 10 is vacuous or the situation changed: FIL-GAP-012 is '
+             'neither recorded as OPEN nor as partially closed in the PRD. If '
+             'the E-22 consumer question has genuinely been resolved in full, '
+             'this check must be revisited deliberately rather than allowed '
+             'to lapse silently')
     else:
         overclaims = [
             (r'architecture alignment[^\n]{0,60}\b(clean|clear|complete|resolved)\b',

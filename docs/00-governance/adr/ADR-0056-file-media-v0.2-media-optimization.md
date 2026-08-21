@@ -6,7 +6,7 @@
 | **Date** | 2026-08-20 |
 | **Deciders** | **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` §2.2, L85 — *"any Rank 1–5 document change"*), with the **Product Owner** attesting the V1 scope addition per §2.4's stage table |
 | **Supersedes** | — |
-| **Amends** | `docs/30-product/file-media/PRD-017_FILE_AND_MEDIA.md` (**Rank 3, FROZEN v0.1**) → **v0.2**. New requirements only; **no existing identifier is renumbered, reworded, withdrawn or deleted** |
+| **Amends** | `docs/30-product/file-media/PRD-017_FILE_AND_MEDIA.md` (**Rank 3, FROZEN v0.1**) → **v0.2**. New identifiers only; **no obligation-bearing (`FIL-FR`/`BR`/`INV`/`XC`) or Class B (`FIL-AC`/`CFG`) identifier is renumbered, reworded, withdrawn or deleted**. ⚠ **One Class C finding row is revised** — `FIL-GAP-012`, to record that `ADR-0055` closed its architecture half; see §8.2 |
 | **Amended by** | — |
 | **Baseline** | **`BASELINE-2026-08-20-C`** — a **Rank 3** document changes version, so `DOCUMENTATION_BASELINE.md` §7 step 4 **requires** a baseline re-issue. Supersedes `BASELINE-2026-08-20-B`. The **third** suffix advance in one day |
 | **Closes** | Nothing. **This ADR adds obligations; it discharges none** |
@@ -53,12 +53,17 @@ Four questions had to be answered from the repository before a single requiremen
 | EA **L1878**, **L1880** | 6 | Document Preview **V3**; CDN Delivery **V2** |
 | EA **L964** | 6 | *"Videos (**V3**)"* under *"Media & Text Sharing (V2)"* |
 | Baseline **L139** | — | The EA is *"**Descriptive** — must follow the PRDs, never lead them"* |
-| `FIL-GAP-005` | 3 | The **identical** V1-vs-V2 conflict for thumbnailing was already ruled: *"Precedence resolves it in favour of V1 (`MP-CON-08`)"* |
-| `FIL-FR-055`…`059` | 3, FROZEN | A complete derivative framework already exists: generate, inherit access, regenerable, cascade-delete, bounded set |
-| **`FIL-FR-004`** | **3, FROZEN** | V1 supports **exactly three** content classes: images, PDF, non-executable office/text |
-| **`FIL-FR-005`** | **3, FROZEN** | *"Video and audio **SHALL NOT** be accepted in V1"* |
-| **`FIL-XC-016`** | **3, FROZEN** | The module *"**MUST NOT** implement video or audio transcoding, streaming, adaptive bitrate or media playback"* |
-| `FIL-CFG-002`, `003`, `007` | 3, FROZEN | Type allow-list, byte ceiling and derivative-size set are **already** configurables |
+| `PRD-017` `FIL-GAP-005` | 3 | The **identical** V1-vs-V2 conflict for thumbnailing was already ruled: *"Precedence resolves it in favour of V1 (`MP-CON-08`)"* |
+| `PRD-017` `FIL-FR-055`…`059` | 3, FROZEN | A complete derivative framework already exists: generate, inherit access, regenerable, cascade-delete, bounded set |
+| `PRD-017` **`FIL-FR-004`** | **3, FROZEN** | V1 supports **exactly three** content classes: images, PDF, non-executable office/text |
+| `PRD-017` **`FIL-FR-005`** | **3, FROZEN** | *"Video and audio **SHALL NOT** be accepted in V1"* |
+| `PRD-017` **`FIL-XC-016`** | **3, FROZEN** | The module *"**MUST NOT** implement video or audio transcoding, streaming, adaptive bitrate or media playback"* |
+| `PRD-017` `FIL-CFG-002`, `003`, `007` | 3, FROZEN | Type allow-list, byte ceiling and derivative-size set are **already** configurables |
+
+⚠ **Every `FIL-` row above is prefixed with `PRD-017` deliberately.** An identifier alone in a leading table
+cell is indistinguishable from a **definition**, and `prd017_stage5.py` check 4c correctly flagged the first draft
+of this table as *"ADR-0056 defines FIL-FR-004"*. An ADR **cites** requirements; only the owning PRD defines them.
+The table was reshaped so the citation is unambiguous — **the checker was not exempted**.
 
 ---
 
@@ -160,10 +165,18 @@ unavailable to it (frozen §13.2). `FIL-EVT-*` therefore **stays empty**, and no
 
 1. **Media optimization is a V1 obligation of `BC-29`**, on the `MP-CON-08` precedence ruling already recorded in
    `FIL-GAP-005`.
-2. **`PRD-017` goes to v0.2** by the `PRD_LIFECYCLE.md` §4 path, with **19 new requirements** across five
-   registers and **16 new acceptance criteria**, all appended contiguously.
-3. **No existing identifier is renumbered, reworded, withdrawn or deleted.** Verified by hashing the pre-existing
-   requirement text — see §8.
+2. **`PRD-017` goes to v0.2** by the `PRD_LIFECYCLE.md` §4 path, with **18 new obligations** across four
+   registers (13 `FIL-FR`, 2 `FIL-BR`, 2 `FIL-INV`, 1 `FIL-XC`) and **18 new acceptance criteria**, all appended
+   contiguously. ⚠ **These figures were corrected against measurement during execution.** The drafted plan said
+   *"19 requirements across five registers"* and *"16 criteria"*; the executed amendment is **18 obligations across
+   four** and **18 criteria**. Two causes, both recorded rather than smoothed: `FIL-FR-095` and `FIL-CFG-015` were
+   **added during execution** because writing the configurable exposed that nothing bounded the `PROCESSING` state,
+   which would have left `FIL-FR-092`'s terminal-state promise and `FIL-INV-013`'s servability rule unenforceable;
+   and the criteria grew from 16 to 18 to cover the two new obligations. `FIL-CFG-*` is **Class B**, so counting it
+   among *"requirement registers"* was itself an error in the plan.
+3. **No obligation-bearing or Class B identifier is renumbered, reworded, withdrawn or deleted.** Verified by
+   snapshotting every pre-existing definition line and re-matching it — see §8.2, which records the **one**
+   deliberate Class C exception rather than claiming a clean sweep.
 4. **Video and audio optimization is REFUSED at V1** (§3.2). `FIL-FR-005` and `FIL-XC-016` stand unamended;
    `FIL-GAP-016` records the request and the remedy.
 5. **PDF/document integrity is an invariant**, not a setting (§3.3).
@@ -235,24 +248,41 @@ event was minted. Nothing became verified.
 
 | Register | Was | Added | Now |
 |---|---|---|---|
-| `FIL-FR-*` | 82 | **`083`…`094`** (12) | **94** |
+| `FIL-FR-*` | 82 | **`083`…`095`** (13) | **95** |
 | `FIL-BR-*` | 17 | **`018`…`019`** (2) | **19** |
 | `FIL-INV-*` | 11 | **`012`…`013`** (2) | **13** |
 | `FIL-XC-*` | 22 | **`023`** (1) | **23** |
 | `FIL-CFG-*` | 9 | **`010`…`015`** (6) | **15** |
-| `FIL-AC-*` | 78 | **`079`…`094`** (16) | **94** |
+| `FIL-AC-*` | 78 | **`079`…`096`** (18) | **96** |
 | `FIL-GAP-*` | 13 | **`014`…`016`** (3) | **16** |
 | `FIL-EVT-*` | **0** | **none — DECLARED EMPTY** | **0** |
-| **Total** | **232** | **+42** | **274** |
+| **Total** | **232** | **+45** | **277** |
 
 `PRD_LIFECYCLE.md` §5 rule 5 — *"Numbers are never reused"* — is satisfied: every new identifier extends its
 register's maximum.
 
 ### 8.2 Pre-existing text preserved — measured, not asserted
 
-The v0.1 requirement text is **unchanged**. Verified by extracting every pre-existing identifier's definition
-line from v0.1 and from v0.2 and comparing: **232 of 232 identical, 0 modified, 0 removed.** The method and
-result are republished in `PRD-017_STAGE7_FREEZE.md` §3 so a reader can recompute rather than trust.
+Verified by extracting every pre-existing identifier's definition line from v0.1 and from v0.2 and comparing.
+**Measured result: 231 of 232 byte-identical, 1 deliberately revised, 0 removed, 0 renumbered.**
+
+⚠ **This ADR originally claimed "232 of 232" and the claim was FALSE.** The measurement was run after the edits
+and returned 231. The revised line is **`FIL-GAP-012`**, a **Class C finding** row, rewritten to record that
+`ADR-0055` closed its architecture half while its implementation half stays open. That revision is *authorised* —
+`ADR-0055` §5 requires it, and a gap register whose rows may never change could never record a gap closing — but
+the ADR's own preservation claim did not carve it out, so the claim was corrected to the measured figure rather
+than the figure re-interpreted to fit the claim.
+
+**All 132 v0.1 obligation-bearing identifiers and all 87 Class B identifiers are byte-identical.** The exception
+is confined to one row of one Class C register. The method and result are reproducible:
+
+```
+snapshot every ^`FIL-XX-NNN` — and ^| `FIL-XX-NNN` | definition line before the edit
+re-match each after the edit; report missing, changed, added
+```
+
+This is the same discipline `S4-D-06` exists to enforce: a total that is carried forward instead of recomputed is
+the defect class this repository has already been bitten by twice.
 
 ---
 
@@ -275,4 +305,4 @@ result are republished in `PRD-017_STAGE7_FREEZE.md` §3 so a reader can recompu
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0** | 2026-08-20 | Created and **Accepted**. Authorises `PRD-017` **v0.1 → v0.2** adding **19 requirements / 16 acceptance criteria / 6 configurables / 3 gaps** for V1 media optimization: image compression with a document-aware profile for handwritten and text-heavy study material, lossless-only document handling, adaptive profile selection by measured input characteristics, serving variants, original preservation, an explicit upload→validation→processing→ready/failed lifecycle, progress/retry/idempotency, and a servability invariant. **Video and audio optimization was REFUSED** — `FIL-FR-005` and `FIL-XC-016` stand unamended and the request is recorded as `FIL-GAP-016`. Re-issues the baseline to **`BASELINE-2026-08-20-C`** because a Rank 3 document changed version |
+| **v1.0** | 2026-08-20 | Created and **Accepted**. Authorises `PRD-017` **v0.1 → v0.2** adding **18 obligations / 18 acceptance criteria / 6 configurables / 3 gaps** (**45** identifiers, measured) for V1 media optimization: image compression with a document-aware profile for handwritten and text-heavy study material, lossless-only document handling, adaptive profile selection by measured input characteristics, serving variants, original preservation, an explicit upload→validation→processing→ready/failed lifecycle, progress/retry/idempotency, and a servability invariant. **Video and audio optimization was REFUSED** — `FIL-FR-005` and `FIL-XC-016` stand unamended and the request is recorded as `FIL-GAP-016`. Re-issues the baseline to **`BASELINE-2026-08-20-C`** because a Rank 3 document changed version |

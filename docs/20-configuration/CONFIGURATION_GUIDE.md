@@ -2,18 +2,19 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Normative for operations |
-| **Date** | 2026-08-02 · **extended 2026-08-03** |
-| **Governs** | `CFG-1` … `CFG-12` (Authentication PRD v2.0 §E) · **`LCFG-1` … `LCFG-13`** (Library PRD v1.0 §16.1, §14B.9) · **`ICFG-1` … `ICFG-10`** (Invitation Security Specification §11) |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-20** |
+| **Governs** | `CFG-1` … `CFG-12` (Authentication PRD v2.0 §E) · **`LCFG-1` … `LCFG-13`** (Library PRD v1.0 §16.1, §14B.9) · **`ICFG-1` … `ICFG-10`** (Invitation Security Specification §11) · **ten of the fifteen `FIL-CFG-*` media-processing slots** (`PRD-017` §8.5, via `ADR-0057`) |
 | **Authority** | Subordinate to the PRDs. This guide sets values **within** the envelope they define; it cannot change the envelope |
 
 ---
 
 ## 1. How to read this guide
 
-The PRDs declare **thirty-five** configurable parameters — twelve authentication (`CFG-*`), thirteen library
-(`LCFG-*`) and ten invitation (`ICFG-*`). Configurable means: the value can change per environment or per deployment
+The PRDs declare **fifty** configurable parameters — twelve authentication (`CFG-*`), thirteen library
+(`LCFG-*`), ten invitation (`ICFG-*`) and fifteen File & Media (`FIL-CFG-*`, `PRD-017` §8.5). This guide supplies
+values for **forty-five** of them: §2C.11 records the five it deliberately leaves unset and why. Configurable means: the value can change per environment or per deployment
 **without changing the specification, the architecture, or any interface**.
 
 This guide gives, for each parameter:
@@ -48,9 +49,22 @@ configuration. Changing one requires a change to the PRD.
 | Protected operations requiring authentication | The closed list `PO-1` … `PO-12` |
 | Public profile fields | The allow-list in §14A.5 |
 | Invitation single-use policy | `IT-1`, `IT-2` single-use; `IT-3` multi-use bounded by `ICFG-6` |
+| **Chroma subsampling on document-like images** | **Never applied** (`FIL-FR-085`(b)) |
+| **Lossy compression of PDF, office or text documents** | **Never** — lossless, byte-exactly decompressible only (`FIL-FR-090`, `FIL-INV-012`) |
+| **Virus-scan fail-closed behaviour** | Refuse. Only the *timeout* is configurable (`FIL-FR-066`) |
+| **Video or audio optimization in V1** | Not admitted (`FIL-FR-005`, `FIL-XC-016`, `FIL-XC-023`) |
+| **Serving an object outside `READY`** | Never (`FIL-INV-013`) |
+| **Variant selection from a caller-supplied dimension** | Never — purpose plus the declared set only (`FIL-FR-091`) |
 
 Exposing any of these as a tunable is a **defect**, because operators could then configure the system out of
 conformance with its own specification.
+
+**Chroma subsampling deserves its own note, because it is the one an engineer is most likely to expose.** It is the
+single most effective way to shrink an image, and on photographs it is nearly invisible. On handwriting it is
+destructive: it discards colour resolution exactly where thin dark-on-light strokes carry the information, so a
+subsampled scan of a student's notes looks acceptable in a thumbnail and smears under the zoom a reader actually
+uses. Offering it as a dial would let a bandwidth-motivated deployment silently destroy the readability the §2C.1
+floor exists to protect — which is why `FIL-FR-085`(b) states it as a rule and this guide gives it no parameter.
 
 **Two of these deserve emphasis, because they look configurable.** The `PO-1`…`PO-12` list is closed: adding a
 protected operation is a specification change, and *removing* one silently makes a member-only capability
@@ -432,6 +446,287 @@ single control expressed in two places. Neither can be tuned by looking only at 
 
 ---
 
+## 2C. File & Media parameter register — the media-processing values
+
+Declared by [`PRD-017_FILE_AND_MEDIA.md`](../30-product/file-media/PRD-017_FILE_AND_MEDIA.md) §8.5, which publishes
+**fifteen** `FIL-CFG-*` slots. This section supplies values for **ten** of them. Authority:
+[`ADR-0057`](../00-governance/adr/ADR-0057-media-processing-configurable-values.md), which closes `FIL-GAP-014` by
+recording **Product-Owner-supplied** values rather than inventing them.
+
+**Owner: Configuration Owner**, jointly with Security for the signed-URL and scan parameters. Every value is
+consumed by `BC-29` over `E-19` and **owned by its scope owner, not by File & Media** (`FIL-XC-009`) — the module
+reads numbers it has no authority to set.
+
+### 2C.0 The governing principle: readability outranks compression ratio
+
+Everything in this section exists to serve one requirement, and it is worth stating before the numbers. Liboora's
+students photograph **handwritten notes, assignments and scanned study material**. That content is the product. A
+compression setting that saves bandwidth while smearing a pen stroke or dissolving a subscript has not optimised
+anything — it has destroyed the only thing the file was uploaded to carry.
+
+Three consequences follow, and all three are mechanical rather than aspirational:
+
+1. The document quality parameter is a **floor**, not a target. Configuration may raise it and **never lower it**.
+2. A **minimum resolution** is enforced separately from quality, because `PRD-017` §8.5 records that *"readability
+   of handwriting and small print is a function of resolution, not quality alone."* A high quality setting on a
+   downscaled image is a sharp rendering of destroyed information.
+3. Where the profile and a size ceiling **cannot both** be satisfied, `FIL-FR-085` requires the module to
+   **refuse the upload with a typed error** rather than emit an unreadable derivative. Failing loudly is the
+   specified behaviour; quietly degrading is not.
+
+### 2C.1 Document-aware minimum encoder quality
+
+| | |
+|---|---|
+| **Default** | **88** — a *floor*. Configuration may raise, never lower |
+| **Range** | 82 – 100 |
+| **Unit** | encoder quality index |
+| **Slot** | `FIL-CFG-010` (`FIL-FR-085`) |
+| **Owner** | Configuration Owner |
+| **Provenance** | Product Owner, 2026-08-20, via `ADR-0057` |
+
+**Rationale.** Applies to every image classified **document-like** by `FIL-FR-084` — handwritten notes, scanned or
+photographed study material, assignments, text-heavy images. At 88 the high-frequency edges that constitute pen
+strokes and small print survive a single encode without visible ringing; the artefacts that appear in the low 80s
+concentrate exactly on thin dark-on-light strokes, which is the worst possible failure for this corpus.
+
+**Below 82:** thin-stroke ringing becomes visible on handwriting; a subscript or a decimal point can be lost. This
+is why the range floor is not lower, and why the parameter is published as a floor rather than a target.
+**Above 100:** not a value.
+
+**Text-heavy sub-profile: 92.** Screenshots and dense printed text carry the highest edge density in the corpus and
+select **92** within this register. ⚠ This is **not** a third content class — `FIL-FR-084` (FROZEN) defines exactly
+two, and a third would require an amendment. It is permitted because 92 is **above the floor**, which §8.5
+explicitly licenses.
+
+**Failure mode if too low:** unreadable study material, silently. The upload succeeds, the thumbnail looks
+acceptable, and the student discovers the loss when revising. **If too high:** larger files and slower transfers on
+the constrained mobile connections this product targets — a cost, not a defect.
+
+**Interaction:** with the minimum long edge in §2C.2 — both must hold. Quality without resolution is a sharp
+rendering of destroyed information, and `INV-17` prevents the photographic target from being set above this floor.
+
+### 2C.2 Document-aware minimum long-edge dimension
+
+| | |
+|---|---|
+| **Default** | **1600** |
+| **Range** | 1280 – 2560 |
+| **Unit** | pixels, long edge |
+| **Slot** | `FIL-CFG-011` (`FIL-FR-085`) |
+| **Owner** | Configuration Owner |
+| **Provenance** | Product Owner baseline, resolved by `ADR-0057` §3.3 |
+
+**Rationale.** A **minimum**, not a ceiling. `FIL-FR-085`(c) requires a document-like derivative's long edge to be
+**at or above** this value. At 1600 px an A4 page yields roughly **190 pixels per inch** across its short edge —
+above the ~150 ppi below which pen strokes and small print visibly degrade.
+
+⚠ **This is deliberately NOT the Product Owner's "max long edge 2560".** That figure is a **maximum** and lives in
+§2C.3. Writing 2560 here would make a ceiling act as a floor, forcing every document derivative to at least 2560 px
+and **enlarging small originals** in direct breach of `FIL-FR-086`'s *"SHALL NOT enlarge an input."*
+`ADR-0057` §3.3 records the reasoning; `INV-18` enforces the ordering so the confusion cannot recur in a deployment.
+
+**Below 1280:** A4 handwriting drops under ~150 ppi and small print stops being reliably legible.
+**Above 2560:** would exceed the processed maximum and make the two parameters unsatisfiable together — prevented
+by `INV-18`.
+
+**Failure mode if too low:** the quality floor is satisfied and the content is still unreadable, which is the
+failure this parameter exists to prevent. **If too high:** uploads refused under `FIL-FR-085`'s
+refuse-rather-than-degrade rule where the source cannot meet it.
+
+### 2C.3 Photographic profile bound — target quality and maximum long edge
+
+| | |
+|---|---|
+| **Default** | quality **84**, maximum long edge **2560 px** |
+| **Range** | quality 70 – 88 · long edge 1600 – 4096 |
+| **Unit** | encoder quality index · pixels |
+| **Slot** | `FIL-CFG-012` (`FIL-FR-086`) |
+| **Owner** | Configuration Owner |
+| **Provenance** | Product Owner, 2026-08-20 |
+
+**Rationale.** Applies to images classified **photographic** — the class where perceptual loss is acceptable
+because no textual information is at stake. 84 is the standard perceptual-transparency region for photographic
+content. The 2560 px maximum is the **processed ceiling** for all classes.
+
+**Two rules from `FIL-FR-086` are not configurable and are restated because they bound this parameter:** the module
+**SHALL NOT enlarge** an input, and **SHALL NOT** emit a derivative **larger in bytes** than its original — in that
+case it serves the original and records the outcome.
+
+**Below 70:** visible blocking on photographs. **Above 88:** approaches the document floor with no perceptual gain,
+and `INV-17` forbids exceeding it — a photographic target above the document floor would invert the two profiles.
+
+### 2C.4 Output encoding allow-list for optimized derivatives
+
+| | |
+|---|---|
+| **Default** | **WebP, JPEG** — images only |
+| **Range** | any non-empty subset of {WebP, JPEG, PNG} |
+| **Unit** | encoding names |
+| **Slot** | `FIL-CFG-013` (`FIL-FR-086`) |
+| **Owner** | Configuration Owner + Architecture Owner |
+
+**Rationale.** An allow-list, so admitting an encoding is a reviewed configuration change (`FIL-FR-071`) rather
+than a code change. WebP for transfer efficiency, JPEG for universal compatibility. PNG is in range for lossless
+document output but not default, being larger for photographic content.
+
+⛔ **No video or audio encoding is admitted, and none may be added.** `FIL-FR-005`, `FIL-XC-016` and `FIL-XC-023`
+are **FROZEN** and forbid it; `FIL-GAP-016` records that V1 video was requested and **refused**. Adding one here
+would be a configuration change attempting what an ADR was refused permission to do.
+
+⛔ **PDF, office and text documents have no entry in this list at all.** `FIL-FR-090` permits **only lossless,
+byte-exactly decompressible** container-level compression for them: no re-encoding of embedded images, no
+rasterising, no downsampling, no flattening. Their byte-exact recoverability is an **invariant**
+(`FIL-INV-012`, `FIL-BR-018`), not a setting.
+
+### 2C.5 Processing timeout before terminal failure
+
+| | |
+|---|---|
+| **Default** | **120 s** |
+| **Range** | 30 – 600 s |
+| **Unit** | seconds |
+| **Slot** | `FIL-CFG-015` (`FIL-FR-092`, `FIL-FR-095`) |
+| **Owner** | Configuration Owner |
+| **Provenance** | Product Owner, 2026-08-20 |
+
+**Rationale.** Bounds the non-terminal lifecycle states. `FIL-FR-095` requires that an object exceeding this in
+`RECEIVED`, `VALIDATING` or `PROCESSING` moves to terminal **`FAILED`** with a typed, non-leaking reason, and that
+the abandoned derivative is **deleted**. 120 s comfortably covers a multi-megapixel document encode while bounding
+the window in which an object is unservable.
+
+**Why this parameter exists at all** is worth recording: `FIL-INV-013` makes an object servable **only** in
+`READY`, and `FIL-FR-092` promises `READY` and `FAILED` are the **only** terminal states. Without a timeout a
+stalled object would be permanently unservable **and** never terminal — so `FIL-CFG-015` was added at v0.2
+*"because writing the configurable exposed that the obligation was missing."*
+
+**Below 30 s:** large legitimate documents fail spuriously, and a bounded retry cannot help because the retry
+inherits the same insufficient budget. **Above 600 s:** an object sits unservable long enough that the student
+reasonably concludes the upload was lost.
+
+### 2C.6 Processing retry bound
+
+| | |
+|---|---|
+| **Default** | **3** attempts total (initial + 2 retries) |
+| **Range** | 1 – 5 |
+| **Unit** | attempts |
+| **Slot** | `FIL-CFG-014` (`FIL-FR-093`) |
+| **Owner** | Configuration Owner |
+
+**Rationale.** Three attempts absorb transient faults — a worker eviction, a storage blip — without masking a
+deterministic failure. On exhaustion the object rests in terminal `FAILED` with a typed non-leaking reason.
+
+**Two frozen rules bound this and are not configurable.** Processing is **idempotent under an operation key**: a
+retry produces no second derivative, no second audit fact, no different result. And **this module SHALL NOT
+schedule its own retries** — `FIL-XC-017` requires `platform/services:job_runtime`. ⚠ That runtime is placed at
+**V2** by the EA while this work is V1, which is `FIL-GAP-015`, **OPEN**. This value is therefore configured and
+**not yet consumable**.
+
+**Below 1:** not a value; 1 means no retry, permitted for diagnostics. **Above 5:** a deterministic failure
+consumes worker capacity repeatedly and delays the terminal state the student is waiting for.
+
+### 2C.7 Derivative size set
+
+| | |
+|---|---|
+| **Default** | thumbnail **480 px**, preview **1280 px**, full **2560 px** (long edge) |
+| **Range** | a bounded declared set, 1 – 4 members, each 240 – 4096 px |
+| **Unit** | pixels, long edge |
+| **Slot** | `FIL-CFG-007` (`FIL-FR-059`, `FIL-FR-091`) |
+| **Owner** | Configuration Owner |
+| **Provenance** | thumbnail 480 px from the Product Owner, 2026-08-20 |
+
+**Rationale.** A closed, declared set. 480 px serves a chat attachment tile at 2× density; 1280 px serves a
+full-screen portrait preview; 2560 px is the processed maximum.
+
+⚠ **Variant selection is a function of purpose and the declared set — never a caller-supplied dimension**
+(`FIL-FR-091`). A caller-supplied dimension is an unbounded render surface. Variants are reachable **only** through
+the same signed-URL and authorization path as their original (`FIL-XC-014` — there is no CDN in V1).
+
+⚠ **A thumbnail is subject to the document floor when its source is document-like.** A 480 px derivative of a
+handwritten page is *not* readable, and that is acceptable **only** because it is a navigational tile and never the
+sole copy — `FIL-FR-057` forbids a derivative from being the sole copy, and `FIL-FR-083` makes every derivative
+regenerable from a preserved original.
+
+### 2C.8 Signed-URL validity window
+
+| | |
+|---|---|
+| **Default** | **300 s** |
+| **Range** | 60 – 900 s |
+| **Unit** | seconds |
+| **Slot** | `FIL-CFG-004` (`FIL-BR-009`) |
+| **Owner** | **Security** |
+
+**Rationale.** A **security** parameter, owned by Security rather than by whoever tunes media quality. A signed URL
+is a bearer credential: anyone holding it reads the object for as long as it is valid, without any further
+authorization check. 300 s covers a slow mobile fetch while keeping a leaked URL — in a screenshot, a log, a
+referrer header — worthless within minutes.
+
+**Below 60 s:** legitimate fetches fail on slow connections and clients retry, multiplying signing load.
+**Above 900 s:** the window in which a leaked URL is usable exceeds any plausible transfer time, and the credential
+starts behaving like a permanent public link.
+
+### 2C.9 Scan timeout
+
+| | |
+|---|---|
+| **Default** | **30 s** |
+| **Range** | 5 – 120 s |
+| **Unit** | seconds |
+| **Slot** | `FIL-CFG-005` (`FIL-FR-066`) |
+| **Owner** | **Security** |
+
+**Rationale.** Availability tuning for the virus scan, which `FIL-FR-092` requires to complete **before**
+`PROCESSING` begins.
+
+⛔ **Fail-closed behaviour is NOT configurable — only the timeout is.** `FIL-FR-066` requires that a scan which
+times out, errors or is unavailable results in **refusal**. There is no setting that admits an unscanned object,
+and adding one would be a defect of the class §1 describes. This parameter changes **how long** the system waits,
+never **what it decides** when the wait ends.
+
+### 2C.10 Maximum concurrent uploads per actor
+
+| | |
+|---|---|
+| **Default** | **3** |
+| **Range** | 1 – 10 |
+| **Unit** | concurrent uploads |
+| **Slot** | `FIL-CFG-009` (`FIL-BR-012`) |
+| **Owner** | Configuration Owner |
+
+**Rationale.** An **abuse control**, explicitly *not* an entitlement (`FIL-BR-012`) — it is not a paid tier feature
+and must not be raised per plan. Three allows a student to send a few pages at once while bounding what one
+compromised account can push through the pipeline.
+
+### 2C.11 ⛔ Two slots are deliberately left WITHOUT values
+
+**`FIL-CFG-006` — retention window and soft-delete reversibility.** No value. `MP-NFR-10` assigns retention to
+**SECURITY + DATA Governance**, and `PRD-016` established that a retention period invented by a document *"would
+have been a legal determination made by a document with no standing to make one."* `FIL-FR-052` therefore makes
+the missing value a **startup refusal** rather than a silent zero. Carried as `FIL-GAP-008`, **OPEN**.
+
+⚠ **Being handed nine values does not license inventing a tenth.** The Product Owner supplied media-processing
+figures and no retention period; that boundary is respected rather than smoothed over.
+
+**`FIL-CFG-001`, `FIL-CFG-002`, `FIL-CFG-003`, `FIL-CFG-008`** — purpose register, content-type allow-list per
+purpose, maximum byte length per purpose, orphan-sweep interval. These are **per-purpose** structures rather than
+single scalars, and no purpose register exists yet. They are not defaulted here because a partial purpose register
+would be worse than none: `FIL-FR-005` treats the allow-list as its single enforcement point, and a purpose missing
+from a half-written register would fail closed in a way no operator could diagnose.
+
+**⛔ There is no upload-timeout parameter in this section, and its absence is deliberate.** The Product Owner's
+baseline included an upload timeout of ~60 s. `PRD-017` §8.5 declares **no slot** for one — `FIL-CFG-005` is the
+*scan* timeout and `FIL-CFG-015` is the *processing* timeout. §5 of this guide is explicit that *"adding a
+parameter"* requires **a PRD amendment**, because *"the specification declares what is configurable, this guide
+does not."* Supplying a value for an undeclared parameter would be this guide declaring one into existence.
+The finding is **referred to the `PRD-017` owner**: nothing bounds the transfer phase, so a stalled *upload* has no
+terminal path equivalent to `FIL-FR-095`'s. `ADR-0057` §3.4 records the referral and deliberately mints **no**
+identifier for it, because the register belongs to a FROZEN document.
+
+---
+
 ## 3. Cross-parameter invariants
 
 These must be **validated at application startup**. A violation is a fatal configuration error — fail fast and
@@ -455,9 +750,23 @@ loudly. A silently inconsistent security configuration is worse than a wrong one
 | **INV-14** | `ICFG-3` ≤ `ICFG-2` | The weakest artefact (`IT-3`) must never live the longest |
 | **INV-15** | `ICFG-4` > `CFG-2` × `CFG-1` | An invitee must not time out part-way through authentication |
 | **INV-16** | `ICFG-6` ≥ 1 | An `IT-3` code that nobody can redeem is a configuration error, not a policy |
+| **INV-17** | §2C.3 photographic quality ≤ §2C.1 document floor | A photographic target above the document floor **inverts the two profiles** — the class where loss is acceptable would be encoded better than the class where it is not |
+| **INV-18** | §2C.2 minimum long edge ≤ §2C.3 maximum long edge | The two are a **minimum and a maximum**. Inverted, no derivative can satisfy both and every document upload is refused. This is the mechanical guard against the min/max confusion `ADR-0057` §3.3 records |
+| **INV-19** | §2C.7 largest derivative ≤ §2C.3 maximum long edge | A declared variant larger than the processed ceiling could only be produced by **enlarging**, which `FIL-FR-086` forbids |
+| **INV-20** | §2C.9 scan timeout < §2C.5 processing timeout | Scanning completes **before** `PROCESSING` (`FIL-FR-092`). A scan budget exceeding the total budget makes the lifecycle unreachable |
+| **INV-21** | §2C.6 retry bound ≥ 1 | Zero attempts means nothing is ever processed, and every object stalls to `FAILED` by timeout |
+| **INV-22** | §2C.4 allow-list non-empty **and** contains no video or audio encoding | Empty, nothing can be emitted. A video entry would attempt by configuration what FROZEN `FIL-XC-016`/`FIL-XC-023` forbid and `FIL-GAP-016` records as **refused** |
 
 Startup validation must report **all** violations, not just the first — an operator fixing a configuration should
 see the complete list once.
+
+**`INV-17`…`INV-22` are the media-processing set, and five of the six exist to make `READABILITY > COMPRESSION
+RATIO` mechanical rather than aspirational.** A reviewer reading §2C could satisfy every individual row and still
+produce an unreadable configuration — by setting the photographic target above the document floor, or by inverting
+the minimum and maximum long edge so that no derivative can satisfy both. Neither error is visible in the parameter
+it is written in; both are visible only in the relationship. `INV-22` is different in kind: it is the only invariant
+in this guide that guards against a **prohibition** being defeated by configuration rather than against an
+inconsistency, and it exists because `FIL-GAP-016` records that V1 video was requested and refused.
 
 **`INV-11` and `INV-15` are the same constraint applied to two different subsystems**, and both exist because the
 failure they prevent is invisible in development. Each bounds a timeout *below* the maximum legitimate duration of
@@ -504,6 +813,18 @@ the middle of the invitation and preview journeys. It is a reason the validation
 | `ICFG-8` | 100 | 20 | **20** |
 | `ICFG-9` | 50 | 10 | **10** |
 | `ICFG-10` | 5 min | 30 min | **30 min** |
+| §2C.1 document quality floor | 88 | 88 | **88** |
+| §2C.1 text-heavy sub-profile | 92 | 92 | **92** |
+| §2C.2 document min long edge | 1600 px | 1600 px | **1600 px** |
+| §2C.3 photographic quality | 84 | 84 | **84** |
+| §2C.3 max processed long edge | 2560 px | 2560 px | **2560 px** |
+| §2C.4 output encodings | WebP, JPEG | WebP, JPEG | **WebP, JPEG** |
+| §2C.5 processing timeout | 300 s | 120 s | **120 s** |
+| §2C.6 retry bound | 1 | 3 | **3** |
+| §2C.7 derivative set | 480 / 1280 / 2560 px | 480 / 1280 / 2560 px | **480 / 1280 / 2560 px** |
+| §2C.8 signed-URL window | 900 s | 300 s | **300 s** |
+| §2C.9 scan timeout | 30 s | 30 s | **30 s** |
+| §2C.10 concurrent uploads | 10 | 3 | **3** |
 
 `LCFG-1`…`LCFG-5` and `LCFG-7`…`LCFG-10` are **per-library settings, not per-environment**. They are set by each
 library through `BC-25` and do not appear in this table; the defaults in §2A apply on creation.
@@ -518,7 +839,15 @@ library through `BC-25` and do not appear in this table; the defaults in §2A ap
    configuration problems before production does; if it differs, it cannot.
 4. **`INV-1` … `INV-16` are validated in every environment, including development.** Relaxed values must still be
    internally consistent.
-5. **Development relaxations of `ICFG-8` and `ICFG-9` are the most dangerous ones in this table.** They are the
+5. **⚠ The media-quality rows do NOT vary by environment, and that is deliberate.** §2C.1, §2C.2, §2C.3, §2C.4 and
+   §2C.7 hold their production values in **development**. Relaxing a quality floor to speed up a local test would
+   make development the one environment where the readability guarantee does not hold — so a developer would never
+   see the artefacts a student sees, which is the failure mode rule 3 exists to prevent. Only the **timeouts** and
+   the **abuse control** relax: §2C.5 is longer in development to tolerate an unwarmed worker, §2C.8 is longer to
+   survive a debugger pause, §2C.10 is higher for fixture loading, and §2C.6 drops to 1 so a deterministic failure
+   surfaces immediately instead of being retried into a timeout. **No relaxation weakens a control:** §2C.9's
+   fail-closed behaviour is not a value and cannot be relaxed at all.
+6. **Development relaxations of `ICFG-8` and `ICFG-9` are the most dangerous ones in this table.** They are the
    controls that make `IT-3`'s deliberately low entropy safe. Relaxing them in development is acceptable; letting
    the relaxed value reach production removes the compensating control while leaving the entropy figure — and
    therefore every document that cites it — apparently unchanged.
@@ -557,6 +886,19 @@ Each parameter must be observable in production, or you are operating blind on t
 | `ICFG-7` | Invitations created per library per hour | A library at its ceiling — either bulk onboarding or a compromised Owner account |
 | `ICFG-8`/`ICFG-9` | Failed invitation presentations, by origin | **Any** sustained failure rate. Legitimate users mistype once, not repeatedly |
 | `ICFG-6` | `IT-3` codes reaching their acceptance ceiling | Codes hitting the ceiling routinely — the library should probably be Public |
+| §2C.1 | Derivatives emitted **at** the floor vs above it, by content class | A rising share pinned exactly at the floor — the floor is doing the work a target should, and readability has no margin left |
+| §2C.2 | Uploads **refused** for failing the min-long-edge rule | Any sustained rate — students are photographing at a resolution the floor rejects, and refusing is correct but the *guidance* is failing |
+| §2C.3 | Derivatives where the original was served because the derivative was larger | Rising — the profile is not earning its cost on this corpus |
+| §2C.5 | Objects moved to `FAILED` **by timeout**, distinct from failure by error | Any sustained rate — a timeout failure is invisible to the student as a *cause*, and looks identical to a lost upload |
+| §2C.6 | Attempts consumed per object; exhaustion count | Exhaustion rising — a deterministic fault is being retried, which retries cannot fix |
+| §2C.8 | Signed URLs issued vs redeemed | Redemptions far exceeding issuance for one object — a URL is being shared beyond its holder |
+| §2C.9 | Scan refusals split by **verdict** vs **timeout/unavailable** | Timeout share rising — the system is failing closed correctly, but on availability rather than on content |
+
+**§2C.1's metric is the one to watch, and it is deliberately not a simple pass rate.** A configuration can satisfy
+every invariant and still sit permanently *at* the readability floor — which means the floor is the only thing
+preventing unreadable output, with no margin. That is a healthy alert and a passing test at the same time, which is
+precisely why it must be observed rather than inferred from the absence of complaints. Students do not report
+slightly degraded handwriting; they stop using the feature.
 
 **Invitation presentation failures are the highest-signal metric in this guide.** A valid invitation is delivered
 directly to one person, so a legitimate failure is a typo or an expiry. A *pattern* of failures against different
@@ -573,7 +915,14 @@ NIST SP 800-63B (AAL2 reauthentication) · OWASP Authentication Cheat Sheet (loc
 [`Library_PRD_v1.md`](../30-product/library/Library_PRD_v1.md) §16.1 ·
 [`14B-Public-Library-Preview.md`](../30-product/library/14B-Public-Library-Preview.md) §14B.9 ·
 [`INVITATION_SECURITY_SPECIFICATION.md`](../30-product/library/INVITATION_SECURITY_SPECIFICATION.md) §11 ·
-`ADR-0009`, `ADR-0010`
+`ADR-0009`, `ADR-0010` ·
+[`PRD-017_FILE_AND_MEDIA.md`](../30-product/file-media/PRD-017_FILE_AND_MEDIA.md) §8.5 (the fifteen `FIL-CFG-*`
+slots) · [`ADR-0057`](../00-governance/adr/ADR-0057-media-processing-configurable-values.md) (§2C authority;
+closes `FIL-GAP-014`) · [`ADR-0056`](../00-governance/adr/ADR-0056-file-media-v0.2-media-optimization.md) §3.4,
+§3.5, §6 (why the values were owed rather than invented) ·
+[`ADR-0021`](../00-governance/adr/ADR-0021-attendance-management-configurable-defaults.md) §4 / D-1 (the four
+routes for an unsupplied value; route 1 is the one taken) · `MASTER_PRD.md` §25 `MP-NFR-01`…`12` (**no media or
+processing budget** — re-measured, the reason `B-4` stands)
 
 ---
 
@@ -581,5 +930,6 @@ NIST SP 800-63B (AAL2 reauthentication) · OWASP Authentication Cheat Sheet (loc
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-08-20 | **Added §2C, the File & Media media-processing register**, supplying values for **ten** of the fifteen `FIL-CFG-*` slots `PRD-017` §8.5 declares. Authority: `ACCEPTED` [`ADR-0057`](../00-governance/adr/ADR-0057-media-processing-configurable-values.md), which **closes `FIL-GAP-014`** by recording **Product-Owner-supplied** values under the `ADR-0021` D-1 **route 1** pattern (*"owner supplies values"*). `ADR-0056` §6 had rejected **inventing** these numbers; that rejection stands — what changed is that an authority competent to supply them did so, which is exactly the condition `ADR-0021` identified as missing (*"no new authority has arrived"*). Values are **attributed, not derived**. Added invariants **`INV-17`…`INV-22`**, twelve environment-profile rows, seven observability rows, six entries to the **"What is NOT configurable"** table, and §2C.0 stating the governing principle. Parameter count **35 → 50 declared, 45 supplied** — recomputed mechanically, not incremented. **No `CFG-*`, `LCFG-*` or `ICFG-*` value changed.** ⚠ **Three parts of the owner's baseline were REFUSED, and the refusals are the evidence the baseline was not treated as authority over the specification.** (1) Its **three** quality tiers do not match FROZEN `FIL-FR-084`'s **two** content classes, so the text-heavy band is expressed as a sub-profile **92 above the 88 floor** — which §8.5 explicitly licenses (*"configuration may raise it, never lower it"*) — rather than by minting a third class. (2) Its *"max long edge 2560"* was **NOT** written into the `FIL-CFG-011` slot, which `FIL-FR-085`(c) defines as a **minimum**; doing so would have made a ceiling act as a floor and **enlarged small originals in breach of `FIL-FR-086`**. Separated into **1600 px min** (§2C.2) and **2560 px max** (§2C.3), with **`INV-18`** enforcing the ordering so a deployment cannot repeat the confusion. (3) Its *"upload timeout ~60 s"* has **no declared slot** and **none was created**: §5 of this guide says adding a parameter *"is a **PRD amendment** — the specification declares what is configurable, this guide does not"*, so the finding is **referred to the `PRD-017` owner** in §2C.11 with **no identifier minted**, because that register belongs to a FROZEN document. ⛔ **`FIL-CFG-006` retention is left WITHOUT a value** — `MP-NFR-10` assigns it to SECURITY + DATA Governance and it is a **legal** determination; being handed nine values does not license inventing a tenth. `FIL-GAP-008` stays **OPEN**, and `FIL-FR-052` makes its absence a **startup refusal** rather than a silent zero. ⛔ **`FIL-CFG-001`/`002`/`003`/`008` are left unset** because they are per-purpose structures and no purpose register exists; a half-written allow-list would fail closed undiagnosably. ⚠ **No chroma-subsampling parameter was created** and the prohibition was added to §1 instead — it is the single most effective way to shrink an image and the single most destructive thing that can be done to handwriting, so exposing it as a dial would let a bandwidth-motivated deployment silently defeat the §2C.1 floor. ⚠ **`INV-22` is the first invariant in this guide that guards a prohibition rather than a consistency**, forbidding any video or audio encoding in the §2C.4 allow-list, because `FIL-GAP-016` records that V1 video was **requested and refused** and a configuration change must not achieve what an ADR was refused. ⚠ **The media-quality rows deliberately do NOT relax in development** (§4 rule 5) — relaxing a readability floor locally would make development the one environment where the guarantee does not hold, so a developer would never see what a student sees. Only timeouts and the abuse control relax, and the scan's fail-closed behaviour cannot relax because it is not a value. **This guide remains Rank 7 and no baseline identifier is issued**; `BASELINE-2026-08-20-C` stands. **No PRD amended — `PRD-017` is byte-identical. No checker modified. No code, schema or SQL.** |
 | **v1.1** | 2026-08-03 | Added the Library register `LCFG-1`…`LCFG-13` (§2A) and the invitation register `ICFG-1`…`ICFG-10` (§2B), with expanded reasoning for the seven that carry security weight. Added invariants `INV-10`…`INV-16`. Extended §1 "not configurable" with invitation entropy, the closed `IT-*` set, the closed `PO-1`…`PO-12` list and the public field allow-list. Added environment profiles and observability rules for the new parameters. **No `CFG-*` value changed.** |
 | v1.0 | 2026-08-02 | Created. `CFG-1`…`CFG-12` with ranges, rationale, invariants `INV-1`…`INV-9`, profiles and observability. Six values reset to standards-anchored defaults. Closes audit finding `G-3`. |

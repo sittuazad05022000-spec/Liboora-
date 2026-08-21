@@ -59,27 +59,33 @@ identifier outside them exists in this document, and every identifier inside the
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-FR-` | Functional requirement | **82** | `FIL-FR-001` … `FIL-FR-082` | Yes |
-| `FIL-BR-` | Business rule | **17** | `FIL-BR-001` … `FIL-BR-017` | Yes |
-| `FIL-INV-` | Invariant | **11** | `FIL-INV-001` … `FIL-INV-011` | Yes |
+| `FIL-FR-` | Functional requirement | **95** | `FIL-FR-001` … `FIL-FR-095` | Yes |
+| `FIL-BR-` | Business rule | **19** | `FIL-BR-001` … `FIL-BR-019` | Yes |
+| `FIL-INV-` | Invariant | **13** | `FIL-INV-001` … `FIL-INV-013` | Yes |
 | `FIL-EVT-` | Domain event published by this context | **0** | **DECLARED EMPTY** — see §0.3 | n/a |
-| `FIL-XC-` | Exclusion — a prohibition with a named owner elsewhere | **22** | `FIL-XC-001` … `FIL-XC-022` | Yes |
+| `FIL-XC-` | Exclusion — a prohibition with a named owner elsewhere | **23** | `FIL-XC-001` … `FIL-XC-023` | Yes |
 
 **Class B — supporting registers**
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-AC-` | Acceptance criterion | **78** | `FIL-AC-001` … `FIL-AC-078` | Yes |
-| `FIL-CFG-` | Configurable parameter this module publishes | **9** | `FIL-CFG-001` … `FIL-CFG-009` | Yes |
+| `FIL-AC-` | Acceptance criterion | **96** | `FIL-AC-001` … `FIL-AC-096` | Yes |
+| `FIL-CFG-` | Configurable parameter this module publishes | **15** | `FIL-CFG-001` … `FIL-CFG-015` | Yes |
 
 **Class C — finding register**
 
 | Prefix | Meaning | Count | Range | Contiguous? |
 |---|---|---|---|---|
-| `FIL-GAP-` | Open gap this PRD records but cannot close | **13** | `FIL-GAP-001` … `FIL-GAP-013` | Yes |
+| `FIL-GAP-` | Open gap this PRD records but cannot close | **16** | `FIL-GAP-001` … `FIL-GAP-016` | Yes |
 
-> **Totals: 232 identifiers across 8 registers, of which 1 is declared EMPTY. 132 are obligation-bearing.**
+> **Totals: 276 identifiers across 8 registers, of which 1 is declared EMPTY. 150 are obligation-bearing.**
 > **No identifier is retired; none has ever been issued before.**
+>
+> ⚠ **Recomputed at v0.2**, not incremented by hand. v0.1 declared **232 / 132**; `ADR-0056` added **44** — 13
+> `FIL-FR`, 2 `FIL-BR`, 2 `FIL-INV`, 1 `FIL-XC`, 18 `FIL-AC`, 6 `FIL-CFG`, 3 `FIL-GAP` — of which **18** are
+> obligation-bearing. `FIL-EVT-*` is untouched and remains **DECLARED EMPTY** (§0.3). Every range above was
+> re-measured from the document by `tool/docs_check/prd017_stage5.py` rather than reasoned about; `S4-D-06`
+> records what happens when a declared total is carried forward instead.
 
 ### 0.3 `FIL-EVT-*` is DECLARED EMPTY, and this is a finding rather than an omission
 
@@ -345,6 +351,14 @@ instruction of 2026-08-20 excludes it explicitly. Discovery is `BC-23`'s — `FI
 content, and **MUST NOT** decide that a share was inappropriate. *(Owner: `BC-13` Trust & Safety — BC Map
 **L117**, **L379**, and `E-14`'s enforcement fan-out. This module executes deletions it is instructed to make; it
 originates no moderation verdict.)*
+
+`FIL-XC-023` — The module **MUST NOT** decide **whether an actor may upload at original quality**, and **MUST
+NOT** implement **video or audio optimization, compression or transcoding**. The first is an entitlement
+decision consumed over `E-19` (`FIL-FR-089`); the second is refused at V1 — `FIL-FR-005` and `FIL-XC-016` stand
+unamended and `FIL-GAP-016` records the request together with the remedy. *(Added at v0.2 by `ADR-0056`. This
+exclusion exists because the v0.2 amendment introduces adaptive profile selection (`FIL-FR-087`), and adaptive
+machinery without an explicit prohibition invites a reader to conclude that video was quietly admitted. It was
+not.)*
 
 ### 2.4 Video and audio — the request asked "where V1 requires them", and the measured answer is *nowhere*
 
@@ -903,6 +917,17 @@ completion fraction — and **SHALL NOT** expose any storage path, worker identi
 byte-level detail through it. Progress for an object the caller may not read **SHALL** be indistinguishable
 from a non-existent object. *(`FIL-FR-050`'s not-found rule extends to progress; a progress endpoint that
 confirms existence is an enumeration oracle.)*
+
+`FIL-FR-095` — An object **SHALL NOT** remain in `RECEIVED`, `VALIDATING` or `PROCESSING` indefinitely. The
+module **SHALL** move an object that has exceeded the timeout `FIL-CFG-015` to the terminal `FAILED` state with
+a typed, non-leaking reason, and **SHALL** treat any derivative produced by the abandoned attempt as incomplete
+and delete it (`FIL-FR-057` makes this safe — a derivative is never the sole copy of any byte). *(⚠ **This
+requirement was added during the v0.2 amendment because writing `FIL-CFG-015` exposed that the obligation was
+missing.** `FIL-FR-092` promises that `READY` and `FAILED` are the only terminal states and `FIL-INV-013` makes
+an object servable only in `READY`; without this requirement an object stalled in `PROCESSING` would be
+permanently unservable *and* never terminal, and both promises would be unenforceable. The timeout value is owed
+— `FIL-GAP-014`, cause `B-4`.)*
+
 ---
 
 ## 5. Business rules
@@ -1041,6 +1066,18 @@ one's own object is ownership, not a grant. *(`FIL-BR-015`.)*
 **SHALL NOT** contain a `StudentRecordId` (`MP-GBR-03`), any domain field, any credential or secret value
 (`BC-18`/`ID-1`), any raw storage path exposed to a consumer (`E-22`), or any configuration **value** as opposed
 to a reference to one (`FIL-XC-009`).
+
+
+`FIL-INV-012` — For a PDF or non-executable office/text object, the stored bytes are **byte-exactly recoverable**
+to the accepted input, and the record carries the image-class decision (`FIL-FR-084`) for every image object so a
+regeneration reproduces the same profile. A record asserting a lossy transformation of a document object is
+**invalid**. *(`FIL-BR-018`; `FIL-FR-090`. Added at v0.2 by `ADR-0056` §3.3.)*
+
+`FIL-INV-013` — An object is **servable only in `READY`**. No consumer-visible read path — original, derivative,
+serving variant or signed URL — resolves for an object in `RECEIVED`, `VALIDATING`, `PROCESSING` or `FAILED`, and
+a partially written derivative is never reachable. *(`FIL-FR-092`; `FIL-FR-057`. This is the *"failed processing
+must never expose an invalid or incomplete media object"* obligation stated as an invariant, so that a violation
+is a **failing test** rather than a judgement call. Added at v0.2 by `ADR-0056` §3.6.)*
 
 ---
 
@@ -1186,6 +1223,17 @@ nine comply and then discloses an exception is internally contradictory.
 | `FIL-CFG-007` | **Derivative size set** (`FIL-FR-059`) | Bounded, declared, not caller-supplied |
 | `FIL-CFG-008` | **Orphan-sweep interval** (`FIL-FR-065`) | Operational |
 | `FIL-CFG-009` | **Maximum concurrent uploads per actor** | Abuse control that is not an entitlement (`FIL-BR-012`) |
+| `FIL-CFG-010` | **Document-aware minimum encoder quality** (`FIL-FR-085`) | ⛔ **No Rank 1–4 authority supplies a value** — `FIL-GAP-014`. Published as a floor, not a target: configuration may raise it, never lower it |
+| `FIL-CFG-011` | **Document-aware minimum long-edge dimension** in pixels (`FIL-FR-085`) | Readability of handwriting and small print is a function of resolution, not quality alone. ⛔ Value owed — `FIL-GAP-014` |
+| `FIL-CFG-012` | **Photographic profile bound** — target quality and maximum long edge (`FIL-FR-086`) | Bandwidth tuning for the class where perceptual loss is acceptable |
+| `FIL-CFG-013` | **Output encoding allow-list** for optimized derivatives (`FIL-FR-086`) | An allow-list, so adding an encoding is a reviewed configuration change (`FIL-FR-071`) |
+| `FIL-CFG-014` | **Processing retry bound** (`FIL-FR-093`) | Bounds the retry loop so a permanently failing object reaches the terminal `FAILED` state rather than retrying forever |
+| `FIL-CFG-015` | **Processing timeout** after which an object in `PROCESSING` is moved to `FAILED` (`FIL-FR-092`, `FIL-FR-095`) | ⚠ **Published because the amendment revealed a hole rather than to complete a count.** `FIL-INV-013` makes an object servable only in `READY`; without a timeout an object stalled in `PROCESSING` would be permanently unservable *and* never terminal, so `FIL-FR-092`'s promise that `READY` and `FAILED` are the only terminal states would be unenforceable. ⛔ Value owed — `FIL-GAP-014`; `B-4` (no NFR budgets) is the reason |
+
+> **`FIL-CFG-010`…`FIL-CFG-015` were added at v0.2 by `ADR-0056`.** `FIL-CFG-006`'s precedent governs the three
+> whose values are owed: a configurable is published with its range and its owner even when no authority yet
+> supplies a number, because inventing one *"would be a determination made by a document with no standing to
+> make it"*. `FIL-GAP-014` carries them.
 
 ⚠ **`FIL-CFG-006` is published with a declared range but NO default**, in apparent tension with `FIL-FR-074`. The
 tension is deliberate and disclosed rather than resolved by invention: `MP-NFR-10` assigns retention to
@@ -1506,9 +1554,9 @@ would have to assert that a **human review process** occurred, which is not obse
 `PRD-014` set this precedent for `ENT-FR-017`: a criterion asserted here *"would test"* behaviour *"which this
 PRD does not govern"*. The obligation stands; it is verified by governance, not by a test.
 
-**Coverage, computed and stated rather than claimed.** 132 obligation-bearing identifiers
-(82 `FIL-FR` + 17 `FIL-BR` + 11 `FIL-INV` + 0 `FIL-EVT` + 22 `FIL-XC`). Coverage is counted by extracting the
-citation set of the **78 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
+**Coverage, computed and stated rather than claimed.** 150 obligation-bearing identifiers
+(95 `FIL-FR` + 19 `FIL-BR` + 13 `FIL-INV` + 0 `FIL-EVT` + 23 `FIL-XC`). Coverage is counted by extracting the
+citation set of the **96 `FIL-AC-*` definition lines only** — not the whole of §14, because §14 also *names* the
 uncovered identifiers and counting those would inflate the figure.
 
 > ⚠ **Corrected at Stage 4 (`S4-D-06`).** This paragraph read *"114 obligation-bearing identifiers"* immediately
@@ -1518,13 +1566,20 @@ uncovered identifiers and counting those would inflate the figure.
 > **The arithmetic was checkable against a total printed in the same sentence, and it still went unnoticed through
 > three passes** — which is why totals are now recomputed rather than read.
 
-**94 of 132 are covered = 71.2%. 38 are uncovered = 28.8%.**
+**112 of 150 are covered = 74.7%. 38 are uncovered = 25.3%.**
 
-The 38 divide into two kinds. **17 of the 22 `FIL-XC-*` are uncovered by construction** — an exclusion is not
-falsifiable by observing this module. **Five are the exception**: the four sharing exclusions
+> ⚠ **Recomputed at v0.2, not adjusted.** The amendment added **18** obligations and **18** criteria, and every
+> one of the 18 new obligations is covered — so the **uncovered set did not grow and its membership is unchanged**
+> apart from `FIL-XC-023`, which `FIL-AC-096` makes observable. The ratio moved because the denominator did. The
+> figures above were produced by re-extracting the citation set of the criterion lines, which is the only method
+> that would have caught the `S4-D-06` defect.
+
+The 38 divide into two kinds. **17 of the 23 `FIL-XC-*` are uncovered by construction** — an exclusion is not
+falsifiable by observing this module. **Six are the exception**: the four sharing exclusions
 `FIL-XC-019`…`FIL-XC-022`, because each forbids a *behaviour a share flow could otherwise exhibit* and so is
-observable, and `FIL-XC-008`, which `FIL-AC-055` makes observable by asserting that consumption reporting
-returns a measured figure and never a verdict. The remaining **21** are the definitional, structural and cited
+observable; `FIL-XC-008`, which `FIL-AC-055` makes observable by asserting that consumption reporting
+returns a measured figure and never a verdict; and `FIL-XC-023`, added at v0.2, which `FIL-AC-096` makes
+observable because *submitting a video and observing refusal* is a test a system can fail. The remaining **21** are the definitional, structural and cited
 obligations, which state where a rule *lives* rather than what the system *does*: `FIL-FR-001`, `FIL-FR-002`,
 `FIL-FR-003`, `FIL-FR-006`, `FIL-FR-007`, `FIL-FR-009`, `FIL-FR-010`, `FIL-FR-012`, `FIL-FR-024`,
 `FIL-FR-032`, `FIL-FR-046`, `FIL-FR-055`, `FIL-FR-057`, `FIL-FR-067`, `FIL-FR-070`, `FIL-FR-073`,
@@ -1553,6 +1608,30 @@ an internally impossible pair. The figure above was recomputed mechanically from
 draft's list was also found to have wrongly included `FIL-BR-005` (which **is** covered, by `FIL-AC-004`) and
 to have omitted `FIL-FR-008` and `FIL-FR-018`. See §18.3.
 
+
+### 14.5 Media optimization, processing lifecycle and document integrity
+
+> **Added at v0.2 by `ADR-0056`.** Every obligation the amendment introduced carries a criterion here. `SID-4.56`
+> — *"a rule that cannot be checked SHALL be treated as unmet"* — is the reason none was left to prose.
+
+`FIL-AC-079` — For a document-like image, the stored optimized derivative has encoder quality at or above `FIL-CFG-010`, no chroma subsampling, and a long edge at or above `FIL-CFG-011`. *(`FIL-FR-085`)*
+`FIL-AC-080` — Over the declared fixture corpus of handwritten notes, photographed textbook pages, assignments and text-heavy screenshots, character recovery from the optimized derivative is not measurably worse than from the original beyond the declared tolerance. **The corpus is part of the criterion**: a readability rule with no fixtures is prose. *(`FIL-FR-085`, `FIL-BR-019`)*
+`FIL-AC-081` — Where the document-aware profile and a size ceiling cannot both be satisfied, the upload is refused with a typed error and **no** derivative below the floor is stored or served. *(`FIL-BR-019`)*
+`FIL-AC-082` — The image-class decision is present on the stored-object record, and regenerating a deleted derivative reproduces the same class and profile rather than re-deciding. *(`FIL-FR-084`, `FIL-INV-012`)*
+`FIL-AC-083` — No optimized derivative has a pixel dimension larger than its original or a byte length larger than its original; where optimization would not reduce size the original is served and that outcome is recorded. *(`FIL-FR-086`)*
+`FIL-AC-084` — A caller-supplied profile, quality or dimension hint changes nothing about the profile selected, and two inputs differing only in measured properties receive different profiles. *(`FIL-FR-087`)*
+`FIL-AC-085` — After optimization the original bytes are recoverable byte-exactly in each of the four preserving conditions, and no operation overwrites an original. *(`FIL-FR-088`)*
+`FIL-AC-086` — With no entitlement decision available the optimizing default applies; the module reaches no local conclusion about whether the actor may upload at original quality. *(`FIL-FR-089`, `FIL-XC-023`)*
+`FIL-AC-087` — A stored PDF or office document is byte-exactly recoverable, contains no re-encoded embedded image, and has not been rasterized, downsampled or flattened. *(`FIL-FR-090`, `FIL-BR-018`, `FIL-INV-012`)*
+`FIL-AC-088` — No configuration value, purpose or entitlement enables a lossy path for a document content class. *(`FIL-BR-018`)*
+`FIL-AC-089` — A serving variant is reachable only through the same signed-URL and authorization path as its original, the variant set matches `FIL-CFG-007`, and a caller-supplied dimension yields no variant. *(`FIL-FR-091`)*
+`FIL-AC-090` — An optimized derivative carries the original's access decision, tenant class and lifecycle state, and is deleted when the original is. *(`FIL-FR-083`)*
+`FIL-AC-091` — Every accepted object is observed in `RECEIVED`, `VALIDATING`, `PROCESSING` and then exactly one of `READY` or `FAILED`; the scan verdict is recorded before `PROCESSING` begins; no third terminal state exists. *(`FIL-FR-092`)*
+`FIL-AC-092` — An object in any state other than `READY` yields no bytes and no signed URL by any operation, including variant and progress reads. **A failed or in-flight object is never servable.** *(`FIL-INV-013`)*
+`FIL-AC-093` — Two processing attempts under the same operation key produce one stored derivative, one audit fact and an identical result; after `FIL-CFG-014` failed attempts the object rests in `FAILED` with a typed reason. *(`FIL-FR-093`)*
+`FIL-AC-094` — A progress response contains no storage path, worker identity, internal error text or byte-level detail, and progress for an object the caller may not read is indistinguishable from progress for one that does not exist. *(`FIL-FR-094`)*
+`FIL-AC-095` — An object exceeding `FIL-CFG-015` in `RECEIVED`, `VALIDATING` or `PROCESSING` reaches `FAILED`, and any derivative the abandoned attempt produced is absent afterwards. *(`FIL-FR-095`)*
+`FIL-AC-096` — A submitted video or audio file is refused, produces no optimized derivative, and triggers no transcoding path. *(`FIL-XC-023`, `FIL-FR-005`)*
 ---
 
 ## 15. Dependencies and consumed authority
@@ -1613,7 +1692,9 @@ module from the `default_decision: deny`**, so this module's boundary is current
 **13 gaps. All OPEN. None is resolved by this document, and none may be resolved by an implementation choice.**
 
 > ⚠ **Corrected at Stage 5 (`S5-D-01`).** This line read *"**11 gaps**"* while the table below carried **13** rows
-> and §0.2 declared **13** with the range `FIL-GAP-001` … `FIL-GAP-013`. `FIL-GAP-012` and `FIL-GAP-013` were added
+> and §0.2 declares **16** with the range `FIL-GAP-001` … `FIL-GAP-016` (⚠ **`FIL-GAP-014`…`016` were added
+at v0.2 by `ADR-0056`**, and `FIL-GAP-012` was revised there to record its architecture half as closed by
+`ADR-0055`). `FIL-GAP-012` and `FIL-GAP-013` were added
 > **by the Stage 3 architecture alignment** — the `E-22` consumer omission and the peer-sharing isolation wording —
 > and the preamble count was not moved with them. **The same class of defect as `S4-D-06`**, found the same way: a
 > checker recomputed the register instead of reading the sentence. It is the *fourth* stale prose count in this
@@ -1639,8 +1720,11 @@ module from the `default_decision: deny`**, so this module's boundary is current
 | **`FIL-GAP-009`** | **No encryption, key-management or RLS specification exists at any rank**, and **no UI Design System and no NFR Budgets document exists** (`find` → 0 each). This document therefore states behaviour, not policy, and defines no token, algorithm or budget | **High** | SECURITY · UI Design System owner · NFR owner | §7.1, §7.2, §11, §12.2; `PRD-023` blockers `B-3`, `B-4` |
 | **`FIL-GAP-010`** | **`platform/services` has NO module block in `tool/module_dependencies.yaml`** — only a rank at **L33**. `check_module_boundaries.dart` **L778** exempts a blockless module from `default_decision: deny`, so this module's boundary is **unenforced**. `ADR-0012`'s debt at **L647** records that *"only the interfaces are missing"*, expiring **2027-03-31** | **High** | Architecture Owner | manifest; the `CNF-GAP-007` / `B-1` precedent |
 | **`FIL-GAP-011`** | **No database, storage or API-error architecture artefact exists.** `Supabase` appears in `docs/` twice, both *"Not named in EA — **candidate only**"*, and **L271** records that naming a vendor as a layer was corrected out. No Event Catalog and no error register exist. Bucket topology and error vocabulary are therefore **unspecifiable** here without inventing an authority | **Medium** | Architecture Owner | `MASTER_PRD.md` **L227**, **L228**, **L271**; `PRD-023` blocker `B-5` |
-| **`FIL-GAP-012`** | ⛔ **`E-22` does not list the sharing contexts, so V1 student-to-student sharing is specified but not servable.** `BC-11`/`BC-12`/`BC-13` are absent from `E-22`'s consumer list (BC Map **L331**) while the manifest **L242** grants `domain/social` the `files` port. Under `FIL-FR-006` the caller is refused. Widening needs an accepted ADR (**L292**); `ADR-0016` is the precedent shape and **this PRD does not write it** | **Blocking** | Architecture Owner | BC Map **L331**, **L292**; manifest **L242**; §2.6; `ADR-0016` |
+| **`FIL-GAP-012`** | **PARTIALLY CLOSED at v0.2.** ✅ **Architecture half CLOSED by `ADR-0055`** — `E-22`'s consumer list now records `BC-12` Messaging (BC Map **v1.8**, **L331**), so `FIL-FR-006` no longer refuses the conversation context that carries a shared `FileRef`. The ADR admitted `BC-12` **only**: `BC-11` answers eligibility as a boolean and `BC-13` reaches this module outbound over `E-14`, so neither needs the bytes and neither was admitted. ⛔ **Implementation half remains OPEN** — no `lib/` code implements `FIL-FR-006`'s consumer check and `B-2` records that all seven Matrix §10.3 architecture tests are missing, so the rule is specified and authorised but not *enforced*. `IMPL-1230`…`1236` are therefore unblocked **architecturally** and may not be marked done on that basis alone (`ADR-0055` §5) | **High** (was Blocking) | Architecture Owner | `ADR-0055` §5; BC Map **v1.8** **L331**, **L292**; manifest **L242**; `FIL-FR-006`/`007`; `B-2`; `GCP-23` |
 | **`FIL-GAP-013`** | **"Tenant/library membership isolation" cannot apply to peer sharing as worded.** BC Map **L488** makes `BC-11`→`BC-17` *"Global. No `tenantId`"* and `TEN-FR-018` forbids `tenant_id` in global contexts. If sharing must be confined to co-members of one library, that is `BC-11`'s eligibility rule for `PRD-021` to state, not a tenant predicate here | **High** | Product + `PRD-021` | §7.3; BC Map **L488**, **L114**; `TEN-FR-018`; `FIL-XC-019` |
+| **`FIL-GAP-014`** | **No authority supplies a compression quality floor, a minimum document resolution, or a processing timeout.** `FIL-FR-085` and `FIL-FR-095` are complete as obligations, but `FIL-CFG-010`, `FIL-CFG-011` and `FIL-CFG-015` are published without defaults. `MP-NFR-*` sets no media or processing budget and `B-4` records that no NFR budget document exists at any rank. ⚠ **A plausible number was deliberately NOT invented** — `ADR-0056` §6 records the rejection: a fabricated value that reads as derived is worse than a disclosed hole, and `FIL-CFG-006`'s precedent is that the module refuses to start rather than assume | **Medium** | Configuration Owner + Architecture Owner | `FIL-FR-085`, `FIL-FR-095`, `FIL-CFG-010`/`011`/`015`; `B-4`; `ADR-0056` §6 |
+| **`FIL-GAP-015`** | **`FIL-FR-093` requires deferred processing but the EA places Job Runtime at V2.** `FIL-XC-017` forbids this module from scheduling its own retries and requires `platform/services:job_runtime`, which EA **L1865** (Rank 6) places at **V2** while media optimization is V1 by the `MP-CON-08` ruling in `FIL-GAP-005`. The EA is descriptive (baseline **L139**) so this is a **sequencing** gap, not a contradiction of authority — but the V1 implementation cannot be scheduled until the runtime exists | **Medium** | Architecture Owner | `FIL-FR-093`, `FIL-XC-017`; EA **L1865**; `FIL-GAP-005` |
+| **`FIL-GAP-016`** | ⛔ **V1 video and audio optimization was REQUESTED and REFUSED — the request is recorded, not granted.** The product instruction of 2026-08-20 asked for adaptive video compression/transcoding at V1. Three FROZEN requirements forbid it (`FIL-FR-004`, `FIL-FR-005`, `FIL-XC-016`) and **no Rank 1–4 authority admits video**: `MASTER_PRD.md` contains **zero** occurrences of *"video"* or *"audio"* (measured), and the only mention anywhere is EA **L964** *"Videos (V3)"*. `MP-CON-08` precedence could not promote it as it promoted thumbnailing, because precedence promotes from a **higher**-ranked document and there is nothing above V3. **Remedy:** a Rank 1 or Rank 4 authority must first admit video to V1 scope, and only then may an ADR lift `FIL-XC-016`. `FIL-FR-087`'s adaptivity is deliberately generic so that admitting a class later is a configuration change (`FIL-FR-071`), not a redesign | **Medium** | Product Owner + Architecture Owner | `FIL-FR-004`, `FIL-FR-005`, `FIL-XC-016`, `FIL-XC-023`; `MASTER_PRD.md` (no occurrence); EA **L964**; `ADR-0056` §3.2 |
 
 ### 16.1 Risks
 

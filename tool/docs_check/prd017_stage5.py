@@ -199,6 +199,13 @@ SCOPE_REGISTERS = {
     '### 14.2': ['AC'],
     '### 14.3': ['AC'],
     '### 14.4': ['AC'],
+    # ADR-0056 (PRD-017 v0.2): the criteria for the media-optimization
+    # obligations.  Declared for the same reason as `### 4.12` above -- the
+    # document gained a scope, so the scope table must record it.  Note this
+    # entry does NOT relax anything: every criterion inside it is still subject
+    # to the orphan check and the reverse-coverage check in
+    # prd017_traceability.py, which is where an untested obligation is caught.
+    '### 14.5': ['AC'],
     '## 16.':   ['GAP'],
 }
 

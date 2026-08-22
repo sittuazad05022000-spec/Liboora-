@@ -36,20 +36,34 @@ Published up front as a promise, per Stage 2's gate and the `Student_Identity_PR
 
 | Register | Meaning | Range | Count |
 |---|---|---|---|
-| `TSF-FR-nnn` | Functional requirement | `001`…`144` | 144 |
-| `TSF-BR-nnn` | Business rule | `001`…`036` | 36 |
-| `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`064` | 64 |
+| `TSF-FR-nnn` | Functional requirement | `001`…`146` | 146 |
+| `TSF-BR-nnn` | Business rule | `001`…`041` | 41 |
+| `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`070` | 70 |
 | `TSF-INV-nnn` | Invariant enforced inside the aggregate | `001`…`021` | 21 |
 | `TSF-EVT-nnn` | Published domain event | `001`…`002` | **2** |
 | `TSF-CFG-nnn` | Configurable | `001`…`029` | 29 |
 | `TSF-AC-nnn` | Acceptance criterion | `001`…`062` | 62 |
-| `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`015` | 15 |
+| `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`016` | 16 |
 | `TSF-RSK-nnn` | Risk | `001`…`012` | 12 |
-| | | **Total** | **385** |
+| | | **Total** | **399** |
 
 Every register above is **contiguous** — the count equals the highest allocated number, with no gaps and no
-reuse. `TSF-CFG-*` is defined in one place only, §20.4; `TSF-INV-*` definitions are listed with their sections in
-§29's traceability note. The ranges in this table are **measured from the finished document**, not forecast.
+reuse. `TSF-CFG-*` is defined in one place only, §20.4. The ranges in this table are **measured from the
+finished document**, not forecast, and they were re-measured after the v0.3 governance pass rather than
+incremented.
+
+⚠ **v0.3 re-measurement.** v0.2 declared **385** across these nine registers. The v0.3 governance pass
+added 14 identifiers — `TSF-FR-145`…`146`, `TSF-BR-037`…`041`, `TSF-XC-065`…`070`, `TSF-GAP-016` — giving
+**399**. Four registers grew; five are unchanged. The additions record scope reductions and the rules that
+protect them; **none adds a V1 capability, and none amends any external document.**
+
+⚠ **One collision was found and corrected during that re-measurement.** The v0.3 draft of §14.3.1
+allocated `TSF-FR-144`, which **v0.2 had already bound** to a different requirement in §30.6 (*"this
+document MUST NOT be treated as conferring `DRAFT` status on itself"*). Two unrelated requirements briefly
+shared one identifier. The §14.3.1 requirement was renumbered to `TSF-FR-145` and the §21.2 requirement to
+`TSF-FR-146`; `TSF-FR-144` retains its **original v0.2 meaning**, unmoved and uncited elsewhere. This is
+the same defect class as the eight `TSF-CFG-*` collisions corrected in v0.2, and it was caught the same
+way — by re-deriving every register from the finished text rather than trusting the previous count.
 
 ⚠ **`TSF-EVT-*` is deliberately only TWO members, and that is a measurement, not an omission.**
 BC Map §9 (**L432**, **L433**) publishes exactly two `BC-13` events — `safety.AbuseReportFiled` and
@@ -962,34 +976,86 @@ to manufacture urgency — the exact failure `TSF-BR-010` exists to prevent.
 
 ### 14.3 The V1 signal register
 
-All signals below are computable from events `BC-13` **already receives** per BC Map §9, or from its own
-case history. **Nothing here requires a new inbound edge** — that constraint (`F-3`) is what kept this
-list short and honest.
+⚠ **Corrected in v0.3.** The **v0.2** text of this section opened by asserting that all signals below are
+*"computable from events `BC-13` **already receives** per BC Map section 9"*, and that *"nothing here
+requires a new inbound edge."* **That assertion was false for three of the seven signals.** It was written
+from the event *publisher* rows of BC Map section 9 rather than from the *consumer* cells — and a
+published event that `BC-13` is not a listed consumer of is not an event `BC-13` receives. Each signal has
+now been measured against its own consumer cell. Three are deferred to **V2**; four survive V1 unchanged.
 
-| Signal | Source | Rule shape | Confidence driver |
-|---|---|---|---|
-| Request-acceptance ratio | `BC-11` graph events | Outbound requests ÷ accepted, per window | Denominator size (`TSF-BR-008`) |
-| Block rate | `BC-11` `social.UserBlocked` | Distinct blockers ÷ distinct contacted | Contact count (`TSF-BR-009`) |
-| Message-request rate | `BC-12` `messaging.MessageSent` **(sampling, L431)** | Requests to non-connections per window | ⚠ **Sampled — capped at `MEDIUM`** |
-| Report velocity | Own cases | Distinct reporters × distinct categories, per window | Reporter independence |
-| Repeat enforcement | Own `StrikeRecord` | Count of **upheld** actions, decayed | Exact — `HIGH` |
-| Account age at first burst | `BC-10` `identity.PersonIdentityCreated` | Activity volume ÷ account age | Exact — `HIGH` |
-| Coordination indicator | Own cases | ≥ N subjects, same target set, same window | Cohort size |
+**Method.** For each signal the source event was located in BC Map section 9 and its consumer list read
+verbatim. A signal is V1-eligible only if `BC-13` appears in that list, or if the signal is computed
+entirely from `BC-13`'s own aggregate.
+
+| # | Signal | Source event | BC Map consumer cell | `BC-13` a listed consumer? | Release |
+|---|---|---|---|---|---|
+| 1 | Request-acceptance ratio | `social.FriendshipEstablished` | **L430** → `BC-12`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 2 | Block rate | `social.UserBlocked` | **L430** → `BC-12`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 3 | Message-request rate | `messaging.MessageSent` | **L431** → **`BC-13` (sampling)**, `BC-26` | ✅ Yes, sampled | ✅ **V1** |
+| 4 | Report velocity | Own `ModerationCase` history | — | ✅ Own aggregate | ✅ **V1** |
+| 5 | Repeat enforcement | Own `StrikeRecord` | — | ✅ Own aggregate | ✅ **V1** |
+| 6 | Account age at first burst | `identity.PersonIdentityCreated` | **L424** → `BC-23`, `BC-24`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 7 | Coordination indicator | Own `ModerationCase` history | — | ✅ Own aggregate | ✅ **V1** |
+
+#### 14.3.1 V1 signals — buildable on the events `BC-13` actually receives
+
+| Signal | Rule shape | Confidence driver |
+|---|---|---|
+| Message-request rate | Requests to non-connections per window | ⚠ **Sampled — capped at `MEDIUM`** (`TSF-BR-027`) |
+| Report velocity | Distinct reporters × distinct categories, per window | Reporter independence (`TSF-BR-008` denominator discipline applies) |
+| Repeat enforcement | Count of **upheld** actions, decayed by `TSF-CFG-004` | Exact — `HIGH` |
+| Coordination indicator | ≥ N subjects, same target set, same window | Cohort size |
 
 | ID | Requirement |
 |---|---|
 | `TSF-BR-024` | A **reporter-reputation** weight (the forward reference from `TSF-BR-020`) **MAY** influence queue *position* within a severity band and **MUST NOT** influence severity, outcome, or whether a report is accepted. It **MUST NOT** apply at all to `CRITICAL` categories — a low-reputation reporter is exactly who a predator would target |
 | `TSF-BR-027` | The message-request signal derives from a **sampled** stream (BC Map **L431** publishes `messaging.MessageSent` to `BC-13` as *"(sampling)"*). Its confidence is therefore capped at `MEDIUM` and it **MUST NOT** be the sole basis of any irreversible action. Treating a sampled stream as a census is how a safety system acquires a systematic false-positive bias it cannot see |
+| `TSF-BR-038` | The V1 risk engine **MUST** compute only the four signals in section 14.3.1. It **MUST NOT** read, subscribe to, poll, infer or reconstruct any of the three deferred signals in section 14.3.2 by any route, **including a derived proxy computed from a permitted stream**. A deferred inbound dependency reintroduced as a proxy is the same boundary breach wearing a different name |
+| `TSF-FR-145` | The V1 engine **MUST** operate correctly on four signals, and **MUST NOT** treat the deferred three as absent-but-expected inputs. Confidence calibration, the threshold bands of section 14.4 and the false-positive budget of section 14.5 **MUST** be defined over the four-signal set that actually exists. A model tuned for seven inputs and fed four is miscalibrated in production, not merely incomplete |
+
+#### 14.3.2 🔵 Signals deferred to V2, and precisely why
+
+| Signal | Blocking fact, measured | What V2 would require |
+|---|---|---|
+| Request-acceptance ratio | `social.FriendshipEstablished` consumer cell at **L430** lists `BC-12` and `BC-26` only | An `Accepted` ADR admitting `BC-13` to that cell, applying the `ADR-0055` section 3 per-context necessity method |
+| Block rate | `social.UserBlocked` consumer cell at **L430** lists `BC-12` and `BC-26` only | As above. `BC-11`'s block state is authoritative in `BC-11`; BC Map **L286** — *"T&S never reaches into their models"* |
+| Account age at first burst | `identity.PersonIdentityCreated` consumer cell at **L424** lists `BC-23`, `BC-24`, `BC-26` only. ⚠ This dependency was **not disclosed** by `TSF-GAP-015` in v0.2 | An `Accepted` ADR, **plus** a privacy determination: account-creation timestamps are identity data, and `identity.PersonAnonymised` at **L428** likewise does **not** list `BC-13`, so `BC-13` would hold a derived identity fact it could not be told to forget |
+
+**These three are deferred, not blocked.** The distinction is load-bearing. A *blocked* item is inside V1
+scope and cannot be built, so it holds the release. A *deferred* item is outside V1 scope, so it holds
+nothing. Because the four surviving signals are sufficient for the V1 detection capability described in
+section 14.1 — report-driven detection with repeat-offender and coordination amplification — moving these
+three to V2 removes `ADR-0066` from the V1 critical path **entirely**, rather than merely postponing it.
+See section 29.2 row 2.
+
+The third row is worth stating plainly, because it is the strongest of the three. Signal 6 does not fail
+only on the edge register; it fails on erasure. `BC-13` cannot honour an anonymisation request for a fact
+it was never told it holds, and **L428** does not route that request to it. Deferring the signal is
+therefore not a scheduling convenience — it avoids building a privacy defect.
+
+| ID | Requirement |
+|---|---|
+| `TSF-XC-068` | Promoting any signal in section 14.3.2 into V1 **MUST** be preceded by an `Accepted` ADR admitting `BC-13` to the relevant consumer cell. Writing the detection rule first and the ADR afterwards inverts `ADR-INDEX` Process rule 1, and produces a rule that cannot lawfully receive its own input |
 
 ### 14.4 Threshold bands, and the ceiling on each
 
 | Band | Risk | Confidence | Permitted automatic effect |
 |---|---|---|---|
 | **Observe** | < `TSF-CFG-015` | any | Log the signal. No case, no user-visible effect |
-| **Friction** | ≥ `TSF-CFG-015` | ≥ `MEDIUM` | Recommend tightening **existing** `BC-11` limits (§14.6). Reversible, invisible ⚠ `TSF-GAP-012` |
+| ~~**Friction**~~ | — | — | 🔵 **DEFERRED TO V2.** Would recommend tightening **existing** `BC-11` limits (section 14.6) — which needs a graduated semantic the closed **L318** contract does not carry. **Not in the V1 band set** |
 | **Review** | ≥ `TSF-CFG-016` | ≥ `MEDIUM` | **Open a case at `TRIAGED`.** No enforcement |
 | **Restrain** | ≥ `TSF-CFG-017` | **`HIGH` only** | Case + **one** reversible action from §15 rows 1–6, time-boxed to `TSF-CFG-018`, human review mandatory before expiry |
 | — | any | any | ⛔ Suspension (row 8) and termination (row 9) are **never** automatic (`TSF-INV-002`) |
+
+⚠ **Corrected in v0.3.** The V1 band set is **`Observe`, `Review`, `Restrain`**, plus the standing
+prohibition on automatic suspension and termination. `Friction` is deferred to V2 for the reason recorded
+in section 14.6: every other band is expressible either as an outcome held wholly inside `BC-13`, or as a
+value the already-published **L318** contract accepts. `Friction` alone is not. Removing it removes
+`ADR-0067` from the V1 critical path — see section 29.2 row 3.
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-039` | The V1 risk engine **MUST** implement exactly the bands `Observe`, `Review` and `Restrain`. It **MUST NOT** emit a `Friction` outcome, and **MUST NOT** approximate one by issuing a `Restrain` action with a deliberately short `until` value, nor by publishing an advisory `EnforcementActionTaken` that `BC-11` is expected to interpret as a hint. A band whose absence is worked around by misusing an adjacent band has not been deferred; it has been smuggled — and it arrives without the ADR that would have governed it |
 
 | ID | Requirement |
 |---|---|
@@ -1024,14 +1090,36 @@ enforcement lives in the graph"*. Risk detection therefore **computes** and **pu
 per-actor quotas. It publishes a fact by `E-14` and the graph self-restricts — exactly as BC Map **L286**
 requires: *"T&S never reaches into their models."*
 
-⚠ **`TSF-GAP-012`** *(this populates the slot reserved in §0.2)*. The `Friction` band needs `BC-11` to
-interpret an `EnforcementActionTaken` carrying a **graduated tightening** semantic. The published
-contract at BC Map **L318** is `EnforcementActionTaken{personId, action, scope, until}` — a **closed
-four-field shape**. Whether `action` admits a `TIGHTEN_RATE_LIMITS` value, or whether that needs a Rank 4
-contract amendment, is **not this document's decision to make**. Routed to the **Architecture Owner**.
-Until it is decided, the `Friction` band is **specified but not implementable** and `IMPL-1412` is
-blocked. It is recorded rather than assumed because inventing a new enum value inside a Rank 4 contract,
-from an unranked document, is precisely the silent override the brief forbids.
+⚠ **`TSF-GAP-012` — RESOLVED IN v0.3 BY V1 SCOPE REDUCTION, NOT BY AN ADR.**
+
+The gap was real. The `Friction` band required `BC-11` to interpret an `EnforcementActionTaken` carrying a
+**graduated tightening** semantic, and the published contract at BC Map **L318** is
+`EnforcementActionTaken{personId, action, scope, until}` — a **closed four-field shape**. Whether `action`
+admits a `TIGHTEN_RATE_LIMITS` value is a Rank 4 contract question, and **not this document's decision to
+make**.
+
+v0.2 routed that question to the Architecture Owner as `ADR-0067` and marked `IMPL-1412` **blocked**. v0.3
+does not route it, because the question only had to be asked if the `Friction` band was in V1 — and on
+review it need not be. The V1 enforcement capability that `MP-RSK-02` demands is *detection, case
+creation, and reversible restriction under human control*. A silent, invisible tightening of rate limits
+is a refinement of that capability, not a constituent of it.
+
+| Decision | Value |
+|---|---|
+| `Friction` band | 🔵 **Deferred to V2** (section 14.4, `TSF-BR-039`) |
+| `ADR-0067` | 🟡 **Not opened.** No Rank 4 contract amendment is requested by V1 |
+| `IMPL-1412` | **Withdrawn from V1 scope** — *not* blocked. It holds no release date |
+| `TSF-GAP-012` | **Resolved by scope reduction.** Recorded, not deleted, so that V2 inherits the analysis rather than rediscovering it |
+| **L318** contract | **Untouched.** No field added, no enum value invented, no amendment requested |
+
+This is the outcome `TSF-BR-037` exists to produce. The v0.2 instinct — find a gap, open an ADR — was
+directionally right and produced a register in which the one genuinely release-blocking decision
+(`ADR-0065`) sat as one row among nine. Asking instead *"does V1 actually need this?"* dissolved the gap
+without spending any of the Architecture Owner's authority. **The cheapest way to resolve a contract
+question is to stop needing the answer.**
+
+`TSF-XC-037` continues to bind unchanged: `BC-13` **MUST NOT** hold a rate-limit counter, evaluate a
+rate-limit decision, or store per-actor quotas — in V1 or in V2, whichever route V2 eventually takes.
 
 ---
 
@@ -1571,33 +1659,69 @@ published event. Any consumer needing them requires a **Rank 4 amendment** to BC
 
 ### 21.2 Inbound: what `BC-13` consumes
 
-Consumption is permitted where the publisher already publishes to `BC-13` per BC Map §9. No new edge is
-claimed.
+⚠ **Corrected in v0.3.** The v0.2 table below carried three ⚠-marked rows whose consumer cells do not
+list `BC-13`, and its preamble nevertheless read *"no new edge is claimed."* Both have been corrected. The
+table now separates what `BC-13` **actually consumes in V1** from what v0.2 assumed it could consume, and
+a **fourth** unlisted dependency — missed entirely by v0.2 — has been added.
 
-| Consumed | From | Use | Note |
+#### 21.2.1 V1 inbound — consumer cells that list `BC-13`
+
+| Consumed | From | Use | Consumer cell |
 |---|---|---|---|
-| `messaging.MessageSent` | `BC-12` | Risk counters | ⚠ **Sampled (L431)** — `TSF-BR-027` |
-| `social.FriendshipEstablished` / `UserBlocked` | `BC-11` | Acceptance ratio, block rate | **L430** publishes to `BC-12`, `BC-26` ⚠ |
-| `identity.PersonAnonymised` | `BC-10` | `TSF-FR-089` | **L428** publishes to `BC-11`, `BC-12`, … ⚠ |
-| `attendance.FraudSignalDetected` | `BC-03` | ⛔ **Not consumed** — see below | **L417** *does* list `BC-13` |
+| `messaging.MessageSent` | `BC-12` | Risk counters (message-request rate) | ⚠ **Sampled — L431 lists `BC-13` (sampling)**; `TSF-BR-027` caps confidence at `MEDIUM` |
+| `attendance.FraudSignalDetected` | `BC-03` | ⛔ **Listed but deliberately NOT consumed** — see `TSF-XC-056` | **L417** *does* list `BC-13` |
 
 `TSF-XC-056` `attendance.FraudSignalDetected` is published to `BC-13` by **L417**, and this PRD
 **deliberately does not consume it in V1**. It is tenant-side attendance fraud — a `BC-03` operational
 matter under `X-05` — and consuming it would import a tenant signal into a global context, inviting the
 `tenantId` that `TSF-INV-020` forbids. Recorded as a **conscious non-consumption**, not an oversight.
 
-⚠ **`TSF-GAP-015`** *(new)*. Rows 2 and 3 above are marked ⚠ because BC Map **L430** and **L428** list
-their consumers **without `BC-13`**. §14.3's acceptance-ratio and block-rate signals therefore rest on
-subscriptions the Rank 4 register does not publish. This is the **third instance of the `ADR-0016` defect
-class** — a requirement depending on an unlisted consumer cell. Two honest resolutions exist: amend the
-consumer cells (Architecture Owner, per-signal necessity test as `ADR-0055` §3 did), **or** reduce §14.3
-to the signals that survive without them (report velocity, repeat enforcement, coordination — all from
-`BC-13`'s own case history). **This PRD does not choose.** Until it is resolved, `IMPL-1411` is blocked
-and the affected signals are **specified but not implementable**.
+Everything else the V1 risk engine uses comes from `BC-13`'s **own aggregates** — `ModerationCase` and
+`StrikeRecord` — which need no edge at all. That is why section 14.3.1's four surviving signals are
+buildable today.
 
-`TSF-GAP-015` is disclosed rather than papered over because the alternative — quietly asserting a
-subscription — is exactly what `ADR-0016` and `ADR-0055` exist to prevent, and the repository has now
-caught this pattern twice before.
+#### 21.2.2 🔵 Unlisted consumer cells — four dependencies, all deferred to V2
+
+| # | Event | Publisher | Consumer cell, verbatim | `BC-13`? | v0.2 status | v0.3 status |
+|---|---|---|---|---|---|---|
+| 1 | `social.FriendshipEstablished` | `BC-11` | **L430** → `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | 🔵 Signal deferred (section 14.3.2) |
+| 2 | `social.UserBlocked` | `BC-11` | **L430** → `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | 🔵 Signal deferred (section 14.3.2) |
+| 3 | `identity.PersonAnonymised` | `BC-10` | **L428** → `BC-23`, `BC-24`, `BC-11`, `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | ⚠ **Still open — see `TSF-GAP-016`** |
+| 4 | `identity.PersonIdentityCreated` | `BC-10` | **L424** → `BC-23`, `BC-24`, `BC-26` | ❌ No | ⛔ **NOT DISCLOSED** | 🔵 Signal deferred (section 14.3.2) |
+
+Row 4 is the finding of this pass. `TSF-GAP-015` disclosed rows 1–3 and stopped there, but section 14.3's
+*"account age at first burst"* signal rests on `identity.PersonIdentityCreated`, whose consumer cell at
+**L424** lists `BC-23`, `BC-24` and `BC-26` and **not** `BC-13`. That made **four** unlisted dependencies
+in one document, not three — a fourth instance of the same defect class inside the very section that
+disclosed the first three.
+
+⚠ **`TSF-GAP-015` — RECLASSIFIED IN v0.3: resolved by V1 scope reduction for rows 1, 2 and 4.**
+Section 14.3.2 defers the three signals that depended on those cells. No consumer cell is amended, no ADR
+is opened, and `ADR-0066` leaves the V1 critical path (section 29.2 row 2). `IMPL-1411` is **withdrawn
+from V1 scope**, not blocked. The gap is recorded rather than deleted so that V2 inherits the measurement
+instead of rediscovering it.
+
+⚠ **`TSF-GAP-016`** *(new — row 3, and it does not dissolve)*. Rows 1, 2 and 4 disappear because the
+*signals* that needed them are deferred. Row 3 does not, because `identity.PersonAnonymised` is not a
+detection signal — it is an **erasure instruction**, and `TSF-FR-089` commits `BC-13` to honouring it.
+`BC-13` holds `personId` on every `ModerationCase`, in V1, in the four surviving signals, unavoidably. So
+V1 asserts a privacy obligation it has **no published route to be told about**. Two honest resolutions
+exist: admit `BC-13` to the **L428** consumer cell (Architecture Owner, per-context necessity test in the
+manner of `ADR-0055` section 3), **or** specify a retention rule under which safety records age out
+without an erasure signal. **This PRD does not choose —** `TSF-XC-063`. Routed to the **Architecture
+Owner** and the privacy owner jointly.
+
+`TSF-GAP-016` is disclosed rather than folded into `TSF-GAP-015` because the two are no longer the same
+kind of problem. Three of the four were *"we wanted an input we are not entitled to"* — answered by
+wanting less. This one is *"we owe a duty we cannot be notified of"* — and scope reduction cannot answer
+it, because the only way to stop needing the erasure signal is to stop holding `personId`, which is to
+stop being a moderation context. **A gap that dissolves under scope reduction and a gap that does not must
+not share a row.**
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-146` | This section's inbound table **MUST** be re-derived from BC Map section 9's **consumer cells**, not from its publisher rows, whenever the BC Map version pinned in section 0.2 changes. Reading a publisher row as though it granted consumption is the specific error that produced four unlisted dependencies in v0.2 |
+| `TSF-XC-069` | `BC-13` **MUST NOT** subscribe to any event whose consumer cell omits it, and **MUST NOT** obtain the same data by querying the publisher, by reading a shared store, or by inferring it from a permitted stream. `TSF-BR-038` states the same prohibition for the risk engine; this states it for the context as a whole |
 
 ### 21.3 Command surface
 
@@ -1794,25 +1918,48 @@ delivered to a party who is not a party to any of the three cases (`TSF-XC-042`)
 
 ### 24.2 In scope — but **blocked** on a decision this PRD may not make
 
-**This is the most important table in the document.** Each row is specified, testable and ready — and
-cannot be built until someone with the authority decides. Shipping V1 without resolving rows 1 and 2
-means shipping without the `MP-RSK-02` mitigation that BC Map **L468** mandates.
+⚠ **Corrected in v0.3. This table had seven rows. It now has one.**
+
+v0.2 called this *"the most important table in the document"* and it was right about that — but six of its
+seven rows were not actually blocked. They were **out of V1 scope**, which is a different fact with a
+different consequence. A blocked row holds the release; an out-of-scope row holds nothing. Seven rows
+reading *"cannot be built until someone with the authority decides"* invited exactly the wrong response:
+convene six decisions, or ship without six capabilities. The correct response was to notice that V1 needs
+one of them.
 
 | # | Capability | Blocked by | Blocked task | Decision owner |
 |---|---|---|---|---|
-| 1 | **Synchronous send-time enforcement check** | `TSF-GAP-003` — no sync transport; `BC-13`'s only edge is outbound and event-only | `IMPL-1410` | **Architecture Owner** |
-| 2 | Graph/messaging risk signals (acceptance ratio, block rate) | `TSF-GAP-015` — **L430**/**L428** consumer cells omit `BC-13` | `IMPL-1411` | **Architecture Owner** |
-| 3 | `Friction` band (graduated rate-limit tightening) | `TSF-GAP-012` — `EnforcementActionTaken` is a closed 4-field shape | `IMPL-1412` | **Architecture Owner** |
-| 4 | Minor-safety severity floor | `TSF-GAP-014` — no age-band accessor reaches `BC-13` | `IMPL-1417` | **Architecture Owner** + `BC-18` owner |
-| 5 | Review of a reported **file** | `TSF-GAP-005` — `E-22` deliberately excludes `BC-13` (`ADR-0055` §3) | `IMPL-1418` | **Architecture Owner** |
-| 6 | Verified library-affiliation checks | `TSF-GAP-008` — no attestation exists | `IMPL-1421` | **Product Owner** |
-| 7 | Tenancy-level referral | `TSF-GAP-009` — no `BC-13`→`BC-19` transport | `IMPL-1424` | **Architecture Owner** |
+| 1 | **Synchronous send-time enforcement check** | `TSF-GAP-003` — no sync transport; `BC-13`'s only edge is outbound and event-only | `IMPL-1410` | **Architecture Owner** — `ADR-0065`, now `Proposed` |
 
 `TSF-BR-033` Row 1 is **release-critical, not merely blocked.** `MP-RSK-02` is rated **Critical** and BC
 Map **L468** names the send-time check as one of its three mitigations. If `TSF-GAP-003` is unresolved at
-release, then `PRD-020` ships **without** a mitigation the Rank 4 architecture requires, and the
-roadmap's `PRD-021` gate (Roadmap **L161**, **L164** — *"a release-blocking defect, not a schedule
-change"*) rests on an incomplete foundation. This PRD **MUST NOT** be marked `READY` while row 1 is open.
+release, then `PRD-020` ships **without** a mitigation the Rank 4 architecture requires, and the roadmap's
+`PRD-021` gate (Roadmap **L161**, **L164** — *"a release-blocking defect, not a schedule change"*) rests on
+an incomplete foundation. This PRD **MUST NOT** be marked `READY` while row 1 is open.
+
+**Row 1 is now the whole table, and that is the point.** One `Proposed` ADR, one Architecture Owner
+decision, one blocked implementation task. It is no longer competing for attention with six questions that
+V1 does not need answered.
+
+#### 24.2.1 🔵 The six rows that left this table, and where they went
+
+Each row below was **withdrawn from V1 scope** rather than resolved. Nothing was decided, no boundary
+moved, no contract amended — the V1 capability set was reduced to what the published architecture already
+permits, and these six fell outside it.
+
+| v0.2 row | Capability | Was "blocked by" | Why it is not a V1 blocker | Task | Recorded at |
+|---|---|---|---|---|---|
+| 2 | Graph/messaging risk signals (acceptance ratio, block rate) | `TSF-GAP-015` | The **signals** are deferred to V2. Four signals remain and are sufficient for V1 detection | `IMPL-1411` withdrawn | section 14.3.2, section 21.2.2 |
+| 3 | `Friction` band (graduated rate-limit tightening) | `TSF-GAP-012` | The **band** is deferred to V2. The V1 band set fits the closed **L318** shape unchanged | `IMPL-1412` withdrawn | section 14.4, section 14.6 |
+| 4 | Minor-safety severity floor | `TSF-GAP-014` | section 24.3 already places age-differentiated enforcement outside V1. No V1 requirement reads an age band | `IMPL-1417` withdrawn | section 24.3 |
+| 5 | Review of a reported **file** | `TSF-GAP-005` | ⚪ **Already decided, against.** `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169** refuse this admission. Reported files reach `BC-11`/`BC-15` by the outbound `E-14` that already exists | `IMPL-1418` withdrawn | section 29.1, `TSF-XC-065` |
+| 6 | Verified library-affiliation checks | `TSF-GAP-008` | V1 handles impersonation by removing the unverifiable claim, which needs no attestation | `IMPL-1421` withdrawn | section 29.2 row 9 |
+| 7 | Tenancy-level referral | `TSF-GAP-009` | V1 moderates Global Student surfaces only; there is no V1 route that terminates at `BC-19` | `IMPL-1424` withdrawn | section 24.3 |
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-040` | A capability **MUST NOT** appear in this table unless a **V1 requirement** in this document depends on it. A capability that is merely desirable, or that belongs to a later release, **MUST** be recorded in section 24.3 or section 25 instead. A blocked-work table that also carries out-of-scope work misreports the release's true critical path, and the misreport is always in the direction of appearing more blocked than it is |
+| `TSF-XC-070` | The six rows in section 24.2.1 **MUST NOT** be reinstated here without an authorised scope decision restoring the corresponding V1 capability. Reinstating the row and reinstating the capability are one act, not two — `TSF-XC-067` states the same rule for their ADRs |
 
 ### 24.3 Explicitly not in V1 — and why that is correct rather than convenient
 
@@ -2018,27 +2165,106 @@ a deliberate V1 choice with a named cost, not as a claim of coverage.
 
 ## 29. ADR Requirements
 
-Nine ADRs. `ADR-0065` is the next free number (ADR-INDEX: 64 files, highest `ADR-0064`). **This PRD does
-not author them** — an unranked document cannot amend Rank 4 — it specifies what each must decide.
+⚠ **Rewritten in v0.3.** The **v0.2** text of this section opened with the words *"Nine ADRs."* That
+count was produced by asking *"what has this document left open?"* -- a question that mints one candidate
+ADR per open question, and therefore always mints too many. Re-derived against the **accepted** ADR set,
+and against V1 scope as it actually stands, this section **shrank**: from nine candidate ADRs to **one
+genuine V1 blocker**. One candidate was withdrawn because the decision already exists and is `Accepted`;
+two dissolved when V1 scope was reduced to what the architecture already permits; five were always V2
+questions wearing V1 clothing.
 
-| # | ADR | Decides | Rank touched | Owner | Blocks |
-|---|---|---|---|---|---|
-| 1 | **`ADR-0065`** | **The synchronous enforcement-check transport.** New `CF` sync port `BC-12 → BC-13`, **or** an event-fed projected cache in `BC-12`. Must satisfy BC Map **L468** | Rank 4 — BC Map §7 edge table | Architecture Owner | `IMPL-1410`, `TSF-RSK-002` |
-| 2 | `ADR-0066` | Whether `BC-13` is admitted to the consumer cells at BC Map **L430**/**L428**. Per-signal necessity test, following `ADR-0055` §3's method | Rank 4 — BC Map §9 | Architecture Owner | `IMPL-1411`, `TSF-GAP-015` |
-| 3 | `ADR-0067` | Whether `EnforcementActionTaken.action` admits a graduated `TIGHTEN_RATE_LIMITS` value, or the `Friction` band is dropped | Rank 4 — **L318** contract | Architecture Owner | `IMPL-1412`, `TSF-GAP-012` |
-| 4 | `ADR-0068` | How an **age band** reaches `BC-13` without leaking a birth date. Event field, port, or none | Rank 4 + `BC-18` | Architecture Owner + `BC-18` owner | `IMPL-1417`, `TSF-GAP-014` |
-| 5 | `ADR-0069` | Whether `BC-13` is admitted to `E-22` for **reported-file review only**, revisiting `ADR-0055` §3 on the evidence of `TSF-FR-129`'s metric | Rank 4 — `E-22` **L331** | Architecture Owner | `IMPL-1418`, `TSF-GAP-005` |
-| 6 | `ADR-0070` | **The library-scoped moderation route** — `R-1`, `R-2` or `R-3` (§18.3). Must not breach `ID-2` or `TSF-INV-018` | Rank 4 + Rank 1 scope | Architecture Owner + Product Owner | `TSF-GAP-001`, `TSF-GAP-002` |
-| 7 | `ADR-0071` | Whether a **third** `BC-13` event is published (appeal outcome / case closure), or `TSF-FR-124`'s workaround stands | Rank 4 — BC Map §9 | Architecture Owner | `TSF-GAP-004` |
-| 8 | `ADR-0072` | Whether "Library official post" becomes an owned, reportable object — and which `BC-nn` owns it | Rank 4 + Rank 1 | Product Owner + Architecture Owner | `TSF-GAP-010` |
-| 9 | `ADR-0073` | Whether verified **library affiliation** exists as an attestation, enabling impersonation enforcement beyond unverifiable-claim removal | Rank 1 product scope | Product Owner | `IMPL-1421`, `TSF-GAP-008` |
+**This PRD does not author ADRs** -- an unranked document cannot amend Rank 4. It specifies what an ADR
+must decide, and it is now equally explicit about which ADRs must **not** be opened.
+
+### 29.0 Classification -- what is actually blocking V1
+
+| Class | ADRs | V1 consequence |
+|---|---|---|
+| ⛔ **Genuine V1 blocker** | **`ADR-0065`** | **1.** `IMPL-1410` cannot start; `PRD-020` cannot leave `DRAFT` |
+| ⚪ **Already decided** | ~~`ADR-0069`~~ | **0.** `ADR-0055` and `ADR-0059` already answered it, and answered it *against* |
+| 🟡 **Resolvable by V1 scope reduction, no ADR needed** | `ADR-0066`, `ADR-0067` | **0.** The V1 capability is deliverable without the decision |
+| 🔵 **Correctly deferred** | `ADR-0068`, `ADR-0070`, `ADR-0071`, `ADR-0072`, `ADR-0073` | **0.** Each governs scope V1 does not contain |
 
 | ID | Requirement |
 |---|---|
-| `TSF-FR-142` | `ADR-0065` **MUST** be decided before `PRD-020` leaves `DRAFT`. Every other ADR above may be `Proposed` at that point; this one cannot, because `TSF-RSK-002` is **Critical** and BC Map **L468** already mandates the behaviour it enables |
-| `TSF-FR-143` | Each ADR above **MUST** apply a **per-context necessity test** in the manner of `ADR-0055` §3, rather than admitting `domain/social` wholesale. The map is context-grained where the manifest is module-grained (`GCP-23`), and that asymmetry must be preserved |
-| `TSF-XC-063` | This PRD **MUST NOT** be cited as the authority for any decision above. It supplies the requirement and the evidence; the ADR supplies the decision |
+| `TSF-BR-037` | An ADR **MUST NOT** be opened from this section while a **V1 answer already exists** -- whether that answer is an `Accepted` ADR, a published contract that already carries the needed shape, or a V1 scope boundary that removes the question. An ADR register padded with questions nobody must answer in order to ship V1 hides the one question that must be answered. Register inflation is not diligence; it is the loss of the signal that diligence exists to produce |
 
+### 29.1 ⚪ `ADR-0069` — WITHDRAWN. The decision already exists and is `Accepted`
+
+**v0.2** listed `ADR-0069` as *"whether `BC-13` is admitted to `E-22` for reported-file review only,
+revisiting `ADR-0055` section 3."* It has been measured against the accepted ADR set and **withdrawn**.
+Two `Accepted` ADRs have already run exactly that test on exactly that context and refused it -- one in
+prose, one in code.
+
+| Authority | Status | Verbatim finding |
+|---|---|---|
+| `ADR-0055` **L114** | **Accepted** | On `BC-13`: *"**NO.** Moderation reaches File & Media by **`E-14`**, which is **outbound from `BC-13`** ... `BC-13` instructs deletion; it does not consume the file capability inbound"* -- **DO NOT ADMIT** |
+| `ADR-0055` **L139** | **Accepted** | *"**`BC-11` and `BC-13` are NOT admitted.** They fail the section 3 necessity test. **A future need must be its own ADR**"* |
+| `ADR-0059` **L162** | **Accepted** | Adding `BC-13`: *"**Rejected** -- reverses `ADR-0055` section 4.3 without an ADR"* |
+| `ADR-0059` **L169** | **Accepted** | *"A `BC-11` or `BC-13` caller is refused **by code**"* |
+
+`ADR-0055` did not overlook `BC-13`. It tested `BC-11` and `BC-13` **separately**, named `BC-13`
+explicitly, and admitted neither. `ADR-0059` then made that refusal executable. Opening `ADR-0069` would
+therefore not be asking an open question; it would be a request to **supersede two `Accepted` ADRs** --
+and the evidence v0.2 offered for doing so was `TSF-FR-129`'s false-negative metric, a measurement that
+**cannot exist until a system runs**. An ADR cannot be justified by evidence its own subject must first be
+built in order to produce.
+
+`ADR-0055` **L139** already states the correct route for a future need: *its own ADR*. That route stays
+open. What is withdrawn is the claim that V1 needs it.
+
+| ID | Requirement |
+|---|---|
+| `TSF-XC-065` | `BC-13` **MUST NOT** be admitted to `E-22` in V1. `TSF-GAP-005` is reclassified from *"open gap"* to **"closed by existing ruling -- `ADR-0055` section 4.3, enforced by `ADR-0059`"**. `IMPL-1418` is **withdrawn from V1 scope**, not blocked: a blocked item holds the release, and this one does not, because reported-file review reaches `BC-11` / `BC-15` by the outbound `E-14` that already exists |
+| `TSF-XC-066` | Any future admission of `BC-13` to `E-22` **MUST** be a new ADR that explicitly **supersedes** `ADR-0055` section 4.3 and amends `ADR-0059`'s enforced consumer list. It **MUST NOT** be effected by editing either ADR's decision text -- `ADR-INDEX` Process rule 2 forbids that -- and **MUST NOT** be effected by citing this PRD as authority (`TSF-XC-063`) |
+
+### 29.2 The remaining register, classified against the evidence
+
+Applying `TSF-BR-037` to all nine v0.2 rows removes one and defers seven.
+
+| # | ADR | Decides | Rank touched | Owner | Class | V1 status |
+|---|---|---|---|---|---|---|
+| 1 | **`ADR-0065`** | **The synchronous enforcement-check transport.** Option A -- a new `C/S` sync port `BC-12 -> BC-13`. Option B -- an event-fed projected enforcement state inside `BC-12`, fed by the **existing** `E-14`. Must satisfy BC Map **L468** | Rank 4 -- BC Map section 7 edge register; Matrix **L90** + **L254**; `tool/module_dependencies.yaml` **L255-L259** | Architecture Owner (ARB) | ⛔ **Genuine V1 blocker** | **OPENED as `Proposed`.** Blocks `IMPL-1410`. `PRD-020` **MUST NOT** leave `DRAFT` until it is `Accepted` |
+| 2 | ~~`ADR-0066`~~ | Whether `BC-13` is admitted to the consumer cells at BC Map **L430** / **L428** / **L424** | Rank 4 -- BC Map section 9 | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.3 defers the three signals needing those cells -- *request-acceptance ratio*, *block rate*, *account age at first burst* -- to **V2**. The four surviving signals run on events `BC-13` is **already** a listed consumer of. `IMPL-1411` withdrawn from V1 |
+| 3 | ~~`ADR-0067`~~ | Whether `EnforcementActionTaken.action` admits a graduated `TIGHTEN_RATE_LIMITS` value | Rank 4 -- **L318** contract | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.6 defers the `Friction` band to **V2**. The V1 band set is expressible in the closed four-field shape already published at **L318**. `IMPL-1412` withdrawn from V1 |
+| 4 | ~~`ADR-0068`~~ | How an **age band** reaches `BC-13` without leaking a birth date | Rank 4 + `BC-18` | Architecture Owner + `BC-18` owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** Section 24.3 already places age-differentiated enforcement outside V1, and no V1 requirement reads an age band. `IMPL-1417` withdrawn from V1 |
+| 5 | ~~`ADR-0069`~~ | Whether `BC-13` is admitted to `E-22` for reported-file review | Rank 4 -- `E-22` **L331** | -- | ⚪ **Already decided, against** | **DO NOT OPEN.** See section 29.1. `IMPL-1418` withdrawn from V1 |
+| 6 | ~~`ADR-0070`~~ | **The library-scoped moderation route** -- `R-1`, `R-2` or `R-3` (section 18.3) | Rank 4 + Rank 1 scope | Architecture Owner + Product Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** V1 moderates Global Student surfaces only. `TSF-GAP-001` / `TSF-GAP-002` remain **disclosed gaps**, not blockers |
+| 7 | ~~`ADR-0071`~~ | Whether a **third** `BC-13` event is published (appeal outcome / case closure) | Rank 4 -- BC Map section 9 | Architecture Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** `TSF-FR-124`'s workaround is expressible in the existing **L318** shape and ships in V1 |
+| 8 | ~~`ADR-0072`~~ | Whether "Library official post" becomes an owned, reportable object | Rank 4 + Rank 1 | Product Owner + Architecture Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** The object does not exist in V1, so there is nothing to moderate. `TSF-GAP-010` is a forward-looking disclosure |
+| 9 | ~~`ADR-0073`~~ | Whether verified **library affiliation** exists as an attestation | Rank 1 product scope | Product Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** V1 handles impersonation by removing the unverifiable claim, which needs no attestation. `IMPL-1421` withdrawn from V1 |
+
+**Count:** one genuine V1 blocker, one withdrawn, two dissolved by scope reduction, five deferred to V2.
+**One ADR was created by this pass. Eight were deliberately not created.**
+
+#### 29.2.1 `ADR-0065`'s blast radius -- three artefacts, four line-sites
+
+`ADR-0065` section 4 records the amendment sites in full. They are reproduced here because **v0.2** of
+this section named only **one** of them (the BC Map edge table). A decision amended at one site while two
+others still forbid it leaves the repository self-contradictory rather than corrected -- and one of the
+three is machine-enforced, so a prose-only amendment would fail the build.
+
+| Site | Artefact | Line(s) | Nature of the amendment | Enforced by |
+|---|---|---|---|---|
+| 1 | `docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | section 7 edge register; governing rule at **L292** | A new edge row -- **or**, under Option B, an explicit finding that no new edge is needed | Review. **L292**: *"If an edge is not in this table, it does not exist"* |
+| 2 | `docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **L90** *"Only edges `E-14`...`E-16`"* **and L254** `internal_edges_allowed: [ E-14, E-15, E-16 ]` | The same closed allow-list appears **twice in one file**. Both occurrences must move together, or the file contradicts itself | Review. **L86**: the list must be *"an explicit allow-list, not 'anything within the cluster'"* |
+| 3 | `tool/module_dependencies.yaml` | **L255-L259** -- `internal_edges:` `E-14` (event), `E-15` (import), `E-16` (port) | The machine-readable form of site 2 | **`tool/check_module_boundaries.dart`.** An edge absent here fails the build regardless of what the prose says |
+
+⛔ **`docs/40-implementation/TRACEABILITY_MATRIX.md` is NOT an amendment site for `ADR-0065`.** It was
+measured, not assumed: the file holds **no edge register**, and its count of `TSF-` identifiers is
+**zero**. What it *does* owe is a `TSF-*` coverage inventory -- a **Traceability Owner** duty at Stage 5
+of `PRD_LIFECYCLE.md` section 6, owed whenever `PRD-020` advances, following the section 2M / v1.17
+`FIL-*` precedent. Recording it as an *architecture* amendment site would misattribute one owner's duty to
+another. `ADR-0065` section 4.4 records the same finding for the same reason.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-142` | `ADR-0065` **MUST** be `Accepted` before `PRD-020` leaves `DRAFT`. It is now **open and registered as `Proposed`** in `ADR-INDEX.md` -- a necessary but not sufficient state, because `Proposed` records the question without answering it. The eight rows classified ⚪, 🟡 or 🔵 above **MUST NOT** be opened for V1: each either has a standing answer or governs scope V1 does not contain |
+| `TSF-FR-143` | Each ADR above **MUST** apply a **per-context necessity test** in the manner of `ADR-0055` section 3, rather than admitting `domain/social` wholesale. The map is context-grained where the manifest is module-grained (`GCP-23`), and that asymmetry must be preserved |
+| `TSF-XC-063` | This PRD **MUST NOT** be cited as the authority for any decision above. It supplies the requirement and the evidence; the ADR supplies the decision |
+| `TSF-XC-067` | An ADR classified 🟡 or 🔵 above **MUST NOT** be reopened as a V1 blocker without first showing that the V1 scope reduction recorded in section 14.3, 14.6 or 24.3 has been **reversed by an authorised scope decision**. Reinstating a deferred capability and reinstating its ADR are one act, not two |
+
+`TSF-FR-143` is the lesson the repository has already learned twice. `ADR-0016` and `ADR-0055` both
 `TSF-FR-143` is the lesson the repository has already learned twice. `ADR-0016` and `ADR-0055` both
 resolved this same defect class, and `ADR-0055` §3 established the better method by testing `BC-11` and
 `BC-13` **separately** and admitting neither. Repeating that discipline here is what keeps `BC-13` from
@@ -2068,15 +2294,28 @@ Unallocated"*. `IMPL-1450`…`1499` reserved for the V2 community work of §25.
 
 ### 30.2 Blocked — do not start before the ADR
 
+⚠ **Corrected in v0.3. Seven tasks were listed here. One remains.**
+
 | Task | Work | Blocked by | ADR |
 |---|---|---|---|
-| ⛔ `IMPL-1410` | **Synchronous send-time check**, fail-closed, p99 ≤ 50 ms | `TSF-GAP-003` | `ADR-0065` |
-| ⛔ `IMPL-1411` | Graph/messaging risk signals | `TSF-GAP-015` | `ADR-0066` |
-| ⛔ `IMPL-1412` | `Friction` band rate-limit recommendation | `TSF-GAP-012` | `ADR-0067` |
-| ⛔ `IMPL-1417` | Minor-safety severity floor from an age band | `TSF-GAP-014` | `ADR-0068` |
-| ⛔ `IMPL-1418` | Reported-file review path | `TSF-GAP-005` | `ADR-0069` |
-| ⛔ `IMPL-1421` | Verified library-affiliation enforcement | `TSF-GAP-008` | `ADR-0073` |
-| ⛔ `IMPL-1424` | `BC-13` → `BC-19` referral transport | `TSF-GAP-009` | — (`TSF-GAP-009`) |
+| ⛔ `IMPL-1410` | **Synchronous send-time check**, fail-closed, p99 ≤ 50 ms | `TSF-GAP-003` | **`ADR-0065`** — open, `Proposed` |
+
+🔵 **Withdrawn from V1 scope** — not blocked, not scheduled, not awaiting a decision. Full reasoning
+in section 24.2.1; the ADR classification is in section 29.2.
+
+| Task | Work | Was blocked by | Withdrawn because |
+|---|---|---|---|
+| `IMPL-1411` | Graph/messaging risk signals | `TSF-GAP-015` | Signals deferred to V2 — section 14.3.2. `ADR-0066` not opened |
+| `IMPL-1412` | `Friction` band rate-limit recommendation | `TSF-GAP-012` | Band deferred to V2 — section 14.4. `ADR-0067` not opened |
+| `IMPL-1417` | Minor-safety severity floor from an age band | `TSF-GAP-014` | Age-differentiated enforcement is already out of V1 — section 24.3. `ADR-0068` not opened |
+| `IMPL-1418` | Reported-file review path | `TSF-GAP-005` | ⚪ **Already decided against** by `ADR-0055` / `ADR-0059` — section 29.1. `ADR-0069` **withdrawn** |
+| `IMPL-1421` | Verified library-affiliation enforcement | `TSF-GAP-008` | No attestation needed for V1's unverifiable-claim removal. `ADR-0073` not opened |
+| `IMPL-1424` | `BC-13` → `BC-19` referral transport | `TSF-GAP-009` | V1 moderates Global Student surfaces only |
+
+`TSF-BR-041` A task **MUST NOT** carry the ⛔ blocked marker unless a **V1** capability depends on it and
+the decision that unblocks it is genuinely open. A task withdrawn from scope **MUST** be recorded as
+withdrawn, with the section that withdrew it, so that the count of blocked tasks equals the number of
+decisions the release is actually waiting on. In v0.2 that count read seven and was one.
 
 ### 30.3 Risk engine, appeals, privacy
 
@@ -2137,7 +2376,7 @@ mine to execute** (§0.6):
 | 2 | `PRD_OWNERSHIP_MODEL.md` **L202** register the `TSF-` prefix and `IMPL-1400`…`1449` | Governance Owner | `TSF-GAP-013` |
 | 3 | `PRD_DEPENDENCY_GRAPH.md` **L118** re-state `D-16` now that `PRD-020` has a specification | Governance Owner | `TSF-GAP-013` |
 | 4 | `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L152** Wave 4.1 status | Governance Owner | `TSF-GAP-013` |
-| 5 | Open `ADR-0065`…`ADR-0073` as `Proposed` | Architecture Owner | §29 |
+| 5 | ✅ **DONE by this pass** — `ADR-0065` created as **`Proposed`** and registered in `ADR-INDEX.md`. `ADR-0066`…`ADR-0073` **deliberately NOT opened**: one is already decided (section 29.1) and seven are outside V1 scope (section 29.2). No transport was chosen; no Rank 4 document was amended | Architecture Owner | section 29 |
 | 6 | Decide `ADR-0065` before `DRAFT` is left | Architecture Owner | `TSF-FR-142` |
 
 `TSF-FR-144` This document **MUST NOT** be treated as conferring `DRAFT` status on itself, and **MUST
@@ -2151,11 +2390,11 @@ measurement it carries, not the standing it claims.
 | | |
 |---|---|
 | **Written at** | `9226f86`, 2026-08-22 |
-| **Status** | `DRAFT` v0.2 — Stage 2 |
+| **Status** | `DRAFT` v0.3 — Stage 2 |
 | **Rank** | **Unranked** |
-| **Repository changes made by this document** | **None to any pre-existing file.** This document is the only path added. Verified by `git diff --name-only`: one file |
-| **Registers** | 385 identifiers across 9 registers, all contiguous, no reuse (§0.2, audited) |
-| **Blocking decision** | `ADR-0065` — the synchronous enforcement-check transport (`TSF-GAP-003`) |
+| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** The v0.3 pass changed this file and two ADR-register files: it created `docs/00-governance/adr/ADR-0065-…md` as **`Proposed`**, and registered that one row in `docs/00-governance/adr/ADR-INDEX.md`. **No `Accepted` ADR was edited, promoted, demoted or superseded; no Rank 1–5 document was touched; no code file was read or written** |
+| **Registers** | **399** identifiers across 9 registers, all contiguous, no reuse (§0.2, re-measured in v0.3) |
+| **Blocking decision** | **`ADR-0065`** — the synchronous enforcement-check transport (`TSF-GAP-003`). **Now open as `Proposed`.** It is the **only** V1 blocker; v0.2 listed nine candidate ADRs and seven blocked tasks (§29, §24.2, §30.2) |
 
 ### v0.2 correction record
 
@@ -2176,3 +2415,51 @@ Item 2 was the material one: a configurable cited as an appeal window in §16 an
 §12 is a **specification defect that would have shipped as a behaviour defect**. It is recorded here rather than
 silently repaired, because §0.2 publishes its registers as a promise and a reader who quoted v0.1 deserves to
 see what moved. `TSF-BR-036` and `TSF-XC-064` were added with §20.4 to prevent the class from recurring.
+
+---
+
+### v0.3 correction record — the governance cleanup pass
+
+v0.2 reconciled the document to itself. **v0.3 reconciles it to the repository.** Every open question was
+re-derived against the **accepted** ADR set and against V1 scope as it actually stands, and the result was
+a document that claims **less**: one blocking decision instead of nine, one blocked task instead of seven,
+four risk signals instead of seven, three enforcement bands instead of four.
+
+Nothing here is a new capability. **v0.3 adds no requirement that expands V1**, amends no external
+document, and decides nothing that belongs to another owner.
+
+| # | Corrected | Was (v0.2) | Now (v0.3) |
+|---|---|---|---|
+| 1 | §29 ADR register | *"Nine ADRs"* — nine candidate ADRs, all presented as open | **One** genuine V1 blocker (`ADR-0065`), one **withdrawn**, two dissolved by scope reduction, five deferred to V2. Classified in §29.0 |
+| 2 | `ADR-0069` | Listed as an open question — *"revisiting `ADR-0055` §3"* | ⚪ **WITHDRAWN.** `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169** are `Accepted` and already refuse it. Recorded with all four verbatim authorities in §29.1. **The ADR was not written** |
+| 3 | `ADR-0065` | Specified but not opened | **Created as `Proposed`** and registered in `ADR-INDEX.md`. Two options framed (sync port / event-fed projection); **no transport chosen**; final decision left with the Architecture Owner |
+| 4 | `ADR-0065` blast radius | One site named (BC Map edge table) | **Three artefacts, four line-sites** — BC Map §7; Matrix **L90** *and* **L254**; `tool/module_dependencies.yaml` **L255–L259** (machine-enforced). §29.2.1 |
+| 5 | `TRACEABILITY_MATRIX.md` | Named as `ADR-0065`'s third amendment site | ⛔ **Rejected on measurement** — it holds no edge register and its `TSF-` count is **zero**. Its owed act is a Traceability Owner coverage inventory, not an architecture amendment. §29.2.1, `ADR-0065` §4.4 |
+| 6 | §14.3 opening claim | *"computable from events `BC-13` **already receives** … nothing here requires a new inbound edge"* | **False for 3 of 7 signals.** Written from publisher rows, not consumer cells. Each signal now measured against its own cell |
+| 7 | §14.3 signal set | 7 signals, all V1 | **4 in V1**, 3 deferred to V2 (`L430`×2, `L424`). `ADR-0066` leaves the V1 critical path |
+| 8 | §21.2 unlisted dependencies | 3 disclosed by `TSF-GAP-015` | **4.** `identity.PersonIdentityCreated` — consumer cell **L424** omits `BC-13` — was **never disclosed**. A fourth instance of the defect class, inside the section that disclosed the first three |
+| 9 | `TSF-GAP-015` | One gap covering all unlisted cells | **Split.** Rows 1, 2, 4 resolved by scope reduction. Row 3 (`PersonAnonymised`) is **not** a signal but an **erasure duty** — raised as new **`TSF-GAP-016`**, because scope reduction cannot dissolve it |
+| 10 | §14.4 / §14.6 `Friction` band | In V1; `IMPL-1412` blocked; `ADR-0067` routed | 🔵 **Deferred to V2.** V1 band set fits the closed **L318** shape unchanged. `ADR-0067` **not opened**; **L318** untouched |
+| 11 | §24.2 blocked table | **7 rows** — *"the most important table in the document"* | **1 row.** Six were out of V1 scope, not blocked. Withdrawn rows recorded in §24.2.1 with their destinations |
+| 12 | §30.2 blocked tasks | 7 ⛔ tasks (`1410`, `1411`, `1412`, `1417`, `1418`, `1421`, `1424`) | **1** ⛔ task (`IMPL-1410`). Six recorded as withdrawn from V1 scope |
+| 13 | §30.6 row 5 | *"Open `ADR-0065`…`ADR-0073` as `Proposed`"* | ✅ `ADR-0065` opened `Proposed`; `0066`…`0073` **deliberately not opened** |
+| 14 | §0.2 register table | 385 identifiers | **Re-measured: 399.** All nine registers contiguous, no reuse |
+| 15 | `TSF-FR-144` collision | — | The v0.3 draft of §14.3.1 allocated `TSF-FR-144`, **already bound** by v0.2 in §30.6. Renumbered to `145`; §21.2's to `146`. `TSF-FR-144` keeps its original meaning |
+
+**Items 2 and 5 are the two that mattered most, and both are refusals.** Item 2 declined to write an ADR
+the brief asked for, because two `Accepted` ADRs had already answered it — and the evidence offered for
+reopening it (`TSF-FR-129`'s false-negative metric) **cannot exist until a system runs**. Item 5 declined
+to record an amendment site the brief named, because measurement showed the file holds no edge register,
+and recording it would have **misattributed one owner's duty to another**. In both cases the instruction
+was followed by measuring it rather than by executing it.
+
+**Item 15 is the reason §0.2 is re-derived rather than incremented.** It is the same collision class as
+v0.2's eight `TSF-CFG-*` defects, and it was caught the same way. A register that is counted forward from
+its last value cannot detect a collision; only re-deriving every identifier from the finished text can.
+
+**What v0.3 did NOT do**, stated explicitly because each was available and each was declined: it did not
+amend the BC Map, the Module Dependency Matrix, or `tool/module_dependencies.yaml`; did not choose between
+`ADR-0065`'s Option A and Option B; did not set `ADR-0065` to `Accepted`; did not edit, promote or
+supersede any `Accepted` ADR; did not create `ADR-0066`…`ADR-0073`; did not promote any V2 or V3 capability
+into V1; did not renumber, reuse or retire any pre-existing identifier; and did not read or write a single
+code file.

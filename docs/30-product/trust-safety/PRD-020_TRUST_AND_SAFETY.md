@@ -91,7 +91,7 @@ Established by measurement before drafting. Each is carried into §29 as an ADR 
 |---|---|---|
 | **F-1** | **`BC-13` may not hold `tenantId`.** BC Map **L488**: `BC-11`→`17` are *"Global. No `tenantId`. Keyed on `PersonId`. Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"*. `module_dependencies.yaml` **L266–267** bans the **symbols** `StudentRecordId` and `TenantId` in `domain/social`, with `use_instead: "nothing — social data is not tenant-scoped"` | **Library-scoped moderation as requested cannot be built in `BC-13`.** §18 and `TSF-GAP-001` |
 | **F-2** | **`X-05` is Separate Ways.** Matrix **L354**: Library Management ⟷ `BC-11`…`BC-17` — *"Merges two tenancy models and two privacy regimes"*; the only bridge is `PersonId` via the `E-13` ACL | **A Library Owner console may not read `BC-13`.** §18, `TSF-GAP-002` |
-| **F-3** | **`BC-13` has exactly ONE edge, and it is outbound.** `E-14` (BC Map **L318**), event-only, to `BC-11`/`BC-12`/`BC-14`/`BC-15`. There is **no inbound edge and no port** | **T&S has no read path into reported content.** §12, `TSF-GAP-003` |
+| **F-3** | **`BC-13` has exactly ONE edge, and it is outbound.** `E-14` (BC Map **L318**), event-only, to `BC-11`/`BC-12`/`BC-14`/`BC-15`. There is **no inbound edge and no port** | **T&S has no read path into reported content.** §12, `TSF-GAP-003`. ✅ **Re-verified at v0.5 and still exactly true** — `ADR-0065` resolved `TSF-GAP-003` **without** adding an edge, so this fact is *unchanged*, not superseded. It is also the reason Option B was preferred: `F-3` is what Option A would have had to break |
 | **F-4** | **`BC-13` is deliberately NOT an `E-22` consumer.** BC Map **L331**; refused per-context by `ADR-0055` §3 and made **executable** by `ADR-0059` — the `files` port refuses callers outside the four-context list | **T&S may not hold a `FileRef` or read bytes.** §13, `TSF-GAP-005` |
 | **F-5** | **`BC-14` and `BC-15` are V2.** BC Map **L118**, **L119**. Content Sharing and Community & Groups have no PRD and are `PLANNED` V2 (`PRD_REGISTRY.md` **L391**) | **Community-post moderation is not V1 work** — there are no V1 posts to moderate. §25, `TSF-GAP-006` |
 | **F-6** | **Block and rate limiting are already owned.** BC Map **L115**/**L377**: `BC-11` owns *"blocks, rate limits on graph mutation"*, aggregate `BlockList`, entity `RateLimitCounter`. `E-16` (**L320**): *"block enforcement lives in the graph"* | **T&S does not own Block, Mute or graph rate limits.** §6, `TSF-XC-004`…`006` |
@@ -174,7 +174,7 @@ Three properties make this urgent rather than important:
 | `G-2` | Every enforcement action is traceable to a case, a named actor and a stated reason | `TSF-INV-001`, `TSF-AC-020` |
 | `G-3` | Strikes escalate deterministically — the same history yields the same next action | `TSF-INV-021`, `TSF-AC-030` |
 | `G-4` | An appeal is never decided by the actor who enforced | `TSF-INV-013`, `TSF-AC-041` |
-| `G-5` | *(restated v0.5)* A suspended person cannot send a message — **including during `E-14` propagation lag, within a bounded and monitored staleness budget (`TSF-CFG-030`), outside which the send is REFUSED rather than allowed** | `TSF-AC-025`, `TSF-AC-025a`, BC Map **L468**, `ADR-0065` §3.6 |
+| `G-5` | *(restated v0.5)* A suspended person cannot send a message — **including during `E-14` propagation lag, within a bounded and monitored staleness budget (`TSF-CFG-030`), outside which the send is REFUSED rather than allowed** | `TSF-AC-025` **(a)+(b)**, BC Map **L468**, `ADR-0065` §3.6 |
 | `G-6` | A minor-safety report reaches a human within its SLA regardless of queue depth | `TSF-AC-014`, `TSF-CFG-005` |
 | `G-7` | No safety decision is made irreversibly by an automated score alone | `TSF-BR-021`, `TSF-XC-014` |
 | `G-8` | A false positive is recoverable, measurable and does not accumulate as a strike | `TSF-BR-026`, `TSF-AC-055` |
@@ -2142,7 +2142,7 @@ Fourteen test classes. Each maps to an acceptance criterion in §27 and each is 
 | `TSF-FR-138` | **T-2** **MUST** be exhaustive over the transition matrix, asserting rejection of every pair not in §13.2. Testing only the happy path in a state machine that governs suspensions is not testing |
 | `TSF-FR-139` | **T-13** **MUST** assert timing indistinguishability, not merely equal status codes. `MP-GBR-22` is defeated by a measurable latency difference |
 | `TSF-FR-140` | **T-10** **MUST** run in CI as a build-failing check, aligned with the existing `banned_symbols` enforcement at yaml **L265–267** |
-| `TSF-FR-141` | *(restated v0.5.)* **T-5 MUST NOT** be marked skipped-and-forgotten while the **implementation half** of `TSF-GAP-003` is open. It **MUST** fail loudly as *blocked* until `IMPL-1410` lands, so the missing `MP-RSK-02` mitigation stays visible in every CI run. Once it lands, T-5 **MUST** become a normally-failing test, and **MUST NOT** be recorded as passing unless its staleness-gate case (`TSF-AC-025a`) passes — a projection-only build that allows the send during lag **MUST** fail T-5 |
+| `TSF-FR-141` | *(restated v0.5.)* **T-5 MUST NOT** be marked skipped-and-forgotten while the **implementation half** of `TSF-GAP-003` is open. It **MUST** fail loudly as *blocked* until `IMPL-1410` lands, so the missing `MP-RSK-02` mitigation stays visible in every CI run. Once it lands, T-5 **MUST** become a normally-failing test, and **MUST NOT** be recorded as passing unless its staleness-gate case (`TSF-AC-025` clause **(b)**) passes — a projection-only build that allows the send during lag **MUST** fail T-5 |
 
 `TSF-FR-141` matters more than it looks. A skipped test is invisible; a failing blocked test is a standing
 reminder that the `MP-RSK-02` mitigation is not yet in place.
@@ -2152,7 +2152,15 @@ for T-5 being red; it did not make T-5 green. The risk the rule guards against h
 before v0.5 the danger was *"a blocked capability ships silently as done"*; after v0.5 it is *"a **partial**
 capability ships as done"* — an `E-14` projection built **without** the fail-closed staleness gate would make
 the obvious T-5 assertions pass while leaving the propagation window wide open. That is precisely why
-`TSF-AC-025a` is named in the rule: it is the one assertion a gate-less build cannot satisfy.
+`TSF-AC-025` clause **(b)** is named in the rule: it is the one assertion a gate-less build cannot satisfy.
+
+⚠ **A register note, so the shortcut that was avoided is on the record.** The staleness gate deserved its own
+acceptance criterion, and the first draft of this edit allocated one as `TSF-AC-025a`. That was **withdrawn**:
+this PRD's `TSF-AC-*` register is strictly numeric and contiguous (`001`…`062`, no letter suffixes anywhere),
+§27.3's declared band `025`…`040` is **full**, and a suffixed ID would have been invisible to the mechanical
+contiguity check in §0.2 — a criterion no checker can see is `SID-4.56`'s *"rule that cannot be checked"*. The
+assertion was therefore folded into `TSF-AC-025` as an explicitly-labelled second clause, which changes no
+identifier count and leaves the band intact.
 
 `TSF-XC-062` Testing **MUST NOT** use real student data, real reports, or production evidence. A test
 fixture that contains a real minor's message is a privacy incident in a repository.
@@ -2201,7 +2209,7 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 
 | ID | Given / When / Then |
 |---|---|
-| `TSF-AC-025` | **Given** a person suspended one millisecond ago, **when** they send a message **before** `TSF-EVT-002` is consumed, **then** the send **fails** — satisfies `G-5`, BC Map **L468**. ⚠ blocked by `TSF-GAP-003` |
+| `TSF-AC-025` | *(restated v0.5 — now **two** clauses, both required.)* **(a) Fresh-projection clause. Given** a person suspended and `TSF-EVT-002` consumed within `TSF-CFG-030`, **when** they send a message, **then** the send **fails**. **(b) ⛔ Staleness-gate clause. Given** `TSF-EVT-002` delivery is withheld so that measured projection lag **exceeds** `TSF-CFG-030` — or freshness cannot be established at all — **when** any send is attempted, **then** the send is **REFUSED** (fail-closed), **not** allowed. Together these satisfy `G-5` as restated and BC Map **L468**'s *"belt-and-braces"*. ✅ **UNBLOCKED** — `ADR-0065` `Accepted`. ⚠ Clause (b) is the assertion a projection-only build **cannot** pass; see `ADR-0065` §3.6 and §7.1 item 2 |
 | `TSF-AC-026` | **Given** the enforcement store is unreachable, **when** a send is attempted, **then** it **fails closed** and an incident is raised (`TSF-FR-130`) |
 | `TSF-AC-027` | **Given** the send-time check under load, **when** measured, **then** p99 ≤ 50 ms |
 | `TSF-AC-028` | **Given** `TSF-EVT-002` delivered twice, **when** consumed, **then** exactly one restriction exists |
@@ -2260,8 +2268,8 @@ unmitigated product risk in the register"* (**L323**).
 
 | ID | Risk | Sev | Mitigation | Residual |
 |---|---|---|---|---|
-| `TSF-RSK-001` | **Minor-safety incident on the social product** (= `MP-RSK-02`) | **Critical** | §17.4 severity floor; `CRITICAL` escalation with a paged SLA; guardian consent gate (`ID-6`); **synchronous send-time check** (BC Map **L468**) | ⚠ **High while `TSF-GAP-003` and `TSF-GAP-014` are open** — two of the three named mitigations are not yet implementable |
-| `TSF-RSK-002` | **Enforcement does not contain in time** — eventual consistency lets a suspended abuser keep messaging | **Critical** | `TSF-FR-030`/`031`, `TSF-INV-007`, fail-closed, p99 ≤ 50 ms | ⚠ **High** — `TSF-GAP-003`: the transport does not exist |
+| `TSF-RSK-001` | **Minor-safety incident on the social product** (= `MP-RSK-02`) | **Critical** | §17.4 severity floor; `CRITICAL` escalation with a paged SLA; guardian consent gate (`ID-6`); **synchronous send-time check** (BC Map **L468**) | ⚠ **High, on narrower grounds after v0.5.** `TSF-GAP-003`'s **architecture** half is closed, so the send-time check is now **implementable** — but it is not yet **implemented** (`IMPL-1410` open), and `TSF-GAP-014` remains open. Residual stays **High** until the check is built and tested per `ADR-0065` §7.1 |
+| `TSF-RSK-002` | **Enforcement does not contain in time** — eventual consistency lets a suspended abuser keep messaging | **Critical** | *(restated v0.5)* `TSF-FR-030`/`031` and `TSF-INV-007` as restated; an `E-14`-fed projection local to `BC-12`; **plus the fail-closed staleness gate** bounded by `TSF-CFG-030`; p99 ≤ 50 ms | ⚠ **High** — no longer because *"the transport does not exist"* (it does: `ADR-0065` `Accepted`, no new edge) but because **nothing is built yet**. ⛔ Note the residual can never reach zero: Option B delivers a **bounded** guarantee, so a sub-`TSF-CFG-030` window survives by design (`ADR-0065` §3.6) |
 | `TSF-RSK-003` | **Automated mass false enforcement** — a rule restricts thousands at machine speed | **High** | `TSF-FR-062` hourly cap → stop and page; `TSF-INV-002` no automatic suspension; `TSF-FR-061` silence expires; `TSF-FR-065` auto-demotion | **Low** — the circuit breaker is buildable today |
 | `TSF-RSK-004` | **Moderator insider abuse** — elevated access to minors' private messages | **High** | `TSF-FR-114` audited reads; `TSF-FR-115` case-bound; `TSF-FR-116` **no free-text search**; `TSF-INV-019` recusal; `TSF-FR-118` volume alerting | **Medium** — detection, not prevention; the role is necessarily privileged |
 | `TSF-RSK-005` | **Cross-tenant leak of global safety intelligence** to a library admin | **High** | `TSF-XC-049`/`050`; `TSF-XC-059`/`060`; `TSF-INV-017`/`020`; **`X-05` Separate Ways is structural, not procedural** | **Low** — the identifier is banned by a machine-checked manifest |
@@ -2270,13 +2278,24 @@ unmitigated product risk in the register"* (**L323**).
 | `TSF-RSK-008` | **Safety system becomes a surveillance asset** | **High** | `TSF-FR-084` minimisation; `TSF-FR-086` measures not observations; `TSF-FR-085` no content retention; §17.2 purge on the clock | **Low–Medium** — depends on purge actually running (`TSF-FR-087`) |
 | `TSF-RSK-009` | **Deletion used to escape investigation** | **High** | `TSF-FR-091` blocks silent anonymisation during an open `CRITICAL` case or legal hold; `TSF-FR-089` case survives anonymised | **Low** |
 | `TSF-RSK-010` | **Moderation capacity exceeded** — queue grows faster than humans | **High** | `TSF-FR-004` 10,000-case design point; severity-then-age ordering; `TSF-BR-022` automation degrades gracefully; §23 backlog alerts | **Medium** — an operational and hiring risk, not solvable in code |
-| `TSF-RSK-011` | **A blocked capability ships silently as "done"** | **High** | `TSF-FR-141` blocked tests fail loudly in CI; §24.2's table; `TSF-BR-033` forbids `READY` while row 1 is open | **Low** — provided §24.2 is read at the gate |
+| `TSF-RSK-011` | **A blocked capability ships silently as "done"** | **High** | `TSF-FR-141` blocked tests fail loudly in CI; §24.2's table; `TSF-BR-033` forbids `READY` while row 1's **implementation** half is open | **Low–Medium** — ⚠ **raised at v0.5.** §24.2 row 1 now reads *"UNBLOCKED"*, which is easier to mistake for *"done"* than *"blocked"* ever was. The controlling assertion is `TSF-AC-025` clause **(b)** |
 | `TSF-RSK-012` | **Two moderation systems diverge** — a future `R-2` library console develops its own vocabulary and ladder | **Medium** | `TSF-INV-018` recorded **in advance**; `TSF-BR-034` V1 invariants are permanent; §25 requires inheritance of §13/§15 | **Medium** — mitigation is documentary until `R-2` exists |
 
-`TSF-BR-035` `TSF-RSK-001` and `TSF-RSK-002` **MUST** be re-rated at implementation gate. Their residual
-ratings are **High** solely because `TSF-GAP-003` is open; resolving that one architectural question moves
-both to **Low**. That is the single highest-leverage decision in this PRD, and it is why §24.2 row 1 is
-listed first.
+`TSF-BR-035` *(restated v0.5 — the v0.4 wording has been falsified by events and is corrected here.)*
+`TSF-RSK-001` and `TSF-RSK-002` **MUST** be re-rated at implementation gate. v0.4 asserted their residuals were
+**High** *"solely because `TSF-GAP-003` is open"* and that resolving *"that one architectural question moves
+both to **Low**."* ⛔ **That was wrong, and v0.5 proves it wrong rather than quietly deleting it.** The
+architectural question **has** been resolved (`ADR-0065` `Accepted`) and **neither residual moved**, because a
+decision is not a mitigation. The corrected rule:
+
+- Both residuals stay **High** while `IMPL-1410` is open. Re-rating is earned by **working, tested code**, not
+  by an `Accepted` ADR — `SID-4.56`: *"a rule that cannot be checked SHALL be treated as unmet."*
+- Both may move to **Low** only when T-5 passes **including `TSF-AC-025` clause (b)**, the staleness gate.
+- ⛔ `TSF-RSK-002` **MUST NOT** be re-rated below **Low** at any point. Option B's guarantee is *bounded*, so a
+  residual propagation window under `TSF-CFG-030` persists permanently by design.
+
+§24.2 row 1 is still listed first, but as the highest-leverage **build**, no longer the highest-leverage
+decision.
 
 `TSF-RSK-007`'s residual is stated as **High** rather than mitigated, because the honest position is that
 a reactive-only system on a minor-heavy platform carries real risk. §10.4 and `TSF-XC-019` record that as
@@ -2299,9 +2318,14 @@ must decide, and it is now equally explicit about which ADRs must **not** be ope
 
 ### 29.0 Classification -- what is actually blocking V1
 
+✅ **Updated at v0.5. The blocker count is now ZERO.** `ADR-0065` was the sole entry in the ⛔ class; it is
+now `Accepted`, so the class is empty. What replaces it is **not** another decision but a **build**
+(`IMPL-1410`), which is tracked in §30.2 and gated by `TSF-BR-033`, not here.
+
 | Class | ADRs | V1 consequence |
 |---|---|---|
-| ⛔ **Genuine V1 blocker** | **`ADR-0065`** | **1.** `IMPL-1410` cannot start; `PRD-020` cannot leave `DRAFT` |
+| ⛔ **Genuine V1 blocker** | *(none)* | **0.** ✅ The class is empty as of v0.5 |
+| ✅ **Decided at v0.5 — was the sole V1 blocker** | **`ADR-0065`** | **0.** `Accepted`: an `E-14`-fed projection local to `BC-12`, **no new edge**. `IMPL-1410` is **UNBLOCKED**; `PRD-020` is no longer held in `DRAFT` by an undecided ADR. ⚠ It is still held from `READY` by the **unbuilt** check |
 | ⚪ **Already decided** | ~~`ADR-0069`~~ | **0.** `ADR-0055` and `ADR-0059` already answered it, and answered it *against* |
 | 🟡 **Resolvable by V1 scope reduction, no ADR needed** | `ADR-0066`, `ADR-0067` | **0.** The V1 capability is deliverable without the decision |
 | 🔵 **Correctly deferred** | `ADR-0068`, `ADR-0070`, `ADR-0071`, `ADR-0072`, `ADR-0073` | **0.** Each governs scope V1 does not contain |
@@ -2345,7 +2369,7 @@ Applying `TSF-BR-037` to all nine v0.2 rows removes one and defers seven.
 
 | # | ADR | Decides | Rank touched | Owner | Class | V1 status |
 |---|---|---|---|---|---|---|
-| 1 | **`ADR-0065`** | **The synchronous enforcement-check transport.** Option A -- a new `C/S` sync port `BC-12 -> BC-13`. Option B -- an event-fed projected enforcement state inside `BC-12`, fed by the **existing** `E-14`. Must satisfy BC Map **L468** | Rank 4 -- BC Map section 7 edge register; Matrix **L90** + **L254**; `tool/module_dependencies.yaml` **L255-L259** | Architecture Owner (ARB) | ⛔ **Genuine V1 blocker** | **OPENED as `Proposed`.** Blocks `IMPL-1410`. `PRD-020` **MUST NOT** leave `DRAFT` until it is `Accepted` |
+| 1 | **`ADR-0065`** | **The synchronous enforcement-check transport.** Option A -- a new `C/S` sync port `BC-12 -> BC-13`. Option B -- an event-fed projected enforcement state inside `BC-12`, fed by the **existing** `E-14`. Must satisfy BC Map **L468** | Rank 4 -- BC Map section 7 edge register; Matrix **L90** + **L254**; `tool/module_dependencies.yaml` **L255-L259** | Architecture Owner (ARB) | ✅ **Decided — no longer a blocker** | ✅ **`Accepted` at v2.0 (v0.5 of this PRD), under authority expressly conferred for this one decision.** **Option B chosen** — an `E-14`-fed projection local to `BC-12`, **with no new `BC-12` → `BC-13` edge** — because `BC-12` was **already** an entitled `E-14` consumer (BC Map **L433**, Matrix **L254**, yaml **L251-253**), so nothing in Rank 4 needed amending and **nothing was amended**. ⛔ Approved **only** as a two-part mechanism: the projection **plus** a fail-closed staleness gate bounded by `TSF-CFG-030`. `IMPL-1410` **UNBLOCKED**, scoped by `ADR-0065` §7.1 |
 | 2 | ~~`ADR-0066`~~ | Whether `BC-13` is admitted to the consumer cells at BC Map **L430** / **L428** / **L424** | Rank 4 -- BC Map section 9 | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.3 defers the three signals needing those cells -- *request-acceptance ratio*, *block rate*, *account age at first burst* -- to **V2**. The four surviving signals run on events `BC-13` is **already** a listed consumer of. `IMPL-1411` withdrawn from V1 |
 | 3 | ~~`ADR-0067`~~ | Whether `EnforcementActionTaken.action` admits a graduated `TIGHTEN_RATE_LIMITS` value | Rank 4 -- **L318** contract | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.6 defers the `Friction` band to **V2**. The V1 band set is expressible in the closed four-field shape already published at **L318**. `IMPL-1412` withdrawn from V1 |
 | 4 | ~~`ADR-0068`~~ | How an **age band** reaches `BC-13` without leaking a birth date | Rank 4 + `BC-18` | Architecture Owner + `BC-18` owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** Section 24.3 already places age-differentiated enforcement outside V1, and no V1 requirement reads an age band. `IMPL-1417` withdrawn from V1 |
@@ -2424,13 +2448,27 @@ Unallocated"*. `IMPL-1450`…`1499` reserved for the V2 community work of §25.
 | `IMPL-1408` | `EffectiveRestriction` single-row projection, rebuildable | `TSF-FR-120`, `TSF-AC-029` |
 | `IMPL-1409` | The two events through the transactional outbox, idempotent | `TSF-EVT-001`/`002`, `TSF-AC-028` |
 
-### 30.2 Blocked — do not start before the ADR
+### 30.2 Blocked — do not start before the ADR — ✅ **NOW EMPTY**
 
-⚠ **Corrected in v0.3. Seven tasks were listed here. One remains.**
+⚠ **Corrected in v0.3. Seven tasks were listed here. One remained.**
+✅ **Corrected again in v0.5: that last task is UNBLOCKED, and this table is now empty.**
 
 | Task | Work | Blocked by | ADR |
 |---|---|---|---|
-| ⛔ `IMPL-1410` | **Synchronous send-time check**, fail-closed, p99 ≤ 50 ms | `TSF-GAP-003` | **`ADR-0065`** — open, `Proposed` |
+| *(none)* | — | — | — |
+
+✅ **Released from this table at v0.5:**
+
+| Task | Work | Was blocked by | ✅ Released because | ⛔ Scope the implementer is bound to |
+|---|---|---|---|---|
+| `IMPL-1410` | **Synchronous send-time check**, fail-closed, p99 ≤ 50 ms | `TSF-GAP-003` — believed to need a transport that did not exist | **`ADR-0065` is `Accepted`.** The check reads an **`E-14`-fed projection local to `BC-12`**. `BC-12` was **already** an entitled `E-14` consumer, so **no new edge, no new grant, and no Rank 4 amendment** were required — and none were made | All **five** items in `ADR-0065` **§7.1**, of which item 2 is not optional: a **fail-closed staleness gate** bounded by `TSF-CFG-030`. Verified by **T-5** including `TSF-AC-025` clause **(b)** |
+
+⛔ **`IMPL-1410` is UNBLOCKED, which is not the same as complete.** Measurement of the repository at v0.5
+found **no implementation to unblock into**: `lib/domain/social/social.dart` is a **67-line stub** that
+describes itself as *"a stub that exists to hold a boundary open, not a half-built feature"*, and a
+repository-wide search for `EnforcementAction`, `enforcementState` and `messagingRestricted` returns
+**empty**. The task may now **start**; it has not **finished**, and `TSF-BR-033` still forbids `READY`
+until it does.
 
 🔵 **Withdrawn from V1 scope** — not blocked, not scheduled, not awaiting a decision. Full reasoning
 in section 24.2.1; the ADR classification is in section 29.2.
@@ -2508,8 +2546,9 @@ mine to execute** (§0.6):
 | 2 | `PRD_OWNERSHIP_MODEL.md` **L202** register the `TSF-` prefix and `IMPL-1400`…`1449` | Governance Owner | `TSF-GAP-013` |
 | 3 | `PRD_DEPENDENCY_GRAPH.md` **L118** re-state `D-16` now that `PRD-020` has a specification | Governance Owner | `TSF-GAP-013` |
 | 4 | `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L152** Wave 4.1 status | Governance Owner | `TSF-GAP-013` |
-| 5 | ✅ **DONE by this pass** — `ADR-0065` created as **`Proposed`** and registered in `ADR-INDEX.md`. `ADR-0066`…`ADR-0073` **deliberately NOT opened**: one is already decided (section 29.1) and seven are outside V1 scope (section 29.2). No transport was chosen; no Rank 4 document was amended | Architecture Owner | section 29 |
-| 6 | Decide `ADR-0065` before `DRAFT` is left | Architecture Owner | `TSF-FR-142` |
+| 5 | ✅ **DONE (v0.3)** — `ADR-0065` created as **`Proposed`** and registered in `ADR-INDEX.md`. `ADR-0066`…`ADR-0073` **deliberately NOT opened**: one is already decided (section 29.1) and seven are outside V1 scope (section 29.2) | Architecture Owner | section 29 |
+| 6 | ✅ **DONE (v0.5)** — `ADR-0065` **DECIDED and `Accepted`** under expressly conferred authority: **Option B**, an `E-14`-fed projection local to `BC-12`, **no new edge**. ⛔ Still **no Rank 4 document amended** — none needed amending, which is precisely why Option B was available | Architecture Owner | `TSF-FR-142` |
+| 7 | ⛔ **Build `IMPL-1410`** to `ADR-0065` §7.1, incl. the fail-closed staleness gate. This is what now holds `READY` — not a decision | `BC-12` owner | `TSF-GAP-003` *(implementation half)* |
 
 `TSF-FR-144` This document **MUST NOT** be treated as conferring `DRAFT` status on itself, and **MUST
 NOT** be cited as authority against any ranked document. It is **Unranked** (header), and its value is the
@@ -2522,11 +2561,11 @@ measurement it carries, not the standing it claims.
 | | |
 |---|---|
 | **Written at** | `9226f86`, 2026-08-22 |
-| **Status** | `DRAFT` v0.4 — Stage 2 |
+| **Status** | `DRAFT` v0.5 — Stage 2 |
 | **Rank** | **Unranked** |
-| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** The v0.3 pass created `docs/00-governance/adr/ADR-0065-…md` as **`Proposed`** and registered one row in `ADR-INDEX.md`. **The v0.4 pass changed this file and `ADR-0065` only, and both changes are CORRECTIONS plus disclosed evidence — no decision.** ⛔ **No Rank 4 document was amended**: `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` and `tool/module_dependencies.yaml` are **byte-unchanged**. **No `Accepted` ADR was edited, promoted, demoted or superseded; `ADR-0065` remains `Proposed`; no code file was read or written** |
-| **Registers** | **399** identifiers across 9 registers, all contiguous, no reuse (§0.2, re-measured in v0.3; **v0.4 adds no identifier** — re-verified 399) |
-| **Blocking decision** | **`ADR-0065`** — the synchronous enforcement-check transport (`TSF-GAP-003`). **Still `Proposed` after v0.4.** It is the **only** V1 blocker. ⛔ **v0.4 attempted to resolve it and STOPPED**: measurement established what the options cost and narrowed the question to a single finding — *does `TSF-FR-031` correctly render Rank 4, or does an unranked `DRAFT` over-specify it?* — but that finding is an **interpretation of Rank 4**, reserved to the **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` **L69**) and denied to this document by `TSF-XC-063`. **`IMPL-1410` remains BLOCKED** |
+| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** v0.3 created `ADR-0065` as **`Proposed`** and registered one row in `ADR-INDEX.md`. v0.4 changed this file and `ADR-0065` only — corrections plus disclosed evidence, no decision. **v0.5 changed exactly three files: this one, `ADR-0065` (→ v2.0 `Accepted`) and the `ADR-0065` row plus count cell in `ADR-INDEX.md`.** ⛔ **No Rank 4 document was amended**: `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md`, `tool/module_dependencies.yaml` and `tool/check_module_boundaries.dart` are **byte-unchanged** — verified by empty `git diff`. **No `Accepted` ADR's decision text was edited, and no ADR was superseded or deprecated.** ⛔ **No code file was written**: `git status --porcelain -- lib test packages web pubspec.yaml android` returns **empty** |
+| **Registers** | **400** identifiers across 9 registers, all contiguous, no reuse (§0.2, mechanically re-derived at v0.5). **v0.5 adds exactly one identifier** — `TSF-CFG-030`, the projection-staleness budget. Three requirements (`TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007`) were **restated in place, keeping their numbers**, which `PRD_LIFECYCLE.md` §5 permits: a number is bound to a slot, and restating the requirement occupying a slot is not reallocation |
+| **Blocking decision** | ✅ **NONE. `ADR-0065` is `Accepted` as of v0.5** — the finding v0.4 identified but could not make has now been made under **expressly conferred Architecture Owner authority**, and it went **in favour of the existing `E-14` projected enforcement state, with no new `BC-12` → `BC-13` edge**. `TSF-FR-031`'s *"MUST NOT rely on its own `E-14` projection alone"* was held to be **over-specification by an unranked `DRAFT`** and has been restated. ⚠ **The conferral was for this one decision only** (`ADR-0033` **L169**: *"a conferral for one act is not a standing licence"*); this document remains **Unranked** and `TSF-XC-063` still binds it. ⛔ **What now blocks `READY` is a build, not a decision**: the implementation half of `TSF-GAP-003` (`IMPL-1410`) per `ADR-0065` §7.1 |
 
 ### v0.2 correction record
 
@@ -2547,6 +2586,60 @@ Item 2 was the material one: a configurable cited as an appeal window in §16 an
 §12 is a **specification defect that would have shipped as a behaviour defect**. It is recorded here rather than
 silently repaired, because §0.2 publishes its registers as a promise and a reader who quoted v0.1 deserves to
 see what moved. `TSF-BR-036` and `TSF-XC-064` were added with §20.4 to prevent the class from recurring.
+
+---
+
+### v0.5 correction record — the pass that decided the blocker, and closed exactly half of it
+
+✅ **v0.5 was given what v0.4 lacked: express Architecture Owner authority for one decision.** It exercised
+that authority, chose **Option B**, and then found that the instruction's own condition prevented it from
+closing `TSF-GAP-003` in full. Both halves of that outcome are recorded here.
+
+| # | Changed | Was (v0.4) | Now (v0.5) |
+|---|---|---|---|
+| 1 | `ADR-0065` status | `Proposed`, v1.1, no option chosen | **`Accepted`, v2.0.** **Option B** — an `E-14`-fed projection **local to `BC-12`**, **no new edge** |
+| 2 | `ADR-0065` reasoning | Options priced, not chosen | **§3.5** the ruling on **7 grounds**; **§3.6** the counter-evidence *answered*, not dropped; **§3.7** the staleness budget; **§5.1** all 8 constraints discharged; **§6.0–§6.3** authority, limits and verbatim preservation; **§7.1** five mandatory implementation items |
+| 3 | §10.1 `TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007` | Stood *"exactly as written"* | **Restated in place, keeping their numbers.** `TSF-FR-001`'s *"p99 ≤ 50 ms, fail closed"* is **preserved verbatim** — the ruling changes the mechanism, not the budget |
+| 4 | §20.4 | 29 `TSF-CFG-*` | **`TSF-CFG-030`** added — projection-staleness budget, p99 ≤ **5 s**, ceiling **30 s**, ⛔ ADR-required |
+| 5 | §0.2 register table | 399 | **400**, mechanically re-derived from the finished text |
+| 6 | `TSF-GAP-003` (§21.3, §24.2, §29) | ⚠ open, blocking | ✅ **architecture half CLOSED**; ⛔ **implementation half OPEN** |
+| 7 | `IMPL-1410` (§30.2) | ⛔ blocked | ✅ **UNBLOCKED**, scoped by `ADR-0065` §7.1. §30.2's blocked table is now **empty** |
+| 8 | `G-5`, `T-5`, `TSF-AC-025`, `TSF-FR-141` | Asserted an **absolute** pre-propagation guarantee | **Reconciled to the bounded guarantee**, each now requiring the **staleness-gate** case. `TSF-AC-025` gained an explicit clause **(b)** |
+| 9 | `TSF-BR-033`, `TSF-BR-035` | Gated on *"is the ADR decided?"* | **Restated** to gate on *"is the check **built**?"*. `TSF-BR-035`'s claim that resolving the ADR moves both residuals to **Low** is ⛔ **recorded as falsified** |
+| 10 | `TSF-RSK-001`, `TSF-RSK-002`, `TSF-RSK-011` | High *"because the transport does not exist"* | Still **High**, on the corrected ground that **nothing is built**. `TSF-RSK-011` **raised** to Low–Medium — *"UNBLOCKED"* is easier to misread as *"done"* than *"blocked"* was |
+| 11 | `TSF-AC-025a` | — | ⛔ **Allocated, then withdrawn.** The `TSF-AC-*` register is strictly numeric and §27.3's band `025`…`040` is full; a suffixed ID would have been invisible to the §0.2 contiguity check. Folded into `TSF-AC-025` as clause **(b)** instead |
+
+⭐ **The one thing v0.5 conceded rather than finessed.** `TSF-INV-007` required the send to fail *"even if
+the `E-14` event has not yet been consumed."* **A projection fed solely by `E-14` cannot satisfy that, and
+the ruling says so in `ADR-0065` §3.6 rather than quietly rewording it.** Option B delivers a **bounded,
+monitored, fail-closed** guarantee, not an absolute one. That concession is what generated `TSF-CFG-030` and
+the mandatory **fail-closed staleness gate**: *"Option B without the gate is NOT what was approved."* An
+invariant that overstates the delivered guarantee is worse than one that states it exactly, because it
+converts a known, bounded, monitored race into an undisclosed one.
+
+⭐ **Why `TSF-GAP-003` closed only halfway.** The instruction authorising this pass made closure
+**conditional** on *"the measured implementation"* satisfying `TSF-FR-030`/`031`/`INV-007`. Measurement found
+**no implementation to assess**: `lib/domain/social/social.dart` is a **67-line stub** self-described as *"a
+stub that exists to hold a boundary open, not a half-built feature"*, and a repository-wide search for
+`EnforcementAction`, `enforcementState` and `messagingRestricted` returns **empty**. Under `SID-4.56` — *"a
+rule that cannot be checked SHALL be treated as unmet"* — the condition **cannot** return *satisfied*.
+Rather than close the gap in defiance of the condition or refuse the instruction altogether, v0.5 applied the
+**`ADR-0055` → `ADR-0059` two-half precedent**: the architecture half closes now, the implementation half
+closes when the code exists. This is the disposition the instruction actually licenses.
+
+**What v0.5 did NOT do**, each item available and each declined:
+
+| ⛔ Not done | Why |
+|---|---|
+| **Did not amend the BC Map, the Dependency Matrix, `tool/module_dependencies.yaml` or `tool/check_module_boundaries.dart`** | All **Rank 4** or Rank-4-enforcing; all **byte-unchanged** (empty `git diff`). ⭐ **Nothing needed amending — that is *why* Option B was available.** `BC-12` was **already** an entitled `E-14` consumer: BC Map **L433**, Matrix **L254**, yaml **L251-253** |
+| **Did not create a `BC-12` → `BC-13` edge** | The instruction forbade it, and Option B does not need it. The Matrix's 3-edge allow-list (**L86**/**L90**/**L254**) is untouched, so §5's `F-3` — *"`BC-13` has exactly ONE edge, and it is outbound"* — **remains true** |
+| **Did not allocate `E-28` or any edge identifier** | No new edge exists to name. `E-27` stays **withdrawn** by `Accepted` `ADR-0033`, and `PRD_LIFECYCLE.md` §5 rule 5 keeps its number retired |
+| **Did not edit, promote, demote or supersede any `Accepted` ADR's decision text** | `ADR-INDEX` process rule 2. `ADR-0016`, `ADR-0032`, `ADR-0033`, `ADR-0055` and `ADR-0059` were **read as authority and left intact** — including `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169**, whose refusals Option B does not disturb |
+| **Did not close the implementation half of `TSF-GAP-003`, or mark `IMPL-1410` complete** | Nothing is built. ✅ *Unblocked* ≠ *done* |
+| **Did not mark this PRD `READY`, or move it out of `DRAFT`** | `TSF-BR-033` as restated forbids `READY` until the check is built. Registry status is the **Governance Owner's** to change, not this document's |
+| **Did not re-issue the documentation baseline** | Every amendment site is **Rank 4**; `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline only for Rank 1–3 |
+| **Did not treat the conferral as standing authority** | `ADR-0033` **L169**: *"a conferral for one act is not a standing licence."* It covered **this one decision**; `TSF-XC-063` still binds this document, which remains **Unranked** |
+| **Did not touch application code** | ⛔ No file under `lib/`, `test/`, `packages/`, `web/`, `android/` or `pubspec.yaml` was written. `lib/domain/social/social.dart` was **read only**, as evidence |
 
 ---
 
@@ -2581,6 +2674,16 @@ changed and what deliberately did not.
 | ⛔ **Did not close `TSF-GAP-003` or unblock `IMPL-1410`** | Neither is closable without the decision |
 | ⛔ **Did not add an identifier to any register** | Re-verified at **399**. A correction is not a requirement |
 | ⛔ **Did not touch application code** | No file under `lib/`, `test/`, `packages/`, `web/`, `android/` or `pubspec.yaml` was read or written |
+
+✅ **Superseded by v0.5 — this table is preserved, not corrected.** Five of its nine refusals were correct
+**for v0.4** and have since been **lawfully discharged** by v0.5 under expressly conferred authority: the
+choice between Option A and B, the restatement of `TSF-FR-030`/`031`/`INV-007`, the promotion of `ADR-0065`
+to `Accepted`, the closure of `TSF-GAP-003` (**architecture half only**) and the unblocking of `IMPL-1410`.
+⛔ **Four refusals still stand and were NOT discharged**: no Rank 4 document was amended, no edge identifier
+was allocated, no `Accepted` ADR's decision text was edited, and no application code was touched. The table
+stays as written because the reasons it gives were **sound at the time** — v0.4 lacked the authority v0.5 was
+given, and a record that erases its own earlier caution cannot be audited (`ADR-0032`/`ADR-0033` §7
+precedent: rewrite the reasoning, never delete it).
 
 ---
 

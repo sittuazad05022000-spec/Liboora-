@@ -639,6 +639,34 @@ and the **report**.
 state at send time — eventual consistency is unacceptable for abuse containment, so this path is belt-and-braces."*
 This PRD adopts a ratified rule; it does not introduce one.
 
+⭐ **v0.4 discloses a SECOND Rank 4 line that v0.3 did not cite, and it cuts against `TSF-FR-031` as
+worded.** BC Map **L477** — §10.1, *"Where Eventual Consistency Is Not Acceptable"*, the same table **L468**
+introduces — states the mitigation **with a location**:
+
+> *"\| **Abuse containment** \| A banned user sending one more abusive message during propagation lag is a real
+> harm \| Synchronous enforcement check at send time **in BC-12**, in addition to event-driven
+> self-restriction \|"*
+
+| What **L477** supplies | Why it matters to §10.1 |
+|---|---|
+| The check is located **in `BC-12`** | Rank 4 does **not** say `BC-12` calls `BC-13`. `TSF-FR-030`/`TSF-FR-031` add that transport — and this PRD is **unranked `DRAFT`** |
+| *"in addition to event-driven self-restriction"* | Names the `E-14` mechanism as the **companion**, not the substitute |
+| BC Map **L286**: *"T&S publishes … other contexts **subscribe and self-restrict**. **T&S never reaches into their models.**"* | Rank 4 chose **against** inbound peer calls to `BC-13`, on cycle grounds |
+| BC Map **L433**, Matrix **L254**, manifest **L251**-**L253** | **`BC-12` is ALREADY an entitled `safety.EnforcementActionTaken` consumer.** A projection-based check needs **no new grant at any rank** |
+
+⛔ **This does NOT mean `TSF-FR-031` is wrong, and this PRD does not resolve it.** The tension is real and
+runs the other way too: `TSF-INV-007` requires the send to fail *"even if the `E-14` event has not yet been
+consumed"*, which a projection fed **solely** by `E-14` cannot satisfy — and **L468** calls the design
+*"belt-and-braces"*, implying two independent mechanisms rather than one mechanism read twice.
+
+⚠ **The question this raises is therefore NOT "which transport is better?" but "does `TSF-FR-031` correctly
+render Rank 4, or does an unranked `DRAFT` over-specify it?"** That is an act of **interpreting Rank 4**,
+reserved to the **Architecture Owner** by `PRD_OWNERSHIP_MODEL.md` **L69** and **expressly denied to this
+document by its own `TSF-XC-063`**. It is recorded in `ADR-0065` **v1.1 §3.4** with the evidence on both
+sides, and it is **the** question that decides whether the blast radius is **three Rank 4 sites or zero**.
+`TSF-FR-030`, `TSF-FR-031` and `TSF-INV-007` are therefore left **exactly as written** — restating them to
+match either reading would be this PRD deciding the matter `TSF-XC-063` forbids it from deciding.
+
 `TSF-GAP-003` **OPEN — the transport does not exist.** `BC-13`'s only edge is the **outbound, event-only** `E-14`
 (`F-3`). A synchronous *inbound* query from `BC-12` to `BC-13` is **not in BC Map §7**, and §7's own rule is that
 *"if an edge is not in this table, it does not exist and adding it requires an ADR."* Both are `domain/social`
@@ -2241,14 +2269,26 @@ Applying `TSF-BR-037` to all nine v0.2 rows removes one and defers seven.
 
 `ADR-0065` section 4 records the amendment sites in full. They are reproduced here because **v0.2** of
 this section named only **one** of them (the BC Map edge table). A decision amended at one site while two
-others still forbid it leaves the repository self-contradictory rather than corrected -- and one of the
-three is machine-enforced, so a prose-only amendment would fail the build.
+others still forbid it leaves the repository self-contradictory rather than corrected.
+
+⛔⛔ **CORRECTED IN v0.4. v0.3 of this subsection stated that "one of the three is machine-enforced, so a
+prose-only amendment would fail the build." That claim is FALSE and is retracted.** It was measured, not
+inherited: `grep -n '_clusterContexts' tool/check_module_boundaries.dart` returns **exactly two lines** --
+**L241** (declaration) and **L435** (write). The set is **populated and never read**, so **no violation can
+be raised from it**, and the parser at **L420**-**L435** reads only each edge's `from`/`to` **context names**,
+never its **`id`**. **No checker compares an edge identifier against the allow-list.** `Accepted` `ADR-0033`
+section 6 had **already recorded this verbatim** -- *"the allow-list is enforced per edge ID: NO"* -- so v0.3
+contradicted an Accepted ADR's measured finding. **Why the error mattered:** it made Option A look more
+expensive than it is (a build failure attributed to it that cannot occur) and it offered false comfort that a
+partial amendment would be caught mechanically. **It would not be.** All three sites are enforced by
+**review**; an unlisted edge enters the manifest **silently**. `ADR-0065` v1.1 section 4.3 carries the same
+correction.
 
 | Site | Artefact | Line(s) | Nature of the amendment | Enforced by |
 |---|---|---|---|---|
 | 1 | `docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | section 7 edge register; governing rule at **L292** | A new edge row -- **or**, under Option B, an explicit finding that no new edge is needed | Review. **L292**: *"If an edge is not in this table, it does not exist"* |
 | 2 | `docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **L90** *"Only edges `E-14`...`E-16`"* **and L254** `internal_edges_allowed: [ E-14, E-15, E-16 ]` | The same closed allow-list appears **twice in one file**. Both occurrences must move together, or the file contradicts itself | Review. **L86**: the list must be *"an explicit allow-list, not 'anything within the cluster'"* |
-| 3 | `tool/module_dependencies.yaml` | **L255-L259** -- `internal_edges:` `E-14` (event), `E-15` (import), `E-16` (port) | The machine-readable form of site 2 | **`tool/check_module_boundaries.dart`.** An edge absent here fails the build regardless of what the prose says |
+| 3 | `tool/module_dependencies.yaml` | **L255-L259** -- `internal_edges:` `E-14` (event), `E-15` (import), `E-16` (port) | The **declared** machine-readable form of site 2 | ⛔ **REVIEW, not build.** See the correction note below |
 
 ⛔ **`docs/40-implementation/TRACEABILITY_MATRIX.md` is NOT an amendment site for `ADR-0065`.** It was
 measured, not assumed: the file holds **no edge register**, and its count of `TSF-` identifiers is
@@ -2264,7 +2304,6 @@ another. `ADR-0065` section 4.4 records the same finding for the same reason.
 | `TSF-XC-063` | This PRD **MUST NOT** be cited as the authority for any decision above. It supplies the requirement and the evidence; the ADR supplies the decision |
 | `TSF-XC-067` | An ADR classified 🟡 or 🔵 above **MUST NOT** be reopened as a V1 blocker without first showing that the V1 scope reduction recorded in section 14.3, 14.6 or 24.3 has been **reversed by an authorised scope decision**. Reinstating a deferred capability and reinstating its ADR are one act, not two |
 
-`TSF-FR-143` is the lesson the repository has already learned twice. `ADR-0016` and `ADR-0055` both
 `TSF-FR-143` is the lesson the repository has already learned twice. `ADR-0016` and `ADR-0055` both
 resolved this same defect class, and `ADR-0055` §3 established the better method by testing `BC-11` and
 `BC-13` **separately** and admitting neither. Repeating that discipline here is what keeps `BC-13` from
@@ -2390,11 +2429,11 @@ measurement it carries, not the standing it claims.
 | | |
 |---|---|
 | **Written at** | `9226f86`, 2026-08-22 |
-| **Status** | `DRAFT` v0.3 — Stage 2 |
+| **Status** | `DRAFT` v0.4 — Stage 2 |
 | **Rank** | **Unranked** |
-| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** The v0.3 pass changed this file and two ADR-register files: it created `docs/00-governance/adr/ADR-0065-…md` as **`Proposed`**, and registered that one row in `docs/00-governance/adr/ADR-INDEX.md`. **No `Accepted` ADR was edited, promoted, demoted or superseded; no Rank 1–5 document was touched; no code file was read or written** |
-| **Registers** | **399** identifiers across 9 registers, all contiguous, no reuse (§0.2, re-measured in v0.3) |
-| **Blocking decision** | **`ADR-0065`** — the synchronous enforcement-check transport (`TSF-GAP-003`). **Now open as `Proposed`.** It is the **only** V1 blocker; v0.2 listed nine candidate ADRs and seven blocked tasks (§29, §24.2, §30.2) |
+| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** The v0.3 pass created `docs/00-governance/adr/ADR-0065-…md` as **`Proposed`** and registered one row in `ADR-INDEX.md`. **The v0.4 pass changed this file and `ADR-0065` only, and both changes are CORRECTIONS plus disclosed evidence — no decision.** ⛔ **No Rank 4 document was amended**: `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` and `tool/module_dependencies.yaml` are **byte-unchanged**. **No `Accepted` ADR was edited, promoted, demoted or superseded; `ADR-0065` remains `Proposed`; no code file was read or written** |
+| **Registers** | **399** identifiers across 9 registers, all contiguous, no reuse (§0.2, re-measured in v0.3; **v0.4 adds no identifier** — re-verified 399) |
+| **Blocking decision** | **`ADR-0065`** — the synchronous enforcement-check transport (`TSF-GAP-003`). **Still `Proposed` after v0.4.** It is the **only** V1 blocker. ⛔ **v0.4 attempted to resolve it and STOPPED**: measurement established what the options cost and narrowed the question to a single finding — *does `TSF-FR-031` correctly render Rank 4, or does an unranked `DRAFT` over-specify it?* — but that finding is an **interpretation of Rank 4**, reserved to the **Architecture Owner** (`PRD_OWNERSHIP_MODEL.md` **L69**) and denied to this document by `TSF-XC-063`. **`IMPL-1410` remains BLOCKED** |
 
 ### v0.2 correction record
 
@@ -2415,6 +2454,40 @@ Item 2 was the material one: a configurable cited as an appeal window in §16 an
 §12 is a **specification defect that would have shipped as a behaviour defect**. It is recorded here rather than
 silently repaired, because §0.2 publishes its registers as a promise and a reader who quoted v0.1 deserves to
 see what moved. `TSF-BR-036` and `TSF-XC-064` were added with §20.4 to prevent the class from recurring.
+
+---
+
+### v0.4 correction record — the pass that measured the blocker and did not decide it
+
+**v0.4 was asked to solve the remaining V1 blocker. It did not, and that is the finding rather than a
+shortfall.** Measurement narrowed the question, priced both options, corrected two false statements this
+document made about the repository, and then **stopped at the authority boundary**. What follows is what
+changed and what deliberately did not.
+
+| # | Corrected / added | Was (v0.3) | Now (v0.4) |
+|---|---|---|---|
+| 1 | §29.2.1 lead-in and site-3 row | *"One of the three is **machine-enforced**, so a prose-only amendment would **fail the build**"* | ⛔ **RETRACTED as FALSE.** `grep -n '_clusterContexts' tool/check_module_boundaries.dart` returns **two lines** — **L241** declaration, **L435** write. The set is **written and never read**; the parser at **L420**-**L435** reads only `from`/`to` **context names**, never an edge **`id`**. **No checker compares an edge identifier against the allow-list.** All three sites are **review**-enforced |
+| 2 | Authority for that retraction | — | **`Accepted` `ADR-0033` §6 had already measured and recorded it**: *"the allow-list is enforced per edge ID: **NO**"*. v0.3 asserted the **opposite of an Accepted ADR's measured finding**, which is the defect this record exists to surface |
+| 3 | Why the error was not harmless | — | It **inflated Option A's cost** (attributing to it a build failure that cannot occur) and gave **false assurance** that a partial amendment would be caught mechanically. **It would not be** — an unlisted edge enters the manifest **silently**. A decision taken on v0.3's figures would have been taken on wrong figures |
+| 4 | §10.1 — second Rank 4 line disclosed | Cited **L468** only | ⭐ Adds **BC Map L477**, in the same §10.1 table, stating the mitigation **with a location**: *"Synchronous enforcement check at send time **in BC-12**, in addition to event-driven self-restriction."* v0.3 did not cite it, and it **cuts against `TSF-FR-031` as worded** |
+| 5 | §10.1 — existing entitlement disclosed | — | **`BC-12` is ALREADY an entitled `safety.EnforcementActionTaken` consumer** at every level: BC Map **L433**, Matrix **L254**, manifest **L251**-**L253**. A projection-based check needs **no new grant at any rank** |
+| 6 | §10.1 — counter-evidence recorded with equal weight | — | ⛔ `TSF-INV-007` requires the send to fail *"even if the `E-14` event has not yet been consumed"* — which a projection fed **solely** by `E-14` **cannot** satisfy — and `TSF-FR-031` **forbids** that design in terms, while **L468**'s *"belt-and-braces"* implies **two** independent mechanisms. **The evidence does not point one way** |
+| 7 | The question, re-framed | *"Which transport?"* | **"Does `TSF-FR-031` correctly render Rank 4, or does an unranked `DRAFT` over-specify it?"** This is an act of **interpreting Rank 4** — `PRD_OWNERSHIP_MODEL.md` **L69** reserves it to the **Architecture Owner**, and **`TSF-XC-063` expressly denies it to this document** |
+| 8 | Duplicated line at §29.2.1 | The sentence beginning *"`TSF-FR-143` is the lesson the repository has already learned twice"* appeared **twice consecutively** — a v0.3 splice artefact | Reduced to **one** occurrence. No wording changed |
+| 9 | `ADR-0065` | v1.0 | **v1.1** — same corrections, plus new **§3.4** recording the two-sided evidence, and **§6 item 3** recording that **`E-27` MUST NOT be revived** (`PRD_LIFECYCLE.md` §5 rule 5, *"Numbers are never reused, even after withdrawal"*; withdrawn by `ADR-0033`). Next free identifier is **`E-28`**. **Still `Proposed`** |
+
+**What v0.4 deliberately did NOT do — and why each refusal was required:**
+
+| Not done | Governing rule |
+|---|---|
+| ⛔ **Did not choose Option A or Option B** | The choice turns on interpreting Rank 4. `PRD_OWNERSHIP_MODEL.md` **L69**; `TSF-XC-063` |
+| ⛔ **Did not restate `TSF-FR-030`, `TSF-FR-031` or `TSF-INV-007`** | Rewording them to fit Option B **is** choosing Option B, wearing the costume of an editorial fix. They stand **exactly as written** |
+| ⛔ **Did not amend the BC Map, the Dependency Matrix or `tool/module_dependencies.yaml`** | All three are **Rank 4**; all three are **byte-unchanged**. `ADR-0033` §4.2's rule holds: an ADR that does not name a document cannot authorise changing it |
+| ⛔ **Did not promote `ADR-0065` to `Accepted`** | `ADR-INDEX.md` status vocabulary; the Architecture Owner has not ruled. `ADR-0033` **L169**: *"a conferral for one act is not a standing licence"* |
+| ⛔ **Did not allocate an edge identifier** | Allocating `E-28` would presuppose Option A |
+| ⛔ **Did not close `TSF-GAP-003` or unblock `IMPL-1410`** | Neither is closable without the decision |
+| ⛔ **Did not add an identifier to any register** | Re-verified at **399**. A correction is not a requirement |
+| ⛔ **Did not touch application code** | No file under `lib/`, `test/`, `packages/`, `web/`, `android/` or `pubspec.yaml` was read or written |
 
 ---
 

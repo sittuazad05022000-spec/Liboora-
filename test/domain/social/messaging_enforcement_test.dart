@@ -871,4 +871,112 @@ void main() {
       );
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // TSF-FR-001 / TSF-AC-027 — the send-time check answers within 50 ms at p99.
+  //
+  // IMPL-1410's task definition is "Synchronous send-time check, fail-closed,
+  // p99 <= 50 ms". The fail-closed half is asserted above; this group measures
+  // the latency half, which is otherwise an unmeasured claim. Per SID-4.56,
+  // "a rule that cannot be checked SHALL be treated as unmet", so the budget
+  // is asserted rather than assumed.
+  //
+  // What this does and does NOT establish is stated plainly: this measures the
+  // in-process read model on the send path, which is the component ADR-0065
+  // Option B put there. It is NOT a production p99 under concurrent load, and
+  // it does not discharge T-5, which PRD-020 L2129 specifies as "Integration +
+  // fault injection". A green assertion here means the data structure is not
+  // the bottleneck; it does not mean the deployed path meets 50 ms.
+  // ---------------------------------------------------------------------------
+  group('TSF-FR-001 — send-path latency budget', () {
+    test('the check answers well inside 50 ms at p99 over 10k reads', () {
+      final f = _fresh();
+
+      // Populate with many restrictions so the lookup is not measured against
+      // an empty map — an empty projection would pass trivially and prove
+      // nothing about the structure that ships.
+      for (var i = 0; i < 1000; i++) {
+        f.projection.apply(
+          _enforcement(
+            eventId: 'EV-load-$i',
+            person: PersonId('person-$i'),
+            action: 'messagingRestriction',
+            until: _t0.add(const Duration(days: 1)),
+            occurredAt: _t0,
+          ),
+        );
+      }
+      expect(
+        f.projection.activeRestrictionCount,
+        1000,
+        reason:
+            'Vacuity guard — the load was not applied, so any latency '
+            'figure below would be measured against an empty model.',
+      );
+
+      const iterations = 10000;
+      final samples = <int>[];
+      final probe = PersonId('person-500');
+      for (var i = 0; i < iterations; i++) {
+        final sw = Stopwatch()..start();
+        f.projection.evaluateSend(sender: probe);
+        sw.stop();
+        samples.add(sw.elapsedMicroseconds);
+      }
+      samples.sort();
+      final p99 = samples[(iterations * 0.99).floor()];
+
+      expect(
+        p99,
+        lessThan(50000),
+        reason:
+            'TSF-FR-001 requires p99 <= 50 ms for the send-time check. '
+            'Measured p99 = ${p99}us over $iterations reads against 1000 '
+            'active restrictions.',
+      );
+    });
+
+    test('a refusal is not slower than an allow — failing closed is not a '
+        'timeout path', () {
+      final f = _fresh();
+      f.projection.apply(
+        _enforcement(
+          person: _abuser,
+          action: 'permanentTermination',
+          // NOT null: TSF-FR-124 makes a nulled `until` a REVERSAL, and
+          // TSF-FR-070 forbids an open-ended suspension. A dated `until` is
+          // how a live restriction is expressed.
+          until: _t0.add(const Duration(days: 3650)),
+          occurredAt: _t0,
+        ),
+      );
+
+      // Vacuity guard: the sender really is refused, so the loop below is
+      // timing the refusal path and not an allow.
+      expect(
+        f.projection.evaluateSend(sender: _abuser).reason,
+        SendRefusalReason.messagingRestricted,
+      );
+
+      const iterations = 2000;
+      final samples = <int>[];
+      for (var i = 0; i < iterations; i++) {
+        final sw = Stopwatch()..start();
+        f.projection.evaluateSend(sender: _abuser);
+        sw.stop();
+        samples.add(sw.elapsedMicroseconds);
+      }
+      samples.sort();
+      final p99 = samples[(iterations * 0.99).floor()];
+
+      expect(
+        p99,
+        lessThan(50000),
+        reason:
+            'A refusal must be decided within the same 50 ms budget. '
+            'A fail-closed path that is slow invites a timeout that fails '
+            'OPEN somewhere upstream. Measured p99 = ${p99}us.',
+      );
+    });
+  });
 }

@@ -36,16 +36,20 @@ Published up front as a promise, per Stage 2's gate and the `Student_Identity_PR
 
 | Register | Meaning | Range | Count |
 |---|---|---|---|
-| `TSF-FR-nnn` | Functional requirement | `001`…`118` | 118 |
-| `TSF-BR-nnn` | Business rule | `001`…`038` | 38 |
-| `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`031` | 31 |
-| `TSF-INV-nnn` | Invariant enforced inside the aggregate | `001`…`016` | 16 |
+| `TSF-FR-nnn` | Functional requirement | `001`…`144` | 144 |
+| `TSF-BR-nnn` | Business rule | `001`…`036` | 36 |
+| `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`064` | 64 |
+| `TSF-INV-nnn` | Invariant enforced inside the aggregate | `001`…`021` | 21 |
 | `TSF-EVT-nnn` | Published domain event | `001`…`002` | **2** |
-| `TSF-CFG-nnn` | Configurable | `001`…`021` | 21 |
+| `TSF-CFG-nnn` | Configurable | `001`…`029` | 29 |
 | `TSF-AC-nnn` | Acceptance criterion | `001`…`062` | 62 |
-| `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`014` | 14 |
+| `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`015` | 15 |
 | `TSF-RSK-nnn` | Risk | `001`…`012` | 12 |
-| | | **Total** | **314** |
+| | | **Total** | **385** |
+
+Every register above is **contiguous** — the count equals the highest allocated number, with no gaps and no
+reuse. `TSF-CFG-*` is defined in one place only, §20.4; `TSF-INV-*` definitions are listed with their sections in
+§29's traceability note. The ranges in this table are **measured from the finished document**, not forecast.
 
 ⚠ **`TSF-EVT-*` is deliberately only TWO members, and that is a measurement, not an omission.**
 BC Map §9 (**L432**, **L433**) publishes exactly two `BC-13` events — `safety.AbuseReportFiled` and
@@ -80,7 +84,7 @@ rather than restating it as a new requirement:
 > **Messaging must additionally check enforcement state at send time** — eventual consistency is unacceptable for
 > abuse containment, so this path is belt-and-braces."*
 
-This is also one of the three mitigations `MP-RSK-02` names. §5 and §11 build on it; they do not reinterpret it.
+This is also one of the three mitigations `MP-RSK-02` names. §6 and §10 build on it; they do not reinterpret it.
 
 ### 0.6 The registry consequence this document does not execute
 
@@ -147,8 +151,8 @@ Three properties make this urgent rather than important:
 |---|---|---|
 | `G-1` | Every user can report abuse against a person, a message, a profile, a file reference or a community object, from the surface where they encountered it | `TSF-AC-001`…`008` |
 | `G-2` | Every enforcement action is traceable to a case, a named actor and a stated reason | `TSF-INV-001`, `TSF-AC-020` |
-| `G-3` | Strikes escalate deterministically — the same history yields the same next action | `TSF-INV-005`, `TSF-AC-030` |
-| `G-4` | An appeal is never decided by the actor who enforced | `TSF-INV-006`, `TSF-AC-041` |
+| `G-3` | Strikes escalate deterministically — the same history yields the same next action | `TSF-INV-021`, `TSF-AC-030` |
+| `G-4` | An appeal is never decided by the actor who enforced | `TSF-INV-013`, `TSF-AC-041` |
 | `G-5` | A suspended person cannot send a message, even before the enforcement event has propagated | `TSF-AC-025`, BC Map **L468** |
 | `G-6` | A minor-safety report reaches a human within its SLA regardless of queue depth | `TSF-AC-014`, `TSF-CFG-005` |
 | `G-7` | No safety decision is made irreversibly by an automated score alone | `TSF-BR-021`, `TSF-XC-014` |
@@ -158,7 +162,7 @@ Three properties make this urgent rather than important:
 
 | ID | Requirement |
 |---|---|
-| `TSF-FR-001` | The send-time enforcement check (§11.4) **MUST** answer within **50 ms at p99** and **MUST fail closed** — an unavailable check denies the send |
+| `TSF-FR-001` | The send-time enforcement check (§10.1) **MUST** answer within **50 ms at p99** and **MUST fail closed** — an unavailable check denies the send |
 | `TSF-FR-002` | Report submission **MUST** be accepted and acknowledged within **1 s at p95**; triage is asynchronous |
 | `TSF-FR-003` | `safety.EnforcementActionTaken` **MUST** be published within **5 s at p95** of the decision committing |
 | `TSF-FR-004` | The moderation queue **MUST** remain answerable at **10,000 open cases** without degrading `TSF-FR-001` |
@@ -199,7 +203,7 @@ Stated as exclusions so that a later reader does not "fix" them.
 | **Student (adult)** | `PersonId` | Files reports; receives notices; submits appeals | See another person's report, case or strike history |
 | **Student (minor)** | `PersonId` + guardian consent record in `BC-18` (`ID-6`) | Same, with escalated routing (§17.4) | — |
 | **Guardian** | `Account` with `guardianOf` scope (`MP-GBR-21`) | Receives notices about the minor's enforcement; may appeal on their behalf | Read the minor's message content through a safety surface (`TSF-XC-016`) |
-| **Platform Safety Moderator** | `Account` + platform role in `BC-18` | Full queue, case, evidence, enforcement, appeal | Decide an appeal on a case they enforced (`TSF-INV-006`) |
+| **Platform Safety Moderator** | `Account` + platform role in `BC-18` | Full queue, case, evidence, enforcement, appeal | Decide an appeal on a case they enforced (`TSF-INV-013`) |
 | **Platform Safety Lead** | `Account` + platform role | Escalations, permanent termination, policy versions | Author and approve the same policy version (`TSF-INV-013`) |
 | **Library Owner / Manager / Staff** | `Account` + tenant role, `StudentRecordId` domain | ⛔ **No V1 path.** See §18.3 | Read any `BC-13` object — `X-05`, `F-2` |
 | **Automated risk evaluator** | System actor | Produces advisory signals and scores | Execute an irreversible action (`TSF-XC-014`) |
@@ -254,7 +258,7 @@ Client ──┬─> BC-18 Authn/Authz ──> the actor is known
          │
          ├─> BC-11 graph          ── eligibility, block, rate limit  (owner: PRD-021)
          │
-         ├─> BC-12 messaging      ── send path, MUST call §11.4      (owner: PRD-021)
+         ├─> BC-12 messaging      ── send path, MUST call §10.1      (owner: PRD-021)
          │
          └─> BC-13 safety         ── report intake, case, decision   (THIS PRD)
                     │
@@ -284,7 +288,7 @@ against the measured architecture:
       │
   [3] BC-11  Eligibility + block       — is the counterparty reachable?        (E-16)
       │
-  [4] BC-13  Enforcement state check   — is the actor restricted right now?    (§11.4, SYNCHRONOUS)
+  [4] BC-13  Enforcement state check   — is the actor restricted right now?    (§10.1, SYNCHRONOUS)
       │
       ├── DENY ──────────────────────> indistinguishable-from-not-found where required (MP-GBR-22)
       │
@@ -466,6 +470,15 @@ later without an ADR. *(`TSF-XC-014`, `G-7`.)*
 
 `TSF-INV-003` A permanent termination **MUST** carry a completed human review record naming the reviewing actor,
 and **MUST** be appealable at least once (§16).
+
+`TSF-INV-004` **Attributability.** Every `EnforcementAction` **MUST** be attributable, for the whole of its retained
+life, to (a) a named `actorId` — a moderator identity, or a rule identifier for an automated action, never the bare
+string `"system"`; (b) the `caseId` it belongs to (`TSF-INV-012`); (c) the `SafetyPolicy` id **and version** cited at
+decision time; and (d) a non-empty `reasonCode`. An action that loses any of the four **MUST** be treated as a defect,
+not as an unattributed action — because the record that justifies a restriction is the same record an appeal
+(§16) and an audit (`E-20` → `BC-24`) must later read. This is why §13.1 admits no "quick action" path and why
+§21.4 permits no deletion: attributability is made *structurally* true by the aggregate boundary rather than by
+convention. *(Strengthens `TSF-INV-001`, which fixes the fields; this fixes their permanence. Supports `G-2`.)*
 
 `TSF-FR-020` **Reinstatement** — on a successful appeal or moderator error, T&S **MUST** publish a
 `safety.EnforcementActionTaken` carrying `action = REINSTATE`, and the accrued `StrikeRecord` **MUST** be marked
@@ -1084,6 +1097,7 @@ effective-restriction row makes the send-time check a **point read**.
 | `TSF-FR-073` | A strike **MUST** be recorded only on an **upheld** action. An overturned appeal **MUST** remove the strike and **MUST NOT** leave a residual "was accused" mark anywhere on the ladder |
 | `TSF-FR-074` | Strikes **MUST** decay per `TSF-CFG-004`. A student's conduct at 14 must not sentence them at 19 |
 | `TSF-FR-075` | `CRITICAL` categories **MUST** be able to bypass the ladder to actions 8–9 at first instance, with two humans. A credible threat to a child is not a first offence to be coached |
+| `TSF-INV-021` | **Strike determinism.** The ladder **MUST** be a pure function of (decayed strike count, category severity, `TSF-CFG-004`, rule-set version `TSF-CFG-002`). The same history **MUST** yield the same *recommended* posture on every evaluation, and that recommendation **MUST** be recomputable from the retained `StrikeRecord` rows alone. It **MUST NOT** vary with moderator identity, queue depth, wall-clock time of evaluation, or any `RiskSignal` — risk may order the queue, never move the ladder (`TSF-INV-014`). Because the posture is only a *recommendation*, `TSF-BR-026` and the human signature of §15.2 still apply: determinism constrains the input to the human decision, it does not remove the human. *(Satisfies `G-3`; measured by `TSF-AC-030`.)* |
 
 ### 15.4 What enforcement never does
 
@@ -1117,7 +1131,7 @@ failures) measurable rather than rhetorical.
 | `TSF-FR-077` | The subject **MUST** be told, at the moment of enforcement: what was decided, which policy, the scope, the expiry, and **how to appeal**. An unexplained restriction is indistinguishable from a bug and generates support load instead of correction |
 | `TSF-FR-078` | An appeal **MUST** be fileable while the restriction is in force, including during a suspension (action 8) — the appeal channel **MUST NOT** be gated behind the capability that was suspended |
 | `TSF-FR-079` | Filing an appeal **MUST NOT** extend, escalate or otherwise worsen the existing action. Appeal **MUST NOT** be a risk |
-| `TSF-FR-080` | Appeal window: `TSF-CFG-006`. Decision SLA: `TSF-CFG-007`. Both **MUST** be stated to the subject up front |
+| `TSF-FR-080` | Appeal window: `TSF-CFG-022`. Decision SLA: `TSF-CFG-023`. Both **MUST** be stated to the subject up front |
 
 `TSF-FR-078` is the one most often broken in practice: the account is suspended, and the appeal form
 lives behind a login the suspension blocks. `BC-18` owns sessions (`ID-1`), so the appeal intake **MUST**
@@ -1134,7 +1148,7 @@ be reachable on a path that does not require an active social session.
 | ID | Requirement |
 |---|---|
 | `TSF-FR-081` | An appeal **MUST NOT** result in a *harsher* action than the one appealed. Discovery of worse conduct **MUST** open a **new** case (`TSF-FR-056`), not amplify the appeal |
-| `TSF-FR-082` | On `Overturned`, the reversal **MUST** propagate by the same `E-14` fan-out that imposed it, and the send-time check (§10.1) **MUST** reflect it within `TSF-CFG-008` |
+| `TSF-FR-082` | On `Overturned`, the reversal **MUST** propagate by the same `E-14` fan-out that imposed it, and the send-time check (§10.1) **MUST** reflect it within `TSF-CFG-024` |
 | `TSF-FR-083` | On `Overturned` for a content removal, the content **MUST** be restored, not merely marked restorable — soft delete (`MP-GBR-14`) exists so that this is possible |
 | `TSF-INV-016` | An appeal decision **MUST** record the deciding actor, and that actor **MUST** satisfy `TSF-INV-013`. A system that cannot find a second moderator **MUST** queue the appeal, **never** auto-uphold it |
 
@@ -1181,9 +1195,9 @@ risk engine that retains every observation it counted has quietly built the beha
 
 | Data | Retention | Authority |
 |---|---|---|
-| Case + transitions + decisions | `TSF-CFG-009` after `CLOSED` | Accountability; audit is separate and append-only (`MP-GBR-13`) |
-| Reporter-submitted evidence | `TSF-CFG-010` after `CLOSED`, then purged | Minimisation; it is private content |
-| `RiskSignal` (derived measures) | `TSF-CFG-011`, rolling | Short window suffices for pattern detection |
+| Case + transitions + decisions | `TSF-CFG-025` after `CLOSED` | Accountability; audit is separate and append-only (`MP-GBR-13`) |
+| Reporter-submitted evidence | `TSF-CFG-026` after `CLOSED`, then purged | Minimisation; it is private content |
+| `RiskSignal` (derived measures) | `TSF-CFG-027`, rolling | Short window suffices for pattern detection |
 | `StrikeRecord` | Decayed per `TSF-CFG-004`; row retained | Ladder needs history; weight must not |
 | `AuditEntry` for safety actions | Owned by **`BC-24`**, append-only | `E-20`, `MP-GBR-13`; **not** `BC-13`'s to expire |
 | Legal-hold cases | ⛔ Purge **blocked** | `MP-GBR-13` — legal hold blocks purge |
@@ -1390,7 +1404,7 @@ treats its own operators as a monitored population.
 | `TSF-FR-114` | Every **read** of reporter-submitted private evidence **MUST** emit an audit event by `E-20` recording moderator, case, artefact and timestamp. Reading private content is an action, not navigation |
 | `TSF-FR-115` | Access **MUST** be case-bound. A moderator **MUST NOT** be able to browse persons, messages or evidence outside a case assigned to or claimed by them |
 | `TSF-FR-116` | There **MUST NOT** be a free-text search over evidence content, message bodies, or persons by attribute. Search **MUST** be by case identifier, `PersonId`, or queue filter |
-| `TSF-FR-117` | Minor-safety cases (§17.4) **MUST** require a restricted role, and access **MUST** be reported in a review that a human reads on `TSF-CFG-012` |
+| `TSF-FR-117` | Minor-safety cases (§17.4) **MUST** require a restricted role, and access **MUST** be reported in a review that a human reads on `TSF-CFG-028` |
 | `TSF-FR-118` | Moderator access volume **MUST** be a monitored metric (§23) with an alert on anomalous per-moderator read volume |
 | `TSF-INV-019` | A moderator **MUST NOT** act on a case where they are the reporter, the subject, or a named party in the evidence. Self-recusal **MUST** be enforced by the system, not left to conscience |
 | `TSF-XC-053` | The console **MUST NOT** expose reporter identity to any role below safety lead, and **MUST NOT** expose it in any export, log line, or notification (`TSF-INV-009`, `TSF-XC-044`) |
@@ -1424,7 +1438,7 @@ section makes it a table.
 | 5 | **`StrikeRecord`** | ✅ Inside | `BC-13` | **L379**; written in the same transaction as the upheld action |
 | 6 | **`Appeal`** | ✅ Inside | `BC-13` | **L379**; the appeal decides *this* case |
 | 7 | **`CaseTransition`** | ✅ Inside | `BC-13` | `TSF-FR-009`; immutable child |
-| 8 | **`RiskSignal`** | ⛔ **Outside** | `BC-13` | Per-person, not per-case; one signal informs many cases. Separate lifecycle and retention (`TSF-CFG-011`) |
+| 8 | **`RiskSignal`** | ⛔ **Outside** | `BC-13` | Per-person, not per-case; one signal informs many cases. Separate lifecycle and retention (`TSF-CFG-027`) |
 | 9 | **`RiskAssessment`** | ⛔ **Outside** | `BC-13` | Computed, reproducible (`TSF-FR-059`), not a system of record |
 | 10 | **`SafetyPolicy`** | ⛔ **Outside** | `BC-13` | Versioned reference data cited by actions; changing policy must not rewrite decided cases |
 | 11 | **`EffectiveRestriction`** | ⛔ **Outside** | `BC-13` | The read-optimised answer to *"what may this person do now?"* — `TSF-BR-026`, required by §10.1's ≤ 50 ms budget |
@@ -1439,14 +1453,14 @@ Rank 4 aggregate and create two answers to *"who did what"*.
 
 | Entity | Scope key | Lifecycle | States | Authorisation | Retention | Audited | Index |
 |---|---|---|---|---|---|---|---|
-| `ModerationCase` | `PersonId` (subject) | Report / rule / moderator → `CLOSED` | The 7 of §13.2 | Safety roles; case-bound (`TSF-FR-115`) | `TSF-CFG-009` | Every transition | `(state, severity, openedAt)`; `(subjectPersonId)` |
+| `ModerationCase` | `PersonId` (subject) | Report / rule / moderator → `CLOSED` | The 7 of §13.2 | Safety roles; case-bound (`TSF-FR-115`) | `TSF-CFG-025` | Every transition | `(state, severity, openedAt)`; `(subjectPersonId)` |
 | `AbuseReport` | `caseId` | Filed → attached | `ACCEPTED`/`DUPLICATE`/`INVALID` | Reporter identity ≥ safety lead only | With case | On file, on read | `(caseId)`; `(reporterPersonId, filedAt)` for `TSF-BR-013` |
-| `Evidence` | `caseId` | Attached, **never mutated** | — | Read = audited action (`TSF-FR-114`) | `TSF-CFG-010`, shortest clock | **Every read** | `(caseId)` |
+| `Evidence` | `caseId` | Attached, **never mutated** | — | Read = audited action (`TSF-FR-114`) | `TSF-CFG-026`, shortest clock | **Every read** | `(caseId)` |
 | `EnforcementAction` | `caseId` + `PersonId` | Created → active → expired/reversed | `ACTIVE`/`EXPIRED`/`REVERSED` | Two actors for row 9 (`TSF-FR-069`) | With case | Create + reverse | `(personId, state, until)` |
 | `StrikeRecord` | `PersonId` | On **upheld** action only | Active, decaying | Safety roles | Row retained; weight decays | On write + removal | `(personId, occurredAt)` |
 | `Appeal` | `caseId` | Filed → decided | `FILED`/`UPHELD`/`MODIFIED`/`OVERTURNED` | Subject files; **different** moderator decides (`TSF-INV-013`) | With case | File + decide | `(caseId)`; `(state, filedAt)` for SLA |
 | `CaseTransition` | `caseId` | Append-only | — | Read-only always | With case | Is itself the record | `(caseId, at)` |
-| `RiskSignal` | `PersonId` | Computed, rolling | — | Safety roles; **advisory label** | `TSF-CFG-011` | On use in a case | `(personId, ruleId, window)` |
+| `RiskSignal` | `PersonId` | Computed, rolling | — | Safety roles; **advisory label** | `TSF-CFG-027` | On use in a case | `(personId, ruleId, window)` |
 | `RiskAssessment` | `PersonId` | Computed on demand | — | Safety roles | Not retained beyond citing case | On use | `(personId, at)` |
 | `SafetyPolicy` | Policy id + version | Versioned, immutable per version | `DRAFT`/`ACTIVE`/`RETIRED` | Safety lead publishes | Permanent | On publish | `(policyId, version)` |
 | `EffectiveRestriction` | **`PersonId` (PK)** | Derived from active actions | — | Read by `BC-12` send-time check | Rebuildable | Rebuild logged | **`(personId)` point read** |
@@ -1474,6 +1488,61 @@ banned bare term appears in a cross-context contract file."*
 
 `TSF-XC-055` This PRD **MUST NOT** introduce the bare term `Report` into any contract, event, table or
 API identifier. The brief's `SafetyReport` was already refused for the same reason as `TSF-XC-022`.
+
+### 20.4 Configurable register — `TSF-CFG-001`…`029`
+
+§0.2 promised this register; §14.4 defined three of its members inline. This subsection is the **single
+normative home** for all of them, so that no configurable is cited without a definition.
+
+Three rules govern the table. **(1)** A configurable is a value the platform may tune *without an ADR*; anything
+that changes a boundary, an owner or a contract is **not** a configurable and does not belong here. **(2)** Every
+row states an **initial value**, because "configurable" is not a licence to ship undefined behaviour — the initial
+value is the V1 default and is testable. **(3)** Every row states who may change it, and a change to any row marked
+**Safety Lead** is an audited act (`E-20` → `BC-24`).
+
+| ID | Configurable | Initial value (V1) | Bound / guard | Changeable by | Cited at |
+|---|---|---|---|---|---|
+| `TSF-CFG-001` | Account-creation velocity threshold per shared correlator | 5 accounts / 24 h | Opens a case; **never** blocks creation (`TSF-FR-011`) | Safety Lead | §7 |
+| `TSF-CFG-002` | Rule-set version pin | `v1` | Immutable per decided case; cited on every action (`TSF-INV-004`) | Safety Lead | §14.2, §15.3 |
+| `TSF-CFG-003` | Signal observation window | 24 h | ≤ 7 d — longer windows turn detection into profiling (§17.1) | Safety Lead | §14.2 |
+| `TSF-CFG-004` | Strike decay half-life | 180 d | ≥ 90 d. Decays weight, never deletes the row (`TSF-FR-074`) | Safety Lead | §14.2, §15.3, §17.2 |
+| `TSF-CFG-005` | `CRITICAL` time-to-human (page) SLA | 15 min | Hard ceiling 60 min; queue depth is not an excuse (`G-6`, `TSF-FR-054`) | Safety Lead | §12.4, §12.5, §17.4, §23.1 |
+| `TSF-CFG-006` | `HIGH` triage SLA | 4 h | ≤ 24 h | Safety Lead | §12.4 |
+| `TSF-CFG-007` | `MEDIUM` / `LOW` triage SLA | 72 h | ≤ 7 d | Safety Lead | §12.4 |
+| `TSF-CFG-008` | Block-evasion correlation window | 30 d | Signal only; **MUST NOT** auto-terminate (`TSF-BR-010`) | Safety Lead | §8.4 |
+| `TSF-CFG-009` | Outstanding message-request cap | 20 per sender | Enforced by `BC-11` limits, not by `BC-13` (§14.6) | Safety Lead | §10.2 |
+| `TSF-CFG-010` | Reported-message context window | 5 messages either side | Hard ceiling 10. Reporter-supplied only (`TSF-BR-012`) | **ADR required** to raise | §10.3 |
+| `TSF-CFG-011` | Report free-text length bound | 2,000 chars | Bounded input is a security control, not a UX choice | Product | §12.2 |
+| `TSF-CFG-012` | Evidence retention after content removal | 90 d | ≥ appeal window (`TSF-CFG-022`), else appeals have nothing to review | Safety Lead | §11.2 |
+| `TSF-CFG-013` | Duplicate-report coalescing window | 24 h | **MUST NOT** apply to `CRITICAL` (`TSF-BR-017`) | Safety Lead | §12.5 |
+| `TSF-CFG-014` | Correlator-hash retention | 30 d | Salted hash only; never the raw identifier (`TSF-XC-023`) | **ADR required** to raise | §7 |
+| `TSF-CFG-015` | `Friction` band threshold | 0.4 | Reversible, invisible band only ⚠ `TSF-GAP-012` | Safety Lead | §14.4 |
+| `TSF-CFG-016` | `Review` band threshold | 0.6 | Opens a case; no enforcement | Safety Lead | §14.4 |
+| `TSF-CFG-017` | `Restrain` band threshold | 0.85 | `HIGH` severity only; §15 rows 1–6 only | Safety Lead | §14.4 |
+| `TSF-CFG-018` | Automatic-action expiry without human affirmation | 24 h | **Silence expires it; silence never extends it** (`TSF-FR-061`) | **ADR required** to raise | §14.4 |
+| `TSF-CFG-019` | Global automatic-action rate cap | 50 / h | On breach: **stop and page**, never act faster (`TSF-FR-062`) | Safety Lead | §14.4 |
+| `TSF-CFG-020` | Per-rule false-positive budget | 10% overturn rate | Breach ⇒ **automatic** demotion to `Observe` (`TSF-FR-065`) | Safety Lead | §14.5, §23.1 |
+| `TSF-CFG-021` | FP-budget evaluation period | 30 d rolling | ≥ 14 d, so the sample is meaningful | Safety Lead | §14.5 |
+| `TSF-CFG-022` | **Appeal window** | 30 d from notice | ≥ 14 d. Runs from *notice*, not from decision (`TSF-FR-077`) | **ADR required** to lower | §16.1 |
+| `TSF-CFG-023` | **Appeal decision SLA** | 14 d | Stated to the subject up front (`TSF-FR-080`) | Safety Lead | §16.1 |
+| `TSF-CFG-024` | **Reversal propagation budget** | 60 s at p95 | Reversal uses the same `E-14` fan-out that imposed the action | Safety Lead | §16.2, §27 |
+| `TSF-CFG-025` | **Case retention after `CLOSED`** | 2 y | Audit is separate and append-only (`MP-GBR-13`, `BC-24`) | **ADR required** — `MP-GBR-04`/`14` | §17.2, §20.2 |
+| `TSF-CFG-026` | **Reporter-submitted evidence retention after `CLOSED`** | 90 d, then purged | Shortest clock in the document; it is private content | **ADR required** to raise | §17.2, §20.2 |
+| `TSF-CFG-027` | **`RiskSignal` rolling retention** | 30 d | Derived measures only, never the observations (`TSF-FR-086`) | **ADR required** to raise | §17.2, §20.1, §20.2 |
+| `TSF-CFG-028` | **Minor-safety access review cadence** | Weekly | A human must *read* it, not merely receive it (`TSF-FR-117`) | Safety Lead | §19.4 |
+| `TSF-CFG-029` | **Analytics minimum cell size** | 5 | Below this, aggregates **MUST** be suppressed (`TSF-XC-059`) | **ADR required** to lower | §23.3 |
+
+`TSF-BR-036` A configurable marked **ADR required** in the table above **MUST NOT** be changed by operational
+configuration alone. These eight rows are the ones where a tuning knob would silently relax a privacy or
+due-process guarantee — lengthening evidence retention, shortening the appeal window, widening the message
+context window, or lowering the analytics cell size are all **boundary changes wearing a configurable's clothes**.
+Their presence in this register records their *initial value*, not permission to move them freely.
+
+`TSF-XC-064` This register **MUST NOT** be extended by inventing a configurable to defer a decision the document
+should have made. A number that nobody can supply a default for is an open gap and belongs in `TSF-GAP-*`, not here.
+
+---
+
 
 ---
 
@@ -1685,7 +1754,7 @@ record."*
 | ID | Requirement |
 |---|---|
 | `TSF-FR-133` | Safety metrics **MUST** be aggregate. No metric, dimension, drill-down or export **MUST** expose a `PersonId`, evidence content, or reporter identity |
-| `TSF-FR-134` | Aggregates **MUST** be suppressed below `TSF-CFG-014` cell size. A count of 1 in a rare category is an identification |
+| `TSF-FR-134` | Aggregates **MUST** be suppressed below `TSF-CFG-029` cell size. A count of 1 in a rare category is an identification |
 | `TSF-XC-059` | Safety metrics **MUST NOT** be exposed in any tenant-facing dashboard, export or API — `TSF-XC-049`, `TSF-XC-050`. There **MUST NOT** be a per-library safety statistic, because a per-library figure over a small membership re-identifies students |
 | `TSF-XC-060` | Safety metrics **MUST NOT** be dimensioned by tenant at all. `BC-13` holds no `tenantId` (`TSF-INV-020`), so such a dimension could only be created by joining across `X-05` |
 
@@ -1894,7 +1963,7 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 | `TSF-AC-047` | **Given** an overturned action, **when** the ladder is computed, **then** no residual mark remains |
 | `TSF-AC-048` | **Given** an appeal, **when** the subject reads it, **then** the reporter's identity is absent (`TSF-XC-044`) |
 | `TSF-AC-049` | **Given** a reporter dissatisfied with `NO_VIOLATION`, **when** they attempt to appeal, **then** no appeal path exists for them (`TSF-XC-045`) |
-| `TSF-AC-050` | **Given** an overturned action, **when** propagation completes, **then** the send-time check reflects it within `TSF-CFG-008` |
+| `TSF-AC-050` | **Given** an overturned action, **when** propagation completes, **then** the send-time check reflects it within `TSF-CFG-024` |
 
 ### 27.5 Risk, privacy, isolation (`TSF-AC-051`…`062`)
 
@@ -2082,7 +2151,28 @@ measurement it carries, not the standing it claims.
 | | |
 |---|---|
 | **Written at** | `9226f86`, 2026-08-22 |
-| **Status** | `DRAFT` v0.1 — Stage 2 |
+| **Status** | `DRAFT` v0.2 — Stage 2 |
 | **Rank** | **Unranked** |
-| **Repository changes made by this document** | **None.** One new untracked file |
+| **Repository changes made by this document** | **None to any pre-existing file.** This document is the only path added. Verified by `git diff --name-only`: one file |
+| **Registers** | 385 identifiers across 9 registers, all contiguous, no reuse (§0.2, audited) |
 | **Blocking decision** | `ADR-0065` — the synchronous enforcement-check transport (`TSF-GAP-003`) |
+
+### v0.2 correction record
+
+v0.1 was written section-by-section and its front matter forecast register sizes that the finished text
+overran. v0.2 changes **no requirement, no boundary and no decision** — it reconciles the document to itself.
+
+| # | Corrected | Was | Now |
+|---|---|---|---|
+| 1 | §0.2 register table | Forecast 314 identifiers | **Measured 385**, all contiguous |
+| 2 | `TSF-CFG-*` | **8 IDs bound to two different meanings** (`006`–`012`, `014` reused in §16/§17/§19/§20/§23) | Second uses renumbered `TSF-CFG-022`…`029`; all 29 defined once, in §20.4 |
+| 3 | `TSF-INV-004` | Cited in §15.1 and §13.1, never defined | Defined in §15.1 — **attributability**, four required fields for the life of the action |
+| 4 | `G-3` (strike determinism) | Cited `TSF-INV-005`, which is the *discovery-pipeline* invariant | Cites new **`TSF-INV-021`**, defined in §15.3 |
+| 5 | `G-4` + §4 personas (appeal independence) | Cited `TSF-INV-006`, which is the *library-scoped actor* invariant | Cites **`TSF-INV-013`** |
+| 6 | Send-time check cross-references (§2.3, §5.4, §6.1) | Cited `§11.4` — which is *"library official post — refused"* | Cites **§10.1**, the synchronous check |
+| 7 | §0.5 closing line | *"§5 and §11 build on it"* | *"§6 and §10 build on it"* |
+
+Item 2 was the material one: a configurable cited as an appeal window in §16 and as a harassment triage SLA in
+§12 is a **specification defect that would have shipped as a behaviour defect**. It is recorded here rather than
+silently repaired, because §0.2 publishes its registers as a promise and a reader who quoted v0.1 deserves to
+see what moved. `TSF-BR-036` and `TSF-XC-064` were added with §20.4 to prevent the class from recurring.

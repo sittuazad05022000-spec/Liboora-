@@ -41,16 +41,23 @@ Published up front as a promise, per Stage 2's gate and the `Student_Identity_PR
 | `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`070` | 70 |
 | `TSF-INV-nnn` | Invariant enforced inside the aggregate | `001`…`021` | 21 |
 | `TSF-EVT-nnn` | Published domain event | `001`…`002` | **2** |
-| `TSF-CFG-nnn` | Configurable | `001`…`029` | 29 |
+| `TSF-CFG-nnn` | Configurable | `001`…`030` | 30 |
 | `TSF-AC-nnn` | Acceptance criterion | `001`…`062` | 62 |
 | `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`016` | 16 |
 | `TSF-RSK-nnn` | Risk | `001`…`012` | 12 |
-| | | **Total** | **399** |
+| | | **Total** | **400** |
 
 Every register above is **contiguous** — the count equals the highest allocated number, with no gaps and no
 reuse. `TSF-CFG-*` is defined in one place only, §20.4. The ranges in this table are **measured from the
-finished document**, not forecast, and they were re-measured after the v0.3 governance pass rather than
-incremented.
+finished document**, not forecast, and they were re-measured after the v0.3 governance pass, again after v0.4,
+and again after v0.5 — each time **re-derived from the text rather than incremented**.
+
+⭐ **v0.5 re-measurement.** v0.4 declared **399**. v0.5 adds **exactly one** identifier — **`TSF-CFG-030`**, the
+enforcement read-model staleness budget required by `ADR-0065` v2.0 §3.6 condition 1 — giving **400**. ⚠ **One
+register grew by one; eight are unchanged**, and the total was re-derived by counting `TSF-*-nnn` occurrences in
+the finished text, **not** by adding one to 399. **No identifier was renumbered, reused or withdrawn**, and the
+three requirements v0.5 restated — `TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007` — **keep their numbers**, because
+`PRD_LIFECYCLE.md` §5 binds a number to a *slot*, and restating the requirement in that slot is not reallocation.
 
 ⚠ **v0.3 re-measurement.** v0.2 declared **385** across these nine registers. The v0.3 governance pass
 added 14 identifiers — `TSF-FR-145`…`146`, `TSF-BR-037`…`041`, `TSF-XC-065`…`070`, `TSF-GAP-016` — giving
@@ -167,7 +174,7 @@ Three properties make this urgent rather than important:
 | `G-2` | Every enforcement action is traceable to a case, a named actor and a stated reason | `TSF-INV-001`, `TSF-AC-020` |
 | `G-3` | Strikes escalate deterministically — the same history yields the same next action | `TSF-INV-021`, `TSF-AC-030` |
 | `G-4` | An appeal is never decided by the actor who enforced | `TSF-INV-013`, `TSF-AC-041` |
-| `G-5` | A suspended person cannot send a message, even before the enforcement event has propagated | `TSF-AC-025`, BC Map **L468** |
+| `G-5` | *(restated v0.5)* A suspended person cannot send a message — **including during `E-14` propagation lag, within a bounded and monitored staleness budget (`TSF-CFG-030`), outside which the send is REFUSED rather than allowed** | `TSF-AC-025`, `TSF-AC-025a`, BC Map **L468**, `ADR-0065` §3.6 |
 | `G-6` | A minor-safety report reaches a human within its SLA regardless of queue depth | `TSF-AC-014`, `TSF-CFG-005` |
 | `G-7` | No safety decision is made irreversibly by an automated score alone | `TSF-BR-021`, `TSF-XC-014` |
 | `G-8` | A false positive is recoverable, measurable and does not accumulate as a strike | `TSF-BR-026`, `TSF-AC-055` |
@@ -628,12 +635,19 @@ and the **report**.
 
 ### 10.1 The synchronous send-time check — the load-bearing requirement
 
+✅ **DECIDED — `ADR-0065` v2.0 is `Accepted` (2026-08-22), Option B.** The transport question that made this
+subsection the document's load-bearing gap is **resolved**: the check is a **local, synchronous read inside
+`BC-12`** against a read model fed by the **existing** `E-14` event. **No `BC-12` → `BC-13` edge exists or is
+created, and no Rank 4 document was amended** — BC Map, Dependency Matrix and `tool/module_dependencies.yaml` are
+**byte-unchanged**. The three requirements below are **restated to the decided architecture** under that ADR's
+`Amends` row, which names this PRD and only this PRD.
+
 | ID | Requirement |
 |---|---|
-| `TSF-FR-030` | `BC-13` **MUST** expose a **synchronous** enforcement-state query answering *"is `PersonId` restricted from messaging right now?"* |
-| `TSF-FR-031` | `BC-12` **MUST** call it on **every** send, and **MUST NOT** rely on its own `E-14` projection alone |
+| `TSF-FR-030` | `BC-12` **MUST** maintain a **local enforcement-state read model**, keyed by `PersonId`, answering *"is this person restricted from messaging right now?"* **synchronously**. It **MUST** be fed **only** by the `E-14` `safety.EnforcementActionTaken` event that `BC-12` is **already** an entitled consumer of (BC Map **L433**, Matrix **L254**), and **MUST** be recomputable from that event stream alone — **never hand-edited** (the BC Map **L383** projection discipline). ⛔ `BC-13` **MUST NOT** expose, and `BC-12` **MUST NOT** call, any synchronous enforcement query across the context boundary |
+| `TSF-FR-031` | `BC-12` **MUST** consult that read model on **every** send, on the send path, **before** the message is accepted. ⭐ It **MUST** additionally apply a **fail-closed staleness gate**: if the read model's lag exceeds `TSF-CFG-030`, **or its freshness cannot be established**, the send **MUST** be **refused**. ⛔ The gate is **not optional** — it is the second of the two independent mechanisms BC Map **L468** requires when it calls this path *"belt-and-braces"*, and a projection read without it is one mechanism read twice (`ADR-0065` §3.6, §7.1 item 2) |
 | `TSF-FR-001` | p99 ≤ 50 ms, **fail closed** |
-| `TSF-INV-007` | A send by a messaging-restricted person **MUST** fail even if the `E-14` event has not yet been consumed |
+| `TSF-INV-007` | A send by a messaging-restricted person **MUST** fail from the moment the restriction is in `BC-12`'s read model, and **MUST** fail **whenever that model cannot be shown to be fresher than `TSF-CFG-030`** — so the containment guarantee is **bounded and monitored, never open-ended**. ⛔ **The residual window is disclosed, not eliminated**: between `BC-13` deciding a restriction and `E-14` reaching `BC-12`'s model, a send by that person **can** succeed. That window is bounded by `TSF-CFG-030`, and exceeding it converts the window into a **refusal** rather than a silent success |
 
 ⚠ **Authority.** BC Map **L468** already requires exactly this: *"Messaging must additionally check enforcement
 state at send time — eventual consistency is unacceptable for abuse containment, so this path is belt-and-braces."*
@@ -654,29 +668,48 @@ introduces — states the mitigation **with a location**:
 | BC Map **L286**: *"T&S publishes … other contexts **subscribe and self-restrict**. **T&S never reaches into their models.**"* | Rank 4 chose **against** inbound peer calls to `BC-13`, on cycle grounds |
 | BC Map **L433**, Matrix **L254**, manifest **L251**-**L253** | **`BC-12` is ALREADY an entitled `safety.EnforcementActionTaken` consumer.** A projection-based check needs **no new grant at any rank** |
 
-⛔ **This does NOT mean `TSF-FR-031` is wrong, and this PRD does not resolve it.** The tension is real and
-runs the other way too: `TSF-INV-007` requires the send to fail *"even if the `E-14` event has not yet been
-consumed"*, which a projection fed **solely** by `E-14` cannot satisfy — and **L468** calls the design
-*"belt-and-braces"*, implying two independent mechanisms rather than one mechanism read twice.
+⭐ **v0.5 — the question v0.4 posed has been ANSWERED, and this PRD records the answer rather than the
+question.** v0.4 closed this subsection by stating that `TSF-FR-030`, `TSF-FR-031` and `TSF-INV-007` were *"left
+**exactly as written**"* because *"restating them to match either reading would be this PRD deciding the matter
+`TSF-XC-063` forbids it from deciding."* **That reasoning was correct and is why v0.4 stopped.** It has been
+overtaken lawfully: the **Architecture Owner has ruled** in `ADR-0065` v2.0, and this PRD is now **carrying out**
+a Rank-4 interpretation rather than **making** one — which is exactly what `TSF-XC-063` permits and requires.
 
-⚠ **The question this raises is therefore NOT "which transport is better?" but "does `TSF-FR-031` correctly
-render Rank 4, or does an unranked `DRAFT` over-specify it?"** That is an act of **interpreting Rank 4**,
-reserved to the **Architecture Owner** by `PRD_OWNERSHIP_MODEL.md` **L69** and **expressly denied to this
-document by its own `TSF-XC-063`**. It is recorded in `ADR-0065` **v1.1 §3.4** with the evidence on both
-sides, and it is **the** question that decides whether the blast radius is **three Rank 4 sites or zero**.
-`TSF-FR-030`, `TSF-FR-031` and `TSF-INV-007` are therefore left **exactly as written** — restating them to
-match either reading would be this PRD deciding the matter `TSF-XC-063` forbids it from deciding.
+| The ruling (`ADR-0065` §3.5) | Consequence for §10.1 |
+|---|---|
+| **L477** and **L468** require the check to be *synchronous* and *in `BC-12`*, and **never name a transport** | The transport was never a Rank 4 requirement, so **nothing in Rank 4 needed changing** |
+| **L286** chose **against** inbound peer calls into `BC-13` | `TSF-FR-030` is restated to place the state **in `BC-12`**, not behind a `BC-13` query |
+| `TSF-FR-031`'s *"MUST NOT rely on its own `E-14` projection alone"* is an **over-specification by an unranked `DRAFT`** | **Restated.** The rank order permits correcting this PRD to Rank 4, never the reverse |
+| ⛔ `TSF-INV-007`'s absolute no-lag guarantee is **CONCEDED to be unachievable** by an `E-14`-fed projection | **Restated to the guarantee the architecture actually delivers** — bounded, monitored, fail-closed |
 
-`TSF-GAP-003` **OPEN — the transport does not exist.** `BC-13`'s only edge is the **outbound, event-only** `E-14`
-(`F-3`). A synchronous *inbound* query from `BC-12` to `BC-13` is **not in BC Map §7**, and §7's own rule is that
-*"if an edge is not in this table, it does not exist and adding it requires an ADR."* Both are `domain/social`
-contexts, so no rank law is violated and an internal edge (`E-14`'s sibling) is the likely shape — but that is an
-**Architecture Owner** act. Owner: Architecture Owner with the `BC-12` and `BC-13` owners. **Blocks `IMPL-1410`.**
+⛔ **The concession is recorded plainly, because the alternative is worse.** `ADR-0065` §3.6 concedes in full
+that a projection fed solely by `E-14` **cannot** make a send fail *"even if the `E-14` event has not yet been
+consumed"*. An invariant that claims a guarantee the mechanism cannot deliver does not create the guarantee — it
+converts a **known, bounded, monitored** race into an **undisclosed** one. `TSF-INV-007` now states the real
+guarantee, names the residual window, and binds it to `TSF-CFG-030`. ⭐ **The fail-closed staleness gate of
+`TSF-FR-031` is what makes this safe and what makes the path genuinely *belt-and-braces*; it is constitutive of
+the approved architecture, not an optimisation of it.**
 
-⚠ This is the same defect class as `ADR-0016` and `ADR-0055` — a Rank 3 requirement depending on an edge the Rank 4
-register does not list. Both precedents were resolved by a **one-cell amendment after a per-context necessity
-test**, and neither was resolved by the PRD author. This PRD follows that precedent: it **names the gap and routes
-it** rather than asserting the edge.
+`TSF-GAP-003` ✅ **ARCHITECTURE HALF CLOSED** — ⛔ **IMPLEMENTATION HALF OPEN.** The transport question is
+answered: **there is no missing edge.** `BC-13`'s only edge remains the **outbound, event-only** `E-14` (`F-3`,
+still true and unchanged), and the send-time check needs **no inbound edge at all** — so BC Map **L292** is never
+engaged and **no ADR-authorised amendment was required**. ⛔ **What remains open is code, not architecture:** the
+read model, the fail-closed staleness gate, the lag observability and the tests **do not exist**. Measured at
+2026-08-22: `lib/domain/social/social.dart` is a **67-line** self-described *"stub that exists to hold a boundary
+open"*, and `grep -rln 'EnforcementAction\|enforcementState\|messagingRestricted' lib/ test/ packages/` returns
+**empty**. Owner of the remaining half: the `BC-12` owner. **`IMPL-1410` is UNBLOCKED and NOT complete.**
+
+⚠ **This is the `ADR-0055` → `ADR-0059` two-half shape, not a partial close dressed up as a full one.**
+`ADR-0055` closed `FIL-GAP-012`'s *"architecture half only"*; `ADR-0059` later closed its *"implementation half"*.
+The same discipline is applied here deliberately, because **`DECIDED` is not `IMPLEMENTED`, and `IMPLEMENTED` is
+not `VERIFIED`** — and reporting this gap as closed in full would assert a verification nobody has performed.
+
+⚠ v0.4 described this as *"the same defect class as `ADR-0016` and `ADR-0055` — a requirement depending on an
+edge the Rank 4 register does not list"*, expecting resolution by *"a one-cell amendment after a per-context
+necessity test"*. ⭐ **Measurement returned a different and better answer: it was not that defect class at all.**
+The register was never deficient; **this PRD had over-specified a transport Rank 4 left open**. The nearer
+precedent is therefore `ADR-0033`, where *"no Rank 4 law needed changing"*, and the per-context necessity test of
+`ADR-0055` §3 is satisfied **vacuously** — `BC-12`'s `E-14` entitlement is **pre-existing** and **not widened**.
 
 ### 10.2 Message requests and unwanted contact
 
@@ -1605,7 +1638,7 @@ banned bare term appears in a cross-context contract file."*
 `TSF-XC-055` This PRD **MUST NOT** introduce the bare term `Report` into any contract, event, table or
 API identifier. The brief's `SafetyReport` was already refused for the same reason as `TSF-XC-022`.
 
-### 20.4 Configurable register — `TSF-CFG-001`…`029`
+### 20.4 Configurable register — `TSF-CFG-001`…`030`
 
 §0.2 promised this register; §14.4 defined three of its members inline. This subsection is the **single
 normative home** for all of them, so that no configurable is cited without a definition.
@@ -1647,12 +1680,23 @@ value is the V1 default and is testable. **(3)** Every row states who may change
 | `TSF-CFG-027` | **`RiskSignal` rolling retention** | 30 d | Derived measures only, never the observations (`TSF-FR-086`) | **ADR required** to raise | §17.2, §20.1, §20.2 |
 | `TSF-CFG-028` | **Minor-safety access review cadence** | Weekly | A human must *read* it, not merely receive it (`TSF-FR-117`) | Safety Lead | §19.4 |
 | `TSF-CFG-029` | **Analytics minimum cell size** | 5 | Below this, aggregates **MUST** be suppressed (`TSF-XC-059`) | **ADR required** to lower | §23.3 |
+| ⭐ `TSF-CFG-030` | **Enforcement read-model staleness budget** — the maximum tolerated lag of `BC-12`'s local enforcement projection before the send-path gate **fails closed** | **5 s at p99** | ⛔ **Hard ceiling 30 s.** Beyond the budget, or when freshness cannot be established, the send is **REFUSED** — never allowed through (`TSF-FR-031`, `TSF-INV-007`). ⚠ **Not** the same quantity as `TSF-CFG-024`: that bounds how fast a **reversal** reaches the send path (a convenience failure), this bounds how stale a **restriction** may be (a **safety** failure). They point in opposite directions and **MUST NOT** be tuned together | ⛔ **ADR required** — raising it silently relaxes a **Critical** Rank 1 mitigation (`MP-RSK-02`) | §10.1, §16.2 |
 
 `TSF-BR-036` A configurable marked **ADR required** in the table above **MUST NOT** be changed by operational
-configuration alone. These eight rows are the ones where a tuning knob would silently relax a privacy or
-due-process guarantee — lengthening evidence retention, shortening the appeal window, widening the message
-context window, or lowering the analytics cell size are all **boundary changes wearing a configurable's clothes**.
-Their presence in this register records their *initial value*, not permission to move them freely.
+configuration alone. These **nine** rows are the ones where a tuning knob would silently relax a privacy,
+due-process or **safety** guarantee — lengthening evidence retention, shortening the appeal window, widening the
+message context window, lowering the analytics cell size, or ⭐ **raising the enforcement staleness budget** are
+all **boundary changes wearing a configurable's clothes**. Their presence in this register records their *initial
+value*, not permission to move them freely. ⚠ **v0.5 re-derived this count rather than incrementing the word *"eight"*.** Measured: `grep -c 'ADR required'`
+over §20.4 returns **10**, of which **one is this paragraph itself** — so the table carries **9** such rows
+(`TSF-CFG-010`, `014`, `018`, `022`, `025`, `026`, `027`, `029`, `030`). `TSF-CFG-030` is the ninth, and it is the
+first whose misuse would degrade **abuse containment** rather than privacy or due process.
+
+⚠ **Why `TSF-CFG-030` is a lawful register entry and not a deferral in disguise.** `TSF-XC-064` forbids
+*"inventing a configurable to defer a decision the document should have made"*. This row **records a decided
+bound** — `ADR-0065` §3.7 fixed its existence, semantics, home and change-control, and §20.4 rule 2 supplies the
+testable V1 default above. The decision it implements is `ADR-0065` v2.0 §3.6 condition 1; without a stated bound
+the fail-closed gate of `TSF-FR-031` would be unimplementable, which is the opposite of a deferral.
 
 `TSF-XC-064` This register **MUST NOT** be extended by inventing a configurable to defer a decision the document
 should have made. A number that nobody can supply a default for is an open gap and belongs in `TSF-GAP-*`, not here.
@@ -1773,13 +1817,42 @@ clients under stress; a duplicate report **MUST NOT** become two accusations, an
 `TSF-FR-126` Authorisation failures on **all** safety endpoints **MUST** be indistinguishable from
 not-found (`MP-GBR-22`). A distinguishable `403` on a case endpoint confirms a case exists.
 
-⚠ **`TSF-GAP-003`** *(carried, and this is the blocking one)*. §10.1's synchronous send-time check needs
-`BC-12` to **query** `BC-13`'s `EffectiveRestriction` inside a request. `BC-13` has **one edge, outbound,
-event-only**. **There is no published sync transport.** BC Map **L468** *mandates* the check; the edge
-table does not carry it. Routed to the **Architecture Owner**; `IMPL-1410` blocked. Two candidate
-resolutions — a new `CF` sync port `BC-12 → BC-13`, or `BC-12` maintaining a locally projected
-restriction cache fed by `TSF-EVT-002` — are **named, not chosen**. The second is attractive because it
-adds no edge, and dangerous because a stale cache defeats the entire point of `L468`.
+✅ **`TSF-GAP-003`** *(architecture half **CLOSED** at v0.5 — implementation half **OPEN**)*.
+
+**What v0.4 recorded, preserved so the change is auditable.** §10.1's synchronous send-time check needs
+`BC-12` to establish `BC-13`'s `EffectiveRestriction` inside a request. `BC-13` has **one edge, outbound,
+event-only**. v0.4 concluded **there is no published sync transport**, that BC Map **L468** *mandates* the
+check while the edge table does not carry it, and routed the question to the **Architecture Owner** with
+`IMPL-1410` blocked. Two candidate resolutions — a new sync port `BC-12 → BC-13`, or `BC-12` maintaining a
+locally projected restriction state fed by `TSF-EVT-002` — were **named, not chosen**. v0.4 ended with the
+warning that the second *"adds no edge, and \[is\] dangerous because a stale cache defeats the entire point
+of `L468`."*
+
+⭐ **How that warning was answered, rather than waved away.** `ADR-0065` v2.0 (`Accepted`) chose the second
+option — a **projected enforcement state inside `BC-12`, fed by the existing `E-14`, with no new edge**. It
+did **not** dismiss the staleness objection; it made the answer to it a **condition of the approval**. Two
+mechanisms are mandatory, and Option B **without both of them is not what was approved**:
+
+1. **A staleness budget with a number** — `TSF-CFG-030`, p99 projection lag ≤ **5 s**, hard ceiling **30 s**,
+   ⛔ ADR-required to change. A "stale cache" is only undefined while nobody has bounded it.
+2. **A fail-closed staleness gate on the send path** — if measured lag exceeds `TSF-CFG-030`, **or** if
+   freshness cannot be established at all, the send is **REFUSED**. This is what preserves `L468`'s
+   *"belt-and-braces"* reading: brace one is `E-14`-driven self-restriction, brace two is this gate.
+
+**What is now settled, and what is not.** The **transport question is settled** — there is a published,
+entitled read path (`BC-12` was already an `E-14` consumer: BC Map **L433**, Matrix **L254**,
+`tool/module_dependencies.yaml` **L251-253**), so **no new edge and no new grant** was needed and none was
+created. **`IMPL-1410` is therefore UNBLOCKED.** What remains open is the **implementation half**: measurement
+of `lib/` confirms `lib/domain/social/social.dart` is a **67-line boundary stub** with **zero** enforcement
+code, and a repository-wide search for `EnforcementAction`, `enforcementState` and `messagingRestricted`
+returns **empty**. Per `SID-4.56` — *"a rule that cannot be checked SHALL be treated as unmet"* — the
+implementation half stays **OPEN** until the five mandatory items in `ADR-0065` **§7.1** exist and are tested.
+This two-half disposition follows the `ADR-0055` → `ADR-0059` precedent, where an architecture half was closed
+first and the implementation half closed later by a separate ADR.
+
+⚠ **The honest residual.** Option B delivers a **bounded, monitored, fail-closed** guarantee, not the
+**absolute** one `TSF-INV-007` asserted in v0.4. That invariant has been **restated** in §10.1 to say what is
+actually delivered. `ADR-0065` **§3.6** concedes the point in full rather than rewording it out of sight.
 
 ### 21.4 Why nothing here is ever deleted
 
@@ -1944,9 +2017,10 @@ delivered to a party who is not a party to any of the three cases (`TSF-XC-042`)
 | Retention, purge, legal hold, anonymisation handling | §17.2–17.3 | ✅ |
 | Observability and the circuit breaker | §14.4, §23 | ✅ |
 
-### 24.2 In scope — but **blocked** on a decision this PRD may not make
+### 24.2 In scope — and ✅ **no longer blocked** on a decision this PRD may not make
 
-⚠ **Corrected in v0.3. This table had seven rows. It now has one.**
+⚠ **Corrected in v0.3. This table had seven rows. It then had one.**
+✅ **Corrected again in v0.5. That one row is now UNBLOCKED.**
 
 v0.2 called this *"the most important table in the document"* and it was right about that — but six of its
 seven rows were not actually blocked. They were **out of V1 scope**, which is a different fact with a
@@ -1955,15 +2029,27 @@ reading *"cannot be built until someone with the authority decides"* invited exa
 convene six decisions, or ship without six capabilities. The correct response was to notice that V1 needs
 one of them.
 
-| # | Capability | Blocked by | Blocked task | Decision owner |
-|---|---|---|---|---|
-| 1 | **Synchronous send-time enforcement check** | `TSF-GAP-003` — no sync transport; `BC-13`'s only edge is outbound and event-only | `IMPL-1410` | **Architecture Owner** — `ADR-0065`, now `Proposed` |
+| # | Capability | Was blocked by | Task | Decision owner | ✅ Disposition at v0.5 |
+|---|---|---|---|---|---|
+| 1 | **Synchronous send-time enforcement check** | `TSF-GAP-003` — v0.4 held that no sync transport existed, `BC-13`'s only edge being outbound and event-only | `IMPL-1410` | **Architecture Owner** — `ADR-0065` | ✅ **UNBLOCKED.** `ADR-0065` v2.0 is **`Accepted`**: the check reads an **`E-14`-fed projection local to `BC-12`**, with **no new edge**. `IMPL-1410` may start, scoped by `ADR-0065` **§7.1** |
 
-`TSF-BR-033` Row 1 is **release-critical, not merely blocked.** `MP-RSK-02` is rated **Critical** and BC
-Map **L468** names the send-time check as one of its three mitigations. If `TSF-GAP-003` is unresolved at
-release, then `PRD-020` ships **without** a mitigation the Rank 4 architecture requires, and the roadmap's
-`PRD-021` gate (Roadmap **L161**, **L164** — *"a release-blocking defect, not a schedule change"*) rests on
-an incomplete foundation. This PRD **MUST NOT** be marked `READY` while row 1 is open.
+**This table is now empty of blockers.** It is kept, not deleted, because the row records a resolved
+dependency and the reasoning that resolved it — and because `TSF-BR-033` below still binds.
+
+`TSF-BR-033` *(restated at v0.5 — the release-criticality survives, the blockage does not.)* Row 1 is
+**release-critical.** `MP-RSK-02` is rated **Critical** and BC Map **L468** names the send-time check as one of
+its three mitigations. The **architectural** obstacle is removed, so the correct release gate is no longer
+*"is `ADR-0065` decided?"* but ⛔ *"is the check **built** to `ADR-0065` §7.1, including the fail-closed
+staleness gate?"* Accordingly:
+
+- ✅ `PRD-020` is **no longer held in `DRAFT` by an undecided ADR.**
+- ⛔ `PRD-020` **MUST NOT** be marked `READY` while the **implementation half** of `TSF-GAP-003` is open —
+  that is, while `IMPL-1410` is incomplete or while any of the five `ADR-0065` §7.1 items is missing.
+- ⛔ Shipping the `E-14` projection **without** the fail-closed staleness gate would ship a mitigation the
+  Rank 4 architecture requires in name only. `ADR-0065` **§3.6** states this directly: *"Option B without the
+  gate is NOT what was approved."* Such a build **MUST** be treated as row 1 still open.
+- The roadmap's `PRD-021` gate (Roadmap **L161**, **L164** — *"a release-blocking defect, not a schedule
+  change"*) is unchanged and still binds.
 
 **Row 1 is now the whole table, and that is the point.** One `Proposed` ADR, one Architecture Owner
 decision, one blocked implementation task. It is no longer competing for attention with six questions that
@@ -2040,7 +2126,7 @@ Fourteen test classes. Each maps to an acceptance criterion in §27 and each is 
 | **T-2** | **Lifecycle** | Only §13.2's transitions are reachable; `CLOSED` is terminal; no reopen | **State-machine exhaustive** — assert every *illegal* pair is rejected |
 | **T-3** | **Attribution** | No `EnforcementAction` exists without a case, actor and policy citation | Property-based; attempt orphan creation and assert failure |
 | **T-4** | **Enforcement propagation** | `TSF-EVT-002` reaches each consumer; idempotent on redelivery; no double restriction | Contract + duplicate-delivery |
-| **T-5** | **Synchronous containment** | A suspended person cannot send, **before** propagation; p99 ≤ 50 ms; **fails closed** | Integration + fault injection ⚠ blocked by `TSF-GAP-003` |
+| **T-5** | **Synchronous containment** *(restated v0.5)* | A suspended person cannot send once the `E-14` projection is current; p99 ≤ 50 ms; **fails closed** on unreachability **and on staleness beyond `TSF-CFG-030`** | Integration + fault injection ✅ **UNBLOCKED** — `ADR-0065` `Accepted`. **MUST** include a *staleness-gate* case: hold `E-14` delivery past `TSF-CFG-030` and assert the send is **REFUSED** |
 | **T-6** | **Strike determinism** | Same history ⇒ same next action; decay applied; overturn removes the strike | Golden-case table |
 | **T-7** | **Appeal independence** | Enforcer cannot decide own appeal; approval chain excluded; timeout **queues**, never auto-upholds | Negative-path |
 | **T-8** | **Risk transparency** | Every signal is explainable and reproducible at a pinned rule version | Replay |
@@ -2056,10 +2142,17 @@ Fourteen test classes. Each maps to an acceptance criterion in §27 and each is 
 | `TSF-FR-138` | **T-2** **MUST** be exhaustive over the transition matrix, asserting rejection of every pair not in §13.2. Testing only the happy path in a state machine that governs suspensions is not testing |
 | `TSF-FR-139` | **T-13** **MUST** assert timing indistinguishability, not merely equal status codes. `MP-GBR-22` is defeated by a measurable latency difference |
 | `TSF-FR-140` | **T-10** **MUST** run in CI as a build-failing check, aligned with the existing `banned_symbols` enforcement at yaml **L265–267** |
-| `TSF-FR-141` | **T-5 MUST NOT** be marked skipped-and-forgotten while `TSF-GAP-003` is open. It **MUST** fail loudly as *blocked*, so the missing mitigation stays visible in every CI run |
+| `TSF-FR-141` | *(restated v0.5.)* **T-5 MUST NOT** be marked skipped-and-forgotten while the **implementation half** of `TSF-GAP-003` is open. It **MUST** fail loudly as *blocked* until `IMPL-1410` lands, so the missing `MP-RSK-02` mitigation stays visible in every CI run. Once it lands, T-5 **MUST** become a normally-failing test, and **MUST NOT** be recorded as passing unless its staleness-gate case (`TSF-AC-025a`) passes — a projection-only build that allows the send during lag **MUST** fail T-5 |
 
 `TSF-FR-141` matters more than it looks. A skipped test is invisible; a failing blocked test is a standing
 reminder that the `MP-RSK-02` mitigation is not yet in place.
+
+⭐ **Why v0.5 tightened this rather than relaxing it.** Deciding `ADR-0065` removed an *architectural* excuse
+for T-5 being red; it did not make T-5 green. The risk the rule guards against has in fact **changed shape**:
+before v0.5 the danger was *"a blocked capability ships silently as done"*; after v0.5 it is *"a **partial**
+capability ships as done"* — an `E-14` projection built **without** the fail-closed staleness gate would make
+the obvious T-5 assertions pass while leaving the propagation window wide open. That is precisely why
+`TSF-AC-025a` is named in the rule: it is the one assertion a gate-less build cannot satisfy.
 
 `TSF-XC-062` Testing **MUST NOT** use real student data, real reports, or production evidence. A test
 fixture that contains a real minor's message is a privacy incident in a repository.

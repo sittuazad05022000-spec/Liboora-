@@ -1,31 +1,42 @@
-# ADR-0065 — How `BC-12` Messaging performs the synchronous enforcement-state check against `BC-13`, and this ADR does not decide it
+# ADR-0065 — How `BC-12` Messaging performs the synchronous enforcement-state check against `BC-13`: a **local** read of an `E-14`-fed projection, with **no new edge**
 
 | Field | Value |
 |---|---|
-| **Status** | **Proposed** — not binding. *(`ADR-INDEX.md` status vocabulary: "Under consideration; not binding")* |
+| **Status** | **Accepted** — *"In force. Binding on all implementation"* (`ADR-INDEX.md` status vocabulary). **Option B selected — the send-time check is a LOCAL read of an `E-14`-fed projection inside `BC-12`. NO `BC-12` → `BC-13` edge is created.** Accepted **2026-08-22** by **direct, explicit conferral of Architecture Owner authority by the human principal of this engagement**, on the same basis and with the same disclosures as `ADR-0032` §5.2 and `ADR-0033` §7.2. ⚠ **§6 was rewritten on acceptance rather than deleted** — it still quotes verbatim the reasoning that kept this ADR `Proposed`, so a later reader can distinguish a considered ruling from a rubber stamp |
 | **Date** | 2026-08-22 |
-| **Deciders** | **Architecture Owner (ARB)** — `PRD_OWNERSHIP_MODEL.md` §2.2/§2.3 (**L85**, **L102**), the role **L68**/**L69** name as the only approver of a structural change or a Rank 1–5 document change. ⚠ Amendment site 3 (§4.3) additionally touches a **machine-enforced manifest**; whether that is the same act or a separate Technical Owner act is itself an open question — see §6 item 4 |
-| **Supersedes** | Nothing |
-| **Amends** | **Nothing. No document is modified by this ADR.** An amendment is what a decision would authorise; none is made here. The three sites a future decision *would* have to amend are enumerated in §4 and left untouched |
+| **Deciders** | **Architecture Owner (ARB)** — `PRD_OWNERSHIP_MODEL.md` §2.2/§2.3 (**L85**, **L102**), the role **L68**/**L69** name as the only approver of a structural change or a Rank 1–5 document change. ⭐ **Authority was conferred directly and explicitly by the human principal of this engagement for this single act** — see §6.0. ⚠ v1.0's Deciders cell added a caveat that amendment site 3 *"additionally touches a **machine-enforced manifest**"*; **that caveat is retracted** on the same measurement that retracted §4.3 (`_clusterContexts` is written and never read), and it is **moot in any case**: the ruling amends **no** site. §6 item 4 is accordingly resolved as **not reached** |
+| **Supersedes** | Nothing. **No `Accepted` ADR's decision text is edited, reversed or reinterpreted** — `ADR-0033` §6's measured finding is *relied on*, and `ADR-0055`/`ADR-0059`'s `BC-13` refusal is *left intact* (this decision adds no consumer anywhere) |
+| **Amends** | **`docs/30-product/trust-safety/PRD-020_TRUST_AND_SAFETY.md` (unranked `DRAFT`) → v0.5 only** — restating `TSF-FR-030`, `TSF-FR-031` and `TSF-INV-007` to the decided architecture, and re-scoping `TSF-GAP-003`. ⛔⛔ **NO Rank 4 document is amended, and that is the substance of the decision, not an omission.** `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` and `tool/module_dependencies.yaml` are **byte-unchanged** — verified by empty `git diff`. Option B **needs no Rank 4 change**, which is precisely why it was available: the `ADR-0033` §5.1 shape, where *"withdrawing … restores compliance with the existing allow-list, so no Rank 4 law needed changing"* |
 | **Amended by** | — |
 | **Baseline** | **No baseline re-issue.** Nothing changes version. Were the decision taken, `DOCUMENTATION_BASELINE.md` §7 step 4 would still exempt it — all three sites are **Rank 4**, and the baseline identifier moves *"only when a Rank 1–3 document changes version"* (the `ADR-0016`/`ADR-0055` exemption precedent) |
-| **Closes** | **Nothing.** `TSF-GAP-003` stays **OPEN**; `IMPL-1410` stays **BLOCKED** |
-| **Does NOT close** | `TSF-GAP-003`, `IMPL-1410`, `D-16`, `MP-RSK-02`, or any `TSF-AC-*`. **This ADR frames a decision; it authorises no edge and verifies no code** |
+| **Closes** | **The ARCHITECTURE HALF of `TSF-GAP-003`** — the transport question is decided and the edge question is answered *"no edge"*. **`IMPL-1410` is UNBLOCKED for specification and implementation.** ⛔ **The IMPLEMENTATION HALF of `TSF-GAP-003` stays OPEN** — on the exact `ADR-0055` → `ADR-0059` two-half precedent. **Measured reason:** the user's conferral closes the gap *"only if the measured implementation satisfies `TSF-FR-030`/`031`/`INV-007`"*, and **there is no implementation to measure** — `lib/domain/social/social.dart` is a **67-line boundary stub** and `grep -rln 'EnforcementAction\|enforcementState\|messagingRestricted' lib/ test/ packages/` returns **EMPTY**. A satisfaction condition evaluated against zero code cannot return *satisfied*; `SID-4.56` holds that *"a rule that cannot be checked SHALL be treated as unmet"* |
+| **Does NOT close** | `TSF-GAP-003`'s **implementation** half, `D-16`, `MP-RSK-02`, `TSF-AC-025`, `T-5`, or any other `TSF-AC-*`. **This ADR decides an architecture and verifies NO code** — 0 of the acceptance criteria that depend on the send-time check are proven, because none can be until `IMPL-1410` is built. **`DECIDED` is not `IMPLEMENTED`, and `IMPLEMENTED` is not `VERIFIED`** |
 | **Related** | **`ADR-0022`** (the exact `Proposed`-frames-but-does-not-decide precedent) · `ADR-0055` §3 (the per-context necessity method this decision must follow) · `ADR-0059` (why an unlisted caller is refused *by code*) · `ADR-0011` (created the Social-cluster shape) · `ADR-0012` (module boundary authority) · BC Map **L292** (the governing rule), **L318** (`E-14`), **L468** (the requirement), **L477** (⭐ *added in v1.1* — the same requirement located *"in BC-12"*), **L286**, **L433** (`BC-12` already an `E-14` consumer) · **`ADR-0033`** (⭐ *added in v1.1* — §6 measured that the allow-list is **not** enforced per edge identifier, and §4.1 rejected widening it) · Matrix **L90**, **L254**, **L354** (`X-05`) · `tool/module_dependencies.yaml` **L255**–**L259** · `MASTER_PRD.md` **L552** (`MP-RSK-02`, **Critical**) · `PRD-020` `TSF-FR-001`, `TSF-GAP-003`, `TSF-RSK-002`, §10.1, §29 · `PRD_DEPENDENCY_GRAPH.md` **D-16** · `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161**/**L164** |
 
-> ⚠️ **`Proposed`. This ADR frames a decision it is not authorised to make.**
+> ✅ **`Accepted`. The transport is decided: Option B (§3.2).**
 >
-> It exists because three repository rules independently require one *before* anything changes:
+> **The send-time enforcement check is a LOCAL, synchronous read performed inside `BC-12`, against a read model
+> `BC-12` maintains from the EXISTING `E-14` `safety.EnforcementActionTaken` event. No `BC-12` → `BC-13` edge is
+> created. No Rank 4 document is amended. No edge identifier is allocated.**
 >
-> * `ADR-INDEX.md` Process step 1 — *"A decision that changes structure, ownership, **a boundary**, or a
->   platform-wide rule requires an ADR **before** implementation."*
-> * `DOCUMENTATION_BASELINE.md` §7 step 1 — *"A change to any **Rank 1–5** document requires an ADR **before**
->   the change."*
-> * Bounded Context Map **L292** — *"If an edge is not in this table, it **does not exist** and adding it
->   requires an ADR."*
+> ⚠ **This banner replaces, but does not erase, the one it succeeded.** v1.0 and v1.1 carried the text below,
+> and it is preserved verbatim so that a later reader can see this record held its hesitation for two revisions
+> and a full measurement pass before a ruling was given — the `ADR-0032`/`ADR-0033` §7 discipline:
 >
-> **No transport is chosen here.** Two candidate options are described in §3 with their measured consequences.
-> Selecting one is the Architecture Owner's act.
+> > *"⚠️ **`Proposed`. This ADR frames a decision it is not authorised to make.** It exists because three
+> > repository rules independently require one *before* anything changes: `ADR-INDEX.md` Process step 1 — 'A
+> > decision that changes structure, ownership, **a boundary**, or a platform-wide rule requires an ADR
+> > **before** implementation.'; `DOCUMENTATION_BASELINE.md` §7 step 1 — 'A change to any **Rank 1–5**
+> > document requires an ADR **before** the change.'; Bounded Context Map **L292** — 'If an edge is not in this
+> > table, it **does not exist** and adding it requires an ADR.' **No transport is chosen here.** Two candidate
+> > options are described in §3 with their measured consequences. **Selecting one is the Architecture Owner's
+> > act."*
+>
+> Those three rules are **satisfied, not bypassed**: this ADR existed *before* the change, and the change it
+> authorises turns out to be **zero Rank 4 amendments and zero new edges** — so **L292** is never engaged.
+>
+> ⛔ **What this ADR still does NOT do.** It writes **no code**, closes **no acceptance criterion**, and closes
+> only the **architecture half** of `TSF-GAP-003`. See §7.
 
 ---
 
@@ -67,8 +78,12 @@ easier:
 > This would create a **new edge in a closed cluster allow-list**, or avoid needing one. It is a larger act,
 > and §4 enumerates every site it touches so that the size is visible before it is authorised.
 
-⚠ **This ADR does not assert that a new edge is the answer.** §3 Option B satisfies **L468** with **no new
-edge at all**. Which is why this is `Proposed`: the framing must not smuggle in the outcome.
+⭐ **RESOLVED — and resolved in the direction the framing deliberately left open.** v1.0 wrote here: *"This ADR
+does not assert that a new edge is the answer. §3 Option B satisfies **L468** with **no new edge at all**. Which
+is why this is `Proposed`: the framing must not smuggle in the outcome."* **The ruling is that Option B is
+correct: there is no new edge, and the Rank 4 edge register is right as it stands.** The "defect" of §1.3 is
+therefore **not** a missing Rank 4 edge — it is an **unranked `DRAFT` PRD over-specifying a transport Rank 4
+never named**. §6.0 records the finding; §3.4 records the evidence it rests on.
 
 ---
 
@@ -87,11 +102,12 @@ state this record can hold today.
 
 ---
 
-## 3. The two options, and what each costs
+## 3. The two options, what each costs, and which was chosen
 
-Both satisfy **L468**. They differ in which architectural principle they spend.
+Both satisfy **L468**. They differ in which architectural principle they spend. **§3.4 records the ruling:
+Option B.**
 
-### 3.1 Option A — a synchronous `BC-12 → BC-13` check
+### 3.1 Option A — a synchronous `BC-12 → BC-13` check — ⛔ **NOT CHOSEN**
 
 A new edge: `BC-12` Messaging (downstream) asks `BC-13` Trust & Safety (upstream) *"is this actor restricted
 right now?"* on the send path. Pattern would plausibly be `C/S` + sync port, by direct analogy with **`E-16`**
@@ -106,7 +122,7 @@ right now?"* on the send path. Pattern would plausibly be `C/S` + sync port, by 
 | No projection to build, no staleness window to reason about | An outage in the safety context becomes an outage in messaging (fail-closed is *correct* but *costly*) |
 | Strongest possible reading of a **Critical** Rank 1 mitigation | Inverts `E-14`'s direction of travel — BC Map **L286**: *"T&S never reaches into their models"* is preserved, but the converse traffic is new |
 
-### 3.2 Option B — an event-fed projected enforcement state inside `BC-12`
+### 3.2 Option B — an event-fed projected enforcement state inside `BC-12` — ✅ **CHOSEN**
 
 `BC-12` maintains its own local read model of enforcement state, fed by the **existing** `E-14`
 `safety.EnforcementActionTaken` event (**L318**, **L433** — `BC-12` is *already* a listed consumer). The
@@ -163,8 +179,73 @@ foreclosed:**
 | **L477**'s *"in `BC-12`"* is satisfied by a projected check | **Option B.** `PRD-020` must restate `TSF-FR-030`/`TSF-FR-031`/`TSF-INV-007` — a **PRD-020-internal** act on an unranked `DRAFT`, **not** a Rank 4 amendment | ⭐ **Zero Rank 4 sites** |
 | `TSF-INV-007`'s no-lag guarantee is the correct reading of **L468** | **Option A.** All three §4 sites amend | **Three sites, four line-sites** |
 
-**Neither is chosen here.** Recording that the blast radius is **0 or 3 depending on one interpretive finding**
-is the most this record may lawfully contain.
+⭐ **v2.0 SUPERSEDES the sentence above.** It read: *"**Neither is chosen here.** Recording that the blast
+radius is **0 or 3 depending on one interpretive finding** is the most this record may lawfully contain."* That was
+correct while no authority had been conferred. **Authority has since been conferred (§6.0), the finding has been
+made, and the blast radius is therefore settled at ZERO Rank 4 sites.** §3.5 records the ruling and §3.6 answers
+the counter-evidence rather than ignoring it.
+
+### 3.5 ✅ THE RULING — Option B, and the finding it rests on
+
+**Finding.** Of the two readings §3.4 left open, the Architecture Owner finds the **first**:
+
+> **BC Map L477's *"Synchronous enforcement check at send time in BC-12"* is satisfied by a synchronous check
+> performed on state `BC-12` holds locally. Rank 4 requires that the check be *synchronous* and that it be
+> *in `BC-12`*. It does not require, anywhere, that `BC-12` call `BC-13`.**
+
+**Therefore `TSF-FR-031`'s clause *"MUST NOT rely on its own `E-14` projection alone"* is an OVER-SPECIFICATION
+by an unranked `DRAFT` of a Rank 4 requirement, not a rendering of it.** `PRD-020` is corrected to Rank 4, not the
+reverse — which is the only direction the rank order permits.
+
+| # | Ground for the finding | Authority | Rank |
+|---|---|---|---|
+| 1 | Rank 4 **locates** the check (*"in `BC-12`"*) and **qualifies** it (*"synchronous"*) but **never names a transport** | BC Map **L477**, **L468** | **4** |
+| 2 | Rank 4 **chose against** inbound peer calls into `BC-13`, explicitly and on cycle grounds: *"T&S never reaches into their models"* | BC Map **L286** | **4** |
+| 3 | **L477** pairs the check with *"in addition to event-driven self-restriction"* — naming `E-14` as the **companion mechanism of the check itself**, which is what Option B builds | BC Map **L477** | **4** |
+| 4 | `BC-12` is **already** an entitled `safety.EnforcementActionTaken` consumer in **all three** artefacts. Option B needs **no grant at any rank** | BC Map **L433**, Matrix **L254**, manifest **L251**–**L253** | **4** + manifest |
+| 5 | Rank 4 already imposes, and therefore already sanctions, a **derived-state projection** as a first-class architectural instrument: *"Derived state only — **never** hand-edited; recomputable from Subscription events (rebuild-from-events must yield identical output)"* | BC Map **L383** (`BC-21`) | **4** |
+| 6 | The contrary text sits in an **unranked `DRAFT`** which is **expressly forbidden** from being the authority on this question by its own cross-cutting rule | `PRD-020` `TSF-XC-063`; Ownership **L69** | unranked |
+| 7 | Option A would create a **4th edge in a closed 3-edge allow-list**, which Matrix **L86** forbids dissolving, and would put a `[CORE]` safety context on the synchronous critical path of **every** message send | Matrix **L86**, **L90**, **L254** | **4** |
+
+⚠ **Ground 7 is a reason, not the reason.** Cost did not decide this; §3.3 forbids that and §3.3 stands. The
+finding is grounds 1–3: **Rank 4 does not say what `TSF-FR-031` says it says.** Ground 7 records that the reading
+which respects Rank 4 also happens to be the cheaper one — a convergence worth noting and not worth relying on.
+
+### 3.6 ⛔ The counter-evidence, answered rather than dropped
+
+§3.4 recorded three counter-arguments and called them *"not weak"*. **They are not withdrawn. They are answered,
+and two of them force the ruling to carry a condition.**
+
+| Counter-argument | Answer | Consequence |
+|---|---|---|
+| `TSF-INV-007`: the send **MUST** fail *"even if the `E-14` event has not yet been consumed"* | ⛔ **CONCEDED IN FULL. A projection fed solely by `E-14` cannot satisfy this as written, and this ruling does not pretend otherwise.** The invariant states an **absolute** no-lag guarantee. Option B delivers a **bounded** one. **`TSF-INV-007` is therefore RESTATED in `PRD-020` → v0.5 to the guarantee the architecture actually delivers**: the send fails **as soon as the restriction is in `BC-12`'s projection**, the projection lag is **bounded and monitored**, and the check **fails closed** on a stale or unavailable projection. An invariant that overstates the delivered guarantee is worse than one that states it exactly — it converts a known, bounded, monitored race into an **undisclosed** one | ⭐ **Condition 1 — a staleness budget is now MANDATORY, not optional.** See §3.7 |
+| `TSF-FR-031`: *"MUST NOT rely on its own `E-14` projection alone"* | **Over-specification by an unranked `DRAFT`** — §3.5 grounds 1–3 and 6. Restated in v0.5 | Restated, not deleted; the v0.5 record discloses the change |
+| **L468**'s *"belt-and-braces"* implies **two** independent mechanisms | ⚠ **Partly conceded, and this is the sharpest of the three.** Under Option B the two braces are **not** two transports; they are **(i)** `BC-12`'s own self-restriction on consuming `E-14`, and **(ii)** an **explicit, fail-closed send-path gate** that reads the projection and **refuses the send when the projection is stale beyond budget**. The second brace is what makes this *belt-and-braces* rather than *the same brace read twice* — and it only exists if the staleness gate is actually built | ⭐ **Condition 2 — the fail-closed staleness gate is part of the approved architecture and is NOT optional.** Without it, Option B degenerates into the design **L468** refuses |
+
+⭐ **This is the load-bearing paragraph of the ruling.** Option B is approved **as a two-part mechanism** — an
+`E-14`-fed projection **plus** a fail-closed staleness gate on the send path. **Option B without the gate is NOT
+what was approved**, and an implementation that ships the projection alone does not satisfy this ADR.
+
+### 3.7 The staleness budget — §6 item 2, now answered
+
+§6 item 2 asked *"if Option B: what staleness budget is acceptable, and where is it recorded?"* and noted that
+`TSF-CFG-024`'s **60 s p95 reversal propagation** budget is *"a different quantity"*. **It is a different quantity,
+measured: `TSF-CFG-024` bounds how fast a *reversal* (un-restriction) reaches the send path; the quantity now
+needed bounds how stale the *restriction* projection may be before the gate refuses the send.** They point in
+opposite directions and must not share a number: a generous reversal budget is a *convenience* failure, a generous
+staleness budget is a **safety** failure.
+
+| Decision | Value | Ground |
+|---|---|---|
+| **Where it is recorded** | A **new** `PRD-020` configurable, `TSF-CFG-030`, in §20.4 | `TSF-CFG-*` has exactly one normative home (§20.4); `TSF-XC-064` forbids inventing a configurable to *defer* a decision — this one **records a decided bound**, which is what the register is for |
+| **What it bounds** | Maximum tolerated age of `BC-12`'s enforcement projection before the send-path gate **fails closed** | §3.6 condition 2 |
+| **Changeable by** | ⛔ **ADR required** — not operational configuration | Raising it silently relaxes a **Critical** Rank 1 mitigation (`MP-RSK-02`). This is exactly the class `TSF-BR-036` describes as *"a boundary change wearing a configurable's clothes"* |
+| **Relationship to `TSF-CFG-024`** | **Independent.** Neither derives from the other; both are stated | Different quantities, opposite failure directions |
+
+⚠ **This ADR fixes the *existence*, *semantics*, *home* and *change-control* of the budget, and leaves the
+*initial numeric value* to `PRD-020` §20.4 under §20.4's own rule that every row must state a testable V1 default.**
+That is not a deferral: §20.4 rule 2 is the mechanism by which the number becomes normative, and it is the Safety
+Lead's and Product's register, not the Architecture Owner's.
 
 ---
 
@@ -180,13 +261,35 @@ is the most this record may lawfully contain.
 
 ---
 
-## 4. The blast radius — three amendment sites, enumerated and untouched
+## 4. The blast radius — three amendment sites, enumerated and ✅ **NONE AMENDED**
 
 ⚠ **This is the section `PRD-020` §29 under-specified.** §29 named the BC Map only. Measurement returns **three**
-sites, and the third is **machine-enforced**, so a decision that amended only the first would be caught by a
-checker rather than by review.
+sites. **v1.1 retracted v1.0's claim that the third is "machine-enforced"** — see §4.3; all three are enforced by
+**review**, and an unlisted edge would enter the manifest **silently**.
 
-**Under Option A, all three would require amendment. Under Option B, potentially none** (see §6 item 1).
+⭐⭐ **OUTCOME OF THE RULING: ZERO of the three sites is amended, and that is the substance of the decision, not
+an omission.** §3.5 found that Rank 4 never named a transport, so there is **nothing in Rank 4 to correct**. The
+sites below are therefore preserved **as a record of what Option A would have cost** — they are the enumeration
+that made the ruling's cheapness visible and checkable, and deleting them would erase the evidence that the
+alternative was priced rather than dismissed.
+
+| Site | Rank | Amended? | Verification |
+|---|---|---|---|
+| §4.1 `LIBOORA_BOUNDED_CONTEXT_MAP.md` | 4 | ✅ **NO** | `git diff` **empty** |
+| §4.2 `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | 4 | ✅ **NO** | `git diff` **empty** |
+| §4.3 `tool/module_dependencies.yaml` | manifest | ✅ **NO** | `git diff` **empty** |
+| §4.4 `TRACEABILITY_MATRIX.md` | — | ✅ **NO** — and it was never a site | Rejected in v1.0, §4.4 |
+
+⚠ **This is the `ADR-0033` §5.1 shape.** There, *"withdrawing … restores compliance with the existing
+allow-list, so no Rank 4 law needed changing"*. Here, **reading Rank 4 as written** — rather than as an unranked
+`DRAFT` paraphrased it — leaves the allow-list, the edge register and the manifest all already correct. **An ADR
+that amends nothing is not an ADR that did nothing**: it is the record that a proposed amendment was examined and
+found unnecessary, which is `ADR-0033`'s entire contribution and `ADR-0016` §3's rejected option 2.
+
+⛔ **What this does NOT license.** The three sites remain the **only** lawful route to a `BC-12` → `BC-13` edge.
+If a future need for a genuine synchronous cross-context call arises — for a capability V1 does not contain — it
+**MUST** be its own ADR amending all three, on the `ADR-0055` **L139** rule that *"a future need must be its own
+ADR"*. **This ruling narrows nothing and widens nothing; it declines to open the boundary at all.**
 
 ### 4.1 Site 1 — `docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` (Rank 4)
 
@@ -224,7 +327,10 @@ apparent cost and would have biased the very decision this ADR exists to frame.*
 
 **Consequence for the decision.** All three sites are enforced by **review**, not by build. Option A's cost is
 **three document amendments**, not *"three amendments, one of which breaks the build."* That is a materially
-smaller number than v1.0 stated, and the Architecture Owner should weigh the options on the corrected figure.
+smaller number than v1.0 stated, and the Architecture Owner weighed the options on the **corrected** figure.
+⭐ **v2.0: the corrected figure did not change the outcome.** Option A was rejected on §3.5 grounds 1–3 — that
+Rank 4 never required it — **not** on cost. Had the false machine-enforcement claim survived, it would have
+rejected Option A for the *wrong reason*, which is precisely why v1.1 retracted it before any ruling was given.
 
 ### 4.4 What is *not* a site — and why the instruction's third name was corrected
 
@@ -251,9 +357,10 @@ would enter the manifest silently, which is an argument for *care*, not for *con
 
 ---
 
-## 5. What a decision must satisfy — constraints that hold under either option
+## 5. What a decision must satisfy — constraints, and ✅ how the chosen option satisfies each
 
-These are **not** decisions; each is an existing rule a resolution may not breach.
+These are **not** decisions; each is an existing rule a resolution may not breach. **§5.1 confirms each against
+Option B.** Nothing in §5 is amended; the constraints are unchanged and now **discharged**.
 
 | # | Constraint | Authority |
 |---|---|---|
@@ -265,6 +372,22 @@ These are **not** decisions; each is an existing rule a resolution may not breac
 | C-6 | Library ↔ Social **Separate Ways** is untouched; the only bridge stays `E-13` via ACL | Matrix **L92**, **L354** (`X-05`) |
 | C-7 | Necessity is tested **per context**, not granted to `domain/social` wholesale | `ADR-0055` §3; `PRD-020` `TSF-FR-143` |
 | C-8 | A caller outside an allow-list is refused **by code**, indistinguishably from absent | `ADR-0059` §4 items 3–4 |
+
+### 5.1 ✅ Constraint discharge against Option B
+
+| # | Satisfied? | How |
+|---|---|---|
+| **C-1** | ✅ **Yes, and more strongly than under Option A** | `BC-13` receives **nothing** — there is no inbound call, so no request payload exists that could carry a `StudentRecordId` or `TenantId`. Option A would have created a request shape needing its own `banned_symbols` guard; Option B removes the surface entirely |
+| **C-2** | ✅ **Yes** | T&S writes nothing. `BC-12` builds its own projection **from an event it is already entitled to consume** — which is precisely the *"subscribe and self-restrict"* shape BC Map **L286** prescribes |
+| **C-3** | ✅ **Yes — untouched** | Block enforcement and rate limits stay in `BC-11` behind **`E-16`** (**L320**). This ruling concerns **enforcement state from `BC-13`** and does not move, duplicate or reinterpret `BC-11`'s responsibilities |
+| **C-4** | ✅ **Yes — and it is now load-bearing** | ⭐ Fail-closed is no longer only a transport-failure rule. Under §3.6 condition 2 it also governs a **stale projection**: beyond `TSF-CFG-030` the gate **refuses the send**. Fail-closed is the mechanism that converts a bounded race into a safe one |
+| **C-5** | ✅ **Yes, trivially, and this is Option B's clearest advantage** | A local point read against a projection keyed by `PersonId` meets 50 ms p99 with margin, and is **independent of the 10,000-open-case volume** of `TSF-FR-004` — the projection holds *current restrictions*, not *cases*. Option A would have coupled the send path's latency to `BC-13`'s case-store load |
+| **C-6** | ✅ **Yes — not engaged** | Nothing crosses Library ↔ Social. `X-05` **Separate Ways** (Matrix **L92**, **L354**) and the `E-13` ACL bridge are untouched |
+| **C-7** | ✅ **Yes — and no grant was needed to test** | The per-context necessity test of `ADR-0055` §3 is satisfied **vacuously**: no context is admitted to anything. `BC-12`'s `E-14` consumption is **pre-existing** (BC Map **L433**, Matrix **L254**, manifest **L251**–**L253**) and is **not widened** — no consumer cell gains an entry |
+| **C-8** | ✅ **Yes — preserved unchanged** | `ADR-0059`'s *"refused by code"* rule concerns `E-22` and is **not touched**: this ruling admits no one to `E-22`, so `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169** stand exactly as written. ⚠ `TSF-XC-065`/`TSF-XC-066` in `PRD-020` §29.1 are likewise unaffected |
+
+⛔ **No constraint required relaxation, and none was relaxed.** Had any needed to be, that would have been a
+separate act requiring its own record — `ADR-0033` **L169**: *"a conferral for one act is not a standing licence."*
 
 ---
 

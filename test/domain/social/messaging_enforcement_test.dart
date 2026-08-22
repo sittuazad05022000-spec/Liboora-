@@ -104,7 +104,8 @@ void main() {
       expect(
         f.projection.isMessagingRestricted(_abuser),
         isTrue,
-        reason: 'The read model did not record the restriction at all, so the '
+        reason:
+            'The read model did not record the restriction at all, so the '
             'refusal above may be coming from the staleness gate instead of '
             'from brace one.',
       );
@@ -127,7 +128,8 @@ void main() {
       expect(
         decision.allowed,
         isTrue,
-        reason: 'A gate that refuses everyone contains no information. This '
+        reason:
+            'A gate that refuses everyone contains no information. This '
             'assertion is what makes every refusal above meaningful.',
       );
       expect(decision.reason, isNull);
@@ -157,8 +159,9 @@ void main() {
         );
       }
 
-      final notMessaging =
-          kEnforcementActions.difference(kMessagingRestrictingActions);
+      final notMessaging = kEnforcementActions.difference(
+        kMessagingRestrictingActions,
+      );
       expect(notMessaging, isNotEmpty);
       for (final action in notMessaging) {
         final f = _fresh();
@@ -173,7 +176,8 @@ void main() {
         expect(
           f.projection.evaluateSend(sender: _abuser).allowed,
           isTrue,
-          reason: '$action is not a messaging restriction, but BC-12 enforced '
+          reason:
+              '$action is not a messaging restriction, but BC-12 enforced '
               'it anyway. TSF-FR-068 assigns each action to its OWNING '
               'context.',
         );
@@ -208,7 +212,8 @@ void main() {
       expect(
         f.projection.evaluateSend(sender: _abuser).allowed,
         isTrue,
-        reason: 'A restriction whose `until` has passed is still being '
+        reason:
+            'A restriction whose `until` has passed is still being '
             'enforced. TSF-FR-070 forbids an open-ended suspension.',
       );
 
@@ -234,7 +239,8 @@ void main() {
       expect(
         g.projection.evaluateSend(sender: _abuser).allowed,
         isTrue,
-        reason: 'A nulled `until` must lift the restriction (TSF-FR-124). '
+        reason:
+            'A nulled `until` must lift the restriction (TSF-FR-124). '
             'Treating it as "forever" would make every reversal a permanent '
             'ban.',
       );
@@ -268,7 +274,8 @@ void main() {
       expect(
         decision.refused,
         isTrue,
-        reason: '⛔ TSF-AC-025 clause (b) FAILED. Projection lag exceeded '
+        reason:
+            '⛔ TSF-AC-025 clause (b) FAILED. Projection lag exceeded '
             'TSF-CFG-030 and the send was still allowed. This is the '
             'gate-less build ADR-0065 §7.1 item 2 refuses to accept: items 1, '
             '3, 4 and 5 without item 2 build the design BC Map L468 '
@@ -291,7 +298,8 @@ void main() {
       expect(
         f.projection.evaluateSend(sender: _bystander).allowed,
         isTrue,
-        reason: 'Lag exactly equal to the budget was refused. TSF-CFG-030 is '
+        reason:
+            'Lag exactly equal to the budget was refused. TSF-CFG-030 is '
             '"≤ 5 s", so the boundary is inclusive.',
       );
 
@@ -320,7 +328,8 @@ void main() {
       expect(
         decision.reason,
         SendRefusalReason.projectionStale,
-        reason: 'The staleness arm must be evaluated BEFORE the restriction '
+        reason:
+            'The staleness arm must be evaluated BEFORE the restriction '
             'lookup. If the model cannot be trusted, its answer — including '
             '"restricted" — is not what decided the send.',
       );
@@ -346,7 +355,8 @@ void main() {
       expect(
         f.projection.evaluateSend(sender: _bystander).allowed,
         isTrue,
-        reason: 'Catching up did not restore service. A gate that never '
+        reason:
+            'Catching up did not restore service. A gate that never '
             'recovers is an outage, and would be switched off in production — '
             'taking the MP-RSK-02 mitigation with it.',
       );
@@ -367,7 +377,8 @@ void main() {
       expect(
         f.projection.projectionLag,
         isNull,
-        reason: 'Lag must be null — not zero — when no event has ever been '
+        reason:
+            'Lag must be null — not zero — when no event has ever been '
             'seen. Reporting zero would claim perfect freshness on the '
             'strength of no evidence at all.',
       );
@@ -376,7 +387,8 @@ void main() {
       expect(
         decision.refused,
         isTrue,
-        reason: '⛔ A projection that has never observed the E-14 stream '
+        reason:
+            '⛔ A projection that has never observed the E-14 stream '
             'allowed a send. TSF-FR-031 requires refusal when freshness '
             '"cannot be established".',
       );
@@ -395,7 +407,8 @@ void main() {
       expect(
         f.projection.activeRestrictionCount,
         0,
-        reason: 'The liveness signal must move only the freshness watermark. '
+        reason:
+            'The liveness signal must move only the freshness watermark. '
             'If it could create or clear restrictions it would be the '
             'hand-editing BC Map L383 forbids.',
       );
@@ -425,7 +438,8 @@ void main() {
       expect(
         decision.refused,
         isTrue,
-        reason: 'An event that could not be interpreted was treated as "no '
+        reason:
+            'An event that could not be interpreted was treated as "no '
             'restriction". That is failing OPEN on a Critical mitigation.',
       );
       expect(decision.reason, SendRefusalReason.projectionDegraded);
@@ -475,7 +489,8 @@ void main() {
       expect(
         f.projection.evaluateSend(sender: _bystander).refused,
         isTrue,
-        reason: 'Degradation cleared itself on the next valid event. The '
+        reason:
+            'Degradation cleared itself on the next valid event. The '
             'decision that could not be interpreted is still unknown.',
       );
     });
@@ -533,8 +548,8 @@ void main() {
         () => MessagingEnforcementProjection(
           FixedClock(_t0),
           _telemetry(),
-          stalenessBudget: kEnforcementStalenessCeiling +
-              const Duration(seconds: 1),
+          stalenessBudget:
+              kEnforcementStalenessCeiling + const Duration(seconds: 1),
         ),
         throwsA(isA<DomainError>()),
       );
@@ -566,53 +581,56 @@ void main() {
   // ADR-0065 §7.1 item 3 — rebuild-from-events equivalence.
   // ════════════════════════════════════════════════════════════════════
   group('item 3 — the projection is rebuildable from E-14 alone', () {
-    test('a fresh instance rebuilt from the log matches the live-fed one', () async {
-      final events = <DomainEvent>[
-        _enforcement(
-          person: _abuser,
-          action: 'messagingRestriction',
-          until: _t0.add(const Duration(days: 7)),
-          occurredAt: _t0,
-          eventId: 'EV-1',
-        ),
-        _enforcement(
-          person: _bystander,
-          action: 'visibilityRestriction',
-          until: _t0.add(const Duration(days: 2)),
-          occurredAt: _t0.add(const Duration(seconds: 1)),
-          eventId: 'EV-2',
-        ),
-      ];
+    test(
+      'a fresh instance rebuilt from the log matches the live-fed one',
+      () async {
+        final events = <DomainEvent>[
+          _enforcement(
+            person: _abuser,
+            action: 'messagingRestriction',
+            until: _t0.add(const Duration(days: 7)),
+            occurredAt: _t0,
+            eventId: 'EV-1',
+          ),
+          _enforcement(
+            person: _bystander,
+            action: 'visibilityRestriction',
+            until: _t0.add(const Duration(days: 2)),
+            occurredAt: _t0.add(const Duration(seconds: 1)),
+            eventId: 'EV-2',
+          ),
+        ];
 
-      final live = _fresh();
-      for (final e in events) {
-        live.projection.apply(e);
-      }
+        final live = _fresh();
+        for (final e in events) {
+          live.projection.apply(e);
+        }
 
-      // Vacuity guard: if the live feed produced nothing, "before == after"
-      // would be "empty == empty" and would prove nothing.
-      expect(live.projection.activeRestrictionCount, 1);
-      expect(live.projection.evaluateSend(sender: _abuser).refused, isTrue);
+        // Vacuity guard: if the live feed produced nothing, "before == after"
+        // would be "empty == empty" and would prove nothing.
+        expect(live.projection.activeRestrictionCount, 1);
+        expect(live.projection.evaluateSend(sender: _abuser).refused, isTrue);
 
-      final rebuilt = MessagingEnforcementProjection(
-        FixedClock(_t0),
-        _telemetry(),
-      );
-      await rebuilt.rebuildFrom(events);
+        final rebuilt = MessagingEnforcementProjection(
+          FixedClock(_t0),
+          _telemetry(),
+        );
+        await rebuilt.rebuildFrom(events);
 
-      expect(
-        rebuilt.activeRestrictionCount,
-        live.projection.activeRestrictionCount,
-      );
-      expect(
-        rebuilt.evaluateSend(sender: _abuser).reason,
-        live.projection.evaluateSend(sender: _abuser).reason,
-      );
-      expect(
-        rebuilt.evaluateSend(sender: _bystander).reason,
-        live.projection.evaluateSend(sender: _bystander).reason,
-      );
-    });
+        expect(
+          rebuilt.activeRestrictionCount,
+          live.projection.activeRestrictionCount,
+        );
+        expect(
+          rebuilt.evaluateSend(sender: _abuser).reason,
+          live.projection.evaluateSend(sender: _abuser).reason,
+        );
+        expect(
+          rebuilt.evaluateSend(sender: _bystander).reason,
+          live.projection.evaluateSend(sender: _bystander).reason,
+        );
+      },
+    );
 
     test('replaying the same log twice is idempotent — at-least-once delivery '
         'cannot drift the state', () async {
@@ -636,55 +654,61 @@ void main() {
       expect(f.projection.activeRestrictionCount, once);
     });
 
-    test('an out-of-order reversal does not resurrect a lifted restriction',
-        () {
-      // Ordering is guaranteed per aggregate only (§9.1), so a late-arriving
-      // older event must not overwrite a newer decision.
-      final f = _fresh();
-      f.projection.apply(
-        _enforcement(
-          person: _abuser,
-          action: 'messagingRestriction',
-          occurredAt: _t0.add(const Duration(seconds: 10)),
-          eventId: 'EV-REVERSAL',
-        ),
-      );
-      expect(f.projection.evaluateSend(sender: _abuser).allowed, isTrue);
+    test(
+      'an out-of-order reversal does not resurrect a lifted restriction',
+      () {
+        // Ordering is guaranteed per aggregate only (§9.1), so a late-arriving
+        // older event must not overwrite a newer decision.
+        final f = _fresh();
+        f.projection.apply(
+          _enforcement(
+            person: _abuser,
+            action: 'messagingRestriction',
+            occurredAt: _t0.add(const Duration(seconds: 10)),
+            eventId: 'EV-REVERSAL',
+          ),
+        );
+        expect(f.projection.evaluateSend(sender: _abuser).allowed, isTrue);
 
-      f.projection.apply(
-        _enforcement(
-          person: _abuser,
-          action: 'messagingRestriction',
-          until: _t0.add(const Duration(days: 7)),
-          occurredAt: _t0, // OLDER
-          eventId: 'EV-OLD-BAN',
-        ),
-      );
-      expect(
-        f.projection.evaluateSend(sender: _abuser).allowed,
-        isTrue,
-        reason: 'A late-arriving older ban overwrote a newer reversal. The '
-            'person would be banned again by a redelivery.',
-      );
-    });
+        f.projection.apply(
+          _enforcement(
+            person: _abuser,
+            action: 'messagingRestriction',
+            until: _t0.add(const Duration(days: 7)),
+            occurredAt: _t0, // OLDER
+            eventId: 'EV-OLD-BAN',
+          ),
+        );
+        expect(
+          f.projection.evaluateSend(sender: _abuser).allowed,
+          isTrue,
+          reason:
+              'A late-arriving older ban overwrote a newer reversal. The '
+              'person would be banned again by a redelivery.',
+        );
+      },
+    );
 
-    test('a rebuild makes no stronger freshness claim than the log supports',
-        () async {
-      // A rebuilt instance that inherited a live watermark would silently
-      // re-open the very window this gate closes.
-      final clock = FixedClock(_t0.add(const Duration(hours: 1)));
-      final rebuilt = MessagingEnforcementProjection(clock, _telemetry());
-      await rebuilt.rebuildFrom([
+    test(
+      'a rebuild makes no stronger freshness claim than the log supports',
+      () async {
+        // A rebuilt instance that inherited a live watermark would silently
+        // re-open the very window this gate closes.
+        final clock = FixedClock(_t0.add(const Duration(hours: 1)));
+        final rebuilt = MessagingEnforcementProjection(clock, _telemetry());
+        await rebuilt.rebuildFrom([
           _enforcement(person: _abuser, action: 'warning', occurredAt: _t0),
-        ]),;
+        ]);
 
-      expect(
-        rebuilt.evaluateSend(sender: _bystander).reason,
-        SendRefusalReason.projectionStale,
-        reason: 'The log is an hour old, so the rebuilt projection is stale '
-            'and must fail closed rather than report itself fresh.',
-      );
-    });
+        expect(
+          rebuilt.evaluateSend(sender: _bystander).reason,
+          SendRefusalReason.projectionStale,
+          reason:
+              'The log is an hour old, so the rebuilt projection is stale '
+              'and must fail closed rather than report itself fresh.',
+        );
+      },
+    );
 
     test('rebuilding clears a degraded flag, since the state is recomputed '
         'from scratch', () async {
@@ -695,12 +719,12 @@ void main() {
       expect(f.projection.isDegraded, isTrue);
 
       await f.projection.rebuildFrom([
-          _enforcement(
-            person: _abuser,
-            action: 'warning',
-            occurredAt: f.clock.now(),
-          ),
-        ]),;
+        _enforcement(
+          person: _abuser,
+          action: 'warning',
+          occurredAt: f.clock.now(),
+        ),
+      ]);
       expect(f.projection.isDegraded, isFalse);
       expect(f.projection.evaluateSend(sender: _bystander).allowed, isTrue);
     });
@@ -709,19 +733,20 @@ void main() {
         'event type', () async {
       final f = _fresh();
       await f.projection.rebuildFrom([
-          DomainEvent(
-            eventId: 'EV-OTHER',
-            eventType: 'messaging.MessageSent',
-            tenantId: const TenantId('T-TEST'),
-            aggregateId: 'M-1',
-            occurredAt: _t0,
-            payload: const {'personId': 'P-ABUSER'},
-          ),
-        ]),;
+        DomainEvent(
+          eventId: 'EV-OTHER',
+          eventType: 'messaging.MessageSent',
+          tenantId: const TenantId('T-TEST'),
+          aggregateId: 'M-1',
+          occurredAt: _t0,
+          payload: const {'personId': 'P-ABUSER'},
+        ),
+      ]);
       expect(
         f.projection.projectionLag,
         isNull,
-        reason: 'An unrelated event established freshness. Only E-14 may feed '
+        reason:
+            'An unrelated event established freshness. Only E-14 may feed '
             'this model (ADR-0065 §7.1 item 1), and a foreign event proving '
             'liveness would let an unrelated stream open the gate.',
       );
@@ -749,7 +774,8 @@ void main() {
       expect(
         f.projection.projectionLag,
         const Duration(seconds: 2),
-        reason: 'Item 5 requires projection lag to be observable so the '
+        reason:
+            'Item 5 requires projection lag to be observable so the '
             "gate's threshold is measurable rather than aspirational.",
       );
       expect(f.projection.stalenessBudget, kEnforcementStalenessBudget);
@@ -813,7 +839,8 @@ void main() {
       expect(
         f.projection.activeRestrictionCount,
         1,
-        reason: 'A restriction was recorded per tenant. PersonId is global '
+        reason:
+            'A restriction was recorded per tenant. PersonId is global '
             '(ID-3) and the restriction must be too.',
       );
       expect(f.projection.evaluateSend(sender: _abuser).refused, isTrue);
@@ -838,7 +865,8 @@ void main() {
       expect(
         f.projection.activeRestrictionCount,
         0,
-        reason: 'The reversal did not reach the restriction because the two '
+        reason:
+            'The reversal did not reach the restriction because the two '
             'events were filed under different tenants.',
       );
     });

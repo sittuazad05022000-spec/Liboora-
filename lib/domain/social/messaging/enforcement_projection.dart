@@ -230,7 +230,7 @@ final class MessagingEnforcementProjection {
   }
 
   /// `X-09` — injected. `DateTime.now()` is banned inside `domain/**`, and a
-/// staleness gate that read the wall clock directly could not be tested.
+  /// staleness gate that read the wall clock directly could not be tested.
   final Clock _clock;
   final Telemetry _telemetry;
   final Duration _budget;
@@ -361,7 +361,10 @@ final class MessagingEnforcementProjection {
       _telemetry.log(
         LogLevel.warn,
         'enforcement projection lag past half of TSF-CFG-030 budget',
-        fields: {'lagMs': lag.inMilliseconds, 'budgetMs': _budget.inMilliseconds},
+        fields: {
+          'lagMs': lag.inMilliseconds,
+          'budgetMs': _budget.inMilliseconds,
+        },
       );
     }
   }

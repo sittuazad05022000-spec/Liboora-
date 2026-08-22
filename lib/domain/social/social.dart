@@ -28,9 +28,17 @@
 ///
 /// If a future feature needs library data on a social screen, it travels as a
 /// published event or through a BFF query — never as a Dart import.
+///
+/// **`BC-12` enforcement (`IMPL-1410`).** `messaging/enforcement_projection.dart`
+/// holds `BC-12`'s local enforcement read model and its fail-closed send-time
+/// staleness gate, per `ADR-0065` §7.1. It is fed only by the existing `E-14`
+/// `safety.EnforcementActionTaken` event and creates **no** `BC-12` → `BC-13`
+/// edge. Exported here because cross-module imports must target this barrel.
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
+
+export 'messaging/enforcement_projection.dart';
 
 /// A person's presence in the social graph, keyed on `PersonId` (`ID-3`).
 ///

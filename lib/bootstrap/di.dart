@@ -58,6 +58,7 @@ final class AppContainer {
     required this.identities,
     required this.identityService,
     required this.socialPresences,
+    required this.messagingEnforcement,
     required this.auth,
     required this.enrollStudent,
     required this.createMembership,
@@ -125,6 +126,11 @@ final class AppContainer {
 
   /// BC-11 social graph presence. A consumer of identity, never its owner.
   final InMemorySocialPresenceRepository socialPresences;
+
+  /// BC-12's local enforcement read model and fail-closed send-time gate
+  /// (`IMPL-1410`, `ADR-0065` §7.1). Fed only by the existing `E-14` event;
+  /// creates no `BC-12` -> `BC-13` edge.
+  final MessagingEnforcementProjection messagingEnforcement;
 
   // ── Identity ─────────────────────────────────────────────────────
   final AuthService auth;
@@ -243,6 +249,19 @@ final class AppContainer {
     final sync = OfflineSyncEngine();
     final audit = AuditTrail(ids);
     final analytics = AnalyticsProjections(clock)..register(events);
+    // IMPL-1410 / ADR-0065 §7.1. Subscribes to safety.EnforcementActionTaken
+    // only. Freshness is NOT declared here: until the stream is observed live
+    // the gate fails closed, which is the intended cold-start posture rather
+    // than an oversight (TSF-FR-031, SID-4.56).
+    final messagingEnforcement = MessagingEnforcementProjection(
+      clock,
+      telemetry,
+    );
+    events.subscribe(
+      kEnforcementActionTaken,
+      messagingEnforcement.apply,
+      consumer: 'messaging-enforcement',
+    );
 
     // Tenant-partitioned stores. Every one of these refuses to answer
     // without a tenant in scope — cross-tenant leaks fail loud, not silent.
@@ -312,6 +331,7 @@ final class AppContainer {
       identities: identities,
       identityService: identityService,
       socialPresences: InMemorySocialPresenceRepository(),
+      messagingEnforcement: messagingEnforcement,
       auth: AuthService(
         accounts,
         clock: clock,

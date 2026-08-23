@@ -2175,33 +2175,33 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 
 | ID | Given / When / Then |
 |---|---|
-| `TSF-AC-001` | **Given** a signed-in student viewing a person's profile, **when** they report it, **then** a case is created and an acknowledgement is shown |
-| `TSF-AC-002` | **Given** a received message, **when** reported, **then** the case is created and the message is attached as evidence with provenance `reporter-submitted` |
-| `TSF-AC-003` | **Given** a profile field, **when** reported, **then** a case is created citing the field, not the whole person |
-| `TSF-AC-004` | **Given** a reported **file**, **when** the case is opened, **then** the console shows *no read path* and offers `UNRESOLVABLE_PENDING_ACCESS` |
-| `TSF-AC-005` | **Given** a community object in V1, **when** a report is attempted, **then** the surface is absent — not an error page |
-| `TSF-AC-006` | **Given** the same report submitted twice with one client key, **when** both arrive, **then** exactly one `AbuseReport` exists |
-| `TSF-AC-007` | **Given** two different reporters on the same subject and category inside the window, **when** both file, **then** both attach to **one** case and both are recorded |
+| `TSF-AC-001` | **Given** a signed-in student viewing a person's profile, **when** they report it, **then** a case is created and an acknowledgement is shown (`TSF-FR-044`, `TSF-FR-045`, `TSF-FR-046`) |
+| `TSF-AC-002` | **Given** a received message, **when** reported, **then** the case is created and the message is attached as evidence with provenance `reporter-submitted` (`TSF-FR-049`, `TSF-FR-050`) |
+| `TSF-AC-003` | **Given** a profile field, **when** reported, **then** a case is created citing the field, not the whole person (`TSF-FR-045`, `TSF-FR-008`) |
+| `TSF-AC-004` | **Given** a reported **file**, **when** the case is opened, **then** the console shows *no read path* and offers `UNRESOLVABLE_PENDING_ACCESS` (`TSF-FR-112`) |
+| `TSF-AC-005` | **Given** a community object in V1, **when** a report is attempted, **then** the surface is absent — not an error page (`TSF-FR-027`) |
+| `TSF-AC-006` | **Given** the same report submitted twice with one client key, **when** both arrive, **then** exactly one `AbuseReport` exists (`TSF-FR-048`) |
+| `TSF-AC-007` | **Given** two different reporters on the same subject and category inside the window, **when** both file, **then** both attach to **one** case and both are recorded (`TSF-FR-053`, `TSF-CFG-013`) |
 | `TSF-AC-008` | **Given** a `CRITICAL` category, **when** a duplicate arrives, **then** it is **not** auto-closed (`TSF-BR-017`) |
-| `TSF-AC-009` | **Given** any report, **when** it is stored, **then** the reporter's identity is absent from `TSF-EVT-001` |
-| `TSF-AC-010` | **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists |
+| `TSF-AC-009` | **Given** any report, **when** it is stored, **then** the reporter's identity is absent from `TSF-EVT-001` (`TSF-EVT-001`, `TSF-INV-009`) |
+| `TSF-AC-010` | **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists — ⚠ **UNMAPPED**, see `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md` §4 |
 
 ### 27.2 Lifecycle & attribution (`TSF-AC-011`…`024`)
 
 | ID | Given / When / Then |
 |---|---|
-| `TSF-AC-011` | **Given** a case at `NEW`, **when** any transition not in §13.2 is attempted, **then** it is rejected and the state is unchanged |
-| `TSF-AC-012` | **Given** a `CLOSED` case, **when** reopening is attempted, **then** it is rejected and a **new linked** case is offered |
+| `TSF-AC-011` | **Given** a case at `NEW`, **when** any transition not in §13.2 is attempted, **then** it is rejected and the state is unchanged (`TSF-FR-138`) |
+| `TSF-AC-012` | **Given** a `CLOSED` case, **when** reopening is attempted, **then** it is rejected and a **new linked** case is offered (`TSF-FR-056`) |
 | `TSF-AC-013` | **Given** a severity-`HIGH` case, **when** `TRIAGED → ACTIONED` is attempted directly, **then** it is rejected (`TSF-FR-057`) |
 | `TSF-AC-014` | **Given** a `CRITICAL` minor-safety report and a queue of 10,000, **when** it arrives, **then** a human is paged within `TSF-CFG-005` — satisfies `G-6` |
-| `TSF-AC-015` | **Given** any transition, **when** it completes, **then** an immutable `CaseTransition` exists with actor and reason |
-| `TSF-AC-016` | **Given** a claimed case, **when** another moderator acts, **then** it is rejected absent recorded reassignment |
-| `TSF-AC-017` | **Given** a breached SLA, **when** the case is reassigned, **then** the breach remains recorded |
+| `TSF-AC-015` | **Given** any transition, **when** it completes, **then** an immutable `CaseTransition` exists with actor and reason (`TSF-FR-009`) |
+| `TSF-AC-016` | **Given** a claimed case, **when** another moderator acts, **then** it is rejected absent recorded reassignment (`TSF-FR-107`) |
+| `TSF-AC-017` | **Given** a breached SLA, **when** the case is reassigned, **then** the breach remains recorded (`TSF-INV-011`) |
 | `TSF-AC-018` | **Given** a rule set that is disabled, **when** a report arrives, **then** it is still accepted and triageable (`TSF-BR-022`) |
-| `TSF-AC-019` | **Given** a `NO_VIOLATION` resolution, **when** metrics are computed, **then** it counts as a **correct** outcome |
-| `TSF-AC-020` | **Given** any `EnforcementAction`, **when** inspected, **then** it has a case, a named actor, a policy citation, and a scope — satisfies `G-2` |
-| `TSF-AC-021` | **Given** an attempt to create an `EnforcementAction` without a case, **when** submitted, **then** it fails at the aggregate boundary |
-| `TSF-AC-022` | **Given** a permanent termination by one actor, **when** submitted, **then** it is rejected pending a second actor |
+| `TSF-AC-019` | **Given** a `NO_VIOLATION` resolution, **when** metrics are computed, **then** it counts as a **correct** outcome (`TSF-BR-021`) |
+| `TSF-AC-020` | **Given** any `EnforcementAction`, **when** inspected, **then** it has a case, a named actor, a policy citation, and a scope — satisfies `G-2` (`TSF-FR-067`, `TSF-INV-001`) |
+| `TSF-AC-021` | **Given** an attempt to create an `EnforcementAction` without a case, **when** submitted, **then** it fails at the aggregate boundary (`TSF-INV-012`) |
+| `TSF-AC-022` | **Given** a permanent termination by one actor, **when** submitted, **then** it is rejected pending a second actor (`TSF-FR-069`, `TSF-INV-003`) |
 | `TSF-AC-023` | **Given** a suspension without an expiry, **when** submitted, **then** it is rejected (`TSF-FR-070`) |
 | `TSF-AC-024` | **Given** a case, **when** a moderator who is a named party attempts to act, **then** recusal is enforced (`TSF-INV-019`) |
 
@@ -2211,14 +2211,14 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 |---|---|
 | `TSF-AC-025` | *(restated v0.5 — now **two** clauses, both required.)* **(a) Fresh-projection clause. Given** a person suspended and `TSF-EVT-002` consumed within `TSF-CFG-030`, **when** they send a message, **then** the send **fails**. **(b) ⛔ Staleness-gate clause. Given** `TSF-EVT-002` delivery is withheld so that measured projection lag **exceeds** `TSF-CFG-030` — or freshness cannot be established at all — **when** any send is attempted, **then** the send is **REFUSED** (fail-closed), **not** allowed. Together these satisfy `G-5` as restated and BC Map **L468**'s *"belt-and-braces"*. ✅ **UNBLOCKED** — `ADR-0065` `Accepted`. ⚠ Clause (b) is the assertion a projection-only build **cannot** pass; see `ADR-0065` §3.6 and §7.1 item 2 |
 | `TSF-AC-026` | **Given** the enforcement store is unreachable, **when** a send is attempted, **then** it **fails closed** and an incident is raised (`TSF-FR-130`) |
-| `TSF-AC-027` | **Given** the send-time check under load, **when** measured, **then** p99 ≤ 50 ms |
-| `TSF-AC-028` | **Given** `TSF-EVT-002` delivered twice, **when** consumed, **then** exactly one restriction exists |
+| `TSF-AC-027` | **Given** the send-time check under load, **when** measured, **then** p99 ≤ 50 ms (`TSF-FR-001`) |
+| `TSF-AC-028` | **Given** `TSF-EVT-002` delivered twice, **when** consumed, **then** exactly one restriction exists (`TSF-FR-123`) |
 | `TSF-AC-029` | **Given** overlapping restrictions, **when** effective state is read, **then** exactly one row answers *"what may this person do now?"* (`TSF-BR-026`) |
-| `TSF-AC-030` | **Given** two persons with identical strike histories, **when** the next action is computed, **then** the recommendation is identical — satisfies `G-3` |
-| `TSF-AC-031` | **Given** a strike past its decay half-life, **when** the ladder is computed, **then** its weight is reduced |
-| `TSF-AC-032` | **Given** a non-upheld action, **when** the ladder is computed, **then** no strike is counted |
+| `TSF-AC-030` | **Given** two persons with identical strike histories, **when** the next action is computed, **then** the recommendation is identical — satisfies `G-3` (`TSF-INV-021`) |
+| `TSF-AC-031` | **Given** a strike past its decay half-life, **when** the ladder is computed, **then** its weight is reduced (`TSF-FR-074`, `TSF-CFG-004`) |
+| `TSF-AC-032` | **Given** a non-upheld action, **when** the ladder is computed, **then** no strike is counted (`TSF-FR-073`) |
 | `TSF-AC-033` | **Given** an account-takeover victim, **when** the case resolves, **then** **no strike** is recorded against the victim (`TSF-BR-005`) |
-| `TSF-AC-034` | **Given** a `CRITICAL` first offence, **when** actioned, **then** rows 8–9 are reachable with two humans |
+| `TSF-AC-034` | **Given** a `CRITICAL` first offence, **when** actioned, **then** rows 8–9 are reachable with two humans (`TSF-FR-075`) |
 | `TSF-AC-035` | **Given** a global suspension, **when** the subject's library record is inspected, **then** membership, fees, seat and attendance are **unchanged** (`TSF-XC-040`/`041`) |
 | `TSF-AC-036` | **Given** a global enforcement action, **when** notifications are inspected, **then** **no** library, owner or staff was notified (`TSF-XC-042`) |
 | `TSF-AC-037` | **Given** an enforcement notice, **when** the subject has unsubscribed from notifications, **then** the notice is still delivered (`TSF-BR-030`) |
@@ -2230,13 +2230,13 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 
 | ID | Given / When / Then |
 |---|---|
-| `TSF-AC-041` | **Given** an action taken by moderator M, **when** M attempts to decide its appeal, **then** it is rejected — satisfies `G-4` |
+| `TSF-AC-041` | **Given** an action taken by moderator M, **when** M attempts to decide its appeal, **then** it is rejected — satisfies `G-4` (`TSF-INV-013`) |
 | `TSF-AC-042` | **Given** M's manager, **when** they attempt to decide M's appeal, **then** it is rejected (approval chain, `TSF-INV-013`) |
 | `TSF-AC-043` | **Given** a suspended account, **when** the subject files an appeal, **then** the appeal channel is reachable (`TSF-FR-078`) |
 | `TSF-AC-044` | **Given** an appeal SLA breach and no second moderator, **when** the clock expires, **then** the appeal is **queued**, never auto-upheld (`TSF-INV-016`) |
 | `TSF-AC-045` | **Given** an appeal, **when** decided, **then** the outcome cannot be harsher than the original (`TSF-FR-081`) |
-| `TSF-AC-046` | **Given** an overturned removal, **when** the appeal completes, **then** the content is **restored** |
-| `TSF-AC-047` | **Given** an overturned action, **when** the ladder is computed, **then** no residual mark remains |
+| `TSF-AC-046` | **Given** an overturned removal, **when** the appeal completes, **then** the content is **restored** (`TSF-FR-083`) |
+| `TSF-AC-047` | **Given** an overturned action, **when** the ladder is computed, **then** no residual mark remains (`TSF-FR-073`) |
 | `TSF-AC-048` | **Given** an appeal, **when** the subject reads it, **then** the reporter's identity is absent (`TSF-XC-044`) |
 | `TSF-AC-049` | **Given** a reporter dissatisfied with `NO_VIOLATION`, **when** they attempt to appeal, **then** no appeal path exists for them (`TSF-XC-045`) |
 | `TSF-AC-050` | **Given** an overturned action, **when** propagation completes, **then** the send-time check reflects it within `TSF-CFG-024` |
@@ -2245,17 +2245,17 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 
 | ID | Given / When / Then |
 |---|---|
-| `TSF-AC-051` | **Given** any `RiskSignal`, **when** displayed, **then** it states rule, window, value, threshold and a human-readable sentence |
-| `TSF-AC-052` | **Given** a pinned rule version and stored signals, **when** replayed, **then** the assessment is identical |
+| `TSF-AC-051` | **Given** any `RiskSignal`, **when** displayed, **then** it states rule, window, value, threshold and a human-readable sentence (`TSF-FR-058`) |
+| `TSF-AC-052` | **Given** a pinned rule version and stored signals, **when** replayed, **then** the assessment is identical (`TSF-FR-059`, `TSF-CFG-002`) |
 | `TSF-AC-053` | **Given** a risk score alone, **when** an action is attempted citing only it, **then** it is rejected (`TSF-BR-023`) |
 | `TSF-AC-054` | **Given** a high-risk subject and a `LOW` category, **when** severity is computed, **then** severity is unchanged (`TSF-INV-014`) |
-| `TSF-AC-055` | **Given** a rule whose FP rate exceeds its budget, **when** evaluated, **then** it is auto-demoted to `Observe` — satisfies `G-8` |
-| `TSF-AC-056` | **Given** an overturned automatic action, **when** the rule's FP rate is computed, **then** the overturn is counted; and **no strike** persists against the subject |
+| `TSF-AC-055` | **Given** a rule whose FP rate exceeds its budget, **when** evaluated, **then** it is auto-demoted to `Observe` — satisfies `G-8` (`TSF-FR-065`, `TSF-CFG-020`, `TSF-CFG-021`) |
+| `TSF-AC-056` | **Given** an overturned automatic action, **when** the rule's FP rate is computed, **then** the overturn is counted; and **no strike** persists against the subject (`TSF-FR-064`, `TSF-FR-073`) |
 | `TSF-AC-057` | **Given** any `BC-13` table, payload, log line or export, **when** inspected, **then** it contains **no** `tenantId` and **no** `StudentRecordId` (`TSF-INV-020`) |
 | `TSF-AC-058` | **Given** a library-admin session, **when** any `BC-13` surface is requested, **then** the response is indistinguishable from not-found (`TSF-XC-049`/`050`) |
 | `TSF-AC-059` | **Given** safety metrics, **when** dimensions are enumerated, **then** no per-library or per-tenant dimension exists (`TSF-XC-059`/`060`) |
 | `TSF-AC-060` | **Given** a reported file with no read path, **when** the case closes, **then** it closes as `UNRESOLVABLE_PENDING_ACCESS` and is **counted** (`TSF-FR-129`) |
-| `TSF-AC-061` | **Given** a moderator reading evidence, **when** the read completes, **then** an audit event exists naming moderator, case and artefact; and no free-text evidence search exists |
+| `TSF-AC-061` | **Given** a moderator reading evidence, **when** the read completes, **then** an audit event exists naming moderator, case and artefact; and no free-text evidence search exists (`TSF-FR-114`, `TSF-FR-116`) |
 | `TSF-AC-062` | **Given** a subject who requests deletion during an open `CRITICAL` case, **when** anonymisation runs, **then** the case survives anonymised and the review completes (`TSF-FR-091`) |
 
 ---

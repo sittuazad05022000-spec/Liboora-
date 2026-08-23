@@ -13,16 +13,28 @@
 | **Date** | 2026-08-22 |
 | **Mandate** | **Stage 4 only.** ⛔ No ADR · no matrix registration · no Rank 1–5 document touched · no registry/baseline update · no freeze · no code |
 | **Verdict (v1.0)** | ⚠️ CONDITIONALLY PASSED — 5 of 6; check 4 failed on 32 of 62 criteria |
-| **Verdict (v1.1, current)** | ⚠️ **CONDITIONALLY PASSED — 5 of 6 checks pass cleanly; check 4 is SUBSTANTIALLY REPAIRED but not clean.** `RQ-1` closed for **31 of 32** orphans; **1** criterion (`TSF-AC-010`) is **explicitly deferred with a reason and an owner**. **6 findings**; 1 now **RESOLVED-WITH-DEFERRAL**, 5 still deferred. **3 candidates rejected** (§4). ⚠ **2 instrument defects disclosed** (§5) |
+| **Verdict (v1.1, superseded)** | ⚠️ CONDITIONALLY PASSED — check 4 repaired to 61 of 62; 1 criterion deferred |
+| **Verdict (v1.2, current)** | ✅ **PASS — 6 of 6 checks.** Check 4: **62 of 62** criteria cite a defined requirement, **0** gaps. `RQ-1` **CLOSED**. **5 findings remain deferred** with reason and owner (`RQ-2`…`RQ-6`), none of which is a check failure. **3 candidates rejected** (§4). ⚠ **3 instrument defects disclosed** (§5) |
 
-> ⚠ **Why still not an unqualified `PASS`.** Check 4 asks that **every** acceptance criterion
-> map to a requirement. After the repair, **61 of 62** do. `TSF-AC-010` does not, because
-> **no requirement in PRD-020 states its obligation** — pre-enforcement concealment of a
-> report's *existence*, as distinct from the reporter's *identity*. Writing that requirement
-> is a **Product owner** act. Under `SID-4.56` — *"a rule that cannot be checked SHALL be
-> treated as unmet"* — an outstanding criterion is not called satisfied. The gate's own
-> wording (*"closed **or explicitly deferred with a reason and an owner**"*) is met; the
-> check's literal text is not. Both facts are recorded rather than averaged into one word.
+> ✅ **Why this is now an unqualified `PASS`.** All six mandated checks are satisfied on
+> measurement. Check 4 — the only one that ever failed — is closed: every one of the 62
+> acceptance criteria cites at least one **defined** requirement, and **no** criterion is
+> marked unmapped, deferred or excepted.
+>
+> ⛔ **v1.1's residual was not a real gap.** It claimed `TSF-AC-010` had no supporting
+> requirement. **That claim was false and is retracted.** `TSF-FR-099` (**L1415**) — *"A user
+> **MUST NOT** be able to determine **whether they were reported**, by whom, or how many
+> times"* — states the obligation exactly, and §28's task table at **L2518** had already
+> allocated `TSF-AC-010` to `TSF-FR-126`/`139` under `IMPL-1436`. The criterion was
+> requirement-backed the whole time; only the inline citation was absent. See
+> `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md` §4 and instrument defect `I-3` at §4.1 there.
+>
+> ⚠ **No new requirement was created — and none should be.** Adding one would duplicate
+> `TSF-FR-099` and manufacture the *"two sources of truth"* failure that check 5 forbids.
+> **0 `TSF-*` identifiers were minted across both revisions.**
+>
+> ⭐ **A clean Stage 4 does not imply Stage 5, 6 or 7 readiness.** `B-2`…`B-5` are untouched
+> and still open; see §6.
 
 ---
 
@@ -45,7 +57,7 @@ Both forms are used by the subject and both are legitimate.
 | 1 | Every requirement testable | Normative language defined; requirements phrased **MUST**/**MUST NOT**/**MAY** with measurable predicates (e.g. `TSF-FR-001` *"p99 ≤ 50 ms, fail closed"*; `TSF-CFG-030` *"5 s at p99, hard ceiling 30 s"*). No instance of the *"should be fast"* failure pattern found | ✅ |
 | 2 | Every exclusion states what must be **impossible** | **46** `TSF-XC-*` defined. Sampled throughout: `TSF-XC-002` (*does not own credentials/sessions/OTP*), `TSF-XC-016` (*MUST NOT read message bodies at rest*), `TSF-XC-017` (*does not introduce a fourth authorization scope*). Each states a prohibition, not a deferral | ✅ |
 | 3 | Every configurable has a default and a range | **29** `TSF-CFG-*`. Detail-table rows carrying a *default* and a *range* column: **0 rows missing either** (measured). `TSF-CFG-030` = default **5 s**, ceiling **30 s**, ADR required to change | ✅ |
-| 4 | **Every acceptance criterion maps to a requirement** | ⚠ **REPAIRED, 1 residual.** Re-measured after `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md`: **61 of 62** rows cite ≥ 1 defined requirement · **1** (`TSF-AC-010`) marked **UNMAPPED** with owner · **0** silently uncited. 46 distinct requirements newly cited, **0 undefined**, **0** new identifiers minted. *(v1.0 measured: 32 of 62 orphaned.)* | ⚠ **NOT CLEAN** |
+| 4 | **Every acceptance criterion maps to a requirement** | ✅ **PASSES.** Re-measured at v1.2: **62 of 62** rows cite ≥ 1 **defined** requirement · **0** unmapped · **0** silently uncited. 49 distinct requirements cited across the repair, **0 undefined**, **0** new identifiers minted. *(v1.0: 32 orphaned. v1.1: 1 residual — retracted as false, see the verdict note.)* | ✅ **PASS** |
 | 5 | No requirement restates another PRD's | The exclusion register is the mechanism, and it is used deliberately: `TSF-XC-002` defers credentials to `BC-18`/`PRD-001`; **L368–369** route credentials/sessions/roles/consent to `BC-18` and tenant records to `BC-19`; `TSF-XC-017` defers the scope register to `MP-GBR-21`. **No duplicated ownership found** | ✅ |
 | 6 | Business rules do not contradict Rank 1 | `TSF-INV-015` binds action scope to `MP-GBR-21`'s **closed** register; `F-1` binds tenancy to `ID-2`; `TSF-XC-016` upholds the privacy posture. **No contradiction found.** ⚠ Convention note: Rank 1 risk ids `MP-GBR-08`/`MP-RSK-01` are not cited by name — recorded as `RQ-6`, not as a contradiction | ✅ |
 
@@ -58,7 +70,7 @@ Both forms are used by the subject and both are legitimate.
 
 | # | Finding | Severity | Reason for deferral | **Owner** |
 |---|---|---|---|---|
-| **`RQ-1`** | ✅ **RESOLVED WITH ONE DEFERRAL (v1.1).** Originally: 32 of 62 criteria cited no requirement, the only mapping being **goal → AC** (**L173**), the inverse direction. **31 have been mapped** to pre-existing requirements and the citations written into §27; see `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md` for the per-criterion table, grounding quotations and strength classification. **1 residual:** `TSF-AC-010` | **HIGH → LOW** (residual only) | `TSF-AC-010` — *nothing reveals that a report exists* — has **no** supporting requirement. `TSF-FR-047`/`TSF-INV-009` conceal the reporter's **identity**; `TSF-FR-098`/`TSF-FR-024` bind only **after enforcement**. The nearest text (**L1805**) is a command-table cell, not a requirement. Authoring the missing requirement is a content act, not a review act | **Product owner** — author one new requirement in §18, then cite it from `TSF-AC-010` |
+| **`RQ-1`** | ✅ **CLOSED (v1.2).** Originally: 32 of 62 criteria cited no requirement, the only mapping being **goal → AC** (**L173**), the inverse direction. **All 32 are now mapped** to pre-existing requirements, citations written inline into §27. Per-criterion table, grounding quotations and strength classification in `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md`. **No residual** | **HIGH → CLOSED** | — nothing deferred. ⛔ v1.1's `TSF-AC-010` residual is **retracted as a false finding**: `TSF-FR-099` (**L1415**) states the obligation exactly, `TSF-FR-126`/`139` complete the surface, and §28 **L2518** had already allocated the pair under `IMPL-1436`. **0 new identifiers created**; creating one would have duplicated `TSF-FR-099` and breached check 5 | — (closed; no owner action outstanding) |
 | **`RQ-2`** | **6 identifiers are defined twice as table rows**, in a summary table and again in a detail table: `TSF-FR-001` (L186, L649) · `TSF-FR-083` (L1301, L1868) · `TSF-XC-016` (L214, L722) · `TSF-CFG-002` (L1126, L1655) · `TSF-CFG-003` (L1127, L1656) · `TSF-CFG-004` (L1128, L1657) | **LOW** | ⭐ **All six were compared verbatim and are CONSISTENT restatements, not contradictions** — e.g. `TSF-FR-001` reads *"MUST answer within 50 ms at p99 and MUST fail closed"* at L186 and *"p99 ≤ 50 ms, fail closed"* at L649. The defect is **maintenance risk** (two sites to keep in sync), not a specification hole. Not worth an unauthorised edit to a 225 kB draft | **Product owner** |
 | **`RQ-3`** | **Register contiguity is broken in 5 of 9 registers**, contrary to Stage 2 rule 3 (*"Ranges are contiguous. A gap makes the published range false"*): `TSF-FR` 119 defined across 1..146 (**27** gaps) · `TSF-XC` 46 across 1..70 (**24**) · `TSF-BR` 13 across 21..40 (**7**) · `TSF-GAP` (**3**) · `TSF-INV` (**3**) | **MEDIUM** | ⚠ **Genuinely ambiguous, and not this review's call.** The gaps are consistent with deliberate **V1 scope reduction** — `TSF-GAP-012` and `TSF-GAP-015` were *"resolved by scope reduction, recorded not deleted"*, and `IMPL-1412` is recorded **withdrawn** (**L2067**). Under `PRD_LIFECYCLE.md` §5 rule 5 withdrawn numbers are **never reused**, so gaps may be *correct*. Deciding whether each gap is a withdrawal or an omission requires the authoring intent | **Product owner** |
 | **`RQ-4`** | `TSF-AC-*` count is **62**, but §30.5 and `IMPL-1449` speak of `TSF-AC-001`…**`062`** while the evidence record cites *"~128"* criteria elsewhere in the ecosystem | **LOW** | Recorded so the figure is not silently inconsistent between records. **62** is the measured count in the subject | **Product owner** |
@@ -91,10 +103,20 @@ up to `PASS`.
 | **I-1** | The first census recognised a definition only when the identifier began the line, missing prose definitions embedded mid-sentence | Reported **101** "undefined" identifiers, then **13** after a partial fix. Both figures were **wrong** | Definition rule widened to row-initial **and** prose-initial. The residual 13 were then individually inspected and found defined; the finding was **withdrawn** (R-1) |
 | **I-2** | The widened census counted a table row and its adjacent prose elaboration as two competing definitions | Reported **33** duplicates | Re-measured with a line-distance test; adjacent pairs (≤ 8 lines) reclassified as house style. **6** genuine duplicates remain (`RQ-2`) |
 
-⚠ **Both instrument defects over-reported defects in the subject.** Publishing them matters:
-had `RQ-1`'s 32 orphan criteria been reported alongside 101 phantom dangling references and
-33 phantom duplicates, a reader would reasonably have discounted all three. The one real
-finding is more credible for the two false ones being retracted by name.
+| **I-3** | The `TSF-AC-010` gap search matched on the **criterion's** vocabulary (`reveals`, `report exists`, `indistinguishable`, `not-found`, `MP-GBR-22`, `disclos`). `TSF-FR-099` contains **none** of those six terms — it says *"determine **whether they were reported**"*. §28's allocation table (**L2518**), which already cross-referenced `TSF-AC-010` to `TSF-FR-126`/`139`, was also not consulted | Reported **1 phantom gap** and called for a **new requirement** that would have **duplicated `TSF-FR-099`** and breached check 5 | Register swept by **obligation** rather than phrasing, and §28's allocation table read. `TSF-FR-099` found. Gap retracted in v1.2; **0 identifiers created** |
+
+⚠ **All three instrument defects over-reported defects in the subject** — 101 phantom
+dangling references, 33 phantom duplicates, and 1 phantom gap. Publishing them matters:
+had `RQ-1`'s 32 genuine orphan criteria been reported alongside three uncorrected phantoms,
+a reader would reasonably have discounted all of it. The real finding is more credible for
+the false ones being retracted by name.
+
+⭐ **`I-3` is the most instructive of the three, because it nearly caused a *write*.** `I-1`
+and `I-2` would have produced noisy findings; `I-3` would have added a redundant requirement
+to a 226 kB specification, creating exactly the *"two sources of truth"* condition that Stage 4
+check 5 exists to detect. **A rejected-candidate list is evidence that those candidates fail —
+never evidence that no requirement exists.** Where a criterion appears unsupported, the
+allocation tables (§28) must be read before the register is declared incomplete.
 
 ---
 
@@ -108,12 +130,15 @@ finding is more credible for the two false ones being retracted by name.
 | Freeze, rank, or update registry/baseline | **Governance owner** (Stage 7) |
 | Create an ADR | **Architecture Owner** — next lawful number `ADR-0074` |
 
-⛔ **Consequence for Stage 7, stated here so it is not discovered later:** the Stage 4 gate
-is **still not cleanly passed**. `RQ-1` no longer blocks it as a bulk defect — 31 of 32
-orphans are closed — but one criterion remains without a requirement, and the gate's check 4
-is written as *every*. The remaining act is small and precisely named: **one new requirement,
-by the Product owner, for `TSF-AC-010`**. Until it exists, Stage 4 is `CONDITIONALLY PASSED`,
-and a Stage 7 freeze claiming a clean Stage 4 would be false.
+✅ **Consequence for Stage 7, stated precisely so it is neither overclaimed nor understated:**
+the **Stage 4 gate is now cleanly passed**. `RQ-1` is closed with no residual, and the five
+remaining findings (`RQ-2`…`RQ-6`) are deferred with a reason and an owner — which is exactly
+what the gate's own wording permits.
+
+⛔ **This does NOT make PRD-020 freeze-ready.** Stage 4 is one gate of nine. **Stage 5 remains
+NOT PASSED** (`TSF-` unregistered in the traceability matrix), **Stage 6 has no task document**,
+and **Stage 7 has 5 of 7 prerequisites unmet**. Anyone citing this `PASS` as freeze evidence
+would be citing one green gate as though it were seven.
 
 ⭐ **Scope note.** This revision addressed **`B-1` / `RQ-1` only**. `B-2` (matrix
 registration in §2O), `B-3` (`ADR-0074` closing `TSF-GAP-003`), `B-4` (the Stage 6 task
@@ -128,3 +153,4 @@ critical path **B-1 → B-2 → B-4 → B-3 → B-5** unchanged apart from B-1's
 |---|---|---|
 | 1.0 | 2026-08-22 | Created. Stage 4 gate artefact: 5 of 6 checks pass, check 4 **fails** on 32 of 62 acceptance criteria (`RQ-1`). 6 findings deferred with reason and owner; 3 candidates rejected; 2 instrument defects disclosed. **Subject unmodified.** |
 | 1.1 | 2026-08-22 | `RQ-1` repaired. Check 4 re-measured: **61 of 62** criteria now cite a defined requirement; **1** (`TSF-AC-010`) explicitly deferred with reason and owner. Verdict remains `CONDITIONALLY PASSED` — the residual is disclosed, not absorbed. ⚠ **The subject WAS edited** in this revision (32 rows in §27); hashes before/after are published in `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md`, on the `PRD-017` Stage 4 precedent. `B-2`/`B-3`/`B-4`/`B-5` untouched. |
+| 1.2 | 2026-08-22 | ⛔ **v1.1's `TSF-AC-010` gap RETRACTED as a false finding.** `TSF-FR-099` (**L1415**) states the obligation exactly; §28 **L2518** had already allocated it. Criterion mapped to `TSF-FR-099`/`126`/`139`; **0 new identifiers created**. Check 4 re-measured **62 of 62**, **0** gaps — now ✅ **PASS**. **Verdict raised `CONDITIONALLY PASSED` → `PASS`, 6 of 6.** `RQ-1` **CLOSED**. Instrument defect `I-3` disclosed. `B-2`/`B-3`/`B-4`/`B-5`, Stages 5–7 and freeze status untouched. |

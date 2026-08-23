@@ -6,9 +6,11 @@
 | **Purpose** | Close `RQ-1`, the sole failing check of the Stage 4 gate — *"Every acceptance criterion maps to a requirement"* (`PRD_LIFECYCLE.md` **L108-120**) |
 | **Scope** | **`B-1` / `RQ-1` only.** `B-2` (matrix registration), `B-3` (`ADR-0074`), `B-4` (Stage 6 tasks) and `B-5` (freeze) are untouched |
 | **Subject sha256 BEFORE** | `4c719dbf7904a07a8619ab6459f0f8e39dd79a4d603d153b44b3e536b3bbd90b` (225,545 B) |
-| **Subject sha256 AFTER** | `c66764959a7fe07e88d14898a9024b663f4acb7562bb1aae34896fe3cb5d5d60` (226,292 B) |
+| **Subject sha256 AFTER v1.0** | `c66764959a7fe07e88d14898a9024b663f4acb7562bb1aae34896fe3cb5d5d60` (226,292 B) |
+| **Subject sha256 AFTER v1.1 (current)** | `685fb65af95668df9bce8757bcd7d04ec9838a56f8dd108652e80d7e7579497b` (226,262 B) |
 | **⚠ This record edited its subject** | **Yes** — 32 acceptance-criterion rows gained a requirement citation. Precedent: `PRD-017_STAGE4_REQUIREMENTS_REVIEW.md`, which likewise closed Stage 4 defects by editing its subject and published both hashes. §1.2 states the limits |
-| **Result** | **61 of 62** criteria cite a requirement · **1** declared **UNMAPPED/GAP** (`TSF-AC-010`) · **0** silently uncited |
+| **Result (v1.1, current)** | ✅ **62 of 62** criteria cite a defined requirement · **0** unmapped · **0** silently uncited · **0** new identifiers created |
+| **Result (v1.0, superseded)** | 61 of 62 · 1 declared UNMAPPED (`TSF-AC-010`) — ⛔ **that gap claim was FALSE and is retracted in §4** |
 | **Date** | 2026-08-22 |
 
 ---
@@ -51,7 +53,7 @@ Each row shows the criterion, the requirement now cited, and the **normative tex
 | `TSF-AC-006` | `TSF-FR-048` | *"Report submission **MUST** be idempotent on `(reporterId, subjectRef, categoryCode, idempotencyKey)`"* (**L833**) |
 | `TSF-AC-007` | `TSF-FR-053`, `TSF-CFG-013` | *"Reports on the same subject and category within `TSF-CFG-013` **MUST** attach to the open case"* (**L910**) + the 24 h window (**L1666**) |
 | `TSF-AC-009` | `TSF-EVT-001`, `TSF-INV-009` | `TSF-EVT-001`'s closed payload `{caseId, category, severity, filedAt}` contains no reporter field (**L1718**) + *"Reporter identity **MUST NOT** appear in any notice, appeal record or export"* (**L832**) |
-| `TSF-AC-010` | ⚠ **UNMAPPED — see §4** | — |
+| `TSF-AC-010` | `TSF-FR-099`, `TSF-FR-126`, `TSF-FR-139` | *"A user **MUST NOT** be able to determine **whether they were reported**, by whom, or how many times, other than through an enforcement notice served on them"* (**L1415**) — an exact match on all three limbs. Extended by `TSF-FR-126` (**L1817**: denial ≡ not-found on **all** safety endpoints) and `TSF-FR-139` (**L2143**: timing indistinguishability). See §4 |
 
 ### 2.2 Lifecycle & attribution (§27.2)
 
@@ -105,11 +107,60 @@ Each row shows the criterion, the requirement now cited, and the **normative tex
 | **Exact** — requirement states the criterion's obligation in the same terms | 27 | e.g. `TSF-AC-051` → `TSF-FR-058`; `TSF-AC-021` → `TSF-INV-012` |
 | **Composite** — two or three requirements are jointly necessary, each cited | 4 | `TSF-AC-001`, `TSF-AC-020`, `TSF-AC-055`, `TSF-AC-056` |
 | **Inferential** — the requirement grounds the criterion but does not restate it | 1 | `TSF-AC-005` → `TSF-FR-027`: *unpopulated register entry* ⇒ *no surface*. Disclosed here rather than presented as exact |
-| **Unmapped** | 1 | `TSF-AC-010` — §4 |
+| **Unmapped** | 0 | — |
 
 ---
 
-## 4. The one genuine gap — `TSF-AC-010`
+## 4. ⛔ RETRACTION — `TSF-AC-010` was **never** a gap
+
+> **v1.0 of this record declared `TSF-AC-010` unmappable and called for a new requirement.
+> That finding was WRONG. It is retracted in full.** `TSF-FR-099` states the criterion's
+> obligation exactly, and has done since before this review began.
+
+| | |
+|---|---|
+| **`TSF-AC-010`** | *"**Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists"* |
+| **`TSF-FR-099`** (**L1415**) | *"A user **MUST NOT** be able to determine **whether they were reported**, by whom, or how many times, other than through an enforcement notice served on them (`TSF-FR-077`)"* |
+
+The match is exact on every limb — *whether* reported (existence, not identity), *by whom*
+(identity), *how many times* (volume) — with the enforcement-notice carve-out that reconciles it
+with `TSF-FR-077`. Two further requirements complete the surface: **`TSF-FR-126`** (**L1817**)
+extends denial ≡ not-found to **all** safety endpoints, and **`TSF-FR-139`** (**L2143**) closes
+the timing channel that would otherwise defeat both.
+
+⭐ **The subject had already published this mapping itself.** §28's task table, **L2518**:
+
+> `| IMPL-1436 | Denial ≡ not-found across all endpoints, incl. timing | TSF-FR-126/139, TSF-AC-010/058 |`
+
+So the criterion was requirement-backed *and* task-allocated the whole time. The defect was
+never in PRD-020; it was that §27's criterion row did not carry the citation inline.
+
+### 4.1 Why v1.0 missed it — instrument defect `I-3`
+
+v1.0's search for this criterion used the vocabulary of the **criterion**: `reveals`,
+`report exists`, `indistinguishable`, `not-found`, `MP-GBR-22`, `disclos`. **`TSF-FR-099`
+contains none of these six terms** — it says *"determine whether they were reported"*. The
+search was lexical where it needed to be semantic, and the four candidates it *did* surface
+(`TSF-FR-047`, `TSF-INV-009`, `TSF-FR-098`, `TSF-FR-024`) were all correctly rejected — which
+made the empty result look like a confirmed gap rather than a missed match.
+
+⚠ **The lesson, recorded because it generalises:** a rejected-candidate list is evidence that
+the *candidates* fail, never evidence that *no requirement exists*. Before declaring a gap, the
+register must be swept by **obligation**, not by the criterion's own phrasing — and §28's
+allocation table, which cross-references criteria to requirements, must be read. Had v1.0 read
+**L2518**, the answer was one line away.
+
+### 4.2 Consequence — no new requirement, and none may be written
+
+Because `TSF-FR-099` already exists, authoring a new `TSF-FR-*` would create a **duplicate
+obligation in the same register** — precisely the *"two sources of truth"* failure that Stage 4
+check 5 exists to prevent. **0 identifiers were created.** The instruction's condition
+(*"create a new `TSF-FR-*` only when Product Owner authority is clearly available"*) is moot:
+the requirement is not needed.
+
+---
+
+## 4-OLD. The superseded gap analysis, preserved for audit
 
 > `TSF-AC-010` — **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists.
 
@@ -126,13 +177,10 @@ The nearest statement is not a requirement at all but a command-table cell — `
 
 **Therefore:** a **new requirement** is needed — pre-enforcement report-existence non-disclosure, of the `MP-GBR-22` *denial ≡ not-found* family, scoped to every subject-visible surface.
 
-⛔ **STOP — this record does not write it.** Minting a `TSF-FR-*` identifier is a **Product owner** act on PRD-020's content, and no such authority was conferred here. The row is marked **UNMAPPED** in the subject so the gap is visible at the point of use rather than only in this record.
-
-| Item | Value |
-|---|---|
-| **Required act** | Author one new requirement in §18 (privacy/observability), then cite it from `TSF-AC-010` |
-| **Owner** | **Product owner** (`PRD_LIFECYCLE.md` §6) |
-| **Note on numbering** | The next free `TSF-FR-*` number must be determined **at the time of writing**. This record deliberately does **not** reserve one — `PRD_LIFECYCLE.md` §5 rule 5 forbids reuse, and a number reserved but unused is a trap for the next author |
+⛔ **The above four rejections remain correct** — none of those four requirements covers the
+criterion. What v1.0 got wrong was the **conclusion drawn from them**: it inferred *"therefore no
+requirement exists"* when the correct inference was *"therefore keep searching"*. `TSF-FR-099`
+was the answer, and §4 above records it. **No new requirement is required or permitted.**
 
 ---
 
@@ -143,7 +191,7 @@ The nearest statement is not a requirement at all but a command-table cell — `
 | 1 Every requirement testable | ✅ | ✅ unchanged |
 | 2 Every exclusion states what must be impossible | ✅ | ✅ unchanged |
 | 3 Every configurable has a default and a range | ✅ | ✅ unchanged |
-| **4 Every acceptance criterion maps to a requirement** | ⛔ **FAIL — 32 of 62 orphaned** | ⚠ **61 of 62 mapped; 1 declared gap with a named owner** |
+| **4 Every acceptance criterion maps to a requirement** | ⛔ **FAIL — 32 of 62 orphaned** | ✅ **PASS — 62 of 62 mapped; 0 gaps** |
 | 5 No requirement restates another PRD's | ✅ | ✅ unchanged |
 | 6 Business rules do not contradict Rank 1 | ✅ | ✅ unchanged |
 
@@ -160,8 +208,8 @@ The nearest statement is not a requirement at all but a command-table cell — `
 | Check | Result |
 |---|---|
 | AC rows in §27 | **62** (unchanged) |
-| Rows citing ≥ 1 requirement | **61** |
-| Rows marked UNMAPPED | **1** (`TSF-AC-010`) |
+| Rows citing ≥ 1 requirement | **62** |
+| Rows marked UNMAPPED | **0** |
 | Rows silently uncited | **0** |
 | Distinct requirements newly cited | **46** |
 | Newly cited identifiers that are **undefined** | **0** |
@@ -176,3 +224,4 @@ The nearest statement is not a requirement at all but a command-table cell — `
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-08-22 | Created. `RQ-1` repaired: 31 criteria mapped to pre-existing requirements, 1 (`TSF-AC-010`) declared UNMAPPED with reason and owner. Subject edited (hashes above) under the `PRD-017` Stage 4 precedent. `B-2`/`B-3`/`B-4`/`B-5` untouched. |
+| 1.1 | 2026-08-22 | ⛔ **v1.0's `TSF-AC-010` gap finding RETRACTED as false** (§4). `TSF-FR-099` (**L1415**) states the obligation exactly; `TSF-FR-126`/`139` complete the surface; §28 **L2518** had already allocated the mapping. Criterion mapped. **62 of 62** · **0** gaps · **0** new identifiers. Instrument defect `I-3` disclosed (§4.1). Check 4 now ✅ **PASS**. |

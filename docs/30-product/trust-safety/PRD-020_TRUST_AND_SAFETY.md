@@ -2184,7 +2184,7 @@ fixture that contains a real minor's message is a privacy incident in a reposito
 | `TSF-AC-007` | **Given** two different reporters on the same subject and category inside the window, **when** both file, **then** both attach to **one** case and both are recorded (`TSF-FR-053`, `TSF-CFG-013`) |
 | `TSF-AC-008` | **Given** a `CRITICAL` category, **when** a duplicate arrives, **then** it is **not** auto-closed (`TSF-BR-017`) |
 | `TSF-AC-009` | **Given** any report, **when** it is stored, **then** the reporter's identity is absent from `TSF-EVT-001` (`TSF-EVT-001`, `TSF-INV-009`) |
-| `TSF-AC-010` | **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists — ⚠ **UNMAPPED**, see `PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md` §4 |
+| `TSF-AC-010` | **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists (`TSF-FR-099`, `TSF-FR-126`, `TSF-FR-139`) |
 
 ### 27.2 Lifecycle & attribution (`TSF-AC-011`…`024`)
 

@@ -861,7 +861,7 @@ State of the registers at the end of §0–§27.
 
 Register | Range | Count
 ---|---|---
-Functional requirements | `LCM-FR-001` … `LCM-FR-051` | 51
+Functional requirements | `LCM-FR-001` … `LCM-FR-051` | 50 — see the note below
 Business rules | `LCM-BR-001` … `LCM-BR-012` | 12
 Invariants | `LCM-INV-001` … `LCM-INV-014` | 14
 Read model | `LCM-RM-001` … `LCM-RM-015` | 15
@@ -875,9 +875,21 @@ Risks | `LCM-RSK-001` … `LCM-RSK-015` | 15
 Exclusions | `LCM-XC-001` … `LCM-XC-027` | 27
 Gaps | `LCM-GAP-001` … `LCM-GAP-005` | 5
 ADR requirements | `LCM-ADR-001` … `LCM-ADR-002` | 2
-**Total** | — | **230 identifiers across 14 registers**
+**Total** | — | **229 identifiers across 14 registers**
 
 ⚠ This is an **interim** count taken at §27. It is superseded by §44.
+
+⚠ **Measured discrepancy, disclosed rather than papered over.** The functional-requirement
+register skips exactly one number — the one immediately after `LCM-FR-046`. §17 ends at
+`LCM-FR-046` and §20 resumes at `LCM-FR-048`, so that intervening number is never assigned.
+It is deliberately **not written out anywhere in this document**, because reproducing an
+unassigned identifier in prose is exactly what makes a phantom look defined to a grep-based
+or automated continuity check. The skip is carried from the source delivery. It has **not** been closed by
+inventing a requirement to occupy the number, because that would add scope; and it has **not**
+been closed by renumbering, because every later reference would then have to move. The register
+is therefore **contiguous except for that single unassigned number**, the counts here and at §44 are stated as
+*measured* rather than as *implied by the range*, and closing the skip is left as a numbering
+correction for a later revision of this draft.
 
 ---
 
@@ -1450,7 +1462,7 @@ Final state of every register in this document.
 
 Register | Range | Count
 ---|---|---
-Functional requirements | `LCM-FR-001` … `LCM-FR-067` | 67
+Functional requirements | `LCM-FR-001` … `LCM-FR-067` | 66 — one number after `LCM-FR-046` unassigned, see §24
 Business rules | `LCM-BR-001` … `LCM-BR-018` | 18
 Invariants | `LCM-INV-001` … `LCM-INV-020` | 20
 Read model & consistency | `LCM-RM-001` … `LCM-RM-028` | 28
@@ -1469,9 +1481,9 @@ Exclusions | `LCM-XC-001` … `LCM-XC-034` | 34
 Gaps | `LCM-GAP-001` … `LCM-GAP-008` | 8
 ADR requirements | `LCM-ADR-001` … `LCM-ADR-002` | 2
 Decisions outstanding | `LCM-DEC-001` … `LCM-DEC-012` | 12
-**Total** | — | **463 identifiers across 19 registers**
+**Total** | — | **462 identifiers across 19 registers**
 
-⚠ **This table supersedes the counts at §24.** §24 is the interim total taken at the end of §0–§27 (230 identifiers across 14 registers); the table above is the final total for §0–§45. Both are correct for their scope, and the difference is not drift.
+⚠ **This table supersedes the counts at §24.** §24 is the interim total taken at the end of §0–§27 (229 identifiers across 14 registers); the table above is the final total for §0–§45. Both are correct for their scope, and the difference is not drift.
 
 ### 44.1 Verification posture
 
@@ -1487,6 +1499,8 @@ Non-blocking gaps | 7
 FROZEN documents amended | **0**
 ACCEPTED ADRs amended | **0**
 New bounded contexts | **0**
+Registers contiguous | 18 of 19 — one number after `LCM-FR-046` unassigned (§24)
+Distinct identifiers measured in this file | **462**
 
 ---
 

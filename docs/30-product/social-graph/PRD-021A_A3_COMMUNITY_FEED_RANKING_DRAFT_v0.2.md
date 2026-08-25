@@ -550,6 +550,8 @@ Diversity is **active** — it needs no signal substrate beyond data A2 already 
 
 `PRD-023` §3.6 records this split executed **104 times across 8 FROZEN owning PRDs**. No new decision is taken here; A3 conforms to a decision already frozen.
 
+⚠ **Supersedes correction `P1-1` of the v0.1 pass.** `P1-1` correctly removed the reviewed draft's stored `RankingConfiguration` entity — **that removal stands and is unchanged** (`LCR-FR-065`). What `P1-1` additionally did was **defer** the A3-schema / `BC-25`-value split to the Architecture Owner as `D-5`. Stage-3 measurement shows that deferral was unnecessary, because the authorities quoted above had already frozen the split before this part was written. `P1-1`'s *prohibition* is therefore retained and strengthened into a standing one; only its *deferral* is retired. **No configuration store is created here, and none was created by `P1-1` either.**
+
 `LCR-FR-063` | A3 SHALL own the **schema and semantics** of ranking policy: which signals exist, their status, how they normalise, and how versions supersede.
 
 `LCR-FR-064` | A3 SHALL **declare** every ranking parameter it requires in its own configurable register, per `CNF-FR-052`. `BC-25` SHALL **resolve and serve** those values through `E-19` and SHALL NOT originate, re-range or re-default any of them (`CNF-XC-001`). A parameter absent from A3's register SHALL NOT be served (`CNF-FR-030`).

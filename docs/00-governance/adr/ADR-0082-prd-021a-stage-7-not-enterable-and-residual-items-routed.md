@@ -330,3 +330,157 @@ satisfy the gate on strictly better numbers than `PRD-020` did.
 pass is not misled:** unlike the BC Map (§4), where no safe route exists at any time, Stage 5 for `PRD-021A` is
 **executable as soon as a Stage 3 alignment record exists and two committed checkers back the counts.** That is
 the single most valuable next step available on this document, and §9 records it as such.
+
+---
+
+## 6. `READY` / `FROZEN` — REFUSED, with the conditions enumerated
+
+The instruction was conditional: *"mark A2/A3 `READY`/`FROZEN` **only on genuinely satisfied conditions**."*
+Measured against every condition, **none is satisfied**, and the determination is therefore
+⛔ **`PRD-021A` A2 and A3 are NOT READY and NOT FROZEN.**
+
+| # | Condition for `FROZEN` | Status |
+|---|---|---|
+| 1 | Stage 3 alignment record exists | ⛔ **0 files** |
+| 2 | Stage 4 requirements review passed | ⛔ No record |
+| 3 | Stage 5 prefixes registered in the matrix | ⛔ `grep -c` → **0** (executable — §5) |
+| 4 | Stage 6 `IMPL-*` range allocated | ⛔ None; next free is `IMPL-1500`+ |
+| 5 | Stage 7 baseline §3 row **conferred** | ⛔ Absent, and `PRD_LIFECYCLE` **L160** forbids claiming it |
+| 6 | All open items disposed | ⛔ **18 OPEN** |
+| 7 | `LCR-DEC-009` decided | ⛔ **REFUSED as undecidable** |
+| 8 | `BC-15` registered in BC Map §7/§8 | ⛔ Blocked structurally — §4 |
+| 9 | `PRD-020` released so `LCF-GAP-007`/`LCR-GAP-007` can cite it | ⛔ **`DRAFT`, Unranked** — §7 |
+| 10 | `integration_test/` exists | ⛔ Does not exist |
+| 11 | Registry status advanced | ⛔ `PRD-021` is **`PLANNED`** at `PRD_REGISTRY.md` **L321** |
+
+⛔ **Additionally, `FROZEN` would not be `VERIFIED` even if conferred** — `PGA-08`. **0** of A2/A3's acceptance
+criteria are proven by a test, and **0 lines of `BC-15` code exist**.
+
+---
+
+## 7. The `PRD-020` dependency is preserved — and one finding is disclosed
+
+`PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161–164** gates `PRD-021` behind `PRD-020`. That gate is **preserved
+untouched**: `PRD-020` is byte-unchanged, sha256 `685fb65af95668df9bce8757bcd7d04ec9838a56f8dd108652e80d7e7579497b`.
+
+⚠⚠ **A discrepancy was found while measuring the dependency, and it is DISCLOSED rather than repaired.**
+
+`PRD-020`'s own header (**L8**) reads *"**Status** | **`DRAFT`** — `PRD_LIFECYCLE.md` **Stage 2**"*, and **L17**:
+*"**Lifecycle stage** | **Stage 2 of 9 — Draft.** Stages 3–9 **not started**"*.
+
+**That is false of the record.** Measured on disk:
+
+| Stage | Record | Verdict in that record |
+|---|---|---|
+| **3** | `PRD-020_STAGE3_ARCHITECTURE_ALIGNMENT.md` (127 L) | ✅ **PASS — 6 of 6** mandated checks |
+| **4** | `PRD-020_STAGE4_REQUIREMENTS_REVIEW.md` (156 L) | ✅ **PASS — 6 of 6** checks at v1.2 |
+| **5** | `PRD-020_STAGE5_CONFERRAL.md` (266 L) | ✅ **STAGE 5 TRACEABILITY PASSED … CONFERRED** |
+| 6 | — | ⛔ No record |
+| 7 | — | ⛔ No record; **0** occurrences of `PRD-020` in `DOCUMENTATION_BASELINE.md` |
+
+So `PRD-020` has reached **Stage 5 of 9**, and `TRACEABILITY_MATRIX.md` §2O already noted the same defect class:
+*"The subject's header reads v0.1 while its content is v0.5; the discrepancy is **PUBLISHED, not normalised**,
+because amending it is a document-owner act."*
+
+⛔ **This ADR does not repair it, for three reasons:**
+
+1. Amending `PRD-020`'s header is a **document-owner act**, and that role is not one this pass holds.
+2. `PRD-020` is heavily cited by its own family throughout.
+3. ⭐ **It does not change the outcome.** `LCF-GAP-007`'s blocker is not *"`PRD-020` has not reached Stage 3"* — it
+   is that `PRD-020` is **Unranked**, holds **no `DOCUMENTATION_BASELINE.md` §3 row**, and by its own **L18**
+   *"must not be cited as authority against any ranked document."* **Stage 5 confers `APPROVED`, not rank.** So the
+   item stays OPEN on the correct ground either way.
+
+⭐ **The finding is recorded because it strengthens rather than weakens the dependency:** `PRD-020` is *further
+along than it says* and still **cannot be cited**, which shows the blocker is **rank**, not progress. A future pass
+that repairs the header must not read that repair as unblocking `LCF-GAP-007`.
+
+**New gap opened:** ⛔ **`LCF-GAP-015`** — *"`PRD-020`'s header declares Stage 2 while Stages 3, 4 and 5 records
+exist and pass. Owner: `PRD-020` owner. Does not affect `LCF-GAP-007`, which turns on rank."* Recorded here because
+a defect found and not recorded is a defect concealed.
+
+---
+
+## 8. What this ADR changes, exhaustively
+
+| # | File | Change |
+|---|---|---|
+| 1 | this file | Created — the determination |
+| 2 | `PRD-021A_STAGE7_BLOCKER.md` | Created — the blocker record, on the `PRD-013`/`PRD-012a` precedent |
+| 3 | `ADR-INDEX.md` | One row; count re-derived from **all 73** files, **not incremented** |
+| 4 | `PRD-021A_LCF-GAP-012_DECISION_RECORD.md` | New **§7.13**, appended **below** cited `L303–304` |
+
+⛔ **Byte-unchanged, verified by sha256 before and after:**
+
+| Document | Rank | sha256 |
+|---|---|---|
+| `LIBOORA_BOUNDED_CONTEXT_MAP.md` | 4 | `4f35283773f72c82d0e84448cc044ad9f3ef8df0c7b2ca867922272be2c8ec2a` |
+| `TRACEABILITY_MATRIX.md` | unranked | `bf16eb2de31d29945611ae04bf98c5bde7e2d627f1f959ec68ad096bc695cb80` |
+| `DOCUMENTATION_BASELINE.md` | 0 | `7e1c69f92363a5e5fcd7c9ac462824257ebcc1a6f1056ff979498f19bd0b5b14` |
+| `PRD-020_TRUST_AND_SAFETY.md` | unranked | `685fb65af95668df9bce8757bcd7d04ec9838a56f8dd108652e80d7e7579497b` |
+| **A2 v0.7** | — | `9192a8b1626716b5028678f8120fe0c33554ba03b5aecabab106b72a71bd5c19` |
+| **A3 v0.5** | — | `6fb17cb1b8ba3a6c5b87ee9eed62687bccee927982a0799b531d841390b191e8` |
+
+⭐⭐ **A2 and A3 are deliberately NOT EDITED, and that is a decision rather than an omission.** Zero items closed
+means **zero register cells change**. Editing them merely to *describe* this ADR would change the containing
+document of **596 identifiers** for no register effect — and A2/A3 are cited **575 times across 11 files**. The
+routing lives in this ADR and in §7.13 of the Decision Record, which is the append-only surface built for it.
+
+⛔ Also unchanged: `MASTER_PRD.md` · every **FROZEN** PRD · `PRODUCT_IMPLEMENTATION_ROADMAP.md` ·
+`PRD_LIFECYCLE.md` · `PRD_OWNERSHIP_MODEL.md` · `LIBOORA_ENTERPRISE_ARCHITECTURE.md` · `PRD_REGISTRY.md` ·
+all **72** pre-existing ADR files · `tool/module_dependencies.yaml` · **all Dart source** —
+`git status --short lib/ test/` → **0 lines**.
+
+**Identifiers minted: ZERO** (except `LCF-GAP-015`, §7, which records a **found defect**, not a requirement).
+**Requirements changed: ZERO. Weights assigned: ZERO. Edges added: ZERO. Stages advanced: ZERO. Baseline rows
+created: ZERO. Items closed: ZERO.**
+
+---
+
+## 9. What would actually unblock this document
+
+Ordered by dependency, so a future pass does not repeat this one's discovery:
+
+| # | Act | Authority required | Unblocks |
+|---|---|---|---|
+| 1 | ⭐ Write a **Stage 3 alignment record** listing all 18 conflicts with dispositions | Architecture reviewer — **but 13 dispositions need owners who have not ruled**, so `PASS-CONDITIONAL` at best | Stages 4–7 |
+| 2 | ⭐ Commit **two independent checkers** for `LCF-*`/`LCR-*`, then register **§2P** in the matrix | Traceability Owner. **Measured safe: 0 citations invalidated** (§5.1) | Stage 5 |
+| 3 | Rule `LCR-DEC-009`, `LCR-DEC-001`, `006`, `LCF-GAP-006`, `010`, `LCR-GAP-002`, `010` | **Product Owner** — 7 items | A3 `READY` |
+| 4 | Rule `LCR-DEC-003`, `LCR-GAP-006` over a minor-inclusive population | **Privacy Owner** — role exists (`ADR-0077`), **VACANT** | A3 `READY` |
+| 5 | Release **`PRD-020`** to a rank | Governance Owner + `PRD-020` owner | `LCF-GAP-007`, `LCR-GAP-007`, the roadmap gate |
+| 6 | Create `integration_test/` | **Engineering Owner** | `LCF-GAP-011` |
+| 7 | Author a **`BC-14`** PRD | Architecture Owner + a PRD author | `LCF-GAP-004` |
+| 8 | ⭐⭐ Execute **`ADR-0075` §8.5 Option B** — anchor-based citations — extended to the BC Map's **2,920** | Governance Owner, as a **repository-wide programme** | ⭐ **The 5 Architecture-Owner items (§4). Nothing else unblocks them** |
+| 9 | Allocate `IMPL-1500`+ and a task document | Implementation lead | Stage 6 |
+| 10 | Confer a `DOCUMENTATION_BASELINE.md` §3 row | **Governance Owner** — *last*, and only after 1–9 | **Stage 7** |
+
+⭐ **Item 8 is the structural finding of this pass.** Five items were expected to be resolvable by an authority this
+pass holds. They are blocked instead by the repository's **line-citation architecture** — the same blocker that put
+`ADR-0075` into `EXECUTION BLOCKED`, now measured at **2,920 citations** rather than 482. Until Option B is
+executed, **no Rank 4 structured register in this repository can lawfully take a new row**, and that is a fact
+about the repository, not about `PRD-021A`.
+
+---
+
+## 10. Verdict
+
+⛔⛔ **Stage 7 is NOT ENTERABLE.** Its gate — a `DOCUMENTATION_BASELINE.md` §3 row — is absent, freeze is
+*"conferred, not claimed"*, and Stages **3**, **5** and **6** are each unmet. **L294**: *"No fast path. Stage 7 is
+not skippable."*
+
+⛔ **All 18 residual items remain OPEN**, by **three distinct mechanisms** that must not be conflated: **13** for
+want of an owner's ruling, **5** for want of a citation-safe amendment route, and `LCR-DEC-009` **REFUSED as
+undecidable**.
+
+⛔ **`PRD-021A` A2 and A3 are NOT READY and NOT FROZEN.** Eleven conditions, **zero** satisfied.
+
+✅ **What this pass delivers is a measurement, and the measurement is the deliverable.** The five items expected to
+be resolvable are now known to be blocked by something else entirely, with the numbers published (**658** and
+**1,112**) so they can be re-run. The one gate that *is* executable is identified with its evidence (**0**
+citations invalidated), so the next pass starts from a measured position rather than an assumption.
+
+⭐ **Zero values invented. Zero decisions simulated. Zero items closed. Zero stages advanced. Zero frozen documents
+touched.**
+
+*A gap register that shrinks because someone invented the missing values is worse than one that does not shrink at
+all — because the second is honest about what the product does not yet know.*

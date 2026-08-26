@@ -329,3 +329,71 @@ Verifiable without judgement:
 | **v1.0** | 2026-08-04 | Created. Closes `PGA-08`. Four roles, derived from six existing governance rules rather than chosen (§2.1), with vocabulary reused from `ADR-0001`, `ADR-0011`, `ADR-0012` and Matrix §11 rather than invented (§2.3). All 23 registered PRDs assigned plus the two reserved sub-numbers. Two findings surfaced *by* the act of assigning ownership: (1) **`PRD-012` is unassignable** under rule 1 as currently scoped — it spans the SECURITY platform (rank 2) and `BC-28` Workflow (rank 6), which the register already flags as violating the Single Owner Rule; recorded as unassignable rather than given a fabricated owner. (2) **`BC-25` Configuration has no registered claimant** — `PRD-015` is *Search Indexing*, so unlike `BC-19` and `BC-29` there is no second PRD contesting the Library PRD's header, and nothing to transfer it to; `PRD-023` is therefore **not** allocated, since that would pre-empt `ADR-0013` §7. **No PRD was modified, no requirement created or reinterpreted, and no personal name recorded.** |
 | **v1.0** | 2026-08-04 | Cross-reference verification, same day, before the model was relied on. **One defect found and corrected before commit:** §§4.2–4.3 had been drafted with *invented* PRD subjects (`PRD-004` as "Attendance & Seating", `PRD-015` as "Configuration Management") instead of the register's authoritative names (**Student Management**, **Search Indexing**). Every name and context is now quoted from `PRD_REGISTRY.md` §§4.1–4.2 and verified pair-by-pair; the tables are also re-sectioned to match the register's own §31 / §8.1 split. The error mattered beyond tidiness: mis-reading `PRD-015` as a configuration PRD had produced a false claim that `BC-25` was contested *between two PRDs*, when in fact it has **no** registered claimant — which is the stronger finding and the reason `ADR-0013` §7 must stay open. **Version remains v1.0: a defect in an unreleased document, not an amendment to a published one.** |
 | **v1.1** | 2026-08-04 | **All three contested Domain Owner cells resolved; `PRD-023` added; scope 23 → 24 PRDs.** Governance Closure Phase. `ADR-0013` **Accepted** — a capability context is owned by its platform, and context ownership is distinct from aggregate ownership — so `BC-19` → **Tenancy Platform** (`PRD-013`) and `BC-29` → **Services Platform** (`PRD-017`), replacing the ⚠ **Contested** markers in §4.3. `ADR-0017` **Accepted** — `BC-25` → **Configuration Platform** (`PRD-023`, `platform/configuration` rank 3). §4.4 rewritten with a resolution table, and **this document's own reasoning corrected in place**: §4.4 had concluded that allocating `PRD-023` would mean *inventing* a PRD and must therefore not be done. That conclusion was wrong — `MASTER_PRD.md` §8 **module 18** already names *Settings & Configuration* → `BC-25`, `[GENERIC]`, **V1**, at Rank 1, and `PRD_REGISTRY.md` §4.3 had already applied identical reasoning to `PRD-022` (module 17). The error was in the premise, not the principle: the prohibition on inventing requirements is **unchanged**, and `PRD-023` carries **zero** requirements. The original analysis is preserved verbatim rather than overwritten, because the method that produced it — *assign ownership systematically and the unassignable cases announce themselves* — is what exposed the question. **`PRD-012` remains ⚠ Split and unassignable**: the split is *confirmed* as already authorised by Master PRD §8 *Correction 2*, but confirmation is not execution — `PRD-012a` has not been opened, so `PRD-012` is not retired and this finding stays open. **No requirement was created, modified, moved or withdrawn; no personal name is recorded.** |
+| **v1.2** | 2026-08-25 | ⭐ **A fifth role — `Privacy Owner` — is constituted, by derivation, under `ACCEPTED` [`ADR-0077`](../adr/ADR-0077-privacy-owner-role-derived-from-existing-rules.md).** §2.1's minimality test is **met, not overridden**: it holds that *"a fifth would have no rule to serve"*, and **five existing rules were measured that require a privacy review and assign it to nobody** — `ARCHITECTURE_RULINGS.md` **L290** (**Rank 5**), `Library_PRD_v1.md` **L1025** / `LIB-24.2` (**FROZEN Rank 3**), `PRD-020` **L1784**, `PRD-SEAT-MANAGEMENT.md` **L2266** / `SEAT-GAP-014`, and `PRD-021A` A3 `LCR-DEC-003` / `LCR-GAP-006`. The role therefore **serves rules that already exist**, which is the same derivation method §2.1 used for the original four. §2.3's *"role vocabulary is reused, not invented"* rule is satisfied by `PRD-020` **L1784**, which already says *"the privacy owner"* verbatim. ⛔ **Constituting a role is not exercising it:** no privacy decision is taken, `LCR-DEC-003` and `LCR-GAP-006` remain **OPEN**, `LCR-RS-007` remains **DEFERRED**, and **no personal name is recorded** (§7 rule 4). ⚠ **Executed by APPEND (§9), not by insertion into §2.1–§2.3 and §5 as `ADR-0077` §6 originally prescribed** — this document is cited **by line number 74 times**, with **35** citations to **L85** alone plus 9 to L180, 8 to L284, 7 each to L68/L69/L102 and 5 to L202; inserting a table row anywhere above L331 would silently invalidate every citation below it, in **Accepted ADRs** and in `DOCUMENTATION_BASELINE.md`. The append leaves every cited line **byte-identical** — verified. ⚠ **One disclosed consequence, deliberately not repaired:** §2's closing arithmetic still reads *"Four distinct answers"* and *"Four roles is therefore the minimum"*. Correcting it in place is precisely the insertion that breaks the 35 citations, so the discrepancy is **disclosed in §9.4 and routed**, not silently patched. ⚠ **A second, more serious gap is disclosed and NOT fixed:** `Governance Owner` also occurs **0** times in this document despite being the approving authority named in `ADR-0053`, `ADR-0054` and `ADR-0064`. **No PRD, requirement, register or acceptance criterion is created, modified or withdrawn; no PRD row in §§4.1–4.4 is touched; no rank, edge or boundary is altered.** |
+
+---
+
+## 9. ⭐ The `Privacy Owner` role — constituted by `ADR-0077`, recorded by append
+
+⚠ **Why this is a section and not a row in §2.2.** `ADR-0077` §6 prescribed inserting the role into the §2.1
+derivation table, the §2.2 role table, the §2.3 vocabulary table and the §5 stage table. On execution that
+proved unsafe: this document is cited **by line number 74 times** across `docs/`, including **35** citations
+to **L85** (the Architecture Owner row) and **8** to **L284** (*"Only the Architecture Owner approves"*), in
+**Accepted ADRs** — `ADR-0040`, `ADR-0041`, `ADR-0042`, `ADR-0044` and others — and in
+`DOCUMENTATION_BASELINE.md`. A single inserted row shifts every line beneath it and converts those citations
+into silent misdirections. Appending below **L331** shifts **nothing**, and was verified to shift nothing.
+**The role is no less constituted for being recorded here:** this document is the ownership model in whole,
+not in part.
+
+### 9.1 The role
+
+| Role | Decides | Attests | Never decides |
+|---|---|---|---|
+| **Privacy Owner** | Whether a proposed processing of personal data is permissible: per-viewer behavioural tracking, presence and location inference, minor-inclusive data flows, cross-context identity resolution, and retention of observational data | That a **privacy review** demanded by an existing rule has been *completed*, so a gate conditioned on it can be evaluated | ⛔ Boundaries, ranks or permitted edges (**Architecture Owner**) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ document status or freeze (**Governance Owner**) · ⛔ its own conferral |
+
+⭐ **One holder, per §3 rule 1.** ⛔ **No personal name is recorded**, per §7 rule 4. The role is **vacant as
+constituted** — constituting an office does not fill it, and nothing in this document appoints anyone.
+
+### 9.2 Derivation — the five rules that already required it
+
+Each of these demands a privacy review and names **no** role able to perform it. This is the measurement that
+satisfies §2.1's own test rather than setting it aside.
+
+| # | Rule | Where | Rank | What it demands |
+|---|---|---|---|---|
+| 1 | Public Live Occupancy | `ARCHITECTURE_RULINGS.md` **L290** | **5** | *"Requires a completed privacy review before design"*, and expressly that it *"must not be invented"* |
+| 2 | `LIB-24.2` | `Library_PRD_v1.md` **L1025** | **3 — FROZEN** | A privacy review obligation inside a document that can no longer be edited to name its own reviewer |
+| 3 | `TSF-GAP-016` | `PRD-020` **L1784** | DRAFT | Routes an open item to *"**the privacy owner**"* — the phrase, verbatim, already in use |
+| 4 | `SEAT-GAP-014` | `PRD-SEAT-MANAGEMENT.md` **L2266** | 3 | *"Architecture + privacy review"* — two reviews, one role defined |
+| 5 | `LCR-DEC-003` / `LCR-GAP-006` | `PRD-021A` A3 | draft | Per-viewer impression tracking over a population `SM-INV-3` records as **minor-inclusive** |
+
+⭐ **Rule 2 is the one that forecloses every alternative.** A **FROZEN Rank 3** PRD already carries a privacy
+obligation. It cannot be amended to route that obligation elsewhere (`PRD_LIFECYCLE.md` **L177**), so the
+obligation must be dischargeable **as written**. That requires a role. Rule 1 independently forbids inventing
+the review, which means the *reviewer* cannot be improvised at the point of use either.
+
+### 9.3 Why none of the existing four can absorb it
+
+| Candidate | Why not |
+|---|---|
+| **Product Owner** | §2.2 scopes it to *"business intent: scope, priority, acceptance"*. Whether processing a minor's behavioural data is **permissible** is not a scope question; a Product Owner who could waive it could buy features with lawfulness |
+| **Architecture Owner** | §2.2 scopes it to *"boundaries, ranks, permitted edges, precedence"*. `SEAT-GAP-014` demands *"Architecture **+** privacy review"* — the conjunction is in the rule, so the two reviews are **not** the same review |
+| **Domain Owner** | §3 makes this per-PRD. Privacy determinations must be **consistent across** PRDs, or `BC-10`'s global identity rules fragment per document |
+| **Governance Owner** | Owns document status and process. ⚠ And it is **itself undefined here** — §9.4 |
+
+### 9.4 ⚠ Two disclosed defects, neither repaired
+
+| Defect | Measurement | Disposition |
+|---|---|---|
+| §2's closing arithmetic still reads *"Four distinct answers"* / *"Four roles is therefore the minimum"* / *"A fifth would have no rule to serve"* | The clause is a **conditional test**, and §9.2 shows the condition is now met — so the *reasoning* survives intact and only the *count* is stale | ⚠ **Disclosed, not edited.** Correcting the count in place is the insertion that breaks 35 citations to **L85**. Routed to the **Governance Owner** together with the line-citation convention itself |
+| ⛔ `Governance Owner` occurs **0** times in this document | Yet it is the approving authority named in **Accepted** `ADR-0053`, `ADR-0054` and `ADR-0064`, and the routing target of `LCF-GAP-001`, `LCF-GAP-008` and `LCR-GAP-001` | ⛔ **Disclosed, deliberately NOT fixed.** It is **more serious** than the privacy gap — three Accepted ADRs already record approval by a role this model never defines — and it is outside `ADR-0077`'s conferred authority. Deriving a *second* undefined role in the same pass would be exactly the unbounded self-authorisation `ADR-0033` §7.1 warns against |
+
+### 9.5 ⛔ What constituting this role does **not** do
+
+| Claim | Status |
+|---|---|
+| Any privacy decision is taken | ⛔ **No.** `LCR-DEC-003`, `LCR-GAP-006`, `TSF-GAP-016`, `SEAT-GAP-014` and `LIB-24.2` all remain **OPEN** |
+| `LCR-RS-007` (already-seen signal) becomes available | ⛔ **No** — still `DEFERRED`, weight **0** |
+| A holder is appointed | ⛔ **No.** Vacant. §7 rule 4 forbids recording a name |
+| `PRD-021A` A2 or A3 becomes ready or freezable | ⛔ **No** — **NOT READY, NOT FROZEN** |
+| §§2.1–2.3, §5, or any §4 PRD row is amended | ⛔ **No** — every cited line is byte-identical |

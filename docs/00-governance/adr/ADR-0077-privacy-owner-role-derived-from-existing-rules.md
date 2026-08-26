@@ -6,7 +6,7 @@
 | **Date** | 2026-08-25 |
 | **Deciders** | **Architecture Review Board**, acting through the **Architecture Owner** role defined in `PRD_OWNERSHIP_MODEL.md` §2.2 and §2.3 (L85, L102) — and specifically under **§5**, which states that *"**Only the Architecture Owner approves**"* a Rank 1–5 document change, the rule L284 records. Authority **expressly conferred for this one decision**; `ADR-0033` §7.1 — not a standing licence over the ownership model |
 | **Supersedes** | — |
-| **Amends** | `docs/00-governance/prd-ecosystem/PRD_OWNERSHIP_MODEL.md` (**Rank 1–5 governance artefact**) → **v1.2** — §2.1 derivation table (one row added), §2.2 role table (one row added), §2.3 vocabulary table (one row added), §2 closing sentence (*"Four roles"* → **five**, with the arithmetic restated), §5 stage-obligation table (one row added), §8 changelog. **No existing role removed, renamed, merged or re-scoped. No existing role's `Decides` or `Does not decide` cell altered.** Executed, see §6 |
+| **Amends** | `docs/00-governance/prd-ecosystem/PRD_OWNERSHIP_MODEL.md` → **v1.2**. ⚠ **EXECUTED BY APPEND, NOT BY INSERTION — see §8.** The role is constituted in a new **§9** plus a §8 changelog row; every pre-existing line is **byte-identical**, because the document is cited **by line number 74 times** (35 × **L85** alone) in **Accepted ADRs** and `DOCUMENTATION_BASELINE.md`. **The prescription below was the plan and is retained as the specification of what §9 says, not as a record of where it was written:** — §2.1 derivation table (one row added), §2.2 role table (one row added), §2.3 vocabulary table (one row added), §2 closing sentence (*"Four roles"* → **five**, with the arithmetic restated), §5 stage-obligation table (one row added), §8 changelog. **No existing role removed, renamed, merged or re-scoped. No existing role's `Decides` or `Does not decide` cell altered.** Executed, see §6 |
 | **Amended by** | — |
 | **Baseline** | **No baseline re-issue.** `PRD_OWNERSHIP_MODEL.md` is a governance artefact, not a **Rank 1–3** document; `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier *"only when a Rank 1–3 document changes version"*. `ADR-0055` and `ADR-0016` record the identical exemption. §7 steps 1–2 **are** engaged and are honoured: this ADR precedes the change, and the document's version and changelog move in the same commit |
 | **Closes** | The **role-existence** blocker only — the state in which `LCR-DEC-003` / `LCR-GAP-006` (and `TSF-GAP-016`, `SEAT-GAP-014`, `LIB-24.2`) were routed to an authority the repository **did not define**. See §5.1 |
@@ -237,3 +237,87 @@ plus the `Governance Owner` defect (§4.2). **No readiness and no freeze is conf
 | Baseline identifier advanced? | ✅ No |
 | Pre-existing defect search performed? | ✅ Performed, **did NOT return empty** — the `Governance Owner` gap (§4.2). **Disclosed, not repaired** |
 | Readiness / freeze claimed? | ✅ **No** — §5.2 |
+
+---
+
+## 8. ⚠ Execution method changed on verification — append, not insertion
+
+### 8.1 What §6 prescribed, and why it could not be done that way
+
+§6 prescribed inserting the `Privacy Owner` into four existing tables — §2.1 derivation, §2.2 roles, §2.3
+vocabulary, §5 stage obligations — and restating §2's *"four roles"* arithmetic in place. Before applying it,
+the target's citation exposure was measured:
+
+| Cited line | Citations | What lives there |
+|---|---|---|
+| ⭐ **L85** | **35** | `| **Architecture Owner** | Boundaries, ranks, permitted edges, precedence…` |
+| **L180** | 9 | `PRD-012a` register row |
+| **L284** | 8 | *"**Only the Architecture Owner approves.**"* |
+| **L68** / **L69** / **L102** | 7 each | `ADR-INDEX` Process step 1 · Baseline §7 step 1 · Architecture Owner vocabulary |
+| **L202** | 5 | `PRD-020` register row |
+| L64, L83, L90, L106, L163, L165, L179, L198, L199, L285, L305, L311, L329, L331, L6, L29, L35 | 1–3 each | — |
+| | **74 total** | across `ADR-0040`, `0041`, `0042`, `0044`, `ADR-INDEX`, `DOCUMENTATION_BASELINE.md`, `PRD-006` artefacts |
+
+⛔ **A row inserted into §2.2 sits above L85 and shifts all 35 of its citations by one.** Those citations are
+the load-bearing evidence that the **Architecture Owner** is the only body that may approve a Rank 1–5 change
+— the authority under which **this very ADR** was conferred. Breaking them to add a role would corrode the
+rule that made adding the role lawful.
+
+### 8.2 What was done instead, and the proof it shifted nothing
+
+The role is constituted in a **new §9**, appended below the §8 changelog, plus one `v1.2` changelog row. All
+new content sits at **L332+**; the pre-existing file was **331 lines**, and the highest **live** cited line is
+**L331**. Verified after the append — each of these resolves to exactly the same text as before:
+
+| L | Resolves to | |
+|---|---|---|
+| **L64** | `### 2.1 Derivation — what the rules actually require` | ✅ |
+| **L68** | `ADR-INDEX` Process step 1 row | ✅ |
+| **L69** | Baseline §7 step 1 row | ✅ |
+| **L83** | **Product Owner** row | ✅ |
+| ⭐ **L85** | **Architecture Owner** row | ✅ **unmoved — all 35 citations intact** |
+| **L102** | Architecture Owner vocabulary row | ✅ |
+| **L180** | `PRD-012a` register row | ✅ |
+| **L202** | `PRD-020` register row | ✅ |
+| **L284** | *"Only the Architecture Owner approves."* | ✅ |
+| **L329** / **L331** | `v1.0` / `v1.1` changelog rows | ✅ |
+
+File **331 → 399** lines; **0** pre-existing lines moved, changed or removed.
+
+⚠ **One stale citation observed and left alone:** `DOCUMENTATION_BASELINE.md` **L363** cites this document at
+**L358**, which does not exist — the file was 331 lines before this append and 399 after, so the citation was
+**already wrong** and is **not** made wrong by this ADR. Pre-existing drift, **disclosed, not repaired**.
+
+### 8.3 The one substantive consequence of appending
+
+§2's closing arithmetic still reads *"Four distinct answers"*, *"Four roles is therefore the minimum"* and
+*"A fifth would have no rule to serve"*. §6 intended to restate it as five.
+
+⭐ **The reasoning is untouched and the conclusion still holds** — the clause is a **conditional test**
+(*"would have no rule to serve"*), and §9.2 records the **five existing rules** the new role serves, so the
+condition is **met**, not overridden. Only the **count** is stale, and the stale count sits at **L64–L78**,
+directly above the 35 citations to L85.
+
+⚠ **Disclosed in the amended document's own §9.4 and routed to the Governance Owner**, together with the
+line-citation convention that caused it. **Not silently patched.** A reader who reaches §2 and then §9 sees
+both the original test and the measurement that satisfies it — which is more informative than an edited
+number would have been.
+
+### 8.4 Status ledger
+
+| Item | §6 claimed | ⭐ Actual |
+|---|---|---|
+| `PRD_OWNERSHIP_MODEL.md` at **v1.2** | ✅ | ✅ **Yes** — changelog row added |
+| `Privacy Owner` role **exists** | ✅ | ✅ **Yes** — §9.1, one holder, no name |
+| Written into §§2.1–2.3 / §5 | ✅ | ⛔ **No** — §9 instead, §8.1 |
+| §2 arithmetic corrected in place | ✅ | ⛔ **No** — disclosed, §8.3 |
+| Any privacy **decision** taken | never claimed | ⛔ **None.** `LCR-DEC-003`, `LCR-GAP-006`, `TSF-GAP-016`, `SEAT-GAP-014`, `LIB-24.2` all **OPEN** |
+| A holder appointed | never claimed | ⛔ **None** — vacant, §7 rule 4 |
+| `Governance Owner` gap | disclosed §4.2 | ⛔ **Still open, still not fixed** |
+| A3 readiness | none | ⛔ **NOT READY, NOT FROZEN** |
+
+⭐ **Contrast with `ADR-0075`.** The same class of defect — line-number citations to a living document — blocked
+`ADR-0075` outright, because the EA has **175** citations below its required insertion point and no
+append-only path that reaches the capability tree. Here an append-only path existed and was taken, so the
+decision executed. **Two ADRs, one root cause, two different outcomes** — which is why `ADR-0075` §8.5 routes
+the convention itself (its Option B) rather than either instance.

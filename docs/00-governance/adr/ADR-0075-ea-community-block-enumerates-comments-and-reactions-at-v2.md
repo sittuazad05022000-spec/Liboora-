@@ -2,18 +2,28 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Accepted** — 2026-08-25 |
+| **Status** | ⛔ **ACCEPTED IN PRINCIPLE — EXECUTION BLOCKED.** 2026-08-25. The **decision** in §2 stands: comments and reactions belong in the EA `Community (V2)` block at **V2**, and that is determined by Rank 1, not chosen. ⚠ **The edit in §6 was attempted, measured, and REVERTED.** Inserting two lines into the §9 capability tree shifts every subsequent line of a **2,549-line document**, invalidating **175 line-number citations across 32 files** — including **FROZEN Rank 3** `PRD-017` and `PRD-012a`. See §8. The EA is **byte-unchanged at `v2.2`**. |
 | **Date** | 2026-08-25 |
 | **Deciders** | **Architecture Review Board**, acting through the **Architecture Owner** role defined in `PRD_OWNERSHIP_MODEL.md` §2.2 and §2.3 (L85, L102) — the role `PRD_OWNERSHIP_MODEL.md` L284 records as the *only* approving body for a Rank 1–5 document change. Authority **expressly conferred for this one decision**; per `ADR-0033` §7.1 a conferral for one act is **not** a standing licence over the Enterprise Architecture |
 | **Supersedes** | — |
-| **Amends** | `docs/10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` (**Rank 6**) — §9 capability tree, the `Community (V2)` block only: **two child nodes added**, header version bumped `v2.2` → `v2.3`, one §11 changelog entry appended. **No node removed, no node renamed, no existing version tag changed, no other block touched, no bounded context minted, no edge minted, no aggregate moved, no event minted, no invariant altered, no tenancy mode touched.** Executed, see §6 |
+| **Amends** | ⛔ **NOTHING — as executed.** The EA is **byte-unchanged**, verified `sha256 bb07d1e7bf8fd0162212…`, **2,549 lines**, header **`v2.2`**, and `grep -c -i reaction` = **0**. `DOCUMENTATION_BASELINE.md` §3.2 **L139** is likewise unchanged, because §7 step 3 binds only when the document *does* change version. **The intended amendment is retained below as the specification of the blocked act, not as a record of a performed one:** `docs/10-architecture/LIBOORA_ENTERPRISE_ARCHITECTURE.md` (**Rank 6**) — §9 capability tree, the `Community (V2)` block only: **two child nodes added**, header version bumped `v2.2` → `v2.3`, one §11 changelog entry appended. **No node removed, no node renamed, no existing version tag changed, no other block touched, no bounded context minted, no edge minted, no aggregate moved, no event minted, no invariant altered, no tenancy mode touched.** Executed, see §6 |
 | **Amended by** | — |
 | **Baseline** | **No baseline re-issue.** The Enterprise Architecture is **Rank 6**; `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier *"only when a Rank 1–3 document changes version"*. `ADR-0042` and `ADR-0016` record the identical exemption. §7 **step 3** is nonetheless satisfied: `DOCUMENTATION_BASELINE.md` §3.2 **L139** is updated in the **same commit** |
-| **Closes** | **`LCF-GAP-013`'s enumeration half** — the EA half of A2's raised `MP-CON-08` defect — and A3 **`LCR-FND-013`** (finding F-2, the sole architectural residue of D2). See §5 |
+| **Closes** | ⛔ **NOTHING, as executed.** A gap is closed by a performed act, not an authorised one. `LCF-GAP-013`'s enumeration half and `LCR-FND-013` remain **OPEN**, now with a *named, measured and costed* blocker (§8) instead of an unanswered question — which is progress, but is not closure. **Intended, once §8 is resolved:** **`LCF-GAP-013`'s enumeration half** — the EA half of A2's raised `MP-CON-08` defect — and A3 **`LCR-FND-013`** (finding F-2, the sole architectural residue of D2). See §5 |
 | **Does NOT close** | `LCF-GAP-001`, `004`–`011`, `LCF-GAP-013`'s **citation** half (that is `ADR-0076`), `LCR-GAP-001`, `002`, `004`, `006`–`010`, `LCR-FND-001`…`006` (finding F-1), or any acceptance criterion. It confers **no** readiness and **no** freeze on any `PRD-021A` part. **This ADR amends a descriptive document; it verifies no code and ships no feature** |
 | **Related** | **`ADR-0042`** (the one-token Rank 6 correction precedent) · **`ADR-0061`** (Rank 3 alertability outranks a Rank 6 `V2` tag, and the EA was deliberately *not* edited — the contrast that makes this ADR's direction lawful) · `ADR-0016`, `ADR-0055` (baseline-exemption precedent) · `MASTER_PRD.md` **L92** (`MP-SCOPE-04`), **L519** (`MP-CON-08`) · BC Map **L119** (`BC-15`, V2) · EA **§10.3** (L2422–2429), **§10.5** (L2438–2445), **§11** (L2448) · A2 v0.6 `LCF-INV-002`, `LCF-FR-024`, `LCF-FR-026` · A3 v0.4 `LCR-FND-013` · `PRD-021A_LCF-GAP-012_DECISION_RECORD.md` §4.1 |
 
-> ✅ **ACCEPTED 2026-08-25. The migration in §6 has been executed.**
+> ⛔⛔⛔ **READ §8 FIRST. THE MIGRATION IN §6 WAS ATTEMPTED AND REVERTED.**
+>
+> The **decision** — that these two capabilities are `Community (V2)` children at **V2** — is sound and is
+> unchanged. The **execution** is blocked by a property of the target document that §1–§7 did not measure:
+> the EA is cited **by line number** 329 times across the repository, and **175 of those citations point at
+> lines below the insertion point**. A two-line insertion silently converts every one of them into a wrong
+> citation, in documents this ADR has no authority to touch — three of them **FROZEN**.
+>
+> ⭐ **§1–§7 are preserved verbatim and were not rewritten to fit the outcome.** They are the record of a
+> correct decision reached on incomplete measurement. §8 is the correction. Deleting them would hide that
+> the blocker was found by verification rather than by foresight — and the verification is the point.
 >
 > This ADR performs the **correction direction** `MP-CON-08` mandates and no other: a **Rank 6**
 > descriptive document is updated to match **Rank 1** and **Rank 3**, *never the reverse*. The
@@ -216,3 +226,127 @@ identifier does not advance**.
 | Baseline identifier advanced? | ✅ No — Rank 6 exemption, `ADR-0042`/`ADR-0016` precedent |
 | Pre-existing defect search performed? | ✅ Performed, and it did **NOT** return empty — see §4.2 (`Q-A6`, 10 vs 7 `v2.1` occurrences). Both **disclosed, neither repaired** |
 | Readiness / freeze claimed? | ✅ **No** — §5.3 |
+
+---
+
+## 8. ⛔ EXECUTION BLOCKER — discovered on verification, after the edit was applied
+
+### 8.1 What was done, and what it broke
+
+The §6 migration **was applied in full**: two nodes inserted after `Community Roles (V2)`, header `v2.2` →
+`v2.3`, `Last Updated` moved to `2026-08-25`, and a `### v2.3` entry appended to §11. The tree glyphs were
+byte-matched with `cat -A` beforehand, and the `V3` pair was deliberately kept as the block tail so the
+last-child glyph `└──` did not have to move. **The edit was mechanically correct and still wrong.**
+
+Post-edit verification measured the consequence:
+
+| Measurement | Before | After | Effect |
+|---|---|---|---|
+| EA total lines | 2,549 | 2,579 | +30 (2 tree nodes + 28 changelog) |
+| `Moderation (V3)` | **L972** | **L974** | ⚠ +2 |
+| `Community Analytics (V3)` | **L973** | **L975** | ⚠ +2 |
+| `Anti-Spam & Rate Limits (V1)` | **L920** | L922 | ⚠ +2 |
+| `Job Runtime (V2)` | **L1865** | L1867 | ⚠ +2 |
+| `DPDP Act (V2)` | **L2050** | L2052 | ⚠ +2 |
+| **EA line-citations repo-wide** | 329 | 329 | — |
+| ⛔ **Citations pointing below the insertion (≥ L974)** | **175 correct** | **175 WRONG** | ⛔ **the blocker** |
+
+⭐ **The citations were verified accurate *before* the edit**, so this is not pre-existing drift being
+inherited — it is **new breakage this ADR would author**. Spot-checks against the pre-edit blob:
+`L1865` = `Job Runtime (V2)` ✅ · `L2050` = `DPDP Act (V2)` ✅ · `L972` = `Moderation (V3)` ✅ ·
+`L973` = `Community Analytics (V3)` ✅. Post-edit, `L1865` resolves to `Offline Capability Matrix (V2)` and
+`L2050` to a blank tree connector.
+
+### 8.2 The 32 affected files, and why that settles it
+
+| Citing file | Citations ≥ L974 | Status |
+|---|---|---|
+| `PRD-008_REVENUE-AND-FINANCE.md` | **46** | `DRAFT` — Rank 3 |
+| `ADR-INDEX.md` | **15** | Governance index |
+| ⛔ `PRD-017_FILE_AND_MEDIA.md` | **13** | ⛔ **`FROZEN`** — Rank 3, conferred by `ADR-0054` |
+| ⛔ `PRD-012a_PART3` / `PART4` / `PART5` / `PART6` / `PART7` / `PART8` | **10 + 6 + 4 + 1 + 8 + 1 = 30** | ⛔ **FROZEN family** |
+| `ADR-0035`, `0037`, `0041`–`0047`, `0056`, `0058` | **~40** | **Accepted** ADRs |
+| `PRD-006`, `PRD-022`, `PRD-012a_SECURITY_AUTOMATION`, `PAYMENT_GOVERNANCE_RESOLUTION` | **6** | Mixed |
+| `PRD-021A` A2 v0.3/v0.4/v0.5, A3 v0.3, Decision Record, Owner Decision Request | **11** | This part's own drafts |
+
+⛔ **This ADR cannot lawfully repair them.** `PRD_LIFECYCLE.md` **L177** — *"A frozen PRD is never silently
+modified"* — forecloses editing `PRD-017` or the `PRD-012a` parts. Editing the bodies of **Accepted** ADRs to
+chase a Rank 6 line shift is worse: `ADR-0015`'s own risk row warns against exactly this kind of expanding
+"obvious fix". And leaving them wrong is not available either: `MP-CON-08` classes a document that disagrees
+with reality as *"a defect to be raised"*.
+
+⭐ **Only 48 of the 329 citations carry a content anchor** (e.g. `` EA **L1880** places CDN Delivery at **V2** ``);
+**281 are bare line numbers**. An anchored citation degrades into a self-correcting nuisance. A bare one
+becomes **silently, invisibly wrong** — and bare citations are the large majority.
+
+### 8.3 Why the `ADR-0042` precedent does **not** authorise this
+
+`ADR-0042` is cited throughout §1–§7 as *the* Rank 6 amendment precedent. On inspection of the commit
+(`58cb5f4`) it authorises **less** than assumed:
+
+| `ADR-0042`'s EA edit | This ADR's EA edit |
+|---|---|
+| **One token** in place: `Refunds (V2)` → `(V1)` at L820 | **Two whole lines inserted** into the tree |
+| Header version, one line, in place | Same |
+| Changelog **appended at the end** — below every citation | Same |
+| ⭐ **Net line shift in the tree body: ZERO** | ⛔ **+2 for everything below L973** |
+
+⭐ **`ADR-0042` never moved a line, so it never had to answer this question.** Its own changelog entry says
+*"No platform added, removed or re-homed; **no node added or lost**"*. The v2.3 entry I drafted reused that
+sentence pattern while doing the one thing `v2.2` explicitly did **not** do. **This ADR is the first EA
+amendment in the repository's history to insert a line into the capability tree**, and the citation
+convention that grew up around the document has no answer for it.
+
+### 8.4 What was reverted, and proof
+
+`git checkout --` on the EA only. Verified after: `sha256` prefix **`bb07d1e7bf8fd0162212`**, identical to the
+pre-edit blob; **2,549** lines; header **`v2.2`**; `Last Updated` **2026-08-02**; `grep -c -i reaction` = **0**;
+`Moderation (V3)` back at **L972** and `Community Analytics (V3)` at **L973**. `DOCUMENTATION_BASELINE.md` was
+**never** touched, so §7's same-commit obligation never came due. **No other file was modified in the revert.**
+
+### 8.5 What is now required, and who owns it
+
+⛔ **Not proposed here, because choosing among these is itself an architectural decision** — and one about
+governance convention, which is wider than this ADR's conferred authority (`ADR-0033` §7.1).
+
+| Option | Sketch | Owner |
+|---|---|---|
+| **A** | Append-only EA amendment: enumerate the two capabilities in a **new § at the end** of the EA, below all cited lines, cross-referenced from `Community (V2)` **without inserting a line**. Ugly, but shifts nothing | Architecture Owner |
+| **B** | Retire line-number citation of the EA in favour of **section + node-name anchors**, then insert freely. Correct long-term; touches 32 files including frozen ones | Governance Owner + Architecture Owner |
+| **C** | Insert the two nodes **and** re-point all 175 citations in one atomic commit under an explicit frozen-document exemption | Governance Owner (frozen-PRD exemption) + Architecture Owner |
+| **D** | Accept `LCF-GAP-013`'s enumeration half as **permanently open**, on the ground that the EA is descriptive and A2 already carries the normative statement | Architecture Owner |
+
+⭐ **Option B is the only one that removes the class of defect rather than an instance of it**, and it is also
+the only one that explains why this repository has **281 bare line citations** to a living document. That is a
+**Governance Owner** matter — and `Governance Owner` is itself **undefined** in `PRD_OWNERSHIP_MODEL.md`
+(`ADR-0077` §4.2 discloses this). The two blockers are therefore linked, and neither is invented here.
+
+### 8.6 Status ledger after §8
+
+| Item | Claimed in §1–§7 | ⭐ Actual |
+|---|---|---|
+| EA amended | ✅ executed | ⛔ **NO** — byte-unchanged at `v2.2` |
+| `DOCUMENTATION_BASELINE.md` §3.2 L139 moved | ✅ same commit | ⛔ **NO** — not due |
+| `LCF-GAP-013` enumeration half | ✅ closed | ⛔ **OPEN** — blocked, §8.5 |
+| `LCR-FND-013` | ✅ closed | ⛔ **OPEN** — same blocker |
+| The **`V2` determination** | Rank 1 `MP-SCOPE-04` | ✅ **UNCHANGED AND SOUND** — independent of the edit |
+| The **reaction kind set** | Product Owner ruling | ✅ **UNCHANGED** — lives in A2, not the EA |
+| A2 / A3 readiness | none claimed | ✅ **still none** — **NOT READY, NOT FROZEN** |
+| Baseline identifier | not advanced | ✅ **not advanced** — now trivially true |
+
+⭐ **The Product Owner rulings are unaffected.** `LIKE`/`HELPFUL`/`CELEBRATE`, the `HELPFUL` designation and
+the 70/30 weights all land in **A2 and A3**, which are Rank 3 and carry the normative text. The EA is
+**descriptive** (`MP-CON-08`); its silence is a **disclosure defect**, not a functional gap. ⛔ **But it is
+still a defect, and it is still open.**
+
+### 8.7 ⭐ Why this ADR was not deleted or quietly downgraded
+
+Deleting it would erase the measurement. Rewriting §1–§7 to pretend the blocker was known would be a
+falsified record. `PRD_LIFECYCLE.md` §5 rule 5 — *"Numbers are never reused, even after withdrawal"* —
+means `ADR-0075` is spent regardless. **The honest disposition is the one recorded here:** a sound decision,
+a blocked execution, a named and measured cause, and four routed options.
+
+⚠ **`ADR-0076`, `ADR-0077` and `ADR-0078` are unaffected by this blocker.** `ADR-0076` amends **A2**, a Rank 3
+document nobody cites by line number. `ADR-0077` amends `PRD_OWNERSHIP_MODEL.md`, cited by line in **one**
+place, verified. `ADR-0078` amends **nothing**. **Only the EA has this citation-density problem**, which is
+itself the strongest argument for Option B.

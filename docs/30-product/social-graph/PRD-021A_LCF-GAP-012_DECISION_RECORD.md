@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `PRD-021A` authoritative Owner Decision Record. Originally the `LCF-GAP-012` / `LCR-DEC-002` record (D2-P); **extended at v2.0** to carry every subsequent owner ruling. ⭐ **This is the single decision record for `PRD-021A`** — see §7.0 |
-| **Version** | **v2.1** — 2026-08-25. v2.0 and v1.0 retained in full below (§1–§6, §7.0–§7.11) and in repository history. ⭐ **v2.1 adds §7.12 ONLY, by APPEND** — because **L303–304** of this file are cited by `ADR-0081` §2, `ADR-INDEX.md` and A3 v0.5, so nothing above them was allowed to move |
+| **Version** | **v2.2** — 2026-08-25. v2.1, v2.0 and v1.0 retained in full below. ⛔ **v2.2 closes NOTHING**: it records that **Stage 7 is NOT ENTERABLE**, that **all 18 `LCF`/`LCR` items remain OPEN**, and that `READY`/`FROZEN` are **REFUSED** — see **§7.13** |
 | **Decision** | **Community Comments and Community Reactions are IN SCOPE and SHALL SHIP in the current `PRD-021A` generation** |
 | **Product Owner** | ✅ **DECIDED** — SHIP (v1.0, §1) **and**, at v2.0: reaction kinds `LIKE`/`HELPFUL`/`CELEBRATE` (§7.2), `HELPFUL` = the helpfulness signal (§7.3), Recency `70` / Legitimate engagement `30` (§7.4). ⛔ **STILL OWED at v2.1: a helpfulness weight.** `LCR-DEC-009` is **REFUSED as undecidable** by `ADR-0081` §2 rather than answered — §7.12.3 |
 | **Architecture Owner / ARB** | ✅ **DECIDED at v2.0** via four ADRs — `ADR-0075` (EA enumeration, D2-A-i), `ADR-0076` (citation repointing, D2-A-ii), `ADR-0077` (Privacy Owner role), `ADR-0078` (`LCR-GAP-009` tenancy). See §7.5–§7.8. ⭐ **Extended at v2.1** by `ADR-0079` (the EA enumeration **executed**) and `ADR-0081` §3 — see §7.12 |
@@ -780,6 +780,186 @@ Rank 1–3 document changes version"*) — the EA is **Rank 6**.
 
 ---
 
+### 7.13 ⛔⛔ v2.2 — Stage 7 is NOT ENTERABLE, and the remaining 18 items are ROUTED, not resolved
+
+The instruction that produced this subsection was explicit on both halves: *"Mandatory Stage 7 complete karo"* **and**
+*"koi value/decision invent mat karo."* Where those two requirements met, **the second one won.** This subsection
+records why, and what was measured to establish it.
+
+**Authority:** `ADR-0082` (`Accepted`) — Governance Owner (§2, §6), Architecture Owner (§4), Traceability Owner
+(§5, *measurement only*). Companion record: `PRD-021A_STAGE7_BLOCKER.md`.
+
+#### 7.13.1 Stage 7 — the gate was read at its line
+
+`PRD_LIFECYCLE.md` **L159** states the gate as a positive requirement:
+
+> **Gate:** a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank.
+
+and **L160–161** state the rule:
+
+> **"Freeze is conferred, not claimed. No PRD in this repository declares itself frozen."**
+
+⭐⭐ **`DOCUMENTATION_BASELINE.md` contains exactly ONE occurrence of `PRD-021A`, at L139 — and it is inside §3, and
+it DENIES readiness.** The line was opened and read rather than counted, because a hit inside §3's range could be
+mistaken for the gate being satisfied. It is a cell in the Enterprise Architecture's row, and it ends:
+
+> ⛔ Enumerating a capability in a **descriptive** document confers **no readiness**: `PRD-021A` remains **NOT READY /
+> NOT FROZEN**.
+
+⭐ **That sentence was written by this same pass four days earlier, under `ADR-0079`.** A pass declaring the freeze
+now would contradict its own text inside the very document that constitutes the gate.
+
+**Three earlier gates are unmet before it**, each measured independently:
+
+| Stage | Gate quoted at its line | Measurement | State |
+|---|---|---|---|
+| **3** | **L88** — *"a written **alignment record** naming every conflict and its disposition"* | `ls docs/30-product/social-graph/ \| grep -c ALIGNMENT` → **0**. Twelve exist for other PRDs | ⛔ UNMET |
+| **5** | **L123** — *"prefixes registered … verified **mechanically**, zero collisions"* | `grep -c "LCF-\|LCR-"` on the matrix → **0** | ⛔ UNMET |
+| **6** | **L135** — *"an `IMPL-*` range allocated"* | **0**. Next free block is **`IMPL-1500`+** (`PRD-020` holds 1400–1449, reserves 1450–1499, its **L2434**) | ⛔ UNMET |
+
+⛔ **Four routes to "completing" Stage 7 were considered and refused** (`ADR-0082` §2.3): writing the baseline row
+(the row *is* the gate — that is claiming, not conferral); declaring `FROZEN` in A2/A3's headers (**L160** forbids it
+in terms); passing Stages 3/5/6 first to reach Stage 7 (refused as a fast path — **L294**: *"**No fast path.** Stage 7
+is not skippable"*); and recording Stage 7 `NOT APPLICABLE` on the `ADR-0060` precedent. ⭐ **The fourth deserves its
+distinction:** `ADR-0060` applied because Stage 1's gate is **context-scoped** and **did not reach** a platform-scoped
+document. **Stage 7's gate reaches `PRD-021A` perfectly well.** It is **UNMET, not INAPPLICABLE**, and conflating the
+two would be the `PRD-013` blocker-1 error — reasoning *"history, not a rule"*, which `ADR-0050` §5 withdrew.
+
+#### 7.13.2 ⭐⭐⭐ The five Architecture-Owner items — authority is HELD, execution is REFUSED on measurement
+
+This is the finding of the pass, and it inverted the pass's own expectation.
+
+Five items (`LCF-GAP-009`, `LCR-GAP-008`, `LCR-DEC-007`, `LCR-GAP-004`, `LCR-DEC-004`) name the **Architecture
+Owner** — an authority this pass holds and has exercised lawfully five times (`ADR-0055`, `ADR-0076`, `ADR-0078`,
+`ADR-0079`, `ADR-0061`). All five reduce to **one edit**: adding `BC-15` to the **Rank 4** Bounded Context Map. So the
+edit was **measured before being attempted**:
+
+```
+LIBOORA_BOUNDED_CONTEXT_MAP.md  →  624 lines, Rank 4
+line-citations INTO it          →  2,920, across 310 distinct cited lines
+```
+
+| Insert site | Purpose | Cited lines shifted | **Citations INVALIDATED** | Files | Frozen / ranked |
+|---|---|---|---|---|---|
+| **§8, L388** (after `BC-27`) | the `BC-15` aggregate row | **92** | ⛔ **658** | **87** | **11** |
+| **§7, L360** | the `BC-15 → BC-11` edge | **113** | ⛔⛔ **1,112** | **102** | **13** |
+
+Casualties include **L488 ×79**, **L450 ×51**, **L422 ×31** and **L435 ×21** — L422 and L435 are cited by
+**`DOCUMENTATION_BASELINE.md` itself** — and **L605 ×5**, cited by **`ADR-0081`, this pass's own immediately
+preceding ADR**. Frozen or ranked documents that would break include `PRD-017_FILE_AND_MEDIA`,
+`PRD-014_ENTITLEMENT`, `PRD-016_AUDIT_TRAIL`, `PRD-012a_ARCHITECTURE_ALIGNMENT`, `PRD-008_REVENUE-AND-FINANCE` and
+the `PRD-020` family.
+
+⛔ **`ADR-0079`'s append technique does not transfer.** It worked because the EA tolerates an addendum below its
+highest cited line. **BC Map §7 and §8 are STRUCTURED REGISTERS**: a row must land *inside* the table, and BC Map
+**L292** rules that a surface absent from *the table* does not exist — so appending below §8 satisfies **nothing**.
+Worse, §7's closing pattern-count block at **L350–358** contains *"Separate Ways | 1 | Library Management ⟷ Student
+Network `BC-11`…`BC-17` (structural)"*, a cell the new edge **directly contradicts**.
+
+⭐⭐ **The decisive comparison:** `ADR-0075` attempted an edit of this exact shape, measured **175** invalidated
+citations across **32** files, and was **fully reverted**; its status is still `⛔ ACCEPTED IN PRINCIPLE — EXECUTION
+BLOCKED`. **The act refused here is 3.8×–6.4× larger.** Re-attempting a reverted act at six times the scale, in the
+same pass that recorded the revert, would be indefensible.
+
+⭐⭐⭐ **The finding, stated plainly: holding the authority to decide is not the same as the decision being
+executable.** The blocker is the repository's line-citation architecture, not jurisdiction — and the route that
+unblocks it is already published and already open: `ADR-0075` **§8.5 Option B**, retiring the **281** remaining bare
+line-citations. ⛔ **The BC Map is byte-unchanged.**
+
+#### 7.13.3 ⭐ Stage 5 is measured EXECUTABLE — and deliberately not executed
+
+This subsection would be dishonest if it reported all gates as equally immovable. They are not.
+
+```
+TRACEABILITY_MATRIX.md                       →  2,318 lines, UNRANKED (its own L8)
+line-citations INTO it                       →  140, across 80 distinct lines
+highest matrix line cited anywhere           →  L2046
+```
+
+L2046 would sit *below* a §3 insert point at **L1872**, so it was **opened and read**. The text at matrix **L1833**
+and **L2299** is *"§24.2 **L2046**"* — a citation to **`PRD-020`'s** §24.2, **not to the matrix**. ⭐ **It is a false
+positive**, so a new §2P at **L1872** shifts one cited line and that line is the false positive ⇒ **0 real citations
+invalidated.** The matrix is unranked, so no ADR is needed to amend it.
+
+It was still not executed, on **four sequencing grounds**: Stage 3 comes first; **`tool/docs_check/` holds 28
+checkers and none for `PRD-021A`**, so **L123**'s *"verified **mechanically**"* — which every existing `§2x`
+registration satisfies with **two committed, independent checkers** — is unsatisfiable today; registration advances
+no stage; and the `LCF-GAP-002`/`LCF-GAP-003` non-contiguity (**both absent repository-wide** while `LCF-GAP-*` runs
+to 14) requires an **owner annotation**, renumbering being forbidden by `PRD_LIFECYCLE.md` §5 rule 5 — *"Numbers are
+never reused, even after withdrawal."*
+
+⭐ **It is labelled a sequencing refusal, not an impossibility**, so the next pass is not misled into believing
+Stage 5 is structurally blocked. It is blocked by order, and the order is the constraint.
+
+#### 7.13.4 ⛔ `LCR-DEC-009` re-confirmed REFUSED, and the other 12 owner-blocked items
+
+`ADR-0081` §2 refused `LCR-DEC-009` as undecidable. Two probes were re-run as a **check on** that refusal, not an
+attempt to overturn it: `grep -ril "helpfulness"` returns **10 files, every one inside the `PRD-021A` family** ⇒ **0**
+external rulings, and the Owner Decision Request **L365** still reads *"proposes … no value of any kind."*
+
+⛔ **The refusal stands.** ⭐ **The invariant is preserved exactly:** `LCR-RS-003` Helpfulness stays **`ELIGIBLE` at
+weight 0** (§7.4 above, and A3 **L1164**/**L1251**), and the active set stays **`70 + 30 = exactly 100`**. *A weight
+assigned by this pass would be an invented requirement wearing a resolution marker, and it would silently overwrite
+the one split the Product Owner did rule.*
+
+The other 12 were each probed for a ruling by their own named owner. **Every probe returned nothing outside the
+family** — and ⭐ **two probes returned what looked like hits and were proven not to be**: `grep -c "\bPERM-[0-9A-Z]"`
+returns **1** repo-wide hit, which **is the disclosure recording the absence**; and `helpState`/`resolutionState`
+outside the family returns **1**, which **is `ADR-0081`'s own disclosure of the gap**. Separately measured:
+`ls -d integration_test` → **`No such file or directory`** (`LCF-GAP-011` stays OPEN), and **0 PRDs own `BC-14`**
+(`LCF-GAP-004` stays OPEN).
+
+⛔ **One route was available for all 13 and is refused explicitly**: each could be marked ✅ by minting the missing
+value and citing `ADR-0082` as its authority. The repository already names that failure mode, in
+`TRACEABILITY_MATRIX.md` §2O, having refused the identical shortcut for `PRD-020`:
+
+> *"A fix that moves a percentage by creating identifiers is not a fix; it is the defect Stage 5 registers against."*
+
+#### 7.13.5 ⚠ The `PRD-020` dependency — respected, and one discrepancy disclosed
+
+The `PRD-020` release gate (`PRODUCT_IMPLEMENTATION_ROADMAP` **L161–164**) is **reaffirmed**, not softened.
+
+⚠ **A discrepancy was found and is disclosed rather than repaired.** `PRD-020`'s own header (**L8**, **L17**) declares
+*"`DRAFT` — Stage 2"* and *"Stages 3–9 **not started**"*. That is **false of the record**: `PRD-020_STAGE3_ARCHITECTURE_ALIGNMENT.md`
+(127 L) reads **PASS 6/6**, `PRD-020_STAGE4_REQUIREMENTS_REVIEW.md` (156 L) reads **PASS 6/6** at v1.2, and
+`PRD-020_STAGE5_CONFERRAL.md` (266 L) reads **CONFERRED**. ⇒ **`PRD-020` has reached Stage 5 of 9.** Repairing the
+header is a document-owner act, so it is opened as **`LCF-GAP-015`** and `PRD-020` is left **byte-unchanged**.
+
+⭐⭐ **And it does NOT unblock `LCF-GAP-007`** — recorded explicitly, because a future reader who repairs the header
+might conclude otherwise. The blocker is **rank**, not progress: `grep -c "PRD-020"` over
+`DOCUMENTATION_BASELINE.md` → **0**, `PRD-020` is **Unranked**, and its own **L18** states it *"must not be cited as
+authority against any ranked document."* **Stage 5 confers `APPROVED`, not rank**; rank is conferred at **Stage 7**,
+which `PRD-020` has also not reached. So `TSF-CFG-030` remains uncitable and both `LCF-GAP-007` and `LCR-GAP-007`
+stay **OPEN**.
+
+#### 7.13.6 ⛔⛔ Release gating — `READY` / `FROZEN` REFUSED, and the conditions enumerated
+
+⛔ **`PRD-021A` is NOT READY and NOT FROZEN.** `ADR-0082` §6 enumerates **eleven** conditions and **none is met**.
+The instruction permitted the marking *"sirf genuinely satisfied conditions par"* — only on genuinely satisfied
+conditions — and the conditions are not satisfied. A2 stays **v0.7 `DRAFT`**, A3 stays **v0.5 `DRAFT`**, and
+`PRD_REGISTRY.md` **L321** stays **`PLANNED`**.
+
+⭐ **What was NOT done, exhaustively:** no baseline row created; no rank assigned; no `FROZEN`/`READY`/`RELEASED`/
+`BASELINED` claimed; no conditional or partial freeze (a category `PRD_LIFECYCLE.md` does not define — inventing one
+would be the same act as inventing a requirement value); no stage advanced; no gap closed; **no value or decision
+invented**; no `Accepted` ADR's decision text edited; **no Rank 1–4 document amended** — `MASTER_PRD.md`, the **BC
+Map**, the Dependency Matrix and **every FROZEN PRD are byte-unchanged**; the **matrix**, the **baseline** and
+**`PRD-020`** are byte-unchanged; and **A2 and A3 themselves are byte-unchanged** at
+`9192a8b1…5c19` and `6fb17cb1…91e8`.
+
+#### 7.13.7 ⚠ Disclosed and NOT repaired by v2.2
+
+| # | Item | Why not repaired here |
+|---|---|---|
+| 1 | ⭐ **`LCF-GAP-015`** — `PRD-020`'s header claims Stage 2 while its Stage 3/4/5 records all PASS | A document-owner act. §7.13.5, and it does **not** discharge the dependency |
+| 2 | ⭐ **`LCF-GAP-002` / `LCF-GAP-003` absent repository-wide** while `LCF-GAP-*` runs to 14 | Renumbering forbidden (`PRD_LIFECYCLE.md` §5 rule 5). Needs an **owner annotation**, not a matrix registration that papers over it |
+| 3 | ⚠⚠ **A FOURTH link in the `ADR-INDEX.md` citation chain — L143 → L147 → L150 → L151** | ⭐ **Caused by this pass, measured BEFORE the edit, and disclosed in `ADR-INDEX.md` under `Process` step 1 rather than found later.** Adding the `ADR-0082` row moved the rule from L150 to L151. The insert was still made, because the alternative was leaving an `Accepted` ADR unregistered, which `ADR-0057`'s discipline forbids. ⛔ **The 19 citations reading "L143" were ALREADY stale** and are not newly broken; and **two apparent external casualties were opened and read at their lines and proven FALSE POSITIVES** — `PRD-006_AUTHORITY_DETERMINATION.md`'s "L163" cites `PRD_OWNERSHIP_MODEL.md`, `PRD-020_TRUST_AND_SAFETY.md`'s "L169" cites `ADR-0059` — so the real cost is **9 self-references in 2 files this pass already edits, and 0 external documents.** This is now the strongest single piece of evidence for `ADR-0075` §8.5 **Option B** |
+| 4 | `ADR-0075` **Option B** — the **281** bare `EA L###` citations | Out of scope, and §7.13.2 shows it is the **prerequisite** for the five structural items |
+| 5 | ⚠ **A measurement-shape trap recorded for the next pass** | The v2.1 note recorded this file's **L303–304** md5 as `be9afe38…`. That value is correct **only without a trailing newline** (`printf '%s'`); the canonical `sed \| md5sum` form is **`616b1d0652a4be797fe0058ebd136e04`**. **Both were asserted before this append, and both held** — the file is byte-identical to commit `0e03144`. ⭐ Recorded because a hash that looks broken is indistinguishable from content drift until the command shape is checked, and the honest response is to publish both forms rather than to quietly replace one |
+| 6 | The standing deferred set — `GCP-14`/`18`/`20`…`25`, `PGA-01`…`10`, `Q-01`…`07`, `Q-A6`, the 9 `ADR-0012` boundary findings, the 6 baseline `docs_check` failures | Each has a named owner or is red by design |
+
+---
+
 ## 8. Change history
 
 | Version | Date | Change |
@@ -788,4 +968,6 @@ Rank 1–3 document changes version"*) — the EA is **Rank 6**.
 | **v2.0** | **2026-08-25** | ⭐ **Extended in place — no second decision record created** (§7.0). Carries seven owner rulings: reaction kinds `LIKE`/`HELPFUL`/`CELEBRATE`; `HELPFUL` = helpfulness; Recency 70 / engagement 30 = **exactly 100**; EA enumeration at V2 (`ADR-0075`); citation repointing **by measurement, not guess** (`ADR-0076`); Privacy Owner **derived** from five existing rules (`ADR-0077`); `LCR-GAP-009` resolved by scoping L450 against a **third** measurement, with the BC Map **byte-unchanged** (`ADR-0078`). §4.1–§4.4 annotated SUPERSEDED with their reasoning preserved verbatim. ⚠⚠ **Corrects a carried-forward error: the next free ADR number was NOT `ADR-0066`** — `0066`–`0073` are earmarked by `PRD-020` §29.2 and `0074` is contested, so `0075`–`0078` were used (§7.10). ⛔ **Three disclosed and NOT repaired:** the `Governance Owner` role gap, `MASTER_PRD.md`'s 10 stale `v2.1` EA citations (`Q-A6`), and BC Map L450's wording. ⛔ **`READY` / `FROZEN` / `RELEASED` NOT claimed** (§7.11) |
 | **v2.1** | **2026-08-25** | ⭐ **Extended in place again — §7.12 added by APPEND ONLY, and no line above it moved**, because **L303–304** of this file are cited by `ADR-0081` §2, `ADR-INDEX.md` and A3 v0.5. Carries three `ACCEPTED` ADRs. ⭐ **`ADR-0079` EXECUTED the EA enumeration that `ADR-0075` left blocked**, by the append-only path `ADR-0075` §8.5 pre-authorised as **Option A**: EA **v2.2 → v2.3** with a new §12, appended below **L2404**, the highest EA line cited anywhere. Measured after execution: **482** EA citations re-resolved, **0 invalidated**, **0** cited-line contents changed, **L967–L973 byte-identical**, **0 frozen files touched**. ⚠ **Corrects a FALSE claim in v2.0's own Subject row**, which said "EA v2.2 → v2.3" when that edit had in fact been reverted. ⭐ **`ADR-0080` constituted the `Governance Owner`** by derivation from `PRD_LIFECYCLE.md` **L282** and three `Accepted` ADRs that had already named it as `Deciders`; `PRD_OWNERSHIP_MODEL.md` → **v1.3 by APPEND**, role **VACANT**, no personal name ⇒ **`LCF-GAP-001` and `LCR-GAP-001` CLOSED**, discharging the gap §7.11 disclosed. ⛔⛔ **`ADR-0081` REFUSED `LCR-DEC-009` as undecidable rather than inventing a helpfulness weight** — six determinability probes all returned nothing — so `LCR-RS-003` stays **ELIGIBLE at 0** and the active set stays **70 + 30 = exactly 100**; `LCF-GAP-005` closed **on measurement**, while its identically-tested sibling `LCF-GAP-011` stays **OPEN**. Consequential: A2 → **v0.7**, A3 → **v0.5**, `ADR-INDEX.md` extended to **72** registered ADRs (re-derived mechanically: 72 / 58 / 13 / 1 / 0). ⚠ **Six items disclosed and NOT repaired** (§7.12.5), including a **newly discovered second instance of the bare-line-citation defect class** — six documents cite `ADR-INDEX.md` "L143" for a rule that now sits at **L150**, broken by the *previous* pass and bisected rather than assumed. ⭐ **The note then caught itself:** it was written saying "L147" — true of the 186-line file — and this pass's own three new rows moved the rule to **L150**, so the disclosure of a stale citation became stale itself and was corrected in place. The full chain **L143 → L147 → L150** — three breakages, two inside one pass, zero detected by CI — is recorded as measured evidence for Option B. ⛔ **`READY` / `FROZEN` / `RELEASED` / `BASELINED` all still NOT claimed; the `PRD-020` release gate is REAFFIRMED and 11 conditions remain unmet** (§7.12.4) |
 
-*End of Decision Record v2.1. Ten blockers resolved across v2.0 and v2.1, one formally REFUSED, zero stages advanced, nothing frozen, and zero values invented.*
+| **v2.2** | **2026-08-25** | ⛔⛔ **Extended in place a third time — §7.13 added by APPEND ONLY, and no line above it moved**, because **L303–304** of this file are cited by `ADR-0081` §2, `ADR-INDEX.md` and A3 v0.5; **both md5 forms of that anchor were asserted before the append and both held**. Carries **one** `Accepted` ADR, `ADR-0082`, and **it closes nothing — that is its finding.** ⭐⭐ **Stage 7 is recorded NOT ENTERABLE, not merely blocked.** Its gate — *"a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank"* (`PRD_LIFECYCLE.md` **L159**) — does not exist, and the baseline's **only** mention of `PRD-021A`, at **L139**, **denies** readiness in a sentence **this same pass wrote** under `ADR-0079`. **Stages 3, 5 and 6 are unmet before it** (0 alignment records · 0 matrix registrations · 0 `IMPL` range, next free `IMPL-1500`+). **Four routes to "completing" Stage 7 refused**, including the `ADR-0060` `NOT APPLICABLE` route — rejected because Stage 1's gate was **context-scoped and did not reach** a platform, whereas **Stage 7's gate reaches `PRD-021A`: it is UNMET, not INAPPLICABLE.** ⭐⭐⭐ **The central finding: holding an authority is not the same as the decision being executable.** Five items name the **Architecture Owner**, which this pass holds and has exercised five times — but the one BC Map edit all five reduce to was **measured before being attempted** and invalidates **658** citations (§8 row; 92 lines, 87 files, **11 frozen/ranked**) or **1,112** (§7 edge; 113 lines, 102 files, **13 frozen/ranked**), including into **`DOCUMENTATION_BASELINE.md` itself** (BC Map L422 ×31, L435 ×21) and into **`ADR-0081`**, this pass's own preceding ADR (L605 ×5). ⛔ **`ADR-0079`'s append route does NOT transfer** — BC Map §7/§8 are **structured registers** and **L292** holds that a surface absent from *the table* does not exist; §7's pattern-count cell at **L350–358** is additionally **contradicted** by the new edge. **The act is 3.8×–6.4× larger than the `ADR-0075` act already measured at 175 citations and REVERTED**; the unblocking route is `ADR-0075` **§8.5 Option B**. ⭐⭐ **The opposite result is reported with equal care:** Stage 5 is measured **EXECUTABLE** — the matrix is **unranked** and its highest cited line **L2046** was **opened and read and proven a FALSE POSITIVE** (the text is *"§24.2 L2046"*, citing **`PRD-020`'s** §24.2) ⇒ a §2P at **L1872** invalidates **0 real citations** — and is declined on **four sequencing grounds**, chiefly that **`tool/docs_check/` holds 28 checkers and none for `PRD-021A`**, so **L123**'s *"verified mechanically"* is unsatisfiable today. It is expressly labelled *"a sequencing refusal, not an impossibility."* ⛔ **`LCR-DEC-009` re-confirmed REFUSED as undecidable** — `grep -ril "helpfulness"` returns **10 files, all inside the family** ⇒ 0 external rulings — so `LCR-RS-003` stays **`ELIGIBLE` at weight 0** and the active set stays **70 + 30 = exactly 100**. **The other 12 owner-blocked items were each probed and every probe returned nothing**; ⭐ two *looked* like hits and were proven not to be — `PERM-*` returns **1** repo-wide hit which **is the disclosure of the absence**, and `helpState` returns **1** which **is `ADR-0081`'s own disclosure**. ⚠ **`PRD-020`'s header claim of "Stage 2 — Stages 3–9 not started" measured FALSE** (Stage 3 PASS 6/6, Stage 4 PASS 6/6, Stage 5 CONFERRED all exist ⇒ **Stage 5 of 9**) — opened as **`LCF-GAP-015`**, **not repaired**, and §7.13.5 records that it **does NOT unblock `LCF-GAP-007`**, because the blocker is **rank**: `PRD-020` occurs **0** times in the baseline, its own **L18** forbids citing it against ranked documents, and **Stage 5 confers `APPROVED`, not rank**. Consequential records: `PRD-021A_STAGE7_BLOCKER.md` (**new**, 393 L, on the `PRD-012a`/`PRD-013` precedent, *"performs no governance act"*) and `ADR-INDEX.md` → **73** registered ADRs (**re-derived mechanically: 73 / 59 / 13 / 1 / 0, unparsed EMPTY**; unregistered enumeration returned exactly `ADR-0082`). ⚠ **Six items disclosed and NOT repaired** (§7.13.7), including a **FOURTH link in the `ADR-INDEX.md` citation chain, L143 → L147 → L150 → L151, caused by this pass, measured BEFORE the edit and disclosed in the index itself** — with the 19 "L143" citations shown to be **already stale** and two apparent external casualties **read at their lines and proven false positives**, leaving a real cost of **9 self-references in 2 files this pass already edits and 0 external documents**. ⛔⛔ **`READY` / `FROZEN` / `RELEASED` / `BASELINED` all REFUSED; the `PRD-020` release gate REAFFIRMED; 11 conditions unmet; all 18 `LCF`/`LCR` items remain OPEN; 0 closed; 0 stages advanced; 0 values invented; no Rank 1–4 document, no FROZEN PRD, and neither A2 nor A3 modified.** |
+
+*End of Decision Record v2.2. Ten blockers resolved across v2.0 and v2.1, **two** formally REFUSED, **eighteen still OPEN**, zero stages advanced, nothing frozen, and zero values invented.*

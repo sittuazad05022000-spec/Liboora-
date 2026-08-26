@@ -6,9 +6,9 @@
 | Field | Value |
 |---|---|
 | **Document** | LIBOORA Enterprise Architecture (Master) |
-| **Version** | `v2.2` |
+| **Version** | `v2.3` |
 | **Status** | Reviewed & Refined — Approved for Implementation |
-| **Last Updated** | 2026-08-02 |
+| **Last Updated** | 2026-08-25 |
 | **Reviewed By** | Principal Enterprise Architect · SaaS Platform Architect · DDD Expert · Cloud Architect · AI Platform Architect |
 | **Supersedes** | `v1.0` (pre-review architecture tree) |
 | **Platform Count** | 25 |
@@ -2447,6 +2447,28 @@ These rules are **normative**. Any change to this architecture must satisfy all 
 
 ## 11. Changelog
 
+### `v2.3` — 2026-08-25 — Two Community capabilities enumerated by append-only addendum (`ADR-0079`)
+
+**No node was inserted into the capability tree. No existing line moved.** `Community (V2)` at **L967–973** is
+byte-identical to `v2.2`. The two capabilities this document failed to enumerate — **Community Comments** and
+**Community Reactions** — are recorded in the new **§12**, which sits below **every** line cited by line number
+anywhere in the repository (highest such citation: **L2404**, `PRD-012a_PART8` → `EA L2404`).
+
+| Capability | Was | Now | Authority |
+|---|---|---|---|
+| `Community Comments` *(Layer 2 → GLOBAL STUDENT PLATFORM → Community)* | **absent** | **V2** | **Rank 1** `MP-SCOPE-04` (`MASTER_PRD.md` **L92**) places `BC-14`/`BC-15` at **V2**; §10.3 defines V2 as Growth · recorded `ADR-0075`, executed `ADR-0079` |
+| `Community Reactions` *(Layer 2 → GLOBAL STUDENT PLATFORM → Community)* | **absent** | **V2** | as above. Before this entry `reaction` occurred **0** times in this document — the defect `ADR-0075` §8.6 measured |
+
+**Why an addendum and not a tree insertion.** `ADR-0075` measured that inserting two nodes at **L972**
+invalidates **240** EA line-citations across **39** files, three of them **FROZEN** (`PRD-017` and the
+`PRD-012a` family). `PRD_LIFECYCLE.md` **L177** states *"A frozen PRD is never silently modified."*
+`ADR-0079` therefore executed **`ADR-0075` §8.5 Option A**, reproducing the shape of **`ADR-0042`**: header
+token replaced in place, content appended below all citations, **net tree shift zero**. This document is
+**descriptive** at **precedence rank 6** (`MP-CON-08`, **L519**), so this entry **records a determination made
+at Rank 1** — it does not make one. The underlying class defect — the EA being cited by bare line number
+**281** times — is **not** closed here; it remains `ADR-0075` §8.5 **Option B**, routed to the Governance
+Owner by `ADR-0080`.
+
 ### `v2.2` — 2026-08-15 — One version tag corrected to match Rank 4 (`MP-CON-08`)
 
 **One token changed. No platform added, removed or re-homed; no node added or lost; no capability renamed; no
@@ -2542,6 +2564,38 @@ without any account-takeover detection.
 ### `v1.0` — Baseline
 
 Original LIBOORA Enterprise Architecture Tree (24 platforms) prior to review.
+
+---
+
+## 12. Capability Enumeration Addenda
+
+> Appended by **`ADR-0079`** executing **`ADR-0075` §8.5 Option A**. Every line in this section lies **below
+> every line cited by line number anywhere in the repository** (highest: **L2404**), so enumerating a
+> capability here shifts **no** cited line and touches **no** frozen document.
+> ⛔ **Nothing in the Layer 2 capability tree was inserted, moved, renamed or reworded.**
+
+### 12.1 GLOBAL STUDENT PLATFORM → Community (V2)
+
+The `Community (V2)` subtree at **L967–973** enumerates public/private communities, feed, roles, moderation
+and analytics. It does **not** enumerate comments or reactions, although **Rank 1** `MP-SCOPE-04`
+(`MASTER_PRD.md` **L92**) places `BC-14`/`BC-15` at **V2** and the owning Rank 3 PRD specifies both. The two
+missing capabilities are therefore enumerated here.
+
+| Capability | Version | Owning BC | Authority |
+|---|---|---|---|
+| **Community Comments** | **V2** | `BC-15` | **Rank 1** `MP-SCOPE-04` (`MASTER_PRD.md` **L92**) · §10.3 (**L2422–2429**): V2 = Growth · recorded by `ADR-0075`, executed by `ADR-0079` |
+| **Community Reactions** | **V2** | `BC-15` | as above. Reaction **kinds** are enumerated by the owning **Rank 3** PRD, not by this Rank 6 document |
+
+⚠ **Scope of this addendum.** Enumerating a capability in a **descriptive, rank 6** document creates no field,
+no event, no bounded-context edge, no aggregate row, no permission identifier and no configurable. It records
+that the capability is in scope at **V2** and that `BC-15` owns it. Every such artefact remains owned by the
+higher-ranked document that defines it, and the open gaps that require them are unaffected.
+
+⚠ **No cross-reference marker was added at L967–973, deliberately.** A marker would not shift any line, but it
+would change the **content** of lines that **39** files cite — including `EA L967`, cited exactly by
+`PRD-021A_A1`. Changing cited content is the same defect class as changing cited numbering. This section is
+therefore reachable only through its own heading and through `ADR-0079`. `ADR-0075` §8.5 predicted this
+trade-off as *"ugly, but shifts nothing"*; it is accepted knowingly.
 
 ---
 

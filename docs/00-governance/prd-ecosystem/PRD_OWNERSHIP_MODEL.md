@@ -331,6 +331,7 @@ Verifiable without judgement:
 | **v1.1** | 2026-08-04 | **All three contested Domain Owner cells resolved; `PRD-023` added; scope 23 → 24 PRDs.** Governance Closure Phase. `ADR-0013` **Accepted** — a capability context is owned by its platform, and context ownership is distinct from aggregate ownership — so `BC-19` → **Tenancy Platform** (`PRD-013`) and `BC-29` → **Services Platform** (`PRD-017`), replacing the ⚠ **Contested** markers in §4.3. `ADR-0017` **Accepted** — `BC-25` → **Configuration Platform** (`PRD-023`, `platform/configuration` rank 3). §4.4 rewritten with a resolution table, and **this document's own reasoning corrected in place**: §4.4 had concluded that allocating `PRD-023` would mean *inventing* a PRD and must therefore not be done. That conclusion was wrong — `MASTER_PRD.md` §8 **module 18** already names *Settings & Configuration* → `BC-25`, `[GENERIC]`, **V1**, at Rank 1, and `PRD_REGISTRY.md` §4.3 had already applied identical reasoning to `PRD-022` (module 17). The error was in the premise, not the principle: the prohibition on inventing requirements is **unchanged**, and `PRD-023` carries **zero** requirements. The original analysis is preserved verbatim rather than overwritten, because the method that produced it — *assign ownership systematically and the unassignable cases announce themselves* — is what exposed the question. **`PRD-012` remains ⚠ Split and unassignable**: the split is *confirmed* as already authorised by Master PRD §8 *Correction 2*, but confirmation is not execution — `PRD-012a` has not been opened, so `PRD-012` is not retired and this finding stays open. **No requirement was created, modified, moved or withdrawn; no personal name is recorded.** |
 | **v1.2** | 2026-08-25 | ⭐ **A fifth role — `Privacy Owner` — is constituted, by derivation, under `ACCEPTED` [`ADR-0077`](../adr/ADR-0077-privacy-owner-role-derived-from-existing-rules.md).** §2.1's minimality test is **met, not overridden**: it holds that *"a fifth would have no rule to serve"*, and **five existing rules were measured that require a privacy review and assign it to nobody** — `ARCHITECTURE_RULINGS.md` **L290** (**Rank 5**), `Library_PRD_v1.md` **L1025** / `LIB-24.2` (**FROZEN Rank 3**), `PRD-020` **L1784**, `PRD-SEAT-MANAGEMENT.md` **L2266** / `SEAT-GAP-014`, and `PRD-021A` A3 `LCR-DEC-003` / `LCR-GAP-006`. The role therefore **serves rules that already exist**, which is the same derivation method §2.1 used for the original four. §2.3's *"role vocabulary is reused, not invented"* rule is satisfied by `PRD-020` **L1784**, which already says *"the privacy owner"* verbatim. ⛔ **Constituting a role is not exercising it:** no privacy decision is taken, `LCR-DEC-003` and `LCR-GAP-006` remain **OPEN**, `LCR-RS-007` remains **DEFERRED**, and **no personal name is recorded** (§7 rule 4). ⚠ **Executed by APPEND (§9), not by insertion into §2.1–§2.3 and §5 as `ADR-0077` §6 originally prescribed** — this document is cited **by line number 74 times**, with **35** citations to **L85** alone plus 9 to L180, 8 to L284, 7 each to L68/L69/L102 and 5 to L202; inserting a table row anywhere above L331 would silently invalidate every citation below it, in **Accepted ADRs** and in `DOCUMENTATION_BASELINE.md`. The append leaves every cited line **byte-identical** — verified. ⚠ **One disclosed consequence, deliberately not repaired:** §2's closing arithmetic still reads *"Four distinct answers"* and *"Four roles is therefore the minimum"*. Correcting it in place is precisely the insertion that breaks the 35 citations, so the discrepancy is **disclosed in §9.4 and routed**, not silently patched. ⚠ **A second, more serious gap is disclosed and NOT fixed:** `Governance Owner` also occurs **0** times in this document despite being the approving authority named in `ADR-0053`, `ADR-0054` and `ADR-0064`. **No PRD, requirement, register or acceptance criterion is created, modified or withdrawn; no PRD row in §§4.1–4.4 is touched; no rank, edge or boundary is altered.** |
 
+| **v1.3** | 2026-08-25 | ⭐ **A sixth role — `Governance Owner` — is constituted, by derivation, under `Accepted` [`ADR-0080`](../adr/ADR-0080-governance-owner-role-derived-from-existing-rules.md).** This closes the **second defect §9.4 disclosed and deliberately did not fix** — *"`Governance Owner` occurs **0** times in this document"* — which §9.4 correctly routed to a separate pass rather than absorbing into `ADR-0077`'s conferral. ⭐ **The derivation is stronger than the Privacy Owner's, because three of its rules have already been *exercised*:** `PRD_LIFECYCLE.md` §6 **L282** names the role verbatim and assigns it *"Stage 7; the baseline"*; §7 makes Stage 7 **non-skippable**; and **Accepted** `ADR-0053` (**L8**), `ADR-0054` (**L8**, and **L148** holding of this role and the Architecture Owner that *"Those are different roles"*) and `ADR-0064` (**L7**, **L109**, **L134**) each record it as `Deciders`. Measured repository-wide: **342** occurrences of *"governance owner"* across **91** files, and **0** definitions here. §2.3's *"role vocabulary is reused, not invented"* rule is satisfied by **L282** verbatim. ⚠ **Executed by APPEND (§10), not by a sixth row in §2.2** — re-measured this pass: **74** line-citations to this document, highest **L331**, of which **35** are to **L85** alone; appending at **L400+** invalidates **0**, while inserting a row at L85–86 would silently misdirect every citation below it in **Accepted ADRs** and in `DOCUMENTATION_BASELINE.md`. ⛔ **Constituting a role is not exercising it:** `ADR-0075` §8.5 **Option B** (the **281** bare EA line-citations) is **routed** to this role, **not resolved**; it modifies **FROZEN** documents and `PRD_LIFECYCLE.md` **L177** forbids that. ✅ Two items *are* closed, because this role is their **only** required authority: **`LCF-GAP-001`** and **`LCR-GAP-001`** — the `LCF-` and `LCR-` prefixes are **REGISTERED** to `PRD-021A` A2 and A3 respectively, collision-checked against every existing prefix. ⚠ **§2's arithmetic is now stale by two** (*"Four distinct answers"*, *"a fifth would have no rule to serve"*) — the clause is a **conditional test** that both derivations *satisfy*, so the reasoning survives and only the count is stale; correcting it in place is the very insertion that breaks the 35 citations, so it is **disclosed in §10.4 and routed**, not silently patched. ⛔ **No holder is appointed and no personal name is recorded** (§7 rule 4). **No PRD, requirement, register or acceptance criterion is created, modified or withdrawn; no §2.2/§5/§9 line and no §§4.1–4.4 PRD row is touched; no rank, edge or boundary is altered; no document is frozen or baselined.** ⛔ `PRD-021A` remains **NOT READY / NOT FROZEN** and `PRD-021` remains gated behind `PRD-020`. |
 ---
 
 ## 9. ⭐ The `Privacy Owner` role — constituted by `ADR-0077`, recorded by append
@@ -397,3 +398,82 @@ the review, which means the *reviewer* cannot be improvised at the point of use 
 | A holder is appointed | ⛔ **No.** Vacant. §7 rule 4 forbids recording a name |
 | `PRD-021A` A2 or A3 becomes ready or freezable | ⛔ **No** — **NOT READY, NOT FROZEN** |
 | §§2.1–2.3, §5, or any §4 PRD row is amended | ⛔ **No** — every cited line is byte-identical |
+
+---
+
+## 10. ⭐ The `Governance Owner` role — constituted by `ADR-0080`, recorded by append
+
+⚠ **Why this is a section and not a sixth row in §2.2.** Identical to the reason §9 gives, re-measured this
+pass: this document is cited **by line number 74 times** across `docs/`, the highest being **L331**, and **35**
+of those citations are to **L85** alone — the Architecture Owner row — in **Accepted ADRs** and in
+`DOCUMENTATION_BASELINE.md`. Inserting a row into the §2.2 table shifts every line beneath it and converts
+those citations into silent misdirections. Appending below **L399** shifts **nothing**, and was verified to
+shift nothing. **The role is no less constituted for being recorded here:** this document is the ownership
+model in whole, not in part.
+
+### 10.1 The role
+
+| Role | Decides | Attests | Never decides |
+|---|---|---|---|
+| **Governance Owner** | Document **status** and **process**: lifecycle **Stage 7**, admission of a PRD to the baseline, the freeze of a document, the baseline declaration and its identifier, and the **registration of identifier prefixes** | That a lifecycle stage demanded by `PRD_LIFECYCLE.md` has been *completed*, so a gate conditioned on it can be evaluated | ⛔ Boundaries, ranks or permitted edges (**Architecture Owner** — `ADR-0054` **L148**: *"Those are different roles"*) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ domain correctness (**Domain Owner**) · ⛔ implementation or sequencing (**Technical Owner**) · ⛔ whether personal-data processing is permissible (**Privacy Owner**, §9.1) · ⛔ its own conferral, and ⛔ its own scope |
+
+⭐ **One holder, per §3 rule 1.** ⛔ **No personal name is recorded**, per §7 rule 4. The role is **vacant as
+constituted** — constituting an office does not fill it, and nothing in this document appoints anyone.
+
+### 10.2 Derivation — the rules that already required it, three of them already exercised
+
+⭐ **This derivation is evidentially stronger than §9.2's.** For the Privacy Owner, the rules *demanded* a role
+that had never acted. Here, three **Accepted** ADRs have already **acted through** the role.
+
+| # | Rule | Where | What it demands |
+|---|---|---|---|
+| 1 | **Stage 7 and the baseline** | `PRD_LIFECYCLE.md` §6 **L282** — `\| Governance owner \| Stage 7; the baseline \|` | Names the role **verbatim** and assigns it duties. §2.3's *"reused, not invented"* rule is satisfied by this line alone |
+| 2 | **Stage 7 is not skippable** | `PRD_LIFECYCLE.md` §7 | *"Urgent business need — **No fast path.** Stage 7 is not skippable"*. A non-skippable stage owned by an undefined role is unperformable as written |
+| 3 | `ADR-0053` — baselined `PRD-023` | **L8** | `Deciders: **Governance owner** (Stage 7 and the baseline, PRD_LIFECYCLE.md §6 L282)` — ⭐ **Accepted, already exercised** |
+| 4 | `ADR-0054` — froze `PRD-017` | **L8**, **L148**, **L167** | as above, **plus** an explicit holding that this role and the Architecture Owner are *"different roles"* — ⭐ **Accepted, already exercised** |
+| 5 | `ADR-0064` — baselined `PRD-012a` | **L7**, **L109**, **L134** | *"The conferral here is **Governance Owner**"* — ⭐ **Accepted, already exercised** |
+| 6 | Routing target of open items | `LCF-GAP-001`, `LCF-GAP-008`, `LCR-GAP-001`, and §9.4 twice | A routing target that does not exist is an item that can never be actioned |
+
+**Measured, repository-wide:** *"governance owner"* occurs **342** times across **91** files — and, before
+`ADR-0080`, **0** times in this document as a definition. ⭐ **The role was never missing from practice; only
+from the document whose purpose is to define roles.**
+
+⚠ **The circularity objection, answered rather than avoided.** `ADR-0033` §7.1 warns against unbounded
+self-authorisation, and §9.4 invoked it to defer this act. The authority is **not created here**: **L282**
+already assigns the duties and `ADR-0053`/`0054`/`0064` already exercised them under direct conferral. This
+section **writes down an authority that pre-exists it**. Refusing to write it down would not remove the
+authority — it would only keep it undocumented, which is the defect §9.4 measured.
+
+### 10.3 Why none of the other five can absorb it
+
+| Candidate | Why not |
+|---|---|
+| **Architecture Owner** | ⛔ Foreclosed by an **Accepted** ADR: `ADR-0054` **L148** holds of these two roles *"Those are different roles"*, and **L167** assigns a specific act to one and not the other. Merging them would overturn `ADR-0054` by side effect |
+| **Product Owner** | §2.2 scopes it to *"business intent: scope, priority, acceptance"*. Whether a document may be **frozen** is neither scope nor priority; a Product Owner who could freeze could ship past a gate |
+| **Domain Owner** | §3 makes this per-PRD. Baseline and status decisions must be **consistent across** PRDs, or the baseline fragments per document |
+| **Technical Owner** | §2.2 scopes it to implementation, `IMPL-*` and traceability. Stage 7 is a governance gate, not a build step |
+| **Privacy Owner** | §9.1 expressly excludes it: *"⛔ document status or freeze (**Governance Owner**)"* — the exclusion already names this role as the correct holder |
+
+### 10.4 ⚠ Disclosed, not repaired
+
+| Defect | Measurement | Disposition |
+|---|---|---|
+| §2's closing arithmetic reads *"Four distinct answers"*, *"Four roles is therefore the minimum"*, *"A fifth would have no rule to serve"* | Now understates by **two**. But the clause is a **conditional test**, and §9.2 and §10.2 each *satisfy* it by measuring rules that already exist — so the **reasoning survives intact** and only the **count** is stale | ⚠ **Disclosed, not edited.** Correcting the count in place is the insertion that breaks **35** citations to **L85**. Routed to this role, together with the line-citation convention itself |
+| §2.2's table still shows four rows | §§9 and 10 are the two constituted additions | ⚠ Same reason. The document is the model *in whole, not in part* |
+| ⛔ **281 bare EA line-citations** (`ADR-0075` §8.5 **Option B**) | Now routed to a role that **exists** | ⛔ **OPEN, not resolved.** It edits **32 files including FROZEN `PRD-017` and the `PRD-012a` family**; `PRD_LIFECYCLE.md` **L177** forbids silent modification of a frozen PRD, and it needs the Architecture Owner as well |
+| `PGA-08` — *"Every PRD needs a named owner. None has one"* | Unchanged | ⛔ §7 rule 4 forbids recording names. This section records an **office**, not an appointment |
+| ⭐ **`SECP-DEP-007`** — *"Update `PRD_REGISTRY.md` §4.1 and `PRD_OWNERSHIP_MODEL.md` to reflect the executed split"*, owner **Governance Owner** (`PRD-012a_PART8` **L358**) | ⚠ **This document's §4.2 rows are stale.** **L179** still shows `PRD-012` as live and *"⚠ **Split**"*, and **L180**/**L181** still mark `PRD-012a`/`PRD-012b` *"(reserved)"* — but `ADR-0064` **RETIRED** `PRD-012` and moved `PRD-012a` to **FROZEN**. `ADR-0064` §4 item 5 discharged `SECP-DEP-007` *"for the registry"* only and mentions this document **0** times, so the ownership-model half was **never performed**, exactly as `DOCUMENTATION_BASELINE.md` **L363** records (*"ROUTED, NOT PERFORMED … Governance Owner acts"*) | ⚠ **Now dischargeable for the first time — and deliberately NOT discharged here.** ⛔ **L180 is a cited line**, and §4.2's rows cannot be corrected in place without either changing cited content or shifting the **35** citations to **L85**. The act also belongs to the same §7 rule 1 class as the §2 arithmetic. It is therefore **recorded as a live, owned, now-actionable obligation** rather than performed as a side effect of constituting the role that owns it |
+| `DOCUMENTATION_BASELINE.md` **L363** — previously carried in working notes as citing a non-existent `PRD_OWNERSHIP_MODEL L358` | ⛔ **That was a false positive of the measuring instrument, not a defect in the document.** Re-read in full, **L363** cites **`PRD-012a_PART8` L358** — a **valid** line in a **417**-line file, naming `SECP-DEP-007` and its two target files. A regex that captured `PRD_OWNERSHIP_MODEL.md` from earlier in the same sentence mis-attributed the citation | ✅ **No repair owed. The false finding is retracted here rather than propagated**, and the *real* obligation it was obscuring is the `SECP-DEP-007` row immediately above |
+
+### 10.5 ⛔ What constituting this role does **not** do
+
+| Claim | Status |
+|---|---|
+| A holder is appointed | ⛔ **No.** Vacant. §7 rule 4 forbids recording a name |
+| Any document is frozen, baselined or advanced a stage | ⛔ **No** |
+| `ADR-0075` §8.5 Option B is resolved | ⛔ **No** — routed only. The 281 citations stand |
+| Gaps other than `LCF-GAP-001` / `LCR-GAP-001` close | ⛔ **No.** For every other routed gap this role is **not the only** required authority — `LCF-GAP-008` needs the Auth owner, `LCF-GAP-004` the `BC-14` author, `LCF-GAP-006` the Product and Configuration Owners, `LCF-GAP-011` the Engineering Owner |
+| The two prefix registrations confer readiness | ⛔ **No.** A registered prefix on a draft is still a draft |
+| `PRD-021A` A2 or A3 becomes ready or freezable | ⛔ **No** — **NOT READY, NOT FROZEN** |
+| The `PRD-020` release gate is affected | ⛔ **No.** `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161–164** stands unchanged |
+| §§2.1–2.3, §5, §9, or any §4 PRD row is amended | ⛔ **No** — every cited line is byte-identical |

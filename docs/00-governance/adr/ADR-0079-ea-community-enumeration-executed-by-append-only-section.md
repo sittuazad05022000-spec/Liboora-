@@ -38,7 +38,7 @@ Options B and C were **refused for the same reason `ADR-0075` reverted**: they m
 
 ### 2.1 The measurement that makes Option A safe
 
-The insertion point is what matters. Measured across **all** of `docs/`, over **457** EA line-citations (including the second endpoint of every range citation such as `EA L967–973`):
+The insertion point is what matters. Measured across **all** of `docs/`, over **482** EA line-citations (including the second endpoint of every range citation such as `EA L967–973`):
 
 | Insertion point | Citations invalidated | Files affected |
 |---|---|---|
@@ -57,7 +57,7 @@ The insertion point is what matters. Measured across **all** of `docs/`, over **
 
 1. ✅ **Community Comments** and **Community Reactions** are **V2** capabilities of the `Community` platform, owned by **`BC-15`**. This restates `ADR-0075` §2 unchanged — the determination was never in doubt, only its execution.
 2. ✅ The EA records this in a **new §12 — Capability Enumeration Addenda**, appended **after** the existing §11 changelog, at the end of the document.
-3. ⛔ The **capability tree at L967–973 is NOT modified.** No node is inserted, no `└──` last-child glyph moves, no line shifts. `Moderation (V3)` remains at **L972** and `Community Analytics (V3)` remains at **L973**, so every one of the 457 citations continues to resolve to the content it names.
+3. ⛔ The **capability tree at L967–973 is NOT modified.** No node is inserted, no `└──` last-child glyph moves, no line shifts. `Moderation (V3)` remains at **L972** and `Community Analytics (V3)` remains at **L973**, so every one of the 482 citations continues to resolve to the content it names.
 4. ✅ Two **in-place token** edits are made in the header table: `Version` `v2.2` → `v2.3` at **L9**, and `Last Updated` at **L11**. Both replace a token **within** an existing line. ⭐ This is exactly the mechanism `ADR-0042` used (commit `58cb5f4`: `@@ -6,7 +6,7 @@` and `@@ -820,7 +820,7 @@` — token replacement in place, plus `@@ -2447,6 +2447,31 @@`, an append **below every citation**). **This ADR follows the `ADR-0042` precedent exactly, where `ADR-0075` departed from it.**
 5. ✅ A **changelog entry** for `v2.3` is appended to §11, in the same position and manner as `v2.2`.
 
@@ -95,7 +95,7 @@ The EA is **Rank 6 and descriptive** (`MP-CON-08`, `MASTER_PRD.md` **L519**). It
 
 | Check | Result |
 |---|---|
-| EA line count | 2,549 → **2,570** (all 21 new lines **at the end**) |
+| EA line count | 2,549 → **2,603** (all 54 new lines at or below **L2450**; ⭐ **corrected from the 2,570 this table predicted before execution** — see §3.4) |
 | `Moderation (V3)` line | **L972 → L972** ✅ unchanged |
 | `Community Analytics (V3)` line | **L973 → L973** ✅ unchanged |
 | `Anti-Spam & Rate Limits (V1)` line | **L920 → L920** ✅ unchanged |
@@ -103,8 +103,19 @@ The EA is **Rank 6 and descriptive** (`MP-CON-08`, `MASTER_PRD.md` **L519**). It
 | `Job Runtime (V2)` line — cited by **FROZEN** `PRD-017` L217 | **L1865 → L1865** ✅ unchanged |
 | `DPDP Act (V2)` line — cited ×10 by the **frozen** `PRD-012a` family | **L2050 → L2050** ✅ unchanged |
 | Diff hunk shape | header token in place · append at end. ⭐ **No hunk inside L12–2549** |
-| Citations invalidated | **0**, verified by re-resolving all 457 |
+| Citations invalidated | **0**, verified by re-resolving all **482** against the amended file |
 | FROZEN documents modified | **0** |
+
+### 3.4 One figure in §3.3 was predicted before execution and is corrected here
+
+⚠ **§3.3 originally declared `2,549 → 2,570` (21 new lines). The executed amendment produced `2,549 → 2,603` (54 new lines).** The figure has been corrected **to the measurement**, and the discrepancy is recorded rather than quietly overwritten, because the difference between a predicted number and a measured one is exactly the kind of drift this ADR exists to prevent.
+
+| | Predicted | Measured | Why |
+|---|---|---|---|
+| New lines | 21 | **54** | The prediction counted only §12. The executed amendment also appends a **`v2.3` changelog entry** into §11 (22 lines at **L2450**), which EA **§10.5 step 4** and `DOCUMENTATION_BASELINE.md` §7 rule 2 both require. §12 itself is 32 lines. 22 + 32 = **54**. |
+| Final line count | 2,570 | **2,603** | as above |
+
+⭐ **The correction changes no conclusion.** Both insertion points — **L2450** (§11 changelog) and **L2570** (§12) — lie **below L2404**, the highest EA line cited anywhere in the repository. Re-resolving all **482** citations against the amended file yields **0** invalidated and **0** whose cited content changed. The measured diff contains exactly **four** hunks: `@@ -9 +9 @@` and `@@ -11 +11 @@` (in-place header tokens) and two pure additions at **L2450** and **L2570**. ⛔ **There is no hunk anywhere between L12 and L2449.** Lines 1–2404 are byte-identical to the pre-amendment file **except L9 and L11**, verified line by line.
 
 ---
 

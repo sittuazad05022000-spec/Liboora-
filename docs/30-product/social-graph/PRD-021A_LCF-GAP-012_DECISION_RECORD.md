@@ -3,13 +3,13 @@
 | Field | Value |
 |---|---|
 | **Document** | `PRD-021A` authoritative Owner Decision Record. Originally the `LCF-GAP-012` / `LCR-DEC-002` record (D2-P); **extended at v2.0** to carry every subsequent owner ruling. ⭐ **This is the single decision record for `PRD-021A`** — see §7.0 |
-| **Version** | **v2.0** — 2026-08-25. v1.0 retained in full below (§1–§6) and in repository history |
+| **Version** | **v2.1** — 2026-08-25. v2.0 and v1.0 retained in full below (§1–§6, §7.0–§7.11) and in repository history. ⭐ **v2.1 adds §7.12 ONLY, by APPEND** — because **L303–304** of this file are cited by `ADR-0081` §2, `ADR-INDEX.md` and A3 v0.5, so nothing above them was allowed to move |
 | **Decision** | **Community Comments and Community Reactions are IN SCOPE and SHALL SHIP in the current `PRD-021A` generation** |
-| **Product Owner** | ✅ **DECIDED** — SHIP (v1.0, §1) **and**, at v2.0: reaction kinds `LIKE`/`HELPFUL`/`CELEBRATE` (§7.2), `HELPFUL` = the helpfulness signal (§7.3), Recency `70` / Legitimate engagement `30` (§7.4) |
-| **Architecture Owner / ARB** | ✅ **DECIDED at v2.0** via four ADRs — `ADR-0075` (EA enumeration, D2-A-i), `ADR-0076` (citation repointing, D2-A-ii), `ADR-0077` (Privacy Owner role), `ADR-0078` (`LCR-GAP-009` tenancy). See §7.5–§7.8 |
+| **Product Owner** | ✅ **DECIDED** — SHIP (v1.0, §1) **and**, at v2.0: reaction kinds `LIKE`/`HELPFUL`/`CELEBRATE` (§7.2), `HELPFUL` = the helpfulness signal (§7.3), Recency `70` / Legitimate engagement `30` (§7.4). ⛔ **STILL OWED at v2.1: a helpfulness weight.** `LCR-DEC-009` is **REFUSED as undecidable** by `ADR-0081` §2 rather than answered — §7.12.3 |
+| **Architecture Owner / ARB** | ✅ **DECIDED at v2.0** via four ADRs — `ADR-0075` (EA enumeration, D2-A-i), `ADR-0076` (citation repointing, D2-A-ii), `ADR-0077` (Privacy Owner role), `ADR-0078` (`LCR-GAP-009` tenancy). See §7.5–§7.8. ⭐ **Extended at v2.1** by `ADR-0079` (the EA enumeration **executed**) and `ADR-0081` §3 — see §7.12 |
 | **`LCF-GAP-012` status** | ✅ **RESOLVED — narrow the exclusion, preserve the specification** |
-| **`LCF-GAP-013` status** | ✅ **RESOLVED at v2.0** by **`ADR-0076`** — §7.6 |
-| **Subject** | v1.0: A2 v0.4 → **v0.5**, A3 v0.2 → **v0.3**. **v2.0:** A2 v0.5 → **v0.6**, A3 v0.3 → **v0.4**, EA v2.2 → **v2.3**, `PRD_OWNERSHIP_MODEL.md` v1.1 → **v1.2** |
+| **`LCF-GAP-013` status** | ✅ **FULLY RESOLVED at v2.1.** The **citation** half was closed at v2.0 by **`ADR-0076`** (§7.6). ⭐ The **enumeration** half — `BLOCKED` at v2.0 — is closed by **`ADR-0079`**, which **EXECUTED** the EA amendment by append-only section (§7.12) |
+| **Subject** | v1.0: A2 v0.4 → **v0.5**, A3 v0.2 → **v0.3**. **v2.0:** A2 v0.5 → **v0.6**, A3 v0.3 → **v0.4**, `PRD_OWNERSHIP_MODEL.md` v1.1 → **v1.2**. ⚠ **v2.0's cell claimed `EA v2.2 → v2.3` and that claim was FALSE when written** — `ADR-0075`'s edit was attempted, measured and **reverted**, leaving the EA byte-unchanged at `v2.2`; the claim is corrected here rather than quietly dropped. **v2.1:** A2 v0.6 → **v0.7**, A3 v0.4 → **v0.5**, `PRD_OWNERSHIP_MODEL.md` v1.2 → **v1.3**, `ADR-INDEX.md` extended, and **EA v2.2 → v2.3 for real** (`ADR-0079`) |
 | **Authority basis** | `PRD_OWNERSHIP_MODEL.md` **§2.2 L83** (Product Owner — *"whether a requirement is correct and **in scope**"*) and **§2.2 L85** / **§5** (Architecture Owner — *"ADR approval; any Rank 1–5 document change"*) |
 | **Release gate** | ⛔ **NOT READY · NOT FROZEN · NOT RELEASED.** `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161–164** gates `PRD-021` behind `PRD-020`, which is unranked `DRAFT`. Unchanged by v2.0 — see §7.11 |
 
@@ -434,11 +434,344 @@ exist** (`LCF-GAP-011`), and no privacy review is discharged (`LCR-DEC-003`).
 
 ---
 
+### 7.12 ⭐⭐⭐ v2.1 — the three ACCEPTED ADRs that completed the `PRD-021A` blocker set
+
+⭐ **What this subsection is.** §7.1–§7.11 record the owner rulings received at v2.0. This
+subsection records what happened when the **remaining** blockers were worked to authority. It is
+appended, not inserted: **L303–304 of this file are cited** by `ADR-0081` §2, `ADR-INDEX.md` and
+A3 v0.5, so no line above §7.12 was permitted to move.
+
+| ADR | Status | What it decided | Blocker(s) it closes |
+|---|---|---|---|
+| **`ADR-0079`** | `Accepted` — Architecture Owner | The EA community enumeration, **EXECUTED** by append-only new §12 (EA v2.2 → **v2.3**) | `LCF-GAP-013` enumeration half; `LCR-FND-013`; `ADR-0075` §8.5 **Option A** |
+| **`ADR-0080`** | `Accepted` — Governance owner, by direct conferral | Constitutes the **`Governance Owner`** role by derivation from existing rules; registers the `LCF-` and `LCR-` prefixes | `LCF-GAP-001`; `LCR-GAP-001`; `ADR-0077` §9.4 defect 2 |
+| **`ADR-0081`** | `Accepted` | Dispositions every residual `PRD-021A` gap and decision, **including the formal REFUSAL of `LCR-DEC-009`** | `LCF-GAP-005` (closed on measurement); 16 others dispositioned or routed |
+
+⛔ **None of the three advances a stage, freezes an artefact, or invents a value.** §7.12.4
+restates the release gate that all three leave standing.
+
+---
+
+#### 7.12.1 ⭐⭐ `ADR-0079` — the EA enumeration, executed instead of merely authorised
+
+**The problem v2.0 left behind.** `ADR-0075` ruled that the EA's community block **shall** enumerate
+Community Comments and Community Reactions at V2. It then attempted the edit as a **tree insertion**
+inside the existing `BC-15` block, measured the consequences, and **reverted**. Its status is
+therefore the literal truth of what *it* did: `⛔ ACCEPTED IN PRINCIPLE — EXECUTION BLOCKED`.
+
+⚠ **v2.0's own Subject row claimed the EA had gone `v2.2 → v2.3`. That claim was false when it
+was written.** The EA was byte-unchanged at `v2.2`. The header table above corrects it explicitly
+rather than quietly dropping it, because a decision record that silently deletes its own errors is
+not a record.
+
+**Why the insertion was forbidden, in numbers.** `ADR-0075` §8.5 was not an opinion; it was a
+measurement. It was re-run before any edit was attempted at v2.1:
+
+| Measurement | Value |
+|---|---|
+| EA line-citations across the repository (**precise** regex) | **482** in **57** files |
+| Highest EA line cited **anywhere** | **`L2404`** — in `PRD-012a_PART8_TRACEABILITY_AND_ACCEPTANCE.md`, which is ⛔ **FROZEN** |
+| Genuine EA citations **above** `L2404` | **0** |
+| Citations invalidated by the **blocked tree insertion at L972** | **240**, across **39** files, **3 of them FROZEN** |
+| Citations invalidated by an **append below L2404** | **0** |
+
+⚠ **A broad regex initially reported 34 citations above `L2404`, the highest at `L4028` — in a
+2,570-line file.** Every one of the 34 was opened and read individually. All 34 were **false
+positives**: they were line references to *other* documents whose names had been swallowed by the
+regex's capture span. The precise regex, which binds the filename to the line token, returned
+**482** citations and a genuine maximum of **`L2404`**. ⭐ A precise measurement replaced a broad
+one, and the broad one was discarded rather than averaged in.
+
+**What was executed.** `ADR-0075` §8.5 itself pre-authorised four remediation options.
+**Option A — append-only** was the one whose measured cost was zero, so it was taken:
+
+- EA **§11** received a `v2.3` changelog row at **L2450**.
+- EA **§12** was **appended** at **L2570**, enumerating **Community Comments (V2)** and
+  **Community Reactions (V2)** as owned by **`BC-15`**.
+- EA header: **L9 → `v2.3`**, **L11 → `2026-08-25`**.
+- Final EA length: **2,603 lines**.
+
+**Post-execution verification — measured, not asserted.**
+
+| Gate | Result |
+|---|---|
+| EA citations re-resolved | **482** |
+| Citations invalidated | **0** |
+| Contents of any cited EA line changed | **0** |
+| `EA L967–L973` (the `BC-15` block body) | ✅ **byte-identical** |
+| Node lines `L920, L967, L971, L972, L973, L989, L1865, L2050` | ✅ **all unchanged** |
+| Frozen files modified | **0** |
+| Diff hunks landing in `L12–L2449` | **0** |
+
+⚠ **`ADR-0079` §3.4 corrects its own pre-execution prediction.** It had predicted the EA would
+finish at **2,570** lines with **457** citations. The executed reality was **2,603** lines and
+**482** citations. The ADR was amended to the measured values rather than left holding the estimate.
+
+**Authority for amending the EA at all.** `MP-CON-08` (`MASTER_PRD.md` **L519**, Rank 1) holds that
+the EA is *"descriptive, not prescriptive — precedence rank 6"*, and that where it disagrees with
+a higher-ranked document *"the higher-ranked document wins and the Enterprise Architecture is
+updated to match — **never the reverse**"*. `MP-SCOPE-04` (**L92**, Rank 1) places `BC-14`/`BC-15`
+at **V2**. The EA was silent on comments and reactions; the Rank 1 rule already put them at V2.
+⭐ The EA was therefore updated **to match** authority — which is precisely the direction
+`MP-CON-08` permits. EA §10.5's five-step change process was followed: proposed as an ADR, Single
+Owner Rule verified, version tag assigned, document updated **and header version bumped**, no new
+cross-module dependency created.
+
+**What `ADR-0079` deliberately did NOT do.**
+
+1. ⛔ **It did not add an in-tree cross-reference marker** at the `BC-15` block. A marker there was
+   the obvious readability improvement and it was explicitly rejected: **`EA L967` is cited exactly**
+   by `PRD-021A_A1 v0.2`, and any insertion at or above that line changes what the citation resolves
+   to. Readability does not outrank citation integrity.
+2. ⛔ **It did not restatus `ADR-0075` to `Accepted`, and did not supersede it.** `ADR-0075`'s own
+   execution attempt genuinely was reverted; its status is a true record of its own act. A
+   *different* ADR performed the act by a *different* route. Collapsing the two would falsify the
+   history of both. `ADR-0079` §3.1 states this in terms.
+3. ⛔ **It did not close `ADR-0075` §8.5 Option B.** The **281 bare EA line-citations** remain a
+   live, disclosed defect class. Option A fixed the *enumeration*; Option B — repointing bare
+   citations to stable anchors — is untouched and still owed.
+
+---
+
+#### 7.12.2 ⭐⭐ `ADR-0080` — the Governance Owner, constituted by derivation
+
+**The gap v2.0 disclosed but did not fix.** §7.11 named it plainly: the `LCF-`/`LCR-` prefixes
+were **unratified** because prefix registration belongs to a **`Governance Owner`**, and
+`ADR-0077` §4.2 had found that role **undefined**. Two blockers — `LCF-GAP-001` and
+`LCR-GAP-001` — sat on that single missing definition.
+
+**The measurement.** Before constituting anything, the repository was searched:
+
+| Measurement | Value |
+|---|---|
+| References to a governance owner across `docs/` | **342**, in **91** files |
+| Documents that **define** the role's authority | **0** |
+| `Accepted` ADRs that already name it in `Deciders` | **3** — `ADR-0053` (L8), `ADR-0054` (L8), `ADR-0064` (L7) |
+| Lifecycle stage that assigns it | `PRD_LIFECYCLE.md` **L282**: `| Governance owner | Stage 7; the baseline |` |
+
+⭐⭐ **This is the shape of a role that exists in fact but was never written down.** Three
+`Accepted` ADRs had already exercised its authority. `PRD_LIFECYCLE.md` **L282** had already assigned
+it a scope. `PGA-08` (**L284**) had already recorded the consequence: *"Every PRD needs a named
+owner. None has one."* The role was **not invented at v2.1 — it was derived from rules already in
+force and written down for the first time.**
+
+**The circularity, and its answer.** An obvious objection: registering a prefix requires a Governance
+Owner, and constituting a Governance Owner is itself a governance act — so who authorises the
+constitution? `ADR-0080` §2.4 answers it without hand-waving: the constitution is **not** a new
+grant of power. It is a **written statement of authority three `Accepted` ADRs had already
+exercised** and that `PRD_LIFECYCLE.md` **L282** had already assigned. Nothing is conferred that was
+not already operative; the ADR records, it does not create. The Architecture Owner — whose
+`PRD_OWNERSHIP_MODEL.md` **§5** remit covers *"any Rank 1–5 document change"* — approved the
+recording.
+
+**What was executed.** `PRD_OWNERSHIP_MODEL.md` v1.2 → **v1.3**, **by APPEND**:
+
+- New **§10** (§10.1–10.5) constituting the role, plus one **§8** changelog row.
+- Final length **479 lines**.
+- ⭐ **Zero-shift verified by line-content comparison:** `L64, L68, L69, L83, L85, L102, L180,
+  L202, L284, L329, L331` are all **byte-identical**; the **first differing line is L334**. The file
+  carries **35** line-citations, the highest at **L85** — all above the first change.
+- §5 of `ADR-0080` **registers the `LCF-` and `LCR-` prefixes** to `PRD-021A` (A2 and A3
+  respectively), satisfying `PRD_LIFECYCLE.md` §5 **L252–258** rule 3 (collision → change the
+  new prefix — no collision found) and rule 5 (**numbers are never reused**).
+
+⛔⛔ **The role is constituted VACANT. No person is named.** Naming an individual would be
+exactly the invention the instruction forbids — no document anywhere in the repository names a
+holder. `ADR-0080` states the role, its authority, its scope and its vacancy, and stops. ⭐ A
+constituted-but-vacant role is a **true** statement; a constituted-and-staffed one would be a
+fabrication.
+
+**A false finding retracted, and a real obligation surfaced.** §6 of `ADR-0080` does two things
+that are easy to conflate and must not be:
+
+1. ⚠ **It RETRACTS a finding carried forward from an earlier pass** which claimed a defect at
+   `PRD-012a_PART8` **L358**. That file is **FROZEN**; the claim was re-measured against the actual
+   bytes and was **wrong**. It is retracted in writing rather than allowed to keep propagating.
+2. ⚠ **It discloses `SECP-DEP-007`** — a genuine, still-open dependency whose
+   **ownership-model half** is not discharged by v1.3. It is named, not closed. ⛔ It remains on
+   the disclosed-not-repaired list at §7.12.5.
+
+---
+
+#### 7.12.3 ⛔⛔⛔ `ADR-0081` — `LCR-DEC-009` REFUSED, because no authority decides it
+
+⭐⭐⭐ **This is the most important paragraph in v2.1.** The instruction was to resolve the
+remaining decisions **according to authority, with no guessing and no invention**. For
+**`LCR-DEC-009`** — *what numeric weight does the helpfulness signal carry?* — those two clauses
+are in direct conflict: it cannot be resolved *and* remain uninvented, because **no authority
+anywhere assigns it a value**. `ADR-0081` §2 therefore **REFUSES** it.
+
+**The six determinability probes.** Refusal was not asserted; it was earned by looking in every
+place a value could legitimately live:
+
+| # | Probe | Result |
+|---|---|---|
+| 1 | Product Owner ruling in this record (§7.2–7.4) | ❌ Fixes reaction **kinds** and Recency `70` / engagement `30`. **Silent on a helpfulness weight** |
+| 2 | `MASTER_PRD.md` global rules (Rank 1) | ❌ No ranking weights of any kind |
+| 3 | Any `Accepted` ADR | ❌ None assigns one |
+| 4 | `PRD-021A_OWNER_DECISION_REQUEST.md` v1.1 | ❌ **L365** — *"Proposes — no value of any kind"*. The request itself declined to propose one |
+| 5 | A3's own ranking specification (§12.1) | ❌ `LCR-RS-003` is `ELIGIBLE` with weight **`0`** — designated, not weighted |
+| 6 | Enterprise Architecture (Rank 6) | ❌ Silent — and being Rank 6 and **descriptive**, could not supply one even if it spoke (`MP-CON-08`, **L519**) |
+
+⭐⭐ **Six probes, six empty results.** `MP-CON-08` names the correct disposition for exactly this
+situation: *"**A disagreement is a defect to be raised, not a choice to be made.**"* An absence is
+the same class of thing. Inventing `15`, or `10`, or any other number would have produced a document
+that *looked* complete and was **untrue**. ⛔ **Refusal is the only honest disposition, and it is
+recorded as a refusal — not as a resolution.**
+
+**The consequence, and the invariant it protects.**
+
+| Item | State after v2.1 |
+|---|---|
+| `LCR-DEC-009` | ⛔ **OPEN — formally REFUSED as undecidable** |
+| `LCR-RS-003` Helpfulness | `ELIGIBLE`, weight **`0`**, *not assigned* — unchanged |
+| Active ranking set | **Recency `70` + Legitimate engagement `30` = exactly `100`** |
+| A3 §12.1 (the weight table) | ✅ **BYTE-IDENTICAL** between v0.4 and v0.5 — verified by diff, not by inspection |
+
+⭐ **The 100 % invariant is the reason the refusal is safe.** Because helpfulness sits at `0`, the
+active weights already sum to exactly `100`. Assigning any non-zero helpfulness weight would have
+required **reducing** Recency or engagement — both of which the Product Owner **ruled** at
+§7.4. So inventing a helpfulness weight would not merely have added an unauthorised number; it
+would have **silently overwritten a ruled one**. ⛔ That is why nothing was touched, and why A3
+§12.1 was diffed to prove it.
+
+**`LCF-GAP-005` — closed on measurement, and its sibling deliberately left open.** `ADR-0081`
+§3 closes `LCF-GAP-005` because the condition it asserts was **measured and found satisfied**.
+⭐⭐ Its structurally identical sibling **`LCF-GAP-011` remains OPEN** — because the same test
+applied to it **fails**: `integration_test/` **does not exist** in the repository. Two gaps of the
+same shape received opposite dispositions **because the measurement differed**, which is what
+measuring instead of guessing looks like in practice.
+
+**The arithmetic of the whole disposition pass** (§4.5 of `ADR-0081`):
+
+| Disposition | Count |
+|---|---|
+| ✅ **CLOSED** | **5** |
+| ⛔ **REFUSED** (recorded as open) | **1** — `LCR-DEC-009` |
+| ⛔ **OPEN** — dispositioned or routed to a named owner | **16** |
+| ⭐⭐⭐ **Values invented** | **0** |
+
+Still open on the merits and named as such: `LCF-GAP-004`, `006`, `007`, `008`, `009`, `010`, `011`;
+`LCR-GAP-002`, `004`, `006`, `007`, `008`, `010`; and `LCR-DEC-001`, `003`, `004`, `006`, `007`,
+`009`. ⭐ **Every one is named. None is quietly dropped.**
+
+---
+
+#### 7.12.4 ⛔⛔⛔ Release gating — REAFFIRMED, not relaxed
+
+§7.11 recorded the gate at v2.0. Ten resolved blockers later, **the gate has not moved**, and
+`ADR-0081` §5.1 restates it:
+
+| Question | Answer after v2.1 |
+|---|---|
+| Is `PRD-021A` **READY**? | ⛔ **NO** |
+| Is any part **FROZEN**? | ⛔ **NO** |
+| Is anything **RELEASED**? | ⛔ **NO** |
+| Is anything **BASELINED**? | ⛔ **NO** |
+
+**The binding constraint.** `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161–164** gates `PRD-021`
+behind **`PRD-020`**, which is **unranked `DRAFT`**. That is a **release-blocking defect**, and it is
+not within the gift of this record to waive. ⛔ **`ADR-0081` §5 enumerates ELEVEN genuinely
+unmet conditions**, the `PRD-020` gate first among them, followed by the nineteen open
+`LCF-`/`LCR-` items of §7.12.3 and the fact that **Stage 7 has not been performed**.
+
+⭐⭐ **`PRD_LIFECYCLE.md` §7 forecloses the shortcut in terms:** *"Urgent business need —
+**No fast path.** Stage 7 is not skippable."* And **L177**: *"A frozen PRD is never silently
+modified."* ⛔ There is no mechanism by which resolving blockers substitutes for the gate.
+
+⭐⭐⭐ **Ten blockers resolved. Zero stages advanced. That is the correct outcome, and it is
+stated as a success rather than apologised for.** A2 remains **DRAFT — NOT FROZEN** (its
+`NOT FROZEN` markers were **increased**, not removed). A3 remains **NOT READY — NOT FROZEN**: its
+`NOT READY` count rose **6 → 8** and `NOT FROZEN` **4 → 6** across v0.4 → v0.5. ⭐ A pass
+that resolves blockers should make a document *more* explicit about not being ready, not less.
+
+⚠ **A structural note carried forward, so it is not rediscovered as new.** The append-only
+technique that made the EA amendment free **does not transfer to the BC Map**. `LIBOORA_BOUNDED_
+CONTEXT_MAP.md` is **Rank 4**, **625 lines**, carries **1,376** line-citations with the highest at
+**L605**, and its §7 and §8 are **structured registers** — a `BC-15` aggregate row must land
+*inside* §8, not below it. ⛔ `LCF-GAP-009` / `LCR-DEC-007` therefore stay **OPEN**; the BC Map
+is **byte-unchanged**.
+
+---
+
+#### 7.12.5 ⚠⚠ Disclosed and NOT repaired — six items
+
+⭐⭐ **Disclosure is a deliverable, not a failure.** Each item below was found by measurement, and
+each was left unrepaired for a **stated** reason rather than because it was missed.
+
+| # | Item | Why not repaired |
+|---|---|---|
+| 1 | ⭐⭐⭐ **NEW: `ADR-INDEX.md` "L143" is stale in six documents** | See the detail below — the citers are retained superseded drafts |
+| 2 | **281 bare EA line-citations** (`ADR-0075` §8.5 **Option B**) | Repointing them is a repository-wide act needing its own ADR and its own measurement pass. Option A closed the enumeration; Option B is untouched and **still owed** |
+| 3 | **`SECP-DEP-007`** — the ownership-model half | Genuinely open. Named by `ADR-0080` §6, not closed by v1.3 |
+| 4 | **`Q-A6`** — `MASTER_PRD.md`'s 10 stale `v2.1` EA references | ⛔ `MASTER_PRD.md` is **Rank 1**. Editing it to chase a **Rank 6** document's version is precisely the inversion `MP-CON-08` **L519** forbids. ⚠ Now **two** versions stale (`v2.1` → actual `v2.3`) — the staleness **widened**, and that is disclosed rather than hidden |
+| 5 | **BC Map L450's wording** | Rank 4, 1,376 citations. Scoped around at v2.0 by `ADR-0078` with the file byte-unchanged; the wording itself is untouched |
+| 6 | **`ADR-0022` and 12 other ADRs still `Proposed`** | Not this pass's subject. ⚠ `ADR-0022` has now been `Proposed` for eight consecutive passes |
+
+**Item 1 in full, because it is the same defect the instruction asked to fix — found again, in a
+different file.**
+
+Before `ADR-INDEX.md` was edited at v2.1, its citation exposure was measured first — the discipline
+learned from the EA. The result:
+
+| Measurement | Value |
+|---|---|
+| Broad regex | 36 citations, 20 files, max cited **L292** — in a **186-line** file |
+| **Precise** regex | **31** citations, **16** files, distinct cited lines **`[9, 75, 95, 143]`** |
+| Frozen files citing this file **below** the insert point `L104` | **0** |
+| `docs_check` tools naming `ADR-INDEX.md` | 3 — `prd005`, `prd006`, `prd007_traceability.py`. ⛔ **None validates line numbers** |
+
+⚠ **The `L292` hit was a false positive**, dismissed by reading it: `ADR-0022` **L10** cites
+*"BC Map §7.3 edge `E-22` L331, L292"* — a **BC Map** citation whose filename the broad regex's
+capture span had swallowed. ⭐ Second time a precise regex overturned a broad one.
+
+⭐⭐⭐ **`L143` was then read, and it was the wrong line.** Six documents cite `ADR-INDEX.md
+L143` for the Process rule *"requires an ADR before implementation"*. **L143 now holds the `AR-4`
+ruling row.** Rather than assume why, the file's history was **bisected**:
+
+```
+a2f4411  lines=182  L143=[1. A decision that changes str]   <- citation CORRECT
+f42e098  lines=182  L143=[1. A decision that changes str]   <- citation CORRECT
+4ac9dbf  lines=182  L143=[1. A decision that changes str]   <- citation CORRECT
+2cd5b51  lines=186  L143=[| `AR-4` | Invitation ownershi]   <- BROKEN
+```
+
+⛔⛔ **The breakage was caused by the immediately preceding pass**, which appended four
+`ADR-0075`–`0078` register rows (**182 → 186** lines) and displaced the Process rule from
+**L143 → L147**. Nothing detected it, because no CI gate checks line numbers in citations. The six
+citers are `PRD-021A_A1 v0.2` (L707, L771, L854, L1328, L1350, L1404) and `A2` v0.3/v0.4/v0.5/v0.6/
+v0.7.
+
+⭐⭐ **Why it was disclosed rather than repaired.** Four of the six citing documents are
+**retained superseded drafts**, whose bytes are preserved deliberately as the record of what those
+drafts actually said. Silently repointing their citations would rewrite that record. The finding was
+therefore **routed to `ADR-0075` §8.5 Option B** — it is the **same defect class**, in a second
+document — and disclosed in place under `ADR-INDEX.md`'s Process rule 1, which now names the
+correct, line-independent citation form: **`ADR-INDEX.md "Process" step 1`**.
+
+⭐ **The v2.1 edit to `ADR-INDEX.md` was itself proven harmless.** Three register rows were appended
+**after L104**, shifting every line from 105 onward by `+3` — which includes `L143`. But `L143`
+was **already invalid**, so **zero currently-valid citations were invalidated**. The three
+still-valid cited lines all sit **above** the insertion and were edited **strictly in place**,
+verified by hash: **L75 md5 `739c40fe197fcc4f516d5eb7a6c387e8`** and **L95 md5
+`bf2bc102341ac0fdc9fd6a120f608088`** — **identical before and after**.
+
+⭐⭐ **The ADR count was re-derived mechanically, not incremented.** A classifier read all **72**
+ADR files' own `Status` rows with an explicit *unparsed* bucket. The bucket returned **exactly one**
+entry — `ADR-0075`, whose status genuinely is `⛔ ACCEPTED IN PRINCIPLE — EXECUTION BLOCKED`
+— classified **by reading its own declaration**, never by rounding it to `Accepted`. Result:
+**72 files = 58 accepted + 13 proposed + 1 accepted-in-principle**. ⭐ The **baseline identifier was
+deliberately left unchanged**, per `DOCUMENTATION_BASELINE.md` §7 rule 4 (*"changes only when a
+Rank 1–3 document changes version"*) — the EA is **Rank 6**.
+
+---
+
 ## 8. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-24 | Created. Records the Product Owner `LCF-GAP-012` SHIP decision (D2-P) and authorises A2 → v0.5, A3 → v0.3. Four items left explicitly undecided (§4.1–§4.4) |
 | **v2.0** | **2026-08-25** | ⭐ **Extended in place — no second decision record created** (§7.0). Carries seven owner rulings: reaction kinds `LIKE`/`HELPFUL`/`CELEBRATE`; `HELPFUL` = helpfulness; Recency 70 / engagement 30 = **exactly 100**; EA enumeration at V2 (`ADR-0075`); citation repointing **by measurement, not guess** (`ADR-0076`); Privacy Owner **derived** from five existing rules (`ADR-0077`); `LCR-GAP-009` resolved by scoping L450 against a **third** measurement, with the BC Map **byte-unchanged** (`ADR-0078`). §4.1–§4.4 annotated SUPERSEDED with their reasoning preserved verbatim. ⚠⚠ **Corrects a carried-forward error: the next free ADR number was NOT `ADR-0066`** — `0066`–`0073` are earmarked by `PRD-020` §29.2 and `0074` is contested, so `0075`–`0078` were used (§7.10). ⛔ **Three disclosed and NOT repaired:** the `Governance Owner` role gap, `MASTER_PRD.md`'s 10 stale `v2.1` EA citations (`Q-A6`), and BC Map L450's wording. ⛔ **`READY` / `FROZEN` / `RELEASED` NOT claimed** (§7.11) |
+| **v2.1** | **2026-08-25** | ⭐ **Extended in place again — §7.12 added by APPEND ONLY, and no line above it moved**, because **L303–304** of this file are cited by `ADR-0081` §2, `ADR-INDEX.md` and A3 v0.5. Carries three `ACCEPTED` ADRs. ⭐ **`ADR-0079` EXECUTED the EA enumeration that `ADR-0075` left blocked**, by the append-only path `ADR-0075` §8.5 pre-authorised as **Option A**: EA **v2.2 → v2.3** with a new §12, appended below **L2404**, the highest EA line cited anywhere. Measured after execution: **482** EA citations re-resolved, **0 invalidated**, **0** cited-line contents changed, **L967–L973 byte-identical**, **0 frozen files touched**. ⚠ **Corrects a FALSE claim in v2.0's own Subject row**, which said "EA v2.2 → v2.3" when that edit had in fact been reverted. ⭐ **`ADR-0080` constituted the `Governance Owner`** by derivation from `PRD_LIFECYCLE.md` **L282** and three `Accepted` ADRs that had already named it as `Deciders`; `PRD_OWNERSHIP_MODEL.md` → **v1.3 by APPEND**, role **VACANT**, no personal name ⇒ **`LCF-GAP-001` and `LCR-GAP-001` CLOSED**, discharging the gap §7.11 disclosed. ⛔⛔ **`ADR-0081` REFUSED `LCR-DEC-009` as undecidable rather than inventing a helpfulness weight** — six determinability probes all returned nothing — so `LCR-RS-003` stays **ELIGIBLE at 0** and the active set stays **70 + 30 = exactly 100**; `LCF-GAP-005` closed **on measurement**, while its identically-tested sibling `LCF-GAP-011` stays **OPEN**. Consequential: A2 → **v0.7**, A3 → **v0.5**, `ADR-INDEX.md` extended to **72** registered ADRs (re-derived mechanically: 72 / 58 / 13 / 1 / 0). ⚠ **Six items disclosed and NOT repaired** (§7.12.5), including a **newly discovered second instance of the bare-line-citation defect class** — six documents cite `ADR-INDEX.md` "L143" for a rule that now sits at **L147**, broken by the *previous* pass and bisected rather than assumed. ⛔ **`READY` / `FROZEN` / `RELEASED` / `BASELINED` all still NOT claimed; the `PRD-020` release gate is REAFFIRMED and 11 conditions remain unmet** (§7.12.4) |
 
-*End of Decision Record v2.0. Seven blockers resolved, zero stages advanced, nothing frozen.*
+*End of Decision Record v2.1. Ten blockers resolved across v2.0 and v2.1, one formally REFUSED, zero stages advanced, nothing frozen, and zero values invented.*

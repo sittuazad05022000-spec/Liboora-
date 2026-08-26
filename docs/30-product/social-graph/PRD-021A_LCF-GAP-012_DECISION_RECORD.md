@@ -374,7 +374,7 @@ clarity defect — **disclosed and routed** to the Architecture Owner, **not rep
 
 | # | File | Change | Instrument |
 |---|---|---|---|
-| 1 | A2 v0.5 → **v0.6** | Enumerate `kind` (§22); clear the `LCF-BR-010` UNSATISFIED block; `LCF-GAP-014` RESOLVED; `LCF-GAP-013` RESOLVED; repoint `LCF-FR-026`; correct the stale `ADR-0066` observations | §7.2, `ADR-0076` |
+| 1 | A2 v0.5 → **v0.6** | ✅ **DONE.** Enumerate `kind` as exactly `LIKE`/`HELPFUL`/`CELEBRATE` (§22); clear the `LCF-BR-010` UNSATISFIED block and mint `LCF-BR-010a`; `LCF-GAP-014` **RESOLVED**; repoint `LCF-FR-026` to `LCF-XC-006`/`LCF-XC-029`. ⚠ **`LCF-GAP-013` is HALF RESOLVED, not RESOLVED** — the citation half is closed by `ADR-0076`, but the **EA enumeration** half remains **OPEN** because `ADR-0075`'s execution is **BLOCKED** (§7.10a). ⚠ Also corrects v0.5's stale observation that named `ADR-0066` as the next free number: **`ADR-0066` was deliberately NOT created and does not exist** — `0066`–`0073` are earmarked by `PRD-020` **§29.2** | §7.2, §7.10a, `ADR-0076` |
 | 2 | A3 v0.3 → **v0.4** | `LCR-RS-003` + `LCR-RS-004` activated; §12.1 → 70/30; `LCR-GAP-003` + `LCR-DEC-008` RESOLVED; `LCR-GAP-009` RESOLVED; `LCR-FND-013` closed | §7.3, §7.4, `ADR-0078`, `ADR-0075` |
 | 3 | EA v2.2 → **v2.3** | Two nodes added under `Community (V2)`; §11 changelog | **`ADR-0075`** |
 | 4 | `DOCUMENTATION_BASELINE.md` | §3.2 **L139** EA version cell only (§7 step 3) | **`ADR-0075`** |

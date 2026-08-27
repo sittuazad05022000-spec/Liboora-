@@ -100,7 +100,7 @@ Repository    : This document amends no other artefact.
 
 ✅ **The `LCR-` prefix used below is REGISTERED**, not merely proposed. `ACCEPTED` `ADR-0080` §5 (**L196**) registered `LCR-` to `PRD-021A` A3 — and `LCF-` to A2 at **L195** — in the same act that constituted the **Governance Owner** role this gap had been routed to. `LCR-GAP-001` is therefore ✅ **CLOSED** (§31).
 
-⛔ **The distinction that survives, and matters.** Registering the *prefix* does not ratify the *identifiers*. Every `LCR-*` identifier below remains **PROPOSED and UNRATIFIED**: the namespace is conferred, the requirements it labels are not. ⚠ *Corrected at v0.6 (finding `S-1`):* v0.5 recorded the closure at §0.4 and §31 but left this paragraph, §30, `LCR-RSK-011` and §33 still asserting the prefix was unconferred — the same document said both. The registered reading is the correct one; the four stale statements are reconciled at v0.6 and **no identifier status is changed by doing so**.
+⛔ **The distinction that survives, and matters.** Registering the *prefix* does not ratify the *identifiers*. Every `LCR-*` identifier below remains **PROPOSED and UNRATIFIED**: the namespace is conferred, the requirements it labels are not. ⚠ *Corrected at v0.6 (finding `S-1`):* v0.5 recorded the closure at §0.4 and §31 but left this paragraph, §30, §33 (`LCR-RSK-011`) and §36 still asserting the prefix was unconferred — the same document said both. The registered reading is the correct one; the four stale statements are reconciled at v0.6 and **no identifier status is changed by doing so**.
 
 ---
 
@@ -257,6 +257,69 @@ worked for the EA **does not apply** to them; `LCR-GAP-004` and `LCR-GAP-008` ar
 ⛔ **Status remains NOT READY — NOT FROZEN.** Independently of every item above, `PRD-021` **must
 not ship before `PRD-020`** (`PRODUCT_IMPLEMENTATION_ROADMAP` **L161–164**), and `PRD-020` is
 still `DRAFT`. Closing three items is progress; it is not readiness.
+
+---
+
+### 0.5 Revision note — v0.6 finding `S-1` remediation (`LCR-` prefix consistency)
+
+v0.6 differs from v0.5 in **exactly one respect**: the four remaining statements that the `LCR-`
+prefix is *"proposed, not conferred"* are reconciled with the closure v0.5 itself recorded.
+**No product, architecture, privacy, scope or governance decision is taken. No ADR, BC, edge,
+aggregate, event, permission, storage, requirement or identifier is created, removed, merged,
+split or renumbered. No weight is changed.**
+
+**Source of truth:** `PRD-021A_ITEM_DISPOSITION_REASSESSMENT.md` §5.1, finding `S-1`.
+
+⭐ **The defect, precisely.** v0.5 closed `LCR-GAP-001` on the authority of `ACCEPTED` `ADR-0080`
+§5 **L196**, which **REGISTERED** the `LCR-` prefix to `PRD-021A` A3, and recorded that closure at
+§0.4 and in the §31 register row. But four *other* passages — written at v0.1 and never revisited —
+continued to assert the opposite. The same document therefore said both that the prefix **was**
+registered and that it was **never conferred**. That is a self-contradiction about a *governance
+fact*, and the registered reading is the correct one because it rests on an `ACCEPTED` ADR.
+
+| # | Site | v0.5 text (stale) | v0.6 |
+|---|---|---|---|
+| 1 | §0 prefix note | *"proposed, not conferred … ratified nowhere"* | ✅ **REGISTERED** by `ADR-0080` §5 **L196**; `LCR-GAP-001` **CLOSED** |
+| 2 | §30 preamble | *"itself **proposed and unratified**"* | ✅ **REGISTERED**; criteria themselves still unratified and none claimed to pass |
+| 3 | §33 `LCR-RSK-011` | *"The `LCR-` prefix is never ratified, orphaning every identifier"* | ⛔ **RETIRED** — precondition ceased to exist; original text retained inline, **position kept** |
+| 4 | §36 closing line | *"The `LCR-` prefix itself is unratified"* | ✅ **REGISTERED**; the **237** identifiers it labels remain unratified |
+
+⭐ **The distinction v0.6 preserves at every one of the four sites.** Registering a *namespace* is
+not ratifying its *contents*. The prefix is conferred; the **237 live identifiers across 12
+registers** it labels remain **PROPOSED and UNRATIFIED**, and not one acceptance criterion is
+claimed to pass (`LCR-FR-100`). Collapsing that distinction would have converted a prefix
+registration into a bulk ratification of 237 requirements — which `ADR-0080` §5 does not do and
+this document has no authority to do.
+
+⛔ **`LCR-RSK-011` is RETIRED, not deleted.** Its position is retained and it is still counted, per
+`PRD-023` `CNF-FR-008` (a retired identifier SHALL NOT be reused) and `PRD_LIFECYCLE.md` §5 rule 5.
+Register counts in §36 are therefore **unchanged at 237 / 12**. This mirrors A2 v0.8's treatment of
+`LCF-RSK-014`, the identical risk in the `LCF-` namespace.
+
+**Unchanged in v0.6:** every v0.1 correction; every v0.2 Stage-3 integration; the v0.3 scope
+resolution; all four v0.4 owner rulings; every v0.5 integration; **§12.1's weight table
+byte-for-byte**; the pipeline order; the ML/AI exclusion; the hard-filter treatment of enforcement;
+and A1, A2 v0.7 and every frozen artefact untouched.
+
+⚠ **What v0.6 explicitly does NOT do.**
+
+- **`LCR-DEC-009` remains `REFUSED`** and the helpfulness weight remains **unassigned**.
+  `LCR-RS-003` stays **ELIGIBLE at weight 0**; the active set is unchanged at `LCR-RS-001` = **70**
+  and `LCR-RS-004` = **30**, summing to exactly **100** (`LCR-FR-033`). Assigning a weight is a
+  Product Owner act and `ADR-0081` ruled the question **undecidable on present evidence**.
+- **`LCR-FND-001` is not closed.** A2's consumption of `BC-11` with no registered `BC-15 → BC-11`
+  edge is still an open architectural finding. ⭐ A2 **v0.8** gives its three consuming requirements
+  a **self-blocking** form and raises the edge as `LCF-ADR-007`; that makes the consumption
+  lawful-as-written, but it does **not** register the edge, which needs **two** Architecture Owner
+  acts. A3 mints nothing here and takes no position on the shape of that edge.
+- **6 gaps** (`LCR-GAP-002`, `004`, `006`, `007`, `008`, `010`) and **6 decision requirements**
+  (`LCR-DEC-001`, `003`, `004`, `006`, `007`, and the refused `009`) remain **open**.
+- `ADR-0075` **Option B** — the bare EA line-citations — remains open. `ADR-0082` is **not amended**.
+- **No lifecycle stage is advanced or conferred.**
+
+⛔ **Status remains NOT READY — NOT FROZEN.** Independently of every item above, `PRD-021` **must
+not ship before `PRD-020`** (`PRODUCT_IMPLEMENTATION_ROADMAP` **L161–164**), and `PRD-020` is still
+`DRAFT`. Removing a self-contradiction improves *integrity*; it confers no *readiness*.
 
 ---
 

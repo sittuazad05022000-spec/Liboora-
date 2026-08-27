@@ -137,8 +137,9 @@
           LCF-DEC-003a outcome recorded; the blocker "no BC-15 event can be
                        lawfully emitted" is LIFTED
 
-        Six dependent cells and the two section 35 conflict rows (5 and 6) are
-        updated to match. Decision-owner cells are struck through and marked
+        Six dependent cells and the two conflict rows 5 and 6 in the
+        "Architecture Conflicts / Decisions Required" appendix are updated to
+        match. Decision-owner cells are struck through and marked
         "discharged by ADR-0078" - NOT reassigned, NOT invented.
 
         TWO precise limits are recorded rather than glossed:

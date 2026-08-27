@@ -1869,7 +1869,7 @@ Owner** | §23 — parallels A3 `LCR-DEC-003`, which is **OPEN**
 | 2 | Resolve `LCO-DEC-003`, then `LCO-ADR-003` (A2 amendment) | 1 |
 | 3 | Resolve `LCO-ADR-001` (identity read path) | 1 |
 | 4 | Resolve `LCO-DEC-004` (role set) | 1 |
-| 5 | Resolve `LCO-DEC-005`, then `LCO-ADR-002` or refuse `PUBLICx` | 1 |
+| 5 | Resolve `LCO-DEC-005`, then `LCO-ADR-002` or refuse `PUBLIC` | 1 |
 | 6 | Resolve `LCO-DEC-006` (priority weight, with A3's author) | 1 |
 | 7 | `LCO-ADR-004` — register `BC-15` aggregates in BC Map §8 | 3 |
 | 8 | Clear `LCF-ADR-002` (attachments) — **A2's act** | — |

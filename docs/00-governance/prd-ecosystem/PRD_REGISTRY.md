@@ -758,7 +758,43 @@ same place as the allocation, and so no later pass reads their absence as an ove
 | **A7** | Community notifications | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **`BC-22` Notification Delivery / `PRD-010`.** BC Map **L332** `E-23` routes *all contexts* to `BC-22`. ⛔ **A7 not created. `PRD-010` NOT created** — it remains `PLANNED` at §4.1 |
 | **A8** | Community technical architecture | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **Enterprise Architecture · Module Dependency Matrix · `ADR-0001` (scope *"Whole platform"*) · the existing A1–A5 technical sections · the existing `PRD-021A` Stage-3 architecture alignment record.** ⛔ **A8 not created. No new technical architecture PRD created** |
 
-Verified at the time of writing: `ls docs/30-product/social-graph/ | grep -E "_A[678]_"` returns **nothing**.
+⚠⚠ **THE ORIGINAL VERIFICATION SENTENCE HERE WAS FALSIFIED BY LATER EVENTS AND IS CORRECTED, NOT DELETED.**
+As written, this line read: *"Verified at the time of writing: `ls docs/30-product/social-graph/ | grep -E "_A[678]_"`
+returns **nothing**."* **That was true when D-A was recorded and is now false.** Re-measured at commit `f4db31d`
+on 2026-08-26, the same command returns **three** files:
+
+| File | Lines |
+|---|---|
+| `PRD-021A_A6_COMMUNITY_SAFETY_PRIVACY_MODERATION_DRAFT_v0.1.md` | 1,188 |
+| `PRD-021A_A7_COMMUNITY_NOTIFICATIONS_DRAFT_v0.1.md` | 941 |
+| `PRD-021A_A8_TECHNICAL_AND_PRODUCTION_ARCHITECTURE_DRAFT_v0.1.md` | 1,925 |
+
+⭐ **Authority for this correction, and its exact limit.** §8 rule 5 — *"If this register disagrees with a PRD,
+**fix this register**"* — and this register is **unranked** (absent from `DOCUMENTATION_BASELINE.md` §3 and §4),
+so §11.2 question 1 applies and **no ADR is required**. Measured before the edit: **204** line-citations to this
+file exist across `docs/`, and **zero** of them point below L761, so this correction invalidates **no** citation.
+
+⛔⛔ **WHAT THIS CORRECTION DOES NOT DO — read this before reading the three rows above.** It corrects **only a
+false statement about the filesystem**. It does **NOT** authorise A6, A7 or A8, does **NOT** alter their
+disposition, and does **NOT** convert their existence into an allocation. **The three `NOT AUTHORIZED` rows above
+stand unchanged and remain in force.** The drafts exist **without** an allocation: their authority is asserted
+only inside their own provenance headers, and no Product Owner record of it exists in this register, in any ADR,
+or in any governance document. ⭐ **Writing one would manufacture a governance trace, which §8 rule 3 —
+*"updated in the same commit as the change it records"* — forbids, because there is no such change to record.**
+Allocating these three parts is a **Product Owner** act and remains **OPEN**. Tracked as `LCS-GAP-001`.
+
+⭐⭐ **A SECOND FALSIFICATION IS DISCLOSED HERE RATHER THAN REPAIRED.** The three rows above each end with
+*"⛔ **A6 not created**"*, *"⛔ **A7 not created**"* and *"⛔ **A8 not created**"*. Read as a record of **what
+D-A did** — D-A did not create them — those phrases remain **true**. Read as a **present-tense claim about the
+repository**, they are **false**, on the same measurement as above. ⛔ **They are deliberately left unedited**,
+for a reason that is the opposite of convenience: those phrases sit in the **Disposition** and **owner** cells,
+and rewriting a disposition cell is not a factual correction — it is an act on the disposition itself, which
+belongs to the Product Owner. **Correcting a measurement is in this register's gift under §8 rule 5; restating a
+refusal is not.** The ambiguity is therefore recorded so the next reader is not misled, and the phrases are to be
+read strictly in the first sense. ⚠ This is a further instance of the defect class `ADR-INDEX.md` "Process"
+step 1's disclosure note already names — a claim that was measured true at authoring time and decayed silently,
+with **no** `tool/docs_check` script validating it. **No checker covers §11.4**; this was caught by manual
+re-measurement, not by CI, and that gap is itself unrepaired.
 
 ### 11.5 ⛔ What `D-A` does **not** do
 

@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.8 |
+| **Version** | v1.9 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1, v1.2, v1.3, v1.4, v1.5, v1.6, v1.7 and v1.8** |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1…v1.9**. **Edges: 28** — `E-01`…`E-26` (§7) + **`E-28`, `E-29`** (**§15.1**, v1.9); ⛔ `E-27` permanently vacant (withdrawn by `ADR-0033`, never reused). ⭐ **v1.9 appends §15, a NORMATIVE extension of §7 and §8** admitted by `Accepted` [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md) — **appended, not inserted**, because insertion into §7 was measured to invalidate **1,293** of this file's **2,812** line-citations against the append's **0** ([`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A). **§1–§14 byte-identical to v1.8** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
 | **Implementation status** | `ADR-0011` is **implemented in code** as of `a22fd7e` — see [`../40-implementation/IMPLEMENTATION_STATUS.md`](../40-implementation/IMPLEMENTATION_STATUS.md) |
@@ -622,3 +622,141 @@ are unchanged **by that ruling**. *(Edge `E-27` was added by `ADR-0032` and **wi
 
 
 
+---
+
+## 15. ⭐ `ADR-0083` Extension — `BC-15` Community & Groups integration (V2)
+
+> ⚠⚠ **THIS SECTION IS A NORMATIVE EXTENSION OF §7 AND §8, NOT A COMMENTARY ON THEM.**
+> Admitted 2026-08-31 by **`Accepted`** [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md)
+> under **Architecture Owner** authority. §7's rule at **L292** — *"If an edge is not in this table, it does not
+> exist and adding it requires an ADR"* — is satisfied by this section: the ADR exists, and the rows below **are**
+> that table, extended.
+>
+> ⭐ **Why this is an APPEND and not two rows inserted into §7.3, stated as measurement rather than preference.**
+> Measured across all of `docs/` at commit `c66f1d7`: **2,812** line-citations point into this file, and the
+> highest is **L624** — the last line before this section. Inserting a row after `E-26` (~L336) would have shifted
+> **1,293** of those citations, several inside **FROZEN** Rank 3 documents. Appending shifts **zero**. This is the
+> method [`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A
+> established for the Enterprise Architecture, where **482** citations re-resolved and **0** were invalidated.
+> **§1–§14 are byte-identical to v1.8.**
+
+### 15.1 New integration edges
+
+⛔ **`E-27` IS NOT REUSED AND IS PERMANENTLY VACANT.** It was minted by `ADR-0032`, withdrawn by
+[`ADR-0033`](../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md) in v1.7, and
+`PRD_LIFECYCLE.md` §5 rule 5 states *"Numbers are never reused, even after withdrawal."* The edge set is
+therefore **`E-01`…`E-26`, `E-28`, `E-29`** — **28 edges, with `E-27` a deliberate gap that records a
+withdrawal**. A reader who finds no `E-27` has found the correct state.
+
+| # | Upstream (provider) | Downstream (consumer) | Pattern | Mechanism | Release | Contract |
+|---|---|---|---|---|---|---|
+| **E-28** | BC-11 Social Graph | BC-15 Community & Groups | `C/S` | Sync port | **V2** | `RateLimitCounter` and `BlockList` reads. `BC-15` **asks**; enforcement and both aggregates remain `BC-11`'s (§8 **L377**). Same shape as `E-16` — the consumer never holds the provider's state. Required by `PRD-021A` A2 `LCF-FR-034`, `LCF-AUTH-012`, `LCF-FR-096`, `LCF-FR-095`. Admitted by `ADR-0083` §4.1 on ruling **AO-1** (`LCF-ADR-007`) |
+| **E-29** | BC-14 Content Sharing | BC-15 Community & Groups | `CF` | Sync port | **V2** | Community posts reference user-generated media. `BC-15` holds a **reference only — never bytes, never a raw storage path**, and **does NOT become a second media owner**: `BC-14` remains sole owner of user-generated notes, media and links (**L118**) including copyright and takedown. Admitted by `ADR-0083` §4.1 on ruling **AO-3** (`LCF-ADR-002`). ⛔ **See §15.1.1 — this edge's `L2` clearance is UNDETERMINED** |
+
+**Direction.** Both rows are **inbound to `BC-15`**: it is a consumer in each. ⭐ **`BC-15` is therefore still
+the source of ZERO edges**, and consequently publishes **no** event. `PRD-021A` A4's `GroupCreated`,
+`GroupMembershipGranted` and `GroupMembershipRevoked` remain **unpublishable**, and A4's `LCG-ADR-002` remains
+**OPEN** — `ADR-0083` §4.6. Nothing in this section authorises a `BC-15`-sourced event.
+
+**On §7's "in V1" heading.** **L292** scopes §7 to V1 and both contexts here are **V2**. This is an existing
+shape, not a new one: `E-14` (**L318**) already lists the V2 contexts `BC-14` and `BC-15` among its consumers,
+and `E-10` (**L307**) already carries a V2 qualifier in its contract cell. Both rows above are explicitly
+**V2-scoped** so no reader mistakes them for V1 obligations.
+
+#### 15.1.1 ⛔⛔ `E-29`'s `L2` clearance is UNDETERMINED — recorded, not assumed
+
+`LIBOORA_MODULE_DEPENDENCY_MATRIX.md` rule `L2` (**L49**) forbids same-rank dependencies outside a declared
+cluster. §15.2 extends the Social cluster to `BC-11`, `BC-12`, `BC-13`, `BC-15` — **the four members ruling AO-7
+enumerates. `BC-14` is not among them.**
+
+**Measured:** `BC-14` appears **0** times in `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` and **0** times in
+`tool/module_dependencies.yaml`. Its module and rank are **unassigned by any Rank 4 document**. Therefore:
+
+- if `BC-14` is rank 8 in `domain/social`, `E-29` is an **`L2` violation** (same rank, outside the declared cluster);
+- if `BC-14` is lower-ranked, `E-29` is a lawful downward port call;
+- **which of these holds is not determinable from the repository.**
+
+⛔ **`BC-14` is NOT added to the cluster here** — that would exceed AO-7's explicit enumeration. ⛔ **No `L2`
+clearance is claimed for `E-29`.** The determination is routed as **`GAP-BC14-RANK`**, **Architecture Owner**.
+⚠ Until it closes, A2 `LCF-FR-043`'s restriction stands: **only `TEXT` posts ship**; `NOTE`, `MEDIA` and `LINK`
+remain blocked.
+
+### 15.2 Social cluster extended — `BC-15` admitted
+
+Admitted by `ADR-0083` §4.2 on rulings **AO-1** (second required act) and **AO-7** (D-2).
+
+| Cluster | Members after this section | Allowed internal edges |
+|---|---|---|
+| **Social cluster** (within R8) | `BC-11` Graph, `BC-12` Messaging, `BC-13` Safety, **`BC-15` Community & Groups** | `E-14`…`E-16` **and `E-28`** |
+
+`domain/social` remains rank **8** (`tool/module_dependencies.yaml` **L47**) — unchanged.
+
+⭐ **No third cluster was created, and that was the point.** Matrix **L92–95** records `ADR-0011`'s finding that
+a third R8 cluster spanning both worlds *"dissolves the Separate Ways boundary"*. `BC-15` is already inside the
+**Student Network** subdomain (**L119**), so admitting it to the cluster that governs that subdomain adds no
+bridge. **`X-05` is untouched** — `BC-15` is on the social side of the prohibition, `E-13` via ACL remains the
+sole bridge to Library Management, and §7.5's Separate Ways row is unchanged.
+
+### 15.3 Pagination convention — opaque cursor
+
+Admitted by `ADR-0083` §4.5 on ruling **AO-2** (`LCF-ADR-003`).
+
+| Rule | Statement |
+|---|---|
+| **PG-1** | Feed and list pagination SHALL use an **opaque, server-generated cursor**. |
+| **PG-2** | The cursor SHALL be treated by clients as an **opaque value**. Clients SHALL NOT parse, construct, decrement or arithmetically manipulate it. |
+| **PG-3** | The cursor SHALL NOT expose internal ordering keys, database identifiers, offsets, table names or index structure. |
+| **PG-4** | An expired or malformed cursor SHALL produce a domain error, never a silent reset to the first page. |
+
+⭐ **This populates a node the Enterprise Architecture had already declared and left empty.** EA **L379** reads
+`Pagination & Filtering Standards (V1)` beneath `API Specification (V1)`, and a measured sweep of
+`docs/10-architecture/*.md` for `cursor`, `opaque token` and `page token` returned **0** occurrences. So this is
+a reserved slot being filled, **not** a new architectural layer.
+
+### 15.4 ⭐ Event envelope `tenantId` and `BC-15` — the exception, narrowly scoped
+
+Admitted by `ADR-0083` §4.5 on ruling **AO-6** (`LCT-CONF-002`).
+
+| Rule | Statement |
+|---|---|
+| **EV-1** | `BC-15` community events SHALL NOT carry a `tenantId` in the event envelope. |
+| **EV-2** | This is **not** a relaxation of `ID-2`. §11 **L488** already requires that `BC-11`→`17` *"must never receive a `StudentRecordId` or `tenantId`"*. The defect was an envelope rule phrased as universal; `ID-2` is and was authoritative. |
+| **EV-3** | Community scope is carried by the community's own identifier, which is **not** tenant-derived — `Accepted` [`ADR-0078`](../00-governance/adr/ADR-0078-community-scope-identifier-carries-no-tenantid.md) §2.1. |
+| **EV-4** | ⛔ **No other bounded context receives this exception** without a separate authorisation. |
+
+⭐ Stated plainly: **nothing is being exempted from `ID-2`.** `ID-2` forbids the field; this rule stops an
+envelope convention from contradicting it. `PRD-021A` A2 and A8 now share one rule.
+
+### 15.5 `BC-15` aggregates registered
+
+Admitted by `ADR-0083` §4.5 on ruling **AO-8** (D-5). ⭐ **Appended rather than inserted into §8** — a mid-table
+insert at ~L388 was measured to invalidate **747** line-citations. **§8's table is byte-unchanged.**
+
+| Context | Aggregate root(s) | Members | Key invariants |
+|---|---|---|---|
+| **BC-15 Community & Groups** | `Community` · `Group` | `GroupMembership`, `CommunityRole`, `GroupVisibility`, `GroupLifecycleState` | `CommunityRole` ∈ {`OWNER`, `MODERATOR`, `MEMBER`}, closed, ranked `OWNER > MODERATOR > MEMBER` (`ADR-0083` §3, PO-4) · `visibility` ∈ {`PUBLIC`, `PRIVATE`}, closed (PO-5) · **a community SHALL NOT become ownerless** — the last `OWNER`'s departure is blocked until another member is explicitly promoted, and **no silent auto-promotion occurs** (PO-6) · `CommunityRole` and `BC-18` `AccessRole` are **disjoint namespaces** · carries **no** `tenantId` (`ID-2`, §15.4) |
+
+⛔ **No existing aggregate ownership moves.** `ModerationCase`, `AbuseReport`, `EnforcementAction` and
+`StrikeRecord` remain **`BC-13`'s** (**L379**); `Friendship`, `BlockList` and `RateLimitCounter` remain
+**`BC-11`'s** (**L377**); user-generated media remains **`BC-14`'s** (**L118**). ⚠ `Group.name` uniqueness is
+**NOT** specified — the unanswered half of `LCG-DEC-005`, tracked as `LCG-DEC-005b`, **Product Owner**.
+
+### 15.6 Moderation reads, and search — what is authorised and what is refused
+
+| Subject | Determination |
+|---|---|
+| **Moderation reads** (`LCS-ADR-001`, ruling **AO-4**) | ✅ **Option B — existing-edge-fed local projection. ZERO new edges.** `BC-15` and A6 read a **local projection fed by the existing `E-14`**, which already targets `BC-15` (**L318**), following `Accepted` [`ADR-0065`](../00-governance/adr/ADR-0065-bc12-send-time-safety-check-transport.md). ⛔ **No `BC-15` → `BC-13` edge is created.** Moderation state stays owned by `BC-13` / `PRD-020`; A6 reads, never writes, and holds no moderation aggregate |
+| **Media** (ruling **AO-3**) | ✅ Authorised as `E-29`, §15.1 — subject to §15.1.1 |
+| **Community search** (ruling **AO-9**) | ⛔ **NOT AUTHORISED, and no support is claimed.** AO-9 permits `E-21` *"only if the existing contract supports it without inventing a new search protocol"*. **Measured: `E-21` (L330) reads `BC-01, BC-10 → BC-23`. `BC-15` is NOT a consumer.** It does not support it. Per AO-9's own conditional the amendment is **recorded, not assumed**: community search is **out of band for V2**, and `PRD-021A` A8 `LCT-FR-064` and `LCT-AC-032` are **CONFIRMED CORRECT** |
+
+### 15.7 What this section does **not** do
+
+- ⛔ Does **not** add a bounded context — **31** before and after, 23 in V1.
+- ⛔ Does **not** change any existing edge's endpoints, pattern, mechanism or contract. **§7 is byte-unchanged.**
+- ⛔ Does **not** change any existing aggregate or invariant. **§8 is byte-unchanged.**
+- ⛔ Does **not** mint `E-27` or reuse any withdrawn number.
+- ⛔ Does **not** make `BC-15` an event producer, and authorises **no** `BC-15`-sourced event.
+- ⛔ Does **not** create a `BC-15` → `BC-13` edge.
+- ⛔ Does **not** move `BC-14` or `BC-15` from V2 into V1.
+- ⛔ Does **not** add a `tenantId` to anything, and does not weaken `ID-2`, `ID-1` or `X-05`.
+- ⛔ Does **not** confer any lifecycle stage on `PRD-021A` or any of its parts.

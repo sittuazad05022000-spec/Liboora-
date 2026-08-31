@@ -701,7 +701,7 @@ same technique `PRD_OWNERSHIP_MODEL.md` §9/§10 used for two role conferrals.
 
 | PRD ID | Name | Bounded context | Type | V | Status | Recognised decomposition |
 |---|---|---|---|---|---|---|
-| **`PRD-021A`** | **Library Community & Community Feed** | **`BC-15` Community & Groups** | `[SUPPORTING]` | **V2** | **`PLANNED`** | **A1**…**A5** — see §11.3. ⛔ **A6, A7, A8 are NOT parts of this allocation** — §11.4 |
+| **`PRD-021A`** | **Library Community & Community Feed** | **`BC-15` Community & Groups** | `[SUPPORTING]` | **V2** | **`PLANNED`** | **A1**…**A8** — see §11.3 and §11.4. ✅ **A6, A7 and A8 ARE parts of this allocation as of 2026-08-31**, authorised by the **Governance Owner** and recorded in §11.4 and `ADR-0083` §6. ⭐ **All eight parts sit inside ONE allocation on ONE bounded context, which is the point** — Stage-3 check 1 (*context ownership is exclusive*) would fail for **both** documents if any part were split out as a standalone PRD, so the ruling's repeated *"remains a part of `PRD-021A`, not a standalone PRD"* is a structural necessity rather than a preference. ⚠ **This cell was STALE from the moment §11.4 was corrected** and is repaired here in the same commit; it is the residue the §11.4 authorisation block predicted. *(Prior text retained verbatim: **A1**…**A5** — see §11.3. ⛔ **A6, A7, A8 are NOT parts of this allocation** — §11.4)* |
 
 **Identifier.** `PRD-021A` is a **lettered suffix of the existing number `PRD-021`**, not a new sequence number —
 the identifier shape §4.1 already established for `PRD-012a` / `PRD-012b`, and §7 already records that a suffix

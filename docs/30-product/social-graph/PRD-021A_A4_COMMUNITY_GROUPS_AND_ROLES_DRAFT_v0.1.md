@@ -205,7 +205,7 @@ exist. This part takes **no** custody on their behalf (`LCG-INV-003`)
 |---|---|---|
 | **Participant** | A person A1's derived predicate admits to the community | **A1** — consumed, never re-derived |
 | **`CommunityMember`** | A participant holding an in-force `GroupMembership` in a specific group | **A4** — this part |
-| **Group `CommunityRole`** | `OWNER`, `MODERATOR`, `MEMBER` — ⏸ **candidate set, NOT decided** (§32 `LCG-DEC-003`) | ⛔ OPEN. BC Map **L212** names *"Admin/Moderator"* illustratively, not normatively |
+| **Group `CommunityRole`** | `OWNER`, `MODERATOR`, `MEMBER` — ✅ **DECIDED and CLOSED, 2026-08-31** (Product Owner ruling **PO-4**; `LCG-DEC-003` closed). The set is **CLOSED**: ranking is **`OWNER` > `MODERATOR` > `MEMBER`**, and ⛔ **no other role SHALL be added** — the ruling states *"Do not add any other role."* ⭐ **The candidate set was ratified unchanged, not replaced**, which is why no identifier moves and no permission is re-derived. | ✅ **CLOSED.** BC Map **L212** still names *"Admin/Moderator"* **illustratively, not normatively**, and that remains true — ⛔ **`Admin` is NOT a role in this set** and was not admitted by the ruling; the BC Map line is prose, not an enum, and is **byte-unchanged**. *(Prior text retained verbatim: ⏸ **candidate set, NOT decided** (§32 `LCG-DEC-003`) / ⛔ OPEN)* |
 | **Platform `AccessRole`** | Owner / Manager / Reception | **`BC-18`** — BC Map **L212**. Untouched |
 | **Enforcement authority** | Issuer of `safety.EnforcementActionTaken` | **`BC-13`** — consumed as a **hard filter** |
 | **Product Owner** | Holds `LCG-DEC-001`, `003`, `005`, `006` | `PRD_LIFECYCLE.md` §6 |
@@ -228,7 +228,7 @@ Authority: BC Map **L212**.
 | `communityId` | Identifier | Mandatory, immutable. Scoping key — see §4.4 |
 | `name` | Text | Mandatory. ⏸ Bounds deferred to `BC-25` — `LCG-GAP-005` |
 | `description` | Text | Optional. ⏸ Bounds deferred — `LCG-GAP-005` |
-| `visibility` | Enum | ⏸ **NOT ENUMERATED.** `LCG-DEC-005`, OPEN |
+| `visibility` | Enum | ✅ **ENUMERATED and CLOSED, 2026-08-31**: **`PUBLIC`**, **`PRIVATE`** (Product Owner ruling **PO-5**). `PUBLIC` is discoverable under the existing discovery rules; `PRIVATE` requires membership or otherwise authorised access. ⛔ **No additional visibility state SHALL be invented** — the ruling states *"Do not invent additional visibility states"*, so there is no `UNLISTED`, `HIDDEN`, `SECRET` or `INVITE_ONLY`. ⚠ **`LCG-DEC-005` is only HALF closed by this**: its second clause — *whether group names are unique per community* — was **not** ruled on and is now tracked as **`LCG-DEC-005b`**, still **OPEN**, Product Owner. *(Prior text retained verbatim: ⏸ **NOT ENUMERATED.** `LCG-DEC-005`, OPEN)* |
 | `lifecycleState` | Enum | `ACTIVE`, `ARCHIVED` — §5.2 |
 | `createdAt` | Timestamp | Mandatory, immutable |
 | `tenantId` | — | ⛔ **ABSENT.** `ACCEPTED` `ADR-0078` §2.1 determines `BC-15` carries **no** `tenantId`. This part does not reopen it |
@@ -452,7 +452,7 @@ Membership state is `BC-02`'s, not this part's.
 state change, no restoration event.
 
 `LCG-EC-003` | Last owner is enforcement-banned → group has no effective owner.
-⏸ **OPEN** — `LCG-DEC-006`. This part does **not** auto-promote; promotion would
+✅ **CLOSED — 2026-08-31** (Product Owner ruling **PO-6**). **A community SHALL NOT become ownerless.** The departure or ban of the **last `OWNER`** **SHALL be BLOCKED** until another eligible member has been **explicitly promoted** to `OWNER`. ⛔ **This part still does NOT auto-promote, and the ruling forbids it in terms** — *"Do NOT silently auto-promote a member"* — so the previous refusal to auto-promote is **ratified, not reversed**. ⭐ **The open question was never whether to auto-promote; it was what to do INSTEAD**, and the answer is to fail the departure closed. ⚠ **Whether RESTORATION of an ownerless community requires higher authority was NOT ruled on** and stays open under `LCG-DEC-006`'s second clause — it cannot arise while the first clause is enforced, but it is not thereby answered. *(Prior text retained verbatim: ⏸ **OPEN** — `LCG-DEC-006`. This part does **not** auto-promote; promotion would)*
 be an authority act.
 
 `LCG-EC-004` | Group archived while a join is in flight → step 3 rejects.
@@ -622,8 +622,8 @@ claimed to pass. No criterion is recorded as verified.
 `LCG-AC-012` | Given `isGroupMember`, when called, then the response contains no post content, member list or count | Verifiable |
 `LCG-AC-013` | Given any group operation, when it completes, then no cross-community result is observable | Verifiable |
 ⏸ `LCG-AC-014` | Given a group creation, when the community scope is resolved, then … | ⛔ **UNWRITABLE** — `LCG-GAP-006` |
-⏸ `LCG-AC-015` | Given a role change by an owner, when it completes, then … | ⛔ **UNWRITABLE** — role set OPEN, `LCG-DEC-003` |
-⏸ `LCG-AC-016` | Given the last owner leaves, when it completes, then … | ⛔ **UNWRITABLE** — `LCG-DEC-006` |
+✅ `LCG-AC-015` | Given a role change by an owner, when it completes, then the target member holds exactly one of `OWNER`, `MODERATOR`, `MEMBER` and the change is rejected if the value is outside that closed set | ✅ **NOW WRITABLE — 2026-08-31.** The role set is closed by **PO-4** (`OWNER` > `MODERATOR` > `MEMBER`); `LCG-DEC-003` is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run |
+✅ `LCG-AC-016` | Given the last owner attempts to leave or is banned, when the operation is evaluated, then it is **BLOCKED** and the community retains at least one `OWNER`; no member is promoted implicitly | ✅ **NOW WRITABLE — 2026-08-31.** Last-owner policy closed by **PO-6**: block, never auto-promote; `LCG-DEC-006`'s first clause is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run. ⚠ The restoration half of `LCG-DEC-006` stays OPEN and no criterion is claimed for it |
 ⏸ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected | ⏸ **DEFERRED** — no value, `LCG-GAP-005` |
 ⏸ `LCG-AC-018` | Cross-community isolation asserted per query in integration | ⏸ **DEFERRED** — `integration_test/` does **not** exist (measured at authoring time: `ls -d integration_test` → *No such file or directory*). Same condition as A2 `LCF-AC-035` / `LCF-GAP-011` |
 
@@ -658,19 +658,20 @@ claimed to pass. No criterion is recorded as verified.
 
 | ID | Decision | Owner |
 |---|---|---|
-`LCG-DEC-001` | ⭐ Is this residue Part A4, or A5+, or a separate PRD? | **Product Owner** |
+`LCG-DEC-001` | ⭐ Is this residue Part A4, or A5+, or a separate PRD? | **Product Owner** | ✅ **CLOSED — 2026-08-31 (PO-3): it is Part A4 — `Community Groups & Roles`.** ⛔ **A4 remains a PART of `PRD-021A` and is NOT a standalone PRD**, in the ruling's own words. ⭐ This also discharges `LCG-ADR-001`'s classification half |
 `LCG-DEC-002` | Confirm the allocation duplicates no `BC-02` / `BC-13` / `BC-15`-post ownership (the `P0-5` trap, A3 **L413**) | **Architecture Owner** |
-`LCG-DEC-003` | Enumerate the `CommunityRole` set and its ranking | **Product Owner** |
+`LCG-DEC-003` | Enumerate the `CommunityRole` set and its ranking | **Product Owner** | ✅ **CLOSED — 2026-08-31 (PO-4).** Closed set `OWNER`, `MODERATOR`, `MEMBER`; ranking `OWNER` > `MODERATOR` > `MEMBER`; ⛔ no other role |
 `LCG-DEC-004` | Whether group membership is self-service or invitation-gated | **Product Owner** |
-`LCG-DEC-005` | Group `visibility` enum; whether names are unique per community | **Product Owner** |
-`LCG-DEC-006` | Last-owner departure/ban policy; whether restoration needs higher authority | **Product Owner** |
+`LCG-DEC-005` | Group `visibility` enum; whether names are unique per community | **Product Owner** | ⚠ **HALF CLOSED — 2026-08-31 (PO-5).** ✅ The enum is closed at **`PUBLIC`**, **`PRIVATE`**; ⛔ no further states. ⏸ **The name-uniqueness clause was NOT ruled on** — split out below as **`LCG-DEC-005b`** rather than silently treated as answered, because inferring it would breach the ruling's Execution Rule 5 (*"Do NOT invent additional decisions"*) |
+`LCG-DEC-006` | Last-owner departure/ban policy; whether restoration needs higher authority | **Product Owner** | ⚠ **HALF CLOSED — 2026-08-31 (PO-6).** ✅ Departure/ban of the last `OWNER` is **BLOCKED** until another member is explicitly promoted; ⛔ **no silent auto-promotion**. ⏸ **The restoration-authority clause was NOT ruled on and stays OPEN** |
+`LCG-DEC-005b` | ⏸ **NEW, 2026-08-31 — OPEN.** Whether group names must be **unique per community**. ⭐ **Split out of `LCG-DEC-005`, whose visibility half PO-5 answered and whose uniqueness half it did not.** Recorded as a separate item so that a half-answered decision is not booked as closed | **Product Owner** | ⏸ **OPEN.** Blocks no acceptance criterion currently written; `LCG-FR-*` naming rules stay parametric until ruled |
 
 ### ADR requirements
 
 | ID | Requirement | Status |
 |---|---|---|
-`LCG-ADR-001` | An ADR classifying this part and assigning (or withholding) `BC-15` specification authority | **Required, `Proposed`** |
-`LCG-ADR-002` | An ADR registering any `BC-15`-sourced event (`GroupCreated`, `GroupMembershipGranted`/`Revoked`). ⛔ BC Map §7 sources **no** edge from `BC-15`; BC Map **L292** applies | **Required, `Proposed`** |
+`LCG-ADR-001` | An ADR classifying this part and assigning (or withholding) `BC-15` specification authority | ✅ **SATISFIED — 2026-08-31 by `ADR-0083`** (`Accepted`). Classification settled by **PO-3** (A4 is a part of `PRD-021A`); `BC-15` aggregate registration performed by **AO-8** in BC Map **§15.5** by append, leaving §8 byte-unchanged. *(Prior status retained verbatim: **Required, `Proposed`**)* |
+`LCG-ADR-002` | An ADR registering any `BC-15`-sourced event (`GroupCreated`, `GroupMembershipGranted`/`Revoked`). ⛔ BC Map §7 sources **no** edge from `BC-15`; BC Map **L292** applies | ⛔⛔ **STILL REQUIRED AND STILL OPEN — 2026-08-31, and this is a MEASURED refusal, not an oversight.** ⭐ **The owner rulings did not reach it.** **AO-1** authorised `BC-11 → BC-15` (`E-28`) and **AO-3** authorised `BC-14 → BC-15` (`E-29`), and **both are INBOUND**; so is the pre-existing `E-14`. A fresh count of BC Map §7 after those two edges were added returns **ZERO edges SOURCED FROM `BC-15`**. ⚠ **A4's group events therefore remain UNPUBLISHABLE**, which is a genuine **Stage-3 check-2 failure** (*"every integration edge exists in §7"*) and is recorded as such rather than waved through. ⛔ **No outbound edge was minted to close this**, because none of the 22 rulings authorises one and inventing it would breach Execution Rule 5. ⭐ **This is also why SD-1's withdrawal of A7's `MembershipChanged` is coherent rather than a loss** — an event nothing may publish is not a contract. **Owner: Architecture Owner.** *(Prior status retained verbatim: **Required, `Proposed`**)* |
 `LCG-ADR-003` | An ADR minting or resolving the `communityId` scoping key (`LCG-GAP-006`) | **Required, `Proposed`** |
 `LCG-ADR-004` | An ADR **is not required** for consuming `E-14` — the edge already exists (BC Map **L318**, **L433**) and `BC-15` is already a declared consumer | **Not required** |
 

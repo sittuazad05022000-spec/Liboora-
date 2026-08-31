@@ -668,7 +668,7 @@ participationOpen(caller, tenantOrganisation) :=
 
 | Ref | Criterion | Status |
 |---|---|---|
-`LCM-AC-041` | *"A membership expiring on date D is in force on the first day of the protected window and out of force on the day after the window."* | ⛔ **UNWRITABLE.** `W₀` unresolved — `ADR-0036` §8.2 q2. Owner: **Product Owner**. Tracked as `LCM-GAP-001` |
+`LCM-AC-041` | *"A membership expiring on date D is in force on the first day of the protected window and out of force on the day after the window."* | ✅ **NOW WRITABLE — 2026-08-31.** `W₀ = D+1`, ruled by the **Product Owner** and recorded in **existing `ADR-0036` §8.2 question 2 and its new §8.2a** (⛔ no new ADR, per the ruling's own instruction). Instantiated: *for a membership expiring on D the protected window is `D+1`, `D+2`, `D+3`; the membership is in force on `D+1` and out of force on `D+4`.* ⭐ **The criterion's wording is UNCHANGED** — only its writability status moves, because the sentence was always correct and merely lacked a value for `W₀`. ⚠ **NOT recorded as passing.** `LCM-FR-045`'s bar on approximating it is satisfied by an *answer*, not by this edit; the test still has to be written and run. *(Prior text retained verbatim: ⛔ **UNWRITABLE.** `W₀` unresolved — `ADR-0036` §8.2 q2. Owner: **Product Owner**. Tracked as `LCM-GAP-001`)* |
 
 `LCM-FR-045` — `LCM-AC-041` **MUST NOT** be recorded as passing, waived, or approximated while `W₀` is unresolved. `TSF-FR-141` and `SID-4.56` establish the discipline.
 
@@ -752,7 +752,7 @@ ID | Excluded from A1 | Held instead by
 
 ID | Gap | Blocking? | Owner | Cost to close
 ---|---|---|---|---
-`LCM-GAP-001` | The first day of the three-day protected renewal window is undefined (`ADR-0036` §8.2 q2) | ⛔ **YES — the only blocker** | Product Owner | An answer recorded in `ADR-0036`; no new ADR
+`LCM-GAP-001` | The first day of the three-day protected renewal window is undefined (`ADR-0036` §8.2 q2) | ✅ **CLOSED — 2026-08-31. NO LONGER A BLOCKER.** `W₀ = D+1`; window = `D+1`, `D+2`, `D+3`; day D itself is **outside** the window and the first unprotected day is `D+4`. Recorded in **existing `ADR-0036`** (§8.2 q2 outcome cell, new **§8.2a** with a worked example, header `Status`, §11 **v2.1**, §7.3 row at **L385**), moving that ADR from *ACCEPTED on questions 1 and 3 only* to **ACCEPTED on all three questions**. ⛔ **No new ADR was created and `ADR-0084` does not exist** — the ruling said *"Do NOT create a new ADR"*. ⭐ **`ADR-0036` §6.5's refusal to infer `W₀` is NOT overturned — it is discharged**, by the authority it was waiting for arriving. ⚠ **`LCM-FR-048`'s implementation bar is lifted for THIS reason only**; `LCM-GAP-002`…`LCM-GAP-008` remain open and A1 remains a **DRAFT**, unbaselined and unapproved. *(Prior text retained verbatim: ⛔ **YES — the only blocker** | Product Owner | An answer recorded in `ADR-0036`; no new ADR)*
 `LCM-GAP-002` | Final architecture placement of A1 is not recorded in any register | No | Governance Owner | One `PRD_REGISTRY.md` §4.2 row
 `LCM-GAP-003` | The participation gate reuses `LCFG-5` rather than owning a parameter | No | Product | One Rank 3 amendment to `Library_PRD_v1.md` (measured: it is "Approved — authoritative", **not frozen**); no ADR, per `CONFIGURATION_GUIDE.md` L863
 `LCM-GAP-004` | The directory this file sits in is a filing convention, not a placement decision | No | Owner | A `git mv` plus the `LCM-GAP-002` row
@@ -792,7 +792,7 @@ Every conflict carried from draft v0.1, with its disposition and its governance 
 `C-5` | v0.1 coined `MembershipHolder` and `AccessRole` against fixed vocabulary | ✅ **RESOLVED** — both coined terms removed; §5 uses only existing terms | Zero
 `C-6` | `tool/module_dependencies.yaml` declares no `community` context | ✅ **DISSOLVED** — a read composition is not a manifest context; Dashboards and the Parent Portal set the precedent | Zero
 `C-7` | v0.1 required two events that do not exist, against a register `MM-BR-035` closes at seven, plus a `Suspended` state `MM-FR-072` does not have | ✅ **RESOLVED** — exclusion derived from `safety.EnforcementActionTaken` and `tenancy.TenantSuspended`; lapse derived from the projection with **no event at all**, on the `LMD-16` precedent | Zero — **no frozen amendment**
-`C-8` | `ADR-0036` §8.2 question 2 leaves the protected window's first day undefined | ⛔ **OPEN — escalated** as `LCM-GAP-001` / `LCM-DEC-001`. Window stated parametrically; ambiguous day fails closed; the acceptance criterion is declared unwritable | Awaiting the Product Owner
+`C-8` | `ADR-0036` §8.2 question 2 leaves the protected window's first day undefined | ✅ **RESOLVED — 2026-08-31.** The Product Owner ruled **`W₀ = D+1`**; `LCM-GAP-001` and `LCM-DEC-001` are **CLOSED**. ⭐ **The fail-closed interim did its job and is retired for this case**: `LCM-FR-041` denied on the ambiguous day precisely so no implementation would silently pick a boundary, and the parametric window can now be instantiated rather than guessed. ⚠ **The 24-hour-vs-three-day tension `ADR-0036` records is NOT resolved by this** and is left standing there. *(Prior text retained verbatim: ⛔ **OPEN — escalated** as `LCM-GAP-001` / `LCM-DEC-001`. Window stated parametrically; ambiguous day fails closed; the acceptance criterion is declared unwritable | Awaiting the Product Owner)*
 `C-9` | The permission catalogue is closed at zero entries and there is no Staff role to hang a grant on | ✅ **RESOLVED** — capabilities are *derived at evaluation time* from membership validity, never granted. Minting a permission would create a capability `AP-3` keeps permanently unreachable | Zero
 `C-10` | "Library" was ambiguous between organisation, branch and tenant | ✅ **RESOLVED** — the grain is fixed at `TenantOrganisation` (§5) | Zero
 `C-11` | `PRD-020` / `PRD-021` ordering appeared to block A1 | ✅ **EVAPORATED** — A1 contains no content and no moderation, so no ordering dependency arises | Zero
@@ -1433,7 +1433,7 @@ Only `LCM-*` identifiers, which are local to A1. No `BC-`, `E-`, `PERM-`, `TR-`,
 
 ID | Decision | Owner | Blocking? | Related
 ---|---|---|---|---
-`LCM-DEC-001` | The first day of the three-day protected renewal window | **Product Owner** | ⛔ **YES** | `ADR-0036` q2; `LCM-GAP-001`
+`LCM-DEC-001` | The first day of the three-day protected renewal window | **Product Owner** | ✅ **CLOSED — 2026-08-31: `W₀ = D+1`** *(was ⛔ YES)* | Recorded in existing `ADR-0036` §8.2 q2 + **§8.2a**; ⛔ no new ADR; `LCM-GAP-001` closed with it
 `LCM-DEC-002` | Whether to accept the `AR-1` classification for A1 | Architecture / Governance Owner | No — A1 states it, the ADR records it | `LCM-ADR-001`
 `LCM-DEC-003` | Whether A1's V1 surface is the right product minimum | Product Owner | No | §37
 `LCM-DEC-004` | Whether the participation gate should be coupled to the member directory beyond V1 | Product | No | `LCM-GAP-003`, `LCM-CFG-014`
@@ -1494,7 +1494,7 @@ Verifiable now | 57
 Declared **unwritable** pending `LCM-GAP-001` | 1 — `LCM-AC-041`
 **Deferred** pending an integration harness | 2 — `LCM-AC-042`, `LCM-AC-043`
 Recorded as **passing** | **0**
-Blocking gaps | **1** — `LCM-GAP-001`
+Blocking gaps | **0** *(was **1** — `LCM-GAP-001`, **CLOSED 2026-08-31** by the Product Owner ruling `W₀ = D+1`)* ⚠ **Zero BLOCKING gaps is not zero gaps**: `LCM-GAP-002`…`LCM-GAP-008` (**7**) remain open and A1 remains a DRAFT
 Non-blocking gaps | 7
 FROZEN documents amended | **0**
 ACCEPTED ADRs amended | **0**
@@ -1528,5 +1528,5 @@ Version | Change
 
 > ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT APPROVED, NOT BASELINED.**
 > Committed for context-loss recovery and continuity only.
-> One blocking decision remains open: `LCM-GAP-001` / `LCM-DEC-001`.
+> ✅ **The one blocking decision is CLOSED — 2026-08-31.** `LCM-GAP-001` / `LCM-DEC-001` are resolved by the Product Owner ruling **`W₀ = D+1`**, recorded in **existing `ADR-0036`** §8.2 q2 and its new §8.2a. ⛔ **No new ADR was created.** ⚠ **A1 is still a DRAFT** — closing its only *blocking* gap does not baseline, approve or freeze it, and **seven** non-blocking gaps (`LCM-GAP-002`…`LCM-GAP-008`) plus **eleven** outstanding decisions (`LCM-DEC-002`…`LCM-DEC-012`) remain open. *(Prior text retained verbatim: One blocking decision remains open: `LCM-GAP-001` / `LCM-DEC-001`.)*
 > Part A2 has not been started.

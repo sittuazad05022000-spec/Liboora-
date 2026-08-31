@@ -567,3 +567,78 @@ contents changed, verified against the highest cited line **L418**. ⛔ **No hol
 recorded, no lifecycle stage conferred, no document frozen, no A6/A7/A8 owner created, and no A1–A5 decision
 resolved.** ⚠ §4's *"all 23"* heading and §6 item 1's count are **disclosed as stale in §11.3 and routed**, not
 silently patched — the same treatment §9.4 and §10.4 gave §2's arithmetic.
+
+---
+
+## 12. ⭐ Six identifier prefixes registered — `PRD-021A` A1, A4, A5, A6, A7, A8 (2026-08-31)
+
+> **Recorded by APPEND, for the reason §10, §11 and §11.5 all give.** Re-measured this pass: **74** line-citations
+> point into this document, the highest is **L331**, and **35** of them are to **L85** alone. Appending below **L569**
+> invalidates **0**; inserting a row into §5's prefix area or §8's table would silently misdirect citations held in
+> **Accepted** ADRs and in `DOCUMENTATION_BASELINE.md`. **No existing line of this document is modified by this section.**
+
+### 12.1 Authority
+
+**Governance Owner**, the office §10 constitutes and `ADR-0080` derives. Registration of an identifier prefix is a
+**Stage 7 / baseline** act — the duty `PRD_LIFECYCLE.md` §6 **L282** assigns to this role, and §11 of that document
+makes Stage 7 non-skippable. The office is recorded **VACANT** at `ADR-0080` **L85**; it is filled **for this act only**
+by direct conferral from the human principal, on the `ADR-0032` §5.2 / `ADR-0033` §7.2 / `ADR-0036` §8.2 precedent.
+⛔ **No ARB quorum, attendee list, sign-off date or Security review is asserted. No holder is appointed and no personal
+name is recorded** (§7 rule 4).
+
+The conferral directed, in these words:
+
+> *"Register the prefixes `LCM-`, `LCG-`, `LCO-`, `LCS-`, `LCN-`, `LCT-`. Use the existing `ADR-0080` prefix-registration
+> method."*
+
+⭐ **The method is reused verbatim, not re-invented** — the table below has the same four columns `ADR-0080` §5 used to
+register `LCF-` and `LCR-`, and it is executed by [`ADR-0083`](../adr/ADR-0083-prd-021a-owner-rulings-executed.md).
+
+### 12.2 The register
+
+`PRD_LIFECYCLE.md` §5 rule 3 — *"On collision, change the new prefix, never the existing one"* — and rule 5 —
+*"Numbers are never reused, even after withdrawal"* — both apply. The collision domain was measured as **every**
+three-segment identifier prefix in `docs/`: `AFIL ATT AUD CNF ENT FEE FIL INV ITG LCF LCG LCM LCN LCO LCR LCS LCT
+LIB MM SAAS SEAT SEC SECP SID SM TEN TSF XCNF XFIL` — **29** prefixes.
+
+| Prefix | Owning document | Collision check | Determination |
+|---|---|---|---|
+| **`LCM-`** | `PRD-021A` **A1** — Library Community Foundation | **No collision.** **953** uses; **601** in A1, which is the maximum and therefore the owner. The only non-`PRD-021A` occurrences are in `PRD_REGISTRY.md`, and those *reference* A1 rather than claiming the prefix | ✅ **REGISTERED** to `PRD-021A` A1 |
+| **`LCG-`** | `PRD-021A` **A4** — Community Groups & Roles | **No collision.** **304** uses; **214** in A4 (maximum). ⚠ Distinct from **`LCF-`** (A2) by measurement, not by assumption — different second letter, and the two registers share no identifier | ✅ **REGISTERED** to `PRD-021A` A4 |
+| **`LCO-`** | `PRD-021A` **A5** — Official Library Communication | **No collision.** **579** uses; **492** in A5 (maximum) | ✅ **REGISTERED** to `PRD-021A` A5 |
+| **`LCS-`** | `PRD-021A` **A6** — Community Safety, Privacy & Moderation | **No collision.** **257** uses; **195** in A6 (maximum). ⚠ Distinct from `PRD-020`'s **`TSF-`**; A6 owns **no** `TSF-` identifier and mints none | ✅ **REGISTERED** to `PRD-021A` A6 |
+| **`LCN-`** | `PRD-021A` **A7** — Community Notifications | **No collision.** **204** uses; **150** in A7 (maximum); **zero** occurrences outside `PRD-021A` anywhere in `docs/` | ✅ **REGISTERED** to `PRD-021A` A7 |
+| **`LCT-`** | `PRD-021A` **A8** — Technical & Production Architecture | **No collision.** **318** uses; **292** in A8 (maximum); **zero** occurrences outside `PRD-021A` | ✅ **REGISTERED** to `PRD-021A` A8 |
+
+⭐ **With `LCF-` and `LCR-` (registered by `ADR-0080` §5), all eight `PRD-021A` parts now hold a registered prefix.**
+The collision domain grows from 29 to 29 — the six were already in use and are now *registered*, which is precisely the
+defect being repaired: identifiers were in circulation without an authorising act.
+
+### 12.3 ⛔ What registration does **not** do
+
+`ADR-0080` §5's limiting paragraph is reproduced because it governs these six exactly as it governed the first two:
+
+> ⛔ *"It settles **only** the prefix. It creates no requirement, closes no other gap, and confers no readiness on
+> either annex. A registered prefix on a draft is still a draft."*
+
+| Question | Answer |
+|---|---|
+| Does any part become READY, or gain a lifecycle stage? | ⛔ **No.** All eight remain **NOT READY / NOT FROZEN**. Stage 3 is a separate dated record with its own authority test; Stages 4–7 are **NOT CONFERRED** |
+| Is any requirement, AC, gap or decision created? | ⛔ **No.** Registration authorises the *namespace*, not its contents |
+| Are the parts' open items closed? | ⛔ **No.** `LCG-ADR-002` stays **OPEN** (`BC-15` publishes no event), `GAP-BC14-RANK` is **newly opened**, and `LCG-DEC-005b` is **newly split out**. A prefix does not answer a question asked in it |
+| Is a role constituted or a holder appointed? | ⛔ **No.** Six roles before, six after; **no personal name recorded** |
+| Is context ownership, a rank, an edge or a boundary altered? | ⛔ **No.** Those are **Architecture Owner** acts — `ADR-0054` **L148**: *"Those are different roles"* — and this pass's edge and cluster changes were made under **that** authority in the Rank 4 documents, not here |
+| Does this document outrank a PRD? | ⛔ **No** — §3 rule 5. This document is **Unranked** (header **L10**) and absent from `DOCUMENTATION_BASELINE.md` §3/§4, so **no ADR was required** for this append; `ADR-0083` records it because the ruling set asked for one record, not because rank compelled it |
+| Was any existing line changed? | ⛔ **No.** Every cited line, including **L85** and **L331**, is **byte-identical**. §11's *"73 ADR files before and after"* is now stale at **74** — ⚠ **disclosed here and routed, not silently patched**, on the §9.4 / §10.4 / §11.3 precedent, because correcting it in place is the very insertion that breaks the 35 citations to L85 |
+
+### 12.4 Changelog note
+
+**v1.5 — 2026-08-31.** ⭐ **Six identifier prefixes registered** — `LCM-` (A1), `LCG-` (A4), `LCO-` (A5), `LCS-` (A6),
+`LCN-` (A7), `LCT-` (A8) — under **Governance Owner** authority conferred directly, executed by `ADR-0083`, using the
+**`ADR-0080` §5 method** unchanged. Collision-checked against all **29** existing prefixes: **0** collisions; the four
+apparent foreign uses in `PRD_REGISTRY.md` were measured to be *references* to the owning parts, not competing claims.
+Executed **by APPEND**: **0** cited lines shifted, **0** cited-line contents changed, verified against the highest cited
+line **L331** and the 35 citations to **L85**. ⛔ **No holder appointed, no personal name recorded, no lifecycle stage
+conferred, no document frozen, no requirement or AC created, and no open decision resolved.** ⚠ §11's ADR count
+(*"73 … before and after"*) is stale at **74** and is **disclosed above rather than edited**, for the citation reason
+this document has now given five times.

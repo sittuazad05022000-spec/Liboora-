@@ -747,16 +747,16 @@ version advanced, no gate closed, no blocking item answered.**
 ⚠ **A4 is named by its repository scope — *Community Groups & Roles*** — the title its own document and BC Map
 **L119** carry. It is **not** renamed to any Help / Resources / Interaction framing.
 
-### 11.4 ⛔ A6, A7 and A8 — **NO STANDALONE PRD**
+### 11.4 ✅ A6, A7 and A8 — **AUTHORIZED AS PARTS OF `PRD-021A`** *(was ⛔ NO STANDALONE PRD until 2026-08-31)*
 
 **D-A expressly refused to authorize these three.** They are recorded here so the refusal is discoverable at the
 same place as the allocation, and so no later pass reads their absence as an oversight.
 
 | Part | Requested as | Disposition | Existing owner that keeps the scope |
 |---|---|---|---|
-| **A6** | Community moderation | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **`BC-13` / `PRD-020` Trust & Safety.** `ModerationCase` is `BC-13`'s (BC Map **L379**). ⛔ **`R-1`/`R-2`/`R-3` NOT selected**; `TSF-GAP-001`/`002`/`006` and `ADR-0070` **remain OPEN / Not opened**. ⛔ **A6 not created** |
-| **A7** | Community notifications | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **`BC-22` Notification Delivery / `PRD-010`.** BC Map **L332** `E-23` routes *all contexts* to `BC-22`. ⛔ **A7 not created. `PRD-010` NOT created** — it remains `PLANNED` at §4.1 |
-| **A8** | Community technical architecture | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **Enterprise Architecture · Module Dependency Matrix · `ADR-0001` (scope *"Whole platform"*) · the existing A1–A5 technical sections · the existing `PRD-021A` Stage-3 architecture alignment record.** ⛔ **A8 not created. No new technical architecture PRD created** |
+| **A6** | Community moderation | ✅ **AUTHORIZED 2026-08-31 as `PRD-021A` Part A6 — NOT a standalone PRD.** Governance Owner authorization, executed by [`ADR-0083`](../adr/ADR-0083-prd-021a-owner-rulings-executed.md); the moderation architecture is settled by ruling **AO-4** as an **existing-edge-fed local projection** (BC Map **§15.6**), ⛔ with **no `BC-15 → BC-13` edge created**. *(Was ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** from D-A until 2026-08-31.)* | **`BC-13` / `PRD-020` Trust & Safety keeps the aggregates and the scope.** `ModerationCase` is still `BC-13`'s (BC Map **L379**) — ⛔ **no aggregate ownership transferred**, A6 reads a projection locally per `ADR-0065`. ⛔ **`R-1`/`R-2`/`R-3` still NOT selected**; `TSF-GAP-001`/`002`/`006` and `ADR-0070` **remain OPEN / Not opened** — authorizing A6 as a part settles neither |
+| **A7** | Community notifications | ✅ **AUTHORIZED 2026-08-31 as `PRD-021A` Part A7 — NOT a standalone PRD.** Governance Owner authorization, executed by [`ADR-0083`](../adr/ADR-0083-prd-021a-owner-rulings-executed.md). ⭐ Its event contract is **REDUCED, not expanded**, by Social Domain Owner ruling **SD-1** (option B): `community.CommentAdded` → **`community.CommentPublished`**, `community.ReactionAdded` → **`community.ReactionChanged`**, and four A7-only events (`MembershipChanged`, `ContentEligibilityChanged`, `OfficialCommunicationPublished`, `HelpRequestAnswered`) are **WITHDRAWN**. ⛔ **A2's six-event contract was NOT expanded to seven.** *(Was ⛔ **NO STANDALONE PRD — NOT AUTHORIZED**.)* | **`BC-22` Notification Delivery keeps delivery.** BC Map **L332** `E-23` still routes *all contexts* to `BC-22`. ⛔ **`PRD-010` is still NOT created** — it remains `PLANNED` at §4.1, and authorizing A7 as a part of `PRD-021A` neither creates it nor requires it |
+| **A8** | Community technical architecture | ✅ **AUTHORIZED 2026-08-31 as `PRD-021A` Part A8 — NOT a standalone PRD.** Governance Owner authorization, executed by [`ADR-0083`](../adr/ADR-0083-prd-021a-owner-rulings-executed.md). Its two conflicts are ruled: **AO-5** — ⛔ **V2 does NOT pull Event Replay forward from V3**, so where `LCF-NFR-006` is impossible in the V2 band it is marked **conditional/deferred** rather than pretended; **AO-6** — `BC-15` events carry **no `tenantId`**, because `ID-2` is authoritative for `BC-15` (BC Map **§15.4**, **L488**), ⛔ **`ID-2` preserved, not weakened**. *(Was ⛔ **NO STANDALONE PRD — NOT AUTHORIZED**.)* | **Enterprise Architecture · Module Dependency Matrix · `ADR-0001` (scope *"Whole platform"*) keep platform-wide technical authority.** A8 is a **part-level** technical section, ⛔ **not a platform architecture document**, and ⛔ **SHALL NOT invent new V2 infrastructure**. The Rank 4 amendments this pass required were made in the Rank 4 documents themselves, not in A8 |
 
 ⚠⚠ **THE ORIGINAL VERIFICATION SENTENCE HERE WAS FALSIFIED BY LATER EVENTS AND IS CORRECTED, NOT DELETED.**
 As written, this line read: *"Verified at the time of writing: `ls docs/30-product/social-graph/ | grep -E "_A[678]_"`
@@ -782,6 +782,57 @@ only inside their own provenance headers, and no Product Owner record of it exis
 or in any governance document. ⭐ **Writing one would manufacture a governance trace, which §8 rule 3 —
 *"updated in the same commit as the change it records"* — forbids, because there is no such change to record.**
 Allocating these three parts is a **Product Owner** act and remains **OPEN**. Tracked as `LCS-GAP-001`.
+
+⭐⭐ **UPDATE 2026-08-31 — `LCS-GAP-001` IS NOW CLOSED, AND THE PARAGRAPH ABOVE IS PRESERVED RATHER THAN DELETED.**
+Everything above was true when written and is now **superseded by an authorization that actually arrived**. On
+2026-08-31 the **Governance Owner** — the office `ADR-0080` §2.2 constituted and recorded as **VACANT** at its
+**L85**, filled **for this act only** by direct conferral from the human principal — authorized items 1 and 2 of a
+consolidated `PRD-021A` ruling set in these words:
+
+> *"Correct `PRD_REGISTRY.md` §11.4 so A6/A7/A8 are no longer recorded as nonexistent. Record their authorization
+> as parts of `PRD-021A`."*
+
+⭐ **Why this now permits what the paragraph above forbade.** The refusal above rested on a precise ground: the
+disposition cells belonged to an authority that had not spoken, so rewriting them *"would manufacture a governance
+trace, which §8 rule 3 … forbids, **because there is no such change to record**."* **There is now such a change to
+record.** §8 rule 3 is therefore *satisfied* by this edit rather than violated by it — the register is updated in the
+same commit as the authorization it records, and the authorization is a real act by a named office, not an inference
+from the drafts' existence. **The earlier refusal is discharged by authority arriving, not overturned as an error.**
+
+| | Then (D-A → 2026-08-30) | Now (2026-08-31) |
+|---|---|---|
+| Disposition of A6/A7/A8 | ⛔ **NOT AUTHORIZED** | ✅ **AUTHORIZED as Parts A6/A7/A8 of `PRD-021A`** |
+| Standalone PRDs | ⛔ None | ⛔ **Still none** — authorized as **parts**, so ⛔ **no PRD is created, recreated or duplicated** |
+| `LCS-GAP-001` | ⛔ OPEN | ✅ **CLOSED** by the Governance Owner authorization |
+| `PRD-010` | `PLANNED`, not created | ⛔ **Still `PLANNED`, still not created** |
+| Governance trace | ⛔ None existed | ✅ `ADR-0083`, this section, and `PRD_OWNERSHIP_MODEL.md` §10 |
+
+⭐ **THE SECOND FALSIFICATION IS NOW REPAIRED, AND THE DISCLOSURE ABOVE EXPLAINS EXACTLY WHY IT COULD NOT BE BEFORE.**
+The block above records that *"⛔ **A6 not created**"* etc. were left unedited because *"restating a refusal"* was not
+in this register's gift. Those phrases have now been rewritten in the three rows — **not** as a factual correction
+under §8 rule 5, but as the **execution of an authorization** under §8 rule 3. ⭐ The distinction the earlier pass drew
+was correct and is what made this edit lawful today rather than then. Each row **preserves its former `NOT AUTHORIZED`
+disposition in parentheses**, so the record still shows what was refused and for how long.
+
+⚠ **What this authorization does NOT do — six limits, stated because an authorization is the easiest thing to read too
+widely.**
+
+1. ⛔ **It creates no PRD.** A6/A7/A8 are **parts of `PRD-021A`**. `PRD-010` is still uncreated and still `PLANNED`.
+2. ⛔ **It confers no lifecycle stage.** Authorization to exist as a part is not Stage 3, 4, 5, 6 or 7. Every part
+   remains at its own stage, and the Stage-3 alignment is a separate dated record with its own authority test.
+3. ⛔ **It transfers no bounded-context ownership.** `BC-13` keeps `ModerationCase`; `BC-22` keeps delivery;
+   `BC-14` keeps media. `ID-2` is preserved.
+4. ⛔ **It closes no substantive gap of another PRD.** `TSF-GAP-001`/`002`/`006` and `ADR-0070` remain exactly as they were.
+5. ⛔ **It does not pull `BC-15` into V1.** §11.5 below stands byte-unchanged.
+6. ⚠ **It does not repair the missing checker.** **No `tool/docs_check` script covers §11.4** — this section is still
+   validated only by manual re-measurement, exactly as the disclosure above records. That gap is **still unrepaired**,
+   and it is the reason both falsifications survived undetected. Recorded, not fixed, in this pass.
+
+⭐ **Citation safety, measured before editing.** **366** line-citations point into this file; the deepest that resolves
+inside it is **L761**. The three disposition rows and the §11.4 heading were rewritten **in place** — line count
+unchanged at **853** — and this block is **appended below L761**, so **zero** citations are invalidated. The three
+citers of L750/L757/L758 (`PRD-021A` A8, A6 and A7 respectively) still resolve to the same rows, now bearing the
+authorization those drafts had asserted only in their own provenance headers.
 
 ⭐⭐ **A SECOND FALSIFICATION IS DISCLOSED HERE RATHER THAN REPAIRED.** The three rows above each end with
 *"⛔ **A6 not created**"*, *"⛔ **A7 not created**"* and *"⛔ **A8 not created**"*. Read as a record of **what

@@ -477,8 +477,22 @@ re-reading the live files**, not carried forward from the planning stage.
 | 5 | Distinct requirements cited | **286** (333 citation occurrences) |
 | 6 | Cited identifiers that are **undefined** *(must be 0)* | **0** |
 | 7 | New identifiers minted *(must be 0)* | **0** |
-| 8 | Requirement register text altered *(must be None)* | **None** — 0 non-AC lines changed in any part |
+| 8 | Requirement register text altered *(must be None)* | **None for the check-4 repair** — 0 non-AC lines changed. ⭐ **After PO-2, exactly 1 non-AC line changed: A1 L1193** — disclosed and adjudicated below |
 | 9 | Rank 1–5 / matrix / registry / baseline / ADRs byte-unchanged | ✅ **Verified** — see §10 |
+
+⭐ **Row 8 — the one non-AC line, disclosed rather than suppressed.** The nine-row instrument
+flags `R8 = 1 ['A1 L1193']`. That line is `LCM-XC-034`'s register row, rewritten by **PO-2**. It
+was adjudicated by diffing A1 against `git show 73ff4fc:` — the pre-ruling baseline — and the
+result is that the row's **subject text is byte-identical**:
+
+```
+lines before 1533  after 1533     (wc -l 1532; the trailing newline accounts for the difference)
+changed lines: [661, 1193]
+L1193 subject unchanged? True   subject: Integration-level fault-injection verification
+```
+
+Only the **classification** was appended. ⛔ **No obligation, prohibition or scope was altered.**
+L661 is an AC row, so it is in scope for the AC population and not counted here.
 
 Additional integrity measures:
 
@@ -513,11 +527,23 @@ Additional integrity measures:
 | Stage-5 registration for `PRD-021A` | 0 | 0 | ✅ |
 | `IMPL-*` in subjects | 0 | 0 before, 0 after, **delta 0** in all eight parts | ✅ |
 | Files changed vs `35d1f76` | 8 subjects only | `8 files changed, 206 insertions(+), 206 deletions(-)` | ✅ no collateral file |
+| ⭐ Files changed by **PO-1/PO-2** vs `73ff4fc` | A1 + this record only | `2 files changed, 113 insertions(+), 12 deletions(-)`; A1 alone `4 +/-` at **L661** and **L1193** | ✅ no collateral file |
+| ⭐ A7 event contract | 3 ACTIVE / 4 WITHDRAWN | 7 distinct `LCN-EVT-*`; `WITHDRAWN` ×10; L326 *ACTIVE 3*, L327 *WITHDRAWN 4* | ✅ unchanged; no event revived |
 | Push | none | none | ✅ |
 
 ⚠ **Edge-count note:** a naïve `E-\d+` scan returns **29** distinct tokens. The map itself
 resolves this at **L649** — `E-27` is a **deliberate gap**, and the defined-row count is 28. The
 invariant holds; the raw token count is not the edge count.
+
+⚠ **Two further counting traps were hit and adjudicated, not reported as breaches.**
+
+| Trap | Naïve result | Adjudicated result |
+|---|---|---|
+| Bounded contexts | `grep -c` on `^\|…BC-\d+` returns **88** | That counts **matching rows**, not contexts. Distinct ids are `BC-01`…`BC-31` = **31**, and the map states *"the context count remains 31"* (**L86**, **L613**) | 
+| New `PERM-*` | `PERM-[0-9]*` returns **1** distinct across A1–A8 | The `*` makes the digits optional, so it matched the bare prose token `PERM-` inside exclusion rows such as A1 **L736** `LCM-XC-018` *"A new `PERM-*` permission"* — which **forbids** minting one. With digits mandatory (`PERM-[0-9][0-9]*`) the count is **0** in all eight parts |
+
+⭐ In both cases the invariant holds. A grep that is wrong in the safe direction is still wrong,
+and recording it uncorrected would have manufactured a false alarm.
 
 ---
 
@@ -525,20 +551,27 @@ invariant holds; the raw token count is not the edge count.
 
 ⛔ **STAGE 4 IS NOT CONFERRED BY THIS RECORD.**
 
-All six checks now read PASS or N/A across A1–A8, with one disclosed finding
-(`LCM-XC-034`) and one partially-grounded criterion (`LCM-AC-036`) held with a reason and an
-owner. That is **evidence**, not authority.
+All six checks now read PASS or N/A across A1–A8, and — following **PO-1** and **PO-2** (§5.8) —
+**both previously owner-held items are CLOSED**, leaving **0 remaining blockers**. That is
+**evidence**, not authority. A complete evidence set does not confer a stage.
 
 > **Determination: `STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING`.**
 
 - No explicit conferral authority was granted for this work, and **Stage-3 conferral does not
   imply Stage-4 authority** (`PRD-008_STAGE4_CONFERRAL.md`).
 - The **Requirements reviewer** role (`PRD_LIFECYCLE.md` §6 **L278**) has **no named holder** —
-  `PGA-08`. A conferral requires one.
+  `PGA-08`, recorded verbatim at `ADR-0050` **L281**: *"Every PRD needs a named owner. **None
+  has one**"*. A conferral requires one. `PRD_OWNERSHIP_MODEL.md` names no holder either, and
+  `PRD_LIFECYCLE.md` **L272** states *"Roles, not people — the repository names no individuals,
+  and this document does not invent any."*
+- ⭐ **The PO rulings do not supply this authority.** PO-1 and PO-2 were issued with **Product
+  Owner** authority, which `PRD_LIFECYCLE.md` **L276** scopes to *"Content, business rules,
+  scope"*. Stage 4 belongs to the **Requirements reviewer** (**L278**). The rulings therefore
+  close the two content questions — and they do — but they **cannot confer the stage**.
 - ⛔ **No Stage-5 registration was made.** The `PRD-021A` Stage-5 registration count is **0**
   before and after.
-- The two owner-held items in §6 must be closed or explicitly deferred with a reason and an
-  owner before conferral is considered under **L119**.
+- ✅ The two owner-held items in §6 **are now closed** under **L119**, each with a reason and an
+  owner. The remaining bar to conferral is **authority alone**, not evidence.
 
 ---
 
@@ -549,11 +582,14 @@ owner. That is **evidence**, not authority.
 | Was the Check-4 blocker real? | **Yes.** 211 of the criteria cited no requirement |
 | Was it closed correctly? | **Yes** — by citing requirements that **already existed**, using the repository's own §27 convention |
 | Was any requirement invented? | ⛔ **No. Zero.** |
-| Was any acceptance criterion weakened, reworded or removed? | ⛔ **No.** 0 non-AC lines and 0 criterion semantics changed; only citations were appended |
+| Was any acceptance criterion weakened, reworded or removed? | ⛔ **None weakened or removed; 233 of 233 retained.** The check-4 repair appended citations only. ⭐ **PO-1** rewrote `LCM-AC-036` once, removing a clause the Product Owner ruled **non-normative** — the criterion still tests `TR-3`'s denial and its interim `AP-3` status, so its **testable obligation is unchanged** and it is now fully grounded rather than partially |
 | Was any identifier minted or renumbered? | ⛔ **No. Zero.** |
 | Was any Stage-3 decision, Rank 1–5 document or accepted ADR touched? | ⛔ **No.** All hashes re-measured identical |
-| Do genuine orphan criteria remain? | ⛔ **No — 0 orphans.** One criterion (`LCM-AC-036`) is **partially** grounded and is routed to the Product Owner rather than forced |
-| Is Stage 4 conferred? | ⛔ **No.** `STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING` |
+| Do genuine orphan criteria remain? | ⛔ **No — 0 orphans.** ⭐ `LCM-AC-036` is no longer partial: **PO-1** removed the unsupported naming obligation, leaving it fully grounded in `LCM-AUTH-007` |
+| Is `LCM-XC-034` correctly classified? | ✅ **Yes — a declared DEFERRAL, not an exclusion** (**PO-2**), carrying `LCM-GAP-005`'s existing reason and **Engineering** owner. It is **excluded from the L113 exclusion population** and satisfies the **L119** gate |
+| Was a requirement invented to make Stage 4 pass? | ⛔ **No. Zero.** Both closures came from an owner ruling plus text that **already existed** — `LCM-AUTH-007`, `LCM-GAP-005`, and A1's own `⏸ DEFERRED` convention |
+| Remaining blockers | ✅ **0** |
+| Is Stage 4 conferred? | ⛔ **No.** `STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING` — evidence is complete; **authority is absent** |
 
 ---
 
@@ -561,5 +597,5 @@ owner. That is **evidence**, not authority.
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.1** | 2026-09-01 | ⭐ **Product Owner rulings PO-1 and PO-2 received and executed** (new **§5.8**, **§5.9**). **PO-1 (`LCM-AC-036`, Option A):** the *"with the Product Owner named"* clause is narrative, not normative — removed in one in-place rewrite at A1 **L661**; the criterion is now **fully grounded in `LCM-AUTH-007`**, whose obligation is evidenced at A1 **L440**. **PO-2 (`LCM-XC-034`, Option B):** the row is an **intentional declared deferral, not an exclusion** — classified explicitly at A1 **L1193**, reusing A1's own `⏸ DEFERRED` convention (`LCM-AC-042`/`043`, **L681–682**) and the reason + **Engineering** owner **already recorded in `LCM-GAP-005`** (**L759**). ⛔ **0 requirements created · 0 identifiers minted · 0 prohibitions invented · 0 scope change · 0 new policy.** **2 in-place line rewrites; A1 1532 → 1532 lines**; `LCM-XC-034`'s subject text byte-identical. **A1's check-2 verdict moves FINDING → PASS**, measured against the L119 gate (all 5 §37.2 rows carry a reason and an owner) rather than forced through L113. Six-check matrix, header verdict and A1's AFTER hash (`4c6e0652f4ceb9ff`) updated. **0 remaining blockers.** Still ⛔ **NOT CONFERRED**; no Stage 5; no push. |
+| **v1.1** | 2026-09-01 | ⭐ **Product Owner rulings PO-1 and PO-2 received and executed** (new **§5.8**, **§5.9**). **PO-1 (`LCM-AC-036`, Option A):** the *"with the Product Owner named"* clause is narrative, not normative — removed in one in-place rewrite at A1 **L661**; the criterion is now **fully grounded in `LCM-AUTH-007`**, whose obligation is evidenced at A1 **L440**. **PO-2 (`LCM-XC-034`, Option B):** the row is an **intentional declared deferral, not an exclusion** — classified explicitly at A1 **L1193**, reusing A1's own `⏸ DEFERRED` convention (`LCM-AC-042`/`043`, **L681–682**) and the reason + **Engineering** owner **already recorded in `LCM-GAP-005`** (**L759**). ⛔ **0 requirements created · 0 identifiers minted · 0 prohibitions invented · 0 scope change · 0 new policy.** **2 in-place line rewrites; A1 1532 → 1532 lines**; `LCM-XC-034`'s subject text byte-identical. **A1's check-2 verdict moves FINDING → PASS**, measured against the L119 gate (all 5 §37.2 rows carry a reason and an owner) rather than forced through L113. Six-check matrix, header verdict and A1's AFTER hash (`4c6e0652f4ceb9ff`) updated. **0 remaining blockers.** ⚠ **§9 row 8 now discloses the one non-AC line changed (A1 L1193), adjudicated against `73ff4fc` as subject-byte-identical** rather than left reading "0". §10 gains the PO-ruling file-change row, the A7 event-contract row, and **two adjudicated counting traps** (BC `grep -c` 88 → **31 distinct**; `PERM-[0-9]*` 1 → **0** with digits mandatory). §11 records that **Product-Owner authority does not confer Stage 4** — that role is the **Requirements reviewer**, unheld (`PGA-08`, `ADR-0050` **L281**). Still ⛔ **NOT CONFERRED**; no Stage 5; no push. |
 | **v1.0** | 2026-09-01 | Check-4 repair executed: 206 criterion rows across A1–A8 gained an inline requirement citation under the `PRD-020` §27 convention, at **zero line-count delta**. Complete six-check rerun for A1–A8. Product Owner package for `LCM-AC-036` and `LCM-XC-034`. Instrument defects `I-11` and `I-12` disclosed. Subject BEFORE/AFTER hashes published. ⛔ Not conferred |

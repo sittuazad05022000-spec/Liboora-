@@ -393,14 +393,14 @@ Caller → [A1 predicate] → deny? ⇒ REJECT (LCG-FR-004)
        → [resolve communityId] → ⏸ BLOCKED (LCG-GAP-006) ⇒ REJECT
        → create CommunityGroup(ACTIVE)
        → create GroupMembership(creator, highest role) ⏸ (LCG-DEC-003)
-       → emit GroupCreated ⏸ BLOCKED (LCG-ADR-002)
+       → emit GroupCreated ✅ UNBLOCKED (LCG-ADR-002 CLOSED, ADR-0084)
 ```
 
 ### 6.2 Join a group
 ```
 Caller → six-step gate (LCG-FR-012, order fixed by LCG-INV-008)
        → create GroupMembership(ACTIVE, default role) ⏸ (LCG-DEC-003)
-       → emit GroupMembershipGranted ⏸ BLOCKED (LCG-ADR-002)
+       → emit GroupMembershipGranted ✅ UNBLOCKED (ADR-0084)
        ⛔ NO notification is dispatched here — BC-22 owns that (LCG-XC-010)
 ```
 
@@ -408,7 +408,7 @@ Caller → six-step gate (LCG-FR-012, order fixed by LCG-INV-008)
 ```
 Caller → last-owner check (LCG-FR-015) ⏸ OPEN (LCG-DEC-006)
        → set state=REVOKED, stamp revokedAt (record retained, LCG-FR-013)
-       → emit GroupMembershipRevoked ⏸ BLOCKED (LCG-ADR-002)
+       → emit GroupMembershipRevoked ✅ UNBLOCKED (ADR-0084)
 ```
 
 ### 6.4 Enforcement arrives from `BC-13`
@@ -497,8 +497,8 @@ refused rather than defaulted. This part publishes no fallback number.
 be observable.
 
 `LCG-FS-006` | Event emission fails → the write SHALL NOT be rolled back;
-emission is at-least-once and consumers are idempotent. ⏸ Blocked on
-`LCG-ADR-002`.
+emission is at-least-once and consumers are idempotent. ✅ **NO LONGER BLOCKED**
+— `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) closes `LCG-ADR-002`. ⭐ This clause was already **exactly** BC Map §9.1's event-delivery contract — *"Transactional Outbox"*, *"At-least-once. Therefore every consumer must be idempotent — keyed on `eventId`"* — which is why it needed no amendment, only an authority.
 
 ---
 
@@ -671,7 +671,7 @@ claimed to pass. No criterion is recorded as verified.
 | ID | Requirement | Status |
 |---|---|---|
 `LCG-ADR-001` | An ADR classifying this part and assigning (or withholding) `BC-15` specification authority | ✅ **SATISFIED — 2026-08-31 by `ADR-0083`** (`Accepted`). Classification settled by **PO-3** (A4 is a part of `PRD-021A`); `BC-15` aggregate registration performed by **AO-8** in BC Map **§15.5** by append, leaving §8 byte-unchanged. *(Prior status retained verbatim: **Required, `Proposed`**)* |
-`LCG-ADR-002` | An ADR registering any `BC-15`-sourced event (`GroupCreated`, `GroupMembershipGranted`/`Revoked`). ⛔ BC Map §7 sources **no** edge from `BC-15`; BC Map **L292** applies | ⛔⛔ **STILL REQUIRED AND STILL OPEN — 2026-08-31, and this is a MEASURED refusal, not an oversight.** ⭐ **The owner rulings did not reach it.** **AO-1** authorised `BC-11 → BC-15` (`E-28`) and **AO-3** authorised `BC-14 → BC-15` (`E-29`), and **both are INBOUND**; so is the pre-existing `E-14`. A fresh count of BC Map §7 after those two edges were added returns **ZERO edges SOURCED FROM `BC-15`**. ⚠ **A4's group events therefore remain UNPUBLISHABLE**, which is a genuine **Stage-3 check-2 failure** (*"every integration edge exists in §7"*) and is recorded as such rather than waved through. ⛔ **No outbound edge was minted to close this**, because none of the 22 rulings authorises one and inventing it would breach Execution Rule 5. ⭐ **This is also why SD-1's withdrawal of A7's `MembershipChanged` is coherent rather than a loss** — an event nothing may publish is not a contract. **Owner: Architecture Owner.** *(Prior status retained verbatim: **Required, `Proposed`**)* |
+`LCG-ADR-002` | An ADR registering any `BC-15`-sourced event (`GroupCreated`, `GroupMembershipGranted`/`Revoked`). ⛔ BC Map §7 sources **no** edge from `BC-15`; BC Map **L292** applies | ✅✅ **CLOSED — 2026-08-31 by `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) — AND THE PREMISE OF THIS ROW WAS ITSELF MEASURED WRONG.** ⭐⭐⭐ **The requirement is discharged because no such ADR is needed, not because one was written.** Publishing a domain event is governed by BC Map **§9 "Published Language — Event Surface"**, whose §9.1 contract is Transactional Outbox + at-least-once + per-aggregate ordering. **§7 governs synchronous boundary crossings** — its own preamble at **L292** says *"Every edge that **crosses a context boundary**"*. ⭐⭐ **Proof that §9 is independent of §7, measured on the live document, three times over:** `BC-11` publishes to **`BC-26`** (**L430**) with no §7 edge to it (`BC-11`'s only outbound edge is `E-16` → `BC-12`); `BC-03` publishes to **`BC-13`** (**L417**) with no §7 edge to it; `BC-12` publishes to **`BC-13`** (**L431**) with no §7 edge to it. If §7 governed event publication, all three frozen rows would be violations. They are not. ⭐ **And the earlier claim that `BC-15` sources ZERO edges was an INSTRUMENT ERROR** — the scan read the edge table's column 2 (the edge **id**) as the source cell; §7 puts the source in column 3. Re-measured: **five** edges have a wildcard source — `E-17` *"All write paths"*, and `E-18`/`E-19`/`E-20`/`E-23` *"All contexts"* — and *"All contexts"* includes `BC-15`. The audit carrier is **`E-20`** (BC Map **L329**) and the notification-fact carrier is **`E-23`** (**L332**), which is the identical reasoning A7 **L167** was **conferred Stage 3 on**. ⛔ **What is NOT authorised:** no `LCG-EVT-*` identifier is minted, **no BC Map §9 producer row is added** (these events have no named domain consumer, so a Rank 4 amendment would be gratuitous — the same restraint `PRD-017` **R-6** exercised), and **§7 is byte-unchanged**. ⚠ **Only this marker clears.** `LCG-DEC-003`, `LCG-DEC-006` and `LCG-GAP-006` are untouched and the flows in §6 still carry their ⏸ markers
 `LCG-ADR-003` | An ADR minting or resolving the `communityId` scoping key (`LCG-GAP-006`) | **Required, `Proposed`** |
 `LCG-ADR-004` | An ADR **is not required** for consuming `E-14` — the edge already exists (BC Map **L318**, **L433**) and `BC-15` is already a declared consumer | **Not required** |
 
@@ -715,7 +715,7 @@ Registering `LCG-*` is a Stage 5 act by the traceability owner
 BC Map **L119** | `BC-15` charter — the four aggregates |
 BC Map **L147** | V2 set includes `BC-15` |
 BC Map **L200**, **L207**, **L212** | The three terminology disambiguations |
-BC Map **L292** | Edge rule — `LCG-ADR-002`, `LCG-DEP-006` |
+BC Map **L292** | Edge rule — ⚠ **and its SCOPE is now stated precisely**: L292 governs edges that *"cross a context boundary"* (synchronous coupling), **not** Published Language event publication, which BC Map **§9** and **§9.1** govern separately. `LCG-ADR-002` ✅ CLOSED on this distinction (`ADR-0084`); `LCG-DEP-006` unaffected |
 BC Map **L299** (`E-02`) | Proof no `BC-02 → BC-15` edge exists |
 BC Map **L318**, **L433** (`E-14`) | The one existing inbound edge |
 BC Map **L371**, **L376**, **L377**, **L379** | `BC-02`, `BC-10`, `BC-11`, `BC-13` ownership |

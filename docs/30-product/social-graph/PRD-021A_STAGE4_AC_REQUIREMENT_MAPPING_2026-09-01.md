@@ -13,7 +13,7 @@
 | **Authority claimed** | ⛔ **Mechanical citation only.** No requirement invented · no identifier minted · no requirement text altered · no product behaviour changed. See §4 |
 | **Mandate** | **Stage 4 only.** ⛔ No ADR created · no Rank 1–5 document touched · no registry/baseline/matrix update · no Stage-3 record edited · no Stage 5 · no Stage 6 · no freeze · no code · no push |
 | **Date** | 2026-09-01 |
-| **Verdict** | ⚠️ **STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING.** Check 4 repaired: **233 of 233** ACs now cite a defined normative requirement, **0 orphans**. All six checks measured across A1–A8: **C1 PASS ×8 · C2 6 PASS + 1 N/A + 1 FINDING · C3 N/A ×8 · C4 PASS ×8 · C5 PASS ×8 · C6 PASS ×8.** **1 residual check-2 finding** (`LCM-XC-034`), **1 partially-grounded AC** (`LCM-AC-036`), **4 pre-existing repository defects** disclosed, **2 new instrument defects** disclosed. ⛔ **NOT CONFERRED** — §11 |
+| **Verdict** | ⚠️ **STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING.** Check 4 repaired: **233 of 233** ACs cite a defined normative requirement, **0 orphans**. All six checks across A1–A8: **C1 PASS ×8 · C2 PASS ×7 + 1 N/A · C3 N/A ×8 · C4 PASS ×8 · C5 PASS ×8 · C6 PASS ×8.** ⭐ **Both owner-held items CLOSED by Product Owner rulings PO-1 and PO-2** (§5.8): `LCM-AC-036` is now fully grounded; `LCM-XC-034` is correctly classified as a declared deferral. **0 remaining blockers.** **4 pre-existing repository defects** and **2 instrument defects** disclosed. ⛔ **NOT CONFERRED** — no Stage-4 conferral authority exists (§11) |
 
 > ⛔ **This record does not make Stage 4 pass by interpretation.**
 > The original blocker was real: 211 acceptance criteria cited no requirement. It was closed by
@@ -70,7 +70,7 @@ values. The predecessor's hash table (its **L57–64**) is therefore the **BEFOR
 
 | Part | sha256 BEFORE (16) | sha256 AFTER (16) | Lines before | Lines after | Δ |
 |---|---|---|---|---|---|
-| A1 | `bbd3f3945ecc947c` | `f5347b0480687c11` | 1532 | 1532 | **0** |
+| A1 | `bbd3f3945ecc947c` | `4c6e0652f4ceb9ff` | 1532 | 1532 | **0** |
 | A2 | `a81759234ce7a4c8` | `1aca384098a72574` | 1959 | 1959 | **0** |
 | A3 | `ecbccedcdde3cf01` | `fd1a4ca0653f6a04` | 1330 | 1330 | **0** |
 | A4 | `ce37c794e345a733` | `95af7e30a58cbc37` | 766 | 766 | **0** |
@@ -83,7 +83,7 @@ values. The predecessor's hash table (its **L57–64**) is therefore the **BEFOR
 Full-length AFTER values:
 
 ```
-A1  f5347b0480687c11517cb2e924e45430c5810f58fe123ca55a15f9410a914aab
+A1  4c6e0652f4ceb9ff488adf68ad1061e3392256e591197ee281d6bc10056849fb
 A2  1aca384098a7257449dc487a424d876515d9366ab85c6c74bc49621b980d685d
 A3  fd1a4ca0653f6a0402040aafe4e47594974380d4dec60a1651be7a70a666cffc
 A4  95af7e30a58cbc37a65f00c86a902ec61fbedce0691b9c70c6e84d7794746f24
@@ -154,7 +154,7 @@ recorded, and the instrument was corrected where it was wrong (§8).
 
 | Part | C1 testable | C2 exclusions | C3 configurables | C4 AC→RQ | C5 no restatement | C6 vs Rank 1 |
 |---|---|---|---|---|---|---|
-| **A1** | ✅ PASS 190/190 | ⚠️ **FINDING** 29/34 | ➖ N/A declares 0 | ✅ PASS 60/60 | ✅ PASS | ✅ PASS |
+| **A1** | ✅ PASS 190/190 | ✅ **PASS** 29 excl + 5 deferrals | ➖ N/A declares 0 | ✅ PASS 60/60 | ✅ PASS | ✅ PASS |
 | **A2** | ✅ PASS 170/170 | ✅ PASS 29/29 | ➖ N/A declares 0 | ✅ PASS 36/36 | ✅ PASS | ✅ PASS |
 | **A3** | ✅ PASS 124/124 | ✅ PASS 16/16 | ➖ N/A declares 0 | ✅ PASS 22/22 | ✅ PASS | ✅ PASS |
 | **A4** | ✅ PASS 44/44 | ✅ PASS 16/16 | ➖ N/A declares 0 | ✅ PASS 18/18 | ✅ PASS | ✅ PASS |
@@ -162,7 +162,11 @@ recorded, and the instrument was corrected where it was wrong (§8).
 | **A6** | ✅ PASS 78/78 | ✅ PASS 6/6 (`NG-*`) | ➖ N/A declares 0 | ✅ PASS 20/20 | ✅ PASS | ✅ PASS |
 | **A7** | ✅ PASS 74/74 | ➖ **N/A — no register** | ➖ N/A declares 0 | ✅ PASS 21/21 | ✅ PASS | ✅ PASS |
 | **A8** | ✅ PASS 131/131 | ✅ PASS 12/12 | ➖ N/A declares 0 | ✅ PASS 35/35 | ✅ PASS | ✅ PASS |
-| **Total** | **991 / 991** | **151 rows; 5 flagged** | **0 configurables** | **233 / 233** | **0 restatements** | **0 contradictions** |
+| **Total** | **991 / 991** | **151 rows; 0 findings** | **0 configurables** | **233 / 233** | **0 restatements** | **0 contradictions** |
+
+⭐ **A1's check-2 column now reads PASS** following **PO-2** (§5.8/§5.9): its 29 exclusions satisfy
+L113, and its 5 §37.2 rows are **declared deferrals** satisfying the L119 gate with a reason and
+an owner. ⛔ **No prohibition was invented to achieve this.**
 
 ### 5.1 Check 1 — every requirement testable (L112)
 
@@ -306,16 +310,112 @@ was added, removed, renumbered or reworded to reach it. Disclosed as defect **`I
 
 ---
 
+## 5.8 ⭐ PRODUCT OWNER RULINGS RECEIVED AND EXECUTED — 2026-09-01
+
+Both items held for an owner in §6 have been **ruled on by the Product Owner** and executed.
+The rulings are recorded verbatim in substance; the execution is minimal and measured.
+
+### PO-1 — `LCM-AC-036` · **OPTION A — ACCEPT**
+
+> **Ruling.** *"The requirement to display/name the Product Owner by personal name is NOT
+> normative product behavior. Treat the naming of the Product Owner as narrative/documentation
+> detail only. The normative requirement is only the underlying role/authority treatment already
+> supported by the existing requirement set, including `LCM-AUTH-007`."*
+
+**Executed** — one in-place rewrite at A1 **L661**:
+
+```
+BEFORE  `LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim
+                       under `AP-3` with the Product Owner named (`LCM-AUTH-007`)
+AFTER   `LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim
+                       under `AP-3` (`LCM-AUTH-007`)
+```
+
+| Constraint | Result |
+|---|---|
+| No new requirement created | ✅ 0 |
+| No identifier minted | ✅ 0 |
+| No product scope change | ✅ none — a documentation obligation was removed, not a behaviour |
+| No new behaviour invented | ✅ none |
+| Intent preserved | ✅ The criterion still tests that **TR-3 Reception is denied** and that **the denial is recorded as interim under `AP-3`** — the whole authorisation outcome. Only the *"with the Product Owner named"* clause, ruled narrative, was dropped |
+| Minimal | ✅ **one line, one clause**; 1532 → 1532 lines |
+
+**Traceability now complete.** `LCM-AUTH-007` (A1 **L433**) obliges: *"A1 **MUST** state each
+role's treatment explicitly."* The role table at A1 **L440** states TR-3's treatment as
+**`⚠ Interim DENY under AP-3`**. The criterion tests exactly that stated treatment — so it is
+**fully grounded in an existing normative requirement**, with the observation point supplied.
+⭐ **`LCM-AC-036` is no longer partially grounded.**
+
+### PO-2 — `LCM-XC-034` · **OPTION B — ACCEPT**
+
+> **Ruling.** *"`LCM-XC-034` is an intentional DEFERRED item, NOT a normative exclusion.
+> Keep it explicitly classified as DEFERRED. Do NOT convert it into an exclusion. Do NOT invent
+> a prohibition. Do NOT claim that the behavior is impossible. Preserve the existing identifier.
+> Make the classification unambiguous so Stage 4 does not incorrectly count it as an exclusion.
+> If the lifecycle requires a holder/reason for a declared deferral, use only the existing
+> governance mechanism and existing owner information."*
+
+**Executed** — one in-place rewrite at A1 **L1193**:
+
+```
+BEFORE  `LCM-XC-034` | Integration-level fault-injection verification — pending `LCM-GAP-005`
+AFTER   `LCM-XC-034` | Integration-level fault-injection verification — ⏸ **DECLARED DEFERRAL,
+                       not an exclusion** (PO-2, 2026-09-01). Reason: no `integration_test/`
+                       harness exists. Owner: **Engineering**, per `LCM-GAP-005`
+```
+
+| Constraint | Result |
+|---|---|
+| Still classified DEFERRED | ✅ explicitly — *"DECLARED DEFERRAL, not an exclusion"* |
+| Not converted into an exclusion | ✅ no prohibition, no impossibility claim added |
+| No prohibition invented | ✅ 0 |
+| Identifier preserved | ✅ `LCM-XC-034` unchanged |
+| No new requirement minted | ✅ 0 |
+| Classification unambiguous | ✅ the row now states its own class, so a checker cannot count it as an exclusion |
+| **Only existing governance mechanism used** | ✅ ⭐ **The reason and the owner were already in the repository** — `LCM-GAP-005` (A1 **L759**) reads *"No `integration_test/` harness exists, so `LCM-AC-042` / `043` cannot be executed \| No \| **Engineering** \| Create the harness; out of A1's scope"*. **No new policy, owner or mechanism was invented** |
+| Convention reused, not invented | ✅ A1 already marks deferrals this way — `LCM-AC-042` / `LCM-AC-043` at **L681–682** use `⏸ **DEFERRED**` with a named prerequisite |
+| Minimal | ✅ **one line**; subject text *"Integration-level fault-injection verification"* is **byte-identical** |
+
+### 5.9 Consequence for check 2 — measured, not asserted
+
+L113 governs **exclusions** (*"Every exclusion states what must be impossible"*), and its stated
+failure mode is *"An exclusion is not a deferral"*. Under PO-2, A1 §37.2's five rows are
+**declared deferrals**, so L113 is **not the rule that governs them**. The governing rule is the
+Stage-4 **gate at L119**: *"conflicts closed or explicitly deferred **with a reason and an
+owner**."* All five were re-tested against **that** rule:
+
+| Row | Reason | Owner | Owner evidence |
+|---|---|---|---|
+| `LCM-XC-030` | ✅ `BC-15` V2/V3 | ✅ | Names `BC-15` in-row; §19 `LCM-XC-002` *"held by `BC-15`, **V2** (`MP-SCOPE-04`)"*, `XC-003`…`006` *"Enterprise Architecture L967-973"* |
+| `LCM-XC-031` | ✅ V2 | ✅ | §19 `LCM-XC-007` *"Enterprise Architecture L976-982, **V2**"* |
+| `LCM-XC-032` | ✅ V2 | ✅ | §19 `LCM-XC-026` *"Enterprise Architecture L913, **V2**"* |
+| `LCM-XC-033` | ✅ pending `LCM-GAP-003` | ✅ | `LCM-GAP-003` owner = **Product** |
+| `LCM-XC-034` | ✅ no harness exists | ✅ | **explicit: Engineering**; `LCM-GAP-005` owner = **Engineering** |
+
+⭐ **All five are explicitly deferred with a reason and an owner. A1's check-2 finding is
+CLOSED**, and closed by classification and existing ownership — **not** by inventing a
+prohibition, which PO-2 forbade and L113 would have required.
+
+⚠ **This is not a pass by interpretation.** The five rows were never exclusions that failed to
+state impossibility; they were deferrals filed under a register whose name implied exclusion.
+The Product Owner resolved the classification, and the lifecycle's own gate (L119) admits a
+declared deferral **with a reason and an owner** — which these have.
+
+---
+
 ## 6. Product Owner decision package
 
-⛔ **These items are NOT repaired here.** Each would require creating a requirement, changing
-scope, or exercising an owner's judgement. `PRD_LIFECYCLE.md` **L119** requires a **reason and
-an owner** — both are given.
+⭐ **STATUS 2026-09-01: the two owner-held items are CLOSED by PO-1 and PO-2 (§5.8).** The table
+below is retained as the handoff that was issued, with each disposition recorded. The four
+remaining rows are disclosures, not owner-blocking items.
+
+⛔ **No item was closed by creating a requirement.** `PRD_LIFECYCLE.md` **L119** requires a
+**reason and an owner** — both are given.
 
 | Item | Why no requirement exists | Owner | Required decision |
 |---|---|---|---|
-| **`LCM-AC-036`** (partially grounded) | The criterion tests two obligations. `LCM-AUTH-007` requires each role's explicit treatment, and the table at A1 **L440** records TR-3 as *Interim DENY* under `AP-3`. But **no normative requirement states that the interim status must NAME the Product Owner** — that half of the criterion has no requirement behind it | **Product Owner** | Either (a) mint a requirement obliging the interim-status statement to name its holder, or (b) confirm the naming is narrative and amend the criterion. ⛔ Do not silently drop the clause |
-| **`LCM-XC-034`** (check-2 finding) | The row's exclusion is asserted **only** under A1 §37.2's `Deferred` column, and it has **no §19 counterpart** that states a prohibition with a named holder. Pending `LCM-GAP-005` (integration-level fault-injection verification) | **Product Owner** (with Governance Owner on the register form) | Either (a) promote it to §19 with an explicit *what must be impossible* + holder, or (b) accept it as a **declared deferral with a reason and an owner** under L119. Converting a deferral into an exclusion is a scope act |
+| ✅ **`LCM-AC-036`** — **CLOSED, PO-1 OPTION A** | The criterion tested two obligations. `LCM-AUTH-007` requires each role's explicit treatment, and the table at A1 **L440** records TR-3 as *Interim DENY* under `AP-3`. But **no normative requirement stated that the interim status must NAME the Product Owner** | **Product Owner** | ✅ **RULED: OPTION A — the naming is narrative, not normative.** The clause was removed; the criterion now tests the stated role treatment alone and is **fully grounded in `LCM-AUTH-007`**. No requirement created (§5.8) |
+| ✅ **`LCM-XC-034`** — **CLOSED, PO-2 OPTION B** | The row's exclusion was asserted **only** under A1 §37.2's `Deferred` column, with **no §19 counterpart** stating a prohibition | **Product Owner** | ✅ **RULED: OPTION B — it is an intentional DEFERRAL, not an exclusion.** Classified explicitly as a declared deferral, carrying the reason and the **Engineering** owner **already recorded in `LCM-GAP-005`**. No prohibition invented; identifier preserved (§5.8) |
 | **`I-7`** — `LCM-GAP-002` misattribution | A1 **L440**/**L579** cite `LCM-GAP-002` as the TR-3 Reception open item, but the gap register at **L756** defines it as *"Final architecture placement of A1 is not recorded in any register"* (owner Governance Owner). **The TR-3 question has no gap identifier at all** | **Governance Owner** | Mint a gap for the TR-3 Reception question, or correct the two citations. Pre-existing defect — disclosed, not repaired |
 | **`I-8`** — A8 AC-count understatement | 35 criteria exist; 34 were counted. Cause is a wrapper on **L1745**, not a missing criterion | **Requirements reviewer** (measurement) | Accept **233** as the grand total in all downstream Stage-4 arithmetic |
 | **`I-9`** — 10 A8 non-requirement citations | Ten A8 criteria already carried a citation, but to a **section, step, edge, external line or BC-Map line** — not to a normative requirement, so none satisfied L115: `AC-006` (BC Map L446), `AC-007` (A5 §19), `AC-008` (A7 §8), `AC-009` (`ID-2`; yaml L266–267), `AC-010` (§20.3), `AC-018` (§8.1 step 4), `AC-021` (§13.3), `AC-027` (BC Map L452), `AC-030` (`E-20`), `AC-032` (§19) | **Requirements reviewer** (closed) | ✅ **Already repaired** — all ten now additionally cite a genuine `LCT-*` requirement. Recorded because it is a **distinct class of check-4 failure**: the row *looks* cited but the citation is not a requirement |
@@ -461,4 +561,5 @@ owner. That is **evidence**, not authority.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-09-01 | ⭐ **Product Owner rulings PO-1 and PO-2 received and executed** (new **§5.8**, **§5.9**). **PO-1 (`LCM-AC-036`, Option A):** the *"with the Product Owner named"* clause is narrative, not normative — removed in one in-place rewrite at A1 **L661**; the criterion is now **fully grounded in `LCM-AUTH-007`**, whose obligation is evidenced at A1 **L440**. **PO-2 (`LCM-XC-034`, Option B):** the row is an **intentional declared deferral, not an exclusion** — classified explicitly at A1 **L1193**, reusing A1's own `⏸ DEFERRED` convention (`LCM-AC-042`/`043`, **L681–682**) and the reason + **Engineering** owner **already recorded in `LCM-GAP-005`** (**L759**). ⛔ **0 requirements created · 0 identifiers minted · 0 prohibitions invented · 0 scope change · 0 new policy.** **2 in-place line rewrites; A1 1532 → 1532 lines**; `LCM-XC-034`'s subject text byte-identical. **A1's check-2 verdict moves FINDING → PASS**, measured against the L119 gate (all 5 §37.2 rows carry a reason and an owner) rather than forced through L113. Six-check matrix, header verdict and A1's AFTER hash (`4c6e0652f4ceb9ff`) updated. **0 remaining blockers.** Still ⛔ **NOT CONFERRED**; no Stage 5; no push. |
 | **v1.0** | 2026-09-01 | Check-4 repair executed: 206 criterion rows across A1–A8 gained an inline requirement citation under the `PRD-020` §27 convention, at **zero line-count delta**. Complete six-check rerun for A1–A8. Product Owner package for `LCM-AC-036` and `LCM-XC-034`. Instrument defects `I-11` and `I-12` disclosed. Subject BEFORE/AFTER hashes published. ⛔ Not conferred |

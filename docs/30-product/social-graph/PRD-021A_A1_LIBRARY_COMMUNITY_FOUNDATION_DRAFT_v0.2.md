@@ -658,7 +658,7 @@ participationOpen(caller, tenantOrganisation) :=
 |---|---|
 `LCM-AC-034` | No participation capability activates for a person requiring guardian consent where no consent record exists, **including where minor status is `Unknown`** (`LCM-FR-024`, `LCM-FR-025`)
 `LCM-AC-035` | Every role in the closed set of five has an explicit, stated treatment; no treatment relies on inheritance (`LCM-AUTH-007`)
-`LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim under `AP-3` with the Product Owner named (`LCM-AUTH-007`)
+`LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim under `AP-3` (`LCM-AUTH-007`)
 `LCM-AC-037` | The surface is absent when `LCFG-5` is Disabled, which is the default, and no data is deleted (`LCM-CFG-002`, `LCM-CFG-006`)
 `LCM-AC-038` | The gate is read through the `BC-25` typed accessor; no raw string lookup exists (`LCM-CFG-004`)
 `LCM-AC-039` | No configuration parameter is created, renamed, re-defaulted or re-scoped; no `LCFG-*` value changes (`LCM-CFG-007`, `LCM-BR-011`)
@@ -1190,7 +1190,7 @@ ID | Deferred
 `LCM-XC-031` | Study groups — V2
 `LCM-XC-032` | Multiple simultaneous library memberships — V2
 `LCM-XC-033` | A dedicated participation configuration parameter — pending `LCM-GAP-003`
-`LCM-XC-034` | Integration-level fault-injection verification — pending `LCM-GAP-005`
+`LCM-XC-034` | Integration-level fault-injection verification — ⏸ **DECLARED DEFERRAL, not an exclusion** (PO-2, 2026-09-01). Reason: no `integration_test/` harness exists. Owner: **Engineering**, per `LCM-GAP-005`
 
 `LCM-BR-018` — V1 is deliberately the smallest surface that is useful and safe: one derived read, one gate, two derived exclusions, one consent gate. Anything larger would require an act reserved to another owner.
 

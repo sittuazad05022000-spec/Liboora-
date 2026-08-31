@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **ACCEPTED** — *"In force. Binding on all implementation"* (`ADR-INDEX.md` status vocabulary), **on questions 1 and 3 only. Question 2 remains OPEN** — tracked as the unnumbered *window boundary* row of **§7.3**, deliberately **without** a new `MM-GAP-*` identifier (see §8.3). **ACCEPTED by direct conferral of Architecture Owner authority by the human principal** on the `ADR-0032` §5.2 / `ADR-0033` precedent — **no ARB quorum, attendee list, sign-off date or Security review is asserted.** **This is a PARTLY ACCEPTED record and says so in its own status row**, because accepting all three questions when only two were answered would be the more convenient and less true reading. Superseded status text, retained per Process step 3: *"**PROPOSED** — Recorded, not in force. **This ADR is not self-accepted.** It records findings and asks **three** questions of named authorities."* See **§8.2** |
+| **Status** | **ACCEPTED** — *"In force. Binding on all implementation"* (`ADR-INDEX.md` status vocabulary), **on all three questions as of 2026-08-31.** Question 2 — the window boundary — was answered **`W₀ = D+1`** by the **Product Owner** on 2026-08-31 (ruling `PO-1`); see **§8.2a**. The unnumbered *window boundary* row of **§7.3** is thereby **closed**, still deliberately **without** any `MM-GAP-*` identifier (see §8.3 — answering a question grants no licence to number it). **ACCEPTED by direct conferral of Architecture Owner authority by the human principal** on the `ADR-0032` §5.2 / `ADR-0033` precedent for questions 1 and 3, and by **direct conferral of Product Owner authority** for question 2 — **no ARB quorum, attendee list, sign-off date or Security review is asserted for either conferral.** Superseded status text, retained per Process step 3, **both stages**: *"**PARTLY ACCEPTED** … on questions 1 and 3 only. Question 2 remains OPEN"* (2026-08-05 → 2026-08-31, when accepting all three would have been the more convenient and less true reading) and, before it, *"**PROPOSED** — Recorded, not in force. **This ADR is not self-accepted.** It records findings and asks **three** questions of named authorities."* See **§8.2** and **§8.2a** |
 | **Date** | 2026-08-05 |
 | **Raised by** | V1 product requirement: *"3-DAY RENEWAL PROTECTION MUST BE PART OF V1 … DO NOT downgrade it to V2"*, against frozen `PRD-005` Membership Management and frozen `PRD-007` Seat Management |
 | **Decision by** | **Architecture Owner + `BC-04` owner** jointly for `Q-01` (`MM-GAP-001` assigns it in those words) · **Product Owner** for the protection semantics · **`BC-25` configuration authority** for any parameter identifier |
@@ -441,7 +441,7 @@ asserted.** The decision as given was:
 | # | Question | Outcome |
 |---|---|---|
 | **1** | Is `Q-01` answered as *"after a 3-calendar-day grace period"*? | ✅ **ANSWERED — YES.** *"3-day renewal protection remains mandatory V1."* The duration is **3 calendar days**, it is **mandatory**, and it is **V1**. `MM-GAP-001`'s 24h recommendation is **overridden by the authority entitled to override it** — and §5.1 already recorded that a recommendation inside an open question was never a decision, so nothing is being reversed |
-| **2** | Does the window include `endDate`, or begin the day after? | ⛔ **NOT ANSWERED. STILL BLOCKED.** The decision says *"3-day"*; it does **not** say whether 5 August is day 0 or day 1. §6.5 refuses to infer this, and that refusal **stands** |
+| **2** | Does the window include `endDate`, or begin the day after? | ✅ **ANSWERED — 2026-08-31 — `W₀ = D+1`.** *(Was ⛔ **NOT ANSWERED. STILL BLOCKED.** from 2026-08-05 until 2026-08-31: the 2026-08-05 decision said *"3-day"* and did **not** say whether 5 August was day 0 or day 1, and §6.5 refused to infer it.)* The refusal is **discharged by authority arriving, not overturned** — §6.5's reasoning was correct for as long as no ruling existed. **The Product Owner ruled `PO-1` on 2026-08-31**: the window **begins the day after** expiry. See **§8.2a** for the ruling as given, the worked example and the scope limit. ⛔ **No new ADR was created** — the ruling directed that it be recorded here, and §8.3 below already explains why question 2 receives no new `MM-GAP-*` identifier |
 | **3** | Fixed 3-day platform default, or tenant-configurable? | ✅ **ANSWERED — FIXED.** The decision reads *"remains mandatory V1"* with no configurability granted, and lists no `SEAT-CFG-*`/`BC-25` parameter. Under `CONFIGURATION_GUIDE.md` §5 a configurable would require an ADR **and** a PRD amendment **and** an identifier this ADR may not allocate. **Fixed, not configurable, is both the fail-safe and what §6 proposed** |
 
 #### Why question 2 is not quietly closed by the "3-day" wording
@@ -478,7 +478,53 @@ inferred** — the *window boundary* row of §7.3, which already carried it befo
 
 **What acceptance does not license.** Per `ADR-0033` §7.1, *"A conferral for one act is not a standing licence."*
 This conferral covers questions 1 and 3. **It does not authorise writing A1–A3, amending `PRD-007`, or choosing the
-window boundary** — each needs its own decision, and the boundary needs the **Product Owner**.
+window boundary** — each needs its own decision, and the boundary needs the **Product Owner**. ⭐ *(That last clause
+was satisfied on 2026-08-31 — see **§8.2a**. The sentence is left standing rather than rewritten, because it correctly
+records what was true for the twenty-six days between the two conferrals.)*
+
+---
+
+### 8.2a The window boundary, answered — `W₀ = D+1` (Product Owner, 2026-08-31)
+
+**On 2026-08-31 the Product Owner conferred authority directly**, in the same manner and with the same disclosure as
+§8.2, `ADR-0032` §5.2 and `ADR-0033` §7.2: **no ARB quorum, attendee list, sign-off date or Security review is
+asserted.** The ruling, recorded as `PO-1` of the consolidated `PRD-021A` rulings and applied here because the ruling
+itself directed that it be recorded *"inside existing `ADR-0036` §8.2"*, was:
+
+> *"`W₀ = D+1`. For a membership expiring on day D, the protected window is `D+1`, `D+2`, `D+3`."*
+
+**This answers question 2 exactly, with nothing left to infer.** The two readings §6.5 refused to choose between are
+now distinguished by an authority entitled to choose, and the ruling states both the rule and its worked example, so
+the answer does not depend on this ADR restating it correctly.
+
+#### The worked example, restated against the requirement's own case
+
+§8.2's question 2 turned on whether *"5 August"* is day 0 or day 1. Under `W₀ = D+1`:
+
+| Term | Value |
+|---|---|
+| `D` — the day the membership expires (`endDate`) | **5 August** |
+| `W₀` — first protected day | **6 August** *(= `D+1`)* |
+| Protected window, three calendar days | **6, 7, 8 August** |
+| **`endDate` itself** | ⛔ **NOT inside the protected window.** 5 August is `D`, not `W₀` |
+| First unprotected day after the window | **9 August** |
+
+⭐ **The expiry day is therefore excluded, and the window runs wholly after it.** This is the reading in which the
+member gets three *whole* days of protection rather than two-and-a-remainder, and it is the fail-safe of the two —
+but that reasoning is recorded as *consistency*, not as the ground of the decision. The ground is the ruling.
+
+#### What this changes, and what it does not
+
+| | |
+|---|---|
+| ✅ **Question 2 of §8 is closed** | The outcome cell above is amended in place; the ⛔ marker is replaced by the ruling and its former state is preserved in the cell so the record still shows what was blocked and for how long |
+| ✅ **`PRD-021A` Part A1's dependent items unblock** | A1's `LCM-DEC-001` and `LCM-GAP-001` cited this exact question; `LCM-AC-041` was unwritable because a test cannot assert a boundary that has not been chosen. All three are now determinable — A1 is updated in the same commit |
+| ⛔ **No new ADR** | The ruling said *"Record inside existing `ADR-0036` §8.2. Do **NOT** create a new ADR."* Executed literally |
+| ⛔ **No new identifier** | §8.3 below stands unchanged and still governs: question 2 gets **no `MM-GAP-*` number**, because `MM-GAP-011` is asserted as a **phantom** (0 occurrences required) by a passing review check, and the register is FROZEN at 13 entries. Answering the question does not create a licence to number it |
+| ⛔ **Questions 1 and 3 are untouched** | Duration stays **3 calendar days**, **mandatory**, **V1**, **fixed and not tenant-configurable**. `PO-1` addresses only the boundary |
+| ⛔ **No `PRD-007` amendment, no seat-release change** | `Q-01`'s substantive answer was already given in §8.2; `PO-1` adds only where the three days start. No frozen Rank 3 document is edited by this ADR |
+| ⛔ **No configurable, no `SEAT-CFG-*`, no `BC-25` parameter** | `W₀` is a **fixed platform rule**, exactly as question 3 was answered. A configurable boundary was neither ruled nor implied |
+| ⚠ **The `24h` vs `3-day` conflict is still recorded, not erased** | BC Map **L540** and `MASTER_PRD.md` **L673** still carry the **24h** *recommendation*. §8.2 already ruled that a recommendation inside an open question was never a decision; `PO-1` does not revisit it |
 
 #### 8.3 Why question 2 gets **no new `MM-GAP-*` identifier** — a collision this pass nearly caused
 
@@ -540,10 +586,14 @@ property of not colliding with a frozen register or a review invariant.
 
 | Version | Date | Change |
 |---|---|---|
+| **v2.1** | 2026-08-31 | **FULLY ACCEPTED — question 2 answered; questions 1 and 3 untouched; no new identifier, no new ADR, no frozen document modified.** By **direct conferral of Product Owner authority by the human principal**, recorded as ruling `PO-1` of the consolidated `PRD-021A` rulings executed by [`ADR-0083`](ADR-0083-prd-021a-owner-rulings-executed.md): **`W₀ = D+1`** — for a membership expiring on day `D`, the protected window is `D+1`, `D+2`, `D+3`, so **`endDate` itself is NOT inside the window**. Recorded in a new **§8.2a**, with question 2's outcome cell in §8.2 amended in place; the cell **preserves its former ⛔ *NOT ANSWERED. STILL BLOCKED.* text and the twenty-six days it stood**, because a record that shows only the answer conceals how long the gap was open. ⭐ **§6.5's refusal to infer the boundary is NOT overturned — it is discharged.** A refusal for want of authority is correct until authority arrives; the ruling supplies what §6.5 declined to invent, which is a different thing from §6.5 having been wrong. ⛔ **The ruling directed *"Record inside existing `ADR-0036` §8.2. Do NOT create a new ADR"*** and that was executed literally — no `ADR-0084` exists for this. ⛔ **No `MM-GAP-*` number was minted**: §8.3 stands, `MM-GAP-011` is asserted as a **phantom** (0 occurrences) by a passing `PRD-005` review check at **L275**, and the register is FROZEN at 13 entries. ⛔ **Questions 1 and 3 are byte-unchanged** — 3 calendar days, mandatory, V1, fixed and not tenant-configurable. ⛔ **No `PRD-007`, `PRD-005` or `PRD-008` amendment**, no seat-state change, no configurable, no `SEAT-CFG-*`, no `BC-25` parameter. ⚠ **The 24h recommendation at BC Map L540 / `MASTER_PRD.md` L673 is left standing and still recorded as a conflict** — §8.2 already ruled a recommendation inside an open question was never a decision, and `PO-1` does not revisit it. **Consequence downstream:** `PRD-021A` Part A1's `LCM-DEC-001` and `LCM-GAP-001` close and `LCM-AC-041` becomes writable, updated in the same commit |
 | **v2.0** | 2026-08-05 | **PARTLY ACCEPTED — `Proposed` → `Accepted` on questions 1 and 3; question 2 stays OPEN.** By **direct conferral of Architecture Owner authority by the human principal** on the `ADR-0032` §5.2 / `ADR-0033` precedent — **no ARB quorum, attendee list, sign-off date or Security review asserted.** The decision given: *"3-day renewal protection remains mandatory V1. No membership extension, penalty, proration or term deduction."* **Question 1 ANSWERED** — `Q-01` is a **3-calendar-day** window, **mandatory**, **V1**; `MM-GAP-001`'s 24h *recommendation* is overridden by the authority entitled to override it, and §5.1 had already established a recommendation inside an open question was never a decision, so nothing is reversed. **Question 3 ANSWERED — FIXED, not tenant-configurable**, so **no `SEAT-CFG-*` and no `BC-25` parameter was allocated and none was needed.** **Question 2 is NOT answered and the status row says so** — *"3-day"* does not decide whether 5 August is day 0 or day 1; frozen `MM-FR-062` makes `endDate` a usable day, which is **an argument, not an authority** (§6.5), and frozen `MM-FR-057` calls inclusive-interval off-by-ones *"the classic source of a customer-visible dispute"*. **Accepting all three when two were answered would have been the convenient reading; the status row is `ACCEPTED … on questions 1 and 3 only`.** **A near-collision is recorded rather than hidden (new §8.3):** a first draft numbered question 2 **`MM-GAP-011`** — which `PRD-005_FIFTH_INDEPENDENT_REVIEW.md` **L275** names as a **phantom identifier asserted to have 0 occurrences**, so minting it would have **falsified a passing review check**, and the `MM-GAP-*` register lives in **frozen** `PRD-005` (**L62**, 13 entries) which this ADR may not extend. **The mint was retracted**; the boundary keeps the unnumbered *window boundary* row of §7.3. **§7.3's own header sentence is retained verbatim** — *"No gap is closed by this ADR. It is `PROPOSED`…"* — with an amendment note, because the reasoning was right for the status it had. **NOT done:** §6's A1–A3 amendment is **still not applied** and cannot be until question 2 is answered; **`PRD-007` untouched**; **`PRD-005` untouched**; **no frozen document modified** (`PRD-SEAT-MANAGEMENT.md` and `PRD-MEMBERSHIP-MANAGEMENT.md` byte-identical); **no fifth `SeatState` value** (the closed four stand, §4.2); **no `Reservation` primitive** (still refused per `SEAT-FR-155`); `MM-GAP-001`/`SEAT-GAP-003` **entries not edited** in their frozen homes — the answer is recorded here and propagating it needs its own authority; **no Dart source touched.** The conferral is **not a standing licence** (`ADR-0033` §7.1). |
 | **v1.0** | 2026-08-05 | **First record. `PROPOSED` — not accepted, not in force.** Raised by the V1 requirement for 3-day renewal protection against frozen `PRD-005` and `PRD-007`. **Its central act is to overturn one of my own prior findings:** `PRD-008` §39.2 (v0.9) recorded that `MM-XC-012`, `MM-FR-100` and `MM-FR-111` *"forbid"* the behaviour; re-measured with surrounding prose, that conflated **money arithmetic** (forbidden, and not needed), **entitlement extension** (forbidden, and not conferred) and **seat-release timing** (`Q-01`, **open** — the actual blocker). Frozen `PRD-005` **L820-823** makes the separation itself, `MM-FR-112` **defers** seat reclamation to `BC-04`, and frozen `PRD-007` **L1166-1172** states the seat PRD is *"written to be correct under any resolution"* of `Q-01` because *"the release action becomes a policy-driven trigger over an already-flagged allocation rather than a redesign."* **So the requirement needs an open question answered, not a frozen rule broken.** Measured that the retention half is **already frozen behaviour** (`SEAT-BR-024`, `SEAT-BR-011`, gate `G16`, `SeatState` rule 2, the `Expiry-flagged` queue, `SEAT-FR-217`), and that the calendar arithmetic it needs **already exists** (`MM-FR-057`…`MM-FR-064`, `MM-CFG-006`) and must be reused — including `MM-FR-058`'s purity, which forbids the natural-but-wrong *"now + 3 days"*. **Rejected the attractive shortcut** of expressing protection as a `Reservation`: `SEAT-FR-155` **auto-cancels** an unexpired reservation on expiry *"per A2"*, the exact trigger, and `SEAT-BR-009`/`SEAT-BR-024` block the conversion anyway. **Recorded the finding that most nearly refutes this ADR:** frozen `PRD-005` §24.3 **L1719** contains a **refused** grace-period proposal — refused because *"the architecture has not decided it"* and *"a recommendation inside an open question is not a decision"*, i.e. **procedurally, not substantively**, which is why it supports rather than blocks the route taken here. **Nothing invented:** no bounded context (still **31**, no `BC-32`), no fifth `SeatState` value, no aggregate, no requirement identifier, no configuration identifier, no permission, no event, no edge, no port, no money rule. **No gap closed** — `Q-01`/`SEAT-GAP-003`/`MM-GAP-001` stay **OPEN**, and **three new open questions** are recorded (window boundary, configurability scope, release actor) rather than inferred. **Proposes the minimum amendment**: close `Q-01` by accepted ADR, then **two additive requirements in `PRD-007` only** — **`PRD-005` is not amended at all**, because it already says the decision is not its to make. **3-day renewal protection is preserved as a V1 requirement** and is **not** downgraded, made optional, removed or re-timed; it is recorded as **blocked on `Q-01`**, with the safe failure mode already guaranteed by frozen rules. **Also records that `PRD-008` §39.2 is wrong and must be corrected**, a changelog act needing no ADR. No frozen document, BC Map, Dependency Matrix, Traceability Matrix or module manifest was modified; no Dart source was touched. |
 
 ---
 
-*End of `ADR-0036` **v1.0 — PROPOSED**. Recorded, not in force. `Q-01` remains OPEN. Three questions await three
-named authorities. No frozen document was modified.*
+*End of `ADR-0036` **v2.1 — ACCEPTED on all three questions**. In force. `Q-01` is answered (3 calendar days, mandatory,
+V1, fixed) and its window boundary is answered (**`W₀ = D+1`**, §8.2a). **No frozen document was modified by this ADR at
+any version.** No requirement, configuration or gap identifier was ever created by it. Superseded footer, retained per
+Process step 3: *"End of `ADR-0036` **v1.0 — PROPOSED**. Recorded, not in force. `Q-01` remains OPEN. Three questions
+await three named authorities."*

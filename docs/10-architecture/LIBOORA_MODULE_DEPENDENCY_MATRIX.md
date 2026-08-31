@@ -87,7 +87,7 @@ Two exceptions to L2, both declared and bounded:
 | Cluster | Members | Allowed internal edges |
 |---|---|---|
 | **Core Library cluster** (within R8) | BC-01 Enrollment, BC-02 Membership, BC-03 Attendance, BC-04 Seating, BC-05 Fee, BC-06 Policy | Only the edges E-01…E-10 listed in the context map. Enforced as an explicit allow-list, not "anything within the cluster". |
-| **Social cluster** (within R8) | BC-11 Graph, BC-12 Messaging, BC-13 Safety | Only edges E-14…E-16. **`BC-10` was removed from this cluster by `ADR-0011`** and is now a rank-7.5 platform identity, consumed by these contexts rather than clustered with them. |
+| **Social cluster** (within R8) | BC-11 Graph, BC-12 Messaging, BC-13 Safety, **BC-15 Community & Groups** *(added 2026-08-31)* | Only edges E-14…E-16 **and E-28**. **`BC-10` was removed from this cluster by `ADR-0011`** and is now a rank-7.5 platform identity, consumed by these contexts rather than clustered with them. ⭐ **`BC-15` was added by `Accepted` [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md) under Architecture Owner ruling AO-7**, which resolves open item `D-2` — before it, `BC-15` belonged to no declared module and Stage-3 check 3 ("rank direction is downward") was **vacuous** for every `PRD-021A` part, because a context outside the cluster table has no rank to compare. The cluster is **extended, not replaced**: `domain/social` stays rank **8** (`tool/module_dependencies.yaml` L47) and no existing member's rank, ownership or edge changes. ⭐ **A third R8 cluster was deliberately NOT created** — L92–95 below record `ADR-0011`'s warning that an additional same-rank cluster *"dissolves the Separate Ways boundary"*, so the ruling was executed by widening the one that exists. The allow-list stays an **explicit allow-list, not "anything within the cluster"**: `E-28` (`BC-11` → `BC-15`, `C/S`, Sync port, **V2**) is named, and no other intra-cluster edge is admitted by implication. ⚠ **`BC-14` is NOT a member and was NOT added.** AO-7 enumerates only `BC-11`, `BC-12`, `BC-13`, `BC-15`; adding `BC-14` would exceed the ruling. Consequently the new edge **`E-29`** (`BC-14` → `BC-15`, BC Map §15.1) has an **UNDETERMINED `L2` status** — `BC-14` is measured **0** times in this document and **0** times in the manifest, so it cannot be established whether `E-29` is a same-rank edge needing cluster cover or a lawful downward one. Recorded as **`GAP-BC14-RANK`**, Architecture Owner; disclosed rather than assumed either way. |
 
 **The two clusters may not reference each other** (Separate Ways). The single bridge is E-13 via ACL.
 
@@ -649,7 +649,7 @@ exceptions:
 | Allowed cross-platform edges | 26 (context map §7) |
 | Named forbidden edges | 14 (§7) |
 | Direct-import permissions | 1 (`liboora_contracts` only) |
-| Same-rank clusters | 2 (Core Library `BC-01`…`BC-06`, Social `BC-11`…`BC-13`) |
+| Same-rank clusters | 2 (Core Library `BC-01`…`BC-06`, Social `BC-11`…`BC-13` **+ `BC-15`** — `BC-15` added 2026-08-31 by `ADR-0083` ruling AO-7, resolving `D-2`; the count stays **2** because the existing cluster was **extended**, not joined by a third, per `ADR-0011` L92–95) |
 | Cycle-breaking patterns | 4 |
 | CI enforcement layers | 3 |
 | Laws with zero exceptions | 1 (L1 — acyclic). `L2` retains exactly its two declared cluster exceptions — **`ADR-0011` added none**, which is why rank 7.5 exists |

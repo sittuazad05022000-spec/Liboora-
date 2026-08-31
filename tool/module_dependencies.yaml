@@ -230,8 +230,8 @@ domain/social:
   rank: 8
   classification: supporting
   # ADR-0011 — `identity` removed: BC-10 is now domain/person at rank 7.5.
-  # BC-11 graph, BC-12 messaging, BC-13 safety. Consumers of the identity, not owners.
-  contexts: [graph, messaging, safety]
+  # BC-11 graph, BC-12 messaging, BC-13 safety. Consumers of the identity, not owners. ADR-0083 (AO-7, 2026-08-31) adds BC-15 community, resolving open item D-2: before it BC-15 belonged to no declared module, so the L2 rank comparison had nothing to compare and Stage-3 check 3 was vacuous for every PRD-021A part. BC-14 is deliberately NOT added — AO-7 enumerates only BC-11/12/13/15 — which leaves edge E-29 (BC-14 -> BC-15) with an UNDETERMINED L2 status, recorded as GAP-BC14-RANK rather than assumed either way.
+  contexts: [graph, messaging, safety, community]
   imports:
     - { target: contracts, mode: import }
   ports:
@@ -253,9 +253,9 @@ domain/social:
     - safety.EnforcementActionTaken
   internal_edges:
     - { id: E-14, from: safety,   to: [graph, messaging], mode: event }
-    # ADR-0011 — E-15 is no longer an intra-cluster import. PersonId and the privacy
-    # value objects live in contracts (L5), because rank 8 may not import rank 7.5's internals.
+    # ADR-0011 — E-15 is no longer an intra-cluster import: PersonId and the privacy value objects live in contracts (L5), because rank 8 may not import rank 7.5's internals. (Two comment lines were merged into this one to make room for E-28 without inserting a line: 222 line-citations point into this file and ~100 sit below this block, several inside FROZEN PRD-017 and PRD-020, so E-14 stays at L255 and E-16 stays at L259 exactly as cited.)
     - { id: E-15, from: contracts, to: graph,             mode: import, note: "shared kernel VOs in contracts" }
+    - { id: E-28, from: graph,     to: community,          mode: port,   note: "ADR-0083 AO-1; BC Map §15.1; C/S sync port, V2; carries RateLimitCounter + BlockList reads; BC-11 remains the owner" }
     - { id: E-16, from: graph,    to: messaging,          mode: port  }
   banned_imports:
     - "domain/library/**"         # X-05 Separate Ways

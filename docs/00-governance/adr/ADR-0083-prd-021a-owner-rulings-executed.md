@@ -112,7 +112,9 @@ bounds, deferred to `BC-25`) is likewise untouched.
 
 ### 4.1 The two new edges, and why they are `E-28` and `E-29`
 
-⛔ **`E-27` is NOT reused.** It was withdrawn by `ADR-0033` (BC Map v1.7, changelog **L614**), and
+⛔ **`E-27` is NOT reused.** It was withdrawn by `ADR-0033` (BC Map v1.7 changelog row, at **L615** in v1.9 —
+it stood at **L614** in v1.8 and moved down one line when this ADR's own v1.9 row was inserted above it; that
+single-citation cost is disclosed in the v1.9 row itself and repaired here in the same commit), and
 `PRD_LIFECYCLE.md` §5 rule 5 states *"Numbers are never reused, even after withdrawal."* The edge set therefore
 runs `E-01`…`E-26`, `E-28`, `E-29`, with **`E-27` permanently vacant** — a gap that is a record, not an error.
 

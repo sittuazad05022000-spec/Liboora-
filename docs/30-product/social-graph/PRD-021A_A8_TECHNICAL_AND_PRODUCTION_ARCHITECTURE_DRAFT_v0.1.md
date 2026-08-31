@@ -196,7 +196,7 @@ of it.
 2. ⭐ **The event envelope collides with the tenancy rule.** BC Map §9.1 L450
    makes `tenantId` **mandatory on every domain event**; rule `ID-2` (L488)
    forbids `BC-15` from ever holding one. `ADR-0078` resolved the *scope
-   identifier* question but did not amend L450. `LCT-CONF-002`, §15.4.
+   identifier* question but did not amend L450. `LCT-CONF-002`, §15.4 — ✅ **RESOLVED by AO-6, 2026-08-31** via BC Map **§15.4** `EV-1`…`EV-4`. ⚠ **BC Map L450 itself remains unamended and is deliberately left so:** AO-6 authorised recording the envelope exception, not editing Rank 4 prose, and Governance authorization item 6 forbids modifying frozen/Rank-sensitive documents absent an explicit requirement. ⭐ The residue is now a **wording** residue, not a rule conflict.
 3. ⭐ **Projection rebuild is required but its mechanism is V3.** BC Map L453
    requires every projection to be rebuildable from the log; `Event Replay` is
    **V3** (EA). A2's feed projection is required to be rebuildable
@@ -900,7 +900,7 @@ treated as settled. Until A2 rules, A7 §3's seven facts SHALL be read as
 → Routed to the **Social Domain owner** as A2's owner, with the **Architecture
 Owner** consulted on naming (BC Map L401). `LCT-ADR-001`.
 
-### 15.4 ⭐ `LCT-CONF-002` — the envelope vs the tenancy rule
+### 15.4 ✅ `LCT-CONF-002` — the envelope vs the tenancy rule — **RESOLVED by AO-6 (2026-08-31)**: `BC-15` events carry **no `tenantId`**; `ID-2` is **preserved, not overridden**; recorded as BC Map §15.4 `EV-1`…`EV-4`; ⛔ no other BC gains the exception
 
 ⛔ OPEN OWNER DECISION
 
@@ -957,7 +957,7 @@ that would be new infrastructure, forbidden by `LCT-XC-001`, and would
 duplicate a capability the `EVENT PLATFORM` owns.
 
 → **Architecture Owner**: either `Read Model Rebuild` is needed at V2, or A2
-`LCF-NFR-006` is unsatisfiable in band. `LCT-ADR-002`.
+`LCF-NFR-006` is unsatisfiable in band. `LCT-ADR-002`. ✅✅ **ANSWERED — Architecture Owner ruling AO-5, 2026-08-31: the SECOND limb is correct.** `Read Model Rebuild` is **NOT** pulled forward to V2, and A2 `LCF-NFR-006` **is** unsatisfiable in the V2 band. The ruling's own words: V2 *"must not pull Event Replay/V3 forward"*, A8 *"SHALL NOT invent new V2 infrastructure"*, and where the requirement is impossible *"mark the requirement as conditional/deferred rather than pretending V2 provides Event Replay."* ⭐⭐ **A8's refusal at L955–957 is vindicated exactly as written** — it declined to propose a private replay mechanism on the grounds that it would be new infrastructure forbidden by `LCT-XC-001` and would duplicate an `EVENT PLATFORM` capability, and the ruling adopts that reasoning rather than overriding it. ✅ A2 `LCF-NFR-006` has been marked **CONDITIONAL / DEFERRED** in place at A2 **L1526**, with the requirement **retained, not deleted or weakened**, and ⛔ it **SHALL NOT** be recorded as passing, waived or approximated in V2. ⚠ It **auto-reactivates** when the platform's capability band provides an event stream.
 
 ### 15.7 No unnecessary events
 
@@ -1043,9 +1043,9 @@ distinction rather than reading the node as a decision.
 **Measured.** `E-21` reads *"`BC-01`, `BC-10` → `BC-23` Search Indexing"*.
 `BC-15` is **not** a producer.
 
-`LCT-FR-064` | A8 SHALL NOT design a community search path. `BC-15` cannot
+`LCT-FR-064` | ✅✅ **CONFIRMED CORRECT — Architecture Owner ruling AO-9, 2026-08-31.** A8 SHALL NOT design a community search path. `BC-15` cannot
 publish to `BC-23` without a new edge, and BC Map L292 makes an unregistered
-edge non-existent.
+edge non-existent. ⭐⭐ **AO-9 was a CONDITIONAL authorization and the condition FAILED, so the refusal stands.** The ruling permits `BC-15` to use the existing search architecture *"only if the existing `E-21` contract supports it without inventing a new search protocol"*, and directs that *"if an architectural amendment is required, record it explicitly rather than silently claiming `E-21` support."* ✅ Re-measured on the live BC Map at v1.9: `E-21` (**L330**) reads `BC-01`, `BC-10` → `BC-23 Search Indexing` — ⛔ **`BC-15` is absent from the consumer cell.** The contract does **not** support it. ✅ Per the ruling's own conditional the refusal is therefore **recorded, not overridden**: community search is **out of band for V2**, and this requirement plus `LCT-AC-032` are **CONFIRMED**, as is A8's original measurement at L1043–1044. ⛔ **No `E-21` amendment was made and no support was claimed** — the tempting move here was to read AO-9's permissive clause and mint the edge; measurement forbade it.
 
 `LCT-FR-065` | A2 §15 already scopes community filtering to **in-community
 filtering over an authorized candidate set**, not platform search. A8 concurs
@@ -1730,7 +1730,7 @@ attachment-bearing and `TEXT` posts is read, **then** `TEXT` posts render fully
 and attachment-bearing posts render with unresolved references.
 *(A2 `LCF-NFR-008`)*
 
-`LCT-AC-032` | **Given** community search is not implemented, **when** the
+`LCT-AC-032` | ✅ **CONFIRMED CORRECT by AO-9 (2026-08-31) — the criterion stands exactly as written and its wording is UNCHANGED.** ⚠ It is **not** recorded as passing; it remains a criterion to be verified. **Given** community search is not implemented, **when** the
 codebase is inspected, **then** no `BC-15` → `BC-23` publication path exists.
 *(§19)*
 
@@ -1756,7 +1756,7 @@ asserts absence and is expected to remain asserted until A4 is resolved.**
 | `LCT-R-002` | A missing edge (media, search, reporting) is worked around by an in-part path | `LCT-XC-001`; `LCT-FR-074`; three ⛔ rows left open in §35.1 |
 | `LCT-R-003` | Cache isolation implemented on community only, leaking between viewers | `LCT-FR-072` + `LCT-AC-013` |
 | `LCT-R-004` | Fail-closed produces a blank feed, read as a bug and "fixed" by failing open | `LCT-INV-006`; `LCT-GAP-007` routed to Product Owner |
-| `LCT-R-005` | `LCT-GAP-004` deferred until a projection needs rebuilding in production | Routed as `LCT-ADR-002` now, before build |
+| `LCT-R-005` | `LCT-GAP-004` deferred until a projection needs rebuilding in production | ✅ **Routed as `LCT-ADR-002` before build — and the routing paid off: AO-5 answered it on 2026-08-31.** ⭐ Raising it early rather than discovering it in production is precisely what this risk row argued for |
 | `LCT-R-006` | A V3 capability assumed available because its parent node is V2 | `LCT-FR-007` requires the tag on every dependency |
 | `LCT-R-007` | Notification treated as a read path with its own authorization | `LCT-SEC-009`; A7 `LCN-FR-037` |
 | `LCT-R-008` | A8 read as authority to amend EA/Matrix | §0.4, §6.1, `LCT-INV-001` |
@@ -1770,7 +1770,7 @@ asserts absence and is expected to remain asserted until A4 is resolved.**
 | ID | Question | Owner | Blocking |
 |---|---|---|---|
 | `LCT-ADR-001` | Reconcile A7's seven proposed facts with A2's set closed at six by `LCF-FR-104`, including two name divergences and one semantic divergence | **Social Domain owner** (as A2's owner), Architecture Owner consulted on BC Map L401 naming | ⛔ Blocks A7's event register |
-| `LCT-ADR-002` | Is `Read Model Rebuild` required at V2, or is A2 `LCF-NFR-006` unsatisfiable in band? | **Architecture Owner** | ⚠ Blocks projection rebuild guarantee |
+| `LCT-ADR-002` | ✅ **RESOLVED — AO-5, 2026-08-31.** Is `Read Model Rebuild` required at V2, or is A2 `LCF-NFR-006` unsatisfiable in band? → **Unsatisfiable in band, and that is the ratified answer.** ⛔ Event Replay stays **V3**; V2 gains **no** new infrastructure. ⭐ The resolution is a **deferral with the requirement preserved**, not a waiver: A2 **L1526** now carries `LCF-NFR-006` as **CONDITIONAL/DEFERRED**, and three alternatives were **refused by name** — inventing a V2 replay mechanism, silently claiming V2 provides Event Replay, and quietly deleting the requirement | **Architecture Owner** | ✅ **CLOSED.** ⚠ The projection-rebuild *guarantee* is still **not delivered** in V2 — what changed is that its absence is now **ratified and disclosed** rather than an open question |
 
 ⛔ **A8 writes neither.** 73 ADR files exist; `ADR-0083` does not, and A8 does
 not create it.
@@ -1782,7 +1782,7 @@ not create it.
 | `LCT-GAP-001` | A4→A1/A2/A5 role seam cannot close while A4 is a CANDIDATE | Product Owner |
 | `LCT-GAP-002` | `BC-15` absent from Matrix L90 cluster and L480–483 module tree | Architecture Owner |
 | `LCT-GAP-003` | No membership reference path for offline projections (`X-05` Separate Ways) | Architecture Owner |
-| `LCT-GAP-004` | Projection rebuild required (BC Map L453) but `Event Replay` is V3 | Architecture Owner → `LCT-ADR-002` |
+| `LCT-GAP-004` | ✅ **CLOSED by AO-5, 2026-08-31.** Projection rebuild required (BC Map L453) but `Event Replay` is V3 — ⭐ **the gap was real and the answer is that the V3 boundary holds.** A2 `LCF-NFR-006` is marked conditional/deferred at A2 **L1526** instead of being satisfied by invented V2 infrastructure | Architecture Owner → `LCT-ADR-002` ✅ **resolved** |
 | `LCT-GAP-005` | `BC-15` is not an `E-22` consumer — no registered media path | Architecture Owner |
 | `LCT-GAP-006` | `BC-15` is not an `E-21` producer — no registered search path | Architecture Owner + Product Owner |
 | `LCT-GAP-007` | Product behaviour of a fail-closed blank feed unspecified | Product Owner |
@@ -1796,7 +1796,7 @@ not create it.
 | ID | Conflict | Disposition |
 |---|---|---|
 | `LCT-CONF-001` | A7's seven facts vs A2's `LCF-FR-104` closure at six | ⛔ **RAISED, NOT RESOLVED** → `LCT-ADR-001` |
-| `LCT-CONF-002` | Event envelope `tenantId` vs `ID-2` | ⛔ **RAISED, NOT RESOLVED** → `LCT-GAP-009` |
+| `LCT-CONF-002` | Event envelope `tenantId` vs `ID-2` | ✅✅ **RESOLVED — Architecture Owner ruling AO-6, 2026-08-31.** `BC-15` events carry **no `tenantId`**, and the reason matters: ⭐⭐ **this is NOT a new exemption from `ID-2` — it is a repair to an envelope rule that was wrongly phrased as universal.** Measured: BC Map §10 **L488** already reads *"`BC-11`→`17` Student Network | **Global.** No `tenantId` … Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"*. `ID-2` was therefore **always** authoritative for the global band; the defect was the envelope rule claiming `tenantId` on every event. ✅ `ID-2` is **preserved, not weakened**. The exception is recorded explicitly as `EV-1`…`EV-4` in BC Map **§15.4**, and ⛔ **no other bounded context receives it** unless separately authorised. `LCT-GAP-009` is **CLOSED** |
 
 ### 41.4 Preserved untouched
 
@@ -1807,7 +1807,7 @@ A8 changed nothing about, and asserts no position on:
 `LCG-DEC-001`…`003` · `LCO-DEC-001`/`002` · `LCO-ADR-003` · `LCO-GAP-020` ·
 `TSF-GAP-001`/`002`/`005`/`006`/`009`/`010` · `R-1`/`R-2`/`R-3` · `ADR-0070` ·
 `ADR-0075` · `ADR-0036` §8.2 q2 · the Stage-3 record's `D-1`…`D-6` ·
-`ADR-INDEX` L9-vs-L110 drift · `DOCUMENTATION_BASELINE.md` L218 mis-ranking ·
+✅ `ADR-INDEX` L9-vs-L110 drift — **REPAIRED 2026-08-31; the line reference is now L9-vs-L111** because registering `ADR-0083` added one row above the derivation paragraph. ⭐⭐ **A8's finding was correct and was more precise than it knew:** the two cells genuinely disagreed, and measurement showed **L110 was the CORRECT one** (73 ADRs / 59 accepted) while **L9 was stale** (72 / 58) — it had missed the `ADR-0082` registration. ⛔ **The fix was NOT to copy the good figure into the bad cell.** Both readings were discarded and a mechanical classifier was re-run over all **74** `ADR-*.md` files with an explicit unparsed bucket (which returned **0**), giving **74 total · 60 accepted · 13 proposed · 1 execution-blocked**. ⚠ So the visible 58→60 is **one real addition plus one line of accumulated drift**, not two additions. · `DOCUMENTATION_BASELINE.md` L218 mis-ranking — ⚠ **still open, deliberately**: repairing it means editing a Rank-1 protected document, which no ruling authorises ·
 `PRD_REGISTRY.md` §11.4's now-false verification line.
 
 ---
@@ -1822,7 +1822,7 @@ gated; A6's reporting path is self-blocked.
 |---|---|---|
 | 1 | Register the `LCT-` prefix | `PRD_LIFECYCLE.md` §5 rule 3 |
 | 2 | Resolve `LCT-ADR-001` | Social Domain owner |
-| 3 | Resolve `LCT-ADR-002` | Architecture Owner |
+| 3 | ✅ **DONE — `LCT-ADR-002` resolved by AO-5, 2026-08-31.** Event Replay stays V3; A2 `LCF-NFR-006` is conditional/deferred at A2 **L1526**. ⚠ Resolving the decision does **not** make item 3's downstream work buildable — nothing on this list is buildable while Stage 3 is unconferred | Architecture Owner |
 | 4 | Resolve `LCS-ADR-001` (reporting) | Architecture Owner |
 | 5 | Resolve `LCF-ADR-003` (pagination) | Architecture Owner |
 | 6 | Resolve `LCT-GAP-005`/`006` (media, search) | Architecture Owner |
@@ -1876,11 +1876,11 @@ gated; A6's reporting path is self-blocked.
 | Check | Self-review | Note |
 |---|---|---|
 | 1 Context ownership exclusive | ✅ | A8 owns no context |
-| 2 Every integration edge exists in §7 | ⚠ **Conditional** | A8 proposes no edge; but it documents that three needed paths have none (§19, §21, §8.3). Under the Stage-3 record's *disclosed-and-gated* standard these are disclosed and gated, not asserted |
+| 2 Every integration edge exists in §7 | ⚠⚠ **STILL Conditional — and now for a SHARPER, MEASURED reason.** A8 proposes no edge. Of the three needed paths it documented as having none: ✅ **media** is now `E-29` (**AO-3**) and ✅ **blocks/rate limits** are now `E-28` (**AO-1**), both admitted to BC Map §15.1. ⛔ **search is REFUSED** (**AO-9** — condition failed). ⛔⛔ **But a NEW and more serious finding replaces the old one:** re-measured on the live §7 table at v1.9, **`BC-15` is the source of ZERO edges** — `E-14`, `E-28` and `E-29` are **all inbound**. So A4's `GroupCreated`/`GroupMembershipGranted`/`GroupMembershipRevoked` are **unpublishable** (`LCG-ADR-002`, OPEN) and A6 cannot **file** a report (`LCS-ADR-001b`, OPEN). ⭐ This is a **genuine Stage-3 Check-2 failure** for A4 and A6, and it is recorded as a failure rather than absorbed into the *disclosed-and-gated* standard — disclosure is not satisfaction |
 | 3 Rank direction downward | ✅ | §24.1; `LCT-GAP-002` disclosed |
 | 4 No authorization outside `BC-18` | ✅ | §17, §20.2 |
 | 5 No credential/OTP/session outside `BC-18` | ✅ | A8 mentions none |
-| 6 Tenant scoping correct | ⚠ **Conditional** | §9 complies with `ID-2`; `LCT-CONF-002` discloses the L450 residue |
+| 6 Tenant scoping correct | ✅ **PASS** (was ⚠ Conditional) | §9 complies with `ID-2`, and `LCT-CONF-002` is ✅ **RESOLVED by AO-6** — BC Map §15.4 `EV-1`…`EV-4` record that `BC-15` events carry no `tenantId`, with `ID-2` **preserved rather than excepted**. ⚠ The BC Map **L450** *wording* residue survives (Rank 4 prose, unamended by design), but it is no longer a **rule** conflict |
 
 ### 43.4 Register state
 
@@ -1904,8 +1904,8 @@ gated; A6's reporting path is self-blocked.
 ⭐ **The `LCT-FR-*` count was corrected from 118 to 119 by A8's own §43 audit
 before publication.** Recorded rather than silently amended, because a register
 that disagrees with its document is the defect class A8 exists to catch: A2's
-`LCF-GAP-002`/`003` non-contiguity and the `ADR-INDEX` L9-vs-L110 drift are the
-same class, and both remain open upstream.
+`LCF-GAP-002`/`003` non-contiguity and the `ADR-INDEX` L9-vs-L111 drift (⚠ **cited as L110 before `ADR-0083` was registered**) are the
+same class. ✅ **The `ADR-INDEX` one is now CLOSED** — both count cells were re-derived from the files on 2026-08-31 rather than reconciled against each other. ⚠ **A2's `LCF-GAP-002`/`003` non-contiguity remains open upstream**, and is untouched by these rulings. ⭐ A8 was right that a register disagreeing with its own document is a defect class worth naming: it caught this one in `ADR-INDEX`, and the repair followed A8's own standard of re-measuring rather than patching.
 
 ### 43.5 Final determination
 

@@ -1841,7 +1841,7 @@ Owner** | §23 — parallels A3 `LCR-DEC-003`, which is **OPEN**
 `LCO-GAP-009` | Is archiving manual, automatic, or both? | **Product Owner** | §8.2
 `LCO-GAP-010` | Does a material edit re-notify? | **`BC-22` owner** | §9, §14
 `LCO-GAP-011` | No ranking weight exists for priority | **Product Owner** | §10, §13
-`LCO-GAP-012` | ⚠ `officialAuthority`'s shape inherits A2 §20.5's unresolved *"`tenantId` wearing a different name"* objection, which A2 assigns to **no one** | **UNASSIGNED — disclosed** | §19.2, §16
+`LCO-GAP-012` | ⚠ `officialAuthority`'s shape inherits A2 §20.5's unresolved *"`tenantId` wearing a different name"* objection, which A2 assigns to **no one** | **Product Owner** — ⭐ assigned 2026-09-01 by explicit Product Owner ruling. ⚠ The ruling supplies the **owner** this row previously lacked and **nothing else**: the objection stated in the reason cell is **still OPEN, still unresolved and still disclosed**, and no requirement, ADR or identifier was created to reach this state | §19.2, §16
 `LCO-GAP-013` | May `BC-13` moderate a library's own official post? | **`BC-13` owner + Product Owner** | §16
 `LCO-GAP-014` | May a member block a library's official communication? | **Product Owner + `BC-11` owner** | §16, `LCO-EC-014`
 `LCO-GAP-015` | No audit retention value exists; `PRD-016`'s `AUD-CFG-*` is deliberately empty | **`BC-24` owner** | §17

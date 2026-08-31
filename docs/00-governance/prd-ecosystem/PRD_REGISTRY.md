@@ -766,7 +766,7 @@ on 2026-08-26, the same command returns **three** files:
 | File | Lines |
 |---|---|
 | `PRD-021A_A6_COMMUNITY_SAFETY_PRIVACY_MODERATION_DRAFT_v0.1.md` | 1,188 |
-| `PRD-021A_A7_COMMUNITY_NOTIFICATIONS_DRAFT_v0.1.md` | 941 |
+| `PRD-021A_A7_COMMUNITY_NOTIFICATIONS_DRAFT_v0.1.md` | **953** | ⚠ **Was `941`; re-measured 2026-08-31 after applying Social Domain Owner ruling **SD-1** (OPTION B — REDUCE A7).** ⭐ **This cell is corrected because a line count is a MEASUREMENT, and leaving it stale would make this register the source of a fact that is no longer true.** The growth is **+12** physical lines, all inside a single disclosure block placed directly beneath the `LCN-EVT-*` table, which records that A7's active event set is **reduced from 7 to 3**: `LCN-EVT-002` renamed to `community.CommentPublished`, `LCN-EVT-003` renamed to `community.ReactionChanged`, and `LCN-EVT-004`…`007` **WITHDRAWN** with their identifiers **retained and never reused** (`PRD_LIFECYCLE.md` §5 rule 5). ✅ **The shift cost ZERO citations, and this was measured rather than assumed** — no document outside A7 cites an A7 line at all, and every `**L…**` citation inside A7 points at *other* files (BC Map, this register), not at A7's own line numbers. ⛔ **A2 was NOT expanded** to seven events; SD-1 directed the opposite |
 | `PRD-021A_A8_TECHNICAL_AND_PRODUCTION_ARCHITECTURE_DRAFT_v0.1.md` | 1,925 |
 
 ⭐ **Authority for this correction, and its exact limit.** §8 rule 5 — *"If this register disagrees with a PRD,

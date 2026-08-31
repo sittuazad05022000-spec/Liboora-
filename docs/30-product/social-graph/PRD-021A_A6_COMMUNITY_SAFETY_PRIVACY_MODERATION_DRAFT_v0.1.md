@@ -94,7 +94,7 @@
 | **Integrates with** | `BC-13` `[CORE]` V1 (**L117**), `BC-11` (**L115**), `BC-18` (**L127**), `BC-24`, `BC-19`, `BC-25` |
 | **Aggregates created** | **ZERO.** §10 |
 | **Bounded contexts created** | **ZERO.** Count remains **31** |
-| **Edges created** | **ZERO.** One is *required and raised* — `LCS-ADR-001` — not minted |
+| **Edges created** | **ZERO — and this is now RATIFIED rather than merely deferred.** Owner ruling **AO-4** (2026-08-31) selected **Option B**, the existing-edge-fed local projection, and ⛔ **expressly forbade a `BC-15` → `BC-13` edge.** A6's refusal to mint one was therefore **correct**, and the zero is now the *approved* answer, not a pending one. ⚠⚠ **`LCS-ADR-001` is therefore HALF closed, and the halves are recorded separately as `LCS-ADR-001a` (moderation reads — ✅ CLOSED) and `LCS-ADR-001b` (report filing — ⛔ STILL OPEN).** |
 | **ADRs minted** | **ZERO.** Next free number remains `ADR-0083` |
 | **Permissions minted** | **ZERO.** `AUTH-7.22` closes the catalogue; `ADR-0036` §7.1 records zero `PERM-*` repo-wide |
 | **Roles minted** | **ZERO** |
@@ -269,7 +269,7 @@ verbatim from the Stage-3 record §2.4.
 | Consumption of `safety.EnforcementActionTaken` | ✅ **NO** | `E-14` exists — `A6-F2` |
 | Audit emission | ✅ **NO** | `E-20` *"All contexts → `BC-24`"* |
 | Config reads | ✅ **NO** | `E-19` *"All contexts → `BC-25`"* |
-| Report **filing** | ⛔ **YES** | `LCS-ADR-001` — `A6-F3` |
+| Report **filing** | ⛔ **STILL YES — blocked, and AO-4 does NOT unblock it** | `LCS-ADR-001b` — `A6-F3`. ⭐⭐ **This is the measured limit of AO-4 and it is stated rather than glossed.** AO-4 authorises a **local projection fed by the existing `E-14`**, and `E-14` runs `BC-13` → `BC-11, BC-12, BC-14, BC-15` — it is **INBOUND** to `BC-15`. A projection fed by an inbound event lets `BC-15` **read and apply** moderation outcomes; it does **not** carry a report **outbound** to `BC-13`. Re-measured on the live §7 table at v1.9: rows whose TARGET contains `BC-13` = **0**; rows whose SOURCE is `BC-15` = **0**; and the four all-context edges (`E-18`, `E-19`, `E-20`, `E-23`) target `BC-19`, `BC-25`, `BC-24`, `BC-22` — ⛔ **none targets `BC-13`**, so the `ADR-0065` “emit over an existing all-context edge” variant has **no carrier** either. ⚠ `E-28` and `E-29` do not help: both are also inbound to `BC-15` |
 | Block/mute **consumption** | ⛔ **YES** | `LCF-ADR-007` — `A6-F4` |
 | Moderator queue / case UI | ⛔ **REFUSED** | Not A6's scope in any world — `BC-13`'s |
 
@@ -360,7 +360,7 @@ decision. None duplicates a `BC-13` aggregate.**
 
 | § | Subject | Classification |
 |---|---|---|
-| 7 | Reporting integration | **INTEGRATION** ⛔ blocked by `LCS-ADR-001` |
+| 7 | Reporting integration | **INTEGRATION** — ✅ **read path CLOSED** by Owner ruling **AO-4** (2026-08-31) (`LCS-ADR-001a`, `E-14`-fed local projection, no new edge); ⛔ **filing path STILL blocked** by `LCS-ADR-001b` |
 | 8 | Moderation intake | **DELEGATED** to `BC-13` |
 | 9 | Content eligibility states | **OWNED** |
 | 10 | Safety filtering before ranking | **OWNED** (ordering) |
@@ -657,13 +657,13 @@ alter their own eligibility values, because that would record a safety decision
 Deletion is a **retention** act, and retention is unresolved (§22).
 
 `LCS-FR-030` | ⭐ **Community content SHALL NOT be servable while §7 reporting
-is blocked.** If `LCS-ADR-001` is unresolved, community content **SHALL** be
+is blocked.** ⚠⚠ **THIS REQUIREMENT STANDS AND IS NOT RELAXED BY AO-4.** If `LCS-ADR-001b` (report **filing**) is unresolved, community content **SHALL** be
 `WITHHELD`. Shipping visible-but-unreportable user-generated content on a
 minor-heavy product would be the unsafe reading, and this requirement is what
 makes §7's fail-closed direction coherent rather than merely convenient.
 
 ⚠ **Disclosed consequence, stated plainly:** `LCS-FR-030` means **A6, as
-written, blocks the community product until `LCS-ADR-001` is resolved.** That is
+written, blocks the community product until `LCS-ADR-001b` is resolved.** ⭐ AO-4 closed the *reads* half, which removes one of the two reasons this clause fired — but the clause is gated on **reportability**, and reportability is the half that is still open. ⛔ **The block therefore remains in force.** That is
 a real cost and it is not hidden. The alternative — serving unreportable content
 — is worse, and `BC-13`'s `[CORE]` classification (*"existential legal risk"*,
 **L117**) is the repository's own statement of why.
@@ -868,7 +868,7 @@ solved. `LCS-GAP-006`, **Architecture Owner**, expressly linked to
 `LCS-FR-062` | If the `E-14` consumer is lagging beyond the staleness budget →
 write paths **SHALL** refuse (§13 `LCS-FR-034`), mirroring `TSF-FR-031`.
 
-`LCS-FR-063` | If reporting is unavailable (including because `LCS-ADR-001` is
+`LCS-FR-063` | If reporting is unavailable (including because `LCS-ADR-001b` is
 unresolved) → content **SHALL** be `WITHHELD` (§12 `LCS-FR-030`).
 
 `LCS-FR-064` | If A3 ranking fails → the feed **SHALL** fall back to
@@ -1054,7 +1054,7 @@ measurably so that they become executable the moment their gates clear.
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-014` | **Given** a filed report, **when** every `BC-15` store, log, cache, index, event and audit record is inspected, **then** the reporter's `PersonId` is **absent** (`TSF-INV-009`) | `PENDING` ⛔ blocked by `LCS-ADR-001` |
+| `LCS-AC-014` | **Given** a filed report, **when** every `BC-15` store, log, cache, index, event and audit record is inspected, **then** the reporter's `PersonId` is **absent** (`TSF-INV-009`) | `PENDING` ⛔ still blocked by `LCS-ADR-001b` (filing) — ⭐ AO-4's closure of the reads half does not make a *filed report* observable, because filing is what remains unauthorised |
 | `LCS-AC-015` | **Given** restricted content, **when** the **author** views it, **then** they see the fact of restriction and an opaque reference, and **no** reporter identity, evidence, severity or strike count | `PENDING` |
 | `LCS-AC-016` | **Given** restricted content, **when** a **non-author** views it, **then** the response is byte-indistinguishable from `WITHHELD` and from never-existed | `PENDING` |
 
@@ -1065,7 +1065,7 @@ rather than aspirational.
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-017` | **Given** `LCS-ADR-001` is unresolved, **when** the community product is assembled, **then** community content is `WITHHELD` and **no** reporting path is exposed (`LCS-FR-030`) | `PENDING` |
+| `LCS-AC-017` | **Given** `LCS-ADR-001b` is unresolved, **when** the community product is assembled, **then** community content is `WITHHELD` and **no** reporting path is exposed (`LCS-FR-030`) | `PENDING` — ⚠ **NOW WRITABLE against a narrower antecedent.** AO-4 resolved `LCS-ADR-001a`, so this criterion no longer depends on an undivided decision; it depends on the filing half only. ⛔ It is **not** recorded as passing |
 | `LCS-AC-018` | **Given** `LCF-ADR-007` is unresolved, **when** a feed read is attempted, **then** content is `WITHHELD` rather than served without block filtering (`LCS-FR-061`) | `PENDING` |
 | `LCS-AC-019` | **Given** the repository as it stands, **when** `BC-15` code is searched, **then** it contains **no** `ModerationCase`, `AbuseReport`, `StrikeRecord` or `Appeal` type, and **no** moderation queue | `PENDING` |
 | `LCS-AC-020` | **Given** A6, **when** its text is measured, **then** it defines **zero** moderator roles, **zero** severities, **zero** thresholds, **zero** SLAs, **zero** permission identifiers and **zero** policy values | ✅ **VERIFIABLE NOW** — §28 |
@@ -1078,8 +1078,8 @@ rather than aspirational.
 |---|---|---|
 | Aggregates created | **0** | No aggregate root defined; §9 states content state on **existing** A2/A4 aggregates |
 | Bounded contexts created | **0** | Count remains **31** |
-| Bounded-context edges created | **0** | One **required and raised** (`LCS-ADR-001`); one **inherited** (`LCF-ADR-007`) |
-| ADRs created | **0** | Next free remains `ADR-0083` |
+| Bounded-context edges created | **0** | ✅ **Now the ratified answer.** Owner ruling **AO-4** (2026-08-31) selected Option B and ⛔ **forbade** a `BC-15` → `BC-13` edge, so A6's zero is approved rather than pending. The **inherited** `LCF-ADR-007` was separately **ACCEPTED** by **AO-1** and admitted as **`E-28`** in BC Map §15.1 — ⚠ that edge belongs to A2, and A6 still mints nothing. ⛔ `LCS-ADR-001b` (filing) remains **OPEN** with **no** edge and **no** carrier |
+| ADRs created | **0** | ⚠ **Stale as written — corrected here.** `ADR-0083` is no longer free: it was **created and Accepted 2026-08-31** as the record of these 22 Owner rulings, and is registered in `ADR-INDEX.md`. The ADR total is **74**. ⭐ A6 still creates **zero** ADRs — `ADR-0083` is the *governance* record of the rulings, not an A6 artefact |
 | Permission identifiers | **0** | `AUTH-7.22`, `ADR-0036` §7.1 |
 | Roles | **0** | `LCS-FR-042` refuses the tempting one |
 | Moderation enums | **0** | §9's three values are **content lifecycle**, not moderation outcomes |
@@ -1118,7 +1118,7 @@ registration is a Governance Owner act not exercised here.
 
 | ID | Requirement | Owner | State |
 |---|---|---|---|
-| **`LCS-ADR-001`** | ⛔ **Establish a lawful `BC-15 → BC-13` reporting path.** Two shapes are **named, neither chosen**: **(a)** admit a `BC-15 → BC-13` edge to BC Map §7 — ⚠ note this would break `F-3`, which `ADR-0065` deliberately preserved; **(b)** an event/read-model shape over an existing all-context edge, on the `ADR-0065` pattern, adding no edge. ⚠ Either way, a **same-rank** dependency additionally engages Matrix rule `L2` (**L49**) and requires the declared **Social cluster** (**L90** = `BC-11`/`12`/`13`) to accommodate `BC-15`, because `domain/social` is rank **8** (`yaml` **L47**) | **Architecture Owner** | ⛔ **OPEN** |
+| **`LCS-ADR-001`** | ⚠⚠ **HALF RESOLVED — Owner ruling **AO-4** (2026-08-31) — SPLIT INTO 001a AND 001b.** ✅ **`LCS-ADR-001a` — moderation READS — CLOSED.** Option **(b)** was selected: an **existing-edge-fed local projection** on the `ADR-0065` pattern, reusing `E-14` (**L318**), which already lists `BC-15`. ⛔ **No `BC-15` → `BC-13` edge was created**, so `F-3` is **preserved exactly as `ADR-0065` intended** and the `ADR-0055` §3 / `ADR-0059` refusals are **honoured, not overturned**. ⭐⭐ **A6's §7.3 analysis is vindicated in full:** it predicted this decision *"may well be answered by refusal"* of the edge, named option (b) as the alternative, and declined to rank either — and the Architecture Owner chose precisely the option A6 named without recommending. ⛔⛔ **`LCS-ADR-001b` — report FILING — STILL REQUIRED AND OPEN**, and this is a **measured** finding, not a hedge: `E-14` is **inbound** (`BC-13` → … `BC-15`), so an `E-14`-fed projection cannot carry a report **outbound**. Re-measured on the live §7 table at BC Map **v1.9**: rows targeting `BC-13` = **0**; rows sourced from `BC-15` = **0**; all-context edges `E-18`/`E-19`/`E-20`/`E-23` target `BC-19`/`BC-25`/`BC-24`/`BC-22` and ⛔ **none targets `BC-13`**. ⚠ The same-rank `L2` and Social-cluster concerns this row raised are now **partly discharged** — **AO-7** extended the declared cluster to `BC-11`/`12`/`13`/**`BC-15`** (Matrix **L90**/**L652**) — but a cluster that *admits* the dependency does not *create the transport*. ⭐ `LCS-ADR-001b` is the **same structural finding** as A4's `LCG-ADR-002`: `BC-15` is the source of **zero** edges, so it can neither publish its own events nor file a report. Both are genuine **Stage-3 Check-2** failures and both are routed to the **Architecture Owner**. ⛔ A6 does **not** mint the edge, does **not** claim a carrier that measurement says is absent, and does **not** lift `LCS-FR-030` | **Architecture Owner** | ⚠ **001a ✅ CLOSED · 001b ⛔ OPEN** |
 | *(inherited)* `LCF-ADR-007` | `BC-15 → BC-11` consumption edge | **Architecture Owner** | ⛔ **OPEN** — A6 adds no new requirement |
 
 ### 29.2 Gaps
@@ -1185,4 +1185,4 @@ A6 does **not** perform it; `BC-15` remains **V2**.
 | **Date** | 2026-08-25 |
 | **Status** | **DRAFT** — NOT FROZEN, NOT CONFERRED, NOT BASELINED |
 | **Part of** | `PRD-021A` (authorized by `D-A`; A6 authorized as a **part**, not a standalone PRD) |
-| **Determination** | An **integration contract**. `BC-13`/`PRD-020` retains every safety decision. ⛔ Reporting is **self-blocked** on `LCS-ADR-001`; block/mute and rate limiting on the inherited `LCF-ADR-007`. Enforcement consumption over `E-14` is ✅ **lawful as written** |
+| **Determination** | An **integration contract**. `BC-13`/`PRD-020` retains every safety decision — ✅ **and Owner ruling **AO-4** (2026-08-31) confirms this by construction**, since Option B has `BC-15` hold only a **local projection** of state that remains `BC-13`'s. ✅ Moderation **reads** are now lawful as an `E-14`-fed local projection (`LCS-ADR-001a`, `ADR-0065` pattern, **zero** new edges). ⛔ Report **filing** stays **self-blocked** on `LCS-ADR-001b` — `BC-15` sources **0** edges and no all-context edge reaches `BC-13`. Block/mute and rate limiting are unblocked by **AO-1**, admitted as **`E-28`** (A2's edge, inherited — A6 mints nothing). Enforcement consumption over `E-14` is ✅ **lawful as written**, as it always was |

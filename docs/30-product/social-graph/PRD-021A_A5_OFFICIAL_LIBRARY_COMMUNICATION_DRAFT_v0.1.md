@@ -44,11 +44,11 @@
 > traceability only. Publication of this file to `main` is a **filing act**. It
 > confers no lifecycle stage, ratifies no identifier, and closes no gap.
 >
-> ⛔ **This part's existence as Part A5 is itself an open question** —
-> `LCO-GAP-001` / `LCO-DEC-001`. See §0.3.
+> ✅ **This part's existence as Part A5 is DECIDED — Owner ruling **PO-7** (2026-08-31).** The
+> ruling states, in its own words, that the official communication surface *"does exist"* and that *"it IS Part A5."* `LCO-GAP-001` and `LCO-DEC-001` are therefore **CLOSED**. ⭐ The allocation is reinforced from the other side by **PO-3**, which approved the measured `BC-15` residue as Part A4 and stated that *"A4 remains a part of PRD-021A, not a standalone PRD"* — the same reasoning applies to A5, and `PRD_REGISTRY.md` **L704** now records the allocation as **A1…A8**. ⚠ Closing this gate settles *which document owns the subject*; it confers **no lifecycle stage**. See §0.3.
 >
-> ⛔ **This part's subject matter is gated on a Product Owner decision that is
-> already OPEN in the repository** — A3 v0.6 `LCR-DEC-006`. See §0.3.
+> ✅ **This part's subject matter EXISTS — the Product Owner decision that gated it
+> is now ANSWERED** — A3 v0.6 `LCR-DEC-006` is **CLOSED** by Owner ruling **PO-7** (2026-08-31) and has been marked closed in A3 at its **L1156**. ⛔⛔ **But the answer has two halves and only the first is permissive:** the surface exists *and* it **does NOT silently extend A2's closed event contract**. PO-7 clause 4 holds that A5 *"may publish via its own mechanism"* while *"A2's six-event contract remains authoritative unless A2 is separately amended"*, and clause 5 holds that A5 *"does NOT invent a seventh A2 event."* See §0.3.
 
 ---
 
@@ -70,8 +70,8 @@
 ### 0.1 Normative language
 
 `SHALL` / `SHALL NOT` are binding on any implementation of *this part*, and take
-effect only if `LCO-DEC-001` and `LCR-DEC-006` are both resolved in this part's
-favour. `MAY` is permissive. **Every occurrence is conditional on §0.3.**
+effect **as of 2026-08-31**, because Owner ruling **PO-7** (2026-08-31) resolved BOTH `LCO-DEC-001` and `LCR-DEC-006` in this part's
+favour. `MAY` is permissive. ✅ **§0.3's two gates are now CLOSED, so the conditionality that suspended every `SHALL` in this document is discharged.** ⚠⚠ **This is not the same as the requirements being approved.** They are now *unsuspended*, not *ratified*: this part has advanced no lifecycle stage, Stage 3 is **NOT CONFERRED**, the `LCO-` prefix registration is recorded in `PRD_OWNERSHIP_MODEL.md` §12 but **no `LCO-` identifier has been entered in `TRACEABILITY_MATRIX.md`**, and the decisions listed in §29.2 other than `LCO-DEC-001`/`002` remain **OPEN**. See the footer.
 
 ### 0.2 What this document is not
 
@@ -87,14 +87,14 @@ in the repository; neither is invented here.
 to Part A5. Measured: `grep -rn "A1-A8\|A1–A8\|A4–A8" docs/` returns hits that
 are all *freeze preconditions* or A3's `P0-5` correction; **none allocates
 scope**. A4 v0.1 `LCG-DEC-001` asks the same question of itself and leaves it
-open. → `LCO-GAP-001` / `LCO-DEC-001`.
+open. → `LCO-GAP-001` / `LCO-DEC-001`. ✅ **GATE 1 IS NOW CLOSED — Owner ruling **PO-7** (2026-08-31).** ⭐ **The measurement above is left standing verbatim because it was accurate when taken.** It is not deleted and not softened: at the time of writing, no document did allocate scope to A5, and saying so was correct. What changed is not the measurement but the **authority** — the ruling supplied the allocation the repository lacked, and `PRD_REGISTRY.md` **L704** and §11.4 now carry it. ⭐ A4's `LCG-DEC-001`, which this line cites as asking the same question of itself, was closed by **PO-3** in the same ruling set, at A4 **L661**. ⚠ A gate closing is a **precondition** being met, not a stage being conferred.
 
 `LCO-INV-002` | **Gate 2 — subject-matter existence.** A3 v0.6 `LCR-DEC-006`
 asks, verbatim: *"Does an official announcement surface exist, and does it extend
 A2's closed type set?"* — owner **Product Owner**, status **OPEN**. This part is
 a specification *of that surface*. It therefore **presumes an answer the
 repository has not given**, and says so rather than hiding it. →
-`LCO-GAP-002` / `LCO-DEC-002`.
+`LCO-GAP-002` / `LCO-DEC-002`. ✅ **GATE 2 IS NOW CLOSED — Owner ruling **PO-7** (2026-08-31).** The ruling answers A3's verbatim question in both its parts. **Part 1 — does the surface exist?** Yes: *"an official communication surface does exist"* and *"it is Part A5."* **Part 2 — does it extend A2's closed type set?** ⛔ **NO.** PO-7 clauses 3–5 are explicit that A5 *"does not silently extend A2's closed contract"*, that A2's six-event contract *"remains authoritative unless A2 is separately amended"*, and that A5 *"does NOT invent a seventh A2 event."* ⭐⭐ **This part's own honesty is what made the gate closable.** §0.3 did not assume an answer and then build on it; it recorded that it *"presumes an answer the repository has not given, and says so rather than hiding it."* That disclosure is the reason the ruling could be applied as a **closure** rather than as a correction of a fabricated premise. ⚠ The six A2 events remain, by name: `community.PostPublished`, `community.PostUpdated`, `community.PostRemoved`, `community.CommentPublished`, `community.ReactionChanged`, `community.MembershipRevoked` — A5 adds none of them and renames none of them.
 
 `LCO-INV-003` | **Every requirement in this document is conditional on BOTH
 gates.** If the Product Owner allocates this subject elsewhere, or answers
@@ -1799,12 +1799,12 @@ belong to A2 and remain A2's. A5 records that it is blocked by them and creates
 
 ### 29.2 Decisions required
 
-`LCO-DEC-001` | ⭐ Is this subject Part A5, or another part, or a separate PRD? |
-**Product Owner** | Gate 1 — the whole document
+`LCO-DEC-001` | ✅ **CLOSED — Owner ruling **PO-7** (2026-08-31).** Is this subject Part A5, or another part, or a separate PRD? → **It is Part A5.** The ruling states the surface *"does exist"* and *"it IS Part A5"*; the allocation is recorded in `PRD_REGISTRY.md` **L704** (**A1…A8**) and §11.4. ⛔ **Not a separate PRD** — the same Stage-3 check-1 reasoning that PO-3 applied to A4 (*"a part of PRD-021A, not a standalone PRD"*) applies here, and splitting A5 out would fragment `BC-15`'s exclusive context ownership across two PRDs. |
+**Product Owner** | Gate 1 — the whole document. ⚠ **Closing Gate 1 unsuspends this document's requirements; it does not approve them.**
 
 `LCO-DEC-002` | ⭐ Resolve A3 `LCR-DEC-006`: does an official announcement
 surface exist, and does it extend A2's closed type set? | **Product Owner** |
-Gate 2 — the whole document
+Gate 2 — the whole document. ✅ **CLOSED — Owner ruling **PO-7** (2026-08-31), in two halves.** **(a)** The surface **exists** and is A5. **(b)** ⛔ It **does NOT** extend A2's closed type set — A2's six-event contract stays authoritative *"unless A2 is separately amended"*, and A5 *"does NOT invent a seventh A2 event."* ⭐ A5 may publish through **its own** mechanism (PO-7 clause 4); what it may not do is reach into A2's contract to do it. ⚠⚠ **`LCO-DEC-003` and `LCO-ADR-003` are NOT closed by this.** Those ask whether an *orthogonal discriminator* may be approved over a fifth post type — an A2 amendment. PO-7 grants no A2 amendment, and Execution Rule 5 forbids inventing one. They remain **OPEN**.
 
 `LCO-DEC-003` | Approve the orthogonal-discriminator approach over a fifth post
 type (§6.1). | **Product Owner + A2 author** | §6.1, §19.2
@@ -1865,7 +1865,7 @@ Owner** | §23 — parallels A3 `LCR-DEC-003`, which is **OPEN**
 
 | # | Item | Precondition |
 |---|---|---|
-| 1 | Resolve `LCO-DEC-001` and `LCO-DEC-002` | — |
+| 1 | ✅ **DONE — 2026-08-31.** Both resolved by Owner ruling **PO-7** (2026-08-31): the subject exists, it is Part A5, and it does not extend A2's closed event set. Items 2–7 below had item 1 as their precondition, so that precondition is now met — ⛔ **but every one of them remains OPEN on its own merits, and §0.3's closure is not a work order.** | — |
 | 2 | Resolve `LCO-DEC-003`, then `LCO-ADR-003` (A2 amendment) | 1 |
 | 3 | Resolve `LCO-ADR-001` (identity read path) | 1 |
 | 4 | Resolve `LCO-DEC-004` (role set) | 1 |
@@ -1945,9 +1945,9 @@ touches is bounded by no authority, so shapes are declared in prose and routed t
 `BC-25` rather than given identifiers that imply values.
 
 ⛔ **Lifecycle status:** No stage advanced. Stage 3 **NOT CONFERRED**. **NOT
-READY. NOT FROZEN. NOT APPROVED. NOT BASELINED.** `LCO-DEC-001` and
-`LCO-DEC-002` are both open, so even this part's *existence as Part A5, and the
-existence of its subject at all,* are undetermined.
+READY. NOT FROZEN. NOT APPROVED. NOT BASELINED.** ✅ `LCO-DEC-001` and
+`LCO-DEC-002` are now **both CLOSED** by Owner ruling **PO-7** (2026-08-31), so this part's *existence as Part A5, and the
+existence of its subject at all,* are **no longer undetermined.** ⚠⚠ **That is the only thing that changed.** Stage 3 is still **NOT CONFERRED** for A5, no stage has advanced, and the remaining §29.2 decisions — `LCO-DEC-003`, `LCO-DEC-004`, `LCO-DEC-005`, `LCO-DEC-006` — together with `LCO-ADR-001`, `LCO-ADR-002`, `LCO-ADR-003` and `LCO-ADR-004` are **all still OPEN**. ⭐ Two gates closing turned this document from *"a specification of something that may not exist"* into *"an unratified specification of something that does"*. ⛔ It does **not** make it ready, and this footer is not being softened to imply otherwise.
 
 ⛔ **Identifiers are PROPOSED and UNRATIFIED.** The `LCO-` prefix is not
 registered; `TRACEABILITY_MATRIX.md` carries zero `LCO-` entries.

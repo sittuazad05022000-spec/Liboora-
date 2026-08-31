@@ -311,12 +311,24 @@ another.
 | # | Fact | Why it must exist separately | Gated on |
 |---|---|---|---|
 | `LCN-EVT-001` | `community.PostPublished` | The root activity fact. Everything else references a post | A2 |
-| `LCN-EVT-002` | `community.CommentAdded` | Distinct audience (post author + thread), distinct from a post's audience | A2 |
-| `LCN-EVT-003` | `community.ReactionAdded` | Distinct audience (author only) and the highest-volume, most aggregation-prone fact — §21 | A2 |
-| `LCN-EVT-004` | `community.MembershipChanged` | Membership transitions are A1's; the *fact* that one occurred is notifiable | A1 |
-| `LCN-EVT-005` | `community.ContentEligibilityChanged` | ⭐ Derived from A6 §9. Carries **no** moderation detail — §8 | A6 |
-| `LCN-EVT-006` | `community.OfficialCommunicationPublished` | A5's subject matter; audience is community-wide, unlike `001` | ⛔ A5 open |
-| `LCN-EVT-007` | `community.HelpRequestAnswered` | A3's helpfulness domain (`LCR-BR-010`); distinct from a plain comment | ⛔ A3 `LCR-DEC-009` |
+| `LCN-EVT-002` | ✅ **`community.CommentPublished`** — **RENAMED** from `community.CommentAdded` by Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7** | Distinct audience (post author + thread), distinct from a post's audience. ⭐ The rename is **not cosmetic**: it aligns this fact with A2's existing `community.CommentPublished`, so A7 now consumes A2's contract instead of declaring a near-duplicate name for the same fact. ⚠ A2 was **not** changed — measured: A2 v0.8 already uses `community.CommentPublished`, so the drift was entirely A7's | A2 |
+| `LCN-EVT-003` | ✅ **`community.ReactionChanged`** — **RENAMED** from `community.ReactionAdded` by Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7** | Distinct audience (author only) and the highest-volume, most aggregation-prone fact — §21. ⭐ `Changed` rather than `Added` is the **more accurate** name as well as the contract-conforming one: a reaction can be removed or replaced, and A2's contract already modelled that | A2 |
+| `LCN-EVT-004` | ⛔ **WITHDRAWN — `community.MembershipChanged`** — Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7**. ⛔ **The identifier is NOT reused.** `PRD_LIFECYCLE.md` §5 rule 5 reads *"Numbers are never reused, even after withdrawal"*, and SD-1 itself directs *"preserve withdrawn identifiers according to the repository's no-reuse rule"* — so this row is **retained as a WITHDRAWN record**, not deleted and not refilled. ⭐⭐ **The withdrawal is architecturally coherent, not merely obedient:** A4's `LCG-ADR-002` measurement shows `BC-15` is the source of **ZERO** BC Map §7 edges, so a `BC-15`-published membership fact had **no lawful transport** in any case — *an event nothing may publish is not a contract.* ⚠ The **underlying need** does not vanish: membership transitions remain A1's, and if they must be notifiable, that requires an A2 amendment or an outbound edge, **neither of which SD-1 grants** | A1 |
+| `LCN-EVT-005` | ⛔ **WITHDRAWN — `community.ContentEligibilityChanged`** — Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7**. ⛔ **The identifier is NOT reused.** `PRD_LIFECYCLE.md` §5 rule 5 reads *"Numbers are never reused, even after withdrawal"*, and SD-1 itself directs *"preserve withdrawn identifiers according to the repository's no-reuse rule"* — so this row is **retained as a WITHDRAWN record**, not deleted and not refilled. ⭐ A6's eligibility transitions are still real; what is withdrawn is A7's claim to publish a **new A2-contract event** about them. ⚠ A6 reads moderation state via the **`E-14`-fed local projection** ratified by **AO-4** — an inbound path, which is precisely why no outbound A7 fact was ever transportable | A6 |
+| `LCN-EVT-006` | ⛔ **WITHDRAWN — `community.OfficialCommunicationPublished`** — Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7**. ⛔ **The identifier is NOT reused.** `PRD_LIFECYCLE.md` §5 rule 5 reads *"Numbers are never reused, even after withdrawal"*, and SD-1 itself directs *"preserve withdrawn identifiers according to the repository's no-reuse rule"* — so this row is **retained as a WITHDRAWN record**, not deleted and not refilled. ⭐⭐ **This withdrawal survives the fact that its gate opened.** **PO-7** closed A5's `LCO-DEC-001`/`LCO-DEC-002` on the same day — A5 exists, and its subject exists — yet PO-7 clause 5 holds that A5 *"does NOT invent a seventh A2 event"* and clause 4 that A2's six-event contract *"remains authoritative unless A2 is separately amended."* ⛔ So the reason this row is withdrawn **changed** (no longer *"A5 may not exist"*, now *"A2's contract is closed"*) while the outcome did not. A5 **may** publish via **its own** mechanism | ✅ A5 now exists (**PO-7**) — ⛔ but withdrawn on contract grounds |
+| `LCN-EVT-007` | ⛔ **WITHDRAWN — `community.HelpRequestAnswered`** — Social Domain Owner ruling **SD-1** (2026-08-31), **OPTION B — REDUCE A7**. ⛔ **The identifier is NOT reused.** `PRD_LIFECYCLE.md` §5 rule 5 reads *"Numbers are never reused, even after withdrawal"*, and SD-1 itself directs *"preserve withdrawn identifiers according to the repository's no-reuse rule"* — so this row is **retained as a WITHDRAWN record**, not deleted and not refilled. ⭐ Consistent with **PO-2**, which closed A3's `LCR-DEC-009` by **permanent deferral** with `LCR-RS-003` held `ELIGIBLE` at weight **0**. A helpfulness signal that carries zero ranking weight does not need a dedicated platform event to carry it. ⚠ The `HELPFUL` designation itself (`LCR-BR-010`) is **not** retired | ✅ A3 `LCR-DEC-009` closed (**PO-2**) — ⛔ withdrawn |
+
+✅ **SD-1 APPLIED — 2026-08-31. A7's event set is REDUCED from 7 to 3, and A2 was NOT expanded.**
+
+| Register state | Value |
+|---|---|
+| `LCN-EVT-*` identifiers minted | **7** (`001`–`007`) — unchanged, because numbers are never reused |
+| ✅ **ACTIVE** | **3** — `LCN-EVT-001` `community.PostPublished`, `LCN-EVT-002` `community.CommentPublished`, `LCN-EVT-003` `community.ReactionChanged` |
+| ⛔ **WITHDRAWN** | **4** — `LCN-EVT-004`, `LCN-EVT-005`, `LCN-EVT-006`, `LCN-EVT-007` |
+
+⭐⭐ **Why Option B is the coherent choice, stated as measurement rather than deference.** The conflict `LCT-CONF-001` was that A7 declared **seven** community events while A2's contract declares **six**, with different names. Option A would have expanded A2 to seven-or-more; Option B reduces A7. ⛔ SD-1 chose B and directed *"do NOT expand A2 to seven or more events."* Independently of the ruling, **B is the only option the architecture could have carried**: `BC-15` is the source of **ZERO** BC Map §7 edges (`E-14`, `E-28`, `E-29` are all **inbound**), so every one of the four withdrawn facts was **unpublishable as written**. ⭐ A7's three surviving facts are exactly the three that name **A2-owned** content events, which A2 publishes.
+
+⚠⚠ **What this does NOT do.** It does **not** amend A2 (byte-unchanged by A7's hand). It does **not** retire the underlying needs — membership, eligibility, official communication and helpfulness notifications remain **unserved**, and each would require a separate A2 amendment or an outbound `BC-15` edge, ⛔ **neither of which SD-1 grants**. It does **not** resolve `LCG-ADR-002` / `LCS-ADR-001b`, the zero-outbound-edge finding that makes the withdrawals structurally necessary. It does **not** advance A7's lifecycle stage.
 
 `LCN-FR-002` | ⛔ A7 **SHALL NOT** define a fact for: a channel, a delivery
 attempt, a read receipt, a preference change, a digest, or any `BC-22` internal
@@ -350,7 +362,7 @@ consumer the map does not authorise would invent an edge.
 
 ### 3.5 Volume asymmetry, disclosed
 
-⚠ `LCN-EVT-003` (reactions) will exceed the other six combined by orders of
+⚠ `LCN-EVT-003` (`community.ReactionChanged`, reactions) will exceed the other **two active** facts combined by orders of — ⚠ **corrected from "the other six" per SD-1**, which reduced the active set from 7 to 3; the volume asymmetry is **worse**, not better, now that only three facts remain and the highest-volume one is among them —
 magnitude on any active community. Aggregation is the obvious mitigation — and
 aggregation is **deduplication**, which BC Map **L131** assigns to `BC-22`.
 ⛔ **A7 does not aggregate.** §21 records the producer-side limit question and
@@ -420,7 +432,7 @@ produce a notification fact.
 
 ## 6. Comment / reply notifications
 
-`LCN-FR-015` | `community.CommentAdded` **SHALL** be emitted on a published
+`LCN-FR-015` | ✅ **`community.CommentPublished`** (renamed per **SD-1**) **SHALL** be emitted on a published
 comment, carrying community, post, comment and author references.
 
 `LCN-FR-016` | ⛔ The comment body **SHALL NOT** be in the payload. Templating
@@ -444,20 +456,20 @@ with **no requirement written**.
 
 ## 7. Help-related and official-communication notifications
 
-`LCN-FR-019` | `community.HelpRequestAnswered` **SHALL** be emitted when a
+`LCN-FR-019` | ⛔ **VOID — `LCN-EVT-007` was WITHDRAWN by SD-1 (2026-08-31).** This requirement is **retained, not deleted**, so the withdrawal is auditable: it formerly read that `community.HelpRequestAnswered` **SHALL** be emitted when a
 contribution is designated helpful, per A3's `HELPFUL` designation
 (`LCR-BR-010`, `LCR-BR-010a`).
 
 > ⛔ **Gated.** A3's `LCR-DEC-009` (helpfulness weight) is **REFUSED and still
 > open**, and `LCR-RS-003` stays `ELIGIBLE` at weight **0**. **Until the Product
-> Owner resolves `LCR-DEC-009`, `LCN-EVT-007` SHALL be treated as blocked.**
+> Owner resolves `LCR-DEC-009`, `LCN-EVT-007` SHALL be treated as blocked.** ✅ **`LCR-DEC-009` was closed on 2026-08-31 by PO-2 — permanent deferral, `LCR-RS-003` `ELIGIBLE` at weight 0.** ⛔ **But `LCN-EVT-007` is not thereby unblocked: SD-1 WITHDREW it.** ⭐ The gate opened and the event was withdrawn anyway — recorded plainly so no reader concludes the closure revived it.
 > ⛔ A7 does **not** resolve it and states **no** weight.
 
-`LCN-FR-020` | `community.OfficialCommunicationPublished` **SHALL** be emitted
+`LCN-FR-020` | ⛔ **VOID — `LCN-EVT-006` was WITHDRAWN by SD-1 (2026-08-31).** Retained for audit: it formerly read that `community.OfficialCommunicationPublished` **SHALL** be emitted
 when A5 subject matter is published.
 
 > ⛔ **Gated twice over.** A5's own existence is open (`LCO-DEC-001`) **and** its
-> subject matter is gated on A3 `LCR-DEC-006`. **Until both resolve,
+> subject matter is gated on A3 `LCR-DEC-006`. ✅ **BOTH RESOLVED 2026-08-31 by PO-7** — A5 exists and its subject exists. ⛔ **The event is withdrawn regardless**, on PO-7 clause 5 (*"does NOT invent a seventh A2 event"*) and SD-1. Formerly: **Until both resolve,
 > `LCN-EVT-006` SHALL be treated as blocked.** ⚠ Additionally, `PRD-020`
 > `TSF-XC-034` refused *"Library official post"* as a reportable type *"for want
 > of a subject"* (`TSF-GAP-010`) — so an official communication is currently
@@ -477,7 +489,7 @@ notification system"* the instruction forbids. Routed as `LCN-DEC-001`, owner
 
 ## 8. Moderation-related notification integration
 
-`LCN-FR-022` | `community.ContentEligibilityChanged` **SHALL** be emitted when
+`LCN-FR-022` | ⛔ **VOID — `LCN-EVT-005` was WITHDRAWN by SD-1 (2026-08-31).** Retained for audit: it formerly read that `community.ContentEligibilityChanged` **SHALL** be emitted when
 A6 §9 eligibility transitions, carrying the content reference and the **new
 eligibility value only**.
 
@@ -506,7 +518,7 @@ distinct from *restricted*) is A6's `LCS-DEC-003`, **Privacy Owner**. ⛔ A7 emi
 
 ## 9. Membership-related community notifications
 
-`LCN-FR-026` | `community.MembershipChanged` **SHALL** be emitted on a community
+`LCN-FR-026` | ⛔ **VOID — `LCN-EVT-004` was WITHDRAWN by SD-1 (2026-08-31).** Retained for audit: it formerly read that `community.MembershipChanged` **SHALL** be emitted on a community
 membership transition, carrying community, person and the new state reference.
 
 `LCN-FR-027` | ⛔ A7 **SHALL NOT** define membership states. A1's.
@@ -735,7 +747,7 @@ gap.
 `LCN-FR-066` | ⛔ **A7 states no fan-out limit.** Not one number.
 
 ⛔ **`LCN-DEC-003` — OPEN.** A community-wide fact addresses an unbounded
-audience, and `LCN-EVT-003` (reactions) is high-volume by nature (§3.5).
+audience, and `LCN-EVT-003` (`community.ReactionChanged`, reactions) is high-volume by nature (§3.5). ⚠ **SD-1's reduction sharpens this gap rather than closing it** — with the active set down to 3, reactions are now an even larger share of total volume.
 Resolution requires: a limit value (`BC-25` config — and
 `CONFIGURATION_GUIDE.md` **L863** makes adding a parameter a PRD amendment), a
 decision on whether limiting is a **producer** or **`BC-22`** concern, and
@@ -855,7 +867,7 @@ clear.
 
 | Register | Count | Range |
 |---|---|---|
-| `LCN-EVT-*` | 7 | `001`–`007` |
+| `LCN-EVT-*` | **7 minted · 3 ACTIVE · 4 WITHDRAWN** | `001`–`007`. ✅ Active: `001`, `002` (renamed `CommentPublished`), `003` (renamed `ReactionChanged`). ⛔ Withdrawn by **SD-1**: `004`, `005`, `006`, `007` — identifiers **retained, never reused** (`PRD_LIFECYCLE.md` §5 rule 5) |
 | `LCN-FR-*` | 76 | `001`–`076` |
 | `LCN-AC-*` | 21 | `001`–`021` |
 | `LCN-GAP-*` | 8 | `001`–`008` |

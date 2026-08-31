@@ -608,24 +608,24 @@ claimed to pass. No criterion is recorded as verified.
 
 | ID | Criterion | Writability |
 |---|---|---|
-`LCG-AC-001` | Given a caller A1's predicate denies, when a join is attempted, then it is rejected at step 1 | Verifiable |
-`LCG-AC-002` | Given an in-force `BC-13` action, when a join is attempted, then it is rejected at step 2 | Verifiable |
-`LCG-AC-003` | Given an `ARCHIVED` group, when a join is attempted, then it is rejected at step 3 | Verifiable |
-`LCG-AC-004` | Given an existing `ACTIVE` membership, when a join is attempted, then it is rejected as duplicate | Verifiable |
-`LCG-AC-005` | Given a leave, when it completes, then `state=REVOKED` and the record still exists | Verifiable |
-`LCG-AC-006` | Given a revoked membership, when re-join occurs, then a **new** record is created | Verifiable |
-`LCG-AC-007` | Given any `CommunityRole`, when platform permission is checked, then no `PERM-*` is granted | Verifiable |
-`LCG-AC-008` | Given a denied caller, when a group is queried, then absence and denial are indistinguishable | Verifiable |
-`LCG-AC-009` | Given the A1 predicate is unavailable, when a join is attempted, then it fails **closed** | Verifiable |
-`LCG-AC-010` | Given the `BC-13` feed is unavailable, when a join is attempted, then it fails **closed** | Verifiable |
-`LCG-AC-011` | Given group creation, when it completes, then group + owner membership are atomic | Verifiable |
-`LCG-AC-012` | Given `isGroupMember`, when called, then the response contains no post content, member list or count | Verifiable |
-`LCG-AC-013` | Given any group operation, when it completes, then no cross-community result is observable | Verifiable |
-⏸ `LCG-AC-014` | Given a group creation, when the community scope is resolved, then … | ⛔ **UNWRITABLE** — `LCG-GAP-006` |
-✅ `LCG-AC-015` | Given a role change by an owner, when it completes, then the target member holds exactly one of `OWNER`, `MODERATOR`, `MEMBER` and the change is rejected if the value is outside that closed set | ✅ **NOW WRITABLE — 2026-08-31.** The role set is closed by **PO-4** (`OWNER` > `MODERATOR` > `MEMBER`); `LCG-DEC-003` is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run |
-✅ `LCG-AC-016` | Given the last owner attempts to leave or is banned, when the operation is evaluated, then it is **BLOCKED** and the community retains at least one `OWNER`; no member is promoted implicitly | ✅ **NOW WRITABLE — 2026-08-31.** Last-owner policy closed by **PO-6**: block, never auto-promote; `LCG-DEC-006`'s first clause is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run. ⚠ The restoration half of `LCG-DEC-006` stays OPEN and no criterion is claimed for it |
-⏸ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected | ⏸ **DEFERRED** — no value, `LCG-GAP-005` |
-⏸ `LCG-AC-018` | Cross-community isolation asserted per query in integration | ⏸ **DEFERRED** — `integration_test/` does **not** exist (measured at authoring time: `ls -d integration_test` → *No such file or directory*). Same condition as A2 `LCF-AC-035` / `LCF-GAP-011` |
+`LCG-AC-001` | Given a caller A1's predicate denies, when a join is attempted, then it is rejected at step 1 (`LCG-FR-012`) | Verifiable |
+`LCG-AC-002` | Given an in-force `BC-13` action, when a join is attempted, then it is rejected at step 2 (`LCG-FR-012`) | Verifiable |
+`LCG-AC-003` | Given an `ARCHIVED` group, when a join is attempted, then it is rejected at step 3 (`LCG-FR-012`) | Verifiable |
+`LCG-AC-004` | Given an existing `ACTIVE` membership, when a join is attempted, then it is rejected as duplicate (`LCG-FR-011`) | Verifiable |
+`LCG-AC-005` | Given a leave, when it completes, then `state=REVOKED` and the record still exists (`LCG-FR-013`) | Verifiable |
+`LCG-AC-006` | Given a revoked membership, when re-join occurs, then a **new** record is created (`LCG-FR-014`) | Verifiable |
+`LCG-AC-007` | Given any `CommunityRole`, when platform permission is checked, then no `PERM-*` is granted (`LCG-FR-024`) | Verifiable |
+`LCG-AC-008` | Given a denied caller, when a group is queried, then absence and denial are indistinguishable (`LCG-SEC-003`) | Verifiable |
+`LCG-AC-009` | Given the A1 predicate is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-001`) | Verifiable |
+`LCG-AC-010` | Given the `BC-13` feed is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-002`) | Verifiable |
+`LCG-AC-011` | Given group creation, when it completes, then group + owner membership are atomic (`LCG-FS-005`) | Verifiable |
+`LCG-AC-012` | Given `isGroupMember`, when called, then the response contains no post content, member list or count (`LCG-FR-021`) | Verifiable |
+`LCG-AC-013` | Given any group operation, when it completes, then no cross-community result is observable (`LCG-SEC-005`) | Verifiable |
+⏸ `LCG-AC-014` | Given a group creation, when the community scope is resolved, then … (`LCG-INV-007`) | ⛔ **UNWRITABLE** — `LCG-GAP-006` |
+✅ `LCG-AC-015` | Given a role change by an owner, when it completes, then the target member holds exactly one of `OWNER`, `MODERATOR`, `MEMBER` and the change is rejected if the value is outside that closed set (`LCG-FR-016`) | ✅ **NOW WRITABLE — 2026-08-31.** The role set is closed by **PO-4** (`OWNER` > `MODERATOR` > `MEMBER`); `LCG-DEC-003` is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run |
+✅ `LCG-AC-016` | Given the last owner attempts to leave or is banned, when the operation is evaluated, then it is **BLOCKED** and the community retains at least one `OWNER`; no member is promoted implicitly (`LCG-FR-015`) | ✅ **NOW WRITABLE — 2026-08-31.** Last-owner policy closed by **PO-6**: block, never auto-promote; `LCG-DEC-006`'s first clause is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run. ⚠ The restoration half of `LCG-DEC-006` stays OPEN and no criterion is claimed for it |
+⏸ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected (`LCG-FR-005`) | ⏸ **DEFERRED** — no value, `LCG-GAP-005` |
+⏸ `LCG-AC-018` | Cross-community isolation asserted per query in integration (`LCG-SEC-005`) | ⏸ **DEFERRED** — `integration_test/` does **not** exist (measured at authoring time: `ls -d integration_test` → *No such file or directory*). Same condition as A2 `LCF-AC-035` / `LCF-GAP-011` |
 
 **18 criteria — 13 verifiable · 3 unwritable · 2 deferred.** ⛔ **0 passing.**
 

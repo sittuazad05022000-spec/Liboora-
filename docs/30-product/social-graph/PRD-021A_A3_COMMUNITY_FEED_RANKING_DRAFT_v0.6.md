@@ -1094,28 +1094,28 @@ Every item in §14, plus §19's configuration-ownership question, §20's aggrega
 
 ID | Criterion | Status
 --- | --- | ---
-`LCR-AC-001` | Given a viewer not authorised for a community, when ranking is requested for it, then no candidate from that community is returned | Verifiable
-`LCR-AC-002` | Given candidates from two communities in one request, when ranking runs, then the request is **rejected** and nothing is ranked | Verifiable
-`LCR-AC-003` | Given a candidate set with no community scope, when ranking runs, then it fails closed | Verifiable
-`LCR-AC-004` | Given two candidates in different age buckets, when ranking runs, then the newer receives the higher recency contribution | Verifiable
-`LCR-AC-005` | Given an enforcement-suppressed post, when ranking runs, then it is absent from the result and no score is computed for it | Verifiable
-`LCR-AC-006` | Given a suppressed post and any configuration, when ranking runs, then no configuration makes it appear | Verifiable
-`LCR-AC-007` | Given an identical candidate set, configuration and version, when ranking runs twice, then the orderings are identical | Verifiable
-`LCR-AC-008` | Given two candidates with equal score and equal timestamp, when ranking runs, then the tie-break orders them totally and repeatably | Verifiable
-`LCR-AC-009` | Given a first page with multiple authors available, when ranking runs, then diversity limits the consecutive run of a single author | Verifiable
-`LCR-AC-010` | Given a candidate set with no diversity available, when ranking runs, then pure score order is returned with no gap or error | Verifiable
-`LCR-AC-011` | Given A3 unavailable, when the feed is requested, then the feed renders in reverse-chronological order | Verifiable
-`LCR-AC-012` | Given A3 unavailable, when the feed renders, then the visible set is identical to the hard-filtered set — never wider | Verifiable
-`LCR-AC-013` | Given an empty candidate set, when ranking runs, then an empty ordering is returned and no error is raised | Verifiable
-`LCR-AC-014` | Given a previously approved configuration version, when rollback occurs, then it activates and no historical evaluation record changes | Verifiable
-`LCR-AC-015` | Given any completed ranking, when the evaluation record is inspected, then it contains no viewer identifier and no per-student behavioural attribute | Verifiable
-`LCR-AC-016` | Given a duplicate candidate identifier, when ranking runs, then exactly one occurrence appears in the result | Verifiable
-`LCR-AC-017` | Given a deferred signal and any configuration value, when ranking runs, then that signal contributes exactly zero | Verifiable
-`LCR-AC-018` | Given a repeated identical request, when ranking runs, then no second evaluation record is created | Verifiable
-`LCR-AC-019` | ⏸ Given a help-priority post, … | **DEFERRED** — no substrate (`LCR-GAP-002`)
-`LCR-AC-020` | ⏸ Given an already-seen post, … | **DEFERRED** — no substrate (`LCR-GAP-006`)
-`LCR-AC-021` | ⏸ Given an active official announcement, … | **DEFERRED** — no substrate (`LCR-GAP-002`)
-`LCR-AC-022` | ✅ Given two posts of equal recency where one carries a higher aggregate engagement count, the higher-engagement post SHALL rank first; and given a post whose only engagement is self-engagement, that engagement SHALL contribute zero | **VERIFIABLE at v0.4** — substrate authoritative (A2 `LCF-FR-061`/`084`) and weight ruled at `30` (`LCR-DEC-008` RESOLVED). Bounded by `LCR-BR-010`/`010a`
+`LCR-AC-001` | Given a viewer not authorised for a community, when ranking is requested for it, then no candidate from that community is returned (`LCR-INV-004`, `LCR-FR-014`) | Verifiable
+`LCR-AC-002` | Given candidates from two communities in one request, when ranking runs, then the request is **rejected** and nothing is ranked (`LCR-FR-019`, `LCR-INV-002`) | Verifiable
+`LCR-AC-003` | Given a candidate set with no community scope, when ranking runs, then it fails closed (`LCR-FR-018`, `LCR-FR-086`) | Verifiable
+`LCR-AC-004` | Given two candidates in different age buckets, when ranking runs, then the newer receives the higher recency contribution (`LCR-FR-038`, `LCR-FR-041`) | Verifiable
+`LCR-AC-005` | Given an enforcement-suppressed post, when ranking runs, then it is absent from the result and no score is computed for it (`LCR-FR-024`) | Verifiable
+`LCR-AC-006` | Given a suppressed post and any configuration, when ranking runs, then no configuration makes it appear (`LCR-INV-006`) | Verifiable
+`LCR-AC-007` | Given an identical candidate set, configuration and version, when ranking runs twice, then the orderings are identical (`LCR-INV-008`, `LCR-FR-007`) | Verifiable
+`LCR-AC-008` | Given two candidates with equal score and equal timestamp, when ranking runs, then the tie-break orders them totally and repeatably (`LCR-FR-054`, `LCR-FR-055`) | Verifiable
+`LCR-AC-009` | Given a first page with multiple authors available, when ranking runs, then diversity limits the consecutive run of a single author (`LCR-BR-013`, `LCR-FR-049`) | Verifiable
+`LCR-AC-010` | Given a candidate set with no diversity available, when ranking runs, then pure score order is returned with no gap or error (`LCR-FR-052`) | Verifiable
+`LCR-AC-011` | Given A3 unavailable, when the feed is requested, then the feed renders in reverse-chronological order (`LCR-FR-059`, `LCR-FR-060`) | Verifiable
+`LCR-AC-012` | Given A3 unavailable, when the feed renders, then the visible set is identical to the hard-filtered set — never wider (`LCR-INV-009`) | Verifiable
+`LCR-AC-013` | Given an empty candidate set, when ranking runs, then an empty ordering is returned and no error is raised (`LCR-FR-057`) | Verifiable
+`LCR-AC-014` | Given a previously approved configuration version, when rollback occurs, then it activates and no historical evaluation record changes (`LCR-FR-068`) | Verifiable
+`LCR-AC-015` | Given any completed ranking, when the evaluation record is inspected, then it contains no viewer identifier and no per-student behavioural attribute (`LCR-FR-073`) | Verifiable
+`LCR-AC-016` | Given a duplicate candidate identifier, when ranking runs, then exactly one occurrence appears in the result (`LCR-FR-020`) | Verifiable
+`LCR-AC-017` | Given a deferred signal and any configuration value, when ranking runs, then that signal contributes exactly zero (`LCR-FR-028`, `LCR-FR-029`) | Verifiable
+`LCR-AC-018` | Given a repeated identical request, when ranking runs, then no second evaluation record is created (`LCR-API-004`) | Verifiable
+`LCR-AC-019` | ⏸ Given a help-priority post, … (`LCR-FR-043`, `LCR-FR-002`) | **DEFERRED** — no substrate (`LCR-GAP-002`)
+`LCR-AC-020` | ⏸ Given an already-seen post, … (`LCR-FR-047`, `LCR-FR-002`) | **DEFERRED** — no substrate (`LCR-GAP-006`)
+`LCR-AC-021` | ⏸ Given an active official announcement, … (`LCR-FR-045`, `LCR-FR-002`) | **DEFERRED** — no substrate (`LCR-GAP-002`)
+`LCR-AC-022` | ✅ Given two posts of equal recency where one carries a higher aggregate engagement count, the higher-engagement post SHALL rank first; and given a post whose only engagement is self-engagement, that engagement SHALL contribute zero (`LCR-BR-010a`, `LCR-FR-033`) | **VERIFIABLE at v0.4** — substrate authoritative (A2 `LCF-FR-061`/`084`) and weight ruled at `30` (`LCR-DEC-008` RESOLVED). Bounded by `LCR-BR-010`/`010a`
 
 `LCR-FR-100` | No criterion above is claimed to pass. **19 verifiable, 3 deferred.** ⭐ v0.4 moves exactly one criterion (`LCR-AC-022`) from deferred to verifiable, because its weight was ruled. ⚠ Helpfulness has **no** acceptance criterion at v0.4: its substrate is designated but unweighted, and writing a criterion for an unweighted signal would assert an ordering effect that `LCR-FR-028a` guarantees is zero.
 

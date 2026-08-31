@@ -1026,37 +1026,37 @@ measurably so that they become executable the moment their gates clear.
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-001` | **Given** a published `ELIGIBLE` post, **when** `TSF-EVT-002` is consumed with a community `scope` naming its author, **then** the post becomes `RESTRICTED` and is absent from the feed candidate set | `PENDING` |
-| `LCS-AC-002` | **Given** `TSF-EVT-002` delivered **twice**, **when** consumed, **then** exactly **one** restriction exists (`TSF-AC-028` parity) | `PENDING` |
-| `LCS-AC-003` | **Given** a restriction, **when** a reversal arrives with a nulled `until`, **then** eligibility is restored and the transition is audited | `PENDING` |
-| `LCS-AC-004` | **Given** an action whose `scope` is unrecognised, **when** consumed, **then** content is **WITHHELD**, not ignored, and the unrecognised value is audited | `PENDING` |
-| `LCS-AC-005` | **Given** the `E-14` projection is staler than the budget, **when** a post is attempted, **then** the write is **REFUSED** (`TSF-FR-031` parity) | `PENDING` |
+| `LCS-AC-001` | **Given** a published `ELIGIBLE` post, **when** `TSF-EVT-002` is consumed with a community `scope` naming its author, **then** the post becomes `RESTRICTED` and is absent from the feed candidate set (`LCS-FR-033`) | `PENDING` |
+| `LCS-AC-002` | **Given** `TSF-EVT-002` delivered **twice**, **when** consumed, **then** exactly **one** restriction exists (`TSF-AC-028` parity) (`LCS-FR-012`) | `PENDING` |
+| `LCS-AC-003` | **Given** a restriction, **when** a reversal arrives with a nulled `until`, **then** eligibility is restored and the transition is audited (`LCS-FR-047`) | `PENDING` |
+| `LCS-AC-004` | **Given** an action whose `scope` is unrecognised, **when** consumed, **then** content is **WITHHELD**, not ignored, and the unrecognised value is audited (`LCS-FR-048`) | `PENDING` |
+| `LCS-AC-005` | **Given** the `E-14` projection is staler than the budget, **when** a post is attempted, **then** the write is **REFUSED** (`TSF-FR-031` parity) (`LCS-FR-062`) | `PENDING` |
 
 ### 27.2 Filter ordering and ranking fallback
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-006` | **Given** a candidate set containing a `RESTRICTED` post, **when** the feed is built, **then** A3 ranking **never receives** that post — asserted on the input to ranking, not the output | `PENDING` |
-| `LCS-AC-007` | **Given** A3 ranking throws, **when** the feed is requested, **then** deterministic recent **eligible** posts are returned **and** authorization, eligibility, block/mute and community-scope filters are all still applied | `PENDING` |
-| `LCS-AC-008` | **Given** eligibility state is unreadable, **when** the feed is requested, **then** content is **WITHHELD** and the pipeline does **not** proceed to ranking | `PENDING` |
+| `LCS-AC-006` | **Given** a candidate set containing a `RESTRICTED` post, **when** the feed is built, **then** A3 ranking **never receives** that post — asserted on the input to ranking, not the output (`LCS-FR-027`) | `PENDING` |
+| `LCS-AC-007` | **Given** A3 ranking throws, **when** the feed is requested, **then** deterministic recent **eligible** posts are returned **and** authorization, eligibility, block/mute and community-scope filters are all still applied (`LCS-FR-064`) | `PENDING` |
+| `LCS-AC-008` | **Given** eligibility state is unreadable, **when** the feed is requested, **then** content is **WITHHELD** and the pipeline does **not** proceed to ranking (`LCS-FR-060`) | `PENDING` |
 
 ### 27.3 Isolation and leakage — mandatory cross-boundary tests
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-009` | **Given** two communities, **when** content is restricted in one, **then** no eligibility, restriction or block effect is observable in the other | `PENDING` |
-| `LCS-AC-010` | **Given** a reader in community X, **when** they request any `BC-15` read path with a forged `communityId` for Y, **then** the request is refused and the refusal is indistinguishable from *not found* | `PENDING` |
-| `LCS-AC-011` | **Given** any `BC-15` record, projection, cache entry, index document, event payload or audit record, **when** inspected, **then** it contains **no** `tenantId` and **no** `StudentRecordId` (`ID-2`, `ADR-0078`) | `PENDING` |
+| `LCS-AC-009` | **Given** two communities, **when** content is restricted in one, **then** no eligibility, restriction or block effect is observable in the other (`LCS-FR-073`) | `PENDING` |
+| `LCS-AC-010` | **Given** a reader in community X, **when** they request any `BC-15` read path with a forged `communityId` for Y, **then** the request is refused and the refusal is indistinguishable from *not found* (`LCS-SEC-001`) | `PENDING` |
+| `LCS-AC-011` | **Given** any `BC-15` record, projection, cache entry, index document, event payload or audit record, **when** inspected, **then** it contains **no** `tenantId` and **no** `StudentRecordId` (`ID-2`, `ADR-0078`) (`LCS-FR-056`) | `PENDING` |
 | `LCS-AC-012` | **Given** a client-supplied `LibraryId`, **when** any `BC-15` endpoint receives it, **then** the request is **rejected** (`LCS-SEC-002`) | `PENDING` |
-| `LCS-AC-013` | **Given** a cache populated for reader A, **when** reader B requests the same community, **then** B's eligibility is evaluated independently and A's block state does not affect B | `PENDING` |
+| `LCS-AC-013` | **Given** a cache populated for reader A, **when** reader B requests the same community, **then** B's eligibility is evaluated independently and A's block state does not affect B (`LCS-FR-015`) | `PENDING` |
 
 ### 27.4 Privacy and anonymity
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCS-AC-014` | **Given** a filed report, **when** every `BC-15` store, log, cache, index, event and audit record is inspected, **then** the reporter's `PersonId` is **absent** (`TSF-INV-009`) | `PENDING` — ✅ **no longer blocked; now genuinely testable.** `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) closed `LCS-ADR-001b`, and it closed it in a way that makes this criterion **structurally easy** rather than merely reachable: because filing goes **directly** to `BC-13`'s command surface, `BC-15` is never a party to the call and therefore never holds the reporter's identity to begin with. ⚠ **Still `PENDING`, not passing** — an acceptance criterion is verified against a running implementation at Stage 5/6, and ⛔ no implementation exists. Recording it as passing now would be a fabrication |
-| `LCS-AC-015` | **Given** restricted content, **when** the **author** views it, **then** they see the fact of restriction and an opaque reference, and **no** reporter identity, evidence, severity or strike count | `PENDING` |
-| `LCS-AC-016` | **Given** restricted content, **when** a **non-author** views it, **then** the response is byte-indistinguishable from `WITHHELD` and from never-existed | `PENDING` |
+| `LCS-AC-014` | **Given** a filed report, **when** every `BC-15` store, log, cache, index, event and audit record is inspected, **then** the reporter's `PersonId` is **absent** (`TSF-INV-009`, `LCS-FR-072`) | `PENDING` — ✅ **no longer blocked; now genuinely testable.** `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) closed `LCS-ADR-001b`, and it closed it in a way that makes this criterion **structurally easy** rather than merely reachable: because filing goes **directly** to `BC-13`'s command surface, `BC-15` is never a party to the call and therefore never holds the reporter's identity to begin with. ⚠ **Still `PENDING`, not passing** — an acceptance criterion is verified against a running implementation at Stage 5/6, and ⛔ no implementation exists. Recording it as passing now would be a fabrication |
+| `LCS-AC-015` | **Given** restricted content, **when** the **author** views it, **then** they see the fact of restriction and an opaque reference, and **no** reporter identity, evidence, severity or strike count (`LCS-FR-023`) | `PENDING` |
+| `LCS-AC-016` | **Given** restricted content, **when** a **non-author** views it, **then** the response is byte-indistinguishable from `WITHHELD` and from never-existed (`LCS-FR-025`) | `PENDING` |
 
 ### 27.5 Blocked-path criteria — verifying the blocks themselves
 
@@ -1067,8 +1067,8 @@ rather than aspirational.
 |---|---|---|
 | `LCS-AC-017` | **Given** reporting is unavailable, **when** the community product is assembled, **then** community content is `WITHHELD` and **no** reporting path is exposed (`LCS-FR-030`) | `PENDING` — ⚠ **antecedent REWRITTEN, criterion RETAINED.** `AO-4` closed `LCS-ADR-001a` and `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) closed `LCS-ADR-001b`, so the original antecedent (*"Given `LCS-ADR-001b` is unresolved"*) can no longer be constructed. ⭐ **The criterion is therefore re-stated against the general fail-closed condition rather than deleted** — testing withholding behaviour under reporting unavailability remains required, and is now exercised by fault injection instead of by an open decision. ⛔ **Not** recorded as passing |
 | `LCS-AC-018` | **Given** `LCF-ADR-007` is unresolved, **when** a feed read is attempted, **then** content is `WITHHELD` rather than served without block filtering (`LCS-FR-061`) | `PENDING` |
-| `LCS-AC-019` | **Given** the repository as it stands, **when** `BC-15` code is searched, **then** it contains **no** `ModerationCase`, `AbuseReport`, `StrikeRecord` or `Appeal` type, and **no** moderation queue | `PENDING` |
-| `LCS-AC-020` | **Given** A6, **when** its text is measured, **then** it defines **zero** moderator roles, **zero** severities, **zero** thresholds, **zero** SLAs, **zero** permission identifiers and **zero** policy values | ✅ **VERIFIABLE NOW** — §28 |
+| `LCS-AC-019` | **Given** the repository as it stands, **when** `BC-15` code is searched, **then** it contains **no** `ModerationCase`, `AbuseReport`, `StrikeRecord` or `Appeal` type, and **no** moderation queue (`LCS-FR-009`) | `PENDING` |
+| `LCS-AC-020` | **Given** A6, **when** its text is measured, **then** it defines **zero** moderator roles, **zero** severities, **zero** thresholds, **zero** SLAs, **zero** permission identifiers and **zero** policy values (`LCS-FR-078`) | ✅ **VERIFIABLE NOW** — §28 |
 
 ---
 

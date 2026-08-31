@@ -1647,79 +1647,79 @@ clear.
 
 `LCO-AC-001` | **Given** an authorised publisher, **when** an official post is
 published, **then** it is attributed to the institution and the actor's personal
-display name, username and photo appear nowhere in the rendered authorship.
+display name, username and photo appear nowhere in the rendered authorship. (`LCO-INV-008`, `LCO-INV-007`)
 
 `LCO-AC-002` | **Given** a `TR-1` Owner, **when** they publish a personal
 non-official post, **then** it is attributed to them as a person and carries no
-institutional mark.
+institutional mark. (`LCO-INV-009`)
 
 `LCO-AC-003` | **Given** any client request, **when** it supplies an official
 discriminator, institution reference, role or library identifier, **then** the
-supplied value is ignored and the server-derived value is used.
+supplied value is ignored and the server-derived value is used. (`LCO-SEC-015`, `LCO-SEC-003`, `LCO-SEC-001`)
 
 `LCO-AC-004` | **Given** a member with no publishing authority, **when** they
 attempt to publish officially by any route including field injection, **then**
-the attempt is refused and audited.
+the attempt is refused and audited. (`LCO-SEC-004`, `LCO-AUTH-001`, `LCO-SEC-024`)
 
 `LCO-AC-005` | **Given** an actor whose role was revoked, **when** they attempt
 any official operation, **then** it is refused on the next authorisation
-decision.
+decision. (`LCO-SEC-005`, `LCO-AUTH-003`)
 
 `LCO-AC-006` | **Given** an actor authorised in library L, **when** they attempt
-to publish into library M's community, **then** it is refused.
+to publish into library M's community, **then** it is refused. (`LCO-AUTH-008`, `LCO-SEC-002`)
 
 `LCO-AC-007` | **Given** an official post in library L, **when** a member of
 library M requests it by identifier, **then** the response is
-indistinguishable from *"does not exist"*.
+indistinguishable from *"does not exist"*. (`LCO-SEC-013`, `LCO-SEC-011`)
 
 `LCO-AC-008` | **Given** a priority assignment without an expiry, **when**
-submitted, **then** it is rejected.
+submitted, **then** it is rejected. (`LCO-INV-016`, `LCO-FR-055`)
 
 `LCO-AC-009` | **Given** a priority whose expiry has passed, **when** the feed is
-retrieved, **then** the post appears in ordinary ordering.
+retrieved, **then** the post appears in ordinary ordering. (`LCO-FR-055`, `LCO-FR-075`)
 
 `LCO-AC-010` | **Given** a pinned official post, **when** the feed is retrieved,
-**then** no non-official post is hidden, suppressed or omitted.
+**then** no non-official post is hidden, suppressed or omitted. (`LCO-INV-017`)
 
 `LCO-AC-011` | **Given** an official post, **when** any unauthenticated request
-targets it by any path, **then** it is not served.
+targets it by any path, **then** it is not served. (`LCO-FR-064`, `LCO-FR-065`, `LCO-AUTH-009`)
 
 `LCO-AC-012` | **Given** an official post, **when** the public library profile is
 rendered, **then** no field, count, excerpt or existence signal from the post
-appears.
+appears. (`LCO-FR-026`, `LCO-FR-025`)
 
 `LCO-AC-013` | **Given** stored `visibility` = `PUBLIC`, **when** an
-unauthenticated request targets the post, **then** it is not served.
+unauthenticated request targets the post, **then** it is not served. (`LCO-INV-018`, `LCO-FR-063`)
 
 `LCO-AC-014` | **Given** a published official post, **when** the notification
 fact is emitted, **then** it carries the category and does **not** carry the post
-body.
+body. (`LCO-FR-082`, `LCO-FR-081`)
 
 `LCO-AC-015` | **Given** a repeated publish request with the same idempotency
 token, **when** processed, **then** exactly one post and one notification fact
-exist.
+exist. (`LCO-SEC-016`)
 
 `LCO-AC-016` | **Given** any official operation, **when** it completes or is
 refused, **then** an audit fact identifies the natural person, the institution
-and the authorisation basis.
+and the authorisation basis. (`LCO-FR-094`, `LCO-FR-095`)
 
 `LCO-AC-017` | **Given** an official post, **when** its audit record is
-inspected, **then** it does not contain the post body.
+inspected, **then** it does not contain the post body. (`LCO-FR-098`)
 
 `LCO-AC-018` | **Given** enforcement from `BC-13`, **when** applied to an
 official post, **then** the post becomes `REMOVED` and the response reveals no
-enforcement reason.
+enforcement reason. (`LCO-SEC-020`, `LCO-SEC-021`)
 
 `LCO-AC-019` | **Given** a suspended or closed library, **when** official
-publication is attempted, **then** it is refused.
+publication is attempted, **then** it is refused. (`LCO-INV-025`)
 
 `LCO-AC-020` | **Given** an institution whose display identity cannot be
 authoritatively resolved, **when** publication is attempted, **then** it is
-refused and the actor's identity is **not** substituted.
+refused and the actor's identity is **not** substituted. (`LCO-FR-022`, `LCO-NFR-002`)
 
 `LCO-AC-021` | **Given** an official post, **when** any event payload is
 inspected, **then** it contains no `StudentRecordId`, no `tenantId` and no post
-body.
+body. (`LCO-FR-116`, `LCO-SEC-018`)
 
 ---
 

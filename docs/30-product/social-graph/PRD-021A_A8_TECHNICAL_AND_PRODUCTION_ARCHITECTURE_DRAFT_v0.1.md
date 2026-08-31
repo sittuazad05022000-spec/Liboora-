@@ -1598,7 +1598,7 @@ Given / When / Then. Each maps to a seam or control above.
 
 `LCT-AC-001` | **Given** a non-member, **when** a community feed is requested,
 **then** the request fails at authorization and no candidate is retrieved.
-*(A1→A2)*
+*(A1→A2; `LCT-FR-012`, `LCT-FR-013`)*
 
 `LCT-AC-002` | **Given** a candidate set without a community scope identifier,
 **when** it reaches A3, **then** A3 fails closed and returns no partial
@@ -1614,29 +1614,29 @@ from the candidate set** — not present with a zero weight. *(A2→A6;
 
 `LCT-AC-005` | **Given** A3 returns an ordering, **when** it is compared with
 its input, **then** the output is a permutation of a subset — never a
-superset. *(A3→A2; `LCR-INV-005`)*
+superset. *(A3→A2; `LCR-INV-005`; `LCT-FR-013`)*
 
 `LCT-AC-006` | **Given** a published post, **when** the transaction commits,
 **then** exactly one outbox row exists in the same transaction and no event was
-published from application code. *(A2→A7; BC Map L446)*
+published from application code. *(A2→A7; BC Map L446; `LCT-FR-015`)*
 
 `LCT-AC-007` | **Given** an official communication, **when** it enters the
 feed, **then** it is a `CommunityPost` and no parallel entity exists.
-*(A5→A2; A5 §19)*
+*(A5→A2; A5 §19; `LCT-FR-026`, `LCT-INV-004`)*
 
 `LCT-AC-008` | **Given** an eligibility change, **when** a notification fact is
 produced, **then** it carries no moderation reason, category or actor.
-*(A6→A7; A7 §8)*
+*(A6→A7; A7 §8; `LCN-FR-023`)*
 
 ### 39.2 ⭐ Cross-library leakage — mandatory
 
 `LCT-AC-009` | **Given** any PRD-021A persisted row, **when** its columns are
 inspected, **then** no `tenantId` and no `StudentRecordId` is present.
-*(`ID-2`; yaml L266–267)*
+*(`ID-2`; yaml L266–267; `LCT-FR-020`)*
 
 `LCT-AC-010` | **Given** any PRD-021A cache key, **when** it is inspected,
 **then** it contains the community scope identifier and no library identifier.
-*(§20.3)*
+*(§20.3; `LCT-FR-070`)*
 
 `LCT-AC-011` | **Given** any PRD-021A event payload, **when** it is inspected,
 **then** it contains no `tenantId`, no `StudentRecordId`, no post body and no
@@ -1644,7 +1644,7 @@ attachment reference. *(`LCT-SEC-008`)*
 
 `LCT-AC-012` | **Given** a cache read whose key omits the community scope
 identifier, **when** it executes, **then** it fails rather than returning a
-wider set. *(`LCT-INV-003`)*
+wider set. *(`LCT-INV-003`, `LCT-FR-071`)*
 
 `LCT-AC-013` | **Given** two viewers in the same community with a block between
 them, **when** both read the feed, **then** each receives a different page and
@@ -1663,32 +1663,32 @@ byte-identical to the response for a non-existent identifier.
 
 `LCT-AC-016` | **Given** a client-supplied `AuthorId` differing from the
 authenticated principal, **when** a post is created, **then** the supplied
-value is ignored and the principal is recorded. *(`LCT-SEC-002`)*
+value is ignored and the principal is recorded. *(`LCT-SEC-002`, `LCT-SEC-001`)*
 
 `LCT-AC-017` | **Given** a client-supplied membership status or role, **when**
 any request is authorized, **then** the supplied values are ignored and
-server-side state is evaluated. *(`LCT-SEC-001`)*
+server-side state is evaluated. *(`LCT-SEC-001`, `LCT-SEC-002`)*
 
 `LCT-AC-018` | **Given** membership revoked after a page-1 read, **when**
-page 2 is requested, **then** it fails authorization. *(§8.1 step 4)*
+page 2 is requested, **then** it fails authorization. *(§8.1 step 4; `LCT-SEC-002`, `LCT-SEC-003`)*
 
 ### 39.4 Degraded modes
 
 `LCT-AC-019` | **Given** A3 unavailable, **when** a feed is requested, **then**
 posts are returned in reverse-chronological order, the student sees no error,
 and the returned set is a subset of what full ranking would have been eligible
-to order. *(A3 §18; `LCR-INV-009`)*
+to order. *(A3 §18; `LCR-INV-009`; `LCT-FR-038`)*
 
 `LCT-AC-020` | **Given** A3 unavailable, **when** the fallback feed is
 inspected, **then** every hard filter — authorization, eligibility, block/mute,
-community scope — is still applied. *(`LCT-INV-006`)*
+community scope — is still applied. *(`LCT-INV-006`, `LCT-FR-038`)*
 
 `LCT-AC-021` | **Given** the eligibility source unavailable, **when** a feed is
 requested, **then** the request **fails closed** and no unfiltered post is
-returned. *(§13.3)*
+returned. *(§13.3; `LCT-FR-039`, `LCT-INV-006`)*
 
 `LCT-AC-022` | **Given** the `BC-13` read model stale beyond tolerance, **when**
-a feed is requested, **then** the gate refuses. *(A2 `LCF-RM-004`)*
+a feed is requested, **then** the gate refuses. *(A2 `LCF-RM-004`; `LCT-SEC-006`)*
 
 `LCT-AC-023` | **Given** a realtime outage, **when** a client reconnects,
 **then** it re-reads through the full pipeline and no missed signal is replayed.
@@ -1706,11 +1706,11 @@ process it, **then** the effect is identical to single delivery.
 
 `LCT-AC-026` | **Given** the same `EnforcementActionTaken` delivered twice,
 **when** applied, **then** no second restriction is created.
-*(`TSF-FR-123`)*
+*(`TSF-FR-123`, `LCT-FR-056`)*
 
 `LCT-AC-027` | **Given** a consumer failing repeatedly, **when** retries
 exhaust, **then** the event lands in the DLQ and DLQ depth is observable.
-*(BC Map L452)*
+*(BC Map L452; `LCT-FR-057`)*
 
 `LCT-AC-028` | **Given** `BC-22` unavailable, **when** a post is published,
 **then** the publish succeeds and no notification is delivered.
@@ -1718,21 +1718,21 @@ exhaust, **then** the event lands in the DLQ and DLQ depth is observable.
 
 `LCT-AC-029` | **Given** content the recipient may not read, **when**
 notification facts are produced, **then** no fact referencing that content is
-produced for that recipient. *(A7 `LCN-FR-059`)*
+produced for that recipient. *(A7 `LCN-FR-059`; `LCT-SEC-009`)*
 
 `LCT-AC-030` | **Given** an audit emission failure, **when** the operation
-completes, **then** the operation is not failed. *(`E-20`)*
+completes, **then** the operation is not failed. *(`E-20`; `LCT-SEC-007`)*
 
 ### 39.6 Media, search, jobs, flags
 
 `LCT-AC-031` | **Given** `BC-14` unavailable, **when** a feed containing
 attachment-bearing and `TEXT` posts is read, **then** `TEXT` posts render fully
 and attachment-bearing posts render with unresolved references.
-*(A2 `LCF-NFR-008`)*
+*(A2 `LCF-NFR-008`; `LCT-FR-076`)*
 
 `LCT-AC-032` | ✅ **CONFIRMED CORRECT by AO-9 (2026-08-31) — the criterion stands exactly as written and its wording is UNCHANGED.** ⚠ It is **not** recorded as passing; it remains a criterion to be verified. **Given** community search is not implemented, **when** the
 codebase is inspected, **then** no `BC-15` → `BC-23` publication path exists.
-*(§19)*
+*(§19; `LCT-FR-064`)*
 
 `LCT-AC-033` | **Given** a background job with no ambient context, **when** it
 runs, **then** it fails loudly rather than operating across communities.
@@ -1744,7 +1744,7 @@ authorization check, safety filter or isolation predicate is bypassed.
 
 ⚠ **`LCT-AC-035`** | **Given** A4 remains a CANDIDATE, **when** role-gated
 post types are sought, **then** the capability is absent — **this criterion
-asserts absence and is expected to remain asserted until A4 is resolved.**
+asserts absence and is expected to remain asserted until A4 is resolved.** *(`LCT-FR-017`)*
 
 ---
 

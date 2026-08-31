@@ -1637,42 +1637,42 @@ deferred ones are labelled as such rather than being quietly downgraded to somet
 
 ID | Criterion | Status
 --- | --- | ---
-`LCF-AC-001` | A `TEXT` post created by an entitled member becomes `PUBLISHED` | Verifiable
-`LCF-AC-002` | A post created by a non-member is refused | Verifiable
-`LCF-AC-003` | A refusal for non-membership is byte-identical to one for a non-existent community | Verifiable
-`LCF-AC-004` | Post type is immutable across an edit | Verifiable
-`LCF-AC-005` | A `TEXT` post carries zero attachment references | Verifiable
-`LCF-AC-006` | A non-`TEXT` post cannot reach `PUBLISHED` with an unresolved reference | Verifiable
-`LCF-AC-007` | No `FileRef`, storage key, bucket name or signed URL appears in any response | Verifiable
-`LCF-AC-008` | No response contains a `StudentRecordId` | Verifiable
-`LCF-AC-009` | Only `BC-14` appears on the `BC-29` call path | Verifiable by architecture test
-`LCF-AC-010` | `E-22`'s consumer list is unchanged by this part | Verifiable by diff
-`LCF-AC-011` | `PRD-017` is byte-unchanged by this part | Verifiable by hash
-`LCF-AC-012` | The feed returns only `PUBLISHED` posts | Verifiable
-`LCF-AC-013` | A `DELETED` post's body is unretrievable through every API in §23 | Verifiable
-`LCF-AC-014` | A `REMOVED` post is indistinguishable from a never-existing one | Verifiable
-`LCF-AC-015` | `DELETED` and `REMOVED` are terminal | Verifiable
-`LCF-AC-016` | Deleting a post cascades to comments and reactions | Verifiable
-`LCF-AC-017` | Deleting a post does not delete the `SharedContentRef` | Verifiable
-`LCF-AC-018` | A blocked party's posts are suppressed bidirectionally | Verifiable
-`LCF-AC-019` | An enforcement event suppresses the post without disclosing the reason | Verifiable
-`LCF-AC-020` | A duplicate `E-14` event produces no second effect | Verifiable
-`LCF-AC-021` | The enforcement read model rebuilds from the stream without loss | Verifiable
-`LCF-AC-022` | The gate fails closed when lag exceeds the ceiling | Verifiable once the ceiling is ratified
-`LCF-AC-023` | Post detail applies the same predicate as the feed | Verifiable
-`LCF-AC-024` | There is no deep-link path that bypasses the feed predicate | Verifiable
-`LCF-AC-025` | A reaction summary never enumerates members | Verifiable
-`LCF-AC-026` | A second reaction from the same actor replaces the first | Verifiable
-`LCF-AC-027` | An edit re-runs the rate-limit and enforcement gates | Verifiable
-`LCF-AC-028` | An edit cannot resurrect a taken-down attachment | Verifiable
-`LCF-AC-029` | A rate-limit refusal does not reveal the limit value | Verifiable
-`LCF-AC-030` | An authorization refusal is evaluated before a rate-limit refusal | Verifiable
-`LCF-AC-031` | No realtime signal carries post content | Verifiable
-`LCF-AC-032` | A realtime signal is never delivered to a caller who would be refused the read | Verifiable
-`LCF-AC-033` | No event payload carries a body, an attachment reference or a `StudentRecordId` | Verifiable
-⛔ `LCF-AC-034` | Grace-window **first-day** posting behaviour is correct | **UNWRITABLE.** `ADR-0036` q2 is unanswered, so the expected result does not exist. Writing a test would fabricate the answer. Owner: **Product Owner**.
-⏸ `LCF-AC-035` | Cross-tenant isolation of community posts is asserted per query | ⚠ **STILL DEFERRED at v0.8.** Conflict 5 / `LCF-ADR-005` is CLOSED by `ACCEPTED` `ADR-0078`, **but this criterion is not thereby writable**: it remains blocked because `integration_test/` does **not** exist (`LCF-GAP-011`, re-measured at v0.8 — `ls -d integration_test` → *No such file or directory*). One of two blockers cleared.
-⏸ `LCF-AC-036` | Pagination stability under concurrent write load | ⚠ **STILL DEFERRED — but for ONE reason now instead of two.** ✅ The token-shape blocker is **CLOSED**: `LCF-ADR-003` is resolved by **AO-2** (opaque cursor; BC Map **§15.3**). ⛔ **The second blocker stands**: `integration_test/` **does not exist in this repository** (`LCF-GAP-011`, Engineering Owner), so this criterion cannot be written even once its decision has landed. ⭐ **Recording it as still deferred is the accurate answer** — closing it would claim a test that has nowhere to live |
+`LCF-AC-001` | A `TEXT` post created by an entitled member becomes `PUBLISHED` (`LCF-FR-031`, `LCF-FR-032`) | Verifiable
+`LCF-AC-002` | A post created by a non-member is refused (`LCF-FR-035`) | Verifiable
+`LCF-AC-003` | A refusal for non-membership is byte-identical to one for a non-existent community (`LCF-FR-036`, `LCF-SEC-006`) | Verifiable
+`LCF-AC-004` | Post type is immutable across an edit (`LCF-FR-028`) | Verifiable
+`LCF-AC-005` | A `TEXT` post carries zero attachment references (`LCF-INV-005`) | Verifiable
+`LCF-AC-006` | A non-`TEXT` post cannot reach `PUBLISHED` with an unresolved reference (`LCF-FR-032`, `LCF-INV-005`) | Verifiable
+`LCF-AC-007` | No `FileRef`, storage key, bucket name or signed URL appears in any response (`LCF-FR-038`) | Verifiable
+`LCF-AC-008` | No response contains a `StudentRecordId` (`LCF-FR-063`) | Verifiable
+`LCF-AC-009` | Only `BC-14` appears on the `BC-29` call path (`LCF-FR-039`) | Verifiable by architecture test
+`LCF-AC-010` | `E-22`'s consumer list is unchanged by this part (`LCF-FR-040`) | Verifiable by diff
+`LCF-AC-011` | `PRD-017` is byte-unchanged by this part (`LCF-INV-006`, `LCF-FR-041`) | Verifiable by hash
+`LCF-AC-012` | The feed returns only `PUBLISHED` posts (`LCF-FR-058`) | Verifiable
+`LCF-AC-013` | A `DELETED` post's body is unretrievable through every API in §23 (`LCF-INV-009`) | Verifiable
+`LCF-AC-014` | A `REMOVED` post is indistinguishable from a never-existing one (`LCF-SEC-007`) | Verifiable
+`LCF-AC-015` | `DELETED` and `REMOVED` are terminal (`LCF-FR-046`) | Verifiable
+`LCF-AC-016` | Deleting a post cascades to comments and reactions (`LCF-FR-049`) | Verifiable
+`LCF-AC-017` | Deleting a post does not delete the `SharedContentRef` (`LCF-FR-050`) | Verifiable
+`LCF-AC-018` | A blocked party's posts are suppressed bidirectionally (`LCF-AUTH-012`, `LCF-FR-059`) | Verifiable
+`LCF-AC-019` | An enforcement event suppresses the post without disclosing the reason (`LCF-FR-052`, `LCF-SEC-007`) | Verifiable
+`LCF-AC-020` | A duplicate `E-14` event produces no second effect (`LCF-INV-010`) | Verifiable
+`LCF-AC-021` | The enforcement read model rebuilds from the stream without loss (`LCF-RM-002`) | Verifiable
+`LCF-AC-022` | The gate fails closed when lag exceeds the ceiling (`LCF-RM-004`) | Verifiable once the ceiling is ratified
+`LCF-AC-023` | Post detail applies the same predicate as the feed (`LCF-AUTH-002`, `LCF-INV-014`) | Verifiable
+`LCF-AC-024` | There is no deep-link path that bypasses the feed predicate (`LCF-INV-014`, `LCF-SEC-004`) | Verifiable
+`LCF-AC-025` | A reaction summary never enumerates members (`LCF-FR-084`, `LCF-SEC-011`) | Verifiable
+`LCF-AC-026` | A second reaction from the same actor replaces the first (`LCF-FR-083`) | Verifiable
+`LCF-AC-027` | An edit re-runs the rate-limit and enforcement gates (`LCF-BR-012`) | Verifiable
+`LCF-AC-028` | An edit cannot resurrect a taken-down attachment (`LCF-INV-015`) | Verifiable
+`LCF-AC-029` | A rate-limit refusal does not reveal the limit value (`LCF-FR-097`, `LCF-FR-098`) | Verifiable
+`LCF-AC-030` | An authorization refusal is evaluated before a rate-limit refusal (`LCF-FR-101`, `LCF-INV-016`) | Verifiable
+`LCF-AC-031` | No realtime signal carries post content (`LCF-INV-013`) | Verifiable
+`LCF-AC-032` | A realtime signal is never delivered to a caller who would be refused the read (`LCF-FR-088`) | Verifiable
+`LCF-AC-033` | No event payload carries a body, an attachment reference or a `StudentRecordId` (`LCF-FR-105`) | Verifiable
+⛔ `LCF-AC-034` | Grace-window **first-day** posting behaviour is correct (`LCF-FR-055`) | **UNWRITABLE.** `ADR-0036` q2 is unanswered, so the expected result does not exist. Writing a test would fabricate the answer. Owner: **Product Owner**.
+⏸ `LCF-AC-035` | Cross-tenant isolation of community posts is asserted per query (`LCF-SEC-003`) | ⚠ **STILL DEFERRED at v0.8.** Conflict 5 / `LCF-ADR-005` is CLOSED by `ACCEPTED` `ADR-0078`, **but this criterion is not thereby writable**: it remains blocked because `integration_test/` does **not** exist (`LCF-GAP-011`, re-measured at v0.8 — `ls -d integration_test` → *No such file or directory*). One of two blockers cleared.
+⏸ `LCF-AC-036` | Pagination stability under concurrent write load (`LCF-NFR-011`, `LCF-BR-006`) | ⚠ **STILL DEFERRED — but for ONE reason now instead of two.** ✅ The token-shape blocker is **CLOSED**: `LCF-ADR-003` is resolved by **AO-2** (opaque cursor; BC Map **§15.3**). ⛔ **The second blocker stands**: `integration_test/` **does not exist in this repository** (`LCF-GAP-011`, Engineering Owner), so this criterion cannot be written even once its decision has landed. ⭐ **Recording it as still deferred is the accurate answer** — closing it would claim a test that has nowhere to live |
 
 ---
 

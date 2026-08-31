@@ -598,77 +598,77 @@ participationOpen(caller, tenantOrganisation) :=
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-001` | No `BC-` identifier is assigned to A1 anywhere in the specification
-`LCM-AC-002` | The documented bounded-context count remains **31 (23 in V1)**
-`LCM-AC-003` | `BC-15` is recorded as **V2** in every location it appears; A1 changes none of them
-`LCM-AC-004` | `PRD_REGISTRY.md` L321 is byte-unchanged; `PRD-021` still lists `BC-11`, `BC-12`
-`LCM-AC-005` | `MASTER_PRD.md`, the BC Map, the Module Dependency Matrix and `tool/module_dependencies.yaml` are byte-unchanged
-`LCM-AC-006` | No A1 source file resides under `lib/domain/`
-`LCM-AC-007` | No context is added to `domain/library` or `domain/social` in the manifest
-`LCM-AC-008` | A1 imports nothing from `domain/social/**`
-`LCM-AC-009` | `dart run tool/check_module_boundaries.dart` reports **no new violation category** beyond the known `ADR-0012` baseline
+`LCM-AC-001` | No `BC-` identifier is assigned to A1 anywhere in the specification (`LCM-FR-002`)
+`LCM-AC-002` | The documented bounded-context count remains **31 (23 in V1)** (`LCM-FR-002`, `LCM-XC-001`)
+`LCM-AC-003` | `BC-15` is recorded as **V2** in every location it appears; A1 changes none of them (`LCM-FR-004`)
+`LCM-AC-004` | `PRD_REGISTRY.md` L321 is byte-unchanged; `PRD-021` still lists `BC-11`, `BC-12` (`LCM-FR-004`)
+`LCM-AC-005` | `MASTER_PRD.md`, the BC Map, the Module Dependency Matrix and `tool/module_dependencies.yaml` are byte-unchanged (`LCM-FR-005`, `LCM-INV-020`)
+`LCM-AC-006` | No A1 source file resides under `lib/domain/` (`LCM-FR-005`)
+`LCM-AC-007` | No context is added to `domain/library` or `domain/social` in the manifest (`LCM-FR-005`, `LCM-XC-023`)
+`LCM-AC-008` | A1 imports nothing from `domain/social/**` (`LCM-FR-006`)
+`LCM-AC-009` | `dart run tool/check_module_boundaries.dart` reports **no new violation category** beyond the known `ADR-0012` baseline (`LCM-FR-006`, `LCM-XC-024`)
 
 ### 17.2 Ownership and non-duplication
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-010` | A1 defines no aggregate
-`LCM-AC-011` | A1 owns no schema, table, migration or store
-`LCM-AC-012` | No persisted participant row, table, cache or materialised view exists
-`LCM-AC-013` | A1 defines no membership status
-`LCM-AC-014` | A1 does not duplicate the Library Member Directory
-`LCM-AC-015` | The composed read model contains exactly the four fields at `LCM-RM-001`
-`LCM-AC-016` | No `StudentRecordId` appears on any A1 surface
-`LCM-AC-017` | No profile field is rendered on A1's own authority
+`LCM-AC-010` | A1 defines no aggregate (`LCM-INV-001`, `LCM-RM-009`)
+`LCM-AC-011` | A1 owns no schema, table, migration or store (`LCM-RM-009`)
+`LCM-AC-012` | No persisted participant row, table, cache or materialised view exists (`LCM-RM-006`)
+`LCM-AC-013` | A1 defines no membership status (`LCM-INV-004`, `LCM-FR-010`)
+`LCM-AC-014` | A1 does not duplicate the Library Member Directory (`LCM-FR-012`, `LCM-CFG-014`)
+`LCM-AC-015` | The composed read model contains exactly the four fields at `LCM-RM-001` (`LCM-RM-002`)
+`LCM-AC-016` | No `StudentRecordId` appears on any A1 surface (`LCM-FR-016`, `LCM-RM-005`)
+`LCM-AC-017` | No profile field is rendered on A1's own authority (`LCM-INV-013`, `LCM-FR-014`)
 
 ### 17.3 Language
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-018` | `MembershipHolder` and `AccessRole` are used verbatim
-`LCM-AC-019` | The terms *CommunityMember* and *CommunityRole* appear **nowhere**
-`LCM-AC-020` | No bare use of *"library"* remains where `TenantOrganisation` is meant
-`LCM-AC-021` | Every BC Map §5 citation for the role/member rows points to **L212**
+`LCM-AC-018` | `MembershipHolder` and `AccessRole` are used verbatim (`LCM-BR-004`)
+`LCM-AC-019` | The terms *CommunityMember* and *CommunityRole* appear **nowhere** (`LCM-BR-004`)
+`LCM-AC-020` | No bare use of *"library"* remains where `TenantOrganisation` is meant (`LCM-BR-004`)
+`LCM-AC-021` | Every BC Map §5 citation for the role/member rows points to **L212** (`LCM-BR-004`)
 
 ### 17.4 Tenancy
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-022` | Every read applies the tenant scope server-side before any filter, search, sort or page
-`LCM-AC-023` | No API accepts a tenant parameter
-`LCM-AC-024` | No cross-tenant participant fact, count, comparison or existence check is obtainable
-`LCM-AC-025` | Tenant isolation is inherited structurally, not implemented as an application-layer filter
+`LCM-AC-022` | Every read applies the tenant scope server-side before any filter, search, sort or page (`LCM-FR-017`)
+`LCM-AC-023` | No API accepts a tenant parameter (`LCM-FR-018`)
+`LCM-AC-024` | No cross-tenant participant fact, count, comparison or existence check is obtainable (`LCM-FR-019`)
+`LCM-AC-025` | Tenant isolation is inherited structurally, not implemented as an application-layer filter (`LCM-FR-020`)
 
 ### 17.5 Events, signals and permissions
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-026` | A1 emits zero events; the membership register still holds exactly **seven**
-`LCM-AC-027` | No suspended, frozen or restored participation state exists
-`LCM-AC-028` | Exclusion is driven solely by `safety.EnforcementActionTaken`
-`LCM-AC-029` | Suppression is driven solely by `tenancy.TenantSuspended`
-`LCM-AC-030` | Membership lapse and renewal are handled with **no event consumption at all**
-`LCM-AC-031` | Zero permission identifiers are introduced; the catalogue still holds zero entries
-`LCM-AC-032` | Zero roles are introduced; the role set still holds five
-`LCM-AC-033` | The word *Staff* appears nowhere as an actor or role
+`LCM-AC-026` | A1 emits zero events; the membership register still holds exactly **seven** (`LCM-FR-028`)
+`LCM-AC-027` | No suspended, frozen or restored participation state exists (`LCM-FR-029`)
+`LCM-AC-028` | Exclusion is driven solely by `safety.EnforcementActionTaken` (`LCM-SIG-006`)
+`LCM-AC-029` | Suppression is driven solely by `tenancy.TenantSuspended` (`LCM-SIG-007`)
+`LCM-AC-030` | Membership lapse and renewal are handled with **no event consumption at all** (`LCM-SIG-003`)
+`LCM-AC-031` | Zero permission identifiers are introduced; the catalogue still holds zero entries (`LCM-FR-030`, `LCM-INV-007`)
+`LCM-AC-032` | Zero roles are introduced; the role set still holds five (`LCM-FR-031`)
+`LCM-AC-033` | The word *Staff* appears nowhere as an actor or role (`LCM-FR-032`)
 
 ### 17.6 Authorization, gating and consent
 
 | Ref | Criterion |
 |---|---|
-`LCM-AC-034` | No participation capability activates for a person requiring guardian consent where no consent record exists, **including where minor status is `Unknown`**
-`LCM-AC-035` | Every role in the closed set of five has an explicit, stated treatment; no treatment relies on inheritance
-`LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim under `AP-3` with the Product Owner named
-`LCM-AC-037` | The surface is absent when `LCFG-5` is Disabled, which is the default, and no data is deleted
-`LCM-AC-038` | The gate is read through the `BC-25` typed accessor; no raw string lookup exists
-`LCM-AC-039` | No configuration parameter is created, renamed, re-defaulted or re-scoped; no `LCFG-*` value changes
-`LCM-AC-040` | A1 is unreachable anonymously, publicly, and through the discovery index
+`LCM-AC-034` | No participation capability activates for a person requiring guardian consent where no consent record exists, **including where minor status is `Unknown`** (`LCM-FR-024`, `LCM-FR-025`)
+`LCM-AC-035` | Every role in the closed set of five has an explicit, stated treatment; no treatment relies on inheritance (`LCM-AUTH-007`)
+`LCM-AC-036` | `TR-3` Reception is denied, and the denial is recorded as interim under `AP-3` with the Product Owner named (`LCM-AUTH-007`)
+`LCM-AC-037` | The surface is absent when `LCFG-5` is Disabled, which is the default, and no data is deleted (`LCM-CFG-002`, `LCM-CFG-006`)
+`LCM-AC-038` | The gate is read through the `BC-25` typed accessor; no raw string lookup exists (`LCM-CFG-004`)
+`LCM-AC-039` | No configuration parameter is created, renamed, re-defaulted or re-scoped; no `LCFG-*` value changes (`LCM-CFG-007`, `LCM-BR-011`)
+`LCM-AC-040` | A1 is unreachable anonymously, publicly, and through the discovery index (`LCM-FR-022`, `LCM-FR-023`)
 
 ### 17.7 Declared unwritable
 
 | Ref | Criterion | Status |
 |---|---|---|
-`LCM-AC-041` | *"A membership expiring on date D is in force on the first day of the protected window and out of force on the day after the window."* | ✅ **NOW WRITABLE — 2026-08-31.** `W₀ = D+1`, ruled by the **Product Owner** and recorded in **existing `ADR-0036` §8.2 question 2 and its new §8.2a** (⛔ no new ADR, per the ruling's own instruction). Instantiated: *for a membership expiring on D the protected window is `D+1`, `D+2`, `D+3`; the membership is in force on `D+1` and out of force on `D+4`.* ⭐ **The criterion's wording is UNCHANGED** — only its writability status moves, because the sentence was always correct and merely lacked a value for `W₀`. ⚠ **NOT recorded as passing.** `LCM-FR-045`'s bar on approximating it is satisfied by an *answer*, not by this edit; the test still has to be written and run. *(Prior text retained verbatim: ⛔ **UNWRITABLE.** `W₀` unresolved — `ADR-0036` §8.2 q2. Owner: **Product Owner**. Tracked as `LCM-GAP-001`)* |
+`LCM-AC-041` | *"A membership expiring on date D is in force on the first day of the protected window and out of force on the day after the window."* (`LCM-FR-039`, `LCM-FR-040`) | ✅ **NOW WRITABLE — 2026-08-31.** `W₀ = D+1`, ruled by the **Product Owner** and recorded in **existing `ADR-0036` §8.2 question 2 and its new §8.2a** (⛔ no new ADR, per the ruling's own instruction). Instantiated: *for a membership expiring on D the protected window is `D+1`, `D+2`, `D+3`; the membership is in force on `D+1` and out of force on `D+4`.* ⭐ **The criterion's wording is UNCHANGED** — only its writability status moves, because the sentence was always correct and merely lacked a value for `W₀`. ⚠ **NOT recorded as passing.** `LCM-FR-045`'s bar on approximating it is satisfied by an *answer*, not by this edit; the test still has to be written and run. *(Prior text retained verbatim: ⛔ **UNWRITABLE.** `W₀` unresolved — `ADR-0036` §8.2 q2. Owner: **Product Owner**. Tracked as `LCM-GAP-001`)* |
 
 `LCM-FR-045` — `LCM-AC-041` **MUST NOT** be recorded as passing, waived, or approximated while `W₀` is unresolved. `TSF-FR-141` and `SID-4.56` establish the discipline.
 
@@ -678,8 +678,8 @@ participationOpen(caller, tenantOrganisation) :=
 
 | Ref | Criterion | Status |
 |---|---|---|
-`LCM-AC-042` | Fail-closed behaviour under projection unavailability is verified under fault injection | ⏸ **DEFERRED** — prerequisite: an integration harness. Tracked as `LCM-GAP-005` |
-`LCM-AC-043` | Fail-closed behaviour under signal-stream unavailability is verified under fault injection | ⏸ **DEFERRED** — same prerequisite |
+`LCM-AC-042` | Fail-closed behaviour under projection unavailability is verified under fault injection (`LCM-FR-046`) | ⏸ **DEFERRED** — prerequisite: an integration harness. Tracked as `LCM-GAP-005` |
+`LCM-AC-043` | Fail-closed behaviour under signal-stream unavailability is verified under fault injection (`LCM-FR-046`) | ⏸ **DEFERRED** — same prerequisite |
 
 **Register totals: 43 acceptance criteria — 40 verifiable now, 1 unwritable, 2 deferred. Nothing is recorded as passing.**
 
@@ -1277,23 +1277,23 @@ ID | Given | When | Then
 
 ID | Criterion | Status
 ---|---|---
-`LCM-AC-044` | `LCM-GWT-001` … `003` pass — classification and non-ownership hold | ☐ Not verified
-`LCM-AC-045` | `LCM-GWT-004` … `006` pass — tenancy isolation holds | ☐ Not verified
-`LCM-AC-046` | `LCM-GWT-007` … `011` pass — the gate behaves as a closed default | ☐ Not verified
-`LCM-AC-047` | `LCM-GWT-012` … `014` pass — validity governs the decision | ☐ Not verified
-`LCM-AC-048` | `LCM-GWT-015`, `016` pass — projection unavailability fails closed at the unit level | ☐ Not verified
-`LCM-AC-049` | `LCM-GWT-017`, `018` pass — the unambiguous window cases behave correctly | ☐ Not verified
-`LCM-AC-050` | `LCM-GWT-019` passes — the ambiguous day denies | ☐ Not verified
-`LCM-AC-051` | `LCM-GWT-020` holds — no assertion of the window's first day exists in this document | ☑ Verifiable by inspection of this file
-`LCM-AC-052` | `LCM-GWT-021`, `022` pass — exclusion is derived without a dedicated event | ☐ Not verified
-`LCM-AC-053` | `LCM-GWT-023` passes — tenant suspension denies | ☐ Not verified
-`LCM-AC-054` | `LCM-GWT-024` passes — signal loss fails closed at the unit level | ☐ Not verified
-`LCM-AC-055` | `LCM-GWT-025` … `027` pass — the minor gate holds, including `Unknown` | ☐ Not verified
-`LCM-AC-056` | `LCM-GWT-028`, `029` pass — rebuild is faithful and idempotent | ☐ Not verified
-`LCM-AC-057` | `LCM-GWT-030` passes — denial responses do not leak the reason | ☐ Not verified
-`LCM-AC-058` | `LCM-GWT-031` passes — no authorisation decision is cacheable | ☐ Not verified
-`LCM-AC-059` | `LCM-GWT-032` passes — observability carries no identifying field | ☐ Not verified
-`LCM-AC-060` | All fourteen `LCM-OBS-*` signals are emitted and observable | ☐ Not verified
+`LCM-AC-044` | `LCM-GWT-001` … `003` pass — classification and non-ownership hold (`LCM-FR-001`, `LCM-INV-006`) | ☐ Not verified
+`LCM-AC-045` | `LCM-GWT-004` … `006` pass — tenancy isolation holds (`LCM-FR-017`, `LCM-FR-018`) | ☐ Not verified
+`LCM-AC-046` | `LCM-GWT-007` … `011` pass — the gate behaves as a closed default (`LCM-CFG-010`, `LCM-CFG-012`, `LCM-CFG-013`) | ☐ Not verified
+`LCM-AC-047` | `LCM-GWT-012` … `014` pass — validity governs the decision (`LCM-FR-007`, `LCM-FR-008`) | ☐ Not verified
+`LCM-AC-048` | `LCM-GWT-015`, `016` pass — projection unavailability fails closed at the unit level (`LCM-BR-008`, `LCM-NFR-011`) | ☐ Not verified
+`LCM-AC-049` | `LCM-GWT-017`, `018` pass — the unambiguous window cases behave correctly (`LCM-FR-040`) | ☐ Not verified
+`LCM-AC-050` | `LCM-GWT-019` passes — the ambiguous day denies (`LCM-FR-041`) | ☐ Not verified
+`LCM-AC-051` | `LCM-GWT-020` holds — no assertion of the window's first day exists in this document (`LCM-FR-039`) | ☑ Verifiable by inspection of this file
+`LCM-AC-052` | `LCM-GWT-021`, `022` pass — exclusion is derived without a dedicated event (`LCM-SIG-006`, `LCM-FR-028`) | ☐ Not verified
+`LCM-AC-053` | `LCM-GWT-023` passes — tenant suspension denies (`LCM-SIG-007`) | ☐ Not verified
+`LCM-AC-054` | `LCM-GWT-024` passes — signal loss fails closed at the unit level (`LCM-BR-008`, `LCM-INV-011`) | ☐ Not verified
+`LCM-AC-055` | `LCM-GWT-025` … `027` pass — the minor gate holds, including `Unknown` (`LCM-FR-024`, `LCM-FR-025`, `LCM-INV-008`) | ☐ Not verified
+`LCM-AC-056` | `LCM-GWT-028`, `029` pass — rebuild is faithful and idempotent (`LCM-RM-020`) | ☐ Not verified
+`LCM-AC-057` | `LCM-GWT-030` passes — denial responses do not leak the reason (`LCM-API-019`, `LCM-API-020`) | ☐ Not verified
+`LCM-AC-058` | `LCM-GWT-031` passes — no authorisation decision is cacheable (`LCM-RM-021`, `LCM-API-024`) | ☐ Not verified
+`LCM-AC-059` | `LCM-GWT-032` passes — observability carries no identifying field (`LCM-INV-019`) | ☐ Not verified
+`LCM-AC-060` | All fourteen `LCM-OBS-*` signals are emitted and observable (`LCM-FR-059`) | ☐ Not verified
 
 Nothing above is recorded as passing. A1 is not implemented.
 

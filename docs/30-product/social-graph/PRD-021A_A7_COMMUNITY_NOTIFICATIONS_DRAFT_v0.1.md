@@ -806,19 +806,19 @@ clear.
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCN-AC-001` | **Given** a post reaching `PUBLISHED`, **when** the transaction commits, **then** exactly one `community.PostPublished` is enqueued in the outbox with the same transaction | `PENDING` |
-| `LCN-AC-002` | **Given** any emitted fact, **when** the payload is inspected, **then** it contains **no** body, title, excerpt, `FileRef`, display name, email, phone, `tenantId` or `StudentRecordId` | `PENDING` |
-| `LCN-AC-003` | **Given** any emitted fact, **when** its name is inspected, **then** it matches `community.<Aggregate><PastTenseVerb>` and is **not** imperative (BC Map **L402**) | `PENDING` |
+| `LCN-AC-001` | **Given** a post reaching `PUBLISHED`, **when** the transaction commits, **then** exactly one `community.PostPublished` is enqueued in the outbox with the same transaction (`LCN-FR-011`, `LCN-FR-009`) | `PENDING` |
+| `LCN-AC-002` | **Given** any emitted fact, **when** the payload is inspected, **then** it contains **no** body, title, excerpt, `FileRef`, display name, email, phone, `tenantId` or `StudentRecordId` (`LCN-FR-041`, `LCN-FR-042`) | `PENDING` |
+| `LCN-AC-003` | **Given** any emitted fact, **when** its name is inspected, **then** it matches `community.<Aggregate><PastTenseVerb>` and is **not** imperative (BC Map **L402**) (`LCN-FR-001`) | `PENDING` |
 | `LCN-AC-004` | **Given** a post that is `WITHHELD` or `RESTRICTED`, **when** eligibility is evaluated, **then** **no** notification fact is emitted (`LCN-FR-014`, `LCN-FR-059`) | `PENDING` |
-| `LCN-AC-005` | **Given** a producer retry, **when** the fact is re-emitted, **then** the idempotency key is **identical** to the first attempt | `PENDING` |
+| `LCN-AC-005` | **Given** a producer retry, **when** the fact is re-emitted, **then** the idempotency key is **identical** to the first attempt (`LCN-FR-046`, `LCN-FR-045`) | `PENDING` |
 
 ### 24.2 Delegation — asserting A7 owns nothing it must not
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCN-AC-006` | **Given** A7's full text, **when** measured, **then** it names **zero** channels, **zero** templates, **zero** quiet-hours windows, **zero** consent rules, **zero** dedup windows and **zero** delivery guarantees | ✅ **VERIFIABLE NOW** — §26 |
-| `LCN-AC-007` | **Given** the `BC-15` implementation, **when** searched, **then** it contains **no** notification inbox, read/unread state, badge count or preference store | `PENDING` |
-| `LCN-AC-008` | **Given** a delivery failure in `BC-22`, **when** `BC-15` is inspected, **then** `BC-15` has **no** record of it and exposes **no** delivery status | `PENDING` |
+| `LCN-AC-006` | **Given** A7's full text, **when** measured, **then** it names **zero** channels, **zero** templates, **zero** quiet-hours windows, **zero** consent rules, **zero** dedup windows and **zero** delivery guarantees (`LCN-FR-031`, `LCN-FR-032`, `LCN-FR-033`, `LCN-FR-048`, `LCN-FR-051`) | ✅ **VERIFIABLE NOW** — §26 |
+| `LCN-AC-007` | **Given** the `BC-15` implementation, **when** searched, **then** it contains **no** notification inbox, read/unread state, badge count or preference store (`LCN-FR-038`, `LCN-FR-039`, `LCN-FR-031`) | `PENDING` |
+| `LCN-AC-008` | **Given** a delivery failure in `BC-22`, **when** `BC-15` is inspected, **then** `BC-15` has **no** record of it and exposes **no** delivery status (`LCN-FR-008`, `LCN-FR-055`) | `PENDING` |
 | `LCN-AC-009` | **Given** an abuse report filed, **when** A7's facts are enumerated, **then** **none** describes it — `BC-13` notifies via `TSF-EVT-001` (`LCN-FR-024`) | `PENDING` |
 | `LCN-AC-010` | **Given** a library membership change, **when** A7's facts are enumerated, **then** **none** duplicates `membership.*` (`LCN-FR-028`) | `PENDING` |
 
@@ -827,7 +827,7 @@ clear.
 | ID | Criterion | Status |
 |---|---|---|
 | `LCN-AC-011` | **Given** a delivered notification referencing a post, **when** the recipient's membership is subsequently revoked and they follow the reference, **then** access is **REFUSED** (`LCN-FR-037`) | `PENDING` |
-| `LCN-AC-012` | **Given** a delivered notification, **when** the content is subsequently `RESTRICTED` and the recipient follows the reference, **then** access is **REFUSED** and indistinguishable from *not found* | `PENDING` |
+| `LCN-AC-012` | **Given** a delivered notification, **when** the content is subsequently `RESTRICTED` and the recipient follows the reference, **then** access is **REFUSED** and indistinguishable from *not found* (`LCN-FR-037`, `LCS-FR-025`) | `PENDING` |
 | `LCN-AC-013` | **Given** a notification reference, **when** an unrelated authenticated person submits it, **then** access is **REFUSED** — no IDOR (`LCN-FR-036`) | `PENDING` |
 | `LCN-AC-014` | **Given** a blocked pair, **when** either party acts, **then** **no** fact is emitted that would inform the other, and no timing difference is observable (`LCN-FR-058`) | `PENDING` |
 | `LCN-AC-015` | **Given** a client-supplied `LibraryId` or `CommunityId`, **when** emission is decided, **then** the client value is **ignored** and the server-derived scope is used (`LCN-FR-065`) | `PENDING` |
@@ -836,11 +836,11 @@ clear.
 
 | ID | Criterion | Status |
 |---|---|---|
-| `LCN-AC-016` | **Given** two communities, **when** a fact is emitted in one, **then** its payload references **only** that community and no member of the other can resolve it | `PENDING` |
+| `LCN-AC-016` | **Given** two communities, **when** a fact is emitted in one, **then** its payload references **only** that community and no member of the other can resolve it (`LCN-FR-063`, `LCN-FR-062`, `LCN-FR-037`) | `PENDING` |
 | `LCN-AC-017` | **Given** the outbox is unavailable, **when** a post is created, **then** the post **succeeds** and the failure is audited (`LCN-FR-053`) | `PENDING` |
 | `LCN-AC-018` | **Given** notification publication fails entirely, **when** the feed is read, **then** content visibility is **unaffected** — no fail-closed (`LCN-FR-054`) | `PENDING` |
 | `LCN-AC-019` | **Given** retry exhaustion, **when** the outbox entry is abandoned, **then** it is audited over `E-20` and not silently dropped (`LCN-FR-052`) | `PENDING` |
-| `LCN-AC-020` | **Given** a fact delivered twice to `BC-22`, **when** consumed, **then** the idempotency key is identical and dedup is `BC-22`'s decision, not `BC-15`'s | `PENDING` |
+| `LCN-AC-020` | **Given** a fact delivered twice to `BC-22`, **when** consumed, **then** the idempotency key is identical and dedup is `BC-22`'s decision, not `BC-15`'s (`LCN-FR-045`, `LCN-FR-034`) | `PENDING` |
 | `LCN-AC-021` | **Given** a community-wide fact, **when** emitted, **then** exactly **one** fact is produced, not one per recipient (`LCN-FR-067`) | `PENDING` |
 
 ---

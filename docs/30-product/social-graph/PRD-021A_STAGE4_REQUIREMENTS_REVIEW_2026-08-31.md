@@ -577,9 +577,28 @@ criteria, and that is a STAGE-4 BLOCKER owned by the Product owner.**
 
 ---
 
+## 14.1 Superseding record — check 4 (added 2026-09-01)
+
+> ⭐ **This record's check-4 conclusion has since been REPAIRED, not retracted.**
+> `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` closed the blocker by citing
+> requirements that **already existed**, under the `PRD-020` §27 convention, at **zero line-count
+> delta**. Check 4 now reads **233 of 233 criteria mapped, 0 orphans**.
+>
+> **What changed in this record's scope:** the *"⛔ All eight byte-unchanged by this review"*
+> statement in the header remains **true of this review**, which measured only. The 2026-09-01
+> record edited the subjects and publishes both BEFORE and AFTER sha256 values; this record's
+> hash table (**§2**, L57–64) is the authoritative **BEFORE** column.
+>
+> **What did not change:** the AC total is corrected from 232 to **233** (A8 has 35 criteria,
+> not 34 — defect `I-8`); no criterion was added, removed, reworded or downgraded; and Stage 4
+> remains ⛔ **NOT CONFERRED** — `STAGE-4 EVIDENCE PASS — FORMAL CONFERRAL PENDING`.
+
+---
+
 ## 15. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| **1.2** | 2026-09-01 | **§14.1 added** — a forward reference to `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md`, which repaired the check-4 blocker (211 orphans → **0**; 233/233 mapped). ⭐ **This record's historical conclusion is NOT overwritten**: the dated 2026-08-31 measurement stands as taken. Clarified that the header's *"byte-unchanged by this review"* claim is true of **this** review's scope, and that its hash table is the authoritative **BEFORE** column for the later repair. AC total corrected 232 → **233** (defect `I-8`). ⛔ No check verdict, count, owner assignment or determination in §1–§14 altered; still **NOT CONFERRED**; no push. |
 | **1.1** | 2026-08-31 | ⛔ **Citation-integrity repair, and disclosure of the failure that made it necessary.** §13's *citation integrity* row was executed for the first time: all **62** line citations were opened against the live subject files. **12 did not resolve to the text attributed to them** — 4 pointed at blank lines, 2 named the **wrong identifier** (A1 `LCM-NFR-012` → `LCM-OBS-010`; the A7 `CommentPublished`/`ReactionChanged` pair each one row low), 2 were >25 lines out (A6 §27 header, A8 `LCT-CONF-*`), and 4 were off-by-one. All 12 corrected in §3.2, §4.2, §5.1, §5.2, §9.3, §9.4 and the Phase-9 preamble. New **§10.1** discloses this as instrument defect **`I-6`** with the full before/after table and an admissibility rule for citations. ⚠ **§13 corrected to distinguish checks executed from checks asserted — v1.0 claimed citation integrity without running it.** ⭐ **No measurement, count, classification, owner assignment or verdict changed**: every defect was a mis-address, not a mis-reading, and the quoted text existed in all 12 cases. **5 instrument defects → 6.** ⛔ **All eight subject files remain byte-unchanged** (re-verified); 0 identifiers minted; still **NOT CONFERRED**; no push. |
 | 1.0 | 2026-08-31 | Created as the **Stage 4 Requirements Review Record** for `PRD-021A` A1–A8, measured at `25554a9`. All six checks decided mechanically. **5 of 6 PASS**; check 4 ⛔ **FAILS** on 211 of 232 criteria (**1 STAGE-4 BLOCKER**). L119 gate ✅ satisfied — 121 open conflicts, **0** without an owner. **7 required repairs** (`S4-R1`, `S4-R4`…`S4-R9`), **4 disclosed non-blocking gaps**, **3 pre-existing repository defects**, **6 already resolved**, **9 false positives**. Phase 6: `LCM-AC-041` writable but 2 stale antecedents. Phase 7: A4 role/visibility/ownerless sets all closed; 2 stale antecedents. Phase 8: ✅ A6 passes, **no requirement weakened**. Phase 9: ✅ A7 clean, **no seventh event**; ⛔ A8 stale on the resolved contract. **5 instrument defects disclosed** (→ 6 in v1.1). ⛔ **Stage 4 NOT CONFERRED** — no Requirements Reviewer conferral exists. **0 PRDs modified · 0 identifiers minted · 0 ADRs created · 0 Rank 1–5 bytes changed · no Stage 5 · no Stage 6 · no freeze · no push.** |

@@ -12,7 +12,7 @@
 | **Mandate** | **Stage 4 only.** ⛔ No PRD modified · no ADR created · no identifier minted · no Rank 1–5 document touched · no registry/baseline/matrix update · no Stage 5 · no Stage 6 · no freeze · no code · no push |
 | **Subject hashes** | ⛔ **All eight byte-unchanged by this review** — verified before and after (§9) |
 | **Date** | 2026-08-31 |
-| **Verdict** | ⚠️ **CONDITIONALLY PASSED — 5 of 6 checks.** Check **4** ⛔ **FAILS**: **211 of 232** acceptance criteria cite no requirement. The **L119 gate itself is SATISFIED** (121 open conflicts, **0** without an owner). **1 STAGE-4 BLOCKER**, **7 REQUIRED REPAIRS**, **4 disclosed non-blocking gaps**, **3 pre-existing repository defects**, **6 already resolved**, **9 false positives**. ⚠ **5 instrument defects disclosed** (§10) |
+| **Verdict** | ⚠️ **CONDITIONALLY PASSED — 5 of 6 checks.** Check **4** ⛔ **FAILS**: **211 of 232** acceptance criteria cite no requirement. The **L119 gate itself is SATISFIED** (121 open conflicts, **0** without an owner). **1 STAGE-4 BLOCKER**, **7 REQUIRED REPAIRS**, **4 disclosed non-blocking gaps**, **3 pre-existing repository defects**, **6 already resolved**, **9 false positives**. ⚠ **6 instrument defects disclosed** (§10), including **`I-6` — 12 of this record's own 62 line citations were wrong** (§10.1) |
 
 > ⛔ **Stage-3 PASS did NOT carry to Stage 4, and this record says so rather than rounding up.**
 > Stage 3 asks *"is this PRD lawful against Ranks 1–5?"*; Stage 4 asks *"is this PRD **buildable
@@ -36,6 +36,8 @@ Every count is produced by a script over the document text, not by reading. **Wh
 mechanical result disagreed with a document's own claim, the disagreement was investigated to
 root cause before either was believed** (`PRD-016` §1). That happened **five** times, and in
 **four** of them **my instrument was wrong, not the document** — all five are disclosed in §10.
+A **sixth** defect (`I-6`) was found by auditing this record against the files it cites: **12
+of its 62 line citations were wrong**, corrected in v1.1 and disclosed in §10.1.
 
 **Definition of "defined"**: a line whose first non-decoration token is the identifier,
 followed by a `|`. Status emoji (`⏸`, `✅`, `⛔`, `⚠`) and `~~strikethrough~~` precede
@@ -122,9 +124,9 @@ headers:
 
 | Part | Table header | Mapping column? |
 |---|---|---|
-| A1 §17.1 (**L598**) | `\| Ref \| Criterion \|` | ⛔ none |
-| A4 §30 (**L610**) | `\| ID \| Criterion \| Writability \|` | ⛔ none |
-| A6 §27 (**L1054**) | `\| ID \| Criterion \| Status \|` | ⛔ none |
+| A1 §17.1 (**L599**) | `\| Ref \| Criterion \|` | ⛔ none |
+| A4 §30 (**L609**) | `\| ID \| Criterion \| Writability \|` | ⛔ none |
+| A6 §27 (**L1027**) | `\| ID \| Criterion \| Status \|` | ⛔ none |
 
 A criterion that cites no requirement **cannot be shown to verify anything**. At Stage 9 the
 question *"which requirement is now proven?"* has no mechanical answer for 211 of 232 rows.
@@ -185,7 +187,7 @@ Measured directions:
 ### 4.2 Why this is not a PRD-021A defect
 
 The `PRD-016` standard (§3.1) requires each exclusion row to carry `MUST NOT` or *impossible*.
-The PRD-021A exclusion tables are structurally different — measured header, A1 **L716**:
+The PRD-021A exclusion tables are structurally different — measured header, A1 **L717**:
 
 ```
 ID | Excluded from A1 | Held instead by
@@ -204,7 +206,7 @@ the precise failure the check names.
 from the Rank-3 Enterprise Architecture V1/V2/V3 banding, is used identically across parts
 authored by different hands, and **changing it is a repository-wide convention decision**, not
 a PRD-021A repair. Recorded, not repaired. **Owner: Governance Owner** (vacant — `ADR-0080`
-§5 **L85**).
+§2.2 **L85**).
 
 ---
 
@@ -216,7 +218,7 @@ a PRD-021A repair. Recorded, not repaired. **Owner: Governance Owner** (vacant �
 
 | Finding | Line | Text | Class |
 |---|---|---|---|
-| **`S4-R1`** | A1 **L1130** `LCM-NFR-012` | *"rebuildable within an operationally **acceptable** window"* | ⛔ **REQUIRED REPAIR (2)** — unbounded. This is the *"should be fast"* pattern verbatim. **Owner: Product owner** |
+| **`S4-R1`** | A1 **L1151** `LCM-NFR-012` | *"rebuildable within an operationally **acceptable** window"* | ⛔ **REQUIRED REPAIR (2)** — unbounded. This is the *"should be fast"* pattern verbatim. **Owner: Product owner** |
 | — | A1 `LCM-SIG-014` | *"never a fallback to a last-known-good allow"* | ✅ **FALSE POSITIVE (6)** — matched on *"good"* inside `last-known-good`, a compound technical term. Fully testable |
 
 ### 5.2 Check 3 — configurables
@@ -228,7 +230,7 @@ Disabled"*).
 | Finding | Line | Text | Class |
 |---|---|---|---|
 | **`S4-R2`** | A1 **L471** `LCM-CFG-008` | *"MUST NOT make its visibility, its window duration, or any invariant configurable"* | ✅ **FALSE POSITIVE (6)** — a **prohibition** on configurability. A thing that must not be configurable has no default or range by definition |
-| **`S4-R3`** | A8 **L1652** `LCT-CONF-*` | 2 rows, no default, 1 no range | ✅ **FALSE POSITIVE (6)** — `LCT-CONF-*` is A8's **cross-part conflict** register (`LCT-CONF-001` = the event conflict), not configuration. Prefix collision with `CONF` |
+| **`S4-R3`** | A8 **§41.3 L1798–1799** `LCT-CONF-*` | 2 rows, no default, 1 no range | ✅ **FALSE POSITIVE (6)** — `LCT-CONF-*` is A8's **cross-part conflict** register (`LCT-CONF-001` = the event conflict), not configuration. Prefix collision with `CONF` |
 
 ⚠ **Both check-3 "failures" were my instrument.** Instrument defect **I-4**.
 
@@ -370,7 +372,7 @@ field tables were not swept:
 | `LCS-FR-030` intact | ✅ **L660** — *"⚠⚠ **THIS REQUIREMENT STILL STANDS AND IS STILL NOT RELAXED** … `ADR-0084` does NOT weaken it by one word."* Only the **antecedent** discharged; the rule is unchanged and re-arms on unavailability |
 | `LCS-AC-014` testable against the real mechanism | ✅ **L1057** — reporter `PersonId` **absent** from every store/log/cache/index/event/audit record, because filing never transits `BC-15`. `PENDING`, ⛔ not passing |
 | `LCS-AC-017` testable against the real mechanism | ✅ **L1068** — re-stated against the **general fail-closed condition**, exercised by **fault injection** rather than by an open decision. `PENDING` |
-| `BC-13` command surface real | ✅ `PRD-020` **§21.3 L1800** — `FileAbuseReport`, actor *"Any authenticated person"*. **Zero inbound edges by design** |
+| `BC-13` command surface real | ✅ `PRD-020` **§21.3 L1805** — `FileAbuseReport`, actor *"Any authenticated person"*. **Zero inbound edges by design** |
 | Requirement weakened? | ⛔ **NO.** Verified: `LCS-FR-030`'s text is a standing invariant; both ACs remain `PENDING`, neither recorded as passing |
 | Maps to a requirement | ✅ **the only part that partly does** — 7 of 20 cite `LCS-SEC-002`, `LCS-FR-030`, `LCS-FR-061` |
 
@@ -379,13 +381,13 @@ rule retained, criterion re-stated against a real mechanism, status held at `PEN
 
 ### 9.4 Phase 9 — A7/A8 event contract
 
-Authoritative contract = A2 §24 (**L1489–1494**), **six** events, closed by `LCF-FR-104`.
+Authoritative contract = A2 §24 (**L1490–1495**), **six** events, closed by `LCF-FR-104` (**L1497**).
 
 | Test | Result |
 |---|---|
 | A7 defines no withdrawn event as active | ✅ **L316–319** — `LCN-EVT-004`…`007` all ⛔ **WITHDRAWN**, retained as records |
-| `CommentPublished` consistent | ✅ A7 **L315** renamed from `CommentAdded`; A2 already used `CommentPublished` — the drift was A7's and is gone |
-| `ReactionChanged` consistent | ✅ A7 **L316** renamed from `ReactionAdded` |
+| `CommentPublished` consistent | ✅ A7 **L314** renamed from `CommentAdded`; A2 already used `CommentPublished` — the drift was A7's and is gone |
+| `ReactionChanged` consistent | ✅ A7 **L315** renamed from `ReactionAdded` |
 | Withdrawn ids never reused | ✅ 4 withdrawn, **0** refilled; `LCN-FR-019`/`020`/`026` retained as **VOID** records for audit |
 | **No seventh event** | ✅ **A2 = 6, A7 active = 3, A5 = 0** (`LCO-FR-113` refuses). **No seventh exists** |
 | Naming follows BC Map convention | ✅ all `community.*` |
@@ -393,7 +395,7 @@ Authoritative contract = A2 §24 (**L1489–1494**), **six** events, closed by `
 
 | Finding | Line | Text | Class |
 |---|---|---|---|
-| **`S4-R8`** | A8 **L857–893** §15.3 | Headed *"⛔ OPEN OWNER DECISION — **the most material finding in A8**"*. Reconciles A7's **seven** facts, lists `CommentAdded` and `ReactionAdded` as *"name divergence"* and four as *"no counterpart"*. **SD-1 resolved all of it** — renames applied, four withdrawn. `LCT-FR-048` still blocks A7's register as *"unsettled"* | ⛔ **REQUIRED REPAIR (2)**. Owner: **Social Domain Owner** (as A2's owner) |
+| **`S4-R8`** | A8 **§15.3 L856–893** | Headed (**L858**) *"⛔ OPEN OWNER DECISION — **the most material finding in A8**"*. Reconciles A7's **seven** facts, lists `CommentAdded` and `ReactionAdded` as *"name divergence"* and four as *"no counterpart"*. **SD-1 resolved all of it** — renames applied, four withdrawn. `LCT-FR-048` still blocks A7's register as *"unsettled"* | ⛔ **REQUIRED REPAIR (2)**. Owner: **Social Domain Owner** (as A2's owner) |
 | **`S4-R9`** | A8 **L1879** | Repeats *"`BC-15` is the source of **ZERO** edges"* and calls A4/A6 *"a **genuine Stage-3 Check-2 failure**"*. ⛔ **`ADR-0084` disproved exactly this** — it was a column-offset instrument error; five wildcard-source edges exist (`E-17`…`E-20`, `E-23`) | ⛔ **REQUIRED REPAIR (2)**. Owner: **Architecture Owner** |
 | — | A7 **L316** | Cites the same disproved *"ZERO edges"* claim inside a **withdrawal rationale** | ⚠ **DISCLOSED NON-BLOCKING GAP (3)** — the withdrawal outcome stands on `LCF-FR-104` (contract closure) independently; only the supporting rationale is stale |
 
@@ -404,7 +406,7 @@ conclude the event contract is unresolved.
 
 ---
 
-## 10. ⚠ Defects in this review's own instruments — all five disclosed
+## 10. ⚠ Defects in this review's own instruments — all six disclosed
 
 | # | Defect | Effect | Correction |
 |---|---|---|---|
@@ -413,10 +415,53 @@ conclude the event contract is unresolved.
 | **I-3** | First check-4 pass counted `DEC`/`GAP`/`ADR` citations as requirement mappings | Under-reported the orphan count (183 vs the true **211**) | Normative registers separated from conflict registers. ⭐ **This defect made the subject look *better* than it is** |
 | **I-4** | Check 3 treated any `CONF`/`CFG` prefix as configuration, and prohibitions as unbounded configurables | 2 phantom failures (A8's conflict register; A1's *"MUST NOT be configurable"*) | Rows opened individually; both withdrawn |
 | **I-5** | L119 owner regex matched only full role titles | **9 phantom owner-less rows** — missed `Product`, `PO + AO`, `Product Owner + Privacy Owner`, and two status registers | All 9 opened individually; all 9 withdrawn. Gate result corrected to **0** |
+| ⛔ **I-6** | **This record's own line citations.** 62 `Lnnn` addresses were transcribed from earlier-phase `grep` output rather than re-resolved at write time | **12 of 62 were wrong** — including A1 `LCM-NFR-012` cited at a line holding `LCM-OBS-010`, and the A7 `CommentPublished`/`ReactionChanged` pair each cited one row low. 4 cited **blank lines** | All 62 re-resolved by opening each line; 12 corrected. Full table and method correction in **§10.1**. ⚠ **No finding changed** — mis-addressed, not mis-read |
 
-⚠ **Four of five over-reported defects; one (I-3) under-reported.** Publishing them matters:
-had the 211 genuine orphans been reported alongside 11 uncorrected phantoms, a reader would
-have had no way to tell which figures to trust.
+⚠ **Four of the five counting defects over-reported; one (I-3) under-reported.** Publishing
+them matters: had the 211 genuine orphans been reported alongside 11 uncorrected phantoms, a
+reader would have had no way to tell which figures to trust.
+
+### 10.1 ⛔⛔ `I-6` — this record's own line citations were wrong, and were caught by auditing it
+
+⭐ **This is the most instructive defect of the six, because it was a defect in the *record*,
+not in the measurement.** Every finding above was re-derived from the live files and every
+count stands. But the **line numbers used to cite them** were transcribed from intermediate
+`grep` output taken during earlier phases, not re-resolved against the file at write time.
+When §13's citation-integrity claim was actually executed — by opening each cited line — **12
+of 62 line citations did not resolve to the text attributed to them.**
+
+| Cited (v1.0) | Actually resolved to | Corrected to | Nature |
+|---|---|---|---|
+| A1 **L1130** `LCM-NFR-012` | `LCM-OBS-010` — *read-model rebuild duration* | **L1151** | ⛔ wrong requirement named |
+| A1 **L716** §19 exclusion header | blank line | **L717** | off-by-one |
+| A1 **L598** §17.1 AC header | blank line | **L599** | off-by-one |
+| A4 **L610** §30 AC header | table delimiter `\|---\|---\|---\|` | **L609** | off-by-one |
+| A6 **L1054** §27 AC header | blank line | **L1027** | ⛔ 27 lines out |
+| A8 **L1652** `LCT-CONF-*` | blank line | **§41.3 L1798–1799** | ⛔ 146 lines out |
+| A2 **L1489–1494** event rows | delimiter + 5 of 6 rows | **L1490–1495** (+ `LCF-FR-104` **L1497**) | off-by-one, truncated the set |
+| A7 **L315** `CommentPublished` | `LCN-EVT-003` `ReactionChanged` | **L314** | ⛔ named the wrong event |
+| A7 **L316** `ReactionChanged` | `LCN-EVT-004` (withdrawn) | **L315** | ⛔ named the wrong event |
+| A8 **L857** §15.3 heading | blank line | **L856** (heading) / **L858** (the ⛔ banner) | off-by-one |
+| `PRD-020` **§21.3 L1800** `FileAbuseReport` | §21.3 prose *"no published inbound edge"* | **L1805** | wrong row in the right section |
+| `ADR-0080` **§5 L85** Governance Owner vacant | §5 is `LCF-GAP-001` closure | **§2.2 L85** | wrong section, right line |
+
+**Effect on the findings: NONE.** Each defect was a mis-*address*, not a mis-*reading* — the
+quoted text existed in every case, at a nearby line. The two most serious (A1 `LCM-NFR-012`
+and the A7 event pair) named the **wrong identifier** alongside the right quotation, which is
+exactly the class of error that would let a reader "verify" a finding against the wrong row and
+conclude the reviewer was wrong. `S4-R1`, `S4-R3`, `S4-R8` and the Phase 9 rows are unchanged
+in substance; only their addresses are.
+
+⚠ **What this says about §13.** Version 1.0 listed *citation integrity* among the verifications
+performed. **It had not in fact been executed** — the row asserted a check that was owed, not
+done. That is a worse defect than the twelve addresses, and it is recorded here rather than
+quietly satisfied by the repair. §13 now distinguishes checks **executed** from checks
+**asserted**.
+
+⭐ **Method correction adopted:** a line citation is only admissible if it was resolved by
+opening that exact line **after** the sentence citing it was written. Citations carried forward
+from an earlier phase's `grep` are treated as unverified. Applied to all 62 citations in v1.1;
+50 verified correct, 12 corrected above.
 
 ---
 
@@ -489,6 +534,7 @@ treated as unmet."* **The blocker must be repaired by its owner first.**
 |---|---|
 | `git status --porcelain` | **clean** before and after |
 | Subject files modified | **0** — all eight hashes identical to §1.1, re-verified post-review |
+| ⛔ **Citation integrity** | ⚠ **EXECUTED IN v1.1, AND IT FAILED.** All **62** line citations opened against the live files: **50 correct, 12 wrong** — corrected, and disclosed as `I-6` (§10.1). ⛔ **v1.0 asserted this check without performing it**; that mis-assertion is itself recorded rather than quietly repaired |
 | `docs_check` | ✅ **`CHECKERS=28 TOTAL_NONZERO=6`** — exactly the baseline (`alignment_record_freshness`, `prd004/005/006/007_traceability`, `prd020_stage5`) |
 | Protected hashes | ✅ all 7 intact: `5c31a3363d99a5f6` · `5031fcc97a95980e` · `eab88c9ab3be6f91` · `34761df53bfbf149` · `7e1c69f92363a5e5` · `bf16eb2de31d2994` · `1270a7689e107c19` |
 | Partial hashes | ✅ ownership `head -569` = `7bc36cd91ffc0d4f` · BC Map `head -612` = `ea23b1c7fabc0922` |
@@ -525,8 +571,9 @@ criteria, and that is a STAGE-4 BLOCKER owned by the Product owner.**
 
 > ⭐ **The goal was correct Stage-4 completion, not forcing a PASS.** Stage 3 passed 48/48 and
 > Stage 4 still fails, because they measure different things. Recording that honestly — with
-> five of my own instrument defects published alongside it — is the only outcome that leaves
-> the next reviewer able to trust these numbers.
+> six of my own instrument defects published alongside it — including twelve wrong citations in
+> this very record — is the only outcome that leaves the next reviewer able to trust these
+> numbers.
 
 ---
 
@@ -534,4 +581,5 @@ criteria, and that is a STAGE-4 BLOCKER owned by the Product owner.**
 
 | Version | Date | Change |
 |---|---|---|
-| 1.0 | 2026-08-31 | Created as the **Stage 4 Requirements Review Record** for `PRD-021A` A1–A8, measured at `25554a9`. All six checks decided mechanically. **5 of 6 PASS**; check 4 ⛔ **FAILS** on 211 of 232 criteria (**1 STAGE-4 BLOCKER**). L119 gate ✅ satisfied — 121 open conflicts, **0** without an owner. **7 required repairs** (`S4-R1`, `S4-R4`…`S4-R9`), **4 disclosed non-blocking gaps**, **3 pre-existing repository defects**, **6 already resolved**, **9 false positives**. Phase 6: `LCM-AC-041` writable but 2 stale antecedents. Phase 7: A4 role/visibility/ownerless sets all closed; 2 stale antecedents. Phase 8: ✅ A6 passes, **no requirement weakened**. Phase 9: ✅ A7 clean, **no seventh event**; ⛔ A8 stale on the resolved contract. **5 instrument defects disclosed.** ⛔ **Stage 4 NOT CONFERRED** — no Requirements Reviewer conferral exists. **0 PRDs modified · 0 identifiers minted · 0 ADRs created · 0 Rank 1–5 bytes changed · no Stage 5 · no Stage 6 · no freeze · no push.** |
+| **1.1** | 2026-08-31 | ⛔ **Citation-integrity repair, and disclosure of the failure that made it necessary.** §13's *citation integrity* row was executed for the first time: all **62** line citations were opened against the live subject files. **12 did not resolve to the text attributed to them** — 4 pointed at blank lines, 2 named the **wrong identifier** (A1 `LCM-NFR-012` → `LCM-OBS-010`; the A7 `CommentPublished`/`ReactionChanged` pair each one row low), 2 were >25 lines out (A6 §27 header, A8 `LCT-CONF-*`), and 4 were off-by-one. All 12 corrected in §3.2, §4.2, §5.1, §5.2, §9.3, §9.4 and the Phase-9 preamble. New **§10.1** discloses this as instrument defect **`I-6`** with the full before/after table and an admissibility rule for citations. ⚠ **§13 corrected to distinguish checks executed from checks asserted — v1.0 claimed citation integrity without running it.** ⭐ **No measurement, count, classification, owner assignment or verdict changed**: every defect was a mis-address, not a mis-reading, and the quoted text existed in all 12 cases. **5 instrument defects → 6.** ⛔ **All eight subject files remain byte-unchanged** (re-verified); 0 identifiers minted; still **NOT CONFERRED**; no push. |
+| 1.0 | 2026-08-31 | Created as the **Stage 4 Requirements Review Record** for `PRD-021A` A1–A8, measured at `25554a9`. All six checks decided mechanically. **5 of 6 PASS**; check 4 ⛔ **FAILS** on 211 of 232 criteria (**1 STAGE-4 BLOCKER**). L119 gate ✅ satisfied — 121 open conflicts, **0** without an owner. **7 required repairs** (`S4-R1`, `S4-R4`…`S4-R9`), **4 disclosed non-blocking gaps**, **3 pre-existing repository defects**, **6 already resolved**, **9 false positives**. Phase 6: `LCM-AC-041` writable but 2 stale antecedents. Phase 7: A4 role/visibility/ownerless sets all closed; 2 stale antecedents. Phase 8: ✅ A6 passes, **no requirement weakened**. Phase 9: ✅ A7 clean, **no seventh event**; ⛔ A8 stale on the resolved contract. **5 instrument defects disclosed** (→ 6 in v1.1). ⛔ **Stage 4 NOT CONFERRED** — no Requirements Reviewer conferral exists. **0 PRDs modified · 0 identifiers minted · 0 ADRs created · 0 Rank 1–5 bytes changed · no Stage 5 · no Stage 6 · no freeze · no push.** |

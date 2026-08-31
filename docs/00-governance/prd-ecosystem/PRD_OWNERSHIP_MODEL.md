@@ -477,3 +477,93 @@ authority — it would only keep it undocumented, which is the defect §9.4 meas
 | `PRD-021A` A2 or A3 becomes ready or freezable | ⛔ **No** — **NOT READY, NOT FROZEN** |
 | The `PRD-020` release gate is affected | ⛔ **No.** `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L161–164** stands unchanged |
 | §§2.1–2.3, §5, §9, or any §4 PRD row is amended | ⛔ **No** — every cited line is byte-identical |
+
+---
+
+## 11. ⭐ `PRD-021A` — four roles assigned on registration, recorded by append
+
+**Trigger.** `PRD-021A` **Library Community & Community Feed** was allocated `PLANNED` at **`BC-15` Community &
+Groups**, **V2**, by Product Owner decision **`D-A`** on 2026-08-25, recorded at
+[`PRD_REGISTRY.md`](./PRD_REGISTRY.md) **§11**.
+
+**Why a record here is required, not optional.** §3 **rule 1** — *"Every registered PRD has exactly one Product
+Owner, one Domain Owner, one Architecture Owner and one Technical Owner"* — and §7 **rule 1** — *"A new PRD gets
+all four roles when it is registered, before it has content"* — together make this row **mandatory** the moment the
+registry row exists. §3 **rule 4** states the reason: *"A `PLANNED` PRD has roles assigned; it does not have
+content. Ownership is what makes the gap actionable — an unowned gap has nobody to close it."*
+
+### 11.1 The assignment
+
+| PRD | Subject | Context | Product Owner | Domain Owner | Architecture Owner | Technical Owner |
+|---|---|---|---|---|---|---|
+| **`PRD-021A`** | Library Community & Community Feed | **`BC-15`** Community & Groups (**V2**) | Product Owner | **Social Domain** | ARB | Platform Engineering |
+
+**The Domain Owner is derived, not chosen** — §3 rule 3. `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L119** gives `BC-15`'s
+*"Owning Platform"* as **Global Student**, the same value **L114**–**L117** give `BC-11`, `BC-12` and `BC-13`. §4.3
+already renders that platform as **Social Domain** for `PRD-020` (`BC-13`) and `PRD-021` (`BC-11`, `BC-12`), so
+this row **reuses the existing derived value rather than introducing a new one**. **No context-ownership change
+occurs**, so §7 rule 2's ADR requirement is **not triggered**.
+
+**Architecture Owner is platform-wide by construction** (§3 rule 2 — ARB). **Product Owner and Technical Owner are
+the roles as defined in §2.2.** ⛔ **No personal name is recorded** — §7 rule 4. ⛔ **No new role is constituted**;
+the six that exist (§2.2 four, §9 Privacy Owner, §10 Governance Owner) are unchanged, and **no holder is
+appointed**.
+
+**Not contested.** §3 rule 6 does not apply: **no second PRD claims `BC-15`**. `PRD-021` owns `BC-11`/`BC-12` and
+`PRD-020` owns `BC-13`; none claims `BC-15`. §4.4's *"✅ **No context is contested. Count: 0**"* therefore **remains
+true and is not amended**.
+
+### 11.2 ⚠ Why this is a section and not a row inside §4.3
+
+Measured before writing, on the identical discipline §9 and §10 record. This document is cited **by line number**
+across the repository; the highest cited line is **L418**, with heavy concentrations at **L85** (35 citations),
+**L180**, **L284** and **L202**/**L203** — the last two being the `PRD-020` and `PRD-021` rows in §4.3, which is
+exactly where a `BC-15` row would naturally sit. **Inserting a row at L204 would shift every cited line below it**,
+including **L284**, **L285**, **L311**, **L329**, **L331**, **L358**, **L399** and **L418**, in `Accepted` ADRs and
+in `DOCUMENTATION_BASELINE.md`. **This section begins below L479, so it shifts 0 lines and changes 0 cited-line
+contents** — verified. The precedent is stated in this document's own v1.3 changelog: the Governance Owner role was
+constituted *"by APPEND (§10), not by a sixth row in §2.2"* because *"appending at L400+ invalidates 0"*.
+
+### 11.3 ⚠ Two consequences disclosed, neither repaired
+
+1. **§4's heading and §6 item 1 are now arithmetically stale.** The heading reads *"Assignment for all **23**
+   registered PRDs"* (already stale before this pass — the header's Scope row says **24**), and §6 item 1 reads
+   *"**23 of 23**, plus the two reserved sub-numbers"*. With `PRD-021A` the population is larger again. **Neither
+   is edited**, because §4's heading sits at **L137** and §6 at **L291**, both above cited lines — the exact
+   insertion that breaks the 35 citations to L85 and the ones to L284/L285. This is the same disclosure §9.4 and
+   §10.4 made for §2's *"Four distinct answers"* arithmetic, which **remains stale by two** and **remains
+   unrepaired on the same reasoning**. **Routed to the Governance Owner.**
+2. **§6 item 1's clause *"`PRD-023` does not exist and is deliberately not allocated (§4.4)"* was already falsified**
+   by `ADR-0017` and this pass **does not repair it either** — it is pre-existing, out of scope for `D-A`, and
+   correcting it is the same insertion problem.
+
+### 11.4 ⛔ What assigning these four roles does **not** do
+
+| Claim | Status |
+|---|---|
+| A holder or personal name is recorded | ⛔ **No.** Roles only — §7 rule 4 |
+| A new role is constituted | ⛔ **No.** Six roles before, six after |
+| Context ownership changes | ⛔ **No.** `BC-15`'s owning platform is unchanged at BC Map **L119**; §7 rule 2's ADR requirement is not triggered |
+| `PRD-021A` gains content, readiness or a lifecycle stage | ⛔ **No.** §3 rule 4 — *"it does not have content."* Stages 3–7 **NOT CONFERRED**; **nothing frozen** |
+| `BC-15` moves from V2 to V1 | ⛔ **No.** The release band is untouched; that is a **Rank 1** scope act |
+| A6, A7 or A8 gains an owner | ⛔ **No — they are NOT registered PRDs.** `D-A` refused them as **NO STANDALONE PRD**; their scope stays with `BC-13`/`PRD-020`, `BC-22`/`PRD-010`, and the EA/Matrix/`ADR-0001` respectively. **No row exists for them and none may be added** |
+| A1–A5's open decisions are resolved | ⛔ **No.** A1's `W₀`, A4's scope decision, A5's existence gate and A2/A3's architectural gates all **remain OPEN**. §3 rule 5 — *"Ownership says who decides"*, not what is decided |
+| Ownership overrides precedence | ⛔ **No** — §3 rule 5. This document is **Unranked** (header L10) and never outranks a PRD or a ranked document |
+| Any ADR was created | ⛔ **No.** `ADR-0083` remains free and **was NOT created**; **73** ADR files before and after |
+| Any §2.2, §5, §9, §10 line or any §§4.1–4.4 PRD row is amended | ⛔ **No** — every cited line is **byte-identical** |
+
+### 11.5 Changelog note
+
+⚠ **Recorded here rather than as a row in §8**, for the reason §9 and §10 both give: §8's table sits at **L325**,
+below cited **L284**/**L285** but above cited **L311**, **L329**, **L331**, **L358**, **L399** and **L418**, so
+appending a row there shifts six cited lines. **This note therefore lives in the section it describes.**
+
+**v1.4 — 2026-08-25.** ⭐ **`PRD-021A` assigned its four roles on registration** under Product Owner decision
+**`D-A`** (`PRD_REGISTRY.md` §11). Domain Owner **derived** to **Social Domain** from BC Map **L119**'s
+*Global Student*, matching the existing `PRD-020`/`PRD-021` renderings — **no new value, no new role, no
+context-ownership change, no ADR required** (this document is **Unranked**, header **L10**; absent from
+`DOCUMENTATION_BASELINE.md` §3 and §4). Executed **by APPEND**: **0** cited lines shifted, **0** cited-line
+contents changed, verified against the highest cited line **L418**. ⛔ **No holder appointed, no personal name
+recorded, no lifecycle stage conferred, no document frozen, no A6/A7/A8 owner created, and no A1–A5 decision
+resolved.** ⚠ §4's *"all 23"* heading and §6 item 1's count are **disclosed as stale in §11.3 and routed**, not
+silently patched — the same treatment §9.4 and §10.4 gave §2's arithmetic.

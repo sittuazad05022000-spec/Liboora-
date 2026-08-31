@@ -668,3 +668,150 @@ nothing on it.
 | **v1.8** | 2026-08-05 | **`PRD-006` Attendance Management FROZEN — the seventh baselined PRD, and the one that closes the `[CORE]` cluster.** Status `PLANNED` → **`FROZEN`** at **v1.9**, admitted by **`ADR-0034`** under **`BASELINE-2026-08-05-A`**. `FROZEN` **6 → 7**; `PLANNED` **17 → 16**; documents that exist **9 files / 7 identities → 10 files / 8 identities**; missing V1 PRDs **17 → 16**. **`PRD-000`…`PRD-007` are contiguous again** and **all four `[CORE]` contexts `BC-01`…`BC-04` are frozen**, so the `E-08` occupancy chain is Rank 3 at both ends and this register's own complaint that `PRD-007` was *"a frozen consumer waiting on an unwritten producer"* no longer holds. **`SEAT-GAP-009` is NOT closed by this**, and the §7 note was rewritten to say so explicitly: the producer now exists, but the gap asks a question only a named owner may answer, and `SEAT-BR-045` forbids resolving one by implementation choice. **A freeze supplies a document; it answers nothing.** Likewise **all 18 open gap-ledger entries in `PRD-006` remain OPEN** with named owners, and **`ADR-0031` remains `Proposed`** because no Product Owner has approved a range for the presence tolerance — **a twenty-fifth configuration row was refused rather than invented**, and the freeze did not change that. **The freeze was blocked and the blocker was resolved by withdrawal rather than by permission.** Edge `E-27` (`BC-03` → `BC-04`), added by `ADR-0032`, was found to sit outside the intra-cluster allow-list `E-01`…`E-10` that `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` enforces *"as an explicit allow-list, not 'anything within the cluster'"* — and it was measured to be the **only** edge above `E-10` with both endpoints in that cluster. `ADR-0033` was accepted under **Architecture Owner authority conferred by the human principal** (recorded as a conferral, **not** as an ARB meeting) and **withdrew `E-27`**: BC Map → v1.7, edge set back to `E-01`…`E-26`, **26 rows, identical to the pre-`ADR-0032` count**. **The allow-list was not widened and the Dependency Matrix was not amended** — it stands byte-unchanged, because withdrawing the edge **restored compliance with the law that already existed**. **`ADR-0032` was not demoted**; it is still `Accepted` and its decision stands, only its transport changed. **Three prior states of this register are worth recording as being correct rather than lucky.** Through nine PRD versions and **two refused freeze attempts**, `PRD-006` carried `Status: DRAFT` in its own header while this register showed `PLANNED` — and that divergence was right, because status here derives from `DOCUMENTATION_BASELINE.md` §3, never from a PRD's self-description: *"Freeze is **conferred, not claimed**."* The §4.1 prose and the §3 table were updated **in the same commit**, which is the specific discipline `GCP-08` exists to enforce; `GCP-11`, logged in the baseline declaration during this same freeze, is the **fourth** recorded instance of that defect class, so the discipline is applied because the class is live. **No requirement changed anywhere**, **no gate was weakened**, and **no Dart source was touched** (0 files versus the pre-work baseline). **`PRD-006` is `FROZEN`, not `VERIFIED`** — 0 of 80 tasks and 0 of 222 acceptance criteria are proven. |
 | **v1.7** | 2026-08-04 | **`PRD-007` Seat Management FROZEN — the sixth baselined PRD, the largest specification in the repository, and the first frozen PRD whose own dependency is still unwritten.** §4.1 `PRD-007` moves **`PLANNED` → `FROZEN`** at **v1.0**, admitted by **[`ADR-0020`](../adr/ADR-0020-seat-management-prd-v1.0-baseline.md)** under **`BASELINE-2026-08-04-E`**. §7 counts: `FROZEN` **5 → 6**, `PLANNED` **18 → 17**, documents **8 files/6 identities → 9 files/7 identities**, missing V1 **18 → 17** — the **third** decrease in that row's history, all three on the same day. `DRAFT` stays at **0**: like `PRD-005`, `PRD-007` was drafted, reviewed and corrected repeatedly and frozen within a single day, so no `DRAFT` row was ever published for it. **Two rows stopped being contiguous runs and now say so** — `PRD-006` Attendance remains `PLANNED` while `PRD-007`, which consumes its occupancy signal (`SEAT-GAP-009`), is frozen; a register that reported *"`PRD-006`…`PRD-023`"* would have hidden a frozen consumer waiting on an unwritten producer. **This is a status change only — the register created, modified, reinterpreted and withdrew nothing** (§Authority). Status is recorded here **because the baseline confers it** (§2.1), not because the PRD declares it. **Version preserved at v1.0 — not renumbered** — following the `PRD-003`-at-v1.0, `PRD-004`-at-v1.2 and `PRD-005`-at-v1.4 precedents, since Stage 7 confers status and not content. **No requirement identifier was added, removed, renumbered or reworded** — **683 identifiers** across ten registers (`SEAT-FR` 304, `SEAT-BR` 45, `SEAT-INV` 14, `SEAT-EVT` 4, `SEAT-XC` 22, `SEAT-PO` 24, `SEAT-CFG` 18, `SEAT-NFR` 12, `SEAT-AC` 226, `SEAT-GAP` 14), unchanged and re-verified at exit 0 before admission — no ranked document was amended beyond the baseline and ADR index, no bounded context was created (still **31**) and **no integration edge was added** (7 inbound, 3 outbound, all pre-declared). `FROZEN` is **not** `VERIFIED`: **0 of 100 tasks (`IMPL-500`…`IMPL-599`) and 0 of 226 acceptance criteria** are proven, so nothing here claims `BC-04` works; AC coverage of criterion-verifiable obligations is **325 of 443 (73.4%)**, recorded rather than rounded up. **Fourteen gaps remain open and are not ratified by admission** — `SEAT-GAP-001`…`SEAT-GAP-014` — each requiring a decision from its named owner, recorded in `ADR-0020` §3; `SEAT-BR-045` forbids resolving any of them by implementation choice. |
 | **v1.6** | 2026-08-04 | **`PRD-005` Membership Management FROZEN — the fifth baselined PRD, and the first to move `PLANNED` → `FROZEN` without ever being recorded as `DRAFT`.** §4.1 `PRD-005` moves **`PLANNED` → `FROZEN`** at **v1.4**, admitted by **[`ADR-0019`](../adr/ADR-0019-membership-management-prd-v1.4-baseline.md)** under **`BASELINE-2026-08-04-D`**. §7 counts: `FROZEN` **4 → 5**, `PLANNED` **19 → 18**, documents **7 files/5 identities → 8 files/6 identities**, missing V1 **19 → 18** — the **second** decrease in that row's history, both on the same day. `DRAFT` stays at **0**: unlike `PRD-004`, which this register watched sit at `DRAFT` between two versions, `PRD-005` was drafted, reviewed five times, corrected four times and frozen within a single day, so the register never published a `DRAFT` row for it. **This is a status change only — the register created, modified, reinterpreted and withdrew nothing** (§Authority). Status is recorded here **because the baseline confers it** (§2.1), not because the PRD declares it: freeze is *"conferred externally by admission to the baseline"*, and a `grep` of `PRD-005` for its own status would have been wrong, exactly as §2.1 predicted for all five earlier specifications. **Version preserved at v1.4 — not renumbered to v1.0** — following the `PRD-003`-at-v1.0 and `PRD-004`-at-v1.2 precedents, since Stage 7 confers status and not content. **No requirement identifier was added, removed, renumbered or reworded** (333 identifiers across ten registers, unchanged), no ranked document was amended, no bounded context was created (still **31**) and **no integration edge was added**. `FROZEN` is **not** `VERIFIED`: **0 of 42 tasks (`IMPL-400`…`IMPL-441`) and 0 of 97 acceptance criteria** are proven, so nothing here claims `BC-02` works. **Five gaps remain open and are not ratified by admission** — `MM-GAP-001`, `MM-GAP-002`, `MM-GAP-005`, `MM-GAP-010`, `MM-GAP-010a` — plus `MM-GAP-006a`/`MM-GAP-007a` carried against the BC Map; each requires a decision from its named owner, recorded in `ADR-0019` §3. **Both PRDs on the `E-01` dependency are now frozen**, so `PRD-006`, `PRD-007` and `PRD-008` inherit settled `E-02`, `E-03` and `E-07` contracts before a line of them is written. |
+
+---
+
+## 11. ⭐ `PRD-021A` Library Community & Community Feed — allocated by Product Owner decision **D-A**, recorded by append
+
+**Product Owner decision `D-A`, taken 2026-08-25.** `PRD-021A` is **APPROVED / AUTHORIZED** as the product
+decomposition of the **`BC-15` Community & Groups** **V2** scope. This section records that allocation and nothing
+else. ⛔ **It confers no lifecycle stage, no readiness and no freeze**, and it does **not** move `BC-15` between
+release bands.
+
+⚠ **Why this is a new section and not a row in §4.2, §4.3 or §4.4 — measured, not preferred.** Each existing
+subsection was tested against `BC-15` and each **excludes it by its own preamble**:
+
+| Candidate home | Its own constraint | Result for `BC-15` |
+|---|---|---|
+| **§4.1** (L213) | requires a **Master PRD §31** naming | ⛔ `BC-15` is not in §31 |
+| **§4.2** (L306) | *"Master PRD §8.1: these carry product-visible obligations"* | ⛔ `BC-15` has **no §8.1 row** — §8.1 names `BC-11`, `BC-12`, `BC-13` only |
+| **§4.3** (L328) | *"**Two** V1 bounded contexts … yet own aggregates and **V1 obligations**"* | ⛔ a third row would falsify the stated count, and `BC-15` is **V2**, not V1 |
+| **§4.4** (L379) | *"**These are not recommendations to write documents**"* | ⛔ inverted — and it is where `BC-15` currently sits (L391) |
+
+⚠ **And why by APPEND rather than by insertion — measured before writing.** This register is cited **by line
+number** across the repository. The highest cited line is **L548**, and two citations fall inside the subsections
+above: **`PRD-020` L2082 and L2092 both cite registry `L391`** (the `BC-15` row) as authority that `BC-15` is V2,
+and **FROZEN `PRD-017` L1757 cites registry `L449`** for its Stage 1 gate evidence. Inserting a row anywhere above
+L548 shifts every cited line below it; editing L391 or L449 in place changes the **content** a citation resolves
+to. **This section begins below L670, so it shifts 0 lines and changes 0 cited-line contents** — the same technique
+`ADR-0079` used on the EA after `ADR-0075` measured insertion at 175 invalidated citations and reverted, and the
+same technique `PRD_OWNERSHIP_MODEL.md` §9/§10 used for two role conferrals.
+
+### 11.1 The allocation
+
+| PRD ID | Name | Bounded context | Type | V | Status | Recognised decomposition |
+|---|---|---|---|---|---|---|
+| **`PRD-021A`** | **Library Community & Community Feed** | **`BC-15` Community & Groups** | `[SUPPORTING]` | **V2** | **`PLANNED`** | **A1**…**A5** — see §11.3. ⛔ **A6, A7, A8 are NOT parts of this allocation** — §11.4 |
+
+**Identifier.** `PRD-021A` is a **lettered suffix of the existing number `PRD-021`**, not a new sequence number —
+the identifier shape §4.1 already established for `PRD-012a` / `PRD-012b`, and §7 already records that a suffix
+*"consumed no number and created none"*. **§8 rule 1 is satisfied: no number is reused or reassigned**, and
+`PRD-021` Social Graph & Messaging (§4.2 L321, `BC-11`/`BC-12`) is **untouched and remains `PLANNED`**.
+
+### 11.2 Authority — why this record is lawful without an ADR and without a Rank 1 amendment
+
+| # | Question | Governing text | Answer |
+|---|---|---|---|
+| 1 | Does recording this require an ADR *before* the change? | `DOCUMENTATION_BASELINE.md` §7 rule 1 — *"a change to any Rank 1–5 document requires an ADR before the change"* | ⛔ **No.** This register appears in **neither** baseline **§3** (L123–131, four rows) **nor §4** Precedence (Ranks 1–7). §4.1 L285 states it directly: *"This register and `PRD_OWNERSHIP_MODEL.md` are both **unranked** (absent from `DOCUMENTATION_BASELINE.md` §4), so this navigational confirmation needs no ADR."* `PRD-022` v1.9 executed on the identical reading |
+| 2 | Does it require a `MASTER_PRD.md` change first? | §2 status vocabulary — `PLANNED` entry evidence is *"Named in the Master PRD, a roadmap **or this register**"* | ⛔ **No.** The third disjunct is satisfied **by this section**. `MASTER_PRD.md` is **byte-unchanged** |
+| 3 | Does it require a new ADR number? | §8 rule 1; identifier discipline | ⛔ **No.** `ADR-0083` is the next free number and **was NOT created**. The ADR count stands at **73 files** |
+| 4 | What is the entry evidence relied on? | §8 rule 2 — *"A status change requires the entry evidence in §2"* | `PLANNED` — *"Named as needed … named in … this register"*, supplied by the Product Owner act recorded here |
+| 5 | Is a baseline row required? | §8 rule 4 — *"`FROZEN` is set **only** when the document appears in `DOCUMENTATION_BASELINE.md` §3"* | ⛔ **No** — and none is written. `DOCUMENTATION_BASELINE.md` **L139** still reads *"`PRD-021A` remains **NOT READY / NOT FROZEN**"* and that remains **true and unamended** |
+| 6 | Does an ownership record follow? | §8 rule 7; `PRD_OWNERSHIP_MODEL.md` §3 rule 1 and §7 rule 1 | ✅ **Yes** — four roles, recorded at that document's **§11**. Roles only; **no personal name** |
+
+⚠ **Why `PLANNED` and not `DRAFT` — the weaker value is chosen deliberately.** `DRAFT`'s entry evidence
+(*"a document on disk with a version header"*) is **also** met: A1–A5 exist. `DRAFT` is **not** selected because
+(i) **D-A is an allocation decision, not a readiness decision**; (ii) advancing to `DRAFT` engages **`GCP-14`**,
+which records that this register states **two incompatible tests** for `DRAFT` and **remains OPEN** — and no
+authority was conferred for this act as `ADR-0043` §8.2 conferred one for `PRD-008`; and (iii) the three prior
+`PLANNED` → `DRAFT` moves (`PRD-004` v1.4, `PRD-022` v1.9, `PRD-008`/`PRD-019`) were **transitions of an
+already-registered row**, whereas this is an **initial registration**. ⚠ **The consequence is disclosed, not
+hidden:** `PLANNED`'s *definition* text — *"No content, no owner assigned, no discovery started"* — is
+**factually false** for `PRD-021A`, because five drafts exist. **§8 rule 2 keys the status on its *entry
+evidence*, not on its definition prose**, and where two closed-set values both qualify, the **non-conferring** one
+is recorded. The discrepancy is logged in §11.6 and routed, **not resolved here**.
+
+### 11.3 The five recognised parts — recognised, **not** advanced
+
+Each part is recognised **at its existing version and with its existing gates open**. ⛔ **No part is rewritten, no
+version advanced, no gate closed, no blocking item answered.**
+
+| Part | Subject | On disk | Its gate — **unchanged by D-A** |
+|---|---|---|---|
+| **A1** | Community Foundation & Membership | `..._A1_LIBRARY_COMMUNITY_FOUNDATION_DRAFT_v0.2.md` | ⛔ **Remains subject to its existing `W₀` decision** — `LCM-GAP-001` / `LCM-DEC-001`, reserved to the Product Owner by name in `ACCEPTED` `ADR-0036` §8.2 question 2. **OPEN. No value supplied** |
+| **A2** | Community Feed & Content | `..._A2_LIBRARY_COMMUNITY_FEED_CONTENT_DRAFT_v0.8.md` | ⛔ **Remains subject to its architectural/lifecycle gates**, including its own self-blocking clause. `LCF-ADR-005`/`006` closed at v0.8 by `ACCEPTED` `ADR-0078`; the rest stand |
+| **A3** | Community Feed Ranking Algorithm | `..._A3_COMMUNITY_FEED_RANKING_DRAFT_v0.6.md` | ⛔ **Remains subject to its architectural/lifecycle gates.** `LCR-GAP-009` resolved at v0.4 by `ADR-0078`; `LCR-DEC-009` **remains REFUSED as undecidable** |
+| **A4** | Community Groups & Roles | `..._A4_COMMUNITY_GROUPS_AND_ROLES_DRAFT_v0.1.md` | ⛔ **Remains subject to its existing Product Owner scope decision** — `LCG-GAP-001` / `LCG-DEC-001`. Its header's *"THE SCOPE ALLOCATION OF THIS PART IS ITSELF OPEN"* **stands**; the document **remains a CANDIDATE**. ⛔ **No role set is defined** |
+| **A5** | Official Library Communication | `..._A5_OFFICIAL_LIBRARY_COMMUNICATION_DRAFT_v0.1.md` | ⛔ **Remains subject to its existing Product Owner existence/scope decision** — its §0.3 **double existence gate**, `LCO-DEC-001`/`002`, `LCO-GAP-001`. ⛔ **No announcement type is answered** |
+
+⚠ **A4 is named by its repository scope — *Community Groups & Roles*** — the title its own document and BC Map
+**L119** carry. It is **not** renamed to any Help / Resources / Interaction framing.
+
+### 11.4 ⛔ A6, A7 and A8 — **NO STANDALONE PRD**
+
+**D-A expressly refused to authorize these three.** They are recorded here so the refusal is discoverable at the
+same place as the allocation, and so no later pass reads their absence as an oversight.
+
+| Part | Requested as | Disposition | Existing owner that keeps the scope |
+|---|---|---|---|
+| **A6** | Community moderation | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **`BC-13` / `PRD-020` Trust & Safety.** `ModerationCase` is `BC-13`'s (BC Map **L379**). ⛔ **`R-1`/`R-2`/`R-3` NOT selected**; `TSF-GAP-001`/`002`/`006` and `ADR-0070` **remain OPEN / Not opened**. ⛔ **A6 not created** |
+| **A7** | Community notifications | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **`BC-22` Notification Delivery / `PRD-010`.** BC Map **L332** `E-23` routes *all contexts* to `BC-22`. ⛔ **A7 not created. `PRD-010` NOT created** — it remains `PLANNED` at §4.1 |
+| **A8** | Community technical architecture | ⛔ **NO STANDALONE PRD — NOT AUTHORIZED** | **Enterprise Architecture · Module Dependency Matrix · `ADR-0001` (scope *"Whole platform"*) · the existing A1–A5 technical sections · the existing `PRD-021A` Stage-3 architecture alignment record.** ⛔ **A8 not created. No new technical architecture PRD created** |
+
+Verified at the time of writing: `ls docs/30-product/social-graph/ | grep -E "_A[678]_"` returns **nothing**.
+
+### 11.5 ⛔ What `D-A` does **not** do
+
+- ⛔ **Does not pull `BC-15` from V2 into V1.** The release band is **unchanged**. `MP-SCOPE-04`
+  (`MASTER_PRD.md` **L92**) and BC Map **L119** both stand, byte-unchanged. A V1 pull-in is a **Rank 1 scope act**,
+  as `PRD-020` **L597** (`TSF-GAP-006`) records, and it is **not performed**.
+- ⛔ **Does not amend `MASTER_PRD.md`, the Bounded Context Map, the Module Dependency Matrix, the Enterprise
+  Architecture, `DOCUMENTATION_BASELINE.md`, `TRACEABILITY_MATRIX.md`, or any FROZEN PRD.** All byte-unchanged.
+- ⛔ **Creates no bounded context** (still **31**) and **no bounded-context edge**. BC Map **L292** —
+  *"If an edge is not in this table, it does not exist"* — is not tested by this record. **`ID-2` unmodified.**
+- ⛔ **Does not reopen or reinterpret `ADR-0078`.**
+- ⛔ **Does not claim that *"Community Feed"* is named by Rank-1 authority.** It is **not**. The feed is recorded
+  here **only** because the Product Owner is explicitly authorizing `PRD-021A`'s decomposition of the `BC-15`
+  community product scope — a **first-time product-scope act**, materially weaker in precedent than `PRD-023`,
+  whose registration rested on `MASTER_PRD.md` §8 **module 18**. `PRD-021A` has **no Rank 1 module row**, and this
+  section does not pretend otherwise.
+- ⛔ **Confers no lifecycle stage.** Stages **3, 4, 5, 6 and 7 are NOT conferred.** The `PRD-021A` Stage-3 record
+  still reads *"**FAIL — 5 of 6 mandated checks pass; Check 2 FAILS**"* / *"**NOT CONFERRED**"*, and remains so.
+  **Nothing is frozen.** **`ADR-0082`'s finding that Stage 7 is NOT ENTERABLE is untouched.**
+- ⛔ **Resolves no open decision** outside the allocation itself, and **invents nothing** — no `W₀`, no
+  `CommunityRole` set, no announcement type, no policy value, no role, no holder, no identifier.
+
+### 11.6 ⚠ Two disclosed defects, neither repaired
+
+1. **A derived-statement defect is created by this allocation and is NOT silently patched.** §4.4 **L391** reads
+   `| BC-07…BC-09, BC-14, BC-15, BC-28 | … | V2 | PLANNED — correctly deferred |` under a heading *"Contexts and
+   surfaces with **no PRD**"*, and §6 **L468** reads `| BC-07…BC-09, BC-14…BC-17, BC-28 | None — V2/V3 | No |`.
+   **For `BC-15` both are now stale**: it has a registered PRD. **Neither line is edited**, because **L391 is cited
+   twice by `PRD-020`** (L2082, L2092) as authority that `BC-15` is V2 — a claim that **remains true** — and
+   rewriting the line changes the content those citations resolve to, the exact defect `ADR-0075` measured and
+   reverted. This is the `GCP-11`/`GCP-15`/`GCP-16`/`GCP-19`/`GCP-21`/`GCP-25` class in its **registry** form.
+   **Disclosed and routed to the Governance Owner; not repaired here.** §7's summary counts are likewise **not**
+   incremented, for the same reason and because a count edit requires re-derivation by measurement, not arithmetic.
+2. **`PLANNED`'s definition prose is factually false for `PRD-021A`** — see §11.2. **Amending §2's vocabulary is a
+   Governance Owner act** and is **not** performed here; it is the same class of finding as the `RETIRED` value
+   already disclosed in §10 as absent from §2's closed set.
+
+⚠ **A conflict found while performing this act is RAISED, not adjudicated**, per `DOCUMENTATION_BASELINE.md` §4 —
+*"A conflict is a defect. If you find one, do not choose — raise it."* Baseline **L218** refers to *"the **Rank 1**
+`PRD_LIFECYCLE.md` L147–153 allocation table"*, while baseline **§3** and **§4** list `PRD_LIFECYCLE.md` at **no
+rank at all**. The reading relied on above is §3/§4's, because those are the sections that *constitute* the
+baseline and the precedence order; **the contradiction is reported and left standing.**
+
+### 11.7 Change note
+
+⚠ **Recorded here rather than as a row in §10, and the version is deliberately NOT incremented.** §10's table ends
+at **L670**; a row appended there would be fine, but this register's version-discipline defect is **pre-existing
+and systemic** — the header still reads **v2.1 / 2026-08-05** while rows have been edited by every freeze since,
+and §10 twice discloses that repairing it is a **Governance Owner** act requiring reconstruction across roughly a
+dozen freezes. Incrementing to v2.2 for this one allocation would imply it is the only change since 2026-08-05,
+which is false. **The change is therefore recorded in place, in the section it describes.**
+
+**2026-08-25 — `PRD-021A` allocated `PLANNED` at `BC-15`, V2, by Product Owner decision `D-A`.** One appended
+section; **0** existing lines modified; **0** cited lines shifted; **0** cited-line contents changed; **0** ADRs
+created; **0** Rank 1–5 documents touched; **0** lifecycle stages conferred; **0** part files created;
+**0** requirements created, modified, moved, withdrawn or reinterpreted.

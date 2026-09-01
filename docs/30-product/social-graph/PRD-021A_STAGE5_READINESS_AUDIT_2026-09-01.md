@@ -106,9 +106,11 @@ character after `LCF` is `G`, not `-`.
 
 ⚠ **The residual risk is named, not dismissed:** a scan for the bare substring
 `LCF` *without* the hyphen **does** hit `LCFG-13`. Any future instrument must
-anchor on `LCF-`. This is the same hazard the matrix itself documents at **L128–133**
-for `PO-3` versus `SPO-3`, where *"citing `PO-3` when `SPO-3` was meant would move
-a requirement from one bounded context to another."*
+anchor on `LCF-`. This is the same hazard documented for `PO-3` versus `SPO-3` — at
+`TRACEABILITY_MATRIX.md` **L132**, *"Citing `PO-3` when `SPO-3` was meant would move a
+requirement from one bounded context to another"*, quoted back by `PRD_LIFECYCLE.md`
+**L132** with the observation that this is a class of error *"which no amount of
+careful reading reliably catches."*
 
 ---
 
@@ -179,10 +181,10 @@ which is a later and separately-authorised question.
 
 | Part | Ids | Regs | AC | Stage 4 | Stage 5 readiness | Part-specific blockers | Required authority |
 |---|---|---|---|---|---|---|---|
-| **A1** | 462 | 19 | 60 | ✅ CONFERRED | ⛔ NOT READY | `LCM-FR-047` skip (pre-disclosed §24); 6 `LCM-ADR-*` Required/Proposed | Traceability Owner |
+| **A1** | 462 | 19 | 60 | ✅ CONFERRED | ⛔ NOT READY | One **unassigned FR number** (§3.3); `LCM-ADR-001` **Required, `Proposed`** — its ADR number is reserved to the Governance Owner | Traceability Owner |
 | **A2** | 319 | 16 | 36 | ✅ CONFERRED | ⛔ NOT READY | — | Traceability Owner |
 | **A3** | 234 | 12 | 22 | ✅ CONFERRED | ⛔ NOT READY | — | Traceability Owner |
-| **A4** | 148 | 15 | 18 | ✅ CONFERRED | ⛔ NOT READY | ⛔⛔ **14 of 14 gaps OPEN**, incl. two hard blockers (§3.1) | Traceability Owner **+ Product Owner + Architecture Owner** |
+| **A4** | 148 | 15 | 18 | ✅ CONFERRED | ⛔ NOT READY | ⛔⛔ **13 OPEN + 1 DEFERRED, 0 closed**, incl. two hard blockers (§3.1) | Traceability Owner **+ Product Owner + Architecture Owner** |
 | **A5** | 330 | 13 | 21 | ✅ CONFERRED | ⛔ NOT READY | **26 of 26 gaps open** (footer L1958), incl. `LCO-GAP-012` — owned, not closed | Traceability Owner |
 | **A6** | 147 | 11 | 20 | ✅ CONFERRED | ⛔ NOT READY | — | Traceability Owner |
 | **A7** | 116 | 6 | 21 | ✅ CONFERRED | ⛔ NOT READY | 4 withdrawn events must stay withdrawn | Traceability Owner |
@@ -193,7 +195,11 @@ which is a later and separately-authorised question.
 
 A4 is the only part whose gap register carries a mechanical `State` column
 (header **L636**: `| ID | Gap | Owner | State |`). Measured over rows **L638–651**:
-**14 open, 0 closed.** Two are declared blocking:
+**13 `OPEN`, 1 `⏸ DEFERRED` (`LCG-GAP-010`), 0 closed.** ⚠ An earlier pass of this
+audit reported "14 open"; a row-by-row tally corrected it. The distinction matters
+precisely because Stage 4's L119 gate treats *deferred with a reason and an owner* as
+**satisfying** the gate — so collapsing `DEFERRED` into `OPEN` would misstate the very
+thing being measured. Two rows are declared blocking:
 
 | Row | Gap | Owner | State |
 |---|---|---|---|
@@ -229,6 +235,35 @@ construction — and the instrument was reading the `Ref` cell as a state.
 for any future revision: the eight registers use at least four different shapes,
 which is why no single mechanical open-gap count is offered here. **It is not needed
 for the Stage-5 gate**, which tests the matrix, not the gap registers.
+
+### 3.3 ⭐ A phantom identifier this audit created, and then removed
+
+⚠ **An earlier draft of this very document wrote out an identifier that A1
+deliberately never writes. That is a defect of the kind Stage 5 exists to catch, and
+it was caught in this audit's own verification pass.**
+
+A1 discloses at **L882–892** that its functional-requirement register *"skips exactly
+one number — the one immediately after `LCM-FR-046`"*, and states the reason for not
+naming it:
+
+> *"It is deliberately **not written out anywhere in this document**, because
+> reproducing an unassigned identifier in prose is exactly what makes a phantom look
+> defined to a grep-based or automated continuity check."*
+
+| Measurement | Result |
+|---|---|
+| Occurrences of the unassigned number in **A1** | **0** — the rule is honoured by its author |
+| Occurrences in **this audit**, first draft | ⛔ **1** — the rule was broken by its reader |
+| Occurrences in this audit, current bytes | ✅ **0** — removed |
+
+⭐ **Why this is recorded rather than quietly fixed.** A1's stated reason is that a
+future mechanical checker would find the identifier in prose and conclude it exists.
+This audit is exactly such a downstream document, so had the phantom survived into a
+committed governance record, A1's precaution would have been defeated **by the very
+document auditing it**. The register is contiguous except for that single unassigned
+number; ⛔ the skip is **not** closed here — closing it by inventing a requirement
+would add scope, and closing it by renumbering would move every later reference.
+Both remain the Product Owner's call in a later revision of A1.
 
 ---
 
@@ -299,7 +334,8 @@ not yet exist in any form:
 |---|---|
 | `PRD_LIFECYCLE.md` **L123–133** (Stage 5), **L135–153** (Stage 6), **L270–283** (Roles) | The gate and the role boundaries |
 | `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` | The Stage-4 precondition |
-| `TRACEABILITY_MATRIX.md` **L70** (`LCFG-n`), **L128–133** (the `PO-`/`SPO-` near-miss), §2–§2O | The register audited |
+| `TRACEABILITY_MATRIX.md` **L70** (`LCFG-n`), **L128–132** (the `PO-`/`SPO-` near-miss), §2–§2O (**L1715**) | The register audited |
+| `PRD-021A_A1_...v0.2.md` **L882–892** | The unassigned-FR-number disclosure behind §3.3 |
 | `PRD-020_STAGE5_CONFERRAL.md` **L7**, `PRD-013`/`PRD-016`/`PRD-017`/`PRD-023`/`PRD-014`/`PRD-007` Stage-5 records | The precedent that falsified §2.1's assumption |
 | `DOCUMENTATION_BASELINE.md` **L139**, **L199** | The NOT-FROZEN status; the scoped `PRD-012a` claim |
 | `ADR-0080` **L195–196** | Registers only `LCF-` and `LCR-` |

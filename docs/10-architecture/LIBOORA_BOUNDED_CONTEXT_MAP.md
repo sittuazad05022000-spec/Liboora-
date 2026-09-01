@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.9 |
+| **Version** | v1.10 |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 |
-| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1…v1.9**. **Edges: 28** — `E-01`…`E-26` (§7) + **`E-28`, `E-29`** (**§15.1**, v1.9); ⛔ `E-27` permanently vacant (withdrawn by `ADR-0033`, never reused). ⭐ **v1.9 appends §15, a NORMATIVE extension of §7 and §8** admitted by `Accepted` [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md) — **appended, not inserted**, because insertion into §7 was measured to invalidate **1,293** of this file's **2,812** line-citations against the append's **0** ([`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A). **§1–§14 byte-identical to v1.8** |
+| **Context Count** | 31 (23 in V1 scope) — **unchanged by v1.1…v1.9**. **Edges: 28** — `E-01`…`E-26` (§7) + **`E-28`, `E-29`** (**§15.1**, v1.9); ⛔ `E-27` permanently vacant (withdrawn by `ADR-0033`, never reused). ⭐ **v1.9 appends §15, a NORMATIVE extension of §7 and §8** admitted by `Accepted` [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md) — **appended, not inserted**, because insertion into §7 was measured to invalidate **1,293** of this file's **2,812** line-citations against the append's **0** ([`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A). **§1–§14 byte-identical to v1.8**. ⭐ **v1.10 appends §16**, publishing the `BC-15` scoping identifier `communityId` as rules **`CID-1`…`CID-6`**, admitted by `Accepted` [`ADR-0085`](../00-governance/adr/ADR-0085-communityid-scoping-identifier-published.md) — again **appended, not inserted**; **§1–§15 byte-identical to v1.9** apart from this cell, the `Version` cell and one changelog row. **No context, edge or aggregate changes: still 31 contexts and 28 edges** |
 | **Companion doc** | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` |
 | **Rulings applied** | `AR-1`, `AR-2`, `AR-3`, `AR-4`, `AR-5`, `AR-6`, `AR-7` — see [`ARCHITECTURE_RULINGS.md`](./ARCHITECTURE_RULINGS.md) |
 | **Implementation status** | `ADR-0011` is **implemented in code** as of `a22fd7e` — see [`../40-implementation/IMPLEMENTATION_STATUS.md`](../40-implementation/IMPLEMENTATION_STATUS.md) |
@@ -610,6 +610,7 @@ are unchanged **by that ruling**. *(Edge `E-27` was added by `ADR-0032` and **wi
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.10** | 2026-09-01 | **One identifier published, by APPEND as a new §16. No context, edge, aggregate, member, invariant, event, identity rule or tenancy model changed; context count remains 31 (23 in V1); the edge set remains `E-01`…`E-26`, `E-28`, `E-29` with `E-27` permanently vacant. §1–§15 are BYTE-IDENTICAL to v1.9** — only this row, the header **Version** cell and the header **Context Count** cell differ. Applies **`Accepted`** [`ADR-0085`](../00-governance/adr/ADR-0085-communityid-scoping-identifier-published.md) §3, an **Architecture Owner** act discharging ruling 3 of the `PRD-021A` Owner Rulings: *"approve a stable `communityId` as the required community/group scoping identifier and publish it through the appropriate existing architecture contract. Do not create duplicate identifiers."* **New §16 rules `CID-1`…`CID-6`**: `communityId` is the **required** scoping identifier for `BC-15`'s `Community` and `Group` (**§15.5**); **`BC-15` is the sole minting authority**; it is **stable and immutable**; it is **not** tenant-derived, which **preserves `ID-2` and `EV-3` rather than weakening them**; and ⛔ **no second scoping identifier is authorised**. ⭐ **This NAMES an existing concept rather than introducing one** — `Accepted` [`ADR-0078`](../00-governance/adr/ADR-0078-community-scope-identifier-carries-no-tenantid.md) §2.1 already reads *"`BC-15`-owned community identifiers"* and **§15.4 `EV-3`** already reads *"the community's own identifier"*; what was missing was the name and the contract, which `PRD-021A` A4 **L276** records as *"no contract defines how a `communityId` is minted or resolved"*. **The no-duplicates constraint was TESTED, not assumed:** `grep -c communityId` against this file at v1.9 returned **0** and `grep -rn "CID-[0-9]"` across `docs/` and `tool/` returned **0**, so both the name and the `CID-` stem were free before use. ⚠ **`CID-6` records a deliberate residue:** **no format, encoding, length or generation algorithm is specified** — the ruling said *"stable"*, not *"a UUIDv7"*, and inventing a representation would exceed the authority granted. Closes `LCG-GAP-006` and `LCG-ADR-003`. ⭐ **Why APPEND, stated as measurement.** **2,977** tight-window line-citations point into this file; appending below the former last line **L763** invalidates **0**. This is the method [`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A established and `ADR-0083` reused. ⚠ **ONE cost is DISCLOSED and deliberately NOT repaired:** this changelog row is itself an insertion, and it shifts `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` **L524**'s pointer at **L649** (the 28-edge set) to **L650**. That file is a **dated Stage-4 review record** committed at `12b0071`; historical review records are not edited after the fact, so the drift is logged as **`GAP-BCMAP-L649-CITE`** rather than silently corrected. The row could not be avoided — `DOCUMENTATION_BASELINE.md` **§7 rule 2** requires the changelog to be updated in the same commit, and **11 of the 14** candidate citations above L613 were measured to be **false positives** citing other documents. ⚠ **§16 measured 83 lines against ADR-0085 §7's predicted 42** — the prediction is **corrected to the measurement** in that ADR rather than quietly overwritten, per the `ADR-0079` §3.3 precedent. **No baseline re-issue** — Rank 4, per `DOCUMENTATION_BASELINE.md` §7 rule 4. ⛔ **Confers no lifecycle stage: `PRD-021A` remains NOT FROZEN and Stage 7 remains NOT CONFERRED** |
 | **v1.9** | 2026-08-31 | **Two new edges, one cluster extended, four rule blocks added — all by APPEND as a new §15. No existing edge added to, removed from or altered inside §7; no aggregate row altered inside §8; no context, invariant, identity rule or tenancy model changed; context count remains 31 (23 in V1). §1–§14 are BYTE-IDENTICAL to v1.8** — only this row, the header **Version** cell and the header **Context Count** cell differ above §15. Applies **`Accepted`** [`ADR-0083`](../00-governance/adr/ADR-0083-prd-021a-owner-rulings-executed.md), which executes 22 `PRD-021A` Owner rulings conferred directly by the human principal. **New §15.1 edges: `E-28`** `BC-11 Social Graph` → `BC-15 Community & Groups` (`C/S`, Sync port, **V2**), authorising `LCF-ADR-007` per **AO-1**; **`E-29`** `BC-14 Content Sharing` → `BC-15` (`CF`, Sync port, **V2**), authorising `LCF-ADR-002` per **AO-3**. ⛔ **`E-27` IS NOT REUSED** — minted by `ADR-0032`, withdrawn by [`ADR-0033`](../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md) in v1.7 (row below), and `PRD_LIFECYCLE.md` §5 rule 5 reads *"Numbers are never reused, even after withdrawal."* The edge set is therefore **`E-01`…`E-26`, `E-28`, `E-29` = 28 edges with `E-27` permanently vacant** — a gap that records a withdrawal rather than an error. **§15.2** extends the declared **Social cluster** to `BC-11`, `BC-12`, `BC-13`, **`BC-15`** per **AO-7**, resolving `D-2`; the operative amendment is in Rank 4 [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](LIBOORA_MODULE_DEPENDENCY_MATRIX.md) **L90**/**L652**, edited in place. ⭐ A **third** R8 cluster was deliberately NOT created — `ADR-0011` L92–95 warns that doing so *"dissolves the Separate Ways boundary"*. **§15.3** opaque cursor pagination `PG-1`…`PG-4` per **AO-2**, populating the declared-but-empty `Pagination & Filtering Standards (V1)` node at EA **L379** (measured: **0** cursor definitions existed anywhere in `docs/10-architecture/`). **§15.4** envelope rules `EV-1`…`EV-4` per **AO-6**: `BC-15` events carry **no `tenantId`**. ⭐ This is **not a new exemption** — §10 **L488** already reads *"`BC-11`→`17` Student Network | **Global.** No `tenantId` … Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"*; the defect was an envelope rule phrased as universal, so **`ID-2` is preserved, not weakened**, and no other BC gains this exception. **§15.5** registers `BC-15`'s aggregates **`Community`** and **`Group`** by append per **AO-8**, with the `OWNER > MODERATOR > MEMBER` closed role set (**PO-4**), the `PUBLIC`/`PRIVATE` closed visibility enum (**PO-5**) and the no-ownerless-community invariant (**PO-6**, departure **blocked**, ⛔ never silent auto-promotion). **§15.6** records that moderation reaches `BC-15` as an **existing-edge-fed local projection** per **AO-4** — ⛔ **no `BC-15 → BC-13` edge was created**, the `ADR-0065` pattern is reused, and `BC-13`/`PRD-020` aggregate ownership is untouched — and that **community search is NOT authorised**: `E-21` (**L330**) runs `BC-01, BC-10 → BC-23` and `BC-15` is **measured absent** from its consumer cell, so per **AO-9**'s own conditional the refusal is recorded rather than support silently claimed. ⭐ **Why APPEND rather than insertion, stated as measurement.** At commit `c66f1d7`, **2,812** line-citations pointed into this file and the highest was **L624**, then the last line. Inserting a row after `E-26` would have shifted **1,293** of them, several inside **FROZEN** Rank 3 documents; inserting into §8 would have shifted **747**; appending shifted **0**. This is the method [`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 Option A established for the Enterprise Architecture. **AO-8** required exactly this discipline for §8; it was applied to §7 as well. ⚠ **This changelog row is itself the one deliberate insertion**, costing **1** measured citation (`ADR-0083` **L115**, repaired in the same commit) — accepted because a changelog that omits its own current version is the worse defect. ⚠ **Two residues are DISCLOSED, NOT resolved.** (1) **`E-29`'s `L2` clearance is UNDETERMINED** — `BC-14` returns **0** occurrences in *both* Rank 4 dependency documents, and **AO-7** enumerates only `BC-11/12/13/15`, so whether `E-29` is same-rank-within-cluster or lawful downward **cannot be measured**; recorded as **`GAP-BC14-RANK`**, Architecture Owner. `BC-14` was **NOT** added to the cluster, because that would exceed the ruling. (2) **`BC-15` remains the source of ZERO edges** — `E-14`, `E-28` and `E-29` are all inbound — so `PRD-021A` Part A4's `GroupCreated`/`GroupMembershipGranted`/`GroupMembershipRevoked` are still **unpublishable** and `LCG-ADR-002` **stays OPEN**. **No baseline re-issue** — Rank 4, per `DOCUMENTATION_BASELINE.md` §7 rule 4 |
 | **v1.8** | 2026-08-20 | **One consumer cell. No edge added, no edge removed, no existing edge's mode, mechanism or contract changed; no context, aggregate, invariant, event, identity rule or tenancy model changed; count remains 31 (23 in V1).** Applied [`ADR-0055`](../00-governance/adr/ADR-0055-e22-consumer-list-includes-bc-12.md). §7 edge **`E-22`** consumer cell `BC-01, BC-10, BC-14` → `BC-01, BC-10, BC-12, BC-14`, admitting **`BC-12` Messaging** as a consumer of `BC-29` File & Media, required by `PRD-017` **FROZEN** `FIL-FR-075`…`FIL-FR-082` (V1 student-to-student file sharing). **`BC-11` Social Graph and `BC-13` Trust & Safety were tested and deliberately NOT admitted** — `ADR-0055` §3 applied a per-context necessity test rather than admitting the whole `domain/social` module, so the map stays context-grained where the manifest is module-grained (`GCP-23`). This is the **second** instance of the `ADR-0016` defect class — a Rank 3 PRD depending on an edge the Rank 4 register did not list — and it is **sharper** than the first, because `tool/module_dependencies.yaml` **L242** already granted `domain/social` the `platform/services:files` port while this cell denied the edge; `FIL-FR-007` rules that a port grant is not an edge authorisation, so the **map** was the incomplete record. Closes the architecture half of `FIL-GAP-012` / `B-11`; the implementation half stays open. **No baseline re-issue** — Rank 4, per `DOCUMENTATION_BASELINE.md` §7 step 4 and the `ADR-0016` precedent |
 | **v1.7** | 2026-08-05 | **One edge removed. No edge added; no existing edge's mode, mechanism, contract or consumer cell changed; no context, aggregate, invariant, event, identity rule or tenancy model changed; count remains 31 (23 in V1); §9's event surface is untouched.** Applies [`ADR-0033`](../00-governance/adr/ADR-0033-e27-core-cluster-edge-allowlist.md), which selects its option **`O-C`**. §7.1 **loses `E-27`**, together with the "`E-27` vs `E-08`" note that explained a row which no longer exists; the edge set returns to **`E-01`…`E-26`**. **Why it was withdrawn rather than legalised.** `E-27` ran `BC-03` → `BC-04`, and **both are members of the Core Library cluster**, whose permitted internal edges Rank 4 [`LIBOORA_MODULE_DEPENDENCY_MATRIX.md`](LIBOORA_MODULE_DEPENDENCY_MATRIX.md) L89/L202 restrict to **`E-01`…`E-10`**, *"Enforced as an explicit allow-list, not 'anything within the cluster'"*. Measured across the whole map, `E-27` was the **only** edge numbered above `E-10` with both endpoints inside that cluster. **The allow-list was NOT widened to accommodate it** — that would have been adding an edge to erase a contradiction — and the Dependency Matrix is therefore **unamended**. **Why nothing breaks.** `ADR-0032`'s substantive decision `O-5` never depended on this row: frozen Rank 3 `SEAT-FR-104` already obliges the Seat Card to compose holder data **from `BC-01` at read time**, and **no `BC-01` → `BC-04` edge has ever existed in §7** — so read-time composition across a context boundary is an **already-ratified pattern that requires no numbered edge**, and `PRD-007` §3 records three further no-edge consumptions (`BC-10`, `BC-05`, `BC-18`) on the same footing. `E-27` documented a transport governance had already permitted without one. **What is unchanged:** `E-08`'s row is **byte-identical** — Attendance still pushes check-in and check-out to Seating for occupancy; the Seat Card still shows four states, still stores no presence, still reads no raw Wi-Fi or device state, and there is still **no fifth `attendance.*` event**. `ADR-0032` **remains `Accepted`**; only its transport is withdrawn. `SEAT-FR-103`…`SEAT-FR-107` are **not modified**. **`SEAT-GAP-009` remains open** — it concerns the opposite direction. |
@@ -760,4 +761,87 @@ insert at ~L388 was measured to invalidate **747** line-citations. **§8's table
 - ⛔ Does **not** create a `BC-15` → `BC-13` edge.
 - ⛔ Does **not** move `BC-14` or `BC-15` from V2 into V1.
 - ⛔ Does **not** add a `tenantId` to anything, and does not weaken `ID-2`, `ID-1` or `X-05`.
+- ⛔ Does **not** confer any lifecycle stage on `PRD-021A` or any of its parts.
+
+---
+
+## 16. ⭐ ADR-0085 Extension — `communityId`, the `BC-15` community/group scoping identifier (V2)
+
+Admitted by `Accepted` [`ADR-0085`](../00-governance/adr/ADR-0085-communityid-scoping-identifier-published.md)
+§3 on **Architecture Owner** authority, discharging ruling 3 of the `PRD-021A` Owner Rulings:
+*"approve a stable `communityId` as the required community/group scoping identifier and publish it
+through the appropriate existing architecture contract. Do not create duplicate identifiers."*
+
+⭐ **Appended, not inserted.** §1–§15 are **byte-identical to v1.9** apart from the header `Version`
+cell, the header `Context Count` cell and one changelog row. See §16.4 for the measurement.
+
+### 16.1 The rules
+
+| Rule | Statement |
+|---|---|
+| **CID-1** | `BC-15`'s `Community` and `Group` aggregates (**§15.5**) SHALL be scoped by a **`communityId`**. It is the **required** community/group scoping identifier, named here for the first time in a normative contract. |
+| **CID-2** | **`BC-15` is the sole minting authority.** No other bounded context creates, allocates or reassigns a `communityId`, because `BC-15` owns both aggregates (**§15.5**). |
+| **CID-3** | A `communityId` SHALL be **stable and immutable** for the lifetime of the aggregate it identifies. It is never re-pointed, recycled or reissued. |
+| **CID-4** | A `communityId` SHALL NOT be derived from, encode, or be recoverable to a `tenantId`. This **preserves** `ID-2` and **`EV-3`** (**§15.4**) unchanged and grants **no** new exemption. |
+| **CID-5** | ⛔ **No second scoping identifier for `BC-15` is authorised.** A community or group is scoped by its `communityId` and by nothing else. Any alternative requires its own ADR. |
+| **CID-6** | ⚠ **The representation is deliberately UNSPECIFIED.** No format, encoding, length, character set, ordering property or generation algorithm is decided here. This is recorded as an **open residue**, not an omission. |
+
+### 16.2 ⭐ This names an existing concept; it does not introduce one
+
+The concept was already `Accepted` — only its **name** and its **contract** were missing.
+
+| Existing record | What it already says |
+|---|---|
+| `Accepted` [`ADR-0078`](../00-governance/adr/ADR-0078-community-scope-identifier-carries-no-tenantid.md) **§2.1** | *"`BC-15`'s aggregates key exclusively on `PersonId` and on **`BC-15`-owned community identifiers**"* |
+| **§15.4 `EV-3`** (this file, v1.9) | *"Community scope is carried by **the community's own identifier**, which is **not** tenant-derived"* |
+| `PRD-021A` A4 **L228** | `` `communityId` | Identifier | Mandatory, immutable. Scoping key `` |
+
+⭐ **The duplicate-identifier prohibition was tested, not assumed.** `grep -c communityId` against this
+file at v1.9 returned **0**, and `grep -rn "CID-[0-9]"` across `docs/` and `tool/` returned **0**. The
+`CID-` stem and the name `communityId` were both free before use. Nothing is renamed and nothing is
+superseded: `CID-1`…`CID-6` **publish** the identifier that `ADR-0078` §2.1 and `EV-3` already presume.
+
+### 16.3 What this unblocks, and what it does not
+
+`PRD-021A` A4 **L276** records the defect as *"no contract defines how a `communityId` is minted or
+resolved"*. **`CID-1`…`CID-5` define exactly that**, so A4 **L393**'s blocked group-creation path may
+proceed. `LCG-GAP-006` and `LCG-ADR-003` are closed by `ADR-0085` §3.
+
+⛔ **It does not confer a lifecycle stage.** `PRD-021A` and every one of its parts remain **NOT
+FROZEN**; Stage 7 remains **NOT CONFERRED**. Publishing a Rank 4 contract is not a freeze act.
+
+### 16.4 ⭐ Measurement, and one disclosed cost
+
+| Quantity | Measured |
+|---|---|
+| Tight-window line-citations into this file (≤ 763) | **2,977** |
+| Candidates resolving at or above the changelog row (**L613**) | **14** |
+| — of those, false positives (cite *other* documents) | **11** |
+| — of those, version-qualified to v1.9 and therefore still true | **1** (`ADR-0083` **L115**) |
+| ⭐ Citations invalidated by the **append** below former **L763** | ⭐ **0** |
+| ⚠ Citations invalidated by the **mandated changelog row** | ⚠ **1** |
+
+⚠ **The one cost, disclosed rather than hidden or silently repaired.**
+`PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` **L524** cites this file's **L649** for the
+28-edge set. The changelog row shifts that content to **L650**, so the pointer is off by one.
+
+**It is deliberately NOT repaired.** That file is a **dated Stage-4 review record**, committed at
+`12b0071`, and historical review records are not edited after the fact. The defect is therefore
+**disclosed as `GAP-BCMAP-L649-CITE`** and routed, exactly as `ADR-0083` disclosed and repaired its own
+single-citation cost in the commit that caused it. ⭐ **The row could not be avoided**:
+`DOCUMENTATION_BASELINE.md` **§7 rule 2** requires that *"the changed document's version is incremented
+and its changelog updated in the same commit"*, and a changelog omitting its own current version is the
+worse defect. The alternative — deleting a blank line below **L613** to keep the count stable — was
+**rejected**: it would edit §15, which this amendment declares byte-identical.
+
+### 16.5 What this section does **not** do
+
+- ⛔ Does **not** add, remove or alter a bounded context — **31** before and after, 23 in V1.
+- ⛔ Does **not** add, remove or alter an edge. The set stays `E-01`…`E-26`, `E-28`, `E-29`; `E-27` stays vacant.
+- ⛔ Does **not** alter any aggregate, member or invariant. **§8 and §15.5 are byte-unchanged.**
+- ⛔ Does **not** specify a format, encoding, length or generation algorithm — see **`CID-6`**.
+- ⛔ Does **not** create a second identifier, alias or synonym for community scope.
+- ⛔ Does **not** weaken `ID-1`, `ID-2`, `X-05` or `EV-1`…`EV-4`.
+- ⛔ Does **not** make `BC-15` an event producer — `LCG-ADR-002` stays **OPEN**.
+- ⛔ Does **not** re-issue the baseline — this file is **Rank 4** (`DOCUMENTATION_BASELINE.md` §7 rule 4).
 - ⛔ Does **not** confer any lifecycle stage on `PRD-021A` or any of its parts.

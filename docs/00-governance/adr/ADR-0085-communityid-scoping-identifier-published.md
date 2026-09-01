@@ -278,10 +278,10 @@ allocated), not Stage 8 (code written). A2 **L1675** already states the correct 
 
 | Measurement | Result |
 |---|---|
-| BC Map lines | **763 → 806** (+43: §16 = 42 lines, changelog row = 1) |
-| Highest genuine BC Map citation | **L673** — below every added line |
-| ⭐ Citations invalidated by §16 | ⭐ **0** |
-| Citations invalidated by the changelog row | measured in §9 |
+| BC Map lines | ⚠ **763 → 847** (+84: §16 = **83** lines, changelog row = 1). ⭐ **CORRECTED TO THE MEASUREMENT** — see §7.1 |
+| Highest genuine BC Map citation | ⚠ **L649**, not L673 — **CORRECTED**, see §7.2 |
+| ⭐ Citations invalidated by §16 (the append) | ⭐ **0** — confirmed after execution |
+| ⚠ Citations invalidated by the changelog row | ⚠ **1** — `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` **L524**; see §7.3 |
 | **FROZEN** documents modified | ⛔ **0** |
 | **Rank 1–3** documents modified | ⛔ **0** |
 | `DOCUMENTATION_BASELINE.md` | **byte-unchanged**, sha256 `7e1c69f92363a5e5…` |
@@ -290,6 +290,55 @@ allocated), not Stage 8 (code written). A2 **L1675** already states the correct 
 | `Accepted` ADR decision text edited | ⛔ **0** |
 | Identifiers minted | **`CID-1`…`CID-6`** — a new rule block in a new section, collision-checked (§8) |
 | Bounded contexts / edges / events / permissions minted | ⛔ **0** |
+
+### 7.1 ⚠ The predicted line count was wrong, and is corrected rather than overwritten
+
+This section, before execution, predicted **763 → 806 (+43: §16 = 42 lines)**. The executed §16
+measured **83 lines**, so the file is **847**, not 806. The prediction understated the addition by
+**41 lines** — very nearly double.
+
+**Why:** the estimate was made from the *rule count* (six `CID-` rules) and assumed a block the size of
+§15.3's `PG-1`…`PG-4`. The written section also carries the §16.2 provenance table, the §16.4
+measurement table and the §16.5 negative list — three structures the estimate never counted.
+
+**The figure is corrected to the measurement, and the discrepancy is recorded rather than quietly
+overwritten**, following `ADR-0079` **§3.3**, which did exactly this when it predicted 21 new EA lines
+and measured 54. ⭐ **Nothing about the decision changes.** The line count was never load-bearing: what
+matters is that the addition is **below the last line**, and 83 lines below the last line invalidate
+exactly as many citations as 42 would — **zero**.
+
+### 7.2 ⚠ The "highest genuine citation" figure is corrected from L673 to L649
+
+The pre-execution sweep reported **L673** as the highest genuine citation. Re-measured with a tighter
+instrument that cuts each window at the next document name and then **opens every candidate**, all four
+`L673` hits resolve to *"Master PRD **L673**"* — a different document. They are **false positives**.
+
+The highest **genuine** citation into this file is **L649**, in
+`PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` **L524**, pointing at the 28-edge statement.
+⭐ **This strengthens the append argument rather than weakening it**: the true ceiling is *lower* than
+believed, so the append zone below L763 is wider than claimed.
+
+### 7.3 ⚠ The changelog row's one cost, disclosed and NOT repaired
+
+Fourteen candidate citations resolve at or above **L613**. Opened individually: **11 are false
+positives** (four cite Master PRD L673, two cite Dependency Matrix L652, two cite `PRD-004`'s own
+§7.4 L753/L757, three record the *v1.8* state and remain true of it), and **one** — `ADR-0083`
+**L115** — is version-qualified *"at **L615** in v1.9"*, so it stays true of v1.9 by construction.
+
+⛔ **Exactly one genuine pointer breaks:** `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md`
+**L524** cites **L649**, and the content moved to **L650**. Verified after execution.
+
+**It is deliberately NOT repaired.** That file is a **dated Stage-4 review record**, committed at
+`12b0071`, and this engagement's standing prohibitions forbid editing historical Stage-4 review
+records. The drift is therefore logged as **`GAP-BCMAP-L649-CITE`** (Architecture Owner, P3 —
+navigational, off by one, changes no determination) and left visible.
+
+⭐ **The row could not be avoided.** `DOCUMENTATION_BASELINE.md` **§7 rule 2** requires that *"the
+changed document's version is incremented and its changelog updated in the same commit"*. Two evasions
+were considered and **rejected**: deleting a blank line elsewhere to hold the count stable would edit
+§15, which this ADR declares byte-identical; and omitting the row would break a Rank 1–5 governance
+rule to preserve a single off-by-one pointer. `ADR-0083` accepted the identical trade at the identical
+cost of one citation.
 
 ---
 

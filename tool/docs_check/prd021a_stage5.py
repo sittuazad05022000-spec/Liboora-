@@ -60,11 +60,19 @@ PARTS = [
 
 STEMS = [s for _, _, s in PARTS]
 
-# Registers whose membership is closed by a normative rule in the subject.  A closed
-# register has no next free member until an ADR confers one, so its next-free cell
-# must not be numeric.  See section 2O.4 defect I-4.
-CLOSED = {
-    ("LCF", "EVT"): "A2 LCF-FR-104 closes the event set at six",
+# Registers that must NOT publish a numeric next-free cell, and why.  A register has
+# no next free member when either (i) a normative rule closes it, or (ii) its extent
+# is the subject of a raised, unresolved conflict routed to a named owner.  In both
+# cases max+1 is an arithmetic answer to a governance question, and writing it mints a
+# phantom inside the table that says the register may not grow.  Section 2O.4 defect
+# I-4 is case (i); case (ii) was added when this gate reported the A7 cell and the
+# reasoning was checked rather than the cell overwritten.
+NO_NEXT_FREE = {
+    ("LCF", "EVT"): "CLOSED - A2 LCF-FR-104 closes the event set at six; "
+                    "PRD_LIFECYCLE.md section 5 rule 6 makes extension an ADR act",
+    ("LCN", "EVT"): "SUSPENDED - A8 LCT-CONF-001 raises A7's seven events against "
+                    "A2's closure at six, RAISED NOT RESOLVED, routed to LCT-ADR-001; "
+                    "the extent of this register is an open architecture question",
 }
 
 # A7's four withdrawn event identifiers.  PRD_LIFECYCLE.md section 5 rule 5:
@@ -201,17 +209,17 @@ def main():
             fail("2P.0 `%s-%s-*` is contiguous but the cell does not say so: %r"
                  % (stem, reg, c_contig))
 
-        # -- defect I-4: a closed register publishes no numeric next free --
+        # -- defect I-4: a register that may not grow publishes no numeric next free --
         numeric_next = re.fullmatch(r"[`*\s]*(\d+)[`*\s]*", c_next)
-        if key in CLOSED:
+        if key in NO_NEXT_FREE:
             if numeric_next:
-                fail("2P.0 `%s-%s-*` is CLOSED (%s) but publishes numeric next-free %r "
-                     "- this is section 2O.4 defect I-4: it mints a phantom inside the "
-                     "table that declares the register closed"
-                     % (stem, reg, CLOSED[key], c_next))
+                fail("2P.0 `%s-%s-*` may not grow (%s) but publishes numeric next-free "
+                     "%r - this is section 2O.4 defect I-4: it mints a phantom inside "
+                     "the table that says the register may not grow"
+                     % (stem, reg, NO_NEXT_FREE[key], c_next))
             else:
-                note("closed register `%s-%s-*` correctly publishes no numeric next free"
-                     % (stem, reg))
+                note("`%s-%s-*` correctly publishes no numeric next free (%s)"
+                     % (stem, reg, NO_NEXT_FREE[key].split(" - ")[0]))
         else:
             if not numeric_next:
                 fail("2P.0 `%s-%s-*` is open but its next-free cell is not a number: %r"
@@ -294,12 +302,44 @@ def main():
         note("direction (c): 8 near-miss probes return 0; control fires (%d) so the "
              "probe is meaningful" % control)
 
-    # direction (d): a foreign DEFINITION of one of our stems inside the matrix
+    # direction (d): a foreign DEFINITION of one of our stems inside the matrix.
+    #
+    # A row that OPENS with a bare identifier is the matrix's definition shape, and
+    # this matrix must not define an identifier the subjects own.  But section 2P.6
+    # publishes the foreign-token evidence table, whose rows legitimately open with a
+    # cited token - and its verdict column says in terms that each is a citation
+    # rather than a definition.  Exempting that ONE subsection by name, rather than
+    # weakening the shape test, keeps the check able to fail everywhere else.
+    #
+    # Every exempted row is then re-tested: the token must resolve to an identifier
+    # its owning part actually defines, OR the row must classify it.  A row that
+    # merely looks like evidence is not evidence.
+    disclosure = ""
+    if "### 2P.6" in matrix:
+        d0 = matrix.index("### 2P.6")
+        d1 = matrix.find("\n### ", d0 + 1)
+        disclosure = matrix[d0:d1 if d1 != -1 else len(matrix)]
+
     for stem in STEMS:
         for line in matrix.split("\n"):
-            if re.match(r"^\|\s*`" + stem + r"-[A-Z]+-\d{3}`", line):
-                fail("direction (d): matrix defines `%s-*` outside the subjects" % stem)
-                break
+            if not re.match(r"^\|\s*\**`" + stem + r"-[A-Z]+-\d{3}`", line):
+                continue
+            if line in disclosure:
+                m = re.match(r"^\|\s*\**`" + stem + r"-([A-Z]+)-(\d{3})`", line)
+                key, num = (stem, m.group(1)), int(m.group(2))
+                defined = key in inv and num in range(inv[key]["lo"], inv[key]["hi"] + 1) \
+                    and num not in inv[key]["gaps"]
+                classified = re.search(
+                    r"citation|reservation|next[- ]free|DRIFT|not a collision|PHANTOM",
+                    line, re.I)
+                if not defined and not classified:
+                    fail("direction (d): 2P.6 row opens with `%s-%s-%03d`, which no "
+                         "subject defines and which the row does not classify"
+                         % (stem, m.group(1), num))
+                continue
+            fail("direction (d): matrix defines `%s-*` outside the subjects "
+                 "and outside 2P.6: %s" % (stem, line[:80]))
+            break
 
     # -- check 7: version bumped with a change-history row -----------------
     mv = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\**v(\d+\.\d+)", matrix)

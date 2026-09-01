@@ -902,3 +902,102 @@ which is false. **The change is therefore recorded in place, in the section it d
 section; **0** existing lines modified; **0** cited lines shifted; **0** cited-line contents changed; **0** ADRs
 created; **0** Rank 1–5 documents touched; **0** lifecycle stages conferred; **0** part files created;
 **0** requirements created, modified, moved, withdrawn or reinterpreted.
+
+---
+
+## 12. ⭐ `PRD-021B` Social Graph, Student Discovery & Messaging — Stage-2 draft registered by append
+
+**2026-09-02.** Four Stage-2 draft files exist on disk under
+`docs/30-product/social-graph/`. This section records that fact. It records
+**nothing else** — no stage beyond Draft, no freeze, no approval, no ownership
+change and no architecture decision.
+
+### 12.1 The registration
+
+| Field | Value |
+|---|---|
+| Identifier | **`PRD-021B`** — a **lettered suffix of the existing number `PRD-021`**, exactly as `PRD-021A` is. ⛔ **No new `PRD-nnn` number is consumed** |
+| Title | Social Graph, Student Discovery & Messaging |
+| Parts | **B0** (cross-part architecture + open decisions), **B1** (Social Graph), **B2** (Social Safety), **B3** (Student Discovery) |
+| Bounded context | **`BC-11`** Social Graph — **existing**. ⛔ No context created; count remains **31** |
+| Status | **`DRAFT`** |
+| Entry evidence | §2 — *"A document on disk with a version header"*. Satisfied by four files, each carrying a §0.1 status header |
+| Lifecycle stage | **Stage 2 (Draft)**. ⛔ **Stage 3 NOT entered** — its gate is *"a written alignment record"* and **none exists** |
+| Freeze | ⛔ **NOT FROZEN.** No `DOCUMENTATION_BASELINE.md` §3 row written, and none requested |
+| Owner | Unchanged — `PRD_OWNERSHIP_MODEL.md` **L203** already records `PRD-021`: Product Owner · Social Domain · **ARB** · Platform Engineering |
+| Open decisions | **`FOD-1`** and **`FOD-2`** — both ⛔ **OPEN**, both **ARB**, recorded in Part B0 §8 |
+
+### 12.2 Why `DRAFT` is lawful here, where `PRD-021A` took `PLANNED`
+
+⚠ **The difference is deliberate and is not a promotion by convenience.**
+§11.2 chose the **weaker** value for `PRD-021A` because that act was *"an
+**allocation** decision, not a readiness decision"* — at that moment `D-A` was
+allocating a home, and `GCP-14` (this register states two incompatible tests for
+`DRAFT`) counselled restraint.
+
+This act is the opposite shape: it is **not** an allocation. `PRD-021`'s
+bounded-context allocation (`BC-11`, `BC-12`) already exists at **§4.2 L321** and
+is **not touched**. What is recorded here is only the **existence of drafts on
+disk**, which is precisely and solely what §2's `DRAFT` entry evidence tests.
+
+⚠ **The `GCP-14` caveat is preserved, not stepped over.** `GCP-14` remains ⛔
+**OPEN**. Where the two tests disagree, the one relied on is §2's **entry
+evidence** (§8 rule 2: *"A status change requires the entry evidence in §2"*),
+which is the same reading `PRD-008` used at `ADR-0043` §8 limb (a) — an
+`ACCEPTED` precedent — and the same reading `PRD-004` v1.4 and `PRD-022` v1.9
+executed. ⛔ **No conferral is claimed and no ADR is created.**
+
+### 12.3 Authority — why this append is lawful without an ADR
+
+| # | Question | Governing text | Answer |
+|---|---|---|---|
+| 1 | ADR required before the change? | `DOCUMENTATION_BASELINE.md` §7 rule 1 — Rank 1–5 only | ⛔ **No.** This register is **unranked** — absent from baseline §3 **and** §4, as §4.1 L285 and §11.2 both state |
+| 2 | `MASTER_PRD.md` change required? | §2 — entry evidence may be *"this register"* | ⛔ **No.** `MASTER_PRD.md` is **byte-unchanged** |
+| 3 | New `PRD-nnn` number consumed? | §8 rule 1 | ⛔ **No.** `PRD-021B` is a lettered suffix of `PRD-021`, per the `PRD-021A` precedent (§11.1) |
+| 4 | Does it add a bounded context to a PRD's ownership? | §8 rule 6 — *"an architecture change requiring an ADR"* | ⛔ **No.** `BC-11` is **already** `PRD-021`'s at **L321**. Nothing is added |
+| 5 | Baseline row required? | §8 rule 4 | ⛔ **No**, and none is written. `PRD-021B` is **not** `FROZEN` |
+| 6 | Ownership record required? | §8 rule 7 | ⛔ **No new record.** `PRD_OWNERSHIP_MODEL.md` **L203** already covers `PRD-021`; roles only, no personal name |
+
+⚠ **Stage-3 check 1 (*context ownership is exclusive*) is satisfied for the same
+reason §11.1 gives for `PRD-021A`:** all parts sit inside **one** allocation on
+**one** bounded context. Splitting any part out as a standalone PRD would fail
+that check for **both** documents. ⛔ No part is split out.
+
+### 12.4 ⛔ What this registration does **not** do
+
+1. ⛔ **Confers no stage beyond Draft.** Stage 3 requires a written alignment
+   record; **none exists**, and none is claimed.
+2. ⛔ **Resolves neither `FOD-1` nor `FOD-2`.** Both stay **OPEN** against **ARB**.
+3. ⛔ **Creates no ADR.** `ADR-0088` and `ADR-0090` are **PROPOSED ONLY** — neither
+   file exists, and neither is ratified by this or any other act.
+4. ⛔ **Amends no Rank 1–5 document.** `MASTER_PRD.md`, the BC Map, the Enterprise
+   Architecture, the Module Dependency Matrix and every FROZEN PRD are
+   **byte-unchanged**.
+5. ⛔ **Amends no frozen decision.** `PRD-020` `TSF-XC-005` (Mute) is reproduced
+   verbatim in Part B2 and is **not** reinterpreted or reclassified.
+6. ⛔ **Creates no bounded context and no integration edge.** Count remains **31**.
+7. ⛔ **Mints no published event.** `BC-11`'s surface stays closed at **two**
+   (BC Map L430).
+8. ⛔ **Mints no `IMPL-*` identifier and creates no implementation task.**
+   `PRD-020`'s `IMPL-1450`…`1499` reserve is untouched.
+9. ⛔ **Modifies no `PRD-021A` row and no §11 content.** §4.2 **L321** is
+   **byte-unchanged** and `PRD-021` itself remains **`PLANNED`** — this section
+   registers `PRD-021B`'s **drafts**, not a status change to `PRD-021`.
+10. ⛔ **Increments no §7 summary count**, for the reason §11.6 already gives: a
+    count edit requires re-derivation by measurement, not arithmetic. ⚠ Disclosed,
+    not repaired.
+
+### 12.5 Change note
+
+⚠ **Recorded here rather than as a row in §10, and the version is deliberately
+NOT incremented** — the identical reasoning §11.7 gives: this register's
+version-discipline defect is pre-existing and systemic, and bumping it for this
+one append would imply it is the only change since the header date, which is
+false.
+
+**2026-09-02 — `PRD-021B` Parts B0–B3 registered as `DRAFT` / Stage 2 at
+`BC-11`.** One appended section; **0** existing lines modified; **0** cited lines
+shifted; **0** ADRs created; **0** Rank 1–5 documents touched; **0** lifecycle
+stages conferred beyond Draft; **0** bounded contexts created; **0** edges
+created; **0** events minted; **0** `IMPL-*` identifiers allocated; **0** frozen
+decisions altered; **2** decisions (`FOD-1`, `FOD-2`) left explicitly **OPEN**.

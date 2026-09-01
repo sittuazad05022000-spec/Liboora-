@@ -10,6 +10,9 @@
 | Scope | **This specific act only** — Stage 4, for `PRD-021A` parts A1–A8. Not a standing licence (`ADR-0033` §7.1: *"A conferral for one act is not a standing licence."*). The instruction says *"Use this authority only for Stage 4"*, and that limit is observed literally: **no Stage 5, 6 or 7 act is performed anywhere in this document.** |
 | Subject | `PRD-021A` parts **A1–A8**, eight `DRAFT` specifications, **11,617** lines, **1,982** identifiers across **105** registers. Per-part hashes in §6. |
 | Evidence reviewed | `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` sha256 `e5d2dda96c240bdb`, 601 lines · `PRD-021A_STAGE4_REQUIREMENTS_REVIEW_2026-08-31.md` sha256 `d23227e0636840b0`, 604 lines. ⛔ **Both are preserved byte-unchanged by this act.** |
+| **Supersedes** | ⚠ **The conferral determination only** of `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` (601 lines, sha256 `e5d2dda96c240bdb`) — namely its **L16** verdict clause *"⛔ **NOT CONFERRED** — no Stage-4 conferral authority exists (§11)"*, its **§11** *"Conferral boundary"* (**L550–576**), and its **§12** final row (**L592**) *"Is Stage 4 conferred? ⛔ **No.**"* Those cells were **correct when written**: no Stage-4 authority existed at that moment. Authority has since been conferred (L8), so the determination is superseded — **not corrected**. |
+| **Does NOT supersede** | ⛔ That record's **measurements**: its six-check matrix, its §5.1–§5.9 per-check evidence, its §5.8 PO-1/PO-2 rulings, its §9 nine-row verification, its §10 safety audit, its instrument-defect disclosures, or its change history. ⛔ Nor **any** part of `PRD-021A_STAGE4_REQUIREMENTS_REVIEW_2026-08-31.md`, or either Stage-3 record. |
+| **Method of supersession** | ⭐ **By this artefact, not by editing the prior one** — the repository's established form. Precedent: `PRD-021A_STAGE3_ALIGNMENT_A4_A6_RESOLUTION_2026-08-31.md` **L19**: *"⛔ **The prior dated record was NOT edited.** It stands byte-unchanged at sha256 `1270a7689e107c19`, 529 lines, exactly as committed at `cf1d07f`."* That base Stage-3 record still reads *"NOT CONFERRED"* for A4/A6 at L413/L415 today. ⛔ **No historical Stage-4 record is edited by this act**, in observance of the instruction *"do NOT overwrite historical records."* |
 | Stage 3 precondition | ✅ **CONFERRED across A1–A8** — `PRD-021A_STAGE3_ALIGNMENT_A4_A6_RESOLUTION_2026-08-31.md` sha256 `453e781d95543d66` **L13**. ⚠ That record **supersedes** the base Stage-3 record's L413/L415, which still read *"NOT CONFERRED"* for A4/A6 and are **historical**. Neither Stage-3 record is modified here. |
 | Gate applied | `PRD_LIFECYCLE.md` **L110–117** (six checks) **and, separately, L119**: *"conflicts closed or explicitly deferred **with a reason and an owner**."* |
 | Status of this record | **Unranked.** Not admitted to `DOCUMENTATION_BASELINE.md`. Admission is the Governance Owner's act, not this one. |
@@ -156,6 +159,38 @@ rest on the faulty total. **This conferral therefore states its own measured
 figure — 135 — and does not restate 151.** Routed to the **Requirements
 Reviewer** for correction in any future revision of that record.
 
+### 3.4 A counting trap this reviewer walked into, and the false alarm it produced
+
+⚠ **This reviewer briefly recorded an ADR-count breach that does not exist, and
+the episode is disclosed rather than deleted**, because the correction is the
+evidence that the figure in §4 was measured rather than copied.
+
+`ls ADR-*.md | wc -l` returns **76**. The `ADR-INDEX.md` **L9** register asserts
+**75**. On that basis a drift was provisionally recorded against the index.
+
+⭐ **The index is right and the shell was wrong.** The glob `ADR-*.md` matches
+**`ADR-INDEX.md` itself** — the register is not one of the decisions it registers.
+Counting only files whose name matches `ADR-<digits>` returns **75**, and a
+separate enumeration of files lacking a table row in the index returned **empty**:
+
+| Instrument | Result | Correct? |
+|---|---|---|
+| `ls ADR-*.md \| wc -l` | **76** | ⛔ counts the register as a decision |
+| files matching `ADR-[0-9]+` | **75** | ✅ |
+| files with no row in `ADR-INDEX.md` | **0** | ✅ all 75 registered |
+| `ADR-INDEX.md` **L9** claim | **75** | ✅ **accurate** |
+
+⛔ **No ADR was created, modified or registered by this act** — measured directly
+against `12b0071`: **0** ADR files added, **0** modified. The §4 delta of **0** holds
+on the corrected figure of **75**, so the conferral's conclusion is unaffected.
+
+⭐ **Why this is recorded.** `ADR-INDEX.md` **L9** documents four prior occasions on
+which *this very cell* was stale, and warns that its self-certifying clause
+*"all N are registered"* is what made the staleness invisible. A reviewer meeting
+`76 ≠ 75` has every reason to suspect a fifth occurrence. It is not one — and
+saying so explicitly is more useful to the next reader than silently publishing
+the right number.
+
 ---
 
 ## 4. No requirement was created to reach this PASS
@@ -176,7 +211,7 @@ before and after the single authorised edit:
 | `LC?-CFG-*` configurables | 0 | 0 | **0** |
 | Minted `PERM-<digits>` | 0 | 0 | **0** |
 | `IMPL-*` in A1–A8 | 0 | 0 | **0** |
-| ADR files | 75 | 75 | **0** |
+| ADR files (⚠ counting trap — see §3.4) | 75 | 75 | **0** |
 | Bounded contexts / edges | 31 / 28 | 31 / 28 | **0** |
 | `LC?-` rows in `TRACEABILITY_MATRIX.md` | 0 | 0 | **0** |
 

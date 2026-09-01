@@ -12,7 +12,7 @@
 | **Acceptance criteria proven** | ⛔ **0 of 233.** Stage 6 allocates work; it does not perform it. Proof is Stage 8/9 |
 | **Stage** | **6 of 9.** ⛔ **Stage 7 is not entered. Stage 8 is not started. No code is written by this document** |
 | **Status of this document** | **Unranked.** Not admitted to `DOCUMENTATION_BASELINE.md` |
-| **Authority** | **Implementation lead** (`PRD_LIFECYCLE.md` **L279**), conferred by the human principal for this act only — `ADR-0033` **L169**: *"A conferral for one act is not a standing licence"* |
+| **Authority** | **Implementation lead** (`PRD_LIFECYCLE.md` **L280**), conferred by the human principal for this act only — `ADR-0033` **L169**: *"A conferral for one act is not a standing licence"* |
 | **Version** | v1.0 · 2026-09-01 |
 
 ---
@@ -356,6 +356,28 @@ vs subjects); its subject is **this document**. It computes, rather than accepts
 - **the Stage 6 gate** — every task traces to at least one identifier the subjects actually define;
 - **no minted identifier** — every `LC*` and `IMPL-*` token in this document already exists.
 
+### 5.1.1 ⭐ The instrument was mutation-tested, because a gate that only passes proves nothing
+
+`prd021a_task_coverage.py` **exits 0 against this document**. That is only
+evidence if it could have exited 1, so it was mutated **six** ways — four against
+the instrument's constants and two against the document itself:
+
+| Mutation | Result |
+|---|---|
+| **A** — declare the growth reserve's first number part of the allocated range | ⛔ **exit 1** — *"range is NOT fully allocated - 1 numbers have no task row: [1570]"* |
+| **B** — treat one **active** A7 event as withdrawn | ⛔ **exit 1** — names the active event as a forbidden citation |
+| **C** — declare part of this range to be `PRD-020`'s reserve | ⛔ **exit 1** — 21 problems, one per overlapping allocation |
+| **D** — move the A1 phantom position onto a number this document cites | ⛔ **exit 1** — *"the task document writes out A1's unassigned LCM-FR number"* |
+| **F** — insert a phantom `LCM-FR` number into a real task row | ⛔ **exit 1** — *"this document MINTS 1 identifier(s) no subject defines"* |
+| **E/G** — weaken the Stage 6 gate to accept unverified citations, **then** insert the phantom | ⛔ **exit 1** — caught by check 6 even with check 5 disabled ⇒ **defence in depth, not a single point of failure** |
+
+⚠ **The first attempt at mutation D was invalid and is recorded rather than
+discarded.** It moved the phantom position onto `LCM-FR-006`, a number this
+document never cites, so nothing could fire and it exited 0 — *a mutation that
+tests nothing looks exactly like a passing gate*. It was re-run against a number
+the document does cite, and then failed correctly. The document was restored and
+verified byte-identical (sha256 prefix `bd65509b9dfbcca9` before and after).
+
 ### 5.2 The figure, and why it is low
 
 Requirement coverage by task row is **far below 100%**, and that is stated rather
@@ -392,10 +414,12 @@ cannot be checked SHALL be treated as unmet"* — and left as existing open work
 | **`K-2`** | **551 of 757 requirements have no acceptance criterion**, so no task can prove them. Inherited from §2P.2, not created here | subject, disclosed |
 | **`K-3`** | Requirement coverage by task row is low by construction — 70 tasks against 757 requirements. Group tasks and `IMPL-1569` carry the remainder, which is weaker than per-requirement tasks and is said so | this document |
 | **`K-4`** | ⚠ **`LCG-AC-014` is `UNWRITABLE` in the subject itself**, so `IMPL-1537` can only ever discharge 17 of A4's 18 criteria. Writing a criterion to fill it is a Product Owner act | subject, disclosed |
-| **`K-5`** | ⚠ **This document has no mechanically-verified predecessor for a multi-part Stage 6.** Every prior task document has exactly one source PRD; this one has eight, so "the PRD defines it" becomes "some part defines it" — the instrument therefore resolves each token against the **union** of the eight, which is weaker than per-part resolution and is a disclosed limit, not a claim |
-| **`K-6`** | ⛔⛔ **This document's own §7 row 10 wrote out the two ADR-drift gap numbers, which no subject defines — so the gate reported this document as MINTING them.** The row's purpose was to *disclose* the drift, and disclosure by reproducing the token is exactly what makes a Stage 6 document look like an identifier's definition site. **The instrument caught it; the author did not.** Corrected to name both by position. ⭐ **This is `J-1a` recurring one stage later**: at Stage 5 the same mistake was made in the section disclosing phantoms, and here it was made in the row disclosing drift — the identical failure shape in a document written by an author who had just recorded `J-1a` |
-| **`K-7`** | ⛔ **The A7 prohibition paragraph wrote a withdrawn event number to say it must never be implemented**, and the gate correctly read that as a Stage 6 document citing a withdrawn identifier. A prohibition that reproduces the forbidden token defeats every `grep`-based check that looks for it. Corrected to name the four withdrawn events by **event name** instead |
-| **`K-8`** | ✅ **The gate's A4 check was too coarse and the instrument was widened, not the document weakened.** It failed `IMPL-1568`/`IMPL-1569` — the two cross-part tasks — for holding a schedulable priority while touching `LCG-*`. But those tasks are *partly* reachable: seven parts today, A4 when its scope opens. The instrument now distinguishes **A4-owned** tasks (all `LCG-*` ⇒ unschedulable) from **cross-part** tasks (⇒ must disclose the A4 clause as partial). ⚠ **The tempting fix was to delete `LCG-XC-001` from the two rows and pass the gate** — which would have hidden a real cross-part obligation. Both rows now disclose the partial reachability instead |
+| **`K-5`** | ⚠ **This document has no mechanically-verified predecessor for a multi-part Stage 6.** Every prior task document has exactly one source PRD; this one has eight, so "the PRD defines it" becomes "some part defines it" — the instrument therefore resolves each token against the **union** of the eight, which is weaker than per-part resolution and is a disclosed limit, not a claim | this document, disclosed |
+| **`K-6`** | ⛔⛔ **This document's own §7 row 10 wrote out the two ADR-drift gap numbers, which no subject defines — so the gate reported this document as MINTING them.** The row's purpose was to *disclose* the drift, and disclosure by reproducing the token is exactly what makes a Stage 6 document look like an identifier's definition site. **The instrument caught it; the author did not.** Corrected to name both by position. ⭐ **This is `J-1a` recurring one stage later**: at Stage 5 the same mistake was made in the section disclosing phantoms, and here it was made in the row disclosing drift — the identical failure shape in a document written by an author who had just recorded `J-1a` | this document, repaired |
+| **`K-7`** | ⛔ **The A7 prohibition paragraph wrote a withdrawn event number to say it must never be implemented**, and the gate correctly read that as a Stage 6 document citing a withdrawn identifier. A prohibition that reproduces the forbidden token defeats every `grep`-based check that looks for it. Corrected to name the four withdrawn events by **event name** instead | this document, repaired |
+| **`K-8`** | ✅ **The gate's A4 check was too coarse and the instrument was widened, not the document weakened.** It failed `IMPL-1568`/`IMPL-1569` — the two cross-part tasks — for holding a schedulable priority while touching `LCG-*`. But those tasks are *partly* reachable: seven parts today, A4 when its scope opens. The instrument now distinguishes **A4-owned** tasks (all `LCG-*` ⇒ unschedulable) from **cross-part** tasks (⇒ must disclose the A4 clause as partial). ⚠ **The tempting fix was to delete `LCG-XC-001` from the two rows and pass the gate** — which would have hidden a real cross-part obligation. Both rows now disclose the partial reachability instead | instrument, widened |
+| **`K-9`** | ⛔ **This very table was malformed: its header declares three columns and rows `K-5`…`K-8` supplied only two**, so a Markdown renderer would have silently dropped the Nature classification for exactly the four newest and least-reviewed defects. ⚠ **No checker in the repository validates table shape**, and none of the three PRD-021A instruments would ever have reported it — it was found by an escape-aware column-count sweep run as part of Stage 6 verification, *after* the gate had already exited 0. ⭐ **A passing gate is not a well-formed document**: the gate's subject is identifier integrity, and shape is a different property that no instrument here measures. Repaired by supplying the four missing cells, not by reducing the header to two columns | this document, repaired |
+| **`K-10`** | ⚠ **This document's header cited the Implementation-lead role row at `PRD_LIFECYCLE.md` L279; read at its line it is L280** — L279 is the *Traceability owner* row, and the Governance-owner row is L281, not L282. The error was inherited from a working note and would have been copied into the Stage 6 record too. ⭐ **A line number is a citation, and a citation is verified by reading it, not by trusting the note that carried it** — the same principle this repository applies to identifier tokens. Corrected in both documents; **the role assignment itself was never in doubt**, only the coordinate | this document, repaired |
 
 ---
 

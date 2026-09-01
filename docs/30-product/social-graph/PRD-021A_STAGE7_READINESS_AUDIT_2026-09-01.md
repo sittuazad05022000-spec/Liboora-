@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document | `PRD-021A_STAGE7_READINESS_AUDIT_2026-09-01.md` |
-| Version | v1.0 |
+| Version | v1.1 |
 | Date | 2026-09-01 |
 | Commit audited | `1f6b380f5298a79006b75688721f8c26d9ceb9e5` |
 | Act | 📐 **READ-ONLY MEASUREMENT.** ⛔ **This document performs NO governance act.** It confers nothing, ranks nothing, registers nothing, freezes nothing and decides nothing. |
@@ -12,12 +12,12 @@
 | Method | **Fresh audit.** Every item re-measured from the repository at this commit. No figure is carried forward from an earlier record without being re-run. |
 | Gate audited | `PRD_LIFECYCLE.md` **L159**: *"a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank."* |
 | **Verdict** | 🔴 **NOT READY FOR FREEZE** |
-| **Blocking items** | **6** — of which **1** is decisive on its own (§3.6) |
+| **Blocking items** | **7** blocking items across **6** blocker groups (§8) — of which **1** is decisive on its own (§3.6) |
 | Stage 8 | ⛔ **NOT ENTERABLE.** Independently, **2 of its 6 pipeline gates are RED** — §5 |
 | Status of this record | **Unranked.** Not admitted to `DOCUMENTATION_BASELINE.md`. Precedence: **none**. |
 
 > **Stage 7's gate, quoted at its line.** `PRD_LIFECYCLE.md` **L159** — *"a row in
-> `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank."* And **L160** — *"Freeze is
+> `DOCUMENTATION_BASELINE.md` §3 at an assigned precedence rank."* And **L161** — *"Freeze is
 > **conferred, not claimed**."*
 >
 > Measured this pass: baseline §3 spans **L121–232**. The string `PRD-021A` occurs there **exactly
@@ -43,7 +43,7 @@ Three things this document is **not**:
 
 | It is not | Because |
 |---|---|
-| A baseline §3 row | ⭐ **The row *is* the gate.** Writing it to pass it satisfies the gate by performing it, which **L160** forbids. §3 is a **Rank 1** surface; baseline §7 rule 1 requires *"an ADR **before** the change."* |
+| A baseline §3 row | ⭐ **The row *is* the gate.** Writing it to pass it satisfies the gate by performing it, which **L161** forbids. §3 is a **Rank 1** surface; baseline §7 rule 1 requires *"an ADR **before** the change."* |
 | A freeze record | The freeze records that exist (`PRD-017_STAGE7_FREEZE.md` and seven others) *follow* an admission ADR and a conferred row. Neither exists here. |
 | A Stage 7 `NOT APPLICABLE` determination | The `ADR-0060` route does not transfer. Stage 1's gate was context-scoped and did not reach a platform; **Stage 7's gate reaches `PRD-021A` perfectly well — it is UNMET, not INAPPLICABLE.** |
 
@@ -84,6 +84,19 @@ applied because each has previously produced a wrong answer in this family of wo
 | **Search with backticks** | `grep "IMPL-1500 +"` returns nothing while `` `IMPL-1500` + `` exists at `PRD-020` **L79**. A bare-token grep nearly produced a false "fabricated citation" finding. |
 | **Never `tail` a `\r`-progress stream** | `flutter test` writes one carriage-return-separated line. `tail -3` returns the *middle* of the run. **§5 re-ran both truncated gates through `tr '\r' '\n'`, and one verdict changed** — see §5.1. |
 | **Verify the regex against a known-present row** | A first attempt at item 3 above returned **0** using `^\| \*\*` + backtick, implying Stage 5 was unmet. The matrix rows are `` \| `LCM-AC-NNN` \| `` — unbolded. **The regex was wrong, not the repository.** Corrected before reporting. |
+| **Open every cited line number** | ⭐ Applied as a mechanical sweep over this document: **19** `**Lnnn**` citations were re-opened at their lines and matched against the token each claims. **Result: 19 verified, 0 mismatches** — but only *after* the sweep caught **6 occurrences of an off-by-one** (§2.1). |
+| **Distinguish stems that differ by one letter** | `LCF-GAP-001` (feed stem) is **CLOSED** by `ADR-0080`; `LCG-GAP-001` (groups stem) is **OPEN** and is blocker 1. Confirmed by reading both at their sources. Treating them as one identifier would have silently deleted a blocker. |
+
+### 2.1 ⭐ A citation defect this sweep caught in its own text
+
+v1.0 cited `PRD_LIFECYCLE.md` **L160** for *"Freeze is **conferred, not claimed**"* in **six**
+places. Read at its line, **L160 is blank**; the sentence is at **L161**. All six were corrected.
+
+This is the **`K-10` defect class recurring** — the Stage-6 record made the identical mistake with
+the Implementation-lead role (cited L279, actually **L280**). ⭐ **The quoted words were right and
+the line number was wrong, which is the failure mode a reader cannot detect**, because the quote
+reads as confirmation. No checker in this repository verifies that a cited line contains what the
+citation says it contains; this document's verification is a purpose-built sweep, not a gate.
 
 ---
 
@@ -149,16 +162,18 @@ identically and is NOT closed."*
 | Owner | **Governance Owner** |
 | Next action | An admission ADR for `PRD-020`. ⛔ **Not** this pass's authority, and `PRD-020`'s `IMPL-1450`…`1499` reserve was not consumed. |
 
-### 3.5 `integration_test/` absent — **Engineering + Architecture Owner**
+### 3.5 `integration_test/` absent — **Engineering Owner**
 
 | Field | Value |
 |---|---|
 | Blocker | `LCF-GAP-011` *"`integration_test/` does not exist"* |
-| Evidence | Measured this pass: **ABSENT.** The predicate is **TRUE** |
+| Evidence | Measured this pass: `ls -d integration_test` → **No such file or directory**. The predicate is **TRUE** |
 | Precedent | `ADR-0081` §3 tested this gap *"identically"* to `LCF-GAP-005` and left it **OPEN** for exactly this reason |
-| ⭐ Why creating the directory closes nothing | `LCF-AC-035` and `LCF-AC-036` (A2 **L1473/L1474**) are each *"⏸ DEFERRED"* on **two** independent grounds: the missing harness **and** two unmade Architecture Owner decisions, `LCF-ADR-003` and `LCF-ADR-005` (requested at A2 **L1521/L1523**). **Creating an empty directory clears one ground and leaves the other.** Writing tests over undecided semantics would be a fabricated harness |
-| Owner | **Engineering Owner** (`LCF-GAP-011`, per A2 **L1633**) + **Architecture Owner** (`LCF-ADR-003`, `LCF-ADR-005`) |
-| Next action | Two Architecture Owner ADRs, then an Engineering Owner harness. |
+| ⭐ Why creating the directory still closes nothing | `LCF-AC-035` (A2 v0.8 **L1674**) and `LCF-AC-036` (**L1675**) each remain *"⏸ DEFERRED"*, and A2 states the reason in its own words: `LCF-AC-036` is deferred *"for **ONE** reason now instead of two"* — because *"`integration_test/` **does not exist in this repository**… so this criterion cannot be written even once its decision has landed."* An empty directory is not a harness; writing tests with nowhere to live, or asserting behaviour no code implements, would be the fabricated harness |
+| ⚠ Correction to §3.5 as first drafted | An earlier draft of this row claimed **two** open grounds, citing *"two unmade Architecture Owner decisions"* at A2 **v0.7** L1521/L1523. **Re-measured against the current part — A2 is now v0.8, not v0.7 — that claim is FALSE and has been withdrawn.** Both decisions are **resolved**: `LCF-ADR-003` ✅ *"RESOLVED — 2026-08-31 by AO-2 and `ADR-0083` §4"* (`Accepted`, opaque cursor pagination) at **L1722**; `LCF-ADR-005` ✅ *"CLOSED at v0.8 by `ACCEPTED` `ADR-0078`"* at **L1724**. Verified independently: `ADR-0078` **Accepted** 2026-08-25, `ADR-0083` **Accepted** 2026-08-31. ⭐ The blocker is **narrower than first stated, and is reported at its true width** |
+| Also blocked by | There is no implementation to integration-test: `lib/domain/library/` holds `attendance`, `enrollment`, `fee`, `membership`, `policy`, `seating` — **0** community or feed modules |
+| Owner | **Engineering Owner** — sole remaining owner (`LCF-GAP-011`; risk `LCF-RSK-017` at **L1699** records it as *"Pre-existing repository condition, not introduced here"*) |
+| Next action | An Engineering Owner decision to stand up an `integration_test/` harness. ⛔ Not this pass's authority, and it advances Stage 7 only in combination with the other five blockers. |
 
 ### 3.6 ⭐ The baseline §3 row — **Governance Owner** — DECISIVE
 
@@ -166,8 +181,8 @@ identically and is NOT closed."*
 |---|---|
 | Blocker | **The gate itself.** No row for `PRD-021A` exists in baseline §3 at any rank |
 | Evidence | §3 spans **L121–232**. `PRD-021A` occurs **once**, at **L139**, and that sentence reads *"`PRD-021A` remains **NOT READY / NOT FROZEN**."* Occurrences of `PRD-021A` in §3 that **confer** anything: **0** |
-| Governing rules | `PRD_LIFECYCLE.md` **L159** (the gate) · **L160** *"conferred, not claimed"* · **L294** *"**No fast path.** Stage 7 is not skippable"* · baseline §7 rule 1 (ADR **before** any Rank 1–5 change) |
-| ⛔ Why this pass did not write it | Writing the row **is** passing the gate by performing it. **L160** forbids exactly that, and §3 is Rank 1, requiring a prior ADR this pass has no authority to issue |
+| Governing rules | `PRD_LIFECYCLE.md` **L159** (the gate) · **L161** *"conferred, not claimed"* · **L294** *"**No fast path.** Stage 7 is not skippable"* · baseline §7 rule 1 (ADR **before** any Rank 1–5 change) |
+| ⛔ Why this pass did not write it | Writing the row **is** passing the gate by performing it. **L161** forbids exactly that, and §3 is Rank 1, requiring a prior ADR this pass has no authority to issue |
 | Owner | **Governance Owner** — the role was **constituted** by `Accepted` `ADR-0080`, so it is **no longer vacant**. ⚠ This is disclosed even though it removes a convenient reason to stop |
 | Next action | A Governance Owner admission ADR, then the row, in that order. |
 
@@ -276,8 +291,8 @@ Per `SID-4.56`, *"a rule that cannot be checked SHALL be treated as unmet."*
 
 | Refused act | Rule that forbids it |
 |---|---|
-| Write the baseline §3 row | `PRD_LIFECYCLE.md` **L160**; baseline §7 rule 1 |
-| Declare `READY` or `FROZEN` | **L160**; the instruction's own clause 3 |
+| Write the baseline §3 row | `PRD_LIFECYCLE.md` **L161**; baseline §7 rule 1 |
+| Declare `READY` or `FROZEN` | **L161**; the instruction's own clause 3 |
 | Assign a rank | **L159** — rank is *conferred* |
 | Advance `PRD-021A`'s registry status | `PRD_REGISTRY.md` **L624** rule 4 |
 | Record Stage 7 as `NOT APPLICABLE` | `ADR-0082` §2.3 — the gate **reaches** `PRD-021A`; it is UNMET |
@@ -285,7 +300,7 @@ Per `SID-4.56`, *"a rule that cannot be checked SHALL be treated as unmet."*
 | Mint or define `communityId` | Architecture Owner authority |
 | Define an A4 role set | Product Owner authority; `PRD_REGISTRY.md` **L744** |
 | Publish a helpfulness weight | `LCR-FR-028a`; `ADR-0081` §2 |
-| Create `integration_test/` or write its tests | Closes only one of two grounds; would be a fabricated harness |
+| Create `integration_test/` or write its tests | A2 v0.8 **L1675**: the criterion *"cannot be written even once its decision has landed"*; there is no community/feed implementation to exercise. An empty directory is not a harness |
 | Rank `PRD-020`, or consume its `IMPL-1450`…`1499` reserve | Governance Owner authority |
 | Fix gate 1's 16 format drifts | Standing deferral |
 | Fix gate 3's 9 violations, or waive them | `ADR-0012` **L181**; `TASK-D10`; *"never silence the check"* |
@@ -331,16 +346,22 @@ occurred and no revert was needed. Gate 6 wrote `build/web`, which `.gitignore` 
 🔴 **`PRD-021A` A1–A8 is NOT READY FOR FREEZE. Stage 7 has not been performed, and Stage 8 is not
 enterable.**
 
-Six blockers, each owner-held:
+Seven blocking items across six blocker groups, each owner-held:
 
-| # | Blocker | Owner |
-|---|---|---|
-| 1 | A4 scope — `LCG-GAP-001` | **Product Owner** |
-| 2 | `communityId` contract — `LCG-GAP-006` | **Architecture Owner** |
-| 3 | `LCR-DEC-009` helpfulness weight | **Product Owner** |
-| 4 | `BC-15` in BC Map §7/§8 (needs `ADR-0075` §8.5 Option B first) | **Architecture + Governance Owner** |
-| 5 | `PRD-020` rank | **Governance Owner** |
-| 6 | ⭐ **The baseline §3 row — decisive on its own** | **Governance Owner** |
+| # | Blocker | § | Owner |
+|---|---|---|---|
+| 1 | A4 scope — `LCG-GAP-001` | §3.1 | **Product Owner** |
+| 2 | `communityId` contract — `LCG-GAP-006` | §3.1 | **Architecture Owner** |
+| 3 | `LCR-DEC-009` helpfulness weight | §3.2 | **Product Owner** |
+| 4 | `BC-15` in BC Map §7/§8 (needs `ADR-0075` §8.5 Option B first) | §3.3 | **Architecture + Governance Owner** |
+| 5 | `PRD-020` rank | §3.4 | **Governance Owner** |
+| 6 | `integration_test/` absent — `LCF-GAP-011` | §3.5 | **Engineering Owner** |
+| 7 | ⭐ **The baseline §3 row — decisive on its own** | §3.6 | **Governance Owner** |
+
+⚠ **This table omitted `integration_test/` as first drafted**, listing six rows while §3 measured
+seven items. Repaired here. ⭐ The same class of defect as `K-9` in the Stage-6 record: **a table
+that renders cleanly is not a table that counts correctly**, and no checker in this repository
+validates either property.
 
 Plus, independently, **2 of Stage 8's 6 pipeline gates are RED** (gates 1 and 3), both pre-existing
 and both owner-held.
@@ -357,4 +378,5 @@ and, through it, a clean path to blocker 6.
 
 | Version | Date | Change |
 |---|---|---|
-| v1.0 | 2026-09-01 | Created. Fresh audit at `1f6b380`. Verdict 🔴 **NOT READY FOR FREEZE**, 6 blockers. Records the 5 of 11 `ADR-0082` §6 conditions now met (§4), the full Stage-8 pipeline measurement (§5), and **one self-caught inverted verdict — gate 3 is RED, not green** (§5.1). |
+| v1.0 | 2026-09-01 | Created. Fresh audit at `1f6b380`. Verdict 🔴 **NOT READY FOR FREEZE**. Records the 5 of 11 `ADR-0082` §6 conditions now met (§4), the full Stage-8 pipeline measurement (§5), and **one self-caught inverted verdict — gate 3 is RED, not green** (§5.1). |
+| v1.1 | 2026-09-01 | **Four self-caught defects in v1.0 corrected, none found by any checker.** (0) **Six occurrences of an off-by-one citation** — `PRD_LIFECYCLE.md` L160 (blank) for text that is at **L161**; the `K-10` defect class recurring (§2.1). A 19-citation mechanical sweep now backs every `**Lnnn**` in this document. (1) §3.5 cited A2 **v0.7** line numbers while the current part is **v0.8**, and claimed *"two unmade Architecture Owner decisions"* — **measured FALSE**: `LCF-ADR-003` is RESOLVED by `Accepted` `ADR-0083` §4 and `LCF-ADR-005` is CLOSED by `Accepted` `ADR-0078`. The blocker is **narrower than first stated** and its owner is **Engineering Owner alone**. (2) §8's owner table listed **six** rows while §3 measured **seven** items, omitting `integration_test/` — repaired. (3) The header's *Blocking items* count restated as **7 items across 6 groups**. ⭐ Every correction narrows or clarifies a blocker; **none removes one, and the verdict is unchanged.** |

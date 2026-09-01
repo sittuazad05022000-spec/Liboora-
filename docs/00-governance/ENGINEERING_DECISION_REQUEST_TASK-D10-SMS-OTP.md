@@ -120,3 +120,64 @@ sequencing is not underestimated.
 - ⛔ Does **not** stub, mock or fake an OTP delivery path — a fake path would make `TASK-D10` *appear*
   completable and is the precise failure `TASK-D10` §7 warns of.
 - ⛔ Does **not** claim gate 3 passes. It **fails**, at exactly **9**, by design.
+
+---
+
+## 7. ⭐ How this request can lawfully be answered
+
+⚠ **Added 2026-09-01, by append.** §1–§6 are unchanged. **Nothing here decides anything, waives
+anything or names any vendor.**
+
+### 7.1 ⛔ This one cannot be unblocked by a conferral alone
+
+`GOVERNANCE_DECISION_REQUEST_PRD-020-RANK.md` §7 records that a vacant governance office can be acted
+through by **direct conferral scoped to a single act**, exercised eight times. ⛔ **That remedy does not
+reach this request**, and the difference is the whole point of §2.
+
+`MASTER_PRD.md` **L570** types `MP-DEP-03` as **`External`**. A conferral is an act of *authority over
+this repository*; it cannot cause an SMS provider contract to exist, and it cannot cause an Indian **DLT
+template registration** to be granted by a telecom regulator. Measured again at this commit:
+**0** provider packages, **0** `sendOtp` call sites.
+
+| | Governance rank decision | This request |
+|---|---|---|
+| Blocked by | a vacant **office** | a missing **external artefact** |
+| Unblocked by | one sentence of conferral | ⛔ a signed provider contract **and** DLT registration |
+| Can an instruction supply it? | ⭐ **Yes** | ⛔ **No** |
+
+⭐ **Consequence, stated plainly:** no instruction given in this engagement — however specific, however
+authoritative — can discharge `MP-DEP-03`. Only the procurement and the registration can. Any change to
+`lib/`, `tool/module_dependencies.yaml` or the checkers that made gate 3 turn green **before** that
+artefact exists would be a manufactured PASS.
+
+### 7.2 What an authority CAN decide now, without the provider
+
+Two things are genuinely decidable today, and neither requires the contract:
+
+| # | Decidable now | Why it does not need the provider |
+|---|---|---|
+| 1 | Whether `TASK-D10`'s **non-SMS** items may proceed ahead of §7 | §6 sequencing is an engineering judgement about ordering |
+| 2 | The **`ADR-0085` §5 `D10-10`** parent-link option | §3.3 options A/B/C are design choices, not procurement |
+
+⛔ Neither closes the 9 violations. The 9 close only when the 4 demo files are deleted, which
+`TASK-D10` §7 makes conditional on the SMS prerequisite. `ADR-0012` **L181** — *"Not waived. Closes with
+`TASK-D10`."*
+
+### 7.3 ⭐ The exact wording that would move this request
+
+> *"Acting as Implementation lead for this act: the V1 SMS provider is [**named provider**], DLT template
+> registration is [complete / in progress, expected DATE]. `TASK-D10` §7 may therefore [begin / not yet
+> begin]. `D10-10` takes option [A / B / C]. The 9 `ADR-0012` violations remain **RED** until the 4 demo
+> files are deleted, and are **not** to be waived, allow-listed or silenced in the interim."*
+
+⚠ ⛔ **The provider name must come from the authority.** This document will not supply, suggest,
+shortlist or rank one, because `MP-DEP-03` is a procurement fact and inventing it would be inventing a
+dependency.
+
+### 7.4 ⛔ What §7 does not do
+
+- ⛔ Names, suggests, shortlists or ranks **no** SMS provider.
+- ⛔ Writes **no** waiver, allow-list entry or suppression; edits **no** checker and **no** manifest.
+- ⛔ Does **not** claim the 9 violations are acceptable — only that they are **correctly** RED.
+- ⛔ Does **not** authorise `TASK-D10` §7, `D10-10`, or any deletion.
+- ⛔ Does **not** treat §7.2 as permission to begin; it identifies what an authority *could* decide.

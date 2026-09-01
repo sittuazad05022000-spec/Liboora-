@@ -124,3 +124,80 @@ cell are one atomic Governance act**, and an ADR must precede it (**§7 rule 1**
 - ⛔ Does **not** assert that `PRD-020` is ready — **R-2 alone is a substantive reason to refuse**.
 - ⛔ Does **not** unblock `PRD-021A`. `PRD-021A`'s Stage 7 gate is its **own** baseline §3 row, which
   is a separate Governance act on a separate document, still **absent** (measured: **0** rows).
+
+---
+
+## 7. ⭐ How this request can lawfully be answered while the office is VACANT
+
+⚠ **Added 2026-09-01, by append.** §1–§6 are unchanged. This section was added because the original
+request named the blocker (**VACANT**) without naming the repository's own remedy, which is a
+deficiency in the request, not a new decision. **Nothing here decides anything.**
+
+### 7.1 The vacancy is not terminal — it has a documented, exercised remedy
+
+`ADR-0080` §2.2 rule 2 constitutes the Governance Owner office **VACANT**, and `PRD_OWNERSHIP_MODEL.md`
+rule **7.4** forbids ever recording a personal name in it. Those two facts together mean the office can
+**never** be filled by writing a name into a document — so if a vacant office were an absolute bar, Stage 7
+would be permanently unperformable, and `PRD_LIFECYCLE.md` **L294** (*"No fast path. Stage 7 is not
+skippable"*) would make every PRD permanently unfreezable.
+
+⭐ **The repository has already resolved this, eight times.** The mechanism is **direct, explicit conferral
+by the human principal of this engagement, scoped to a single act**, recorded in the ADR's `Deciders` row.
+
+| ADR | Act performed under conferral | Status |
+|---|---|---|
+| `ADR-0049` | Revenue baseline | Accepted |
+| `ADR-0050` | Tenancy baseline | Accepted |
+| `ADR-0051` | Audit Trail baseline | Accepted |
+| `ADR-0052` | Entitlement baseline | Accepted |
+| ⭐ `ADR-0053` | **Admitted `PRD-023` to Rank 3** — the closest precedent to this request | Accepted |
+| `ADR-0054` | Froze `PRD-017` | Accepted |
+| `ADR-0064` | Baselined `PRD-012a` | Accepted |
+| `ADR-0080` | Constituted this very office | Accepted |
+
+`ADR-0053` **L8** states the form exactly:
+
+> *"**Governance owner** (Stage 7 and the baseline, `PRD_LIFECYCLE.md` §6 L282) — exercised by direct
+> conferral of the human principal of this engagement, scoped to this act"*
+
+and `ADR-0053` §6 states the authority plainly: *"**That instruction is the authority, and it is the only
+authority claimed.**"*
+
+### 7.2 ⛔ Why a generic instruction is NOT such a conferral
+
+`ADR-0033` §7.1 — *"**A conferral for one act is not a standing licence**"* — cuts **both** ways, and the
+limiting direction is the one that binds here. A conferral must be **specific to the act**. Therefore:
+
+| Not a conferral | Why |
+|---|---|
+| *"Continue"* / *"proceed"* / *"go ahead"* | Names no act, no rank, no document, no version. `ADR-0053` §6 requires the instruction itself to be the authority; an instruction that specifies nothing authorises nothing |
+| Silence, or absence of objection | Confers nothing; no precedent treats non-response as approval |
+| A conferral given for a **different** act | `ADR-0033` §7.1 — the eight ADRs above each carry their **own** conferral; none inherits another's |
+| This document recommending Rank 3 | ⛔ A recommendation is not a decision. §6 already disclaims it |
+
+⚠ **Recorded plainly:** during the pass that produced this section, the instruction *"Continue"* was given.
+It was **measured against this test and refused as a conferral** — it names no act. No rank was assigned,
+no row written, and this section is the only change made.
+
+### 7.3 ⭐ The exact wording that WOULD unblock this request
+
+The Governance Owner's decision can be given in one sentence. To admit `PRD-020`, the conferral must name
+**the act, the document, the rank and the version**, for example:
+
+> *"Acting as Governance Owner by direct conferral for this act: admit `PRD-020` to the documentation
+> baseline at **Rank 3**, scoped to `BC-13`, at version **v0.1**, and write the required ADR, the
+> `DOCUMENTATION_BASELINE.md` §3 and §4 rows, and the baseline identifier advance. Residue **R-2** (no
+> Stage 6 record) is [waived for admission / must be closed first]. Residue **R-1** (`PRD-020`'s stale
+> header at L8/L16) is [repaired as part of the admission / left disclosed]."*
+
+⛔ **Refusal is an equally valid and complete answer**, and **R-2 alone is a substantive ground for it**
+(§6). A refusal needs no remedy from this document; it simply closes the request.
+
+### 7.4 ⛔ What §7 does not do
+
+- ⛔ Does **not** confer, self-confer, assume, infer or imply Governance Owner authority.
+- ⛔ Does **not** treat the eight precedents as authority for **this** act — each was scoped to its own.
+- ⛔ Does **not** appoint anyone, name any person, or fill the office. `ADR-0080` §2.2 rule 2 stands.
+- ⛔ Does **not** change the recommendation, the residues, or any measurement in §1–§6.
+- ⛔ Does **not** narrow the Governance Owner's options — §7.3's wording is an illustration, not a form
+  that must be used, and refusal remains fully available.

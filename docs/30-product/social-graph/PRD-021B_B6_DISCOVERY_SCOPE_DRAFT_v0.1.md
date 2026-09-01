@@ -21,8 +21,11 @@
 
   ⚠ THE LOAD-BEARING TENSION B6 EXISTS TO HOLD
   --------------------------------------------
-  BC-11 -> BC-17 is GLOBAL by BC Map L488 (rule ID-2): no tenantId, keyed on
-  PersonId. Library membership is TENANT-SCOPED (MP-GBR-08). X-05 keeps them
+  The "BC-11..BC-17 Student Network" residency BAND is GLOBAL by BC Map L488
+  (rule ID-2): no tenantId, keyed on PersonId. (⚠ "BC-11→17" in the BC Map is a
+  RANGE label for that band, NOT an integration edge; B6 cites no edge to BC-17
+  Marketplace, which is V3.)
+  Library membership is TENANT-SCOPED (MP-GBR-08). X-05 keeps them
   "Separate Ways". So "library-scoped discovery over a global social graph" is
   not a contradiction only if the SCOPE FILTER sits tenant-side and the GRAPH
   stays global. B6 states that rule explicitly rather than leaving it implied.
@@ -165,7 +168,8 @@ tenant-side.** A library-scoped discovery result is produced by **filtering a
 global candidate set with a tenant-side membership predicate** — ⛔ never by
 introducing a `tenantId` into `BC-11`.
 `GLS-INV-002` — ⛔ **It MUST be IMPOSSIBLE for a `tenantId` or `StudentRecordId`
-to enter `BC-11`→`BC-17`.** Authority: `ID-2` (BC Map **L488**); CI
+to enter any context in the `BC-11`..`BC-17` Student Network residency band.**
+Authority: `ID-2` (BC Map **L488**); CI
 `banned_symbols` (`tool/module_dependencies.yaml` **L268-270**) makes it a
 **build failure**, not a review finding.
 `GLS-INV-003` — ⛔ It **MUST be IMPOSSIBLE** for a scope value to be interpreted
@@ -258,7 +262,8 @@ architecture guarantee.
 
 `GLS-FUT-001` — A future `GLOBAL` scope **MUST** be built on `BC-10`'s global
 `PersonId` space, ⛔ never by federating tenant data. Authority: `ID-2`, `X-05`.
-`GLS-FUT-002` — It **MUST NOT** require a `tenantId` in `BC-11`→`BC-17`.
+`GLS-FUT-002` — It **MUST NOT** require a `tenantId` anywhere in the
+**`BC-11`..`BC-17` Student Network residency band**.
 ⭐ Any global design that needs one is **wrong by construction**.
 `GLS-FUT-003` — It **MUST** reuse `BC-23`'s permission-aware index via **`E-21`**
 (BC Map **L330**). ⚠ Measured: `E-21` reads `BC-01, BC-10 → BC-23` — `BC-11` is

@@ -1001,3 +1001,131 @@ shifted; **0** ADRs created; **0** Rank 1–5 documents touched; **0** lifecycle
 stages conferred beyond Draft; **0** bounded contexts created; **0** edges
 created; **0** events minted; **0** `IMPL-*` identifiers allocated; **0** frozen
 decisions altered; **2** decisions (`FOD-1`, `FOD-2`) left explicitly **OPEN**.
+
+---
+
+## 13. ⭐ `PRD-021B` Parts **B4 / B5 / B6** — Stage-2 drafts registered by append
+
+**2026-09-02.** Three further Stage-2 draft files exist on disk under
+`docs/30-product/social-graph/`, together with one author self-check record. This
+section records that fact. It records **nothing else** — no stage beyond Draft,
+no freeze, no approval, no wave decision, no ownership change and no architecture
+decision.
+
+⚠ **§12 is not modified.** This is an **append**, for the same reason §12 was:
+§12's rows describe Parts B0–B3 and remain true.
+
+### 13.1 The registration
+
+| Field | Value |
+|---|---|
+| Identifier | **`PRD-021B`** — unchanged. ⛔ **No new `PRD-nnn` number is consumed** and no new lettered suffix is created |
+| Parts added | **B4** (Discovery Algorithm & Ranking) · **B5** (Student Recommendations) · **B6** (Global vs Library Discovery Scope) |
+| Bounded context | **`BC-11`** Social Graph — **existing**, already `PRD-021`'s at §4.2 **L321**. ⛔ No context created; count remains **31** |
+| Status | **`DRAFT`** — all three |
+| Entry evidence | §2 — *"A document on disk with a version header"*. Satisfied by three files, each carrying a §0.1 status header |
+| Lifecycle stage | **Stage 2 (Draft)**. ⛔ **Stage 3 NOT entered** for B4/B5/B6 — its gate is *"a written alignment record"*, and the only record on disk for these three parts is an **author self-check** (§13.6), which is categorically not an architecture review |
+| Freeze | ⛔ **NOT FROZEN.** No `DOCUMENTATION_BASELINE.md` §3 row written, and none requested |
+| Owner | Unchanged — `PRD_OWNERSHIP_MODEL.md` **L203** already records `PRD-021`: Product Owner · Social Domain · **ARB** · Platform Engineering |
+| Identifier stems | **`DRK-`** (B4), **`PYK-`** (B5), **`GLS-`** (B6). ⚠ Each measured at **0** repository-wide occurrences before authoring — no existing namespace is shadowed |
+| Measured size | B4 **133** identifiers / 26 ACs · B5 **135** / 24 · B6 **100** / 20. **368** identifiers, **70** ACs, **0** orphan ACs, **0** non-contiguous registers |
+| Open decisions | **`XPB-CONF-001`** (ARB) · **`XPB-CONF-002`** (Architecture Owner + Product Owner) · **`XPB-CONF-005`** (Governance Owner) — all three ⛔ **OPEN**, recorded in the part files and in §13.6 |
+
+### 13.2 ⚠ Two disclosures this registration must carry
+
+**(a) `B6` is a part identifier this repository has not previously named.**
+Measured: `grep -rl "Part B6" docs/` returned **0 files**, and Part B0's `FOD-4`
+enumerates **B4, B5, B7, B8, B9** — ⛔ **not B6**. B6 is registered here on
+exactly the same §2 entry-evidence basis as B0–B3, but ⚠ the gap between `FOD-4`
+and this section is real and is recorded as **`XPB-CONF-005`** against the
+**Governance Owner**. ⛔ **`FOD-4` is not edited by this act** — amending B0 would
+modify a Stage-3/Stage-4-passed subject, which this act does not do.
+
+**(b) Part B5's wave placement is contested by the repository itself.**
+`LIBOORA_ENTERPRISE_ARCHITECTURE.md` **L930** places `Recommended Students` at
+**V2** and **L943** places `Friend Suggestions` at **V3**; Part B3 `SDS-BR-017`
+and `SDS-XC-006`, and Part B0 §2 row 9, agree. ⚠ **Registering B5 as a `DRAFT`
+records only that a draft exists — it does NOT move any capability to V1.** The
+draft itself is **V2-GATED** (`PYK-CFG-001` defaults **FALSE**; `PYK-XC-004`
+makes enablement impossible while the conflict is open). The wave question is
+**`XPB-CONF-002`**, ⛔ **unresolved**, owned by the **Architecture Owner and
+Product Owner jointly**.
+
+### 13.3 Why `DRAFT` is lawful here
+
+The reasoning of §12.2 applies unchanged and is not restated: this act is **not
+an allocation**, so §11.2's restraint (which chose the weaker `PLANNED` for a
+genuine allocation decision) does not govern. `PRD-021`'s bounded-context
+allocation already exists at §4.2 **L321** and is **not touched**. What is
+recorded is only the **existence of drafts on disk** — precisely and solely what
+§2's `DRAFT` entry evidence tests.
+
+⚠ **`GCP-14` remains ⛔ OPEN** and is preserved, not stepped over, on the same
+basis §12.2 gives.
+
+### 13.4 Authority — why this append is lawful without an ADR
+
+| # | Question | Governing text | Answer |
+|---|---|---|---|
+| 1 | ADR required before the change? | `DOCUMENTATION_BASELINE.md` §7 rule 1 — Rank 1–5 only | ⛔ **No.** This register is **unranked** — absent from baseline §3 **and** §4 |
+| 2 | `MASTER_PRD.md` change required? | §2 — entry evidence may be *"this register"* | ⛔ **No.** `MASTER_PRD.md` is **byte-unchanged** |
+| 3 | New `PRD-nnn` number consumed? | §8 rule 1 | ⛔ **No.** Three **parts** are added to the existing `PRD-021B` |
+| 4 | Does it add a bounded context to a PRD's ownership? | §8 rule 6 | ⛔ **No.** `BC-11` is **already** `PRD-021`'s at **L321** |
+| 5 | Baseline row required? | §8 rule 4 | ⛔ **No**, and none is written. `PRD-021B` is **not** `FROZEN` |
+| 6 | Ownership record required? | §8 rule 7 | ⛔ **No new record.** **L203** already covers `PRD-021`; roles only |
+| 7 | ⭐ Does registering a part imply a wave decision? | EA **L930**/**L943** are **Rank 4** | ⛔ **No** — and §13.2(b) states so explicitly. A `DRAFT` registration is an existence record, ⛔ **not** a V1 commitment |
+
+### 13.5 ⛔ What this registration does **not** do
+
+1. ⛔ **Confers no stage beyond Draft** on B4, B5 or B6. Stage 3 requires a written
+   alignment record; for these three parts **none exists**, and none is claimed.
+2. ⛔ **Does not extend B0–B3's Stage-3 PASS or Stage-4 PASS to B4/B5/B6.** Those
+   records name their subjects; ⚠ B4/B5/B6 are **not** among them.
+3. ⛔ **Resolves none of `XPB-CONF-001`, `XPB-CONF-002`, `XPB-CONF-005`**, and
+   resolves neither `FOD-1` nor `FOD-2`. All stay **OPEN**.
+4. ⛔ **Moves no capability between waves.** EA **L926**–**L943** are **byte-unchanged**.
+5. ⛔ **Creates no ADR.** `ADR-0088` and above do not exist; highest remains **`ADR-0087`**.
+6. ⛔ **Amends no Rank 1–5 document.** `MASTER_PRD.md`, the BC Map, the Enterprise
+   Architecture, `ARCHITECTURE_RULINGS.md`, the Module Dependency Matrix and every
+   FROZEN PRD are **byte-unchanged**.
+7. ⛔ **Amends no frozen decision.** `PRD-020` §8.3's pipeline and `TSF-*` rules are
+   cited verbatim in B4/B5/B6 and are **not** reinterpreted or reclassified.
+8. ⛔ **Creates no bounded context and no integration edge.** Count remains **31**.
+   The 7 edges cited by B4/B5/B6 — `E-02`, `E-19`, `E-20`, `E-21`, `E-22`, `E-23`,
+   `E-26` — all **pre-exist**.
+9. ⛔ **Mints no published event.** `BC-11`'s surface stays closed at **two** (BC Map **L430**).
+10. ⛔ **Mints no `IMPL-*` identifier and creates no implementation task.**
+11. ⛔ **Modifies no §11 or §12 content, and no `PRD-021A` row.** §4.2 **L321** is
+    **byte-unchanged**; `PRD-021` itself remains **`PLANNED`**.
+12. ⛔ **Writes no `DOCUMENTATION_BASELINE.md` row and no `TRACEABILITY_MATRIX.md`
+    row.** Measured: **0** `PRD-021B` rows in each. Traceability is Stage 5, ⛔ not entered.
+13. ⛔ **Increments no §7 summary count**, for the reason §11.6 and §12.4 item 10
+    already give. ⚠ Disclosed, not repaired.
+
+### 13.6 The self-check record on disk
+
+`PRD-021B_B4_B5_B6_CROSS_PART_AUDIT.md` accompanies the three drafts. ⚠ **It is
+an author self-check, ⛔ NOT a Stage-3 architecture alignment record**, and it
+says so in its own header. It reports **12/12** required verifications passing,
+**0** ownership duplications, **0** invented bounded contexts, events, edges or
+data sources (with **8** signal/source refusals recorded instead of inventions),
+**0** orphan acceptance criteria, and ⚠ **2 findings against the drafts
+themselves** — one material and fixed (`BC-11→17` had been rendered as an
+integration edge where the BC Map uses it as a residency-band range label), one
+method-only.
+
+### 13.7 Change note
+
+⚠ **Recorded here rather than as a row in §10, and the version is deliberately
+NOT incremented** — the identical reasoning §11.7 and §12.5 give: this register's
+version-discipline defect is pre-existing and systemic, and bumping it for this
+one append would imply it is the only change since the header date, which is false.
+
+**2026-09-02 — `PRD-021B` Parts B4, B5, B6 registered as `DRAFT` / Stage 2 at
+`BC-11`.** One appended section; **0** existing lines modified; **0** cited lines
+shifted; **0** cited-line contents changed; **0** ADRs created; **0** Rank 1–5
+documents touched; **0** lifecycle stages conferred beyond Draft; **0** bounded
+contexts created; **0** edges created; **0** events minted; **0** `IMPL-*`
+identifiers allocated; **0** frozen decisions altered; **0** capabilities moved
+between waves; **3** conflicts (`XPB-CONF-001`, `XPB-CONF-002`, `XPB-CONF-005`)
+left explicitly **OPEN** against named owners.

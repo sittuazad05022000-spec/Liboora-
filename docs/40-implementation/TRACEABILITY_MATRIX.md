@@ -1869,6 +1869,402 @@ own author.**
 
 ---
 
+## 2P. `PRD-021A` A1–A8 Library Community — eight-stem identifier inventory
+
+| Field | Value |
+|---|---|
+| **Subject** | `PRD-021A` Library Community, **A1–A8, all `DRAFT`, all Unranked** — eight documents in `docs/30-product/social-graph/`, **11,617 lines**, sha256 recorded per part in §2P.5. ⚠ **This is the first registration in this matrix whose subject is EIGHT documents rather than one**, and the difference is load-bearing: eight documents mint eight stems, cite one another 253 times across part boundaries, and can therefore fail in a way no single-document registration can — by citing a sibling's identifier that the sibling never minted. That direction is measured in §2P.1 (e) and is **0** |
+| **Stage** | **5 of 9 — Traceability** (`PRD_LIFECYCLE.md` L121–133) |
+| **Prefix stems** | **8** — `LCM-` `LCF-` `LCR-` `LCG-` `LCO-` `LCS-` `LCN-` `LCT-`, each measured free in **five** directions before use; see §2P.1 |
+| **Registers** | **105** |
+| **Identifiers** | **1,982** — **104 of 105 registers contiguous** from `001` to their stated maximum. ⚠ **The one exception is deliberate, is A1's, and is NOT a defect**; see §2P.0's note and §2P.3 |
+| **Normative requirements** | **757** (`*-FR-*` 710 + `*-BR-*` 47) |
+| **Acceptance criteria** | **233** — coverage **206/757 = 27.2%**, ⚠⚠ **551 uncovered**. ⛔⛔ **This is the LOWEST coverage figure ever registered in this matrix, below §2O's 40.6%, and it is registered at its measured value rather than repaired to a flattering one.** See §2P.2 |
+| **Collisions** | **ZERO**, measured in **five** directions — §2P.1 |
+| **Registered at** | This commit |
+| **Instruments** | [`../../tool/docs_check/prd021a_traceability.py`](../../tool/docs_check/prd021a_traceability.py) (subjects) and [`../../tool/docs_check/prd021a_stage5.py`](../../tool/docs_check/prd021a_stage5.py) (this section). **Neither imports the other**; both reach **105 / 1,982** by structurally different routes |
+| **⛔ What this registration does NOT confer** | **Rank, freeze, `IMPL-*` allocation, architecture closure, gap closure, `READY`, or any status move.** See §2P.4. ⛔ **All 97 `*-GAP-*` remain exactly as their subjects left them** — not one is closed, narrowed or reworded here, including `LCG-GAP-001` and `LCG-GAP-006`, which A4 makes hard blockers |
+
+### 2P.0 The inventory
+
+⚠ Counted by **distinct-token occupancy**, not by definition site. §2O.4 defect `I-1` records a census that
+counted definition rows and undercounted a live register by half, because members defined mid-sentence were
+invisible to it. That defect was read before this section was written, and the census was written to avoid it.
+
+**A1 — `LCM-` Library Community Membership foundation (19 registers, 462 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCM-AC-NNN` | Acceptance criterion | **60** | `001`…`060` | ✅ | `061` |
+| `LCM-ADR-NNN` | ADR requirement | **2** | `001`…`002` | ✅ | `003` |
+| `LCM-API-NNN` | API surface rule | **24** | `001`…`024` | ✅ | `025` |
+| `LCM-AUTH-NNN` | Authorisation rule | **18** | `001`…`018` | ✅ | `019` |
+| `LCM-BR-NNN` | Business rule | **18** | `001`…`018` | ✅ | `019` |
+| `LCM-CFG-NNN` | Configurable | **14** | `001`…`014` | ✅ | `015` |
+| `LCM-CHK-NNN` | Implementation checklist item | **30** | `001`…`030` | ✅ | `031` |
+| `LCM-DEC-NNN` | Decision requiring an owner | **12** | `001`…`012` | ✅ | `013` |
+| `LCM-FR-NNN` | Functional requirement | **66** | `001`…`067` | ⚠ **ONE number unassigned** — see the note below | `068` |
+| `LCM-GAP-NNN` | Open gap | **8** | `001`…`008` | ✅ | `009` |
+| `LCM-GWT-NNN` | Given/When/Then scenario | **32** | `001`…`032` | ✅ | `033` |
+| `LCM-INV-NNN` | Invariant | **20** | `001`…`020` | ✅ | `021` |
+| `LCM-NFR-NNN` | Non-functional requirement | **22** | `001`…`022` | ✅ | `023` |
+| `LCM-OBS-NNN` | Observability obligation | **14** | `001`…`014` | ✅ | `015` |
+| `LCM-RM-NNN` | Read-model rule | **28** | `001`…`028` | ✅ | `029` |
+| `LCM-RSK-NNN` | Risk | **26** | `001`…`026` | ✅ | `027` |
+| `LCM-SEC-NNN` | Security obligation | **20** | `001`…`020` | ✅ | `021` |
+| `LCM-SIG-NNN` | Signalling / event prohibition | **14** | `001`…`014` | ✅ | `015` |
+| `LCM-XC-NNN` | Exclusion / negative constraint | **34** | `001`…`034` | ✅ | `035` |
+
+⚠⚠ **`LCM-FR-*` has 66 members across a range of 67, and the missing number is not written here.**
+A1 §24 discloses the skip itself and states that the number *"is deliberately **not written out anywhere in this
+document**, because reproducing an unassigned identifier in prose is exactly what makes a phantom look defined to a
+grep-based or automated continuity check."* **This section is exactly such a downstream document**, so it records
+the skip by **position** — the register resumes two numbers after `LCM-FR-046` — and never by token, on the
+`PRD-012a` Part 8 §1.3 remedy that §2O.4 `I-4` applies. Both instruments hold the position **arithmetically**
+(`A1_GAP_AFTER = 46`) for the same reason: a checker that writes the phantom while enforcing the rule against
+phantoms has not enforced it. Measured: occurrences of that token in A1 = **0**, in this section = **0**, in both
+instruments = **0**. ⛔ **The skip has NOT been closed by inventing a requirement to occupy the number, and NOT by
+renumbering 048…067 downward.** Either would have been a Product Owner act; neither was available here.
+
+**A2 — `LCF-` Community Feed & Content (16 registers, 319 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCF-AC-NNN` | Acceptance criterion | **36** | `001`…`036` | ✅ | `037` |
+| `LCF-ADR-NNN` | ADR requirement | **7** | `001`…`007` | ✅ | `008` |
+| `LCF-API-NNN` | API surface rule | **14** | `001`…`014` | ✅ | `015` |
+| `LCF-AUTH-NNN` | Authorisation rule | **12** | `001`…`012` | ✅ | `013` |
+| `LCF-BR-NNN` | Business rule | **13** | `001`…`013` | ✅ | `014` |
+| `LCF-DEC-NNN` | Decision requiring an owner | **6** | `001`…`006` | ✅ | `007` |
+| `LCF-DEP-NNN` | Dependency | **5** | `001`…`005` | ✅ | `006` |
+| `LCF-EVT-NNN` | Published domain event | **6** | `001`…`006` | ⛔ **CLOSED** by `LCF-FR-104` | ⛔ **none — ADR required** |
+| `LCF-FR-NNN` | Functional requirement | **110** | `001`…`110` | ✅ | `111` |
+| `LCF-GAP-NNN` | Open gap | **14** | `001`…`014` | ✅ | `015` |
+| `LCF-INV-NNN` | Invariant | **16** | `001`…`016` | ✅ | `017` |
+| `LCF-NFR-NNN` | Non-functional requirement | **12** | `001`…`012` | ✅ | `013` |
+| `LCF-RM-NNN` | Read-model rule | **5** | `001`…`005` | ✅ | `006` |
+| `LCF-RSK-NNN` | Risk | **18** | `001`…`018` | ✅ | `019` |
+| `LCF-SEC-NNN` | Security obligation | **16** | `001`…`016` | ✅ | `017` |
+| `LCF-XC-NNN` | Exclusion / negative constraint | **29** | `001`…`029` | ✅ | `030` |
+
+⛔⛔ **`LCF-EVT-*`'s next-free cell reads *none — ADR required*, and §2O.4 defect `I-4` is the reason it does.**
+A2 `LCF-FR-104`: *"The event set SHALL be closed at these six. A seventh SHALL require a PRD…"* — and
+`PRD_LIFECYCLE.md` §5 rule 6 makes extending a closed register an ADR act. The arithmetic successor is a number;
+a **closed register has no next free member** until an ADR confers one, so writing that number would mint a phantom
+inside the table that declares the register closed. That is precisely what §2O.0's first draft did for
+`TSF-EVT-*`, and §2O.4 calls it *"the most instructive defect in this pass."* ⚠ **`prd021a_stage5.py` FAILS any
+closed register that publishes a numeric next-free cell**, so the class cannot recur silently here either.
+⚠ Separately, `LCF-RSK-001`, `-002` and `-014` are marked **RETIRED** by A2 with *"positions retained, never
+renumbered"* — the register count above is **18 minted**, which is the number the matrix registers, because a
+retired position is still an allocated number.
+
+**A3 — `LCR-` Community Feed Ranking (12 registers, 234 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCR-AC-NNN` | Acceptance criterion | **22** | `001`…`022` | ✅ | `023` |
+| `LCR-API-NNN` | API surface rule | **10** | `001`…`010` | ✅ | `011` |
+| `LCR-BR-NNN` | Business rule | **15** | `001`…`015` | ✅ | `016` |
+| `LCR-DEC-NNN` | Decision requiring an owner | **9** | `001`…`009` | ✅ | `010` |
+| `LCR-FND-NNN` | Finding (measured observation) | **13** | `001`…`013` | ✅ | `014` |
+| `LCR-FR-NNN` | Functional requirement | **101** | `001`…`101` | ✅ | `102` |
+| `LCR-GAP-NNN` | Open gap | **10** | `001`…`010` | ✅ | `011` |
+| `LCR-INV-NNN` | Invariant | **11** | `001`…`011` | ✅ | `012` |
+| `LCR-NFR-NNN` | Non-functional requirement | **7** | `001`…`007` | ✅ | `008` |
+| `LCR-RS-NNN` | Ranking signal | **9** | `001`…`009` | ✅ | `010` |
+| `LCR-RSK-NNN` | Risk | **11** | `001`…`011` | ✅ | `012` |
+| `LCR-XC-NNN` | Exclusion / negative constraint | **16** | `001`…`016` | ✅ | `017` |
+
+**A4 — `LCG-` Community Groups & Roles (15 registers, 148 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCG-AC-NNN` | Acceptance criterion | **18** | `001`…`018` | ✅ | `019` |
+| `LCG-ADR-NNN` | ADR requirement | **4** | `001`…`004` | ✅ | `005` |
+| `LCG-BR-NNN` | Business rule | **1** | `001`…`001` | ✅ | `002` |
+| `LCG-DEC-NNN` | Decision requiring an owner | **6** | `001`…`006` | ✅ | `007` |
+| `LCG-DEP-NNN` | Dependency on another part | **10** | `001`…`010` | ✅ | `011` |
+| `LCG-EC-NNN` | Edge case | **10** | `001`…`010` | ✅ | `011` |
+| `LCG-FR-NNN` | Functional requirement | **27** | `001`…`027` | ✅ | `028` |
+| `LCG-FS-NNN` | Fail-safe behaviour | **6** | `001`…`006` | ✅ | `007` |
+| `LCG-GAP-NNN` | Gap | **14** | `001`…`014` | ✅ | `015` |
+| `LCG-INV-NNN` | Invariant | **8** | `001`…`008` | ✅ | `009` |
+| `LCG-NFR-NNN` | Non-functional requirement | **4** | `001`…`004` | ✅ | `005` |
+| `LCG-OBS-NNN` | Observability obligation | **5** | `001`…`005` | ✅ | `006` |
+| `LCG-RSK-NNN` | Risk | **10** | `001`…`010` | ✅ | `011` |
+| `LCG-SEC-NNN` | Security obligation | **9** | `001`…`009` | ✅ | `010` |
+| `LCG-XC-NNN` | Exclusion / negative constraint | **16** | `001`…`016` | ✅ | `017` |
+
+⚠ **A4's gap register is `13 OPEN + 1 DEFERRED + 0 closed`**, not 14 open — `LCG-GAP-010` is deferred with a named
+reason and two named owners. The distinction is not cosmetic: `PRD_LIFECYCLE.md` **L119** makes Stage 4's gate
+*"conflicts closed **or explicitly deferred with a reason and an owner**"*, so a deferral **satisfies** that gate
+where a bare open item does not. **This registration closes none of the 14.**
+
+**A5 — `LCO-` Official Library Communication (13 registers, 330 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCO-AC-NNN` | Acceptance criterion | **21** | `001`…`021` | ✅ | `022` |
+| `LCO-ADR-NNN` | ADR requirement | **4** | `001`…`004` | ✅ | `005` |
+| `LCO-API-NNN` | API surface rule | **11** | `001`…`011` | ✅ | `012` |
+| `LCO-AUTH-NNN` | Authorisation rule | **11** | `001`…`011` | ✅ | `012` |
+| `LCO-DEC-NNN` | Decision requiring an owner | **8** | `001`…`008` | ✅ | `009` |
+| `LCO-EC-NNN` | Edge case | **16** | `001`…`016` | ✅ | `017` |
+| `LCO-FR-NNN` | Functional requirement | **133** | `001`…`133` | ✅ | `134` |
+| `LCO-GAP-NNN` | Open gap | **26** | `001`…`026` | ✅ | `027` |
+| `LCO-INV-NNN` | Invariant | **33** | `001`…`033` | ✅ | `034` |
+| `LCO-NFR-NNN` | Non-functional requirement | **4** | `001`…`004` | ✅ | `005` |
+| `LCO-RSK-NNN` | Risk | **12** | `001`…`012` | ✅ | `013` |
+| `LCO-SEC-NNN` | Security obligation | **24** | `001`…`024` | ✅ | `025` |
+| `LCO-XC-NNN` | Exclusion / negative constraint | **27** | `001`…`027` | ✅ | `028` |
+
+⚠ **All 26 `LCO-GAP-*` are OPEN** — the subject's own footer records *"Gaps open — 26 of 26"*. This registration
+leaves that figure exactly where it found it.
+
+**A6 — `LCS-` Community Safety, Privacy & Moderation (11 registers, 147 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCS-AC-NNN` | Acceptance criterion | **20** | `001`…`020` | ✅ | `021` |
+| `LCS-ADR-NNN` | ADR requirement | **1** | `001`…`001` | ✅ | `002` |
+| `LCS-AP-NNN` | Authoring principle | **7** | `001`…`007` | ✅ | `008` |
+| `LCS-DEC-NNN` | Decision requiring an owner | **3** | `001`…`003` | ✅ | `004` |
+| `LCS-EDGE-NNN` | Edge case | **12** | `001`…`012` | ✅ | `013` |
+| `LCS-FR-NNN` | Functional requirement | **78** | `001`…`078` | ✅ | `079` |
+| `LCS-G-NNN` | Goal | **6** | `001`…`006` | ✅ | `007` |
+| `LCS-GAP-NNN` | Open gap | **6** | `001`…`006` | ✅ | `007` |
+| `LCS-NG-NNN` | Non-goal | **6** | `001`…`006` | ✅ | `007` |
+| `LCS-OWN-NNN` | Ownership statement | **6** | `001`…`006` | ✅ | `007` |
+| `LCS-SEC-NNN` | Security obligation | **2** | `001`…`002` | ✅ | `003` |
+
+**A7 — `LCN-` Community Notifications (6 registers, 116 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCN-AC-NNN` | Acceptance criterion | **21** | `001`…`021` | ✅ | `022` |
+| `LCN-ADR-NNN` | ADR requirement | **1** | `001`…`001` | ✅ | `002` |
+| `LCN-DEC-NNN` | Decision requiring an owner | **3** | `001`…`003` | ✅ | `004` |
+| `LCN-EVT-NNN` | Community event | **7 minted** — **3 ACTIVE, 4 WITHDRAWN** | `001`…`007` | ✅ **as minted** | ⛔ **none published here** — see below |
+| `LCN-FR-NNN` | Functional requirement | **76** | `001`…`076` | ✅ | `077` |
+| `LCN-GAP-NNN` | Open gap | **8** | `001`…`008` | ✅ | `009` |
+
+⚠⚠ **`LCN-EVT-*` registers SEVEN, and the count deliberately does not fall to three.**
+A7 **L870**: *"7 minted · 3 ACTIVE · 4 WITHDRAWN … Withdrawn by SD-1: 004, 005, 006, 007 — **identifiers retained,
+never reused**."* `PRD_LIFECYCLE.md` **L258** §5 rule 5 is the authority: *"Numbers are never reused, even after
+withdrawal. A withdrawn requirement is marked withdrawn."* A register that reported **3** would be reporting the
+live set, not the allocated one, and would invite the next author to mint `004` a second time — which is the exact
+harm rule 5 exists to prevent. ⛔ **This registration does not reinstate the four, does not renumber the three
+survivors, and does not publish a numeric next-free cell**: A8 `LCT-CONF-001` records the seven-versus-six event
+conflict as **RAISED, NOT RESOLVED** and routes it to `LCT-ADR-001`, so the number after `007` is an open
+architecture question rather than an arithmetic one. ⚠ A7 also retains `LCN-FR-019`, `-020` and `-022` as **VOID**
+rows for the same reason — positions held, never recycled.
+
+**A8 — `LCT-` Technical & Production Architecture (13 registers, 226 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `LCT-AC-NNN` | Acceptance criterion | **35** | `001`…`035` | ✅ | `036` |
+| `LCT-ADR-NNN` | ADR requirement | **2** | `001`…`002` | ✅ | `003` |
+| `LCT-AP-NNN` | Authoring principle | **7** | `001`…`007` | ✅ | `008` |
+| `LCT-CONF-NNN` | Cross-part conflict | **2** | `001`…`002` | ✅ | `003` |
+| `LCT-FR-NNN` | Functional requirement | **119** | `001`…`119` | ✅ | `120` |
+| `LCT-G-NNN` | Goal | **6** | `001`…`006` | ✅ | `007` |
+| `LCT-GAP-NNN` | Open gap | **11** | `001`…`011` | ✅ | `012` |
+| `LCT-INV-NNN` | Invariant | **7** | `001`…`007` | ✅ | `008` |
+| `LCT-NG-NNN` | Non-goal | **10** | `001`…`010` | ✅ | `011` |
+| `LCT-OWN-NNN` | Ownership statement | **6** | `001`…`006` | ✅ | `007` |
+| `LCT-R-NNN` | Rejected alternative | **8** | `001`…`008` | ✅ | `009` |
+| `LCT-SEC-NNN` | Security obligation | **10** | `001`…`010` | ✅ | `011` |
+| `LCT-XC-NNN` | Exclusion / negative constraint | **3** | `001`…`003` | ✅ | `004` |
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| **Total** | **105 registers across 8 stems** | **1,982** | | **104 of 105 contiguous; the 1 exception is A1's declared skip** | |
+
+### 2P.1 Prefix collisions checked — in **five** directions
+
+`PRD_LIFECYCLE.md` Stage 5 exists for the `PO-3`/`SPO-3` class of error, recorded at **L132** of this matrix and
+quoted back at **L132** of the lifecycle: *"citing `PO-3` when `SPO-3` was meant would move a requirement from one
+bounded context to another."* A one-way check does not detect it.
+
+⚠ **§2O checked four directions. This subject requires a fifth**, because it is eight documents rather than one and
+the four-direction test is blind to a sibling citing an identifier the owning sibling never minted.
+
+| # | Direction | Method | Result |
+|---|---|---|---|
+| **(a)** | The eight stems already used in this matrix | Count `LC[MFRGOSNT]-[A-Z]+-\d+` over §2…§2O, before this section was written | **0 for all eight.** ⛔ **1,982 identifiers across 105 registers were recorded nowhere** — the exact condition Stage 5 exists to prevent |
+| **(b)** | Another stem collides with one of the eight | Every stem matching `[A-Z][A-Z0-9]{1,6}-[A-Z]+-\d{3}` harvested from `docs/` and tested for prefix containment in **both** directions | **28 stems observed** — `A1 AFIL ATT AUD CNF ENT FEE FIL INV ITG LIB MM MP PROFIL S3 S4 S5 S6 SAAS SEAT SEC SECP SID SM TEN TSF XCNF XFIL`. **0 collide with any of the eight** |
+| **(c)** | A near-miss stem is live | Probe `LC-`, `LCFG-`, `LCMS-`, `LCRS-`, `LCGS-`, `LCOS-`, `LCSS-`, `LCNS-`, `LCTS-`, `LCA-`, `LCB-`, `LCC-`, `LCD-`, `LCE-` against the same register suffixes | **0 hits on all fourteen.** ⚠ The probe is only meaningful because it **does** fire on the real stems when the exclusion is removed — `LCM` 881, `LCF` 4,609, `LCR` 2,686, `LCG` 369, `LCO` 609, `LCS` 255, `LCN` 249, `LCT` 314. *A negative that cannot go positive proves nothing*, and the control is published so the reader need not take the zeroes on trust |
+| **(d)** | One of the eight stems **defined** outside its owning part | Every file under `docs/` and `lib/`/`test/` scanned for a definition of `LC[MFRGOSNT]-*`, resolved against the owning part's defined set, **excluding the ten superseded self-drafts** | **0 collisions. 8 unresolved foreign tokens, each inspected and each a citation or a reservation rather than a definition** — enumerated in §2P.6 |
+| **(e)** | ⭐ **A part cites a sibling identifier the sibling never minted** | All **253** distinct cross-part citations among A1…A8 resolved against the owning part's occupancy set | **0 dangling.** ⚠ **This is the direction §2O did not need and this subject does**, and it is the one a single-document registration structurally cannot run |
+
+⚠⚠ **`LCFG-` is the near miss worth naming, because it is real and it is already registered in this matrix.**
+**L70** registers `` `LCFG-n` `` — *Library configurable*, 13 members — and a bare-substring search for `LCF`
+**does** match `LCFG-13`. The stems are nevertheless disjoint **in shape**, verified both ways: `LCF-[A-Z]+-\d+`
+does not match `LCFG-13`, and `LCFG-\d+` does not match `LCF-FR-001`. ⛔ **The residual hazard is not in the data
+but in future instruments**, so it is recorded as an obligation rather than a clean bill: **any checker touching
+this family must anchor on `LCF-` with the hyphen, never on `LCF`.** Both instruments in this registration do.
+⚠ A1 `LCM-ADR-002` cites `LCFG-5` by name as an existing parameter it reuses — a citation, not a collision, and
+the §2C.1 principle applies.
+
+⚠ **The eight stems were not free-form choices and the naive alternatives were rejected before measurement.**
+`LC-` alone is two characters and, on `PRD_LIFECYCLE.md` §5 rule 3's reasoning — *"on collision change the NEW
+prefix, never the existing one"* — a short stem shifts the entire cost of any future collision onto whichever
+document arrives second. The three-letter forms carry the part's subject in the third character (`M` membership,
+`F` feed, `R` ranking, `G` groups, `O` official, `S` safety, `N` notifications, `T` technical), which is why
+`LCS-` and `LCN-` do not collide despite both being safety-adjacent.
+
+### 2P.2 ⚠⚠ Acceptance coverage is **27.2%** — the lowest in this matrix — and the 551 uncovered obligations are named rather than argued away
+
+Measured **paragraph-aware** unioned with row-scoped: §2N.3.2 records that a line-scoped scan produces false
+negatives against wrapped criteria, *"and that defect has bitten two different reviewers' instruments."*
+
+| Part | Class A (`FR`+`BR`) | `AC` | Covered | Uncovered | Coverage |
+|---|---|---|---|---|---|
+| A1 `LCM-` | 84 | 60 | **41** | **43** | 48.8% |
+| A2 `LCF-` | 123 | 36 | **38** | **85** | 30.9% |
+| A3 `LCR-` | 116 | 22 | **29** | **87** | 25.0% |
+| A4 `LCG-` | 28 | 18 | **10** | **18** | 35.7% |
+| A5 `LCO-` | 133 | 21 | **16** | **117** | 12.0% |
+| A6 `LCS-` | 78 | 20 | **18** | **60** | 23.1% |
+| A7 `LCN-` | 76 | 21 | **31** | **45** | 40.8% |
+| A8 `LCT-` | 119 | 35 | **23** | **96** | 19.3% |
+| **Total** | **757** | **233** | **206** | **551** | **27.2%** |
+
+⛔ **A low figure is not a failed gate, and the distinction is load-bearing.** Stage 5's gate is *"the PRD's
+prefixes registered in `TRACEABILITY_MATRIX.md` §2 with counts and ranges, verified mechanically, zero
+collisions"* — **coverage is not in it**. The precedent is settled in this matrix's own history and was measured
+before being relied on: **§2O registered `PRD-020` at 40.6%**, **§2E `PRD-007` at 73.4%**, **§2D `PRD-005` at
+60.1%**, **§2M `PRD-017` at 71.2%**, **§2C at 94.6%**. What Stage 5 forbids is an **unmeasured or overstated**
+figure — the `PRD-006` v1.0 error of publishing *"100% coverage"* against a true **49.1%**.
+
+⚠⚠ **The obvious "fix" is REFUSED here, and the refusal is the finding.** Minting 551 acceptance criteria would
+take the register from 233 to 784, falsify every count in §2P.0, and satisfy a gate nobody asked for. §2O.2
+refused the same move at a quarter of the scale and named why: *"Minting identifiers to move a percentage is the
+same act at larger scale."* ⛔ **It would also be a Product Owner act.** The conferral behind this section is for
+a **Stage-5 traceability act only**; writing 551 new obligations is authoring, not registering.
+
+⚠ **A5's 12.0% is the lowest single figure and it is not anomalous — it is diagnostic.** A5 holds **133** `LCO-FR-*`
+against **21** `LCO-AC-*` and **26 open gaps**, which is the profile of a part specified ahead of its acceptance
+work rather than one with a measurement defect. It is disclosed under `SID-4.56` — *"a rule that cannot be checked
+SHALL be treated as unmet"* — and routed to the Product Owner as existing open work, **not** closed here.
+
+### 2P.3 What was preserved, and what preserving it cost
+
+| # | Thing preserved | Authority | What the easy alternative would have been |
+|---|---|---|---|
+| 1 | **A1's single unassigned `LCM-FR` number** | A1 §24; `PRD-012a` Part 8 §1.3 | Mint a requirement to occupy it (Product Owner act, invents an obligation) or renumber `048`…`067` down by one (breaks every citation of those 20 identifiers across A2…A8) |
+| 2 | **A1's unassigned number is not WRITTEN, even here** | A1 §24: *"deliberately not written out anywhere in this document"* | Quote the token while explaining it must not exist — the self-referential phantom §2N.3.1 records twice and §2O.4 `I-4` a third time |
+| 3 | **A7's four withdrawn `LCN-EVT-*`** | `PRD_LIFECYCLE.md` **L258** §5 rule 5 | Report the register as **3** — arithmetically defensible, and it would free `004` for reuse, which rule 5 forbids precisely because a reused number silently retargets every historical citation |
+| 4 | **A7's three VOID `LCN-FR-*` positions** | Same rule | Compact the register |
+| 5 | **A2's closed `LCF-EVT-*` publishes no next free** | `LCF-FR-104`; §5 rule 6; §2O.4 `I-4` | Write the arithmetic successor — the exact defect §2O.4 calls *"the most instructive in this pass"* |
+| 6 | **A2's three RETIRED `LCF-RSK-*` positions** | A2 §register summary: *"positions retained, never renumbered"* | Report 15 instead of 18 |
+| 7 | **A8's `LCT-CONF-001` left RAISED, NOT RESOLVED** | A8 §15.3 routes it to A2's owner | Pick a winner between A7's seven events and A2's closure at six — an **Architecture Owner** act, and the conferral behind this section is not that |
+
+### 2P.4 What this registration deliberately does **not** do
+
+| # | Not conferred | Why not, and who could |
+|---|---|---|
+| 1 | **Rank** | Only `DOCUMENTATION_BASELINE.md` §3 admits a document to a rank, and **L139** of it still reads *"PRD-021A remains NOT READY / NOT FROZEN."* **Governance Owner** |
+| 2 | **Freeze / Stage 7** | `PRD_LIFECYCLE.md` §7: *"No fast path. Stage 7 is not skippable."* `ADR-0082` records Stage 7 as **not enterable** for this subject. **Governance Owner** |
+| 3 | **Stage 6 / `IMPL-*` allocation** | Stage 6's gate is at `PRD_LIFECYCLE.md` L137 and the next unallocated range is at **L153**. ⛔ **Not one `IMPL-` identifier is minted by this section**, and `prd021a_stage5.py` fails the run if one appears. **Not this act, and not this conferral** |
+| 4 | **Architecture closure** | `LCT-CONF-001` is **RAISED, NOT RESOLVED**; `LCG-GAP-006` (*"no published contract mints or resolves `communityId`"*) is **OPEN**. **Architecture Owner** |
+| 5 | **Gap closure** | **All 97 `*-GAP-*` stand as their subjects left them** — 8 `LCM` · 14 `LCF` · 10 `LCR` · 14 `LCG` (13 open + 1 deferred) · 26 `LCO` · 6 `LCS` · 8 `LCN` · 11 `LCT`. Not one is closed, narrowed or reworded |
+| 6 | **`READY`** | `LCG-GAP-001` (*"no document allocates scope to Part A4"*) is a **Product Owner** blocker and is open |
+| 7 | **A status move in `PRD_REGISTRY.md`** | A status move *"is an amendment act requiring amendment authority, **not a side effect**."* **Governance Owner** |
+| 8 | **An ADR number for any `*-ADR-*` requirement** | A1 `LCM-FR-049`: *"The ADR number … SHALL be allocated by the Governance Owner. This document SHALL NOT mint one."* **21 `*-ADR-*` requirements are registered above; ZERO ADR numbers are minted here.** **Governance Owner** |
+| 9 | **A baseline re-issue** | `DOCUMENTATION_BASELINE.md` §7 rule 4 moves the identifier only on a **Rank 1–3 version change**. This matrix is **unranked**, so it re-issues nothing; the `Baseline` field deliberately still reads `BASELINE-2026-08-04-D`, on the §2G precedent |
+
+⛔ **Nothing outside this matrix was modified to produce this section.** All eight subjects are **byte-unchanged** —
+sha256 recorded in §2P.5, identical before and after. No ADR file, no Rank 1–5 document, no `PRD_REGISTRY.md`, no
+`DOCUMENTATION_BASELINE.md`, no `PRD_LIFECYCLE.md`, no bounded-context map, and **no Dart source** was touched.
+
+### 2P.5 Subject hashes at registration
+
+| Part | File | Lines | Bytes | sha256 |
+|---|---|---|---|---|
+| A1 | `PRD-021A_A1_LIBRARY_COMMUNITY_FOUNDATION_DRAFT_v0.2.md` | 1,532 | 112,505 | `4c6e0652f4ceb9ff488adf68ad1061e3392256e591197ee281d6bc10056849fb` |
+| A2 | `PRD-021A_A2_LIBRARY_COMMUNITY_FEED_CONTENT_DRAFT_v0.8.md` | 1,959 | 133,400 | `1aca384098a7257449dc487a424d876515d9366ab85c6c74bc49621b980d685d` |
+| A3 | `PRD-021A_A3_COMMUNITY_FEED_RANKING_DRAFT_v0.6.md` | 1,330 | 115,575 | `fd1a4ca0653f6a0402040aafe4e47594974380d4dec60a1651be7a70a666cffc` |
+| A4 | `PRD-021A_A4_COMMUNITY_GROUPS_AND_ROLES_DRAFT_v0.1.md` | 766 | 45,397 | `95af7e30a58cbc37a65f00c86a902ec61fbedce0691b9c70c6e84d7794746f24` |
+| A5 | `PRD-021A_A5_OFFICIAL_LIBRARY_COMMUNICATION_DRAFT_v0.1.md` | 1,964 | 105,474 | `44713670aa112e5a73123c226d381067e7d0b773de5e204d24430aa5678df492` |
+| A6 | `PRD-021A_A6_COMMUNITY_SAFETY_PRIVACY_MODERATION_DRAFT_v0.1.md` | 1,188 | 76,841 | `b5e16450476fd3e535822fe01d917b5c582f0237004685c1b6d83f1b52c0d917` |
+| A7 | `PRD-021A_A7_COMMUNITY_NOTIFICATIONS_DRAFT_v0.1.md` | 953 | 54,248 | `01097dc13691bbfcf647de802e7fbd22760d4e3cdcf942b2f4e44a923d46146d` |
+| A8 | `PRD-021A_A8_TECHNICAL_AND_PRODUCTION_ARCHITECTURE_DRAFT_v0.1.md` | 1,925 | 96,400 | `cf5670ad89c039e54d6be1ec0c31d93f66ae8492a030275ef01c8d6723dc8585` |
+| | **Total** | **11,617** | **739,840** | |
+
+⚠ **The eight are enumerated by name and never globbed.** `PRD-021A_A*_*DRAFT_v*.md` matches **eighteen** files —
+the eight above plus **ten superseded drafts** (A2 v0.3…v0.7, A3 v0.1…v0.5) — and counting all eighteen yields
+**25,230** lines against a true **11,617**. Both instruments enumerate explicitly for this reason.
+
+### 2P.6 The eight foreign tokens — and why **none** is a collision, but **two** are findings
+
+Direction (d) surfaced **8 tokens** carrying one of the eight stems in files outside their owning part. Each was
+read **at its line**, on §2C.1's principle that *a citation is not a collision*.
+
+| Token | Where | Reading at the line | Verdict |
+|---|---|---|---|
+| `LCF-GAP-015` | `ADR-0082` **L398**, **L434**, plus `ADR-INDEX.md` and three PRD-021A records | L398: *"New gap opened: ⛔ `LCF-GAP-015`"*; L434: *"Identifiers minted: ZERO (except `LCF-GAP-015`, §7, which records a found defect)"* | ⚠ **Not a collision — a genuine DRIFT finding.** The ADR minted a gap **one past A2 v0.8's maximum of `LCF-GAP-014`**, and A2 has not absorbed it. ⛔ **This registration counts 14, because 14 is what the subject defines**, and publishes the drift rather than reconciling it: absorbing an ADR-minted gap into a PRD is a **document-owner act** |
+| `LCM-GAP-011` | `ADR-0083` **L12** | *"the `LCM-GAP-011`-adjacent window-boundary row"* | ⚠ **Not a collision — a second DRIFT finding.** A1's maximum is `LCM-GAP-008`. The ADR cites a number A1 does not define. **Published, not reconciled** |
+| `LCN-EVT-008` | `ADR-0083` **L240** | *"`LCN-EVT-008` is the next free number. A2 is not expanded, and no seventh A2 event exists."* | ✅ **Not a collision and not a defect** — a **next-free reservation**, the form §2O.4 `I-2` inspected and **rejected as a finding**. ⚠ Note this section does **not** repeat that token in its own next-free cell, because A7's register is under an unresolved conflict |
+| `LCM-FR-047` | ⛔ `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` **L293** | Written three times, inside the row explaining that A1's gap must not be closed | ⛔⛔ **A PHANTOM, AND IT IS MINE** — see §2P.7 |
+
+**Per-stem resolution:** `LCF` 34 foreign files / 133 tokens / 5 unresolved · `LCG` 17 / 22 / 0 · `LCM` 14 / 52 / 2 ·
+`LCN` 6 / 19 / 1 · `LCO` 13 / 16 / 0 · `LCR` 27 / 68 / 0 · `LCS` 10 / 19 / 0 · `LCT` 8 / 12 / 0. **509 files
+scanned.** Every other token resolves to an identifier its owning part defines: **0 dangling**.
+
+⚠ **`ADR-0080` **L193–196** already records `LCF-` and `LCR-` as *"✅ REGISTERED"* to A2 and A3.** That is an ADR's
+note about prefix ownership, not a §2 matrix registration — **`grep -c 'LCF-' TRACEABILITY_MATRIX.md` returned
+0** before this section. This section does not contradict `ADR-0080`; it performs the matrix act `ADR-0080`
+assumed had a home.
+
+### 2P.7 The defects these instruments found — including two in **me**
+
+`prd021a_traceability.py` never opens this matrix; `prd021a_stage5.py` never trusts §2P.0 except to contradict it.
+They agree on **105 / 1,982** by different routes. §2H.2 names the failure they exist to avoid: *"a checker written
+in the same pass as the register it checks, by the same author, verifies agreement with itself."*
+
+⚠ **`prd021a_stage5.py` was run BEFORE this section existed and exited 1** — *"has no `## 2P.` section — PRD-021A
+A1–A8 registers 1982 identifiers across 105 registers NOWHERE."* **A gate that cannot fail is not a gate.**
+
+⚠ **`prd021a_traceability.py` was mutation-tested in four independent ways and failed all four**, because a gate
+that passes is only evidence if it could have done otherwise: removing the declared gap → *"LCM-FR: NON-CONTIGUOUS,
+missing [47]"*; adding a fifth withdrawn A7 event → *"LCN-EVT-008 row is GONE"*; declaring `LCF-EVT` closed at five
+→ *"declared CLOSED at 5 but reaches 006"*; moving the A1 gap position → three simultaneous failures including
+*"the declared intentional gap has been FILLED."*
+
+| # | Defect | False result | Real cause |
+|---|---|---|---|
+| **`J-1`** | ⛔⛔ **`LCM-FR-047` written into `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` L293** | The conferral record reproduced A1's unassigned identifier **three times**, in the very row explaining that the gap must not be closed | ⛔⛔ **THE MOST INSTRUCTIVE DEFECT IN THIS PASS, and it is mine.** A1 §24 states the number is withheld *"because reproducing an unassigned identifier in prose is exactly what makes a phantom look defined to a grep-based or automated continuity check"* — and a Stage-4 conferral record is **precisely** such a downstream document. A1's precaution was defeated by the document conferring its stage. This is the **fourth** recorded instance of the self-referential phantom: §2N.3.1 records two in `PRD-012a`, §2O.4 `I-4` a third, **and this one was written by an author who had read all three.** ⚠ It was already caught once — the Stage-5 readiness audit made the same error and removed it, disclosing it at its own §3.3 — and the conferral record's copy **survived that sweep** because the sweep looked only at the audit. Remedied at §2P.8 by the Part 8 §1.3 route: the row now states the **position**, not the token |
+| **`J-2`** | §2P.0's `LCN-EVT-*` next-free cell, first draft | Read `008` | ⛔ **`I-4` recurring, in a section that cites `I-4` by name.** A7's event register is under `LCT-CONF-001` — **RAISED, NOT RESOLVED** — and `ADR-0083` L240 independently names `LCN-EVT-008` as next free. The number is defensible; publishing it **from this matrix** is not, because it would resolve by arithmetic a conflict A8 routed to an owner. The cell now reads *"none published here."* ⚠ **The disclosure above deliberately quotes the token only inside the `ADR-0083` row**, where it is that ADR's published reservation, and not in the cell |
+| **`J-3`** | Register census by **glob** | 8 subjects → 18 files, 25,230 lines | `PRD-021A_A*_*DRAFT_v*.md` matches ten superseded drafts. Had the census run, A2's and A3's registers would have been reported at their **superseded** maxima. Fixed by explicit enumeration in both instruments — the §2O.4 `I-1` lesson (*count what the subject defines, by a method that models how it actually writes*) reappearing as a **file-selection** rather than a **regex** problem |
+| **`J-4`** | Direction (c) probe, before the control was added | 14 zeroes | Not a wrong answer — an **unfalsifiable** one. Zeroes from a probe never shown to fire are indistinguishable from a broken probe. The control (`LCM` 881 … `LCT` 314) was added and is published beside the zeroes |
+
+**Four defects, ZERO subject defects** — the same ratio §2M, §2N and §2O reached independently. ⚠⚠ **Note the split:
+`J-3` and `J-4` are instrument defects, but `J-1` and `J-2` are defects in GOVERNANCE PROSE — one of them in a
+record that had already been conferred and pushed.** In all four cases **the instrument or the record was
+corrected and the eight subjects were left untouched.**
+
+### 2P.8 The `J-1` remedy, applied and measured
+
+`PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` L293 is corrected **in place** by the `PRD-012a` Part 8 §1.3 route: the
+row states the unassigned number's **position** relative to `LCM-FR-046` and no longer reproduces the token.
+⛔ **Nothing else in that record is altered** — the conferral it carries is untouched, and correcting a phantom is
+not re-conferring a stage. §2N's precedent governs the form: *"corrected, not rewritten."*
+
+**Measured after the remedy** — occurrences of A1's unassigned identifier, repository-wide:
+
+| Location | Before | After |
+|---|---|---|
+| A1 itself | **0** | **0** |
+| `PRD-021A_STAGE5_READINESS_AUDIT_2026-09-01.md` | **0** (removed in that record's own §3.3) | **0** |
+| `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` | **3** | **0** |
+| This section §2P | **0** | **0** |
+| Both instruments | **0** | **0** |
+| **Repository total** | **3** | **0** |
+
+---
+
 ## 3. Chapter map
 
 | Ch | Title | `AUTH` | `BR` | `XC` | `AC` | Implementation task | Status |

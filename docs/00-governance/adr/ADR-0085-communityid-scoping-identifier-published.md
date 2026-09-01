@@ -428,3 +428,77 @@ terms.
 test, and `TASK-D10` needs an SMS provider under `MP-DEP-03`.
 
 ⛔ **`PRD-021A` remains NOT READY and NOT FROZEN. Stage 7 is NOT conferred. Stage 8 is NOT entered.**
+
+---
+
+## 13. ⭐ A4 scope re-confirmed on a second Product Owner conferral (2026-09-01)
+
+A later Product Owner conferral — *"Confirm that Part A4 remains inside `PRD-021A`. Allocate A4 scope
+as the Community & Groups foundation. Do not exclude A4."* — was measured against this ADR before any
+act was taken.
+
+⭐⭐ **The ruling was ALREADY EXECUTED, by §2.1 of this ADR, in the same words and on the same
+authority.** This section records the **confirmation** and the repairs it obliges. It takes **no
+second decision**.
+
+### 13.1 Why no new decision was taken
+
+| Test | Measurement |
+|---|---|
+| Is A4 allocated to the Community & Groups foundation? | ✅ **Yes** — §2.1: *"Part **A4 — Community Groups & Roles** is allocated to the **Community & Groups foundation** and **remains a part of `PRD-021A`**, not a standalone PRD"* |
+| Is A4 excluded? | ✅ **No** — §2.1 states it remains a part; `ADR-0083` **PO-3** closed `LCG-DEC-001` to the same effect |
+| Is the deciding authority the same? | ✅ **Yes** — this ADR's **Deciders** row records *"**Product Owner** for §2 (A4 scope allocation …)"*, conferred directly by the human principal |
+| Is `LCG-GAP-001` closed? | ✅ **Yes** — named in this ADR's **Closes** field; §2.1 records the predicate *"No document allocates scope to Part A4"* as **false** |
+
+⛔ **Re-deciding it would produce two authorities for one rule** — the defect §2.2 of this ADR
+already refused for the role hierarchy. `ADR-0033` §7.1 (*"a conferral for one act is not a standing
+licence"*) means the second conferral is **spent on confirming**, and confers no licence to re-open a
+closed decision or to widen A4's scope.
+
+### 13.2 ⚠ What the re-measurement DID find — a false statement in a later ADR, now repaired
+
+⭐ **`ADR-0086` §8 (written by this author on 2026-09-01) listed `LCG-GAP-001` and `LCG-GAP-006` as
+*"all OPEN"* and cited *"`ADR-0081` §3"* for them.** Measured: both are **CLOSED** by this ADR, and a
+`grep` of `ADR-0081` for either identifier returns **0** — the citation named the wrong document.
+`ADR-0086` is corrected in the same commit as this section, and its §10 records the correction.
+
+⚠ **This is the derived-statement class again** (`GCP-01`/`07`/`11`/`15`): a summary of another
+document's state, written from memory of the blocker list rather than re-read from the **Closes**
+field of the ADR that closed them. It is recorded, not smoothed over, because the effect was to
+**overstate the Stage 7 blocker count** — the direction of error a freeze record must never take.
+
+### 13.3 ⛔ Stale A4 references NOT repaired, and why
+
+| Location | Stale text | Disposition |
+|---|---|---|
+| A4 draft **L11–17** (provenance block) | *"THE SCOPE ALLOCATION OF THIS PART IS ITSELF OPEN … a CANDIDATE scope, not an allocated one"* | ⛔ **NOT repaired** |
+| A4 draft **L638** (gap register) | `LCG-GAP-001` … *"⛔ **OPEN — blocks everything**"* | ⛔ **NOT repaired** |
+| A4 draft **L40**, **L758** | *"an **OPEN Product Owner decision**"*, *"`LCG-DEC-001` is open"* | ⛔ **NOT repaired** |
+
+**Reason, measured:** the A4 draft's hash `95af7e30a58cbc37…` (**766** lines, **45,397** B) is
+**anchored by SIX records** — `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md` (**L76**, **L89**),
+`PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` (**L308**), `PRD-021A_STAGE6_IMPLEMENTATION_TASKS.md`
+(**L8**, which states the hash is *"unchanged by this stage"*), `PRD-021A_STAGE7_READINESS_AUDIT_2026-09-01.md`
+(**L332**), `TRACEABILITY_MATRIX.md` (**L2189**, with the byte count) and
+`PRD-021A_IMPLEMENTATION_TASKS.md` (**L9**, *"Subjects (byte-unchanged by this document)"*).
+
+⭐ **A one-character edit to the A4 draft would falsify all six simultaneously**, including a line
+count and a byte count. This is the **`D-3` test applied a second time and reaching the same answer**:
+the conferral authorises *"update only the necessary A4 references"*, and an edit that invalidates six
+records is not *necessary* — the allocation is already effective through `ADR-0085`, which outranks a
+draft's own provenance note (`DOCUMENTATION_BASELINE.md` §4: Accepted ADRs are **Rank 2**, a
+`DRAFT` part is unranked). `PRD_LIFECYCLE.md` **L177** governs: a record is *"never silently
+modified … not for one that is certainly right."*
+
+⚠ **Registry L744 likewise NOT repaired** — §2.2 of this ADR already routed it to the **Governance
+Owner**, and this conferral is **Product Owner**. Carried unchanged.
+
+### 13.4 ⛔ What this section does not do
+
+Creates **no** requirement, identifier, architecture, permission or scope. Mints **no** `LCG-*`.
+Closes **no** further gap — `LCG-GAP-003`, `LCG-GAP-004`, `LCG-GAP-007`…`LCG-GAP-014` remain **OPEN**,
+and **11 of A4's 15** `LCG-GAP-*` are still open. Does **not** advance A4 past `DRAFT`, does **not**
+confer Stage 3 on A4, and does **not** make A4's 6 blocked tasks (`IMPL-1532`…`IMPL-1537`)
+schedulable on any ground other than the allocation `ADR-0085` §2.1 already made.
+
+⛔ **`PRD-021A` remains NOT READY and NOT FROZEN. Stage 7 is NOT conferred. Stage 8 is NOT entered.**

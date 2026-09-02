@@ -1129,3 +1129,201 @@ contexts created; **0** edges created; **0** events minted; **0** `IMPL-*`
 identifiers allocated; **0** frozen decisions altered; **0** capabilities moved
 between waves; **3** conflicts (`XPB-CONF-001`, `XPB-CONF-002`, `XPB-CONF-005`)
 left explicitly **OPEN** against named owners.
+
+---
+
+## 14. ⭐ `PRD-021B` Parts **B7 / B8 / B9** — Stage-2 drafts registered by append
+
+**2026-09-02.** Three further Stage-2 draft files exist on disk under
+`docs/30-product/social-graph/`, together with one author self-check record. This
+section records that fact. It records **nothing else** — no stage beyond Draft,
+no freeze, no approval, no wave decision, no ownership change and no architecture
+decision.
+
+⚠ **§12 and §13 are not modified.** This is an **append**, for the same reason
+§13 was: their rows describe Parts B0–B3 and B4–B6 and remain true.
+
+⭐ **This section discharges `FOD-4` for B7, B8 and B9.** Part B0 §8's `FOD-4`
+(*"B4/B5/B7/B8/B9 consumer/owner undefined"*, B0 **L329**) names its *"exact
+smallest action"* as *"a **registry §11-style allocation act**"* if such parts are
+wanted. §13 discharged it for B4 and B5; this section discharges it for **B7, B8
+and B9** — the remaining three parts `FOD-4` actually names. ⛔ **`FOD-4` is not
+edited by this act**, and B0 is byte-unchanged: amending B0 would modify a
+Stage-3/Stage-4-passed subject, which this act does not do.
+
+### 14.1 The registration
+
+| Field | Value |
+|---|---|
+| Identifier | **`PRD-021B`** — unchanged. ⛔ **No new `PRD-nnn` number is consumed** and no new lettered suffix is created |
+| Parts added | **B7** (1-to-1 Messaging & Conversation System) · **B8** (Realtime, Media & Messaging Safety) · **B9** (Technical & Production Architecture) |
+| Bounded contexts | **`BC-11`** Social Graph and **`BC-12`** Messaging — **both existing**, already `PRD-021`'s at §4.2 **L321**. ⛔ No context created; count remains **31 (23 in V1)** |
+| Status | **`DRAFT`** — all three |
+| Entry evidence | §2 — *"A document on disk with a version header"*. Satisfied by three files, each carrying a §0.1 status header reading `DRAFT — v0.1 (Stage 2)` |
+| Lifecycle stage | **Stage 2 (Draft)**. ⛔ **Stage 3 NOT entered** for B7/B8/B9 — its gate is *"a written alignment record"*, and the only record on disk for these three parts is an **author self-check** (§14.6), which is categorically not an architecture review |
+| Freeze | ⛔ **NOT FROZEN.** No `DOCUMENTATION_BASELINE.md` §3 row written, and none requested |
+| Owner | Unchanged — `PRD_OWNERSHIP_MODEL.md` **L203** already records `PRD-021`: Product Owner · Social Domain · **ARB** · Platform Engineering |
+| Identifier stems | **`MSG-`** (B7), **`RTM-`** (B8), **`TPA-`** (B9). ⚠ Each measured at **0** repository-wide occurrences before authoring — no existing namespace is shadowed |
+| Measured size | B7 **137** identifiers / 30 ACs · B8 **109** / 28 · B9 **146** / 24. **392** identifiers, **82** ACs, **0** orphan ACs, **0** dangling citations, **0** non-contiguous registers, **0** malformed Given/When/Then |
+| Open decisions | **`XPB-CONF-011`** (Product + Architecture) · **`XPB-CONF-013`** (Product Owner) · **`XPB-CONF-014`**, **`XPB-CONF-015`**, **`XPB-CONF-016`**, **`XPB-CONF-017`** (Architecture + Product) — all six ⛔ **OPEN**, recorded in the part files and in §14.6 |
+
+### 14.2 ⚠ Three disclosures this registration must carry
+
+**(a) ⭐ B7 does NOT own messaging, and B8 owns nothing at all.**
+The supplied specification for these parts read as though B7 would own
+conversations and B8 would own realtime and media. The repository already says
+otherwise, and the repository wins. `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L116**
+vests in **`BC-12`** *"conversations and messages, delivery guarantees,
+retention, presence"*, and **FROZEN** `PRD-020` §10 **L633** states the guard
+directly: *"`BC-12` owns conversations, messages, delivery and retention. T&S
+owns the **restriction** and the **report**."* B7 is therefore registered as a
+**specification of `BC-12`**, ⛔ not as an ownership claim. B8 is registered as a
+**compatible specification layer**: realtime is a **platform port**
+(`tool/module_dependencies.yaml` **L243**, `platform/services:realtime`) and
+**there is no realtime bounded context** among the 31; media is **`BC-29`'s**
+over `E-22`. ⚠ **57 explicit ownership refusals** are recorded across the three
+drafts, against **0** new ownership claims.
+
+**(b) ⭐ Two entity names in the supplied specification are NOT registered
+entities, and two registered entities were missing from it.**
+BC Map **L378** registers for `BC-12` exactly one aggregate root
+(`Conversation`) and three entities (`Message`, `DeliveryReceipt`,
+`RetentionPolicy`). ⚠ `Participant` and `MessageRequest` — both central to the
+supplied specification — are **not** registered; while `DeliveryReceipt` and
+`RetentionPolicy`, which the supplied specification **omitted**, are. The
+smallest compatible resolution was used: the two unregistered names are
+expressed as **aggregate internals** of `Conversation` (`MSG-XC-001`,
+`MSG-XC-002`) and the two omitted entities are **restored**. ⛔ **No BC Map §8
+amendment is proposed** — that is a Rank 4 change requiring the Architecture
+Owner and an ADR. Recorded as **`XPB-CONF-010`**, resolved by expression rather
+than by amendment.
+
+**(c) ⚠ A prior working assumption about the media wave was WRONG, and is
+corrected here rather than quietly carried.**
+An earlier reading of this task held student-to-student media in messaging to be
+**V2**, on `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **L952**/**L953**. Measurement of
+`E-22`'s consumer cell shows BC Map **L331** (**Rank 4**) and **FROZEN**
+`PRD-017` **L455**/**L435** (**Rank 3**) both date it **V1**, and
+`FIL-FR-075`…`FIL-FR-082` specify it. The EA is **Rank 6** and
+`DOCUMENTATION_BASELINE.md` states twice that it is *"descriptive — must follow
+the PRDs, never lead them."* B8 §B8.3.3 resolves this by the `PRD-017`
+**L195–208** wave precedent using the `ADR-0061` method, so ⛔ **the EA is not
+edited**. ⭐ The same correction was then **deliberately not applied** to
+presence, typing or read receipts: BC Map L116 confers *ownership* on `BC-12` but
+states **no wave**, and no Rank 1–4 dating line exists for them anywhere. Those
+are carried as **`XPB-CONF-014`** and **`XPB-CONF-017`**, ⛔ **OPEN**, and gated
+off in the drafts (`MSG-CFG-002`, `RTM-CFG-001`, `RTM-CFG-002` all default
+**FALSE**).
+
+### 14.3 Why `DRAFT` is lawful here
+
+The reasoning of §12.2 and §13.3 applies unchanged and is not restated: this act
+is **not an allocation**, so §11.2's restraint does not govern. `PRD-021`'s
+bounded-context allocation of **`BC-11` and `BC-12`** already exists at §4.2
+**L321** and is **not touched**. What is recorded is only the **existence of
+drafts on disk** — precisely and solely what §2's `DRAFT` entry evidence tests.
+
+⚠ **`GCP-14` remains ⛔ OPEN** and is preserved, not stepped over, on the same
+basis §12.2 gives.
+
+### 14.4 Authority — why this append is lawful without an ADR
+
+| # | Question | Governing text | Answer |
+|---|---|---|---|
+| 1 | ADR required before the change? | `DOCUMENTATION_BASELINE.md` §7 rule 1 — Rank 1–5 only | ⛔ **No.** This register is **unranked** — absent from baseline §3 **and** §4 |
+| 2 | `MASTER_PRD.md` change required? | §2 — entry evidence may be *"this register"* | ⛔ **No.** `MASTER_PRD.md` is **byte-unchanged** |
+| 3 | New `PRD-nnn` number consumed? | §8 rule 1 | ⛔ **No.** Three **parts** are added to the existing `PRD-021B` |
+| 4 | Does it add a bounded context to a PRD's ownership? | §8 rule 6 | ⛔ **No.** `BC-11` **and** `BC-12` are **already** `PRD-021`'s at **L321** |
+| 5 | Baseline row required? | §8 rule 4 | ⛔ **No**, and none is written. `PRD-021B` is **not** `FROZEN` |
+| 6 | Ownership record required? | §8 rule 7 | ⛔ **No new record.** **L203** already covers `PRD-021`; roles only |
+| 7 | ⭐ Does specifying `BC-12` transfer its ownership to B7? | BC Map **L116** is **Rank 4**; FROZEN `PRD-020` §10 **L633** | ⛔ **No** — and §14.2(a) states so explicitly. A specification of a context is **not** a claim on it |
+| 8 | ⭐ Does B9 require an ADR for microservices, a graph DB, ML infrastructure or a new BC? | Task prohibition + BC Map **L292**, **L522** | ⛔ **No** — because **none is introduced**. §14.5 item 8 records the measurement, including that BC Map **L522** is an extraction **order** table, ⛔ not an instruction to extract |
+
+### 14.5 ⛔ What this registration does **not** do
+
+1. ⛔ **Confers no stage beyond Draft** on B7, B8 or B9. Stage 3 requires a written
+   alignment record; for these three parts **none exists**, and none is claimed.
+2. ⛔ **Does not extend B0–B3's or B4–B6's Stage-3 PASS to B7/B8/B9.** Those
+   records name their subjects; ⚠ B7/B8/B9 are **not** among them.
+3. ⛔ **Resolves none of `XPB-CONF-011`, `013`, `014`, `015`, `016`, `017`**, and
+   resolves neither `FOD-1` nor `FOD-2`. All stay **OPEN**.
+4. ⛔ **Moves no capability between waves.** EA **L938**–**L962** and
+   **L1843**–**L1860** are **byte-unchanged**, including L952/L953 — see §14.2(c).
+5. ⛔ **Creates no ADR.** Highest on disk remains **`ADR-0091`**; `ADR-0092` does
+   not exist. ⚠ `ADR-0088` and `ADR-0090` remain RESERVED and UNWRITTEN.
+6. ⛔ **Amends no Rank 1–5 document.** `MASTER_PRD.md`, the BC Map, the Enterprise
+   Architecture, `ARCHITECTURE_RULINGS.md`, the Module Dependency Matrix and every
+   FROZEN PRD are **byte-unchanged**.
+7. ⛔ **Amends no frozen decision.** **FROZEN** `PRD-020` §10 and `PRD-017`'s
+   `FIL-FR-075`…`FIL-FR-082` are cited verbatim in B7/B8/B9 and are **not**
+   reinterpreted or reclassified. ⛔ **`ADR-0065` is restated, never re-decided**,
+   and ⚠ **neither half of `TSF-GAP-003` is claimed closed**.
+8. ⛔ **Introduces no microservice, graph database, ML infrastructure or bounded
+   context.** Each was **measured before being refused**: BC Map **L522** names
+   `BC-12` first in an extraction **order** table (⛔ not an instruction, and
+   `TPA-XC-001` keeps the boundary extraction-*ready* without exercising it); a
+   graph database has **0** authority lines (`TPA-GAP-001`); ML is refused by
+   FROZEN `TSF-XC-032` (*"a privacy posture, not a capability gap"*); and the BC
+   count remains **31** (`TPA-XC-004`, `TPA-INV-001`).
+9. ⛔ **Creates no integration edge.** The **8** edges cited — `E-14`, `E-16`,
+   `E-19`, `E-20`, `E-21`, `E-22`, `E-23`, `E-26` — all **pre-exist**. ⚠ `E-21` is
+   cited **only** to record that `BC-12` is **absent** from its producer cell,
+   which is why B9 §19 **refuses** message search rather than specifying it —
+   the same discipline as the BC Map v1.9 §15.6 community-search precedent.
+   ⛔ **`E-27` remains permanently vacant** (BC Map **L614**).
+10. ⛔ **Mints no published event.** `messaging.*` stays closed at **one** —
+    `messaging.MessageSent` (BC Map **L431**) — measured identical to the drafts' usage.
+11. ⛔ **Mints no `IMPL-*` identifier and creates no implementation task.**
+12. ⛔ **Modifies no §11, §12 or §13 content, and no `PRD-021A` row.** §4.2 **L321**
+    is **byte-unchanged**; `PRD-021` itself remains **`PLANNED`**.
+13. ⛔ **Modifies no application code and no CI manifest.** Measured: **0** files
+    under `lib/`, `test/`, `tool/`, `web/`, `android/`, `.github/`.
+    `tool/module_dependencies.yaml` is **byte-unchanged** — `E-14` still at
+    **L255** and `E-16` still at **L259**, as ~222 line-citations require.
+14. ⛔ **Writes no `DOCUMENTATION_BASELINE.md` row and no `TRACEABILITY_MATRIX.md`
+    row.** Measured: **0** `PRD-021B` rows in each. Traceability is Stage 5, ⛔ not entered.
+15. ⛔ **Increments no §7 summary count**, for the reason §11.6, §12.4 item 10 and
+    §13.5 item 13 already give. ⚠ Disclosed, not repaired.
+
+### 14.6 The self-check record on disk
+
+`PRD-021B_B7_B8_B9_CROSS_PART_AUDIT.md` accompanies the three drafts. ⚠ **It is
+an author self-check, ⛔ NOT a Stage-3 architecture alignment record**, and it
+says so in its own header. It reports **15/15** verifications passing across the
+nine-part `B1 → B9` chain, **10/10** negative checks, **0** ownership
+duplications, **0** invented bounded contexts, edges, events or `IMPL-*`
+identifiers, **0** orphan acceptance criteria of 82, and — per
+`PRD_LIFECYCLE.md` **L104–106** — both sides of its own ledger: ⚠ **4 findings
+against the drafts themselves** (one malformed acceptance criterion, fixed; one
+**instrument** defect where a case-blind probe reported 23 false positives that
+had buried the one real defect; the media-wave self-correction of §14.2(c); and
+the deliberate **refusal to over-apply** that correction to presence) and ⭐ **8
+candidate findings recorded as REJECTED with reasons**, including the microservices
+reading of BC Map L522, the proposal to amend BC Map §8, and the proposal to close
+`FIL-GAP-013` outright.
+
+⚠ **`FIL-GAP-013` is claimed only as PARTIALLY DISCHARGED.** **FROZEN**
+`PRD-017` **L1162–65** assigns it expressly: same-library confinement of peer
+file sharing *"is `PRD-021`'s to state and `BC-11`'s to evaluate — not a tenant
+predicate on the bytes."* B8 `RTM-FR-014` therefore states the **architectural
+shape**, ⛔ while leaving the **product** question — which confinement rule
+applies — **OPEN** as `XPB-CONF-013` against the **Product Owner**.
+
+### 14.7 Change note
+
+⚠ **Recorded here rather than as a row in §10, and the version is deliberately
+NOT incremented** — the identical reasoning §11.7, §12.5 and §13.7 give: this
+register's version-discipline defect is pre-existing and systemic, and bumping it
+for this one append would imply it is the only change since the header date,
+which is false.
+
+**2026-09-02 — `PRD-021B` Parts B7, B8, B9 registered as `DRAFT` / Stage 2 at
+`BC-11` and `BC-12`.** One appended section; **0** existing lines modified; **0**
+cited lines shifted; **0** cited-line contents changed; **0** ADRs created; **0**
+Rank 1–5 documents touched; **0** application-code or CI files touched; **0**
+lifecycle stages conferred beyond Draft; **0** bounded contexts created; **0**
+edges created; **0** events minted; **0** `IMPL-*` identifiers allocated; **0**
+frozen decisions altered; **0** capabilities moved between waves; **0** ownership
+transferred — **57** ownership refusals recorded instead; **`FOD-4` discharged**
+for B7/B8/B9 without editing B0; **6** conflicts (`XPB-CONF-011`, `013`, `014`,
+`015`, `016`, `017`) left explicitly **OPEN** against named owners.

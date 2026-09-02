@@ -899,8 +899,9 @@ inspected, **then** it contains no message body. *(`TPA-BR-015`, `TPA-BR-041`)*
 the cursor is opaque and no total is returned that would disclose a filtered-out
 set. *(`TPA-FR-013`, `TPA-BR-021`, `TPA-BR-022`)*
 
-`TPA-AC-020` — **Given** a message-content search request, **then** it is refused
-and no `BC-12` → `BC-23` index exists. *(`TPA-XC-013`, `TPA-FR-014`)*
+`TPA-AC-020` — **Given** a caller with a message-content search request, **when**
+that request reaches the messaging surface, **then** it is refused and no
+`BC-12` → `BC-23` index exists. *(`TPA-XC-013`, `TPA-FR-014`)*
 
 `TPA-AC-021` — **Given** a repeated authorisation gate, **when** it is exercised
 twice, **then** `canMessage`, media eligibility and enforcement state are each

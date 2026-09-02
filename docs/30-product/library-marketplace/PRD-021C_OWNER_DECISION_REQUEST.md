@@ -40,7 +40,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `PRD-021C` Owner Decision Request |
-| **Version** | **v1.0** — ⛔ **UNANSWERED.** No request in this document has received an owner ruling |
+| **Version** | **v1.1** — ⛔ **STILL UNANSWERED.** No request in this document has received an owner ruling. v1.1 adds the **execution plan** (§9) — the exact ADR, artefact, cell, smallest-compatible option and deferral impact per blocker — so that each decision is executable the moment authority is recorded |
 | **Date** | 2026-09-02 |
 | **Status** | **OPEN** — awaiting Architecture Owner, Product Owner and a Governance role-appointment act |
 | **Scope** | The **4 blocking** open decisions of `PRD-021C` C2 and C3, plus **3 disclosed non-blockers** |
@@ -52,7 +52,9 @@
 | **Open decisions resolved here** | ⛔ **Zero** — `XPC-OD-001`…`XPC-OD-007` all remain **OPEN** |
 | **ADRs created here** | ⛔ **Zero** |
 | **Lifecycle effect** | ⛔ **None.** Not Stage 3. No freeze, approval, baseline or rank |
-| **Answered** | ⛔ **0 of 7** |
+| **Answered** | ⛔ **0 of 7** — sign-off block §9.5 **UNSIGNED** |
+| **Execution plan** | ✅ **§9** — exact ADR, artefact, cell, smallest-compatible option and deferral impact per blocker. ⛔ **Not executed** |
+| ⚠ **ADR numbers** | ⛔ **`ADR-0088`/`0089`/`0090` are RESERVED** for `PRD-021B` (`ADR-0091` **L315**) and MUST NOT be used. Next lawful: **`ADR-0093`+** (§9.1) |
 
 ---
 
@@ -392,8 +394,95 @@ Privacy Owner is a **governance act**; `PRD_OWNERSHIP_MODEL.md` §10 constitutes
 
 ---
 
+## §9. ⭐ v1.1 — the execution plan, per blocker
+
+> ⛔ **Nothing in this section is executed.** It exists so that the moment an
+> owner records authority, the act is **already fully specified** and no
+> interpretation is required at execution time — the `ADR-0083` discipline
+> *"Record and execute them exactly as stated. Do not reinterpret them."*
+>
+> ⚠ **Every "smallest compatible option" below is a MEASUREMENT of which
+> candidate act is structurally smallest — NOT a recommendation of which is
+> correct.** The owner may select any option, including one this section marks
+> larger. Smallest ≠ right.
+
+### §9.1 ⚠ ADR number space — measured, and three numbers are RESERVED
+
+| Fact | Measured value |
+|---|---|
+| ADRs on disk | **81** (`ADR-0001`…`ADR-0087`, `ADR-0091`, `ADR-0092`, with gaps) |
+| ⛔ **RESERVED and unwritten** | **`ADR-0088`, `ADR-0089`, `ADR-0090`** — `ADR-0091` **L315** verifies *"`ADR-0088`/`ADR-0090` remain reserved and unwritten … ✅ 0 matches; ⛔ untouched"*. ⛔ **These MUST NOT be used for `PRD-021C`** — they are reserved for `PRD-021B`'s `FOD-1`/`FOD-2` |
+| Other free numbers | `0066`–`0074`, `0093`–`0099` |
+| ⭐ **Next lawful numbers for `PRD-021C`** | **`ADR-0093`** onward — the highest-number convention, avoiding all reservations |
+
+### §9.2 The execution table
+
+| Blocker | Smallest compatible option *(measured, not recommended)* | Exact artefact + cell to amend | Exact ADR | Authority required | ⛔ Impact if deferred |
+|---|---|---|---|---|---|
+| **`XPC-OD-001`** | **Option A** — admit `BC-19` to `E-21`'s source cell. Smallest because it is **one cell, one line**, and the `ADR-0016`/`ADR-0055` precedent already establishes the form. ⚠ Options B and C are **not smaller** — B requires naming an edge that measurement shows does not exist; C contradicts Rank 1 `MASTER_PRD.md` **L171** | `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L330** — the `E-21` **source** cell only. ⛔ No new edge. ⛔ `BC-23` unchanged. ⛔ Tenant isolation preserved via `AR-3` + `MP-GBR-08` (the amendment carries a record into an index; it does **not** relax index isolation) | **`ADR-0093`** *(next lawful)* | **Architecture Owner** | ⛔ C2 `LSD-FR-001`…`008` (**8 FR**) stay ⚠ CONDITIONAL. C2 cannot reach Stage 3. ⚠ `MASTER_PRD.md` L171 (Rank 1, V1, *"projected via `BC-23`"*) stays **unimplementable** |
+| **`XPC-OD-002`** | **Option B** — formally establish `Library_PRD_v1.md` **§14A** as the V1 `BC-23` discovery/query contract; `PRD-015` stays **`PLANNED`**. Smallest because §14A **already exists and is FROZEN** — **zero new documents**, versus authoring a full PRD. ⚠ This is your stated *"preferred smallest-compatible path"*; it still requires the owners' ruling and is **not** exercised here | An **append-only** ruling record — the ADR itself, plus an **append** to `PRD_REGISTRY.md`. ⛔ **§14A is NOT edited** (FROZEN; establishing it as the contract does not change its bytes). ⛔ **`PRD-015` NOT created.** ⛔ `PRD_REGISTRY.md` **L315** stays `PLANNED`, amended by append only (append-only rule, 366+ line citations) | **`ADR-0094`** | **Product Owner + Architecture Owner** *(joint)* | ⛔ C2 has **no specified provider** → cannot reach Stage 3 at all, independent of `XPC-OD-001`. Both C2 blockers must clear |
+| **`XPC-OD-003`** | ⚠ **NO option is measurably smallest — this is a genuine discretionary choice.** `BC-19`-only and `BC-25`-only are **equal in size** (one cell each). ⭐ The repository supplies the **test**, in `E-22`'s own cell: *does the context hold a `FileRef`?* — the identical test by which `ADR-0055` §3 **admitted** `BC-10`/`BC-12` and **refused** `BC-11`/`BC-13` | `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L331** — the `E-22` **consumer** cell only. ⛔ **`BC-29` remains the sole media infrastructure owner.** ⛔ No duplicate media system, BC or event | **`ADR-0095`** | **Architecture Owner** | ⛔ C3 `LPP-FR-014`…`017` (**4 FR**) stay ⚠ CONDITIONAL. The public profile carries **no gallery** in V1, against `AR-1`'s *"Gallery → `BC-29`"* |
+| **`XPC-OD-007A`** | ⛔ **NO smallest option can be offered, because the cheapest option is measurably UNAVAILABLE.** Option **A** (existing producer + existing edge) **does not exist** — see §4.2. Between the remainder, **B** (amend an existing edge) is structurally smaller than **C** (mint an event *and* an edge), and **D** (defer) is smallest of all but **removes the feature**. ⛔ **Choosing between "amend", "mint" and "defer" is an act of architectural discretion this document must not perform** | ⚠ **Depends entirely on the option chosen.** B → one edge cell in BC Map §7. C → BC Map §7 **and** the §9 event surface *(⛔ `E-27` is permanently vacant per `ADR-0033` and is **not** a free slot)*. D → C3 §9A only, no Rank 4 edit at all | **`ADR-0096`** | **Architecture Owner** | ⛔ C3 §9A `LPP-FR-030`…`044` (**15 FR**) + `LPP-AC-015`…`022` (**8 AC**) stay ⚠ CONDITIONAL. **👁️ Profile Views · trend · [View Analytics] remain authored but non-renderable.** ⭐ **The feature is NOT lost — it is unreleasable** |
+| **`XPC-OD-007B`** | **Certify `ProfileViews` only** is the smallest *certifying* option — C3 `LPP-FR-036` is **already built** to omit `UniqueViewers` entirely (never zero, never "unknown", never "coming soon"), so partial certification needs **no C3 edit**. ⚠ Certifying nothing is smaller still but leaves the feature blocked | The certification record named by the Product Owner. ⛔ **`PRD-009` NOT created** without explicit authorization. ⛔ `PRD_REGISTRY.md` **L246** stays `PLANNED`. ⛔ **`BC-26` remains the sole analytics semantic/read-model authority** (BC Map **L135**, **L385**); C3 defines **no** metric semantics (`LPP-FR-038`, `LPP-XC-013`) | **`ADR-0097`** *(or recorded inside `ADR-0096` if the owners rule jointly)* | **Product Owner** | ⛔ C3 §9A stays ⚠ CONDITIONAL even if `XPC-OD-007A` is decided. **Both halves are required** |
+
+### §9.3 ⛔ Invariants that bind every option
+
+These hold **whichever** way each decision goes, and are **not** open for trade:
+
+| # | Invariant | Authority |
+|---|---|---|
+| 1 | **`BC-23`** remains the sole search/index owner. ⛔ No second search system, index or edge | BC Map **L132** |
+| 2 | **`BC-29`** remains the sole media infrastructure owner. ⛔ No second media system | BC Map **L138**; `AR-1` |
+| 3 | **`BC-26`** remains the sole analytics semantic/read-model authority; **metric definitions single-sourced from the semantic layer** | BC Map **L135**, **L385** |
+| 4 | **C3 is render-only** — computes nothing, defines no metric semantics, owns no aggregate, emits no event | `LPP-FR-038`, `LPP-XC-001`, `LPP-XC-003`, `LPP-XC-011`…`014` |
+| 5 | ⛔ **`BC-24` Audit Trail is NOT an assumed `BC-26` source.** `BC-24` is **never an edge source** anywhere in the map; `SM-7.17` is **evidence only** | §4.3; BC Map measured |
+| 6 | **Tenant isolation is absolute.** Public discovery must declare its index class — Platform Public Discovery Index vs Tenant Operational Data | `AR-3` / BC Map §11.1; `MP-GBR-08`, `SE-1`, `X-13` |
+| 7 | Context count stays **31**; edge count stays **28** unless an ADR **expressly** changes it. **`E-27` permanently vacant** | `ADR-0033`; C0 §9 |
+| 8 | Every ADR amends **one cell of one artefact**, necessity tested **per context** | `ADR-0016`, `ADR-0055` §3 |
+| 9 | ⛔ **No `IMPL-*`. No application code. No Stage 3. No freeze/approval/baseline/rank.** Lifecycle stays **`DRAFT` / Stage 2** | `PRD_LIFECYCLE.md`; your standing instruction |
+| 10 | ⛔ **`ADR-0088`/`0089`/`0090` MUST NOT be used** — reserved for `PRD-021B` | `ADR-0091` **L315** |
+
+### §9.4 ⭐ What happens to Profile Views under each `XPC-OD-007A` outcome
+
+| Outcome | 👁️ Profile Views | Trend | [View Analytics] | C3 edit needed |
+|---|---|---|---|---|
+| **A / B / C** decided **and** `007B` certifies both | ✅ Renders | ✅ Renders | ✅ Renders | ⛔ **None** — `LPP-FR-035`/`037`/`042` already specify it |
+| **A / B / C** decided, `007B` certifies **`ProfileViews` only** | ✅ Renders | ✅ Renders | ✅ Renders | ⛔ **None** — `LPP-FR-036` already omits `UniqueViewers` |
+| **A / B / C** decided, `007B` certifies **neither** | ⛔ Blocked | ⛔ Blocked | ⛔ Blocked | ⛔ None — stays ⚠ CONDITIONAL |
+| **D — defer from V1** | ⛔ Withdrawn/deferred | ⛔ | ⛔ | ⚠ C3 §9A marked deferred; **position 7 stays a reserved empty slot** (`LPP-FR-029`) |
+
+⭐ **In no outcome is the authored specification discarded.** §9A survives as either a renderable requirement set or an explicitly deferred one.
+
+### §9.5 Owner sign-off block — ⛔ UNSIGNED
+
+```
+XPC-OD-001  E-21 admits BC-19?        ☐ YES, ADR-____   ☐ NO   ☐ DEFER
+XPC-OD-002  V1 BC-23 contract is      ☐ §14A (PRD-015 stays PLANNED), ADR-____
+                                      ☐ PRD-015 authored   ☐ other ______  ☐ DEFER
+            index class:              ☐ Platform Public Discovery  ☐ Tenant Operational
+XPC-OD-003  E-22 admits               ☐ BC-19  ☐ BC-25  ☐ both  ☐ neither  ☐ DEFER
+            FileRef test per context recorded: ______________________
+XPC-OD-007A                           ☐ A existing+existing (⚠ measured unavailable)
+                                      ☐ B existing producer + amended edge: BC-__ / E-__
+                                      ☐ C new event + new edge (EXPLICIT authorization)
+                                      ☐ D defer Profile Views from V1
+XPC-OD-007B ProfileViews              ☐ certified   ☐ not certified
+            UniqueViewers             ☐ certified   ☐ not certified (→ omit)
+            counting rule ______  bot/duplicate ______  uniqueness window ______
+            trend period ______  privacy/suppression ______  owner: BC-26
+
+Architecture Owner ____________  Product Owner ____________  Date __________
+⛔ No personal name recorded (PRD_OWNERSHIP_MODEL §7 rule 4)
+⛔ Signing does NOT confer Stage 3, freeze, approval, baseline or rank.
+```
+
+**Status: ⛔ UNSIGNED. 0 of 7 answered. Execution has NOT begun.**
+
+---
+
 ## §8. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-09-02 | Created after a measured authority audit found **0 of 81 ADRs** reference `PRD-021C`, and no owner decision or alignment record exists. Routes `XPC-OD-001`, `XPC-OD-002`, `XPC-OD-003`, `XPC-OD-007A`, `XPC-OD-007B` to named owners with exact wording, and discloses `XPC-OD-004`/`005`/`006` as non-blocking. ⭐ Records the measured finding that **no lawful existing producer + existing edge exists** for a profile-view fact (`BC-26` has exactly one inbound edge, `E-26`, an AI retrieval port; `BC-24` is **never** an edge source). ⛔ Resolves nothing, decides nothing, proposes no value, creates no ADR/edge/event/context/metric/`IMPL-*`, amends no FROZEN or Rank 1–6 artefact, and confers no Stage 3, freeze, approval, baseline or rank |
+| **v1.1** | 2026-09-02 | ⭐ **Upgraded from a request to a decision-READY resolution package.** Adds **§9 execution plan**: per blocker, the exact artefact and cell to amend, the exact ADR number, the authority required, the measured smallest-compatible option and the impact if deferred (§9.2); the **10 invariants** binding every option (§9.3); a table of what happens to **👁️ Profile Views** under each `XPC-OD-007A` outcome (§9.4); and an owner **sign-off block** (§9.5). ⚠ Records the measured discovery that **`ADR-0088`, `ADR-0089`, `ADR-0090` are RESERVED and unwritten** for `PRD-021B` (`ADR-0091` **L315**) and **MUST NOT** be used by `PRD-021C` — the next lawful numbers are **`ADR-0093`+** (§9.1). ⚠ Records that for `XPC-OD-003` **no option is measurably smallest** and for `XPC-OD-007A` **the cheapest option is measurably unavailable** — both stated as findings rather than resolved by preference. ⛔ **Re-audited at `c892d31`: still 0 of 81 ADRs reference `PRD-021C`; no owner decision record exists.** Therefore **0 decisions executed, 0 ADRs created, 0 cells amended.** `XPC-OD-001`…`007` all remain **OPEN**; sign-off block **UNSIGNED**; lifecycle unchanged at **`DRAFT` / Stage 2** |

@@ -371,6 +371,45 @@ Re-measured at this commit with a fresh extraction, per register, across all nin
 > token can. The rule is therefore: **an unused slot is cited by number, never
 > as a well-formed identifier.**
 
+### 12.1 ⚠ Two instances of the identifier-rendering defect found during this review
+
+Both are disclosed rather than presented as a clean result. Neither changes the
+verdict, and the reasons differ — which is why they are recorded separately.
+
+| # | Where | Measured | Disposition |
+|---|---|---|---|
+| **A-5** | **C0 L128 and L576** render `LDR-FR-` slot **023** as a formed token *inside the prose that discloses the defect* | C6's own register: **22** FR, contiguous ✅. Cross-file glob `PRD-021C_C[0-8]_*.md`: tail reads **023** | ⚠ **Carried, NOT repaired** — see below |
+| **A-6** | **This record**, first draft, wrote all three slots (`011`, `023`, `027`) as formed tokens at §12 | All three registers' tails extended by one — the `XPC-OD-`, `LDR-FR-` and `LMT-FR-` censuses each reported the unused slot as **minted** | ✅ **Corrected before commit.** Now cited by number only |
+
+**Why A-5 is carried rather than corrected.** Three independent reasons, in
+ascending order of authority:
+
+1. **It is not an alignment failure.** §14 specifies the register census
+   **per part**. C6 owns `LDR-*`; C6 measures **22** FR and is contiguous. **C0 does
+   not own `LDR-*` identifiers and mints none** — the token appears only in a
+   narrative sentence describing a defect already fixed in C6. The authoritative
+   measurement passes.
+2. **It is pre-existing and committed.** Both occurrences exist at the audited base
+   commit `6ae3278` (verified: `git show 6ae3278:…C0… | grep -c` = **2**). §1 of this
+   review's mandate is explicit — an unexpected pre-existing state is **reported,
+   not silently overwritten or repaired**.
+3. **Repairing it would be a substantive edit to the cross-part authority.** C0 is
+   the conflict and open-decision register. Rewriting its change-history prose to
+   satisfy a cross-file grep would edit a settled record to flatter a checker — the
+   exact inversion this review exists to prevent.
+
+⚠ **The honest residual risk, stated plainly:** any future checker that censuses
+`LDR-FR-*` across the **whole directory** rather than per part will measure a tail
+of **023** and may report a false contiguity break. That is a **latent instrument
+hazard in C0's prose**, not a defect in C6's register. ⛔ It is **not** resolved
+here. It is recorded for the **Architecture Owner**, whose document C0 is.
+
+⭐ **A-6 is disclosed because the alternative is worse.** The first draft of this
+very record reproduced the defect it was auditing — a **fourth** instance of one
+cause. It was caught by measurement, not by reading, and only because the census
+was re-run **after** authoring. Deleting the evidence would have left the next
+reviewer to rediscover it a fifth time.
+
 ---
 
 ## 13. Citation alignment ✅ **PASS**
@@ -431,6 +470,8 @@ not what is deferred):
 | **A-2** | C7's integration is lawful **only** because the rank-9 `app` shell ports to both domains. This is a load-bearing fact and is recorded here so a future reader does not "simplify" it into a direct dependency | ✅ Recorded as an alignment constraint |
 | **A-3** | `TSF-GAP-009` and `GAP-BCMAP-BC26-EDGES` are inherited and remain the only two architecture questions C0–C8 cannot answer from existing authority | ✅ Routed, not resolved |
 | **A-4** | C8 **strengthens** `ADR-0097` rather than merely complying with it (`LMT-FR-024`) | ✅ Recorded as a positive finding |
+| **A-5** | C0's disclosure prose (L128, L576) still renders C6's withdrawn `LDR-FR-` slot **023** as a formed token, so a **directory-wide** census reads a tail of 023 while C6's own register correctly measures **22** | ⚠ **Accepted as a latent instrument hazard; NOT repaired.** Pre-existing at `6ae3278`; not an alignment failure under the per-part census; routed to the **Architecture Owner**. See §12.1 |
+| **A-6** | The **first draft of this record** reproduced that same defect for all three unused slots — a fourth and fifth instance of one cause, both caught by measurement after authoring | ✅ **Corrected before commit** and disclosed rather than deleted. See §12.1 |
 
 ## 15a. Findings — REJECTED, with reasons
 

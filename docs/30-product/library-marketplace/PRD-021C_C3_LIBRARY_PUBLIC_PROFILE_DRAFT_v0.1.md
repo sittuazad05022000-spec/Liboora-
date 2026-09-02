@@ -32,15 +32,32 @@
 
   C3 renders already-certified metrics and defines NO metric semantics.
 
-  TWO OPEN decisions gate parts of C3:
-    XPC-OD-003 — E-22's consumer enumeration omits BC-19 and BC-25, so the
-                 public gallery cannot lawfully be served as a FileRef today
-                 (Architecture Owner)
-    XPC-OD-007 — No profile-view event producer and no lawful edge into BC-26
-                 exists. Which context produces the profile-view fact, over
-                 which declared edge, and does PRD-009 certify ProfileViews
-                 and UniqueViewers as CertifiedMetrics?
-                 (Architecture Owner + Product Owner)
+  RESOLVED 2026-09-02 — the two decisions that gated 19 of C3's requirements
+  have been decided by their named owners. 0 requirements remain conditional.
+    XPC-OD-003 = C  ADR-0095  E-22's CONSUMER cell now admits BOTH BC-19 and
+                              BC-25. Each was tested SEPARATELY - BC-19 owns
+                              the library organisation record (L128) and AR-1
+                              already routes Gallery to BC-29; BC-25 already
+                              holds "branding values" (L134). BC-29 remains
+                              the sole media-infrastructure owner and FileRef
+                              remains a reference. No duplicate media system.
+    XPC-OD-007A = C ADR-0096  Event tenancy.LibraryProfileViewed, produced by
+                              BC-19 Tenancy, over NEW edge E-30 into BC-26.
+                              Producer DETERMINED across 8 candidates. NOT
+                              BC-24 (source of 0 edges; AuditEntry needs an
+                              actor of record an anonymous view lacks).
+                              E-26 NOT reused. Payload carries NO viewer
+                              identity and NO count/total/trend.
+    XPC-OD-007B = B ADR-0097  ProfileViews CERTIFIED - the repository's FIRST
+                              CertifiedMetric instance. UniqueViewers NOT
+                              CERTIFIED and MUST be OMITTED - never zero,
+                              unknown, placeholder, "coming soon", disabled,
+                              greyed, blurred, locked, teaser, upsell, or
+                              approximated/estimated/modelled/inferred.
+                              PRD-009 was NOT created; it remains PLANNED.
+  C3 remains RENDER-ONLY. LPP-XC-011..014 are NOT relaxed: the event and the
+  edge were minted by the ARCHITECTURE OWNER in the BC Map, not by C3.
+  Unblocked is NOT approved. C3 is still Stage 2 with no Stage-3 record.
 
   What this file does NOT do
   --------------------------
@@ -58,23 +75,24 @@
 
 ## Library Public Profile
 
-### v0.2 — Stage 2 (Draft)
+### v0.3 — Stage 2 (Draft)
 
 > ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT APPROVED.** Stage 3 has **not** been entered.
-> ⚠⚠ **4 of 44 requirements are CONDITIONAL on `XPC-OD-003`** — see §2.
-> ⚠⚠ **15 of 44 requirements are CONDITIONAL on `XPC-OD-007`** — see §9A.1.
+> ⭐⭐ **UPDATED 2026-09-02 — 0 of 44 requirements are conditional** *(was 4 on `XPC-OD-003` + 15 on `XPC-OD-007` = **19**)*. All three parts were **decided by their owners**: `XPC-OD-003` = **C** ([`ADR-0095`]), `XPC-OD-007A` = **C** ([`ADR-0096`]), `XPC-OD-007B` = **B** ([`ADR-0097`]) — see §2 and §9A.1.
+> ⚠⚠ **ONE of those nineteen resolves to an OMISSION, not a feature:** `LPP-FR-036` **`UniqueViewers` is NOT certified** and **MUST be omitted** — ⛔ **never** rendered as zero, unknown, a placeholder, *"coming soon"*, disabled, greyed, blurred, locked, a teaser, an upsell, or approximated. It is *determinate*, which is what unblocked means here.
+> ⛔ **Unblocking is not approval.** Stage 3 remains **not entered**, **0** ACs are proven, **0** `IMPL-*` identifiers exist and **no** code may be written. ⛔ **C3 remains RENDER-ONLY** — `LPP-XC-011`…`014` are unchanged and in force.
 
 | Field | Value |
 |---|---|
 | **PRD** | `PRD-021C` Part **C3** |
 | **Part title** | Library Public Profile |
-| **Version** | **v0.2** |
+| **Version** | **v0.3** |
 | **Status** | **`DRAFT`** — Stage 2 |
 | **Structural classification** | Part of the `AR-1` read composition (module 19). ⛔ **NOT a bounded context** |
 | **Release** | **V1** |
 | **Identifier prefix** | `LPP-*` — collision-checked at **0** occurrences |
 | **Owns** | ⛔ **No entity. No field. No aggregate. No invariant.** Composition rules and presentation semantics only |
-| **Consumes** | `BC-19` Tenancy · `BC-25` Configuration · `BC-29` File & Media *(⚠ conditional)* · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating — projected via `BC-23` · `BC-26` Analytics Read Model *(⚠ conditional — read-only metric readout, §9A)* |
+| **Consumes** | `BC-19` Tenancy · `BC-25` Configuration · `BC-29` File & Media *(✅ **lawful since 2026-09-02** — `E-22` admits both `BC-19` and `BC-25` per [`ADR-0095`])* · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating — projected via `BC-23` · `BC-26` Analytics Read Model *(⚠ conditional — read-only metric readout, §9A)* |
 | **Analytics ownership** | ⛔ **Not C3's.** Metric/semantic layer = **`BC-26`** (BC Map **L135**, **L385**). Analytics experience = **`PRD-009`** (`PRD_REGISTRY.md` **L246**, `PLANNED`). C3 **renders only** |
 | **Access control** | Public profile = anonymous (`LPP-FR-004`). §9A summary = **`PO-12`**, delegated to `BC-18` (`LPP-FR-032`) |
 | **Cross-part** | [`C0`](./PRD-021C_C0_CROSS_PART_ARCHITECTURE_AND_OPEN_DECISIONS_v0.1.md) · [`C1`](./PRD-021C_C1_MARKETPLACE_FOUNDATION_DRAFT_v0.1.md) · [`C2`](./PRD-021C_C2_LIBRARY_SEARCH_AND_LOCAL_DISCOVERY_DRAFT_v0.1.md) |
@@ -140,12 +158,15 @@ one rather than padded to look substantial.
 
 ---
 
-## §2. ⚠ The open decisions that gate parts of C3
+## §2. ✅ The open decisions that gated parts of C3 — all RESOLVED 2026-09-02
 
-| Open decision | What is unresolved | Owner | Requirements blocked |
-|---|---|---|---|
-| **`XPC-OD-003`** | `E-22` (BC Map **L331**) enumerates `BC-01`, `BC-10`, `BC-12`, `BC-14` → `BC-29`. **`BC-19` and `BC-25` are absent.** No lawful edge exists today by which tenant branding or a library gallery becomes a `BC-29` `FileRef` | **Architecture Owner** | `LPP-FR-014` … `LPP-FR-017` |
-| **`XPC-OD-007`** | No profile-view event producer exists in the V1 event surface (BC Map §9), and the only edge into `BC-26` is `E-26` (`BC-27 AI → BC-26, BC-23`), which is not a telemetry ingress. `PRD-009` — `BC-26`'s registered owner — is `PLANNED` and absent from disk | **Architecture Owner** *(producer + edge)* **+ Product Owner** *(`PRD-009` metrics)* | `LPP-FR-030` … `LPP-FR-044`; `LPP-AC-015` … `LPP-AC-022` — see **§9A.1** |
+⭐⭐ **UPDATED.** Both were referred to their owners in this section's original form and **both have now been answered by explicit conferral of the human principal**. ⛔ **Neither was answered by this draft**, which had no authority to answer them. ⚠ **`XPC-OD-007` is reported as its two parts `007A` / `007B`** — the split the owner decision form itself put to the owner, because the halves have **different owners** and could lawfully have been answered differently; ⛔ **no new `XPC-OD-*` identifier was minted**.
+
+| Open decision | What was unresolved | Owner | Requirements blocked | Resolution |
+|---|---|---|---|---|
+| **`XPC-OD-003`** | `E-22` (BC Map **L331**) enumerated `BC-01`, `BC-10`, `BC-12`, `BC-14` → `BC-29`. **`BC-19` and `BC-25` were absent.** No lawful edge existed by which tenant branding or a library gallery could become a `BC-29` `FileRef` | **Architecture Owner** | ~~`LPP-FR-014` … `LPP-FR-017`~~ → ⭐ **0** | ✅ **RESOLVED, option C — BOTH admitted — [`ADR-0095`].** `E-22`'s **consumer cell** now reads `BC-01, BC-10, BC-12, BC-14, BC-19, BC-25`. ⭐ **Each was tested SEPARATELY**, on the `ADR-0055` §3 discipline, so *"both"* is the measured answer and **not a convenience union**: `BC-19` is admitted for **gallery** media (it owns the library organisation record, **L128**; `AR-1` **L23** already routes *"Gallery → `BC-29`"*), and `BC-25` on an **independent** ground for **branding** (**L134** already grants it *"branding values"*, `LPP-FR-011` requires the logo from it, and L134's own *"secret **references**"* phrasing anticipates the `FileRef` shape). ⛔ Admitting only one would leave the other unlawful. ⛔ **`BC-29` remains the sole media-infrastructure owner**, `FileRef` remains a **reference**, no source BC owns bytes, and **no duplicate media infrastructure is created — guaranteed by construction, since the amendment reuses the existing edge rather than adding one.** ⛔ The `BC-11`/`BC-13` refusals stand |
+| **`XPC-OD-007A`** *(producer + edge)* | No profile-view event producer existed in the V1 event surface (BC Map §9), and the only edge into `BC-26` was `E-26` (`BC-27 AI → BC-26, BC-23`), which is not a telemetry ingress | **Architecture Owner** | ~~`LPP-FR-030` … `LPP-FR-034`, `LPP-FR-037` … `LPP-FR-044`~~ → ⭐ **0** | ✅ **RESOLVED, option C — a NEW event and a NEW lawful edge — [`ADR-0096`].** Event **`tenancy.LibraryProfileViewed`**, producer **`BC-19 Tenancy`**, over **NEW edge `E-30`** (`BC-19 → BC-26`, `PL`, Event, **V1**), appended as BC Map **§17**. ⭐ **`E-30`, not `E-27`** — `E-27` is permanently vacant and `PRD_LIFECYCLE.md` §5 rule 5 forbids reuse *"even after withdrawal"*. ⭐ **The producer was DETERMINED across eight candidates**: `BC-19` owns the entity (**L128**, `MASTER_PRD.md` **L171**), **already publishes** `tenancy.*` events (**L435**) and owns the `Tenant` aggregate (**L381**). ⛔ **NOT `BC-24 Audit Trail`** — it is the source of **0** edges, and `AuditEntry` needs an *"actor of record"* (**L384**) an anonymous view has none of; ⭐ `SM-7.17` is **distinguished on its facts, not overruled**. ⛔ **`E-26` is NOT reused as telemetry.** ⭐ The event name was **derived** from §9's `<Context>.<Aggregate><PastTenseVerb>` convention. ⛔ **The payload carries no viewer identity and no count, total or trend** — a **fact**, not an analytics duplicate. ⛔ **Minted in the BC Map by the Architecture Owner, NOT by C3** |
+| **`XPC-OD-007B`** *(metric certification)* | `PRD-009` — `BC-26`'s registered owner — is `PLANNED` and absent from disk, so no metric had ever been certified | **Product Owner** + **Architecture Owner** *(jointly, per **L148**)* | ~~`LPP-FR-035`, `LPP-FR-036`~~ → ⭐ **0** | ✅ **RESOLVED, option B — `ProfileViews` ONLY — [`ADR-0097`].** ⭐ **`ProfileViews` is the FIRST `CertifiedMetric` instance named anywhere in the repository** — **L385** established the *class*, but no instance had ever been defined, so the ADR **exercises** `BC-26`'s existing ownership rather than extending it, and is therefore **declaratory**. ⛔ **`PRD-009` was NOT created and remains `PLANNED`** — it *"remains the registered home"*. All six properties are defined under `BC-26` authority (definition · counting rule · duplicate handling · bot handling `B1`–`B5` · trend period `T1`–`T5` · privacy `P1`–`P7`). ⛔⛔ **`UniqueViewers` is NOT certified** — it is **not computable** from the certified input, and making it computable would require breaking a privacy rule; `U1`–`U8` require **omission**. ⭐ **This is consistent with `007A` by construction, not by coincidence**: `ADR-0096` §4.2 excludes viewer identity at the producer, so uniqueness cannot be derived downstream |
 
 ⛔ **No edge is created here.** `E-22`'s source cell is an **enumeration**, not
 the wildcard *"All contexts"* that `E-17`…`E-20` and `E-23` carry. `ADR-0084`
@@ -153,15 +174,25 @@ records that for the comparable `E-21`, the wildcard argument *"was tested there
 and **failed**"*; `ADR-0083` §4.5 (AO-9) **refused** to mint an edge for
 `BC-15` on the same reasoning. Both refusals are honoured.
 
-> **Why the gallery requirements are written at all, rather than deleted.**
+> **Why the gallery requirements were written at all, rather than deleted.**
 > §14A.5 lists **Gallery** as publishable and `LIB-14B.7` requires the preview to
 > be *able* to display every §14A.5 field. Deleting the gallery requirements
 > would silently contradict a frozen document. Writing them and marking them
-> **CONDITIONAL** records both the frozen obligation and the missing carrier,
-> and leaves the decision with the role that owns it.
+> **CONDITIONAL** recorded both the frozen obligation and the missing carrier,
+> and left the decision with the role that owns it.
+>
+> ⭐⭐ **That choice is vindicated by the outcome.** Because the condition was
+> recorded precisely — *which* edge, *which* cell, *which* contexts absent — the
+> Architecture Owner could discharge it with **one cell amendment** and the four
+> requirements needed **no re-authoring at all**. ⛔ Had they been deleted to make
+> coverage read cleanly, the frozen §14A.5 obligation would have been silently
+> dropped and there would have been nothing to unblock.
 
-⚠ `LPP-FR-014`…`017` are marked **⚠ CONDITIONAL** throughout. They **MUST NOT**
-be implemented until `XPC-OD-003` is decided.
+✅ **`LPP-FR-014`…`017` are UNCONDITIONAL since 2026-09-02.** `XPC-OD-003` was
+decided (**option C**, [`ADR-0095`]) and the lawful carrier now exists. ⛔ They
+remain **not implementable** — but for a different and general reason: C3 is
+**Stage 2** with **no Stage-3 alignment record**, **0** proven ACs and **0**
+`IMPL-*` identifiers. ⭐ **The specific blocker is gone; the lifecycle gate is not.**
 
 ---
 
@@ -175,8 +206,13 @@ be implemented until `XPC-OD-003` is decided.
 
 ⚠ **`LPP-FR-029`…`044`, `LPP-AC-015`…`022` and `LPP-XC-011`…`017`** were added
 in **v0.2** for the Owner Profile Engagement Summary (§9A). `LPP-FR-030`…`044`
-(15 requirements) and `LPP-AC-015`…`022` (8 criteria) are ⚠ **CONDITIONAL** on
-`XPC-OD-007`.
+(15 requirements) and `LPP-AC-015`…`022` (8 criteria) were ⚠ **CONDITIONAL** on
+`XPC-OD-007`; ✅ **that condition is discharged as of 2026-09-02** by
+[`ADR-0096`] (`007A` — producer `BC-19`, event `tenancy.LibraryProfileViewed`,
+new edge `E-30`) and [`ADR-0097`] (`007B` — **`ProfileViews` certified**,
+⛔ **`UniqueViewers` NOT certified and to be omitted**). ⛔ **No identifier was
+added, removed or renumbered by that discharge** — the registers above are
+**unchanged at 44 / 22 / 17**.
 
 ### §3.1 Normative language
 

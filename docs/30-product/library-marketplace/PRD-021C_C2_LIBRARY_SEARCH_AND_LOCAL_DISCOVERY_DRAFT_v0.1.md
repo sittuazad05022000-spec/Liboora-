@@ -11,9 +11,16 @@
   isolation, relevance and query rewriting. C2 creates NO second search system
   and NO second ranking system. C2 specifies the query contract it CONSUMES.
 
-  Two OPEN decisions gate 8 of C2's requirements:
-    XPC-OD-001 — E-21's consumer enumeration omits BC-19 (Architecture Owner)
-    XPC-OD-002 — PRD-015, BC-23's owner, does not exist (Product + Arch Owner)
+  RESOLVED 2026-09-02 — the two decisions that gated 8 of C2's requirements
+  have been decided by their named owners. 0 requirements remain conditional.
+    XPC-OD-001 = A  ADR-0093  E-21's SOURCE cell now reads BC-01, BC-10, BC-19
+    XPC-OD-002 = A  ADR-0094  Library_PRD_v1.md SECTION 14A IS the V1 BC-23
+                              discovery/query contract. DECLARATORY - 14A is
+                              FROZEN and byte-unchanged. Index class ruled
+                              PLATFORM PUBLIC DISCOVERY INDEX per AR-3.
+                              PRD-015 was NOT authored; it remains PLANNED.
+  Unblocked is NOT approved. C2 is still Stage 2, still has no Stage-3
+  alignment record, and still has 0 proven ACs and 0 IMPL-* identifiers.
 
   What this file does NOT do
   --------------------------
@@ -27,10 +34,11 @@
 
 ## Library Search & Local Discovery
 
-### v0.1 — Stage 2 (Draft)
+### v0.2 — Stage 2 (Draft)
 
 > ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT APPROVED.** Stage 3 has **not** been entered.
-> ⚠⚠ **8 of 32 requirements are CONDITIONAL on an OPEN decision** — see §2.
+> ⭐⭐ **UPDATED 2026-09-02 — 0 of 32 requirements are conditional** *(was 8)*. `XPC-OD-001` and `XPC-OD-002` were **decided by their owners** — [`ADR-0093`] and [`ADR-0094`] — see §2.
+> ⛔ **Unblocking is not approval.** Stage 3 remains **not entered**, **0** ACs are proven, **0** `IMPL-*` identifiers exist and **no** code may be written.
 
 | Field | Value |
 |---|---|
@@ -42,7 +50,7 @@
 | **Release** | **V1** |
 | **Identifier prefix** | `LSD-*` — collision-checked at **0** occurrences |
 | **Owns** | ⛔ **No index. No ranking model. No relevance formula. No aggregate.** Query shape and filter semantics only |
-| **Consumes** | `BC-23` Search Indexing *(the provider; ⚠ conditional)* · `BC-19` Tenancy · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating |
+| **Consumes** | `BC-23` Search Indexing *(the provider; ✅ **contract now specified** — `Library_PRD_v1.md` **§14A** per [`ADR-0094`])* · `BC-19` Tenancy · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating |
 | **Cross-part** | [`C0`](./PRD-021C_C0_CROSS_PART_ARCHITECTURE_AND_OPEN_DECISIONS_v0.1.md) · [`C1`](./PRD-021C_C1_MARKETPLACE_FOUNDATION_DRAFT_v0.1.md) |
 
 ---
@@ -88,18 +96,28 @@ optional · unkeyworded prose and `>` blocks are **not** normative.
 
 ---
 
-## §2. ⚠⚠ Conditional requirements — the two blocking open decisions
+## §2. ✅ Conditional requirements — the two blocking open decisions, now RESOLVED
 
-| Open decision | Owner | Requirements blocked |
-|---|---|---|
-| **`XPC-OD-001`** — BC Map **L330** `E-21` admits **`BC-01`, `BC-10`** to `BC-23`. **`BC-19` is absent**, so the `TenantOrganisation` record has no lawful carrier into the discovery index | **Architecture Owner** | `LSD-FR-001`…`LSD-FR-006` |
-| **`XPC-OD-002`** — `BC-23`'s owner `PRD-015` **does not exist** (`PRD_REGISTRY.md` **L315**, `PLANNED`; measured absent from `docs/30-product/`) | **Product Owner** + **Architecture Owner** | `LSD-FR-007`, `LSD-FR-008` |
+⭐⭐ **UPDATED 2026-09-02.** Both decisions were referred to their owners in this section's original form and **both have now been answered by explicit conferral of the human principal**. ⛔ **They were not answered by this draft**, which had no authority to answer them; the rows below record who decided, what was decided and what was deliberately *not* decided.
 
-⚠ **These requirements are written, identified and counted — and marked
-CONDITIONAL.** They are not silently dropped to make coverage read cleanly, and
-they are not asserted as implementable.
+| Open decision | Owner | Requirements blocked | Resolution |
+|---|---|---|---|
+| **`XPC-OD-001`** — BC Map **L330** `E-21` admitted **`BC-01`, `BC-10`** to `BC-23`. **`BC-19` was absent**, so the `TenantOrganisation` record had no lawful carrier into the discovery index | **Architecture Owner** | ~~`LSD-FR-001`…`LSD-FR-006`~~ → ⭐ **0** | ✅ **RESOLVED 2026-09-02, option A — [`ADR-0093`].** `E-21`'s **Upstream (source) cell only** now reads **`BC-01, BC-10, BC-19`**. ⭐ **A one-cell amendment and nothing more**, on the `ADR-0016`/`ADR-0055` precedent: ⛔ no edge added, no edge removed, no pattern or mechanism changed. ⛔ **No second search system**, and ⛔ **no `BC-15` community search** — `ADR-0083` §4.5 **AO-9** stands. The carrier now exists, so `LSD-FR-001`…`006` are **unconditional** |
+| **`XPC-OD-002`** — `BC-23`'s owner `PRD-015` **does not exist** (`PRD_REGISTRY.md` **L315**, `PLANNED`; measured absent from `docs/30-product/`) | **Product Owner** + **Architecture Owner** | ~~`LSD-FR-007`, `LSD-FR-008`~~ → ⭐ **0** | ✅ **RESOLVED 2026-09-02, option A — [`ADR-0094`].** **`Library_PRD_v1.md` §14A IS the V1 `BC-23` discovery/query contract.** ⭐ The ADR is **declaratory and edits nothing** — §14A is **FROZEN 2026-08-03** and **byte-unchanged**; it recognises authority §14A already held (`ADR-0060` precedent). ⭐ **§2.1 rules the index class**: a **Platform Public Discovery Index** (`AR-3`), ⛔ **not** Tenant Operational Data, content limited to §14A public fields filtered by §14A.6. ⛔ **`PRD-015` was NOT authored and remains `PLANNED`** — ⚠ **so the observation in the left-hand cell is STILL TRUE**: `BC-23`'s *registered* owner still has no document. That is a **registry residue, not a C2 blocker**, because C2 needed a *contract*, and it now has a frozen one |
 
-⛔ **`E-21` is NOT extended by this draft.**
+⭐ **These requirements were written, identified and counted — and marked
+CONDITIONAL — rather than dropped to make coverage read cleanly.** That is why
+they could be unblocked by a single owner act instead of re-authored: the
+condition was recorded precisely enough to be discharged.
+
+⛔ **`E-21` is STILL NOT extended by this draft.** It was extended by
+[`ADR-0093`], an **Architecture Owner** instrument, on explicit conferral. The
+distinction is not pedantry — a draft that amended the BC Map itself would have
+been the defect this section was guarding against.
+
+⚠ **Unblocked is not implementable.** C2 remains **Stage 2** with **no
+Stage-3 alignment record**, **0 of 16** ACs proven by any test, and **0**
+`IMPL-*` identifiers. ⛔ No `lib/` or `test/` file is created.
 [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md)
 records that `E-21`'s source cell *"is an **enumeration**… not a wildcard, so the
 wildcard argument was tested there and **failed**"*, and
@@ -119,38 +137,44 @@ wildcard argument was tested there and **failed**"*, and
 
 ---
 
-## §4. The projection — ⚠ CONDITIONAL on `XPC-OD-001` / `XPC-OD-002`
+## §4. The projection — ✅ UNCONDITIONAL since 2026-09-02
 
-`LSD-FR-001` — ⚠ *Conditional on `XPC-OD-001`.* Public library discovery **MUST**
+> ⭐ *(This heading read **"⚠ CONDITIONAL on `XPC-OD-001` / `XPC-OD-002`"** until both
+> were decided by their owners — [`ADR-0093`] and [`ADR-0094`]. The eight
+> requirements below carried an individual `⚠ Conditional on …` marker, now
+> replaced by the citation of the ADR that discharged it. ⛔ **No requirement
+> text was rewritten** — only its condition was discharged.)*
+
+`LSD-FR-001` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* Public library discovery **MUST**
 be served from the **Platform Public Discovery Index** owned by `BC-23`, whose
 indexed unit is the `TenantOrganisation` record (`AR-3`; BC Map §11.1).
 
-`LSD-FR-002` — ⚠ *Conditional on `XPC-OD-001`.* The projection into `BC-23`
+`LSD-FR-002` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* The projection into `BC-23`
 **MUST** be fed by **events** on an existing edge, and search **MUST NOT** read
 domain tables (`E-21` note: *"Search never reads domain tables"*; `F-1`, `F-2`).
 
-`LSD-FR-003` — ⚠ *Conditional on `XPC-OD-001`.* The projection **MUST** contain
+`LSD-FR-003` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* The projection **MUST** contain
 only the fields §14A.5 permits publicly, and **MUST NOT** contain any tenant
 operational value (BC Map §11.1; `LIB-14B.22`).
 
-`LSD-FR-004` — ⚠ *Conditional on `XPC-OD-001`.* A library **MUST** enter the
+`LSD-FR-004` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* A library **MUST** enter the
 projection only when verified, activated and Public, and **MUST** leave it within
 `LCFG-6` of ceasing to satisfy any of those (`LIB-DISC-002`, `LIB-DISC-004`).
 
-`LSD-FR-005` — ⚠ *Conditional on `XPC-OD-001`.* Projection updates **MUST** be
+`LSD-FR-005` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* Projection updates **MUST** be
 idempotent by event identifier, so a redelivered event produces no duplicate
 entry (BC Map §9.1).
 
-`LSD-FR-006` — ⚠ *Conditional on `XPC-OD-001`.* The projection **MUST NOT** be
+`LSD-FR-006` — ✅ *Unconditional; `XPC-OD-001` resolved by [`ADR-0093`].* The projection **MUST NOT** be
 partitioned by caller tenant, because the public discovery index has no caller
 tenant context; this exemption **MUST NOT** be extended to any other index
 (`AR-3`; BC Map §11.1).
 
-`LSD-FR-007` — ⚠ *Conditional on `XPC-OD-002`.* C2 **MUST** consume a query port
+`LSD-FR-007` — ✅ *Unconditional; `XPC-OD-002` resolved by [`ADR-0094`] — the contract is `Library_PRD_v1.md` **§14A**.* C2 **MUST** consume a query port
 exposed by `BC-23` and **MUST NOT** query an index directly (`E-26` pattern;
 `F-2`).
 
-`LSD-FR-008` — ⚠ *Conditional on `XPC-OD-002`.* The query port's contract —
+`LSD-FR-008` — ✅ *Unconditional; `XPC-OD-002` resolved by [`ADR-0094`] — the contract is `Library_PRD_v1.md` **§14A**.* The query port's contract —
 request shape, pagination, error taxonomy — **MUST** be defined by `BC-23`'s
 owner, and C2 **MUST NOT** author it.
 
@@ -407,7 +431,7 @@ Given/When/Then form. ⚠ **0 of 16 is proven by a test — no test exists.**
 
 | Requirement group | Governing authority |
 |---|---|
-| `LSD-FR-001`…`008` | `AR-1`; `AR-3`; BC Map §11.1, **L330**; `F-1`, `F-2`; ⚠ `XPC-OD-001`, `XPC-OD-002` |
+| `LSD-FR-001`…`008` | `AR-1`; `AR-3`; BC Map §11.1, **L330** *(now `BC-01, BC-10, BC-19`)*; `F-1`, `F-2`; ✅ `XPC-OD-001` → [`ADR-0093`], `XPC-OD-002` → [`ADR-0094`] *(contract = `Library_PRD_v1.md` **§14A**; index class = **Platform Public Discovery Index**, `AR-3`)* |
 | `LSD-FR-009`…`016` | §14A.4; `LIB-DISC-005`, `013` |
 | `LSD-FR-017`…`024` | §14A.4, §14A.5; `LXC-7`; `LIB-14B.15`, `18`, `19`, `12`, `11`; `SEAT-XC-009`; `LCFG-1` |
 | `LSD-FR-025`…`032` | BC Map **L132**, §15.3; `ADR-0091` §3; `LIB-18.2`; `LIB-DISC-004`, `005`; `LIB-14B.17`, `23` |
@@ -417,8 +441,9 @@ Given/When/Then form. ⚠ **0 of 16 is proven by a test — no test exists.**
 ## §11. Status
 
 **`DRAFT` · Stage 2 · NOT FROZEN · NOT APPROVED · NOT BASELINED · Rank: none.**
-Stage 3 **not** entered. **8 of 32** requirements ⚠ **CONDITIONAL** on
-`XPC-OD-001` / `XPC-OD-002`. **0** ADRs, **0** contexts, **0** edges, **0**
+Stage 3 **not** entered. ⭐ **0 of 32** requirements conditional *(was 8 on
+`XPC-OD-001` / `XPC-OD-002`, both **RESOLVED** 2026-09-02 by [`ADR-0093`] and
+[`ADR-0094`])*. ⛔ **This draft still creates 0** ADRs, **0** contexts, **0** edges, **0**
 events, **0** indices, **0** ranking models, **0** `IMPL-*`, **0** Rank 1–6
 documents modified, **0** lines of code.
 
@@ -428,4 +453,5 @@ documents modified, **0** lines of code.
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.2** | 2026-09-02 | ⭐⭐ **BOTH BLOCKING DECISIONS RESOLVED — 8 conditional requirements → 0.** `XPC-OD-001` = **A** ([`ADR-0093`]: `E-21`'s **source** cell now `BC-01, BC-10, BC-19`) and `XPC-OD-002` = **A** ([`ADR-0094`]: `Library_PRD_v1.md` **§14A** IS the V1 `BC-23` discovery/query contract, **declaratory**, §14A **FROZEN and byte-unchanged**, index class ruled **Platform Public Discovery Index** per `AR-3`). **Edited:** the header provenance block; the `v0.1` → `v0.2` heading; the *"8 of 32"* banner; the `Consumes` row; §2's heading, both rows and its tail; §4's heading; the eight per-requirement `⚠ Conditional` markers (six on `001`, two on `002`); the `LSD-FR-001`…`008` traceability row; and the closing summary. ⛔⛔ **NO REQUIREMENT TEXT WAS REWRITTEN.** Every `LSD-FR-*`, `LSD-AC-*` and `LSD-XC-*` statement is **byte-identical**; only the *condition* attached to eight of them is discharged. ⭐ That is possible only because the conditions were recorded precisely enough to be discharged rather than being quietly dropped. ⛔ **`PRD-015` was NOT authored and remains `PLANNED`** — ⚠ so `XPC-CONF-005`'s underlying fact survives its own resolution as a **registry residue**, not a C2 blocker; C2 needed a *contract* and now has a frozen one. ⛔ **C2 still specifies no index internals, analyzers, scoring, relevance or query-rewriting rules** — `LSD-XC-001`…`LSD-XC-004` are **unchanged and in force**, and ⛔ **no second search or ranking system exists**. ⛔ **`E-21` was NOT extended by this draft** — it was extended by an **Architecture Owner** instrument on explicit conferral; a draft amending the BC Map itself would have been the very defect §2 was guarding against. ⛔⛔ **NO LIFECYCLE MOVEMENT:** C2 remains **Stage 2 (Draft)**, **NOT FROZEN / NOT FINAL / NOT APPROVED / NOT BASELINED / NO RANK**; ⛔ no Stage-3 alignment record written, no alignment PASS claimed; **0 of 16** ACs proven by any test; **0** `IMPL-*` identifiers; **0** `lib/`/`test/` files. ⭐ **"Unblocked" is not "approved" and not "implementable"** — recorded here because the distinction is the whole point of the gate. ⚠ Counts otherwise unchanged: **32 FR · 16 AC · 12 XC**; ⛔ **0** new identifiers minted. |
 | **v0.1** | 2026-09-02 | Created. Specifies library search and local discovery as a **consumer** of `BC-23`, with the `ADR-0091` ordering split applied verbatim. 32 FR (8 conditional) · 16 AC · 12 XC |

@@ -1327,3 +1327,131 @@ frozen decisions altered; **0** capabilities moved between waves; **0** ownershi
 transferred — **57** ownership refusals recorded instead; **`FOD-4` discharged**
 for B7/B8/B9 without editing B0; **6** conflicts (`XPB-CONF-011`, `013`, `014`,
 `015`, `016`, `017`) left explicitly **OPEN** against named owners.
+## 15. ⭐ `PRD-021C` Local Library Marketplace & Booking — Stage-2 drafts registered by append
+
+**2026-09-02.** Six Stage-2 files exist on disk under
+`docs/30-product/library-marketplace/`. This section records that fact. It
+records **nothing else** — no stage beyond Draft, no freeze, no approval, no
+ownership change, no wave change and no architecture decision.
+
+### 15.1 The registration
+
+| Field | Value |
+|---|---|
+| Identifier | **`PRD-021C`** — a **lettered suffix of the existing number `PRD-021`**, exactly as `PRD-021A` and `PRD-021B` are. ⛔ **No new `PRD-nnn` number is consumed** |
+| Title | Local Library Marketplace & Booking |
+| Parts | **C0** (cross-part architecture + open decisions), **C1** (Marketplace Foundation), **C2** (Library Search & Local Discovery), **C3** (Library Public Profile), **C4** (Seat Availability & Booking Initiation), plus one cross-part audit record |
+| Bounded context | ⛔ **NONE.** ⭐ `PRD-021C` is an **application / read composition capability of the Library domain** under ruling **`AR-1`**, already registered at `MASTER_PRD.md` **L171** as module **19**. **No context created; count remains 31** |
+| Release tier | **V1** — ⭐ **not changed by this act.** `MASTER_PRD.md` **L171** already reads **V1** for module 19 |
+| Status | **`DRAFT`** |
+| Entry evidence | §2 — *"A document on disk with a version header"*. Satisfied by five specification files, each carrying a status header, plus one audit record |
+| Lifecycle stage | **Stage 2 (Draft)**. ⛔ **Stage 3 NOT entered** — its gate is *"a written alignment record"* and **none exists** |
+| Stage 1 | ⚠ **`NOT APPLICABLE`**, not passed — see §15.3 |
+| Freeze | ⛔ **NOT FROZEN.** No `DOCUMENTATION_BASELINE.md` §3 row written, and none requested |
+| Owner | Unchanged — `PRD_OWNERSHIP_MODEL.md` **L203** already records `PRD-021`: Product Owner · Social Domain · **ARB** · Platform Engineering |
+| Identifiers | **246** — `XPC-CONF-001`…`014`, `XPC-OD-001`…`006`, `LMP-*` 46, `LSD-*` 60, `LPP-*` 52, `LSB-*` 68. All registers contiguous, **0** gaps, measured |
+| Open decisions | **`XPC-OD-001`…`XPC-OD-006`** — all six ⛔ **OPEN**, recorded in Part C0 §6 with named owner roles |
+
+### 15.2 ⭐ Why `BC-17` was NOT moved to V1, and what was recorded instead
+
+⚠⚠ **The supplied product intent asked for marketplace functionality in V1, while
+this register records `BC-17` Marketplace as V3 at §4.1 L392 and the BC Map
+records it at L121. That cell is BYTE-UNCHANGED.**
+
+`BC-17` was **measured** rather than assumed: BC Map **L121** (`[SUPPORTING]`,
+Global Student, **V3**, *owns listings, orders, listing moderation*), **L148**
+(one of exactly two V3 contexts), **L488** (global, **no `tenantId`**, keyed on
+**`PersonId`**), and Enterprise Architecture **L992** (`Student Marketplace
+(V3)` — *Buy & Sell Books · Stationery · Listing Moderation · Order History*).
+
+⭐ **`BC-17` is a student-to-student second-hand book and stationery classifieds
+context.** It shares an English word with the supplied intent and nothing else.
+Placing a library directory inside it would breach **`X-05`**
+(`LIBRARY MANAGEMENT ↔ BC-11…BC-17` forbidden, Module Dependency Matrix
+**L354**) and **`ID-3`** (the global band must not resolve *"which library a
+person attends"*, BC Map **L180**) simultaneously.
+
+⭐ **The answer already existed at Rank 1, so this is a DETERMINATION, not a
+decision.** `MASTER_PRD.md` **L171** registers module **19** — *"Composition over
+`BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02`, `BC-04`, projected via `BC-23`"*,
+*"not a context"*, **V1** — and `ARCHITECTURE_RULINGS.md` **`AR-1`** rules the
+capability *"NOT a new bounded context … owns no aggregate, no invariant, no
+business state … Discovery references, never duplicates."* The supplied "V1"
+requirement is therefore **already satisfied** by existing Rank 1 authority.
+
+⭐ **Precedent:** `ADR-0091` §3 used *the same* `MASTER_PRD.md` L171 cell for
+`PRD-021B`'s `XPB-CONF-001`, finding it *"exactly the shape B4 claims, already at
+Rank 1, already V1."*
+
+⛔ **0 wave changes. 0 contexts created. 0 ADRs. `BC-17` remains V3.**
+
+### 15.3 ⚠ Stage 1 recorded `NOT APPLICABLE`, not passed
+
+Stage 1's gate is *"a context identified in the Bounded Context Map, **not
+already owned**."* `PRD-021C` identifies **no** context — by design, under
+`AR-1`. The gate therefore **cannot be met and does not apply**, which is a
+different thing from being skipped.
+
+⭐ **Precedent:** **`PRD-012a`** carries **Stage 1 `NOT APPLICABLE`** by
+`ADR-0060`, recorded at §4.1 **L250** and §7 **L548** as *"a gate that does not
+apply rather than a gate skipped."* `PRD-012a` is also *"the first `FROZEN` PRD
+that owns NO bounded context"*, and **no `BC-32` was created to make its row look
+like the others**. The same restraint is applied here.
+
+### 15.4 Authority — why this append is lawful without an ADR
+
+| # | Question | Governing text | Answer |
+|---|---|---|---|
+| 1 | ADR required before the change? | `DOCUMENTATION_BASELINE.md` §7 rule 1 — Rank 1–5 only | ⛔ **No.** This register is **unranked** — absent from baseline §3 **and** §4, as §4.1 L285, §11.2 and §12.3 all state |
+| 2 | `MASTER_PRD.md` change required? | §2 — entry evidence may be *"this register"* | ⛔ **No.** `MASTER_PRD.md` is **byte-unchanged**; module 19 at **L171** already records the capability at V1 |
+| 3 | New `PRD-nnn` number consumed? | §8 rule 1 | ⛔ **No.** `PRD-021C` is a lettered suffix of `PRD-021`, per the `PRD-021A` (§11.1) and `PRD-021B` (§12.1) precedents |
+| 4 | Does it add a bounded context to a PRD's ownership? | §8 rule 6 — *"an architecture change requiring an ADR"* | ⛔ **No.** ⭐ **No context is claimed at all.** Nothing is added, moved or transferred |
+| 5 | Baseline row required? | §8 rule 4 | ⛔ **No**, and none is written. `PRD-021C` is **not** `FROZEN` |
+| 6 | Ownership record required? | §8 rule 7 | ⛔ **No new record.** `PRD_OWNERSHIP_MODEL.md` **L203** already covers `PRD-021`; roles only, no personal name |
+
+⚠ **Stage-3 check 1 (*context ownership is exclusive*) cannot be contested by
+this act**, because `PRD-021C` owns no context to contest. All parts sit inside
+**one** allocation; ⛔ no part is split out as a standalone PRD.
+
+### 15.5 ⛔ What this registration does **not** do
+
+1. ⛔ **Confers no stage beyond Draft.** Stage 3 requires a written alignment record; **none exists**, and none is claimed.
+2. ⛔ **Resolves none of `XPC-OD-001`…`XPC-OD-006`.** All six stay **OPEN** against named owner roles — Architecture Owner (001, 003, 004, 006), Product Owner + Architecture Owner (002), Privacy Owner (005, ⚠ **role VACANT**).
+3. ⛔ **Creates no ADR.** No `ADR-*` file was added, and none of `ADR-0084` or `ADR-0083` §4.5 is reinterpreted — both edge refusals are **honoured**.
+4. ⛔ **Amends no Rank 1–6 document.** `MASTER_PRD.md`, the BC Map, the Enterprise Architecture, the Module Dependency Matrix, `ARCHITECTURE_RULINGS.md` and every FROZEN PRD are **byte-unchanged**, measured.
+5. ⛔ **Moves no capability between waves.** `BC-17` stays **V3** (§4.1 **L392**, BC Map **L121**); Public Live Occupancy stays **V2** (`LIB-14B.13`, `SEAT-XC-009`, `ARCHITECTURE_RULINGS.md` §6); Reviews & Ratings stay **V2** and excluded.
+6. ⛔ **Creates no bounded context and no integration edge.** Count remains **31** contexts and **28** edges (`E-01`…`E-26`, `E-28`, `E-29`; `E-27` permanently vacant). The two enumeration gaps at `E-21` (**L330**) and `E-22` (**L331**) are carried **OPEN**, ⛔ **not minted**.
+7. ⛔ **Defines no booking, reservation, allocation, seat, membership, lock or idempotency mechanism.** `PRD-007` is **FROZEN** and already owns all of them (**L153**, §11, §12, §21.2, §21.3); Part C4 **cites** them and specifies none.
+8. ⛔ **Creates no search index, ranking model or relevance formula.** `BC-23` keeps relevance (BC Map **L132**); the `ADR-0091` §3 ordering split is applied verbatim.
+9. ⛔ **Mints no published event.** Parts C1–C4 publish **nothing**; `BC-04`'s event set stays closed at `SEAT-FR-206`.
+10. ⛔ **Mints no `IMPL-*` identifier and creates no implementation task.**
+11. ⛔ **Modifies no `PRD-021A`, `PRD-021B`, §11, §12, §13 or §14 content.** §4.2 **L321** is **byte-unchanged** and `PRD-021` itself remains **`PLANNED`** — this section registers `PRD-021C`'s **drafts**, not a status change to `PRD-021`.
+12. ⛔ **Does not create `PRD-015`.** `BC-23`'s registered owner remains **`PLANNED`** at §4.1 **L315** with no document on disk, which is exactly why `XPC-OD-002` is **OPEN**.
+13. ⛔ **Increments no §7 summary count**, for the reason §11.6 and §12.4 item 10 already give: a count edit requires re-derivation by measurement, not arithmetic. ⚠ Disclosed, not repaired.
+14. ⛔ **Claims no verification.** **0 of 60** acceptance criteria is proven by a test, **12 of 120** functional requirements are ⚠ **CONDITIONAL** on an OPEN decision, and **0 lines of code** exist. This is **a draft authored, not a specification delivered**.
+
+### 15.6 Change note
+
+⚠ **Recorded here rather than as a row in §10, and the version is deliberately
+NOT incremented** — the identical reasoning §11.7 and §12.5 give: this register's
+version-discipline defect is pre-existing and systemic, and bumping it for this
+one append would imply it is the only change since the header date, which is
+false.
+
+⭐ **Appended, not inserted.** This register is cited by line number **366+**
+times; appending below the former last line shifts **0** citations, which is the
+method `ADR-0079` §8.5 Option A established and §12, §13 and §14 reused.
+
+**2026-09-02 — `PRD-021C` Parts C0–C4 registered as `DRAFT` / Stage 2 with
+Stage 1 `NOT APPLICABLE`, owning NO bounded context.** One appended section;
+**0** existing lines modified; **0** cited lines shifted; **0** ADRs created;
+**0** Rank 1–6 documents touched; **0** lifecycle stages conferred beyond Draft;
+**0** bounded contexts created; **0** integration edges created; **0** events
+minted; **0** `IMPL-*` identifiers allocated; **0** frozen decisions altered;
+**0** capabilities moved between waves; **2** scope reductions forced by frozen
+authority and recorded (`XPC-CONF-008`, `XPC-CONF-009`); **14** refusals
+recorded instead of inventions; **6** decisions (`XPC-OD-001`…`006`) left
+explicitly **OPEN** against named owner roles.
+
+---
+

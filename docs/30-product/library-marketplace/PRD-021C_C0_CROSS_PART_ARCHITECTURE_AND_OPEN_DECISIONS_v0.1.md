@@ -40,7 +40,7 @@
 | **PRD** | `PRD-021C` — a **lettered suffix of the existing number `PRD-021`**, exactly as `PRD-021A` and `PRD-021B` are. ⛔ **No new `PRD-nnn` number is consumed** |
 | **Title** | Local Library Marketplace & Booking |
 | **Parts** | **C0** (this file) · **C1** Marketplace Foundation · **C2** Library Search & Local Discovery · **C3** Library Public Profile · **C4** Live Seat Availability & Booking |
-| **Version** | **v0.1** |
+| **Version** | **v0.2** |
 | **Status** | **`DRAFT`** |
 | **Lifecycle stage** | **Stage 2 (Draft)** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) §Stage 2. ⛔ Stage 3 **NOT** entered |
 | **Date** | 2026-09-02 |
@@ -383,8 +383,8 @@ skipped."* The same form is used here.
 | **Baseline row** | ⛔ **None.** `DOCUMENTATION_BASELINE.md` §3 contains **no** `PRD-021C` row, and none is requested |
 | **Rank** | ⛔ **None** |
 | **Stage 3** | ⛔ **NOT ENTERED.** Gate is a written alignment record; **none exists** |
-| **Open decisions** | **6** — `XPC-OD-001` … `XPC-OD-006`, all ⛔ **OPEN** |
-| **Conflicts recorded** | **14** — 9 resolved, 5 deferred |
+| **Open decisions** | **7** — `XPC-OD-001` … `XPC-OD-007`, all ⛔ **OPEN** (agrees with the §2 register at **L77**) |
+| **Conflicts recorded** | **15** — 9 resolved · 1 partially resolved · 5 deferred (agrees with **L77**/§5 **L291**) |
 | **ADRs created** | ⛔ **0** |
 | **Bounded contexts created** | ⛔ **0.** Count remains **31** |
 | **Integration edges created** | ⛔ **0.** Count remains **28**, `E-27` permanently vacant |
@@ -419,3 +419,4 @@ skipped."* The same form is used here.
 |---|---|---|
 | **v0.1** | 2026-09-02 | Created as the Stage-2 cross-part companion to C1–C4. Records the `AR-1` / module 19 determination (§2.3), the 14-item conflict register (§5), the 6 open decisions (§6) and the 246-identifier register set (§1.1). ⛔ No ADR, no edge, no context, no event, no `IMPL-*`, no Rank 1–6 edit, no freeze |
 | **v0.2** | 2026-09-02 | Updated for **C3 v0.2 §9A** (Owner Profile Engagement Summary). Added **`XPC-CONF-015`** (analytics ownership reconciled to the **existing** `BC-26` / `PRD-009` owners — nothing invented) and **`XPC-OD-007`** (no profile-view event producer and no lawful edge into `BC-26`). Register totals **246 → 279**, disclosed in §1.1 rather than silently restated; **246** remains correct for the C1–C4 baseline at `21704ba`. Conflict register **14 → 15**; open decisions **6 → 7**. ⛔ Still no ADR, no edge, no context, no event, no metric definition, no analytics system, no `IMPL-*`, no Rank 1–6 edit, no freeze. `BC-17` unchanged; C1, C2, C4 unchanged |
+| **v0.2a** | 2026-09-02 | ⚠ **Internal-consistency correction only — no decision, no architecture, no lifecycle change.** Three stale self-statements left behind by the v0.2 edit are brought into agreement with this document's own authoritative registers: the header **Version** field `v0.1` → **`v0.2`** (the change-history row above already recorded v0.2); §9's closing **Open decisions** cell `6` → **7**; and §9's closing **Conflicts recorded** cell `14 — 9 resolved, 5 deferred` → **15 — 9 resolved · 1 partially resolved · 5 deferred**. The §2 register at **L76**/**L77** and the §5 disposition line at **L291** were already correct and are **byte-unchanged** — this edit corrects the *summary* to match the *register*, never the reverse. ⛔ **Resolves no open decision**, mints no identifier, creates no ADR, edge, event, context, metric definition or `IMPL-*`, amends no FROZEN or Rank 1–6 artefact, and confers no Stage 3, freeze, approval, baseline or rank. `XPC-OD-001`…`XPC-OD-007` all remain **OPEN** |

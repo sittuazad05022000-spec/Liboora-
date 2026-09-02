@@ -877,7 +877,7 @@ under `tool/`, `lib/`, `test/`, `web/`.
 |---|---|
 | **Artifact** | `docs/30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md` |
 | **Registration** | `docs/40-implementation/TRACEABILITY_MATRIX.md` **§2Q** |
-| **Commit SHA** | `9c7fd18` — *see §19.1* |
+| **Commit SHA** | ⏳ `PENDING-MEASUREMENT` — written back by the second commit; *see §19.1* |
 | **Remote** | `github` → `https://github.com/sittuazad05022000-spec/Liboora-.git` |
 | **Branch** | `main` |
 
@@ -889,8 +889,22 @@ A record cannot contain the SHA of the commit that creates it. Two dispositions 
 2. Commit the record, measure the SHA, write it back in a **second commit**.
 
 ⛔ **Amending or rebasing the first commit is excluded** — the delivery constraint forbids amend, rebase and
-force-push. Disposition **2** is used: the SHA in the table above is the **first** commit (record + §2Q), written
-back by a second commit whose only change is that cell. Both commits are pushed to `github main`.
+force-push. Disposition **2** is used: the SHA in the table above is the **substantive** commit (record + §2Q),
+written back by a later commit whose only change is that cell. All commits are pushed to `github main`.
+
+⚠⚠ **An intervening automated commit is disclosed, because it changed the topology this section predicted.** While
+this record was being authored, the sandbox's `genspark` auto-backup fired and committed the record file **on its
+own, before §2Q existed**, as `1494d25 genspark auto-backup`. The consequences are recorded rather than tidied
+away:
+
+| Fact | Disposition |
+|---|---|
+| `1494d25` contains this record **without** §2Q | ⛔ **Left in history, not amended or rebased** — the constraint forbids it, and rewriting an existing commit to make the history look planned is the defect this disclosure exists to prevent |
+| At `1494d25` the record claimed PASS while conjunct 1 was still unmet | ⚠ **This is exactly the conditionality §16 states.** The verdict is sound only at the commit where §2Q is present — which is why §16 couples them explicitly rather than asserting an unconditional pass |
+| The auto-backup was not requested and is not this review's act | Recorded as an **environment fact**, not a governance act. It confers nothing |
+
+⛔ **No history was rewritten to hide it.** The honest topology is: `1494d25` (record only, automated) → the
+substantive commit (§2Q + corrections) → the SHA write-back commit.
 
 ---
 
@@ -914,9 +928,19 @@ back by a second commit whose only change is that cell. Both commits are pushed 
 expected to **enlarge both numbers**, and the enlargement is disclosed rather than suppressed:
 
 - *"`TSF-` appears in **1** §2\* line(s) outside §2O"* — §2Q cites `TSF-` in its foreign-token section, so this
-  count **rises**.
+  count **rises**. ✅ **Measured after the change: 1 → 4** (matrix **L2655** and **L2672**, both in §2Q).
 - *"`TSF-*` defined outside `PRD-020`"* — a **4**-entry file list. This record cites `TSF-*` tokens, so the list
-  **grows** by this file.
+  **grows** by this file. ✅ **Measured after the change: 4 → 5**, the added entry being this record.
+
+⚠ **The prediction was right in direction and incomplete in magnitude, and that is recorded rather than
+retrofitted.** §20.1 was written before the change and said only *"rises"* and *"grows by this file"*; the
+measured rise is **1 → 4**, not 1 → 2. The count is per-**line**, and §2Q cites `TSF-` on more lines than the
+single foreign-token row anticipated. ⛔ The forecast is left as it was written, with the measurement beside it —
+editing a prediction after seeing the outcome makes a record that cannot be audited.
+
+⚠ The checker also reports `matrix version: v1.22` and *"changelog row for v1.22 mentioning §2O: found"* — it
+tracks the **current** version rather than the version that introduced §2O, so it follows the bump automatically.
+That is the checker's own behaviour, unchanged by this commit.
 
 Both are artefacts of the checker's **leading-cell heuristic** (`prd020_stage5.py` **L295–312**), which cannot
 distinguish a citation from a definition — the same limitation §2C.1 addresses by requiring a token be read at its

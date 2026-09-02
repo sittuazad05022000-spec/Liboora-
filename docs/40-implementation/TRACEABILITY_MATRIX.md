@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.21** |
+| **Version** | **v1.22** |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** |
 | **Baseline** | **BASELINE-2026-08-04-D** — ⚠ **not re-issued by §2G.** `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier only *"when a Rank 1–3 document changes version"*. `PRD-008` is **byte-unchanged** by this pass, so no baseline change is due, and this matrix is **unranked** — it confers nothing |
 | **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** · **Attendance Management PRD v1.3 (`PRD-006`, `DRAFT`)** · **Revenue & Finance PRD v1.7 (`PRD-008`, `DRAFT`)** · **Integration PRD v0.2 (`PRD-019`, `DRAFT`)** · **Tenancy PRD v0.1 (`PRD-013`, `FROZEN`)** · **Audit Trail PRD v0.1 (`PRD-016`, `DRAFT`)** · **Entitlement PRD v0.1 (`PRD-014`, `DRAFT`)** · **Settings & Configuration PRD v0.1 (`PRD-023`, `DRAFT`)** · **File & Media PRD v0.1 (`PRD-017`, `DRAFT`)** |
 | **ADRs applied** | `ADR-0001` … **`ADR-0018`**, **`ADR-0020`**, **`ADR-0032`** |
@@ -2278,6 +2278,446 @@ apparatus built to protect it.
 
 ---
 
+## 2Q. `PRD-021B` B0–B9 Social Graph, Discovery, Messaging — ten-stem identifier inventory
+
+| Field | Value |
+|---|---|
+| **Subject** | `PRD-021B` Social Graph / Discovery / Messaging, **B0–B9, all `DRAFT`, all Unranked** — ten documents in `docs/30-product/social-graph/`, **6,613 lines / 352,765 bytes**, sha256 recorded per part in §2Q.4. ⚠ **This is the largest multi-document subject yet registered here** — ten documents, two more than §2P's eight — and the fifth collision direction §2P introduced is load-bearing again: the parts cite one another **196** times across part boundaries, and can fail by citing a sibling identifier the sibling never minted. That direction is measured in §2Q.1 (e) and is **0** |
+| **Stage** | **5 of 9 — Traceability** (`PRD_LIFECYCLE.md` L121–133) |
+| **Prefix stems** | **10** — `XPA-` `SGR-` `SSF-` `SDS-` `DRK-` `PYK-` `GLS-` `MSG-` `RTM-` `TPA-`, each measured free in **five** directions before use; see §2Q.1 |
+| **Registers** | **113** |
+| **Identifiers** | **1,300** — ⭐ **113 of 113 registers contiguous** from `001` to their stated maximum, **with no exception to preserve**; a stronger result than §2P's 104 of 105 |
+| **Normative requirements** | **365** (`*-FR-*` 196 + `*-BR-*` 169) |
+| **Acceptance criteria** | **242** — coverage **195/365 = 53.4%**, ⚠ **170 uncovered**. Registered at its measured value; see §2Q.2 |
+| **Collisions** | **ZERO**, measured in **five** directions — §2Q.1 |
+| **Registered at** | This commit |
+| **Instruments** | Five scripts (census · collision · near-miss-with-controls · foreign resolution · trace legs). ⚠ **Deliberately NOT committed to `tool/docs_check/`** — see §2Q.6; the measurements are published with their rules and controls for independent reproduction instead |
+| **Consolidated record** | [`../30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md`](../30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md) — verdict **PASS, 4 of 4 gate conjuncts**. ⚠ On the `DOCUMENTATION_BASELINE.md` **L199** principle, **this section IS the gate**; the record carries what does not belong in a register |
+| **⛔ What this registration does NOT confer** | **Rank, freeze, `IMPL-*` allocation, architecture closure, gap closure, `READY`, or any status move.** See §2Q.3. ⛔ **All 30 own-stem `*-GAP-*` and 2 foreign gap citations remain exactly as their subjects left them**; **6 `XPB-CONF-*` and 2 `XPB-DRIFT-*` owner decisions remain OPEN**; `PRD-021` itself remains **`PLANNED`** at `PRD_REGISTRY.md` §4.2 **L321** |
+
+⛔⛔ **The pre-commit measurement, published with its command, because it is the whole substance of the gate's
+first clause:**
+
+```
+$ grep -c "PRD-021B" docs/40-implementation/TRACEABILITY_MATRIX.md
+0
+```
+
+Ten further probes, one per stem, over the full 2,728 lines returned **0** for every one. **So 1,300 identifiers
+across 113 registers were registered NOWHERE** — the exact condition Stage 5 exists to prevent, and the honest
+pre-registration answer to this gate was **BLOCKED on that clause**.
+
+### 2Q.0 The inventory
+
+⚠ Counted by **distinct-token occupancy**, not by definition site — §2O.4 defect `I-1` and §2P.0's note. B0–B9
+define register members in prose as well as in tables, so a definition-site census would have undercounted here
+too.
+
+**B0 — `XPA-` cross-part architecture and open decisions (4 registers, 22 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `XPA-ACGAP-NNN` | Acceptance-criteria gap | **3** | `001`…`003` | ✅ | `004` |
+| `XPA-BND-NNN` | Boundary allocation | **6** | `001`…`006` | ✅ | `007` |
+| `XPA-DEP-NNN` | Cross-part dependency | **6** | `001`…`006` | ✅ | `007` |
+| `XPA-PREC-NNN` | Precedence rule | **7** | `001`…`007` | ✅ | `008` |
+
+⚠ **B0 mints 0 `FR` and 0 `BR`, and this is not an omission.** B0 is the allocation part: its §2 capability matrix
+is the **ownership allocation instrument** for the whole set (§2Q.1 (f)). It allocates and constrains rather than
+requiring.
+
+**B1 — `SGR-` social graph (14 registers, 183 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `SGR-AC-NNN` | Acceptance criterion | **30** | `001`…`030` | ✅ | `031` |
+| `SGR-API-NNN` | API surface rule | **14** | `001`…`014` | ✅ | `015` |
+| `SGR-BR-NNN` | Business rule | **18** | `001`…`018` | ✅ | `019` |
+| `SGR-CACHE-NNN` | Cache rule | **6** | `001`…`006` | ✅ | `007` |
+| `SGR-DM-NNN` | Data model element | **12** | `001`…`012` | ✅ | `013` |
+| `SGR-EC-NNN` | Edge case | **18** | `001`…`018` | ✅ | `019` |
+| `SGR-EVT-NNN` | Event | **8** | `001`…`008` | ✅ | `009` |
+| `SGR-FR-NNN` | Functional requirement | **27** | `001`…`027` | ✅ | `028` |
+| `SGR-GAP-NNN` | Gap | **3** | `001`…`003` | ✅ | `004` |
+| `SGR-PERF-NNN` | Performance rule | **7** | `001`…`007` | ✅ | `008` |
+| `SGR-PRV-NNN` | Privacy rule | **7** | `001`…`007` | ✅ | `008` |
+| `SGR-SCOPE-NNN` | Scope allocation | **8** | `001`…`008` | ✅ | `009` |
+| `SGR-SEC-NNN` | Security rule | **11** | `001`…`011` | ✅ | `012` |
+| `SGR-XC-NNN` | Exclusion | **14** | `001`…`014` | ✅ | `015` |
+
+**B2 — `SSF-` social safety (14 registers, 174 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `SSF-AC-NNN` | Acceptance criterion | **28** | `001`…`028` | ✅ | `029` |
+| `SSF-API-NNN` | API surface rule | **10** | `001`…`010` | ✅ | `011` |
+| `SSF-BR-NNN` | Business rule | **22** | `001`…`022` | ✅ | `023` |
+| `SSF-CACHE-NNN` | Cache rule | **6** | `001`…`006` | ✅ | `007` |
+| `SSF-DM-NNN` | Data model element | **10** | `001`…`010` | ✅ | `011` |
+| `SSF-EC-NNN` | Edge case | **16** | `001`…`016` | ✅ | `017` |
+| `SSF-EVT-NNN` | Event | **6** | `001`…`006` | ✅ | `007` |
+| `SSF-FR-NNN` | Functional requirement | **27** | `001`…`027` | ✅ | `028` |
+| `SSF-GAP-NNN` | Gap | **3** | `001`…`003` | ✅ | `004` |
+| `SSF-PERF-NNN` | Performance rule | **6** | `001`…`006` | ✅ | `007` |
+| `SSF-PRV-NNN` | Privacy rule | **8** | `001`…`008` | ✅ | `009` |
+| `SSF-SCOPE-NNN` | Scope allocation | **6** | `001`…`006` | ✅ | `007` |
+| `SSF-SEC-NNN` | Security rule | **10** | `001`…`010` | ✅ | `011` |
+| `SSF-XC-NNN` | Exclusion | **16** | `001`…`016` | ✅ | `017` |
+
+**B3 — `SDS-` student discovery (14 registers, 161 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `SDS-AC-NNN` | Acceptance criterion | **32** | `001`…`032` | ✅ | `033` |
+| `SDS-API-NNN` | API surface rule | **4** | `001`…`004` | ✅ | `005` |
+| `SDS-BR-NNN` | Business rule | **19** | `001`…`019` | ✅ | `020` |
+| `SDS-CACHE-NNN` | Cache rule | **8** | `001`…`008` | ✅ | `009` |
+| `SDS-DM-NNN` | Data model element | **6** | `001`…`006` | ✅ | `007` |
+| `SDS-EC-NNN` | Edge case | **18** | `001`…`018` | ✅ | `019` |
+| `SDS-FR-NNN` | Functional requirement | **17** | `001`…`017` | ✅ | `018` |
+| `SDS-GAP-NNN` | Gap | **3** | `001`…`003` | ✅ | `004` |
+| `SDS-IDX-NNN` | Index requirement | **10** | `001`…`010` | ✅ | `011` |
+| `SDS-PERF-NNN` | Performance rule | **8** | `001`…`008` | ✅ | `009` |
+| `SDS-PRV-NNN` | Privacy rule | **9** | `001`…`009` | ✅ | `010` |
+| `SDS-SCOPE-NNN` | Scope allocation | **3** | `001`…`003` | ✅ | `004` |
+| `SDS-SEC-NNN` | Security rule | **8** | `001`…`008` | ✅ | `009` |
+| `SDS-XC-NNN` | Exclusion | **16** | `001`…`016` | ✅ | `017` |
+
+**B4 — `DRK-` discovery ranking (14 registers, 133 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `DRK-AC-NNN` | Acceptance criterion | **26** | `001`…`026` | ✅ | `027` |
+| `DRK-BR-NNN` | Business rule | **11** | `001`…`011` | ✅ | `012` |
+| `DRK-CFG-NNN` | Configuration parameter | **8** | `001`…`008` | ✅ | `009` |
+| `DRK-DET-NNN` | Determinism rule | **6** | `001`…`006` | ✅ | `007` |
+| `DRK-EC-NNN` | Edge case | **12** | `001`…`012` | ✅ | `013` |
+| `DRK-EVAL-NNN` | Evaluation rule | **5** | `001`…`005` | ✅ | `006` |
+| `DRK-EXP-NNN` | Explainability rule | **6** | `001`…`006` | ✅ | `007` |
+| `DRK-FR-NNN` | Functional requirement | **14** | `001`…`014` | ✅ | `015` |
+| `DRK-GAP-NNN` | Gap | **5** | `001`…`005` | ✅ | `006` |
+| `DRK-PRV-NNN` | Privacy rule | **5** | `001`…`005` | ✅ | `006` |
+| `DRK-SCOPE-NNN` | Scope allocation | **5** | `001`…`005` | ✅ | `006` |
+| `DRK-SEC-NNN` | Security rule | **4** | `001`…`004` | ✅ | `005` |
+| `DRK-SIG-NNN` | Ranking signal | **10** | `001`…`010` | ✅ | `011` |
+| `DRK-XC-NNN` | Exclusion | **16** | `001`…`016` | ✅ | `017` |
+
+**B5 — `PYK-` student recommendations (16 registers, 135 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `PYK-AC-NNN` | Acceptance criterion | **24** | `001`…`024` | ✅ | `025` |
+| `PYK-BR-NNN` | Business rule | **5** | `001`…`005` | ✅ | `006` |
+| `PYK-CFG-NNN` | Configuration parameter | **7** | `001`…`007` | ✅ | `008` |
+| `PYK-EC-NNN` | Edge case | **12** | `001`…`012` | ✅ | `013` |
+| `PYK-FB-NNN` | Feedback rule | **6** | `001`…`006` | ✅ | `007` |
+| `PYK-FR-NNN` | Functional requirement | **6** | `001`…`006` | ✅ | `007` |
+| `PYK-FRQ-NNN` | Frequency rule | **6** | `001`…`006` | ✅ | `007` |
+| `PYK-GAP-NNN` | Gap | **5** | `001`…`005` | ✅ | `006` |
+| `PYK-POL-NNN` | Policy rule | **8** | `001`…`008` | ✅ | `009` |
+| `PYK-PRS-NNN` | Presentation rule | **7** | `001`…`007` | ✅ | `008` |
+| `PYK-PRV-NNN` | Privacy rule | **7** | `001`…`007` | ✅ | `008` |
+| `PYK-SCOPE-NNN` | Scope allocation | **5** | `001`…`005` | ✅ | `006` |
+| `PYK-SEC-NNN` | Security rule | **4** | `001`…`004` | ✅ | `005` |
+| `PYK-SRC-NNN` | Source rule | **7** | `001`…`007` | ✅ | `008` |
+| `PYK-SUP-NNN` | Suppression rule | **8** | `001`…`008` | ✅ | `009` |
+| `PYK-XC-NNN` | Exclusion | **18** | `001`…`018` | ✅ | `019` |
+
+⚠ **B5 carries the lowest per-part coverage in this registration — 2 of 11 FR+BR = 18.2%** — and it is
+**diagnostic rather than anomalous**: B5's 24 acceptance criteria bind overwhelmingly to `PYK-POL-*`, `PYK-PRS-*`,
+`PYK-SRC-*`, `PYK-FB-*` and `PYK-FRQ-*`, registers the FR+BR denominator excludes **by construction**. ⛔ **The
+denominator was NOT widened to move the figure** — see §2Q.2.
+
+**B6 — `GLS-` discovery scope (12 registers, 100 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `GLS-AC-NNN` | Acceptance criterion | **20** | `001`…`020` | ✅ | `021` |
+| `GLS-BR-NNN` | Business rule | **8** | `001`…`008` | ✅ | `009` |
+| `GLS-CFG-NNN` | Configuration parameter | **5** | `001`…`005` | ✅ | `006` |
+| `GLS-DEF-NNN` | Definition | **6** | `001`…`006` | ✅ | `007` |
+| `GLS-EC-NNN` | Edge case | **10** | `001`…`010` | ✅ | `011` |
+| `GLS-FR-NNN` | Functional requirement | **11** | `001`…`011` | ✅ | `012` |
+| `GLS-FUT-NNN` | Future consideration | **8** | `001`…`008` | ✅ | `009` |
+| `GLS-GAP-NNN` | Gap | **3** | `001`…`003` | ✅ | `004` |
+| `GLS-INV-NNN` | Invariant | **6** | `001`…`006` | ✅ | `007` |
+| `GLS-SCOPE-NNN` | Scope allocation | **4** | `001`…`004` | ✅ | `005` |
+| `GLS-SEC-NNN` | Security rule | **5** | `001`…`005` | ✅ | `006` |
+| `GLS-XC-NNN` | Exclusion | **14** | `001`…`014` | ✅ | `015` |
+
+**B7 — `MSG-` messaging (10 registers, 137 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `MSG-AC-NNN` | Acceptance criterion | **30** | `001`…`030` | ✅ | `031` |
+| `MSG-API-NNN` | API surface rule | **14** | `001`…`014` | ✅ | `015` |
+| `MSG-BR-NNN` | Business rule | **17** | `001`…`017` | ✅ | `018` |
+| `MSG-CFG-NNN` | Configuration parameter | **6** | `001`…`006` | ✅ | `007` |
+| `MSG-EVT-NNN` | Event | **1** | `001`…`001` | ✅ | `002` |
+| `MSG-FR-NNN` | Functional requirement | **33** | `001`…`033` | ✅ | `034` |
+| `MSG-GAP-NNN` | Gap | **2** | `001`…`002` | ✅ | `003` |
+| `MSG-INV-NNN` | Invariant | **6** | `001`…`006` | ✅ | `007` |
+| `MSG-SEC-NNN` | Security rule | **6** | `001`…`006` | ✅ | `007` |
+| `MSG-XC-NNN` | Exclusion | **22** | `001`…`022` | ✅ | `023` |
+
+⚠ **`MSG-GAP-002` names a live governance fact and it is registered rather than resolved**: `PRD-021` itself is
+still **`PLANNED`** (`PRD_REGISTRY.md` §4.2 **L321**) while B0–B9 accumulate as drafts. That is a **Governance
+Owner** matter and **not** a Stage 5 blocker — this gate asks whether prefixes are registered with counts and
+ranges, not what status the parent PRD holds.
+
+**B8 — `RTM-` realtime, media and safety (7 registers, 109 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `RTM-AC-NNN` | Acceptance criterion | **28** | `001`…`028` | ✅ | `029` |
+| `RTM-BR-NNN` | Business rule | **20** | `001`…`020` | ✅ | `021` |
+| `RTM-CFG-NNN` | Configuration parameter | **3** | `001`…`003` | ✅ | `004` |
+| `RTM-FR-NNN` | Functional requirement | **30** | `001`…`030` | ✅ | `031` |
+| `RTM-GAP-NNN` | Gap | **2** | `001`…`002` | ✅ | `003` |
+| `RTM-SEC-NNN` | Security rule | **3** | `001`…`003` | ✅ | `004` |
+| `RTM-XC-NNN` | Exclusion | **23** | `001`…`023` | ✅ | `024` |
+
+**B9 — `TPA-` technical production architecture (8 registers, 146 identifiers)**
+
+| Register | Meaning | Count | Range | Contiguous | Next free |
+|---|---|---|---|---|---|
+| `TPA-AC-NNN` | Acceptance criterion | **24** | `001`…`024` | ✅ | `025` |
+| `TPA-BR-NNN` | Business rule | **49** | `001`…`049` | ✅ | `050` |
+| `TPA-FR-NNN` | Functional requirement | **31** | `001`…`031` | ✅ | `032` |
+| `TPA-GAP-NNN` | Gap | **4** | `001`…`004` | ✅ | `005` |
+| `TPA-GOAL-NNN` | Goal | **4** | `001`…`004` | ✅ | `005` |
+| `TPA-INV-NNN` | Invariant | **8** | `001`…`008` | ✅ | `009` |
+| `TPA-PRIN-NNN` | Principle | **9** | `001`…`009` | ✅ | `010` |
+| `TPA-XC-NNN` | Exclusion | **17** | `001`…`017` | ✅ | `018` |
+
+**Totals — 113 registers · 1,300 identifiers · 113 of 113 contiguous · 0 non-contiguous**
+
+| Register class | Total | Register class | Total | Register class | Total |
+|---|---|---|---|---|---|
+| `AC` | **242** | `CFG` | 29 | `PREC` | 7 |
+| `FR` | **196** | `DM` | 28 | `PRS` | 7 |
+| `BR` | **169** | `PERF` | 21 | `SRC` | 7 |
+| `XC` | **156** | `CACHE` | 20 | `BND` | 6 |
+| `EC` | 86 | `INV` | 20 | `DEP` | 6 |
+| `SEC` | 51 | `EVT` | 15 | `DET` | 6 |
+| `API` | 42 | `IDX` | 10 | `EXP` | 6 |
+| `PRV` | 36 | `SIG` | 10 | `FB` | 6 |
+| `SCOPE` | 31 | `PRIN` | 9 | `FRQ` | 6 |
+| `GAP` | 30 | `POL` | 8 | `DEF` | 6 |
+| | | `SUP` | 8 | `EVAL` | 5 |
+| | | `FUT` | 8 | `GOAL` | 4 |
+| | | | | `ACGAP` | 3 |
+
+**`FR` 196 + `BR` 169 = 365 normative requirements. 242 acceptance criteria.**
+
+⚠ **113 `max+1` phantom probes were run — one per register — and returned 0 hits.** No part cites one past any
+register's ceiling.
+
+### 2Q.1 Collision freedom, six directions
+
+Five directions follow §2O.1 as extended by §2P.1; a sixth is added because this subject allocates ownership.
+
+| Dir | Question | Measured | Result |
+|---|---|---|---|
+| **(a)** | Is any of the ten stems already in this matrix? | 10 probes over 2,728 lines | **0** |
+| **(b)** | Does any stem collide with a foreign stem in use? | **465 files**, **42** stems observed, **32** foreign, containment-tested **both ways** | **0 collide** |
+| **(c)** | Does a near-miss variant resolve to anything? | **20** probes, each with a control | **0** |
+| **(d)** | Does any part cite a foreign token resolving nowhere? | **89** distinct foreign tokens | **0 unresolved** |
+| **(e)** | Does any part cite a **sibling's** identifier the sibling never minted? | **196** cross-part citations | **0** |
+| **(f)** | Does any bounded context get claimed by **two** parts? | B0 §2 capability matrix, single-valued `Owner` column | **0 conflicts** |
+
+The 32 foreign stems observed in (b): `A1` `AFIL` `ATT` `AUD` `CNF` `ENT` `FEE` `FIL` `INV` `ITG` `LCF` `LCG`
+`LCM` `LCN` `LCO` `LCR` `LCS` `LCT` `LIB` `MM` `PROFIL` `SAAS` `SEAT` `SEC` `SECP` `SID` `SM` `TEN` `TSF` `XCNF`
+`XFIL` `XPB`.
+
+⚠ **Every zero in direction (c) is published beside the control that proves the probe fires** — §2P.1's `J-4` rule
+that *a negative that cannot go positive proves nothing*:
+
+| Probe | Hits | Control | Control hits |
+|---|---|---|---|
+| `XP-` | 0 | `XPA-` | **26** |
+| `SG-` | 0 | `SGR-` | **343** |
+| `SS-` | 0 | `SSF-` | **306** |
+| `SD-` | 0 | `SDS-` | **361** |
+| `DR-` | 0 | `DRK-` | **324** |
+| `PY-` | 0 | `PYK-` | **305** |
+| `GL-` | 0 | `GLS-` | **226** |
+| `MS-` | 0 | `MSG-` | **347** |
+| `RT-` | 0 | `RTM-` | **303** |
+| `TP-` | 0 | `TPA-` | **260** |
+| `XPAS-` `SGRS-` `SSFS-` `SDSS-` `DRKS-` `PYKS-` `GLSS-` `MSGS-` `RTMS-` `TPAS-` | **all 0** | as above | — |
+
+⚠⚠ **`XPA-` / `XPB-` is the near miss worth naming, and it is this stage's own `PO-3`/`SPO-3`.** `XPA-` is B0's
+stem (**26** strict-shape occurrences). `XPB-` is a **different family with 257**. Tested in both directions:
+`XPA-[A-Z]{2,6}-\d{3}` does **not** match `XPB-CONF-001`, and `XPB-[A-Z]{2,6}-\d{3}` does **not** match
+`XPA-PREC-001`; **containment collisions 0**. ⚠ **But a bare `'XP'` substring matches BOTH.** So this is recorded
+as a measurement **plus a standing obligation** rather than a clean bill, on §2P's `LCFG-` precedent:
+
+> **Any checker touching this family MUST anchor on `XPA-` with the hyphen — never on `XPA`, never on `XP`.**
+
+⛔ **`XPB-` is NOT registered by this section, and that refusal is a finding — see §2Q.7.**
+
+Direction **(f)**: B0 **§2** is the ownership allocation instrument — a 15-capability matrix whose `Owner` column
+is single-valued and whose B1/B2/B3 columns carry ✅ owns / ▶ consumes / ⛔ must not touch; §2.1 allocates entity
+ownership and §2.2 API ownership. **0 rows assign ✅ to more than one part.** ⭐ **B7 L34 is the affirmative
+case**: it **declines** to confer ownership that `BC-12` already holds under FROZEN `PRD-020` §10 **L633–634**.
+
+### 2Q.2 Coverage — 195/365 = 53.4%, with 170 uncovered
+
+**Both trace directions were measured, including the unflattering one.**
+
+| Direction | Measure | Result |
+|---|---|---|
+| **AC → requirement** | 242 ACs | **242 requirement-backed · 0 orphan ACs · 0 gap-backed · 0 dangling · 0 duplicate GWT triples** |
+| **requirement → AC** | 365 FR+BR | **195 covered · ⚠ 170 UNCOVERED · 53.4%** |
+
+Per part: B1 22/45 **48.9%** · B2 24/49 **49.0%** · B3 17/36 **47.2%** · B4 12/25 **48.0%** · B5 2/11 **18.2%** ·
+B6 13/19 **68.4%** · B7 34/50 **68.0%** · B8 35/50 **70.0%** · B9 36/80 **45.0%** · B0 mints no FR/BR.
+
+On this matrix's published ladder: §2C **94.6%** · §2E **73.4%** · §2M **71.2%** · §2D **60.1%** · **this
+registration 53.4%** · §2O **40.6%** · §2P **27.2%**. Neither the highest nor the lowest; **registered at its
+measured value**.
+
+⛔⛔ **A DENOMINATOR TRAP WAS CAUGHT BEFORE PUBLICATION.** The count of distinct requirements cited by at least one
+AC across the **full normative pool** is **375**; the coverage denominator is **365** (FR+BR only, §2P's
+convention). Combining them yields **102.7%** — a coverage figure **above 100%**, manufactured by accident rather
+than by measurement. Both figures now carry their denominator in the same sentence wherever they appear.
+
+⛔ **The 170 uncovered requirements are NOT closed by minting criteria**, on four independent grounds: it would
+take the AC register **242 → 412** and falsify every count in §2Q.0 **in the commit that publishes them**; it is a
+**Product Owner** authoring act; **coverage is not in this gate** (*"prefixes registered … with counts and ranges,
+verified mechanically, zero collisions"*); and §2O.2 names the act — *"minting identifiers to move a percentage is
+the same act at larger scale."* §2P refused **551** on the same reasoning. ⛔ **Nor was the denominator widened**
+to lift B5's 18.2%: *changing a denominator to move a number is the same act as minting criteria to move it.*
+
+### 2Q.3 ⛔ What this registration does not confer
+
+| # | Not conferred | Who could confer it |
+|---|---|---|
+| 1 | **Rank.** All ten remain **Unranked** | Governance Owner, by ADR |
+| 2 | **Freeze.** Freeze is *conferred, not claimed* (`PRD_LIFECYCLE.md` **L161–164**) | Governance Owner, by ADR |
+| 3 | **Stage 6.** No `IMPL-*` range, no task document, no task-to-requirement mapping | Governance Owner, per **L135+** |
+| 4 | **`IMPL-*` allocation.** **0** `IMPL-*` identifiers written | Governance Owner |
+| 5 | **Architecture closure.** 24 BCs cited of 31, 16 edges of 29, **0 created** | Architecture Owner, by ADR |
+| 6 | **Gap closure.** All 30 own-stem gaps + 2 foreign gap citations stand as their subjects left them | Named owner per gap |
+| 7 | **`READY` or any status move.** §2P.4 item 7: a status move *"is an amendment act requiring amendment authority, **not a side effect**"* | Governance Owner |
+| 8 | **Owner-decision closure.** 6 `XPB-CONF-*` and 2 `XPB-DRIFT-*` remain **OPEN**; 3 `FOD-*` remain **OPEN** | Product / Architecture / Governance Owner |
+| 9 | **An ADR number.** None is minted, and §2Q.5 measures that none is required | Governance Owner |
+
+⛔ **Identifiers minted: ZERO. Requirements changed: ZERO. Acceptance criteria changed: ZERO. Registers extended:
+ZERO. Gaps closed: ZERO. BCs, events, edges and APIs created: ZERO.**
+
+### 2Q.4 Subject hashes — all ten byte-unchanged
+
+| Part | Lines | Bytes | sha256 |
+|---|---|---|---|
+| B0 | 393 | 21,735 | `69dae44e5c8f99fa2fcae71d60f88fac7032ba116d9ba04280752f3c2ec94954` |
+| B1 | 773 | 35,883 | `503c804504f2d04e315c0cf3c99d89e6465eaa1ef668e42e938db65db7532816` |
+| B2 | 589 | 27,202 | `7339862f8cf9fc1174686126f3f49f441316f910352b37e0300f64b90c7963af` |
+| B3 | 565 | 28,079 | `a3ccec3de060144efb932cdf7869c83c21b9a423d70854c6960017946953b533` |
+| B4 | 601 | 36,490 | `429ed76f94042e8988391f6add4dad04ab0ed8afb931750bdc6012e969e2d0cd` |
+| B5 | 533 | 31,864 | `2c8f1c3dba8840c18488d81b3e7397af54b05b301b8b73fba59453c375ebe5bc` |
+| B6 | 426 | 24,316 | `1c481c6ae7557568d80e0a7156667d9132ef1a05ba812caa9be82e296f31137b` |
+| B7 | 940 | 53,311 | `01e2a7fad860abe2a01398a6ac288f73e6532e9d69fcdee1ff99b7af4afc9b4a` |
+| B8 | 810 | 45,340 | `a075ba341baa90037d0290c096f4bf886d9b622410c042f13791042f88506f22` |
+| B9 | 983 | 48,545 | `21561f8b53af7602b0f04182645a75c6fff57226af61359f241054ace2d383a5` |
+
+**All ten are identical to the bytes Stage 3 and Stage 4 measured.** ⚠ Stage 3 and Stage 4 recorded **6,603**
+lines where this section records **6,613**: the difference is a **trailing-newline counting convention**, the
+**hashes are identical**, and both conventions are published rather than one silently replacing the other.
+
+### 2Q.5 Lawfulness of this edit — measured, not assumed
+
+Three independent measurements, because the matrix's own self-description is not sufficient evidence about its
+rank:
+
+| # | Check | Finding |
+|---|---|---|
+| 1 | This matrix's header **L9** | *"this matrix is **unranked** — it confers nothing"* |
+| 2 | Is it in `DOCUMENTATION_BASELINE.md` **§4**'s Rank 1–6 precedence table? | ⛔ **0 occurrences — absent** |
+| 3 | Where is it listed instead? | **L216**, in **§3.4** *Configuration and implementation*, at **v1.1** |
+
+`PRD_LIFECYCLE.md` **L164** quotes baseline §7 — *"A change to any Rank 1–5 document requires an ADR **before** the
+change."* This matrix holds **no Rank 1–5 row**, so **L164 does not reach it**: ⛔ **no ADR is required for §2Q and
+none is minted.** ⛔⛔ **Had §4 listed it at any rank, registration would have STOPPED and been returned to the
+Governance Owner.**
+
+⚠ **No baseline re-issue.** §7 rule 4 moves the identifier only on a **Rank 1–3** version change; this matrix is
+unranked, so the `Baseline` field deliberately still reads `BASELINE-2026-08-04-D`, on the §2G/§2O/§2P precedent.
+
+### 2Q.6 Foreign tokens and instrument disclosures
+
+**89 distinct foreign tokens are cited; all 89 resolve; 0 unresolved:** `FEE-` 1 · `FIL-` 18 · `LCM-` 8 · `LCN-` 2
+· `LCR-` 8 · `MM-` 4 · `TSF-` 31 · `XPB-` 17.
+
+⚠ A minting test returned **15** declaration-shaped foreign lines. ⛔ **A count alone would have published a false
+finding of foreign minting in eight files.** All 15 were **read at their line** (§2C.1): B2 **L353** and B5
+**L249** quote `TSF-*` authority **verbatim**; B7 **L620** records `LCN-FR-019` as **`VOID`**; the remaining 12 are
+`XPB-CONF-*` **disposition-table rows** (B7 **L882–887**, B8 **L762–766**, B9 **L934**). **Genuine foreign
+minting: 0.**
+
+⚠ **`LCM-FR-013` was explicitly verified and explicitly NOT applied — 0 occurrences in all ten parts** — and
+`LCM-FR-012` was measured alongside it and is **also 0 of 10**, which shows the zero is not a suspicious
+single-token gap. The 8 `LCM-*` tokens B0–B9 **do** cite (36 citations: `LCM-RM-006` 8 · `LCM-RM-025` 7 ·
+`LCM-RM-021` 7 · `LCM-RM-023` 6 · `LCM-API-013` 4 · `LCM-RM-001` 2 · `LCM-XC-001` 1 · `LCM-RM-017` 1) all resolve
+to A1, registered at §2P.
+
+⚠ **The five instruments are deliberately NOT committed to `tool/docs_check/`.** Everything there runs in the
+standing sweep, so committing five new checkers in the commit that registers §2Q would make this registration's
+verdict depend on instruments it wrote and nobody reviewed — adding a standing checker is a **Governance Owner**
+act. The measurements are published with their rules and controls for independent reproduction instead.
+
+⚠ **`prd020_stage5.py` fails before and after this commit** on two pre-existing problems, and this commit is
+expected to **enlarge both** (its *"§2\* line(s) outside §2O"* count and its 4-entry file list), because §2Q and
+the consolidated record both cite `TSF-*`. Both are artefacts of its **leading-cell heuristic** (**L295–312**),
+which cannot distinguish a citation from a definition. ⛔ **Two cheaper alternatives are refused by name**:
+deleting true evidence rows, and editing the checker that judges a neighbouring registration — **§2H.2's named
+failure**.
+
+### 2Q.7 Defects — five instrument, zero subject, and one new finding
+
+⚠ **FIVE instrument defects and ZERO subject defects — and two of the five are the SAME CLASS, caught twice in
+one review by an author who had read §2O.4 `I-1` before starting.**
+
+| # | Defect | Correction |
+|---|---|---|
+| `I5-1` | Gap-row census returned **57** against Stage 4's **56** | Re-measured under **four** explicit rules — **97** any-mention rows / **84** own-stem rows / **30** declaration rows / **56** Stage 4's rule — all correct for their rule; **the rule now travels with every number** |
+| `I5-2` | Ownership probe found **6** `\| Owner \|` rows and declared 0 conflicts — **an unfalsifiable zero**, the §2P `J-4` class | Re-run against **B0 §2**, the actual allocation instrument, which *could* have produced a conflict: **0 rows assign ✅ twice** |
+| `I5-3` | A row window reported **16** capability rows against a heading declaring **15** | ⭐ **The subject was right and the instrument wrong** — recorded rather than quietly adjusted |
+| `I5-4` | A shell `\|\| echo 0` fallback **doubled** the `LCM-FR-013` output | Counts correct, presentation not; re-run cleanly, gaining the `LCM-FR-012` column the first pass lacked |
+| `I5-5` | `XPA-`/`XPB-` reported as **26/257** in one pass and **40/259** in another | ⚠ **Not a scope difference but a RULE difference** — identical across `docs/`, `docs/+tool/` and all tracked files. **26/257 = strict identifier shape; 40/259 = bare stem literal.** Both published with their rule. **The fifth appearance of the `I5-1` class here** |
+
+⭐⭐ **NEW FINDING `S5-F-1` — the ELEVENTH STEM, `XPB-`, WHICH NO PART OWNS.** B0's stem is `XPA-` (**26** strict
+occurrences); `XPB-` has **257**, roughly ten times as many, and carries **19 identifiers** —
+`XPB-CONF-001`…`017` (17, contiguous) and `XPB-DRIFT-001`…`002` (2, contiguous) — minted across **14 files
+including `PRD_REGISTRY.md` (23 occurrences) and accepted `ADR-0091` (20)**, of which **six `XPB-CONF-*` are still
+OPEN owner decisions**. ⛔⛔ **Its authoritative enumeration lives in a REVIEW RECORD** —
+`PRD-021B_B0_B9_STAGE3_ARCHITECTURE_ALIGNMENT.md` **§7.1 L354** — **not in any PRD.** A review record is evidence
+about a subject; it is not a subject.
+
+⛔ **It is deliberately NOT registered here.** §2Q's subject is B0–B9, and `XPB-` is not B0's stem; registering
+another document's family inside this one's registration would be **registration without a subject** and would
+assert an ownership this registration has no authority to confer. **Routed to the Governance Owner, raised and not
+resolved.**
+
+### 2Q.8 Items registered as OPEN, none closed
+
+`S5-F-1` (new) · `XPB-CONF-011` Help→Message · `XPB-CONF-013` `FIL-GAP-013` confinement · `XPB-CONF-014` read
+receipts · `XPB-CONF-015` configurable retention · `XPB-CONF-016` message deletion · `XPB-CONF-017`
+presence/typing · `XPB-DRIFT-001` EA wave drift · `XPB-DRIFT-002` `PRD_LIFECYCLE.md` **L96** mis-cites `X-13` ·
+`FOD-1` · `FOD-2` · `FOD-3` · `MSG-GAP-002` · **170 uncovered requirements**.
+
+⚠ **`FOD-4` is recorded as DISCHARGED BY B0 ITSELF** at B0 **L329–345** (*"Blocks B1/B2/B3 authoring? ⛔ No"*,
+*"Blocks later implementation? ⛔ No"*) — **not** discharged by this registration.
+
+⚠ Three carried-forward corrections are registered **recorded, NOT applied**
+(`PRD-021B_STAGE3_RESOLUTION_AND_RE_REVIEW.md` §5 **L127–141**): `C-1` (B3 **L177–179**, `SDS-FR-003` cites `E-22`
+wrongly), `C-2` (B3 **L154–162**, `SDS-FR-002` relabels FROZEN `PRD-020` §8.3 — ⛔ **`PRD-020` MUST NOT be
+edited**) and `C-3` (B0 **L240**, chain link 2 incomplete authority). **All three are citation defects, not
+requirement defects**, and none affects a count in §2Q.0.
+
+---
+
 ## 3. Chapter map
 
 | Ch | Title | `AUTH` | `BR` | `XC` | `AC` | Implementation task | Status |
@@ -2705,6 +3145,7 @@ protection.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.22** | 2026-09-02 | **Added the `PRD-021B` B0–B9 Social Graph / Discovery / Messaging identifier inventory (§2Q) — registering TEN prefix stems (`XPA-` `SGR-` `SSF-` `SDS-` `DRK-` `PYK-` `GLS-` `MSG-` `RTM-` `TPA-`) minted across ten separate documents — and **CLAIMS Stage 5**, recorded at [`../30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md`](../30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md) in the form §2N/§2O/§2P used.** ⛔⛔ **The pre-commit measurement is published with its command: `grep -c "PRD-021B"` over this matrix returned 0, and all ten stems returned 0 individually, so 1,300 identifiers across 113 registers were registered NOWHERE** — the exact condition Stage 5 exists to prevent, and the honest pre-registration answer to this gate was **BLOCKED on its first clause**. **113 registers, 1,300 identifiers, ⭐ 113 of 113 contiguous** from `001` **with no exception to preserve** — a stronger result than §2P's 104 of 105 — **365 normative requirements** (196 `*-FR-*` + 169 `*-BR-*`), **242 acceptance criteria**, **zero collisions**. ⛔⛔ **THE DECISIVE DIFFERENCE FROM §2P: this is the largest multi-document subject yet registered — TEN documents, two more than §2P's eight — and it required a SIXTH collision direction that no prior §2x needed.** Ten documents that **allocate ownership among themselves** can fail in a way even an eight-document subject cannot: by two parts claiming the same bounded context. Direction **(f)** tests it against **B0 §2**, a 15-capability matrix whose `Owner` column is single-valued and whose B1/B2/B3 columns carry ✅ owns / ▶ consumes / ⛔ must not touch — **0 rows assign ✅ to more than one part**, and ⭐ **B7 L34 is the affirmative case, DECLINING ownership `BC-12` already holds under FROZEN `PRD-020` §10 L633–634**. The other five follow §2P.1: **(a)** 0 for all ten stems; **(b)** **465 files** scanned, **42** stems observed, **32 foreign**, containment-tested in **both** directions, **0 collide**; **(c)** **20** near-miss probes all **0**, each published **beside the control that proves the probe fires** (`XPA-` 26 · `SGR-` 343 · `SSF-` 306 · `SDS-` 361 · `DRK-` 324 · `PYK-` 305 · `GLS-` 226 · `MSG-` 347 · `RTM-` 303 · `TPA-` 260), because *a negative that cannot go positive proves nothing*; **(d)** **89** distinct foreign tokens, **0 unresolved**; **(e)** **196** cross-part sibling citations, **0** citing an unminted sibling. **113 `max+1` phantom probes — one per register — returned 0 hits.** ⚠⚠ **`XPA-`/`XPB-` IS THE NEAR MISS WORTH NAMING, and it is this stage's own `PO-3`/`SPO-3`**: `XPA-` is B0's stem with **26** strict-shape occurrences, while **`XPB-` is a DIFFERENT family with 257** — roughly ten times as many. Tested **both ways**, `XPA-[A-Z]{2,6}-\d{3}` does not match `XPB-CONF-001` and `XPB-[A-Z]{2,6}-\d{3}` does not match `XPA-PREC-001`, **containment collisions 0**; ⚠ **but a bare `'XP'` substring matches BOTH**, so it is recorded as a **standing obligation rather than a clean bill**, on the §2P `LCFG-` precedent: *any checker touching this family must anchor on `XPA-` with the hyphen, never on `XPA` or `XP`.* ⭐⭐ **NEW FINDING `S5-F-1` — THE ELEVENTH STEM, `XPB-`, WHICH NO PART OWNS**, surfaced by the very near-miss probes built to catch this shape. It carries **19 identifiers** (`XPB-CONF-001`…`017` and `XPB-DRIFT-001`…`002`, both registers contiguous) minted across **14 files including `PRD_REGISTRY.md` (23) and ACCEPTED `ADR-0091` (20)**, of which **SIX `XPB-CONF-*` are still OPEN owner decisions** — and ⛔⛔ **its authoritative enumeration lives in a REVIEW RECORD**, `PRD-021B_B0_B9_STAGE3_ARCHITECTURE_ALIGNMENT.md` **§7.1 L354**, **not in any PRD**; a review record is evidence about a subject, not a subject. ⛔ **It is deliberately NOT registered here** — §2Q's subject is B0–B9 and `XPB-` is not B0's stem, so registering another document's family would be **registration without a subject** and would assert an ownership this registration cannot confer; **routed to the Governance Owner, raised and not resolved**. ⚠⚠ **BOTH TRACE DIRECTIONS WERE MEASURED, INCLUDING THE UNFLATTERING ONE.** Forward: **242 ACs, 242 requirement-backed, 0 orphan ACs, 0 gap-backed, 0 dangling, 0 duplicate GWT triples**. Reverse: **195 of 365 FR+BR covered = 53.4%, with 170 ORPHAN REQUIREMENTS** — between §2D's 60.1% and §2O's 40.6% on this matrix's ladder, **registered at its measured value**. ⛔⛔ **A DENOMINATOR TRAP WAS CAUGHT BEFORE PUBLICATION**: the count of distinct requirements cited by ≥1 AC across the **full normative pool** is **375** while the coverage denominator is **365** (FR+BR only, §2P's convention), and combining them yields **102.7% — a coverage figure ABOVE 100%, manufactured by accident rather than by measurement**; both figures now carry their denominator in the same sentence wherever they appear. **B5's 18.2% is the lowest single figure and is diagnostic rather than anomalous** — its 24 ACs bind to `PYK-POL-*`/`PRS-*`/`SRC-*`/`FB-*`/`FRQ-*`, registers the FR+BR denominator excludes **by construction**. ⛔ **The 170 are NOT minted** — it would take the AC register **242 → 412** and falsify every count in §2Q.0 **in the commit that publishes them**, it is a **Product Owner** authoring act, **coverage is not in this gate**, and §2O.2 names it: *"minting identifiers to move a percentage is the same act at larger scale"* (§2P refused **551** on the same reasoning). ⛔ **Nor was the denominator widened** to lift B5: *changing a denominator to move a number is the same act as minting criteria to move it.* ⚠ **ALL SIX REMAINING TRACE LEGS MEASURED** — BC ownership (**24 of 31** cited, **0** unresolved, **0** minted, **0** conflicts); upstream authority (`MP-*` **3 of 125**, `AR-*` **2 of 7**, 0 unresolved); integration edges (**16 of 29** cited, ⛔ **0 created**, and ⭐ **all 8 `E-27` occurrences READ AT SOURCE and found to ASSERT VACANCY** — B7 L220/L253/L903, B8 L236, B9 L211/L269/L769/L840 — asserting an edge is vacant being the opposite of creating one); events/data/signals (`EVT` **15**, `DM` 28, `SIG` 10, `IDX` 10, ⛔ **0 new events**, `SGR-EVT-002` positively **prohibiting** minting); scope/wave (`SCOPE` 31, `FUT` 8, **V1 177 · V2 117 · V3 29**, and ⚠ **"Wave 1/2/3" = 0** — a vocabulary mismatch, not absent scope allocation); exclusions (`XC` **156**). **11 multi-AC requirements inspected, 0 duplicate-mapping defects**, including the only cross-part instance **`SGR-BR-014`**, read at four sites (B1 **L324** mints it, **L677**, **L730**; B3 **L294** cites it *as B1's*, **L510** `SDS-AC-007`) and determined **lawful — one rule, two surfaces, one owner**. ⭐ **`LCM-FR-013` WAS EXPLICITLY VERIFIED AND EXPLICITLY NOT APPLIED — 0 occurrences in ALL TEN parts — and `LCM-FR-012` was measured alongside it and is ALSO 0 of 10**, a column Stage 4 did not take, which shows the zero is not a suspicious single-token gap in an otherwise-cited run; the 8 `LCM-*` tokens B0–B9 **do** cite (36 citations: `LCM-RM-006` 8 · `LCM-RM-025` 7 · `LCM-RM-021` 7 · `LCM-RM-023` 6 · `LCM-API-013` 4 · `LCM-RM-001` 2 · `LCM-XC-001` 1 · `LCM-RM-017` 1) all resolve to A1, registered at §2P. ⚠ **A minting test returned 15 declaration-shaped foreign lines and a COUNT ALONE WOULD HAVE PUBLISHED A FALSE FINDING of foreign minting in eight files**; all 15 were **read at their line** (§2C.1) — B2 **L353** and B5 **L249** quote `TSF-*` authority **verbatim**, B7 **L620** records `LCN-FR-019` as **`VOID`**, and the remaining 12 are `XPB-CONF-*` **disposition-table rows** (B7 L882–887, B8 L762–766, B9 L934) — **genuine foreign minting: 0**. ⚠⚠ **FIVE INSTRUMENT DEFECTS AND ZERO SUBJECT DEFECTS — and TWO of the five are the SAME CLASS, caught twice in one review by an author who had read §2O.4 `I-1` before starting.** **`I5-1`**: a gap-row census returned **57** against Stage 4's **56**, re-measured under **four** explicit rules (**97** any-mention / **84** own-stem rows / **30** declaration rows / **56** Stage 4's rule), all correct for their rule — **the rule now travels with every number**. **`I5-5`**: `XPA-`/`XPB-` reported as **26/257** in one pass and **40/259** in another, ⚠ **not a scope difference but a RULE difference** (identical across `docs/`, `docs/+tool/` and all tracked files) — **strict identifier shape vs bare stem literal** — both published. **`I5-2`**: the ownership probe found only **6** `| Owner |` rows across ten documents and declared 0 conflicts, **an unfalsifiable zero of the §2P `J-4` class**, re-run against B0 §2's capability matrix which *could* have produced a conflict. **`I5-3`**: a row window reported **16** capability rows against a heading declaring **15** — ⭐ **the subject was right and the instrument wrong**, recorded rather than quietly adjusted. **`I5-4`**: a shell `|| echo 0` fallback **doubled** the `LCM-FR-013` output; counts correct, presentation not. ⚠ **NINE REJECTED FINDINGS are published with their reasons** in the consolidated record (`S5-R-1`…`S5-R-9`), per `PRD_LIFECYCLE.md` **L104–106** — *"a review that records only accepted findings is indistinguishable from a review that found nothing"* — among them **82 apparently malformed ACs** (an artefact of a **table-only probe** meeting a lawful **prose GWT form**: B0–B6 use a 5-column table for **160**, B7/B8/B9 prose for **82**), **three foreign gap tokens** (one of the three, `LCF-GAP-012`, appears **only inside a FILENAME** at B8 **L225** — true count of foreign gap citations: **2**), and **B0's zero FR/BR** (it is the **allocation** part, whose §2 is the ownership instrument for the whole set). ⚠ **THE MATRIX EDIT'S LAWFULNESS WAS ESTABLISHED BY THREE INDEPENDENT MEASUREMENTS RATHER THAN BY TRUSTING THIS MATRIX'S OWN HEADER**: its self-declaration as *"unranked"* (L9), its **absence** from `DOCUMENTATION_BASELINE.md` §4's Rank 1–6 precedence table (**0 occurrences**), and its presence instead at **L216 in §3.4** at **v1.1**. `PRD_LIFECYCLE.md` **L164** — *"A change to any Rank 1–5 document requires an ADR **before** the change"* — therefore **does not reach it**, so ⛔ **no ADR is required and none is minted**; ⛔⛔ **had §4 listed it at any rank, registration would have STOPPED and been returned to the Governance Owner.** ⚠ **The artifact shape follows `DOCUMENTATION_BASELINE.md` L199** (*"Stage 5 has no separate conferral file … the record and the gate are the same artefact"*): **this section IS the gate**, and ⛔ **the 1,300-identifier census is published ONCE, here in §2Q.0** — duplicating 113 register rows into the record would create a **`GCP-15`** derived-statement defect in the same commit that published it. ⚠ **The five instruments are deliberately NOT committed to `tool/docs_check/`**, because everything there runs in the standing sweep and committing five new checkers in this commit would make this registration's verdict depend on instruments it wrote and nobody reviewed — a **Governance Owner** act; the measurements are published with their rules and controls for independent reproduction instead. ⚠ **`prd020_stage5.py` fails before AND after on two pre-existing problems and this commit ENLARGES both** (its *"§2\* line(s) outside §2O"* count and its 4-entry file list), artefacts of its **leading-cell heuristic** at **L295–312** which cannot distinguish a citation from a definition — **disclosed in advance, not suppressed**, and ⛔ **two cheaper alternatives refused by name**: deleting true evidence rows, and editing the checker that judges a neighbouring registration (**§2H.2's named failure**). **Stage 5 ONLY.** ⛔ **No rank, no freeze, no Stage 6, no `IMPL-*` allocation, no architecture closure, no gap closure, no `READY`, no status move and no ADR number** — §2Q.3 refuses each explicitly and names the owner who could confer it, on §2P.4 item 7's rule that a status move *"is an amendment act requiring amendment authority, **not a side effect**."* **All 30 own-stem `*-GAP-*` and 2 foreign gap citations stand exactly as their subjects left them** (**0** without a reason, **0** without an owner, **32 of 32** *"Blocks authoring?"* = ⛔ No), and **all OPEN items are carried forward unchanged**: **6** `XPB-CONF-*`, **2** `XPB-DRIFT-*`, **3** `FOD-*` — with ⚠ **`FOD-4` recorded as DISCHARGED BY B0 ITSELF** at B0 **L329–345**, not by this registration — plus `C-1`/`C-2`/`C-3` registered ***recorded, NOT applied*** (all three **citation defects, not requirement defects**, and ⛔ **`PRD-020` MUST NOT be edited** for `C-2`), and **`MSG-GAP-002`**, which names the live fact that **`PRD-021` itself is still `PLANNED`** at `PRD_REGISTRY.md` §4.2 **L321** while B0–B9 accumulate as drafts — a **Governance Owner** matter and **not** a Stage 5 blocker, since this gate asks whether prefixes are registered, not what status the parent PRD holds. **Identifiers minted: ZERO. Requirements changed: ZERO. Acceptance criteria changed: ZERO. Registers extended: ZERO. Gaps closed: ZERO. Owner decisions closed: ZERO. BCs, events, edges and APIs created: ZERO. `IMPL-*` written: ZERO. ADRs minted: ZERO.** ⛔ **All ten subjects are byte-unchanged** — sha256 recorded per part at §2Q.4, identical before and after and identical to what Stage 3 and Stage 4 measured, **6,613 lines / 352,765 bytes**; ⚠ Stage 3/4 recorded **6,603** under a different **trailing-newline convention**, the **hashes are identical**, and **both conventions are published** rather than one silently replacing the other. **§2 through §2P are byte-unchanged**, as are `PRD_LIFECYCLE.md`, `DOCUMENTATION_BASELINE.md`, `MASTER_PRD.md`, `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `ARCHITECTURE_RULINGS.md`, `PRD_REGISTRY.md`, all ADR files including `ADR-0091`, FROZEN `PRD-020`, FROZEN `PRD-017` and all Stage 3/Stage 4 records. **No baseline re-issue** — §7 rule 4 moves the identifier only on a **Rank 1–3** version change and this matrix is **unranked, so it confers nothing**; the `Baseline` field deliberately still reads `BASELINE-2026-08-04-D`, on the §2G precedent. **No Dart source changed**; `git status --short lib/ test/ web/ tool/` returns **0 lines**. |
 | **v1.21** | 2026-09-01 | **Added the `PRD-021A` A1–A8 Library Community identifier inventory (§2P) — registering EIGHT prefix stems (`LCM-` `LCF-` `LCR-` `LCG-` `LCO-` `LCS-` `LCN-` `LCT-`) minted across eight separate documents — and **CLAIMS Stage 5**, conferred at [`../30-product/social-graph/PRD-021A_STAGE5_CONFERRAL_2026-09-01.md`](../30-product/social-graph/PRD-021A_STAGE5_CONFERRAL_2026-09-01.md) in the form §2O used for `PRD-020`.** The pre-commit measurement is published with its command: a count of `LC[MFRGOSNT]-[A-Z]+-\d+` over §2…§2O returned **0 for all eight stems**, so **1,982 identifiers across 105 registers were registered nowhere** — the exact condition Stage 5 exists to prevent. **105 registers, 1,982 identifiers, 104 of 105 contiguous** from `001`, **757 normative requirements** (710 FR + 47 BR), **233 acceptance criteria**, **zero collisions**. ⛔⛔ **THE DECISIVE DIFFERENCE FROM EVERY PREDECESSOR: this is the first registration in this matrix whose subject is EIGHT DOCUMENTS rather than one, and that fact required a FIFTH collision direction that no prior §2x needed.** Eight documents cite one another **253** times across part boundaries and can therefore fail in a way a single-document subject structurally cannot — by citing a sibling's identifier the sibling never minted. Direction **(e)** resolves all 253 against the owning part's occupancy set: **0 dangling.** The other four follow §2O.1: **(a)** 0 for all eight stems; **(b)** **23** foreign stems harvested from `docs/` and containment-tested in **both** directions, **0 collide**; **(c)** **14** near-miss probes (`LC-` `LCFG-` `LCMS-` `LCRS-` `LCGS-` `LCOS-` `LCSS-` `LCNS-` `LCTS-` `LCA-`…`LCE-`) all **0**, published **beside the control that proves the probe fires** (`LCM` 881 · `LCF` 4,609 · `LCR` 2,686 · `LCG` 369 · `LCO` 609 · `LCS` 255 · `LCN` 249 · `LCT` 314), because *a negative that cannot go positive proves nothing*; **(d)** **509 files** scanned, **8 unresolved foreign tokens** each read at its line and each classified — **none a collision**, but **two are genuine DRIFT findings** published rather than reconciled (`ADR-0082` **L398** minted `LCF-GAP-015` one past A2 v0.8's maximum of `LCF-GAP-014`; `ADR-0083` **L12** cites an `LCM-GAP` number past A1's maximum of `LCM-GAP-008`). ⚠ **`LCFG-` is the near miss worth naming**: it is **already registered at L70** of this matrix, and a bare `LCF` substring **does** match `LCFG-13`. The stems are disjoint *in shape* — verified both ways — so the hazard is recorded as a standing obligation on future instruments rather than a clean bill: **any checker touching this family must anchor on `LCF-` with the hyphen.** ⛔⛔ **THE LOWEST ACCEPTANCE COVERAGE EVER REGISTERED IN THIS MATRIX — 206/757 = 27.2%, with 551 UNCOVERED — registered at its measured value rather than repaired to a flattering one**, below §2O's 40.6%, §2D's 60.1%, §2M's 71.2%, §2E's 73.4% and §2C's 94.6%. Stage 5's gate is *"prefixes registered … with counts and ranges, verified mechanically, zero collisions"* and **coverage is not in it**; what it forbids is an *unmeasured or overstated* figure, the `PRD-006` v1.0 error of publishing *"100% coverage"* against a true 49.1%. **Minting 551 criteria would take the register 233 → 784, falsify every count in §2P.0, and be a Product Owner authoring act** — refused, on §2O.2's reasoning that *"minting identifiers to move a percentage is the same act at larger scale."* A5's **12.0%** is the lowest single figure and is diagnostic rather than anomalous: 133 `LCO-FR-*` against 21 `LCO-AC-*` and 26 open gaps is the profile of a part specified ahead of its acceptance work; disclosed under `SID-4.56` and left as existing open work. ⚠⚠⚠ **SEVEN PRESERVATION ACTS, each with a cheaper alternative that was available and refused — §2P.3 names both halves.** **(1)** A1's `LCM-FR-*` register holds **66 members across a range of 67**, and the unassigned number is preserved rather than closed: minting a requirement to occupy it is a Product Owner act, and renumbering `048`…`067` downward would break every citation of those twenty identifiers across A2…A8. **(2)** ⛔ **That number is NOT WRITTEN ANYWHERE — not in §2P, not in either instrument, not in the corrected Stage-4 record.** A1 **§24 L885** withholds it *"because reproducing an unassigned identifier in prose is exactly what makes a phantom look defined to a grep-based or automated continuity check"*, and every downstream document here records it by **position** (the number after `LCM-FR-046`); both instruments hold it arithmetically as `A1_GAP_AFTER = 46`. **(3)** A7's `LCN-EVT-*` registers **7 minted · 3 ACTIVE · 4 WITHDRAWN**, and the count deliberately **does not fall to three** — `PRD_LIFECYCLE.md` **L258** §5 rule 5: *"Numbers are never reused, even after withdrawal."* Reporting 3 would free `004` for reuse and silently retarget every historical citation. **(4)** A7's three **VOID** `LCN-FR-*` positions retained on the same rule. **(5)** A2's `LCF-EVT-*` is **CLOSED at six** by `LCF-FR-104` and its next-free cell reads *none — ADR required*. **(6)** A2's three **RETIRED** `LCF-RSK-*` positions counted as minted, *"positions retained, never renumbered."* **(7)** A8's `LCT-CONF-001` — A7's seven events against A2's closure at six — left **RAISED, NOT RESOLVED**: picking a winner is an **Architecture Owner** act. ⚠⚠⚠ **§2P.7 records SIX defects and ZERO subject defects — twice the count of any predecessor — and THREE of the six are recurrences of defects this matrix had already disclosed and which §2P cites BY NAME.** **`J-1`**: the already-conferred-and-pushed `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` **L293** reproduced A1's unassigned identifier **three times**, inside the very row explaining the gap must not be closed — A1's precaution defeated by the document conferring its stage; corrected in place on §2N's *"corrected, not rewritten"* precedent, **the conferral itself untouched**. **`J-1a`**: ⛔⛔ **the same token twice more, in the §2P.6 and §2P.7 rows DISCLOSING `J-1`** — the **fifth** recorded instance of the self-referential phantom (§2N.3.1 records two, one in *"the paragraph that codifies the rule against phantoms"*; §2O.4 `I-4` a third; `J-1` a fourth), written into the section that enumerates all four, by an author who had just cited every one, while that author's own `A1_GAP_AFTER` constant existed to make it impossible in code. **`prd021a_stage5.py` caught it; the author did not** — which is the entire argument for the two-instrument rule. **`J-5`**: `I-3` recurring almost verbatim — direction (b) read *"28 stems"* against a list of **28**, count and list agreeing because **both** came from a harvest missing the `\d{3}` anchor, admitting `EDGE MP S3 S4 S5 S6`; re-measured **23**, and all three harvests (19 matrix-scoped · 23 strict · 29 loose) are now published with their scopes and **all return 0**, so the collision claim survives whichever a reader reproduces. **`J-3`**: a census by **glob** — `PRD-021A_A*_*DRAFT_v*.md` matches **18** files, not 8, because ten superseded drafts sit beside the subjects (**25,230** lines against a true **11,617**); had it run, A2's and A3's registers would have been registered at their *superseded* maxima. **`J-4`**: fourteen unfalsifiable zeroes before the control was added. **`J-6`**: ✅ **the gate flagged A7's non-numeric next-free cell as a failure and the INSTRUMENT was the thing that was wrong** — it modelled only *rule-closed* registers, not *conflict-suspended* ones; **the tempting fix was to write `max+1` and satisfy the gate, which is `I-4` exactly**, so the instrument was widened instead, each ground carrying its authority in code. ⚠ **Both instruments are committed and neither imports the other** — [`../../tool/docs_check/prd021a_traceability.py`](../../tool/docs_check/prd021a_traceability.py) never opens this matrix; [`../../tool/docs_check/prd021a_stage5.py`](../../tool/docs_check/prd021a_stage5.py) never trusts §2P.0 except to contradict it; **both reach 105 / 1,982 by structurally different routes**, avoiding §2H.2's named failure. **`prd021a_stage5.py` was run BEFORE §2P existed and exited 1** — *"has no `## 2P.` section … registers 1982 identifiers across 105 registers NOWHERE"* — and **`prd021a_traceability.py` was MUTATION-TESTED in four independent ways and failed all four** (gap removed → *"NON-CONTIGUOUS"*; a fifth withdrawn A7 event → *"row is GONE"*; `LCF-EVT` declared closed at five → *"reaches 006"*; gap position moved → *"the declared intentional gap has been FILLED"*), because a gate that passes is only evidence if it could have done otherwise. **Stage 5 ONLY.** ⛔ **No rank, no freeze, no Stage 6, no `IMPL-*` allocation, no architecture closure, no gap closure, no `READY`, no status move, and no ADR number** — §2P.4 refuses each explicitly and names the owner who could confer it. **All 97 `*-GAP-*` stand exactly as their subjects left them** (8 `LCM` · 14 `LCF` · 10 `LCR` · 14 `LCG` = **13 open + 1 deferred** · 26 `LCO` · 6 `LCS` · 8 `LCN` · 11 `LCT`), including `LCG-GAP-001` (*"no document allocates scope to Part A4"*) and `LCG-GAP-006` (*"no published contract mints or resolves `communityId`"*), which A4 makes hard blockers. **21 `*-ADR-*` requirements are registered and ZERO ADR numbers are minted** — A1 `LCM-FR-049`: *"The ADR number … SHALL be allocated by the Governance Owner. This document SHALL NOT mint one."* **Identifiers minted: ZERO. Requirements changed: ZERO. Acceptance criteria changed: ZERO. Registers extended: ZERO. Gaps closed: ZERO. ADRs written: ZERO.** ⛔ **All eight subjects are byte-unchanged** — sha256 recorded per part at §2P.5, identical before and after, **11,617 lines / 739,840 bytes**. **§2 through §2O are byte-unchanged**, as are `PRD_LIFECYCLE.md`, `DOCUMENTATION_BASELINE.md`, `PRD_REGISTRY.md`, all **75** ADR files, `LIBOORA_BOUNDED_CONTEXT_MAP.md` and `tool/module_dependencies.yaml`. **No baseline re-issue** — §7 rule 4 moves the identifier only on a **Rank 1–3** version change and this matrix is **unranked, so it confers nothing**; the `Baseline` field deliberately still reads `BASELINE-2026-08-04-D`, on the §2G precedent. **No Dart source changed**; `git status --short lib/ test/` returns **0 lines**. |
 | **v1.20** | 2026-08-23 | **Added the `PRD-020` Trust & Safety identifier inventory (§2O) — registering the `TSF-*` prefix stem that `PRD-020` v0.5 minted when it authored the `BC-13` moderation capability — and **CLAIMS Stage 5**, conferred at [`../30-product/trust-safety/PRD-020_STAGE5_CONFERRAL.md`](../30-product/trust-safety/PRD-020_STAGE5_CONFERRAL.md) in the form `PRD-008`/`PRD-013`/`PRD-014`/`PRD-016`/`PRD-017`/`PRD-023` used.** The pre-commit measurement is published with its command: `grep -c 'TSF-' TRACEABILITY_MATRIX.md` → **0**, so **400 identifiers across nine registers were registered nowhere** — the exact condition Stage 5 exists to prevent. Nine registers, **400 identifiers** (146 `TSF-FR-*` + 41 `TSF-BR-*` + 70 `TSF-XC-*` + 21 `TSF-INV-*` + 2 `TSF-EVT-*` + 30 `TSF-CFG-*` + 62 `TSF-AC-*` + 16 `TSF-GAP-*` + 12 `TSF-RSK-*`), **every register contiguous from `001`**, **0 phantom identifiers** (all nine `max+1` probes return 0), **0 dangling citations**, **zero collisions in FOUR directions**. ⛔⛔ **THE DECISIVE DIFFERENCE FROM EVERY PREDECESSOR: this is the LOWEST acceptance coverage ever registered in this matrix — 76/187 = 40.6%, with 111 obligations UNCOVERED — and it is registered at that figure rather than repaired to a flattering one.** Precedent is settled and was measured before relying on it: **§2E registered `PRD-007` at 73.4%**, **§2D `PRD-005` at 60.1%**, **§2M `PRD-017` at 71.2%**, **§2C at 94.6%** — Stage 5's gate is *"prefixes registered … with counts and ranges, verified mechanically, zero collisions"*, and **coverage is not in it**. What the gate forbids is an *unmeasured or overstated* figure, the `PRD-006` v1.0 error of publishing *"100% coverage"* against a true **49.1%**. ⚠⚠ **THE OBVIOUS FIX WAS AVAILABLE AND IS REFUSED, and the refusal is the finding.** Minting 111 `TSF-AC-*` would take the register 62 → 173, falsify every count in §2O, and satisfy a gate nobody asked for — while repeating **at larger scale** the precise error Stage 4 caught in this same module days earlier, where a new `TSF-FR-*` was nearly minted for `TSF-AC-010` before **`TSF-FR-099` was found already stating the obligation** (`PRD-020_STAGE4_AC_REQUIREMENT_MAPPING.md` §4, a **retracted** finding). *A fix that moves a percentage by creating identifiers is not a fix; it is the defect Stage 5 registers against.* The 111 are **named by register** (83 `TSF-FR-*`, 28 `TSF-BR-*`) under `SID-4.56` and routed to `IMPL-1449`. ⚠⚠ **§2O.4 records TWO instrument defects, ZERO subject defects — the same ratio §2M and §2N reached independently, and one of them is a RECURRENCE of a defect this very module had already disclosed.** **`I-1`**: a register census counting **definition rows** returned `TSF-GAP-*` = **8** against a subject declaring **16**, because **8 of the 16 gaps are defined mid-sentence** (`` `TSF-GAP-009` **OPEN** — no referral transport exists… ``), a legitimate prose form the regex did not model; re-measured by **distinct-token occupancy** it is **16, contiguous**. ⛔ **Had 8 been published, this matrix would have registered a false count for a live register.** The identical blind spot is already recorded as `I-1` in `PRD-020_STAGE4_REQUIREMENTS_REVIEW.md` §5, where it falsely flagged `TSF-CFG-030` and `TSF-BR-030` as undefined — *a disclosed defect that recurs in a later instrument is evidence the disclosure was not read, including by its own author.* **`I-2`**: an `IMPL-*` phantom probe flagged `IMPL-1450` as written one past the declared maximum; **inspected at its line it is a range-boundary reservation** (*"`IMPL-1450`…`1499` reserved for the V2 community work of §25"*) that allocation **rule 2 positively requires** — **rejected as a finding**, the §2C.1 principle that a token must be read at its line, not counted. ⚠ **`TSF-` was not the naive stem.** `TS-` collides with nothing today and was rejected **before** measurement on §5 rule 3's reasoning — a two-letter stem in a repository already carrying `SM-`, `MM-`, `TEN-` and `SID-` shifts the whole cost of a future collision onto whichever document arrives second. Twenty stems were harvested from `docs/` and tested for containment **in both directions**; **0 collide**. **11 files outside the subject cite `TSF-*` and NOT ONE is a collision** — all **28** distinct identifiers resolve to definitions `PRD-020` owns, the §2C.1 *"a citation is not a collision"* principle, and the gate resolves each hit against the defined set rather than allow-listing files. ⚠ **Both instruments are committed and neither imports the other** — [`../../tool/docs_check/prd020_traceability.py`](../../tool/docs_check/prd020_traceability.py) never opens this matrix; [`../../tool/docs_check/prd020_stage5.py`](../../tool/docs_check/prd020_stage5.py) never trusts the subject's §0.2 table except to contradict it; **both reach 400 by structurally different routes**, avoiding §2H.2's named failure. **`prd020_stage5.py` was run BEFORE §2O existed and exited 1** — *"has no `## 2O.` section"* — because a gate that cannot fail is not a gate. ⚠ **`TSF-EVT-*` is registered CLOSED at two members** by an **external fact**, not an authorial choice: BC Map **L432**/**L433** publish exactly two `BC-13` events and §7 rules that a surface absent from the register does not exist, so a third is a **Rank 4 amendment requiring an ADR** (`TSF-GAP-004`). **No register is declared empty** — unlike §2N's three — so no `ADR-0051` §2.4 question arises here and none is manufactured. ⚠ **The subject's header reads v0.1 while its content is v0.5; the discrepancy is PUBLISHED, not normalised**, because amending it is a document-owner act. **Stage 5 ONLY.** ⛔ **No rank, no freeze, no `IMPL-*` allocation, no architecture closure, no gap closure, no `READY`** — §2O.3 refuses each explicitly and names the owner who could confer it. **All 16 `TSF-GAP-*` remain OPEN**, including the **implementation half of `TSF-GAP-003`**, which `TSF-BR-033` and §24.2 **L2046** make a bar to `READY`; `IMPL-1410` is **built and tested** (`PRD-020_IMPL-1410_IMPLEMENTATION_EVIDENCE.md`) but *built is not closed*, and closing it is an **Architecture Owner** act requiring an ADR that **does not exist**. `PRD-020` remains **`PLANNED`** at `PRD_REGISTRY.md` **L320** and **Unranked** — `DOCUMENTATION_BASELINE.md` contains **0** occurrences of `PRD-020`. **Identifiers minted: ZERO. Requirements changed: ZERO. Acceptance criteria changed: ZERO. Registers extended: ZERO. Edges added: ZERO. ADRs written: ZERO.** ⛔ **`PRD-020` is byte-unchanged** — sha256 `685fb65af95668df9bce8757bcd7d04ec9838a56f8dd108652e80d7e7579497b` before and after. **§2 through §2N are byte-unchanged**, as are `PRD_REGISTRY.md`, `DOCUMENTATION_BASELINE.md`, all **65** ADR files, `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` and `tool/module_dependencies.yaml`. **No baseline re-issue** — §7 rule 4 moves the identifier only on a **Rank 1–3** version change, and this matrix is **unranked, so it confers nothing**; the `Baseline` field deliberately still reads `BASELINE-2026-08-04-D`, on the §2G precedent. **No Dart source changed**; `git status --short lib/ packages/ test/` returns **0 lines**. |
 | **v1.19** | 2026-08-21 | **Corrected §2N — six false cells in §2N.2 and two in the §2N header block — under `ADR-0064` §4 item 6, which directs that the section be *"corrected, not rewritten"* with *"prior text retained verbatim beside the correction."* This is a **CORRECTION-ONLY pass on the v1.4 precedent** (*"§2C corrected"*), and it follows that precedent in incrementing the version: a correction is a change, and a matrix that silently corrects itself cannot be audited. ⛔⛔ **THE DECISIVE POINT: §2N.2 was a list of things the Stage 5 registration deliberately did NOT do, and Stage 7 subsequently DID six of them. A refusal that has been overtaken is not merely stale — read as current it is a FALSE STATEMENT ABOUT THE REPOSITORY'S PRESENT STATE**, and §2N.2 is the one section in this matrix a reader consults precisely to learn what `PRD-012a` does *not* hold. Each cell is therefore marked `SUPERSEDED`, `PARTLY SUPERSEDED` or `STILL TRUE IN SUBSTANCE`, the naming authority for the superseding act is cited, and **the prior text is retained verbatim inside the same cell** — `PRD_REGISTRY.md` §8 rule 5's direction to fix the register rather than the subject, applied to a register correcting itself. **Nothing was deleted.** ⚠⚠⚠ **ONE CLAUSE WAS NOT STALE BUT WRONG WHEN WRITTEN, and finding that out is the reason the Stage 7 admission was lawful rather than merely convenient.** The rank/freeze cell asserted the baseline's §4 precedence table holds *"13 Rank 3 module baselines and **every one is scoped to a bounded context or a named domain**"*, offered in support of the proposition that a platform-scoped Rank 3 row would be a new and unprecedented shape. Tested against §4 itself, the second half is **falsified by §4's own Library PRD row**, which scopes to *"Everything inside the **Library Management domain**"* — **a domain, not a `BC-nn`**. A non-`BC-nn` Rank 3 scope was therefore **already an established form**, and `PRD-012a`'s platform-scoped row is a **third instance of an existing shape rather than the first of a new one**. ⛔ **Had all 13 genuinely been `BC-nn`-scoped, the admission would have STOPPED and returned the row-shape question to the Architecture Owner** instead of proceeding; it proceeded on a **measured precedent**, recorded at `ADR-0064` §2.2 and now in the corrected cell. *A refusal repeated from a document's own earlier draft is still a claim, and it decays — or was never true — exactly like a count.* ⚠⚠ **THE GAP COUNT ROSE RATHER THAN FELL, and it is recorded because the intuitive direction is the wrong one.** A pass that resolves four blockers and five routed decisions would be expected to close gaps; instead **44 → 47** (**22 High · 23 Medium · 2 Low**), because `ADR-0060` opened `SECP-GAP-045` (**no exemption instrument exists** anywhere in `PRD_LIFECYCLE.md` for a platform that owns no bounded context — the lifecycle has **zero** exemption or waiver provisions, measured) and `ADR-0062` opened **`SECP-GAP-046`** and **`SECP-GAP-047`**. **All 47 remain OPEN. Not one `SECP-GAP-*` was closed by the Stage 7 pass**, and the *"confer architecture closure"* cell is therefore corrected only as to the three **routed conflicts** — `SECP-GAP-023` and `SECP-GAP-031` decided by [`ADR-0061`](../00-governance/adr/ADR-0061-alertability-rank-3-outranks-ea-v2-tag.md) on **Rank 1** `MP-RSK-01` L551, `SECP-GAP-042` by [`ADR-0062`](../00-governance/adr/ADR-0062-platform-security-outbound-reach-refused-as-ports.md), which **REFUSED all four proposed ports** and left `tool/module_dependencies.yaml` **byte-unchanged** — and **not** as to closure of the gap register. ⚠ **`SECP-GAP-042`'s own framing was falsified in passing and the correction is published:** the cell described `platform/security` having no manifest block as an *"anomaly"*; measured, **8 of 22 modules lack one and 0 of the 7 modules at ranks 1–3 have one**, so the absence is the **majority condition**, not an outlier. The quoted `default_decision: deny` rule *"was FOLLOWED, not set aside."* ⚠ **The byte-unchanged cell is corrected in BOTH directions rather than simply withdrawn.** Its Stage 5 claim was true of the pass that wrote it; the Stage 7 pass that followed **did** edit `DOCUMENTATION_BASELINE.md`, `PRD_REGISTRY.md` and `ADR-INDEX.md`, and says so. But two halves of the original claim **survive and are re-measured rather than assumed**: **§2 through §2M remain byte-unchanged**, and **no ADR file was modified** — the ADR count moves **59 → 64** because **five files were ADDED** (`ADR-0060`…`ADR-0064`), which is not the same event as an amendment and is not allowed to read as one. ⚠ **The baseline re-issue cell is superseded AS TO ITS PREMISE and UNCHANGED AS TO ITS RULE** — the identifier **has** advanced to **`BASELINE-2026-08-21-A`**, but **not by this section and not because this matrix changed**: §7 rule 4 moves it only on a **Rank 1–3 version change**, `PRD-012a` v0.8 is such a document, and **this matrix remains unranked, so it still confers nothing**. Consequently **the `Baseline` field in this header is deliberately NOT advanced** and still reads `BASELINE-2026-08-04-D`, on the §2G precedent recorded in that same field: an unranked document does not re-issue a baseline by editing itself. ⚠ **The §2N header's `Subject` cell moves `v0.8 DRAFT` → `v0.8 FROZEN at Rank 3`, and the version deliberately does NOT move with it** — `PRD-012a` is the **sixth v0.x document frozen at its authored version** in this repository, and the subject's **eight Parts are byte-identical to `bd85a31`**, verified by `git diff --stat bd85a31 HEAD` over all eight paths returning **EMPTY**. **No alignment supplement was therefore required and none was written**; freezing a document is not editing it. ⚠ **The *"does NOT confer"* cell is retained rather than deleted, with a distinction added that the original could not have drawn:** rank, freeze and the `IMPL-1300`…`1359` allocation were all conferred — **by other acts, in other documents, by named authorities** — whereas **architecture closure and gap closure were conferred by NO ONE**, and remain open. *The list did not become wrong; it became a list of two different kinds of thing, and it now says which is which.* **Registers extended: ZERO** — the register census stands at **427 identifiers across 15 registers, every one contiguous 1..max**, re-measured independently this pass and matching §2N exactly. **Identifiers minted: ZERO. Requirements changed: ZERO. Acceptance criteria changed: ZERO.** ⛔ **No `SECP-*` identifier, count, requirement or criterion in `PRD-012a` was altered to make any gate pass**, and the eight Parts were not opened for writing at all. **§2 through §2M byte-unchanged. No ADR file modified. No Dart source changed** — `git status --short lib/ packages/ test/` returns **0 lines**, and `lib/platform/security/` **does not exist** (measured). |

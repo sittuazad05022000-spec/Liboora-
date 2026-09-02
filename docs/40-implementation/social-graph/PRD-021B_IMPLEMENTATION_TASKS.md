@@ -44,7 +44,7 @@ reinterpretation, and §11.1 records that transition.
 | Act | Disposition |
 |---|---|
 | Stage 7, freeze, a `DOCUMENTATION_BASELINE.md` §3 row | ⛔ **NOT ENTERED.** `PRD_LIFECYCLE.md` **L161**: *"Freeze is **conferred, not claimed**."* Stage 7 belongs to the **Governance Owner** (**L281**) |
-| Editing `PRD_LIFECYCLE.md` — including the stale allocation table of §3.5 | ⛔ **REFUSED.** Lifecycle authority. Routed, not repaired (§11.2) |
+| Editing `PRD_LIFECYCLE.md` — including the stale allocation table of §3.5 | ⛔ **REFUSED.** Lifecycle authority. Routed, not repaired (§10.2) |
 | Editing any B0–B9 subject, frozen PRD, accepted ADR, or the BC Map | ⛔ **REFUSED.** §2.1 proves all ten subjects byte-unchanged |
 | Closing any of the **17** OPEN items | ⛔ **REFUSED.** They are carried as blockers (§10) |
 | Minting a requirement, BC, event, edge, API, integration or owner | ⛔ **REFUSED.** §8.5 measures **0** minted identifiers |
@@ -152,7 +152,7 @@ repository's own gate-script check 9 puts it.
 
 ⛔ **The lifecycle allocation table could not be used as the source.** It declares
 `IMPL-227`+ *"Unallocated"* while **569** distinct numbers above 227 are in fact
-occupied. That is finding **`S6-F-2`** (§11.2) and it is routed, not repaired.
+occupied. That is finding **`S6-F-2`** (§10.2) and it is routed, not repaired.
 **The repository was therefore measured.**
 
 ### §3.1 The census — published with its rule, because the rule changes the answer
@@ -251,7 +251,7 @@ allocations. Obeying it would have re-issued `IMPL-227` and violated rule 1's
 ⛔ **`PRD_LIFECYCLE.md` was NOT edited.** It is lifecycle authority; a Rank 1–5
 change requires *"an ADR **before** the change"* (`PRD_LIFECYCLE.md` **L164**).
 The discrepancy is raised as **`S6-F-2`** and routed to the **Governance Owner**
-in §11.2.
+in §10.2.
 
 ---
 
@@ -717,7 +717,8 @@ criteria appear in a done-condition as the test that will decide the task.
 Ten checks. Each states what was run, the denominator, and the result. ⭐ The
 standard is `tool/docs_check/prd021a_task_coverage.py`, the gate script the
 `PRD-021A` Stage 6 precedent was certified with; its ten checks are mirrored here
-and §10 discloses why a `prd021b_` twin was not written.
+and **§10.8** discloses why a `prd021b_` twin was not written — including ⚠ what is
+lost by not writing it.
 
 ### §8.1 Range integrity
 
@@ -1063,7 +1064,61 @@ converts settled work into work that appears to need a Governance Owner, and
 **re-opens a decision the repository already made** — the precise inverse of this
 document's purpose.
 
-### §10.8 Findings ledger
+### §10.8 ⛔ Why no `prd021b_task_coverage.py` was written — the promise in §8 discharged
+
+§8's preamble commits this section to disclosing it. Leaving that forward
+reference unfulfilled would have been **the same `GCP-15` defect this document
+raises against `PRD_LIFECYCLE.md` in §10.2** — a derived statement left behind by
+the thing it describes. So it is answered here, with the measurement that decided it.
+
+| Field | Value |
+|---|---|
+| Question | Should `tool/docs_check/prd021b_task_coverage.py` be written, as **9** sibling `*_task_coverage.py` scripts were? |
+| Existing scripts | **9 of 31** `tool/docs_check/*.py` are task-coverage gates: `prd005`, `prd006`, `prd007`, `prd013`, `prd014`, `prd016`, `prd020`, `prd021a`, `prd023`. A `prd021b_` twin is ⛔ **absent** |
+| Decision | ⛔ **NOT WRITTEN** |
+| Disposition | Routed to **Governance Owner**; ⛔ nothing was added to `tool/` |
+
+⭐⭐ **The measured fact that decided it — the precedent is 5 of 6, not 6 of 6.**
+The prior turn's readiness audit stated *"All six Stage 6 precedents certify their
+artefact with a dedicated script."* **That is wrong, and it is corrected here.**
+`docs/30-product/security/PRD-012a_STAGE6_IMPLEMENTATION_TASKS.md` contains the
+string `script` **zero times** and cites no `tool/docs_check` path anywhere. Its
+header has no `Gate script` row. It reached ✅ **A — PASS** over `IMPL-1300`…`1359`
+by **recomputing its own published figures** — and its §3.2 caught **five**
+self-inflicted defects that way, including `I6-4`, *"14 obligations cited only in
+`Scope`/`Test` cells rather than the gate-measured `Requirements` column, which
+would have been a false gate pass."*
+
+| Reason | Authority |
+|---|---|
+| ⭐ **A script is not what the gate asks for.** `PRD_LIFECYCLE.md` **L135–153** requires exactly two things: an allocated `IMPL-*` range, and a task document in which every task traces to requirements. A checker appears in **neither** conjunct | The gate text, quoted in §1 |
+| ⭐ **A Stage 6 precedent passed without one.** `PRD-012a`, 60 tasks, verdict PASS, no script — measured above | `PRD-012a_STAGE6_IMPLEMENTATION_TASKS.md` |
+| ⭐ **Adding a standing checker is a Governance Owner act, not an Implementation lead act.** A committed `tool/docs_check/*.py` runs against every future commit in the 31-script sweep; it binds work this conferral does not reach. **L280** gives the Implementation lead Stages 6 and 8 — not the repository's standing gate set | `PRD_LIFECYCLE.md` **L280**, **L281**; the prior turn already routed this act to the Governance Owner |
+| ⭐ **This engagement is documentation-only.** *"Do not implement code. Documentation/tasks only."* A `.py` file in `tool/` is code | The instruction |
+| ⭐ **`ADR-0033` §7.1 L169** — *"A conferral for one act is not a standing licence."* Stage 6 was conferred. Extending it to author a permanent repository gate would be exactly the reinterpretation the instruction forbids | `ADR-0033` **L169** |
+
+⚠ **What is lost by not writing it, stated plainly rather than minimised.** The
+ten checks in §8 were run as **throwaway probes in `/tmp`, deliberately not
+committed**. They are therefore **not re-runnable by a later reader** and **not
+mutation-tested**, where `prd021a_task_coverage.py` was *"mutation-tested 6 ways,
+all exit 1."* This document's §8 figures are **reproducible in principle** — every
+check publishes its rule and its denominator, which is what makes recomputation
+possible — but they are ⛔ **not machine-enforced against future edits**. That is a
+real weakness of this artefact, not a neutral choice, and it is disclosed as one.
+
+| Consequence | Status |
+|---|---|
+| §8's ten checks re-runnable from the repository | ⛔ **NO** — probes were not committed |
+| §8's ten checks mutation-tested | ⛔ **NO** |
+| §8's figures carry their rule and denominator, so they can be recomputed | ✅ **YES** — the `PRD-012a` method |
+| Future edits to §5's 90 rows caught automatically | ⛔ **NO** — until a Governance Owner writes the twin |
+| Act required to close this | ⭐ **Write `prd021b_task_coverage.py`** — Governance Owner |
+
+⛔ **This is recorded as an OPEN residual act, not as a satisfied one.** A reader
+who needs the gate mechanically enforced must treat §8 as **measured once, by hand,
+at this document's v1.0 hashes** — and nothing more.
+
+### §10.9 Findings ledger
 
 | ID | Class | Against | Disposition |
 |---|---|---|---|
@@ -1073,11 +1128,19 @@ document's purpose.
 | `S6-I-4` | Status honesty | ⚠ **This document** | ✅ Repaired mechanically |
 | `S6-I-5` | Dependency cycles | ⚠ **This document** | ✅ Repaired, acyclic |
 | `S6-I-6` | Ledger arithmetic | Stage 3 record | ⛔ **OPEN** — raised, not averaged |
+| `S6-I-7` | ⭐ Precedent miscount — *"all six precedents use a script"*; `PRD-012a` uses none | ⚠ **Prior turn's readiness audit** | ✅ **Corrected** (§10.8). Precedent is **5 of 6** |
+| — | Gate script not written; §8 not re-runnable | ⚠ **This document** | ⛔ **OPEN** — routed to **Governance Owner** (§10.8) |
 | — | False blockers | ⚠ **This document's draft** | ✅ Caught pre-publication |
 
-⭐ **Three of seven findings are against this document.** That is the point of
-L104–106: a Stage 6 record that found nothing wrong with its own draft would be
-indistinguishable from one that never checked.
+⭐ **Four of nine findings are against this document or its draft**, and one more
+corrects the record that preceded it. That is the point of L104–106: a Stage 6
+record that found nothing wrong with its own draft would be indistinguishable from
+one that never checked.
+
+⚠ **`S6-I-7` is a correction of a *prior accepted record*, not of a subject.** The
+readiness audit's sentence was read, measured against the file it described, and
+found false. It is ⛔ **not edited** — that record is committed and pushed. The
+correction lives here, where the claim was relied on.
 
 ---
 
@@ -1096,6 +1159,7 @@ indistinguishable from one that never checked.
 | Claim another module's reserve | ⛔ **REFUSED ×4** | **Governance Owner** |
 | Name a person as owner | ⛔ **REFUSED** | `PGA-08` — no PRD has a named owner |
 | Register in `TRACEABILITY_MATRIX.md` | ⛔ **NOT DONE** — see §11.1 | — |
+| Write `tool/docs_check/prd021b_task_coverage.py` | ⛔ **NOT DONE** — see **§10.8** | **Governance Owner** — a committed checker binds every future commit; and *\"documentation/tasks only\"* excludes `.py` |
 
 ### §11.1 Why nothing was written to `TRACEABILITY_MATRIX.md`
 
@@ -1134,4 +1198,4 @@ validates is still a plan.
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0** | 2026-09-02 | **Stage 6 — Implementation Tasks for `PRD-021B` B0–B9, ✅ PASS on both gate conjuncts and all four allocation rules.** ⭐⭐ **Range `IMPL-1600`…`IMPL-1689` — 90 contiguous tasks, one row per number — derived by measuring the repository, NOT by reading `PRD_LIFECYCLE.md`'s allocation table, which is measurably stale (`S6-F-2`).** ⭐⭐ **`IMPL-1600` was read at its line rather than counted:** `PRD-021A_IMPLEMENTATION_TASKS.md` **L147** declares it *"Unallocated — measured empty"* and **L137** warns *"Counting it as an allocation would have pushed this range to `IMPL-1600` and left a 100-number hole"* — counting it would have started at `1700` and stranded **100** numbers, the third time this repository has set that trap (`PRD-007`'s `IMPL-500`, `PRD-021A`'s `IMPL-1500`). **Census published with its rule (`S6-I-3`): `IMPL-(\d{3,4})` → 796 distinct, `IMPL-14`…`1600`; all 8 tokens that appear only under looser regexes were read at their lines and are regex/prose fragments (`IMPL-8xx`, `IMPL-3[0-9][0-9]`, …), the 4th appearance of the census-rule class.** ⛔ **Four reserves declined — `1400`…`1449`, `1450`…`1499`, `1500`…`1569`, and PRD-021A's sibling growth reserve `1570`…`1599`** — consuming another module's declared reserve is a Governance Owner act; `1690`…`1749` declared as this module's own growth reserve and **not** allocated. **Gate conjunct 2 met at 90 of 90: 0 orphan tasks · 0 dangling citations · 0 duplicate IDs · 0 duplicate tasks · 0 minted identifiers · 0 wildcard citations (5 eliminated during authoring) · 0 disclosed absences cited as authority.** **Coverage published WITH denominators: 360 of 1,300 identifiers · 214 of 385 normative `FR`/`BR`/`INV` = 55.6% · 13 of 20 invariants · 97 of 242 ACs named (⛔ 0 proven)** — and the 7 uncarried invariants are **named** rather than rounded away, because Stage 5 measured the same subjects at 53.4% reverse coverage and recorded why (much of `PRD-021B` is prohibition; B5 reverse-traced at 18.2%; **a prohibition needs no task — authoring one would invert it**). ⚠⚠ **The denominator trap is carried as a live warning:** `375 ÷ 365` once produced *102.7%* in this programme, so every figure states its denominator. **Rule 3 satisfied by a dedicated register (§6) because the instruction's 8 mandated columns are a SUPERSET of rule 3's three, not a replacement** — satisfying only the instruction would have failed the gate's own rule 3, and satisfying only rule 3 would have failed the instruction; both are present for the same 90 IDs, with `Blocks` computed as the **mechanical inverse** of `Dependency` over 106 edges and `Priority` as a function of transitive fan-out. ⛔ **No `BLOCKED` row carries a priority** (30 of 30 carry a named governance item instead — check 9). ⭐⭐⭐ **FOUR FALSE BLOCKERS WERE CAUGHT AND REMOVED BEFORE PUBLICATION:** ~15 rows across G4/G5/G6 had been drafted `BLOCKED` on `XPB-CONF-002`/`003`/`005` and `FOD-4`, and reading the authoritative Stage 3 §7.1 ledger verbatim proved `002` **RESOLVED** (B5 V1-eligible, narrowed to `PYK-SRC-001`), `003`/`004` **REFUSED, final**, `005` **DISCHARGED**, and `FOD-4` **DISCHARGED by B0 itself** at L329–345 — publishing them would have silently converted settled work into work needing a Governance Owner and **re-opened decisions already taken**; the genuine B5 blocker was re-routed to **`PYK-GAP-002`** (unsited store, **ARB**), reaching **1** row instead of 6. ⭐ **`FOD-2` read narrowly because the subject is narrow** — B0 L307–317 gates *"the `mute_list` structure **only**"* with a degraded ship mode in `SSF-EC-016`/`SSF-AC-028`, so **1** row carries it, not all of G2. **`FOD-1` verified to reach exactly 20 rows across G1/G2/G3/G5/G7.** ⚠⚠ **THREE FINDINGS AGAINST THIS DOCUMENT'S OWN DRAFT, all caught mechanically and all disclosed:** **`S6-I-4`** 18 rows were mis-stated `READY` while depending on a `BLOCKED` predecessor — resolved with a fourth status ⏳ `SEQUENCED` (*decided, not yet reachable*) applied **from the graph**, because `READY` contradicts *"schedulable"* and `BLOCKED` would have invented a blocker where **no decision is missing**; **`S6-I-5`** two dependency **cycles** (`1602`↔`1632`, `1603`↔`1664`) where G0 rows named their consumers as dependencies — arrows corrected, graph re-verified **acyclic** by depth-first colouring, a defect invisible to inspection; **`S6-I-6`** the Stage 3 ledger's own totals disagree (*"12 RESOLVED · 5 OPEN"* against **6** bolded OPEN rows and a 17-item ledger) — ⛔ **not averaged away**, and **all six** carried, since carrying five would schedule a task behind an unadjudicated decision. **One citation defect caught by the gate check and repaired, not waived:** `IMPL-1604` cited `XPA-ACGAP-001`…`003` as its **authority**, which §2.2 forbids — now `TPA-FR-027` + `TPA-BR-042`, with the `ACGAP` items retained as **scope**. ⛔ **`S6-F-1` DISCHARGED BY CONFERRAL, NOT BY REINTERPRETATION** — the prior turn's `BLOCKED 0/2` was correct and is not reversed as an error; only a new instruction could clear it, and `ADR-0033` §7.1 **L169** (*"a conferral for one act is not a standing licence"*) confines it to Stage 6. ⛔⛔ **`S6-F-2` RAISED AND ROUTED TO THE GOVERNANCE OWNER, NOT REPAIRED** — `PRD_LIFECYCLE.md` **L147–153** declares `IMPL-227`+ *"Unallocated"* while **569** numbers above 227 are occupied across **20** blocks, a `GCP-15` defect; **following that table would have allocated from `IMPL-227` into ranges already held and broken rule 1 on the first row**, so the repository was measured instead, and the stale table is flagged as a standing hazard for the next allocator. **17 OPEN items carried, 0 closed, 0 invented, 17 of 17 with a named owner** (9 blocking ≥1 task, **8 blocking none and recorded anyway**). ⛔ **`PGA-08` honoured — no person is named anywhere; `Owner/Role` carries roles only.** ⛔ **Byte-unchanged: all ten B0–B9 subjects (sha256 re-verified), `PRD_LIFECYCLE.md` (`5031fcc97a95980e…`), `DOCUMENTATION_BASELINE.md`, `LIBOORA_BOUNDED_CONTEXT_MAP.md`, FROZEN `PRD-020`, FROZEN `PRD-017`, `TRACEABILITY_MATRIX.md` (`119d3ca6bdca09e3…`), `PRD_REGISTRY.md`, `MASTER_PRD.md`, `ARCHITECTURE_RULINGS.md`, all ADRs, and `tool/docs_check/prd021a_task_coverage.py`.** ⚠ **`TRACEABILITY_MATRIX.md` deliberately NOT extended** — measured against all six Stage 6 precedents, **none** registers a row there; Stage 6's artefact is the task document, and adding a §2R would register a passage that did not happen. **Repository sweep: 31 scripts, 25 PASS / 6 FAIL, 0 introduced** — all six proven pre-existing at the Stage-4 tip `3f40525` via a detached worktree. ⛔ **Stage 7 NOT ENTERED · freeze NOT DONE · code NOT IMPLEMENTED · 0 of 242 acceptance criteria proven** — §11 refuses **11** acts explicitly and names the authority each would require. |
+| **v1.0** | 2026-09-02 | **Stage 6 — Implementation Tasks for `PRD-021B` B0–B9, ✅ PASS on both gate conjuncts and all four allocation rules.** ⭐⭐ **Range `IMPL-1600`…`IMPL-1689` — 90 contiguous tasks, one row per number — derived by measuring the repository, NOT by reading `PRD_LIFECYCLE.md`'s allocation table, which is measurably stale (`S6-F-2`).** ⭐⭐ **`IMPL-1600` was read at its line rather than counted:** `PRD-021A_IMPLEMENTATION_TASKS.md` **L147** declares it *"Unallocated — measured empty"* and **L137** warns *"Counting it as an allocation would have pushed this range to `IMPL-1600` and left a 100-number hole"* — counting it would have started at `1700` and stranded **100** numbers, the third time this repository has set that trap (`PRD-007`'s `IMPL-500`, `PRD-021A`'s `IMPL-1500`). **Census published with its rule (`S6-I-3`): `IMPL-(\d{3,4})` → 796 distinct, `IMPL-14`…`1600`; all 8 tokens that appear only under looser regexes were read at their lines and are regex/prose fragments (`IMPL-8xx`, `IMPL-3[0-9][0-9]`, …), the 4th appearance of the census-rule class.** ⛔ **Four reserves declined — `1400`…`1449`, `1450`…`1499`, `1500`…`1569`, and PRD-021A's sibling growth reserve `1570`…`1599`** — consuming another module's declared reserve is a Governance Owner act; `1690`…`1749` declared as this module's own growth reserve and **not** allocated. **Gate conjunct 2 met at 90 of 90: 0 orphan tasks · 0 dangling citations · 0 duplicate IDs · 0 duplicate tasks · 0 minted identifiers · 0 wildcard citations (5 eliminated during authoring) · 0 disclosed absences cited as authority.** **Coverage published WITH denominators: 360 of 1,300 identifiers · 214 of 385 normative `FR`/`BR`/`INV` = 55.6% · 13 of 20 invariants · 97 of 242 ACs named (⛔ 0 proven)** — and the 7 uncarried invariants are **named** rather than rounded away, because Stage 5 measured the same subjects at 53.4% reverse coverage and recorded why (much of `PRD-021B` is prohibition; B5 reverse-traced at 18.2%; **a prohibition needs no task — authoring one would invert it**). ⚠⚠ **The denominator trap is carried as a live warning:** `375 ÷ 365` once produced *102.7%* in this programme, so every figure states its denominator. **Rule 3 satisfied by a dedicated register (§6) because the instruction's 8 mandated columns are a SUPERSET of rule 3's three, not a replacement** — satisfying only the instruction would have failed the gate's own rule 3, and satisfying only rule 3 would have failed the instruction; both are present for the same 90 IDs, with `Blocks` computed as the **mechanical inverse** of `Dependency` over 106 edges and `Priority` as a function of transitive fan-out. ⛔ **No `BLOCKED` row carries a priority** (30 of 30 carry a named governance item instead — check 9). ⭐⭐⭐ **FOUR FALSE BLOCKERS WERE CAUGHT AND REMOVED BEFORE PUBLICATION:** ~15 rows across G4/G5/G6 had been drafted `BLOCKED` on `XPB-CONF-002`/`003`/`005` and `FOD-4`, and reading the authoritative Stage 3 §7.1 ledger verbatim proved `002` **RESOLVED** (B5 V1-eligible, narrowed to `PYK-SRC-001`), `003`/`004` **REFUSED, final**, `005` **DISCHARGED**, and `FOD-4` **DISCHARGED by B0 itself** at L329–345 — publishing them would have silently converted settled work into work needing a Governance Owner and **re-opened decisions already taken**; the genuine B5 blocker was re-routed to **`PYK-GAP-002`** (unsited store, **ARB**), reaching **1** row instead of 6. ⭐ **`FOD-2` read narrowly because the subject is narrow** — B0 L307–317 gates *"the `mute_list` structure **only**"* with a degraded ship mode in `SSF-EC-016`/`SSF-AC-028`, so **1** row carries it, not all of G2. **`FOD-1` verified to reach exactly 20 rows across G1/G2/G3/G5/G7.** ⚠⚠ **THREE FINDINGS AGAINST THIS DOCUMENT'S OWN DRAFT, all caught mechanically and all disclosed:** **`S6-I-4`** 18 rows were mis-stated `READY` while depending on a `BLOCKED` predecessor — resolved with a fourth status ⏳ `SEQUENCED` (*decided, not yet reachable*) applied **from the graph**, because `READY` contradicts *"schedulable"* and `BLOCKED` would have invented a blocker where **no decision is missing**; **`S6-I-5`** two dependency **cycles** (`1602`↔`1632`, `1603`↔`1664`) where G0 rows named their consumers as dependencies — arrows corrected, graph re-verified **acyclic** by depth-first colouring, a defect invisible to inspection; **`S6-I-6`** the Stage 3 ledger's own totals disagree (*"12 RESOLVED · 5 OPEN"* against **6** bolded OPEN rows and a 17-item ledger) — ⛔ **not averaged away**, and **all six** carried, since carrying five would schedule a task behind an unadjudicated decision. **One citation defect caught by the gate check and repaired, not waived:** `IMPL-1604` cited `XPA-ACGAP-001`…`003` as its **authority**, which §2.2 forbids — now `TPA-FR-027` + `TPA-BR-042`, with the `ACGAP` items retained as **scope**. ⛔ **`S6-F-1` DISCHARGED BY CONFERRAL, NOT BY REINTERPRETATION** — the prior turn's `BLOCKED 0/2` was correct and is not reversed as an error; only a new instruction could clear it, and `ADR-0033` §7.1 **L169** (*"a conferral for one act is not a standing licence"*) confines it to Stage 6. ⛔⛔ **`S6-F-2` RAISED AND ROUTED TO THE GOVERNANCE OWNER, NOT REPAIRED** — `PRD_LIFECYCLE.md` **L147–153** declares `IMPL-227`+ *"Unallocated"* while **569** numbers above 227 are occupied across **20** blocks, a `GCP-15` defect; **following that table would have allocated from `IMPL-227` into ranges already held and broken rule 1 on the first row**, so the repository was measured instead, and the stale table is flagged as a standing hazard for the next allocator. **17 OPEN items carried, 0 closed, 0 invented, 17 of 17 with a named owner** (9 blocking ≥1 task, **8 blocking none and recorded anyway**). ⛔ **`PGA-08` honoured — no person is named anywhere; `Owner/Role` carries roles only.** ⛔ **Byte-unchanged: all ten B0–B9 subjects (sha256 re-verified), `PRD_LIFECYCLE.md` (`5031fcc97a95980e…`), `DOCUMENTATION_BASELINE.md`, `LIBOORA_BOUNDED_CONTEXT_MAP.md`, FROZEN `PRD-020`, FROZEN `PRD-017`, `TRACEABILITY_MATRIX.md` (`119d3ca6bdca09e3…`), `PRD_REGISTRY.md`, `MASTER_PRD.md`, `ARCHITECTURE_RULINGS.md`, all ADRs, and `tool/docs_check/prd021a_task_coverage.py`.** ⚠ **`TRACEABILITY_MATRIX.md` deliberately NOT extended** — measured against all six Stage 6 precedents, **none** registers a row there; Stage 6's artefact is the task document, and adding a §2R would register a passage that did not happen. **Repository sweep: 31 scripts, 25 PASS / 6 FAIL, 0 introduced** — all six proven pre-existing at the Stage-4 tip `3f40525` via a detached worktree. ⛔⛔ **NO GATE SCRIPT WRITTEN, AND §10.8 DISCLOSES WHAT THAT COSTS.** ⭐ The prior turn's readiness audit stated *\"all six Stage 6 precedents certify their artefact with a dedicated script\"*; **that was measured and is false** — `PRD-012a_STAGE6_IMPLEMENTATION_TASKS.md` contains the string `script` **zero** times, has no `Gate script` header row, and reached ✅ **PASS** over `IMPL-1300`…`1359` by **recomputing its own published figures**, catching **five** self-inflicted defects that way. The precedent is therefore **5 of 6, not 6 of 6** (`S6-I-7`, a correction of a prior *record* — which is ⛔ **not edited**, being already committed and pushed). A checker appears in **neither** gate conjunct at **L135–153**; a committed `tool/docs_check/*.py` joins the standing 31-script sweep and binds work this conferral does not reach, making it a **Governance Owner** act (**L281**) rather than an Implementation lead one (**L280**); and *\"documentation/tasks only\"* excludes a `.py`. ⚠ **The cost is stated rather than minimised:** §8's ten checks ran as throwaway `/tmp` probes that were **deliberately not committed**, so they are ⛔ **neither re-runnable nor mutation-tested** where `prd021a_task_coverage.py` was *\"mutation-tested 6 ways, all exit 1\"*; §8's figures are reproducible **in principle only**, because each publishes its rule and denominator. **Recorded as an OPEN residual act routed to the Governance Owner, not as a satisfied one.** ⛔ **Stage 7 NOT ENTERED · freeze NOT DONE · code NOT IMPLEMENTED · 0 of 242 acceptance criteria proven** — §11 refuses **12** acts explicitly and names the authority each would require. |

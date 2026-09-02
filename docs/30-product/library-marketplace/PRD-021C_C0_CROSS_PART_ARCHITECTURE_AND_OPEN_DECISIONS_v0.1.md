@@ -64,6 +64,10 @@
 | **C2** | `PRD-021C_C2_LIBRARY_SEARCH_AND_LOCAL_DISCOVERY_DRAFT_v0.1.md` | `LSD-` | 32 | 16 |
 | **C3** | `PRD-021C_C3_LIBRARY_PUBLIC_PROFILE_DRAFT_v0.1.md` *(v0.2)* | `LPP-` | 44 | 22 |
 | **C4** | `PRD-021C_C4_LIVE_SEAT_AVAILABILITY_AND_BOOKING_DRAFT_v0.1.md` | `LSB-` | 36 | 18 |
+| **C5** | `PRD-021C_C5_LIBRARY_RATINGS_AND_REVIEWS_DRAFT_v0.1.md` | `LRR-` | 18 | 12 |
+| **C6** | `PRD-021C_C6_LIBRARY_DISCOVERY_PRESENTATION_DRAFT_v0.1.md` | `LDR-` | 22 | 14 |
+| **C7** | `PRD-021C_C7_MARKETPLACE_TRUST_AND_SAFETY_INTEGRATION_DRAFT_v0.1.md` | `LTS-` | 18 | 13 |
+| **C8** | `PRD-021C_C8_TECHNICAL_AND_PRODUCTION_ARCHITECTURE_DRAFT_v0.1.md` | `LMT-` | 26 | 16 |
 
 ### §1.1 Identifier registers — declared up front, ranges published as a promise
 
@@ -87,8 +91,45 @@ identifier"*), rule 2 (*prefixes checked against §5's collision procedure
 | `LSB-FR-*` | C4 functional requirement | `LSB-FR-001` … `LSB-FR-036` | 36 | Yes |
 | `LSB-AC-*` | C4 acceptance criterion | `LSB-AC-001` … `LSB-AC-018` | 18 | Yes |
 | `LSB-XC-*` | C4 exclusion | `LSB-XC-001` … `LSB-XC-014` | 14 | Yes |
+| `LRR-FR-*` | C5 functional requirement | `LRR-FR-001` … `LRR-FR-018` | 18 | Yes |
+| `LRR-BR-*` | C5 business rule | `LRR-BR-001` … `LRR-BR-008` | 8 | Yes |
+| `LRR-XC-*` | C5 exclusion | `LRR-XC-001` … `LRR-XC-016` | 16 | Yes |
+| `LRR-AC-*` | C5 acceptance criterion | `LRR-AC-001` … `LRR-AC-012` | 12 | Yes |
+| `LDR-FR-*` | C6 functional requirement | `LDR-FR-001` … `LDR-FR-022` | 22 | Yes |
+| `LDR-BR-*` | C6 business rule | `LDR-BR-001` … `LDR-BR-009` | 9 | Yes |
+| `LDR-XC-*` | C6 exclusion | `LDR-XC-001` … `LDR-XC-014` | 14 | Yes |
+| `LDR-AC-*` | C6 acceptance criterion | `LDR-AC-001` … `LDR-AC-014` | 14 | Yes |
+| `LTS-FR-*` | C7 functional requirement | `LTS-FR-001` … `LTS-FR-018` | 18 | Yes |
+| `LTS-BR-*` | C7 business rule | `LTS-BR-001` … `LTS-BR-009` | 9 | Yes |
+| `LTS-XC-*` | C7 exclusion | `LTS-XC-001` … `LTS-XC-015` | 15 | Yes |
+| `LTS-AC-*` | C7 acceptance criterion | `LTS-AC-001` … `LTS-AC-013` | 13 | Yes |
+| `LMT-FR-*` | C8 architectural requirement | `LMT-FR-001` … `LMT-FR-026` | 26 | Yes |
+| `LMT-BR-*` | C8 architectural rule | `LMT-BR-001` … `LMT-BR-012` | 12 | Yes |
+| `LMT-XC-*` | C8 exclusion | `LMT-XC-001` … `LMT-XC-020` | 20 | Yes |
+| `LMT-AC-*` | C8 acceptance criterion | `LMT-AC-001` … `LMT-AC-016` | 16 | Yes |
 
-**Total: 136 FR · 68 AC · 53 XC · 22 cross-part records = 279 identifiers.**
+**Total: 220 FR · 123 AC · 118 XC · 38 BR · 22 cross-part records = 521
+identifiers.**
+
+> ⭐⭐ **The total advanced from 279 to 521 when C5–C8 were authored, and the
+> change is disclosed rather than silently restated.** C5 **+54** · C6 **+59** ·
+> C7 **+55** · C8 **+74** = **+242**. The figure **279** remains correct for the
+> C1–C4 baseline at commit `2c9217176d73f94c9baf54579e842f5cd214d99e`, and the
+> figure **246** for the original C1–C4 authoring baseline at `21704ba`. ⭐ **A
+> `-BR-` family enters the register with C5**: it is the convention `PRD-020`
+> §0.2 already uses, borrowed rather than invented, which is why C1–C4 have no
+> `BR` column and C5–C8 do.
+>
+> ⚠ **Two identifier-rendering defects were caught by measurement and fixed
+> before commit, and are recorded rather than hidden.** C6 originally rendered
+> its **withdrawn** fallback slot as a bare `LDR-FR-023` token, so a contiguity
+> check measured **23** against a declared **22**; C8 originally carried a
+> suffixed reserved marker in §11, which measured **27** against a declared
+> **26** because a `\b`-delimited identifier stays greppable regardless of any
+> suffix. Both were corrected — C6 now names the slot **by number only**, and
+> C8's marker was **deleted**. ⛔ **An unallocated, reserved or withdrawn slot
+> must never be rendered as an allocated one**, and every C5–C8 register is now
+> contiguous from `001` under programmatic verification.
 
 > ⚠ **The total was 246 at v0.1 and is disclosed here as changed, not silently
 > restated.** C3 **v0.2** added §9A (Owner Profile Engagement Summary): **+16
@@ -111,6 +152,12 @@ prefix changes, never the existing one**.
 | `LSD-` | **0** | ✅ Free — registered to C2 |
 | `LPP-` | **0** | ✅ Free — registered to C3 |
 | `LSB-` | **0** | ✅ Free — registered to C4 |
+| `LRR-` | **0** | ✅ Free — registered to C5 |
+| `LDR-` | **0** | ✅ Free — registered to C6 |
+| `LTS-` | **0** | ✅ Free — registered to C7 |
+| `LMT-` | **0** | ✅ Free — registered to C8 |
+| ~~`LRV-`~~ | **0** | ⛔ **REJECTED on meaning, not collision** — it reads as *review*, and C5 authorises no review capability. Recorded so the choice is auditable |
+| ~~`LRK-`~~ | **0** | ⛔ **REJECTED on meaning** — it reads as *ranking*, and C6 was narrowed away from owning one |
 | ~~`LMD-`~~ | **350** — Library Module Dependency | ⛔ **REJECTED.** Was the natural choice for "Library Marketplace Discovery"; the new prefix was changed per rule 3 |
 
 ⚠ **`LMD-` is recorded as rejected rather than omitted**, because a register

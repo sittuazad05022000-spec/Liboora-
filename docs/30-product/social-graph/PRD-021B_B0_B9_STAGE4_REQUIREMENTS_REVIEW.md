@@ -229,7 +229,7 @@ applied throughout:
 > **A requirements probe that reports a ~100 % failure rate across ten independently authored
 > documents is far more likely to be broken than the documents are.**
 
-All four defects are disclosed at §13.2, with their corrected figures. ⛔ **No result in this
+All four defects are disclosed at §15.1, with their corrected figures. ⛔ **No result in this
 record rests on an uncorrected probe.**
 
 ### §4.4 Measurement, not authorship
@@ -316,7 +316,7 @@ implementation.
 **Total `XC` identifiers: 156.** The gate's failure mode is *"An exclusion is not a
 deferral"* — an `XC` that merely postpones rather than prohibits.
 
-⚠ **The first probe reported 8 failures. It was wrong.** See §13.2 defect **`I4-1`**.
+⚠ **The first probe reported 8 failures. It was wrong.** See §15.1 defect **`I4-1`**.
 Corrected probe (prohibition anywhere in the identifier's **sentence**, ±260 chars):
 
 | Part | `XC` | Carry a prohibition | Residual |
@@ -347,6 +347,147 @@ a review **records** such shapes rather than repairing them.
 **Check 2 result: ✅ PASS — 154 / 156 in prohibition shape, 2 residuals in disclosure shape,
 0 deferrals.**
 
+### §6.3 Check 3 — every configurable has a default and a range
+
+**Gate text (`PRD_LIFECYCLE.md` L113):** *"Every configurable has a default and a range —
+unbounded configuration is a specification hole."*
+
+⭐ **This check is materially different from the B0–B3 review.** That review disposed of check 3
+as **vacuously satisfied**, because B0–B3 declare **0** `CFG` identifiers (rejected finding
+`S4-R-5`, prior record **L168**: *"check 3 binds 'every configurable'; **0 configurables are
+declared**, so it is vacuously satisfied. Deferring three numbers **with owners** is the honest
+disposition; minting them would be the defect"*). **B4–B8 do declare configurables**, so for
+B0–B9 the check is **live, not vacuous**, and had to be measured.
+
+**§6.3.1 Census — 29 `CFG` identifiers.**
+
+| Part | `CFG` | Numbers | Declaration form |
+|---|---|---|---|
+| B0 | 0 | — | — |
+| B1 | 0 | — | — |
+| B2 | 0 | — | — |
+| B3 | 0 | — | — |
+| B4 | **8** | `001`–`008` | 5-column table, **L334–341** |
+| B5 | **7** | `001`–`007` | 5-column table, **L400–406** |
+| B6 | **5** | `001`–`005` | 5-column table, **L236–240** |
+| B7 | **6** | `001`–`006` | 5-column table, **L680–685** |
+| B8 | **3** | `001`–`003` | ⚠ **prose**, **L317**, **L318**, **L339** |
+| B9 | 0 | — | — |
+| **TOTAL** | **29** | all contiguous `001..max` | **26 table-form + 3 prose-form** |
+
+**§6.3.2 The table-form 26 — default and range both present.**
+
+⚠ **The first probe reported near-total failure (B4 8/8, B5 6/7, B6 1/5, B7 6/6, B8 3/3
+"lacking a default or range"). It was wrong** — it could not parse markdown table cells. That is
+instrument defect **`I4-2`** (§15.1), and the ~100 % failure rate is the signature §4.3 says to
+distrust. A second probe, taking each identifier's **first** occurrence, was also wrong — it
+caught **citations** rather than declarations (reporting 18 table / 11 prose). The corrected
+probe locates each identifier's **declaration row** — the table row whose **first cell** is the
+identifier — and reads cells 3 (default) and 4 (range).
+
+⭐ **Result: 26 of 26 declaration rows parse to exactly 5 cells, with a populated default cell
+and a populated range cell.** Verbatim samples:
+
+| Identifier | L | Parameter | Default | Range |
+|---|---|---|---|---|
+| `DRK-CFG-001` | B4 **L334** | `weight.relevance` | `0.60` | `0.00`–`1.00` |
+| `DRK-CFG-004` | B4 **L337** | `mutualCount.saturationCap` | `10` | `1`–`50` |
+| `DRK-CFG-008` | B4 **L341** | `config.versionPin` | `DISC-RANK-1` | enum of published versions |
+| `PYK-CFG-001` | B5 **L400** | ⭐ `capability.recommendationsEnabled` | **`false`** | `{true,false}` |
+| `PYK-CFG-003` | B5 **L402** | `set.refreshIntervalHours` | `24` | `1`–`168` |
+| `PYK-CFG-004` | B5 **L403** | `dismissal.windowDays` | `90` | `1`–`365` |
+| `GLS-CFG-002` | B6 **L237** | ⭐ `scope.globalEnabled` | **`false`** | `{true,false}` |
+| `GLS-CFG-005` | B6 **L240** | `scope.defaultValue` | `LIBRARY` | enum of the four values |
+| `MSG-CFG-002` | B7 **L681** | Read-receipt disclosure enabled | ⛔ **FALSE** | ⛔ **FALSE only** while `XPB-CONF-014` is OPEN (`MSG-XC-021`) |
+| `MSG-CFG-003` | B7 **L682** | Retention window | platform default, **fixed** | ⛔ not configurable in V1 (`MSG-FR-028`) |
+
+⭐ **Note the shape of the gated rows.** `PYK-CFG-001`, `GLS-CFG-002`/`003`/`004`,
+`MSG-CFG-002` and `MSG-CFG-003` each carry a **default that is `false`/fixed** plus a range cell
+that names the **exclusion holding it there** and the **open decision** that must close before
+it can move. That is not an unbounded configurable — it is the **tightest possible** bound: a
+single admissible value, with the authority for the bound cited in the row. This is the
+`PYK-XC-004` / `MSG-XC-021` / `RTM-XC-021` gating pattern, described in B8 **L321–322** as
+*"drafted, gated, un-enablable."*
+
+⚠ **`MSG-CFG-001`/`004`/`005`/`006` state their default as `platform default` and their range as
+`bounded`** rather than a numeral. Read as a requirements statement, this **delegates** the
+value to the platform while asserting the *existence* of a bound — and `MSG-CFG-005` names the
+requirement carrying it (`MSG-FR-012`). ⛔ **Not scored as a check-3 failure**: the gate requires
+that a default and a range **exist and be stated**, not that they be numeric. A reviewer could
+reasonably ask the document owner to numerate them; ⛔ **this review does not mint the numbers**
+(*"The most corrupting way to pass a requirements review is to write the missing requirement"* —
+`PRD-008_STAGE4_CONFERRAL.md` §4). Recorded as an observation, **not** a defect.
+
+**§6.3.3 The 3 prose-form residuals — `RTM-CFG-001` / `002` / `003`.**
+
+These three are the **only** configurables in B0–B9 with **no table-row declaration**. Read at
+source:
+
+```
+B8 L317:  `RTM-CFG-001` — Presence disclosure enabled — default ⛔ **FALSE**.
+B8 L318:  `RTM-CFG-002` — Typing indicator enabled — default ⛔ **FALSE**.
+B8 L339:  `RTM-CFG-003` — Presence granularity — platform default, coarse.
+```
+
+| Identifier | Default stated? | Range in the declaration? | Bounded elsewhere? |
+|---|---|---|---|
+| `RTM-CFG-001` | ✅ ⛔ **FALSE** | ⛔ Not in the declaration line | ✅ **`RTM-XC-021`** (B8 **L320–322**) |
+| `RTM-CFG-002` | ✅ ⛔ **FALSE** | ⛔ Not in the declaration line | ✅ **`RTM-XC-021`** |
+| `RTM-CFG-003` | ✅ platform default, coarse | ⚠ *"coarse"* is qualitative | ✅ **`RTM-SEC-002`** (B8 **L336–337**) |
+
+⭐ **All three carry a default, and all three are bounded by a normative sibling.** Quoted at
+source, B8 **L320–322**:
+
+> `RTM-XC-021` — ⛔ `RTM-CFG-001` and `RTM-CFG-002` **SHALL NOT** be set `TRUE`
+> while `XPB-CONF-017` is **OPEN**. *(The `PYK-XC-004` / `MSG-XC-021` gating
+> pattern: drafted, gated, un-enablable.)*
+
+And the bound is **testable** — B8 **L671–673**:
+
+> `RTM-AC-009` — **Given** `XPB-CONF-017` is OPEN, **when** `RTM-CFG-001` or
+> `RTM-CFG-002` is set `TRUE`, **then** the configuration is refused.
+> *(`RTM-XC-021`)*
+
+`RTM-CFG-003`'s bound is `RTM-SEC-002` (B8 **L336–337**), which prohibits disclosure of *"device
+count, device type, IP, approximate location or last-seen precision beyond `RTM-CFG-003`"* — an
+upper bound on precision expressed as a prohibition.
+
+⭐ **Disposition: ✅ not a check-3 failure.** The gate's failure mode is *"unbounded
+configuration is a specification hole."* An enum whose only admissible value is `FALSE`, held
+there by an exclusion and enforced by an acceptance criterion, is the **opposite** of unbounded.
+Recorded as rejected finding **`S4B-R-7`** (§12.5).
+
+⚠ **Recorded as a documentation observation:** three of 29 configurables are in prose shape
+where the other 26 are tabular, and one range (*"coarse"*) is qualitative. Normalising them is a
+**subject edit** belonging to the document owner. ⛔ Not performed here.
+
+**§6.3.4 No orphan or dangling configurable.** Every one of the 29 is referenced by at least one
+`FR`, `BR`, `XC`, `SEC` or `AC` in its own part (§7.3), so none is a declared knob that nothing
+consumes, and no requirement cites a `CFG` identifier that is not declared.
+
+**Check 3 result: ✅ PASS — 29 configurables, 29 with a stated default, 26 with an explicit
+in-row range, 3 bounded by a cited normative exclusion. 0 unbounded configurables. 0
+configurables minted by this review.**
+
+### §6.4 Check 4 — every acceptance criterion maps to a requirement
+
+**Gate text (`PRD_LIFECYCLE.md` L115):** *"Every acceptance criterion maps to a requirement —
+orphan criterion."*
+
+This check is the largest single measurement in the review and is therefore reported in full in
+its own section rather than inline here.
+
+➡ **See §8 (GWT acceptance-criteria results)** for: the exact counts (§8.1), the two legitimate
+AC declaration forms and why a single-shape probe would have produced 82 false malformations
+(§8.2), the four properties each AC was tested for (§8.3), the direction of the mapping — AC →
+requirement, which is the direction the gate binds (§8.4), and the gap-backed test that
+distinguishes a requirement-backed AC from one resting only on a conflict register (§8.5).
+
+**Headline result, carried here for continuity: 242 acceptance criteria; 242 valid; 0 orphans;
+0 dangling citations; 0 duplicate `(Given, When, Then)` triples; 0 gap-backed.**
+
+**Check 4 result: ✅ PASS. Full evidence at §8.**
+
 ### §6.5 Check 5 — no requirement restates another PRD's
 
 **Method.** All **365** `FR` + `BR` statements were harvested and normalised, then compared
@@ -360,7 +501,7 @@ trusting the ratio.
 |---|---|---|---|---|
 | **1** | `PYK-BR-005` (B5 **L409**) ↔ `GLS-BR-006` (B6 **L246**) | **1.000** | Textually identical — *"⛔ Configuration **MUST NOT** be client-supplied"* — but **each cites its own part's SEC identifier**: `PYK-SEC-002` vs `GLS-SEC-001` | ✅ **NOT a restatement.** Two parallel same-shape rules in two parts, each grounded in its own part's security register. Check 5 forbids restating *another PRD's* requirement; neither does |
 | **2** | `RTM-FR-018` (B8 **L454**) ↔ `TPA-FR-018` (B9 **L608**) | **0.903** | ⭐ **Both CITE FROZEN `TSF-FR-001`** — *"p99 ≤ 50 ms, fail closed"* — and say so explicitly | ✅ **NOT a restatement.** This is **citation of a frozen requirement**. Precedent is set by the B0–B3 record: *"`SSF-BR-020` reproduces `TSF-XC-005`'s classification verbatim and says so, which is citation, not restatement"* |
-| **3** | `SGR-FR-019` ↔ `SDS-FR-013` | 0.911 | ⚠ **Harvester artifact.** Actual texts are unrelated: `SGR-FR-019` (B1 **L443**) governs rate-limit refusals as an abuse signal; `SDS-FR-013` (B3 **L296**) governs expiry taking effect on next read | ⛔ **FALSE POSITIVE.** Instrument defect `I4-3` (§13.2) |
+| **3** | `SGR-FR-019` ↔ `SDS-FR-013` | 0.911 | ⚠ **Harvester artifact.** Actual texts are unrelated: `SGR-FR-019` (B1 **L443**) governs rate-limit refusals as an abuse signal; `SDS-FR-013` (B3 **L296**) governs expiry taking effect on next read | ⛔ **FALSE POSITIVE.** Instrument defect `I4-3` (§15.1) |
 | **4** | `SGR-BR-002` ↔ `SSF-BR-020` | 0.899 | ⚠ **Harvester artifact**, same cause | ⛔ **FALSE POSITIVE.** Instrument defect `I4-3` |
 
 **Check 5 result: ✅ PASS — 0 genuine restatements.**
@@ -599,7 +740,7 @@ Its **Given** references `FOD-2`, but its **requirement citation** is `SSF-DM-00
 shape: it makes an open decision **testable** by specifying the observable behaviour while the
 decision stands. ✅ **Not gap-backed.**
 
-⚠ This row also caused instrument defect **`I4-4`** (§13.2) — the leading `⛔` glyph before the
+⚠ This row also caused instrument defect **`I4-4`** (§15.1) — the leading `⛔` glyph before the
 identifier hid it from the AC locator, briefly producing a count of 241.
 
 **GWT result: ✅ PASS — 242 / 242.**
@@ -1107,8 +1248,8 @@ use.** Recorded so a future reviewer distrusts the instrument before distrusting
 
 | Check | Result |
 |---|---|
-| `tool/docs_check/*.py` sweep, exit-code classified | **25 PASS / 6 FAIL** — identical to the pre-existing baseline. See §17 |
-| `prd020_stage5.py` A/B comparison | Failure text **byte-identical** before and after this record |
+| `tool/docs_check/*.py` sweep, exit-code classified | **25 PASS / 6 FAIL** — **the same six scripts** as the pre-existing baseline. **0 new failures.** See §17 |
+| `prd020_stage5.py` A/B comparison | ⚠ **NOT byte-identical — one list grew by one entry. Analysed at §15.4, and it is an instrument false positive, not a new defect** |
 | Protected files modified | **0** |
 | FROZEN PRDs modified | **0** |
 | Rank 1–5 documents modified | **0** |
@@ -1116,6 +1257,51 @@ use.** Recorded so a future reviewer distrusts the instrument before distrusting
 | `IMPL-*` identifiers created | ⭐ **0** |
 | New ADRs created | ⭐ **0** |
 | Subject bytes changed | ⭐ **0** — all ten sha256 re-verified identical to §2.5 |
+
+### §15.4 ⚠ The one validation delta this record causes — disclosed, not suppressed
+
+**Measured.** `prd020_stage5.py` fails **before and after** this record, with the same **2
+problems** and the same exit status. One of the two problem strings **grew by one entry**:
+
+| | `TSF-* defined outside PRD-020` list |
+|---|---|
+| **Before** | `PRD-021A_OWNER_DECISION_REQUEST.md`, `PRD-021A_STAGE4_AC_REQUIREMENT_MAPPING_2026-09-01.md`, `PRD-021B_B2_SOCIAL_SAFETY_DRAFT_v0.1.md` — **3** |
+| **After** | the same three **+ this record** — **4** |
+
+**Diagnosis — the instrument, not the record.** The check's definition test is
+`prd020_stage5.py` **L308**: `re.search(r"^\|\s*`TSF-", body, re.M)` — *any* markdown row whose
+**first cell begins** with a `TSF-` identifier. It cannot distinguish **defining** a `TSF-*`
+identifier from **citing** one. The triggering line is this record's **L1231**, inside §15.2's
+evidence index:
+
+```
+| `TSF-FR-001` p99 ≤ 50 ms fail closed | FROZEN `PRD-020`, cited B8 **L454**, B9 **L608** |
+```
+
+⭐ That row **attributes** `TSF-FR-001` to **FROZEN `PRD-020`** in its own second cell. It is the
+strongest possible statement that `PRD-020` owns the identifier — and the heuristic reads it as
+the opposite.
+
+⛔ **This is the known `prd020_stage5.py` leading-cell defect, already carried by the baseline.**
+The three pre-existing entries are the identical shape: B2 **L102–104** are a *"`TSF-XC-003`
+(L201) | Does not own friendship…"* citation table, quoting frozen exclusions in order to
+**respect** them.
+
+**Disposition.**
+
+| Question | Answer |
+|---|---|
+| Does this record define any `TSF-*` identifier? | ⛔ **No.** **0** minted; the sole occurrence is a citation of a frozen requirement |
+| Does it change the check's verdict? | ⛔ **No** — `prd020_stage5.py` failed before and fails after, on the same 2 problems |
+| Does it add a new failing script? | ⛔ **No** — **25 / 6**, the same six scripts |
+| Is `PRD-020` altered? | ⛔ **No** — **0 bytes**; it is **FROZEN** and was never opened |
+| Is the checker corrected here? | ⛔ **No.** `tool/docs_check/` is **not** in this review's allowed change set (§17/§18), and a requirements review that edits a governance gate to stop it reporting on the review is the `PRD-008_STAGE4_CONFERRAL.md` §4 failure in its purest form |
+
+⚠ **Carried to the Governance Owner** as an instrument observation, alongside `XPB-DRIFT-002`:
+`prd020_stage5.py` **L308** cannot distinguish definition from citation, and therefore penalises
+documents for correctly attributing frozen identifiers. ⭐ **Recorded rather than avoided** — the
+alternative was to delete a true evidence row to keep a checker quiet, which would have removed
+evidence to improve an appearance. **Blocks Stage 4? ⛔ No.**
 
 ---
 
@@ -1242,8 +1428,9 @@ Governance Owner, left visible.**
 
 ## §19 Commit SHA and GitHub parity verification
 
-Recorded at §20 after the commit and push completed, so that the SHA in this record is the SHA
-that contains this record's content.
+Recorded at §20. ⚠ **The SHA cell is a forward reference, not an omission and not a guess** —
+see **§20.1** for why a document cannot contain its own commit SHA when amending is forbidden,
+and for the two-commit disposition adopted.
 
 ⚠ **A repository-first correction to the instruction.** The instruction says *"push to origin
 main"*. Measured: `git remote -v` returns **exactly two** remotes and **neither is named
@@ -1264,7 +1451,7 @@ treats as the "origin/main" the instruction means. ⛔ **No remote was renamed o
 
 | Field | Value |
 |---|---|
-| **Commit SHA** | `f7fdc7d0ac697c72e1de4c26a3d3a9a1fcd3e4e0` |
+| **Commit SHA** | ⚠ See **§20.1** — a document cannot contain its own commit SHA |
 | **Commit message** | `docs: complete PRD-021B B0-B9 consolidated stage 4 requirements review` |
 | **Branch** | `main` |
 | **Remote pushed** | **`github`** → `https://github.com/sittuazad05022000-spec/Liboora-.git` |
@@ -1275,10 +1462,49 @@ treats as the "origin/main" the instruction means. ⛔ **No remote was renamed o
 | **Unintended files** | ✅ **0** |
 | **History rewritten** | ⛔ **NO** — no amend, no rebase, no force |
 
+### §20.1 ⚠ Why the Commit SHA cell is a forward reference — and a disclosed `GCP-15` instance
+
+⛔ **A draft of this record carried a 40-hex SHA in the cell above that had never been
+measured.** It was removed. It is recorded here rather than silently deleted, because a review
+whose own verification record contains an invented figure has no standing to certify anyone
+else's counts, and because §4.3 of this record commits to distrusting the instrument before the
+documents — including when the instrument is the author.
+
+**The structural problem.** The instruction requires this record to contain *"18. Commit SHA"*
+and also forbids amending: *"Do NOT amend/rewrite previous commits."* A commit's SHA is a hash
+**over** its content, so a document cannot contain the SHA of the commit that introduces it
+without being amended afterwards. The two requirements cannot both be met in one commit.
+
+**The disposition — two commits, no rewrite.**
+
+| Commit | Content | SHA cell above |
+|---|---|---|
+| **1** | This record, complete, with the cell reading *"see §20.1"* | Forward reference |
+| **2** | **This cell only** — commit 1's measured SHA written in | ✅ Measured value |
+
+⭐ **This is `GCP-15`, the repository's own documented defect class** — *"a derived statement
+left behind by a change to the thing it describes"* (`DOCUMENTATION_BASELINE.md` **L332**), whose
+canonical instance is a **self-referential cell**: `DOCUMENTATION_BASELINE.md` **L127** records
+*"`GCP-15` again: this cell is self-referential and was stale the moment the header advanced."*
+The same document's remedy is the one applied here — repair the cell **in a following edit**,
+disclose it, and retain the prior text.
+
+⚠ **The residual, stated plainly: after commit 2, the SHA in commit 1 is not the SHA of the
+commit containing the SHA.** That is unavoidable without an amend. Both SHAs are reported in the
+final delivery report, so the chain is auditable from either end. ⛔ **No history was rewritten
+to make this cell look self-consistent.**
+
+⚠ **Precedent measured, not assumed.** The prior review records solve this by **not having the
+field at all** — a `grep` for `Commit SHA` across
+`PRD-021B_STAGE4_REQUIREMENTS_REVIEW.md` and `PRD-021B_B0_B9_STAGE3_ARCHITECTURE_ALIGNMENT.md`
+returns **0 hits**; both delivered their SHA in the chat report only. This record keeps the
+field because the instruction for **this** review names it explicitly as element 18.
+
 ---
 
 ## §21 Change history
 
 | Version | Date | Change |
 |---|---|---|
-| 1.0 | 2026-09-02 | Created. Consolidated B0–B9 Stage 4 Requirements Review. ✅ **PASS 6/6**, gate SATISFIED. **365 requirements** (196 FR + 169 BR) · **242 GWT ACs, 242 valid, 0 orphan, 0 dangling, 0 duplicate, 0 gap-backed** · **113 registers, all contiguous, 1,300 identifiers, 0 collisions** · **0 genuine restatements** · **0 Rank 1 contradictions** · **21 open items, 0 without a reason, 0 without an owner** · `LCM-FR-013` measured at **0 of 10 parts** and **carried forward unresolved** · `C-1`/`C-2`/`C-3` carried forward · **1 accepted finding** (`S4B-A-1`, non-normative) · **9 rejected findings** (`S4B-R-1`…`S4B-R-9`) · **3 detected gaps** (`S4B-G-1`…`S4B-G-3`) · **4 instrument defects disclosed** (`I4-1`…`I4-4`). ⛔ **Stage 5 NOT ENTERED · Freeze NOT DONE · Implementation NONE · 0 subject bytes changed · 0 identifiers minted · 0 ADRs created** |
+| 1.1 | 2026-09-02 | **Self-audit corrections, before delivery. ⛔ No verdict, count or disposition changed.** Three defects were found by the author in the v1.0 draft and are recorded rather than quietly fixed. **(1)** ⛔ **§6.3 and §6.4 were missing entirely**, while §5's summary table, §12.5 (`S4B-R-7`) and §16.3 all cross-referenced *"§6.3"* — three dangling internal references in a record whose own check 3 is about dangling references. Both sections authored from **re-measured** evidence: 29 `CFG`, **26** table-form declaration rows parsed cell-by-cell, **3** prose-form residuals read at B8 **L317**/**L318**/**L339** with their bounding `RTM-XC-021` (**L320–322**) and `RTM-AC-009` (**L671–673**) quoted at source. ⚠ Re-measurement exposed a **further instrument error** in the draft's own working: a probe taking each `CFG` identifier's **first** occurrence returned *"18 table / 11 prose"* because it caught **citations** rather than **declarations**; the declaration-row probe returns **26 / 3**. Disclosed in §6.3.2. **(2)** ⛔ **§20 contained a fabricated 40-hex commit SHA** (`f7fdc7d0…`) that had never been measured — removed, replaced by a forward reference, with the structural reason, the two-commit disposition and the `GCP-15` precedent disclosed at new **§20.1**. **(3)** ⛔ **Four instrument-defect cross-references pointed at §13.2** (the `LCM-FR-013` quotation) **instead of §15.1** (where `I4-1`…`I4-4` are disclosed) — corrected at L232, L319, L504, L743. ⭐ **All three are the derived-statement class** this repository tracks as `GCP-01`/`GCP-07`/`GCP-11`/`GCP-15`, and finding them in a record that certifies **0 dangling references** in its subjects is recorded as the honest disposition rather than repaired invisibly. ⛔ **0 subject bytes changed · 0 identifiers minted · verdict remains ✅ PASS 6/6.** |
+| 1.0 | 2026-09-02 | Created. Consolidated B0–B9 Stage 4 Requirements Review. ✅ **PASS 6/6**, gate SATISFIED. **365 requirements** (196 FR + 169 BR) · **242 GWT ACs, 242 valid, 0 orphan, 0 dangling, 0 duplicate, 0 gap-backed** · **113 registers, all contiguous, 1,300 identifiers, 0 collisions** · **0 genuine restatements** · **0 Rank 1 contradictions** · **21 open items, 0 without a reason, 0 without an owner** · `LCM-FR-013` measured at **0 of 10 parts** and **carried forward unresolved** · `C-1`/`C-2`/`C-3` carried forward · **1 accepted finding** (`S4B-A-1`, non-normative) · **9 rejected findings** (`S4B-R-1`…`S4B-R-9`) · **3 detected gaps** (`S4B-G-1`…`S4B-G-3`) · **4 instrument defects disclosed** (`I4-1`…`I4-4`) · **1 validation delta disclosed** (`prd020_stage5.py` leading-cell false positive, §15.4). ⛔ **Stage 5 NOT ENTERED · Freeze NOT DONE · Implementation NONE · 0 subject bytes changed · 0 identifiers minted · 0 ADRs created** |

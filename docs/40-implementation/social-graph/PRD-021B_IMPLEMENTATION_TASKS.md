@@ -47,7 +47,7 @@ reinterpretation, and §11.1 records that transition.
 | Editing `PRD_LIFECYCLE.md` — including the stale allocation table of §3.5 | ⛔ **REFUSED.** Lifecycle authority. Routed, not repaired (§11.2) |
 | Editing any B0–B9 subject, frozen PRD, accepted ADR, or the BC Map | ⛔ **REFUSED.** §2.1 proves all ten subjects byte-unchanged |
 | Closing any of the **17** OPEN items | ⛔ **REFUSED.** They are carried as blockers (§10) |
-| Minting a requirement, BC, event, edge, API, integration or owner | ⛔ **REFUSED.** §9.4 measures **0** minted identifiers |
+| Minting a requirement, BC, event, edge, API, integration or owner | ⛔ **REFUSED.** §8.5 measures **0** minted identifiers |
 | Writing code | ⛔ **NOT DONE.** Documentation and tasks only |
 
 ---
@@ -66,7 +66,7 @@ Two conjuncts. Both must hold.
 | # | Conjunct | Where met | Result |
 |---|---|---|---|
 | 1 | An `IMPL-*` range allocated | §3 — `IMPL-1600`…`1689`, derived mechanically | ✅ |
-| 2 | A task document in which **every task traces back to requirements** | §6–§8 (the 90 rows) · §9.1 measures **0** orphan tasks | ✅ |
+| 2 | A task document in which **every task traces back to requirements** | §5 (the 90 rows) · §7 (groups → requirements → invariants → acceptance) · §8.3 measures **0** orphan tasks | ✅ |
 
 And the four allocation rules, **L140–145**, verbatim:
 
@@ -80,17 +80,17 @@ And the four allocation rules, **L140–145**, verbatim:
 
 | Rule | Where discharged |
 |---|---|
-| 1 | §3 (next free range, measured) · §9.2 (no reuse, repository-wide) |
-| 2 | §3.4 (the reserve left behind; the two foreign reserves declined) |
-| 3 | **§7** — a dedicated `Priority` / `Blocks` / `Blocked by` register, all 90 rows |
-| 4 | **§8** — task groups → requirements → invariants → acceptance |
+| 1 | §3 (next free range, measured) · §8.2 (no reuse, repository-wide) |
+| 2 | §3.4 (the reserve left behind; the four foreign/sibling reserves declined) |
+| 3 | **§6** — a dedicated `Priority` / `Blocks` / `Blocked by` register, all 90 rows |
+| 4 | **§7** — task groups → requirements → invariants → acceptance |
 
 ⚠ **The instruction's mandated columns are a superset of rule 3's, not a
 replacement for it.** The instruction requires
 `IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status`.
 Rule 3 requires `Priority`, `Blocks`, `Blocked by`. Satisfying only the
 instruction would have failed the gate's own rule 3; satisfying only rule 3 would
-have failed the instruction. **§6 carries the mandated eight; §7 carries rule 3's
+have failed the instruction. **§5 carries the mandated eight; §6 carries rule 3's
 three for the same 90 IDs.** Neither is a subset of the other and both are
 present.
 
@@ -122,7 +122,7 @@ recorded at Stage 3 (`510a90b`/`6ddbff9`), Stage 4 (`bd0decd`/`3f40525`), Stage 
 ### §2.2 The identifier pool this document may cite — 113 registers, 1,300 identifiers
 
 Every register is contiguous from `001`. A `max+1` probe on all 113 returns **0**
-phantoms. **A task row may cite only a member of this pool** — §9.3 measures
+phantoms. **A task row may cite only a member of this pool** — §8.4 measures
 compliance at **0 dangling references**.
 
 | Part | Stem | Registers | Identifiers | Registers (n) |
@@ -141,8 +141,8 @@ compliance at **0 dangling references**.
 
 ⚠ **`GAP`, `FOD`, `ACGAP`, `FUT`, `CONF` and `DRIFT` are NOT requirements.** They
 are *disclosed absences*. A task citing one as its authority would be an
-orphan wearing a citation. §9.1 excludes them from the traceability test, and
-**no row in §6 cites one as its Requirement ID(s)** — where a gap governs a task
+orphan wearing a citation. §8.3 excludes them from the traceability test, and
+**no row in §5 cites one as its Requirement ID(s)** — where a gap governs a task
 it appears in `Dependency` or `Status` as a **blocker**, which is where the
 repository's own gate-script check 9 puts it.
 
@@ -280,7 +280,7 @@ already exist in its subject.
 | Token | Meaning |
 |---|---|
 | `READY` | Every input exists in authority. Schedulable now |
-| ⛔ `BLOCKED` | An OPEN item must be adjudicated first. **Carries a blocker, not a schedulable priority** (§7) |
+| ⛔ `BLOCKED` | An OPEN item must be adjudicated first. **Carries a blocker, not a schedulable priority** (§6) |
 | ⚠ `PARTIAL` | Schedulable, but a named sub-part is gated by an OPEN item |
 
 ⛔ **No row is marked `DONE`, `IN PROGRESS` or `VERIFIED`.** Stage 6 allocates
@@ -311,9 +311,9 @@ by the subject itself (`ARB`, `Architecture Owner`, `Governance Owner`,
 |---|---|---|---|---|---|---|---|
 | `IMPL-1600` | Encode the 15-capability ownership matrix as an enforceable module-boundary configuration, so that a build fails if a part touches a capability marked ⛔ for it | `XPA-BND-001`…`006` | ⛔ none — B0 is the allocation instrument | `IMPL-1685` (module manifest) | `dart run tool/check_module_boundaries.dart` reports **zero violations introduced by `PRD-021B`**, pre-existing `ADR-0012` set excluded, per `SGR-AC-028` | Implementation lead | `READY` |
 | `IMPL-1601` | Encode the dependency-direction rules as a directed-acyclic check over the B0–B9 parts, refusing any inbound edge B0 declares forbidden | `XPA-DEP-001`…`006` | ⛔ none | `IMPL-1600` | The acyclicity check runs in CI and fails on an added reverse edge; `TPA-FR-028`'s manifest is the single source | Implementation lead | `READY` |
-| `IMPL-1602` | Implement the privacy/safety precedence order as a single shared resolver, so no part can apply the stages out of order | `XPA-PREC-001`…`007`, `TPA-INV-005` | ⛔ none — consumed by B3/B4/B5 | `IMPL-1632`, `IMPL-1643` | Ranking cannot precede safety: `TPA-AC-*` ordering case passes and `DRK-AC-*` step-order case passes | Implementation lead | `READY` |
+| `IMPL-1602` | Implement the privacy/safety precedence order as a single shared resolver, so no part can apply the stages out of order | `XPA-PREC-001`…`007`, `TPA-INV-005` | ⛔ none — consumed by B3/B4/B5 | `IMPL-1632`, `IMPL-1643` | Ranking cannot precede safety: `TPA-AC-014` holds, and `DRK-AC-001` shows B4's output is a permutation of its input | Implementation lead | `READY` |
 | `IMPL-1603` | Implement the library/global boundary rule so a global-identity structure can never carry a tenant or student-record key | `XPA-BND-001`…`006`, `GLS-INV-002`, `TPA-INV-003` | `BC-11`, `BC-12` (structure shape only) | `IMPL-1605`, `IMPL-1664` | Field enumeration over every `BC-11`/`BC-12` structure yields **no** `StudentRecordId`, `TenantId` or profile field, per `SGR-AC-029` | Implementation lead | `READY` |
-| `IMPL-1604` | Stand up the acceptance-criteria coverage harness for all 242 B0–B9 criteria, reporting coverage without gating on it | `XPA-ACGAP-001`…`003` *(disclosure, cited as scope not authority)*, `TPA-FR-027` | ⛔ none | `IMPL-1689` | The harness enumerates 242 criteria and reports per-part coverage; ⛔ it does **not** assert any criterion passes | Implementation lead | ⚠ `PARTIAL` — `XPA-ACGAP-002` gates the four Mute criteria |
+| `IMPL-1604` | Stand up the acceptance-criteria coverage harness for all 242 B0–B9 criteria, reporting coverage without gating on it | `TPA-FR-027`, `TPA-BR-042` | ⛔ none | `IMPL-1689` | The harness enumerates 242 criteria and reports per-part coverage; ⛔ it does **not** assert any criterion passes. ⚠ `XPA-ACGAP-001`…`003` are **disclosed absences**, carried here as scope, never as the authority | Implementation lead | ⚠ `PARTIAL` — `XPA-ACGAP-002` gates the four Mute criteria |
 
 ### §5.2 G1 — B1 global social graph, `BC-11` (`IMPL-1605`…`IMPL-1618`)
 
@@ -376,4 +376,132 @@ context count remains 31."*
 | `IMPL-1639` | Implement multi-library union and read-time membership expiry | `SDS-FR-012`, `SDS-FR-013` | **`BC-02`** ▶ | `IMPL-1634` | A multi-library viewer sees the union; expiry takes effect on the next read and ⛔ does **not** wait for a scheduled job | Implementation lead | `READY` |
 | `IMPL-1640` | Exclude anonymised, suspended and non-member persons from results | `SDS-FR-014`, `SDS-FR-015`, `SDS-FR-016` | **`BC-10`**, **`BC-13`** (`E-14`) ▶ | `IMPL-1629`, `IMPL-1617` | An anonymised, a suspended (`E-14`) and a membership-less person are each absent from results | Implementation lead | `READY` |
 | `IMPL-1641` | Implement the search index access paths and pagination over `BC-23`'s projection | `SDS-IDX-001`…`010`, `SDS-FR-005`, `TPA-FR-014`, `TPA-FR-005` | **`BC-23`** ▶ fed by `E-21` — ⛔ `BC-23` is not owned | `IMPL-1685` | The ten declared access paths are indexed; the projection is fed by `E-21`; ⛔ no engine choice is specified | Implementation lead | `READY` |
-| `IMPL-1642` | Publish B3's read contract naming **no** consumer | `SDS-FR-017` | read composition — ⛔ no BC | `IMPL-1632` | The contract is published and names no consumer, per `SDS-XC-009`/`SDS-XC-013`; ⚠ `FOD-4` is thereby not blocking | Implementation lead | `READY` |
+| `IMPL-1642` | Publish B3's read contract naming **no** consumer | `SDS-FR-017` | read composition — ⛔ no BC | `IMPL-1632` | The contract is published and names no consumer, per `SDS-XC-009`/`SDS-XC-013`; ⚠ `FOD-4` is **DISCHARGED** by `PRD_REGISTRY.md` §13/§14 and is not blocking | Implementation lead | `READY` |
+
+### §5.5 G4 — B4 discovery ranking, read composition (`IMPL-1643`…`IMPL-1650`)
+
+⛔ **B4 is not a context.** It orders a list B3 already produced.
+
+⭐ **A false blocker was caught here and removed.** An earlier pass marked the G4
+rows blocked on `XPB-CONF-003`. **That is wrong as measured:** the Stage 3 ledger
+(`PRD-021B_B0_B9_STAGE3_ARCHITECTURE_ALIGNMENT.md` **§7.1**) records
+`XPB-CONF-001` **RESOLVED** (`ADR-0091` §3 — the ordering layer is a lawful `AR-1`
+read composition) and `XPB-CONF-003`/`XPB-CONF-004` **REFUSED, final** (`ADR-0091`
+§5.2). A refusal is a **decision**, not an open question — the co-presence and
+impression signals are simply **not built**, which `DRK-SIG-007`/`010` already say.
+⇒ **G4 carries no `XPB-CONF-*` blocker.** Marking these blocked would have
+manufactured a dependency on a decision that has already been taken.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1643` | Implement B4 as a pure function of its inputs, consuming B3's published read contract | `DRK-FR-001`, `DRK-FR-002` | read composition over **`BC-23`** — ⛔ `BC-23` is not owned | `IMPL-1642` | `DRK-AC-001`: output is a permutation of input — same multiset, same cardinality | Implementation lead | `READY` |
+| `IMPL-1644` | Enforce that ranking runs strictly after steps [1]–[3] and admits nobody | `DRK-FR-003`, `DRK-FR-004`, `TPA-INV-005` | read composition | `IMPL-1602`, `IMPL-1632` | `DRK-AC-001` plus `TPA-AC-014`: no person is added, admitted, re-admitted or resurrected by ordering | Implementation lead | `READY` |
+| `IMPL-1645` | Implement the `DISC-RANK-1` weighted-sum scoring model over the three active signals | `DRK-FR-005`, `DRK-SIG-001`, `DRK-SIG-002`, `DRK-SIG-004`, `DRK-BR-004` | **`BC-23`** ▶ relevance; **`BC-11`** ▶ mutual count; **`BC-10`** ▶ completeness | `IMPL-1611`, `IMPL-1641` | Weights are `0.60`/`0.25`/`0.15`; `DRK-SIG-003` stays at `0.00` (constant in V1); the seven reserved signals remain unweighted. ⛔ `DRK-SIG-007` and `DRK-SIG-010` are **REFUSED, final** (`ADR-0091` §5.2) and are not built | Implementation lead | `READY` |
+| `IMPL-1646` | Implement the non-query-surface path where no `BC-23` relevance is available | `DRK-FR-006`, `DRK-FR-009` | read composition | `IMPL-1645` | On a non-query surface the ordering is produced without a relevance term; `DRK-AC-009` preserves band order on query surfaces | Implementation lead | `READY` |
+| `IMPL-1647` | Implement full determinism: stable tie-break, no wall clock, explicit version, no learned parameter | `DRK-DET-001`…`006`, `DRK-FR-011` | read composition | `IMPL-1645` | `DRK-AC-002`: two runs on identical input and configuration version are byte-identical; `DRK-AC-004`: equal scores order by `PersonId` ascending | Implementation lead | `READY` |
+| `IMPL-1648` | Implement in-band diversity re-ordering and the fallback renormalisation | `DRK-FR-007`, `DRK-FR-008`, `DRK-FR-010`, `DRK-FR-012`, `DRK-FR-014`, `DRK-EC-005` | read composition | `IMPL-1647` | `DRK-AC-009`: re-ordering occurs only within a band; `DRK-AC-010`: remaining active weights renormalise to `1.00` and a result is still returned. ⛔ Per-viewer frequency capping (`DRK-FR-013`) is **not built** | Implementation lead | `READY` |
+| `IMPL-1649` | Implement per-candidate explainability records routed to `BC-24` via `E-20`, never exposed to a peer | `DRK-EXP-001`…`006` | **`BC-24`** ▶ via `E-20` — ⛔ not owned | `IMPL-1685` | A per-candidate record carries the configuration version and records degradations; ⛔ it is never exposed to a peer and holds no profile or message content | Implementation lead | `READY` |
+| `IMPL-1650` | Implement offline replay evaluation and pre-activation configuration evaluation | `DRK-EVAL-001`…`005`, `DRK-CFG-001`…`008` | **`BC-25`** ▶ config via `E-19`; **`BC-26`** ▶ metrics — ⛔ neither owned | `IMPL-1647` | Recorded inputs replay to an identical ordering; a configuration change is evaluable before activation. ⛔ No online experiment or A/B split is built (`DRK-EVAL-004`), and no viewer behavioural data is used (`DRK-EVAL-002`) | Implementation lead | `READY` |
+
+### §5.6 G5 — B5 recommendations, read composition (`IMPL-1651`…`IMPL-1656`)
+
+⭐ **A second false blocker was caught and removed.** `XPB-CONF-002` (B5's wave
+conflict) is **RESOLVED**, not open: Stage 3 §7.1 records *"B5 **V1-eligible**,
+narrowed to `PYK-SRC-001`; EA **not** edited"* (`ADR-0091` §4, on the `ADR-0061`
+precedent). ⇒ **G5 carries no wave blocker.** What *does* block G5 is
+`PYK-GAP-002` — dismissal/suppression state has **no sited store**, ⚠ **OPEN**
+with **ARB** — and that is carried on the one row it actually reaches.
+
+⚠ B5's reverse-trace coverage is the lowest of the ten parts at **18.2%**. ⛔ **That is a property of the
+subject, not a defect introduced here** — B5 is largely composed of prohibitions
+(`POL`, `SUP`, `FRQ`), and a prohibition is discharged by *not building
+something*, which is why it is task-light by construction.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1651` | Implement B5 as an `AR-1` read composition owning no aggregate, drawing candidates **only** from B3's contract | `PYK-FR-001`, `PYK-FR-002`, `PYK-SRC-001`…`007` | read composition (`AR-1`) — ⛔ no BC | `IMPL-1642` | Every candidate arrives via B3's published contract; ⛔ B5 holds no aggregate, no invariant and no business state. ⚠ Narrowed to `PYK-SRC-001` per `ADR-0091` §4 | Implementation lead | `READY` |
+| `IMPL-1652` | Implement system-initiated, reproducible generation, refusing a viewer with no valid membership | `PYK-FR-003`, `PYK-FR-004`, `PYK-FR-005`, `PYK-FR-006` | read composition | `IMPL-1651`, `IMPL-1634` | Same viewer + same `asOf` + same configuration reproduces the set; a viewer with no valid membership receives none | Implementation lead | `READY` |
+| `IMPL-1653` | Enforce that a recommendation passes **every** filter a search would, and bypasses nothing | `PYK-POL-001`…`008` | **`BC-11`** ▶ safety; **`BC-10`** ▶ privacy — ⛔ neither owned | `IMPL-1637`, `IMPL-1628` | A blocked person (either direction) and a privacy-excluded person are both absent; no reason for exclusion is disclosed; ⛔ no cross-library recommendation is generated; ⛔ B5 makes no authorisation decision | Implementation lead | ⛔ `BLOCKED` — inherits `FOD-1` via `IMPL-1637` |
+| `IMPL-1654` | Implement dismissal feedback and suppression, undisclosed to the dismissed person and never a safety signal | `PYK-FB-001`…`006`, `PYK-SUP-001`…`008` | read composition; ⚠ `PYK-FB-006` records that **feedback state has no sited store** | `IMPL-1652` | A dismissal suppresses the person from that viewer's set, is invisible to the dismissed person, and is not treated as a safety signal. ⚠ The store for feedback state is unsited in the subject and must be sited before build | ARB (`PYK-GAP-002`), then Implementation lead | ⛔ `BLOCKED` — `PYK-GAP-002` / `PYK-FB-006` unsited store |
+| `IMPL-1655` | Implement set capping, refresh windows and cached repeat responses | `PYK-FRQ-001`, `PYK-FRQ-002`, `PYK-FRQ-003`, `PYK-FRQ-005`, `PYK-FRQ-006`, `PYK-CFG-001`…`007` | **`BC-25`** ▶ configuration — ⛔ not owned | `IMPL-1652` | The set is capped at `PYK-CFG-002`; repeated requests inside the window return a stable set; ⛔ no unsolicited notification is sent; ⛔ frequency control never excludes a person outright. `PYK-FRQ-004` per-viewer capping is **not specified and not built** | Implementation lead | `READY` |
+| `IMPL-1656` | Implement the presentation surface: allow-listed fields, optional mutual count, opaque cursors, no score exposed | `PYK-PRS-001`…`007` | **`BC-10`** ▶ allow-listed fields only | `IMPL-1611`, `IMPL-1652` | Only allow-listed `BC-10` fields appear; ⛔ no browsable mutual-friend list, ⛔ no score, rank position or weight is exposed; pagination uses opaque cursors | Implementation lead | `READY` |
+
+### §5.7 G6 — B6 discovery scope, pure policy (`IMPL-1657`…`IMPL-1663`)
+
+⛔ **B6 holds no aggregate, no invariant over stored data and no state** — it is a
+pure policy function.
+
+⭐ **A third false blocker was caught and removed.** `XPB-CONF-005` (B6 an
+unregistered part identifier) is **DISCHARGED** — Stage 3 §7.1 cites `ADR-0091` §6
+and `PRD_REGISTRY.md` §13, and `FOD-4` is likewise recorded **DISCHARGED** for
+B4/B5/B6 by registry §13 and for B7/B8/B9 by §14. ⇒ **G6 carries no registration
+blocker.** ⚠ What remains open in B6 is `GLS-GAP-002` (multi-library viewer
+semantics and `GLOBAL` authorisation, **Product Owner + ARB**) — and B6 already
+handles it by keeping `GLOBAL` **OFF** and failing such viewers closed, which is
+`GLS-FR-003`/`GLS-FR-008`, already allocated.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1657` | Implement `DiscoveryScope` as a closed four-value server-side enum, supplying exactly one value per request | `GLS-DEF-001`, `GLS-DEF-002`, `GLS-FR-001` | pure policy — ⛔ no BC | — | The enum has exactly four values and is closed; ⛔ it cannot be extended without an architecture decision | Implementation lead | `READY` |
+| `IMPL-1658` | Force the V1 value to `LIBRARY` always, and reject the other three with the specified refusal | `GLS-FR-002`, `GLS-FR-003` | pure policy | `IMPL-1657` | Every V1 request resolves to `LIBRARY`; `GLOBAL`, `LOCAL` and `NEARBY` are each rejected in V1; ⚠ this is also the standing containment for `GLS-GAP-002` | Implementation lead | `READY` |
+| `IMPL-1659` | Make B3, B4 and B5 obtain scope from B6 and treat it as opaque | `GLS-FR-004` | pure policy → B3/B4/B5 | `IMPL-1632`, `IMPL-1643`, `IMPL-1651` | None of B3, B4 or B5 constructs a scope value locally; each treats it as opaque | Implementation lead | `READY` |
+| `IMPL-1660` | Resolve scope server-side before candidate generation and apply it in the **eligibility** stage | `GLS-FR-005`, `GLS-FR-006`, `GLS-FR-007` | pure policy | `IMPL-1633` | Scope is applied at eligibility; ⛔ a post-ranking scope application is impossible by construction | Implementation lead | `READY` |
+| `IMPL-1661` | Fail closed when resolved scope is unavailable | `GLS-FR-008` | pure policy | `IMPL-1660` | An unavailable scope fails the request closed; ⛔ no default scope is substituted | Implementation lead | `READY` |
+| `IMPL-1662` | Enforce the global-identity / library-membership separation as six structural invariants | `GLS-INV-001`…`006` | **`BC-11`** (structure shape); ⛔ `BC-11` does **not** enforce scope per `GLS-INV-005` | `IMPL-1603` | It is **impossible** for a `tenantId` or `StudentRecordId` to enter a global structure; the membership predicate stays `studentRecordId`-keyed; a `LIBRARY`-scoped result cannot leak a global one | Implementation lead | `READY` |
+| `IMPL-1663` | Keep B6 stateless with a two-element output surface, and leave the future global architecture defined but **disabled** | `GLS-FR-009`, `GLS-FR-010`, `GLS-FR-011`, `GLS-CFG-001`…`005` | pure policy — ⛔ no state | `IMPL-1657` | The output surface is one scope value plus a refusal; ⛔ B6 persists nothing and holds no aggregate. `GLS-FUT-001`…`008` remain **defined and NOT enabled** | Implementation lead | `READY` |
+
+### §5.8 G7 — B7 messaging, `BC-12` (`IMPL-1664`…`IMPL-1676`)
+
+⭐ **B7 declines ownership of `BC-12`** at its own **L34**, and that refusal holds
+under FROZEN `PRD-020` §10 **L633–634**. B7 *specifies* `BC-12`; it does not claim
+it. ⚠ Four of the five genuinely OPEN `XPB-CONF-*` items land in this group —
+**`011` (Help→Message), `014` (read receipts), `015` (configurable retention),
+`016` (message deletion)** — and each is carried on the row it actually reaches.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1664` | Implement `Conversation` as the aggregate root with exactly two participants and participation as an internal | `MSG-FR-001`, `MSG-FR-002`, `MSG-FR-003` | **`BC-12`** — ⛔ specified, **not owned** by B7 | `IMPL-1603` | A V1 `Conversation` admits exactly two participants; participation is not separately addressable | Implementation lead | `READY` |
+| `IMPL-1665` | Implement the closed `Conversation` state enum | `MSG-FR-004` | **`BC-12`** | `IMPL-1664` | The state is drawn from the closed enum; ⛔ no state is added | Implementation lead | `READY` |
+| `IMPL-1666` | Implement `Message` as an entity of `Conversation`, immutable after delivery, with `DELETED` deliberately absent | `MSG-FR-005`, `MSG-FR-010` | **`BC-12`** | `IMPL-1664` | A delivered message cannot be mutated; ⛔ **no `DELETED` state exists** — BC Map **L378** holds *"message immutable after delivery"* | Product + Architecture (`XPB-CONF-016`), then Implementation lead | ⛔ `BLOCKED` — `XPB-CONF-016` (message deletion) |
+| `IMPL-1667` | Implement the two send gates and a refusal response that discloses nothing | `MSG-FR-007`, `MSG-FR-032`, `MSG-FR-033` | **`BC-12`** ▶ `BC-11` via `E-16`; ▶ `BC-13` enforcement | `IMPL-1618`, `IMPL-1630` | `canMessage(a,b)` is re-asked on **every** send via `E-16`; a refusal by either gate discloses no reason | Implementation lead | ⛔ `BLOCKED` — inherits `FOD-1` via `IMPL-1630` |
+| `IMPL-1668` | Implement delivery/failure transitions, with `FAILED` reachable only before `DELIVERED` | `MSG-FR-008`, `MSG-FR-009`, `MSG-FR-019` | **`BC-12`** | `IMPL-1666` | `DELIVERED` is set on durable acceptance by `BC-12`; ⛔ `FAILED` is unreachable after `DELIVERED`; a `DeliveryReceipt` records delivery to `BC-12`'s durable store | Implementation lead | ⛔ `BLOCKED` — inherits `XPB-CONF-016` via `IMPL-1666` |
+| `IMPL-1669` | Implement client-supplied idempotency keys with the declared retention | `MSG-FR-011`, `MSG-FR-012`, `TPA-FR-011` | **`BC-12`** | `IMPL-1667` | A replayed key produces one message; keys are retained for at least the declared minimum | Implementation lead | `READY` |
+| `IMPL-1670` | Implement server-assigned per-conversation sequencing and opaque cursor pagination | `MSG-FR-013`, `MSG-FR-014`, `MSG-FR-015`, `TPA-FR-013` | **`BC-12`** | `IMPL-1666` | Sequence is server-assigned and monotonic per conversation; ⛔ **no cross-conversation ordering is provided**; pagination is opaque-cursor only | Implementation lead | `READY` |
+| `IMPL-1671` | Implement per-participant read cursors and derived unread counts, undisclosed in V1 | `MSG-FR-016`, `MSG-FR-017`, `MSG-FR-018` | **`BC-12`** | `IMPL-1670` | The unread count is **derived**, not stored; ⛔ in V1 a read cursor is **not disclosed** to the other participant | Architecture + Product (`XPB-CONF-014`), then Implementation lead | ⛔ `BLOCKED` — `XPB-CONF-014` (read-receipt wave) |
+| `IMPL-1672` | Implement per-participant archive with un-archive on new message, and per-participant mute | `MSG-FR-020`, `MSG-FR-021`, `MSG-FR-022` | **`BC-12`** — ⚠ distinct from B2's `Mute` on `BC-11` | `IMPL-1664` | Archive is per-participant view state; a new message un-archives; mute suppresses only for the muting participant | Implementation lead | `READY` |
+| `IMPL-1673` | Constrain context references to an opaque closed enum, and route consent/audit facts to `BC-22` | `MSG-FR-023`, `MSG-FR-024`, `MSG-FR-025` | **`BC-12`**; **`BC-22`** ▶ — ⛔ `BC-22` not owned | `IMPL-1664` | The `type` enum is closed and V1-constrained; the reference stays **opaque**; ⚠ only `E-16` inbound and `E-22` outbound exist for `BC-12` | Implementation lead | `READY` |
+| `IMPL-1674` | Implement `RetentionPolicy` as a `Conversation` entity, with purge removing bodies and `FileRef`s | `MSG-FR-026`, `MSG-FR-027`, `MSG-FR-028`, `TPA-FR-025` | **`BC-12`** | `IMPL-1664` | Purge removes message bodies and `FileRef`s; ⚠ in V1 the policy is a **fixed platform value** — the *configurable* policy value is undecided | Architecture + Product (`XPB-CONF-015`), then Implementation lead | ⛔ `BLOCKED` — `XPB-CONF-015` (configurable retention) |
+| `IMPL-1675` | Implement the four hand-offs — realtime, notification, media, safety — on pre-existing edges only | `MSG-FR-029`, `MSG-FR-030`, `MSG-FR-031` | **`BC-12`** → `BC-30`/`BC-22`/`BC-29`/`BC-13` via `E-22`, `E-23` | `IMPL-1677`, `IMPL-1679`, `IMPL-1683` | Each hand-off uses a **pre-existing** edge; ⛔ **0 edges are created**; attachments are held as `BC-29` `FileRef`s | Implementation lead | `READY` |
+| `IMPL-1676` | ⛔ Do **not** author the Help → Message flow; preserve B7's six-step refusal | `MSG-FR-024`, `MSG-FR-025` | **`BC-12`** ▶ community — ⛔ the source event is **WITHDRAWN** | ⛔⛔ **`XPB-CONF-011`** | ⛔ **Nothing is built.** `community.HelpRequestAnswered` (`LCN-EVT-007`) is **WITHDRAWN** by `ADR-0083` **L237** and `LCN-FR-019` is **VOID**; the number cannot return. Done condition is that the flow remains **unauthored** | Product + Architecture (`XPB-CONF-011`) | ⛔ `BLOCKED` — `XPB-CONF-011` |
+
+### §5.9 G8 — B8 realtime, media & messaging safety (`IMPL-1677`…`IMPL-1684`)
+
+⛔ **B8 owns nothing.** Realtime is a **port** (`platform/services:realtime`,
+manifest **L243**), media is `BC-29`'s, offline is `BC-30`'s, and messaging safety
+was already decided by `ADR-0065` Option B. ⚠ **`XPB-CONF-017`** (presence/typing
+wave) and **`XPB-CONF-013`** (`FIL-GAP-013` confinement) land here.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1677` | Implement the realtime hand-off and post-reconnect reconciliation | `RTM-FR-001`, `RTM-FR-002`, `TPA-FR-008` | **`BC-30`** / realtime **port** — ⛔ not a context, not owned | `IMPL-1670` | An accepted `Message` is handed to the realtime port; a client reconciles after reconnect by reading, not by replay | Implementation lead | `READY` |
+| `IMPL-1678` | Implement subscription authorisation and connection lifecycle, with no tenant key in any frame | `RTM-FR-003`, `RTM-FR-004`, `RTM-FR-005`, `TPA-INV-003`, `TPA-FR-017` | realtime **port**; **`BC-12`** state | `IMPL-1603`, `IMPL-1667` | Subscription authorisation is evaluated server-side per subscription; ⛔ **no frame carries a `tenantId`** | Implementation lead | `READY` |
+| `IMPL-1679` | Implement presence and typing as `BC-12` state, undisclosed in V1 | `RTM-FR-006`, `RTM-FR-007` | **`BC-12`** — ⚠ *"un-dated by authority"* | ⛔ **`XPB-CONF-017`** | ⛔ In V1 presence is **not disclosed to any other person**. ⚠ EA **L1854**/**L1855** date presence/typing V2/V3 while B8 needs them; `RTM-GAP-001` is the open record | Architecture + Product (`XPB-CONF-017`) | ⛔ `BLOCKED` — `XPB-CONF-017` |
+| `IMPL-1680` | Hold attachments as `BC-29` `FileRef`s, uploading against `BC-29` and never proxying bytes | `RTM-FR-008`, `RTM-FR-009`, `RTM-FR-013`, `TPA-FR-016` | **`BC-29`** ▶ via `E-22` — ⛔ not owned | `IMPL-1675` | Upload targets `BC-29`; ⛔ `BC-12` never stores or proxies media bytes; media in messaging is **V1** per `RTM-FR-013` | Implementation lead | `READY` |
+| `IMPL-1681` | Implement read-only share grants and grant revocation on retention purge | `RTM-FR-010`, `RTM-FR-011`, `RTM-FR-012` | **`BC-29`** ▶ | `IMPL-1674`, `IMPL-1680` | A grant conveys **read access only** (FROZEN); a purge revokes the grants it created | Implementation lead | ⛔ `BLOCKED` — inherits `XPB-CONF-015` via `IMPL-1674` |
+| `IMPL-1682` | ⚠ Record the attachment-sharing confinement **shape** only, without closing `FIL-GAP-013` | `RTM-FR-014`, `RTM-FR-026` | **`BC-29`** ▶ | ⛔ **`XPB-CONF-013`** | ⛔ **Nothing is closed.** FROZEN `PRD-017` **L1162–65** assigns the confinement statement to `PRD-021`; B8 states the shape only, and `RTM-FR-026` **forbids** claiming `TSF-GAP-003` closed | Product Owner (`XPB-CONF-013`) | ⛔ `BLOCKED` — `XPB-CONF-013` |
+| `IMPL-1683` | Implement the local enforcement-state read model with a fail-closed staleness gate and observable lag | `RTM-FR-015`, `RTM-FR-016`, `RTM-FR-017`, `RTM-FR-018`, `RTM-FR-019`, `TPA-FR-018`, `TPA-FR-019`, `TPA-INV-008` | **`BC-12`** local read model of **`BC-13`** state | `IMPL-1629`, `IMPL-1685` | The model is consulted on **every** send; a stale model **fails closed**; the check meets FROZEN `TSF-FR-001` **p99 ≤ 50 ms**; lag is observable and alertable | Implementation lead | `READY` |
+| `IMPL-1684` | Implement the safety and notification hand-offs, minor-contact restriction and `E-14` self-restriction | `RTM-FR-021`, `RTM-FR-022`, `RTM-FR-023`, `RTM-FR-024`, `RTM-FR-025`, `RTM-FR-029`, `RTM-FR-030`, `TPA-INV-006` | **`BC-13`** ▶, **`BC-22`** ▶ via `E-23` — ⛔ neither owned | `IMPL-1683` | Reported content reaches `BC-13` only in the specified form; a reported link is recorded by normalised URL; on `E-14` `BC-12` **self-restricts** and ⛔ `BC-13` performs no write into it; ⛔ no second notification system is created | Implementation lead | `READY` |
+
+### §5.10 G9 — B9 cross-cutting technical architecture (`IMPL-1685`…`IMPL-1689`)
+
+⛔ **B9 owns nothing** — `TPA-INV-001` forbids any `PRD-021B` part from owning a
+row it does not already own. G9 is the platform wiring the other nine groups
+depend on, which is why so many rows above name `IMPL-1685`.
+
+| IMPL-ID | Task | Requirement ID(s) | BC/Context | Dependency | Acceptance/Done Condition | Owner/Role | Status |
+|---|---|---|---|---|---|---|---|
+| `IMPL-1685` | Wire the event architecture — publish two, consume the declared set, on the 16 pre-existing edges, creating none | `TPA-FR-001`, `TPA-FR-009`, `TPA-FR-010`, `TPA-FR-026`, `SGR-EVT-002` | `BC-11`, `BC-12` → `BC-13`, `BC-22`, `BC-23`, `BC-24`, `BC-26`, `BC-29`, `BC-30` | — | **8 edges used, 0 created**; ⛔ `E-27` is **not referenced**; ⛔ **no event is minted** (`SGR-EVT-002`); `BC-26` receives `messaging.MessageSent` and `BC-11`'s two events | Implementation lead | `READY` |
+| `IMPL-1686` | Implement per-context persistence, the two recomputable `BC-12` projections, and anonymisation propagation | `TPA-FR-002`, `TPA-FR-003`, `TPA-FR-004`, `TPA-INV-004` | `BC-11`, `BC-12` | `IMPL-1685` | `BC-11` and `BC-12` hold separate persistence; **every projection is reconstructible from its event stream**; `identity.PersonAnonymised` propagates per BC Map **L428** | Implementation lead | `READY` |
+| `IMPL-1687` | Implement the declared index set, cache policy restricted to public read models, and opaque-cursor pagination | `TPA-FR-005`, `TPA-FR-013`, `TPA-FR-015`, `SDS-IDX-001`…`010`, `SGR-CACHE-001`…`006`, `SSF-CACHE-001`…`006`, `SDS-CACHE-001`…`008` | `BC-11`, `BC-12`, **`BC-23`** ▶ | `IMPL-1641`, `IMPL-1686` | Every declared access path is indexed; ⛔ **caching is permitted only for public read models**; every list endpoint uses opaque cursors; ⛔ no database engine is selected | Implementation lead | `READY` |
+| `IMPL-1688` | Implement observability, background jobs, failure/recovery and the fail-closed consistency rule | `TPA-FR-020`, `TPA-FR-021`, `TPA-FR-022`, `TPA-FR-023`, `TPA-FR-024`, `TPA-FR-031`, `TPA-INV-008` | cross-cutting; **`BC-24`** ▶ via `E-20` | `IMPL-1683`, `IMPL-1686` | Enforcement read-model lag and `canMessage` latency are observable; retention purge runs as background work; strong consistency within an aggregate and eventual across contexts; ⛔ **a safety dependency fails closed** | Implementation lead | `READY` |
+| `IMPL-1689` | Enforce module boundaries, additive-only API versioning, default-OFF flags for contested capabilities, and the test matrix | `TPA-FR-027`, `TPA-FR-028`, `TPA-FR-029`, `TPA-FR-030`, `TPA-INV-001` | cross-cutting | `IMPL-1600`, `IMPL-1601` | `tool/module_dependencies.yaml` is the single source and CI enforces it; ⛔ **no removed field or narrowed type ships**; every contested capability is flag-gated **default OFF**; the test matrix covers `MSG-AC-001`…`030` and `RTM-AC-001`…`028`. ⛔ **0 of 242 criteria are proven here** | Implementation lead | `READY` |

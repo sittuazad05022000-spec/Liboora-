@@ -616,7 +616,7 @@ Adding a §2R for a stage that is **BLOCKED** would register a passage that did 
 | Field | Value |
 |---|---|
 | **Artifact** | `docs/30-product/social-graph/PRD-021B_B0_B9_STAGE6_READINESS_AUDIT.md` |
-| **Commit SHA** | ⏳ `PENDING-MEASUREMENT` — see §10.1 |
+| **Commit SHA** | ✅ `b3467514492006c6f5803f8391100a0b0a8b4a5f` — the commit that added this record, measured after commit and written back by a second commit whose only change is this cell; *see §10.1* |
 | **Remote** | `github` → `https://github.com/sittuazad05022000-spec/Liboora-.git` |
 | **Branch** | `main` |
 

@@ -877,7 +877,7 @@ under `tool/`, `lib/`, `test/`, `web/`.
 |---|---|
 | **Artifact** | `docs/30-product/social-graph/PRD-021B_B0_B9_STAGE5_TRACEABILITY.md` |
 | **Registration** | `docs/40-implementation/TRACEABILITY_MATRIX.md` **§2Q** |
-| **Commit SHA** | ⏳ `PENDING-MEASUREMENT` — written back by the second commit; *see §19.1* |
+| **Commit SHA** | ✅ `60e3782825be8cefeb5ef314ca0401b3869baed6` — the **substantive** commit (this record + matrix **§2Q**), measured after commit and written back here by the second commit; *see §19.1* |
 | **Remote** | `github` → `https://github.com/sittuazad05022000-spec/Liboora-.git` |
 | **Branch** | `main` |
 

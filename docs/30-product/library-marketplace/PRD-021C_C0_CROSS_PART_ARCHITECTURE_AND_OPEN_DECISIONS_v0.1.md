@@ -62,7 +62,7 @@
 | **C0** | `PRD-021C_C0_CROSS_PART_ARCHITECTURE_AND_OPEN_DECISIONS_v0.1.md` | `XPC-` | — | — |
 | **C1** | `PRD-021C_C1_MARKETPLACE_FOUNDATION_DRAFT_v0.1.md` | `LMP-` | 24 | 12 |
 | **C2** | `PRD-021C_C2_LIBRARY_SEARCH_AND_LOCAL_DISCOVERY_DRAFT_v0.1.md` | `LSD-` | 32 | 16 |
-| **C3** | `PRD-021C_C3_LIBRARY_PUBLIC_PROFILE_DRAFT_v0.1.md` | `LPP-` | 28 | 14 |
+| **C3** | `PRD-021C_C3_LIBRARY_PUBLIC_PROFILE_DRAFT_v0.1.md` *(v0.2)* | `LPP-` | 44 | 22 |
 | **C4** | `PRD-021C_C4_LIVE_SEAT_AVAILABILITY_AND_BOOKING_DRAFT_v0.1.md` | `LSB-` | 36 | 18 |
 
 ### §1.1 Identifier registers — declared up front, ranges published as a promise
@@ -73,22 +73,30 @@ identifier"*), rule 2 (*prefixes checked against §5's collision procedure
 
 | Register | Meaning | Range | Count | Contiguous |
 |---|---|---|---|---|
-| `XPC-CONF-*` | Cross-part conflict record | `XPC-CONF-001` … `XPC-CONF-014` | 14 | Yes |
-| `XPC-OD-*` | Open decision | `XPC-OD-001` … `XPC-OD-006` | 6 | Yes |
+| `XPC-CONF-*` | Cross-part conflict record | `XPC-CONF-001` … `XPC-CONF-015` | 15 | Yes |
+| `XPC-OD-*` | Open decision | `XPC-OD-001` … `XPC-OD-007` | 7 | Yes |
 | `LMP-FR-*` | C1 functional requirement | `LMP-FR-001` … `LMP-FR-024` | 24 | Yes |
 | `LMP-AC-*` | C1 acceptance criterion | `LMP-AC-001` … `LMP-AC-012` | 12 | Yes |
 | `LMP-XC-*` | C1 exclusion | `LMP-XC-001` … `LMP-XC-010` | 10 | Yes |
 | `LSD-FR-*` | C2 functional requirement | `LSD-FR-001` … `LSD-FR-032` | 32 | Yes |
 | `LSD-AC-*` | C2 acceptance criterion | `LSD-AC-001` … `LSD-AC-016` | 16 | Yes |
 | `LSD-XC-*` | C2 exclusion | `LSD-XC-001` … `LSD-XC-012` | 12 | Yes |
-| `LPP-FR-*` | C3 functional requirement | `LPP-FR-001` … `LPP-FR-028` | 28 | Yes |
-| `LPP-AC-*` | C3 acceptance criterion | `LPP-AC-001` … `LPP-AC-014` | 14 | Yes |
-| `LPP-XC-*` | C3 exclusion | `LPP-XC-001` … `LPP-XC-010` | 10 | Yes |
+| `LPP-FR-*` | C3 functional requirement | `LPP-FR-001` … `LPP-FR-044` | 44 | Yes |
+| `LPP-AC-*` | C3 acceptance criterion | `LPP-AC-001` … `LPP-AC-022` | 22 | Yes |
+| `LPP-XC-*` | C3 exclusion | `LPP-XC-001` … `LPP-XC-017` | 17 | Yes |
 | `LSB-FR-*` | C4 functional requirement | `LSB-FR-001` … `LSB-FR-036` | 36 | Yes |
 | `LSB-AC-*` | C4 acceptance criterion | `LSB-AC-001` … `LSB-AC-018` | 18 | Yes |
 | `LSB-XC-*` | C4 exclusion | `LSB-XC-001` … `LSB-XC-014` | 14 | Yes |
 
-**Total: 120 FR · 60 AC · 46 XC · 20 cross-part records = 246 identifiers.**
+**Total: 136 FR · 68 AC · 53 XC · 22 cross-part records = 279 identifiers.**
+
+> ⚠ **The total was 246 at v0.1 and is disclosed here as changed, not silently
+> restated.** C3 **v0.2** added §9A (Owner Profile Engagement Summary): **+16
+> FR**, **+8 AC**, **+7 XC**, plus **`XPC-CONF-015`** and **`XPC-OD-007`** in
+> this document — **+33** identifiers. The figure **246** remains correct for the
+> C1–C4 authoring baseline at commit
+> `21704ba8c71f76f8689ddd0fc1680f78fe768359`, and any artefact citing 246 is
+> citing that baseline rather than being wrong.
 
 ### §1.2 Prefix collision check — measured, not assumed
 
@@ -278,7 +286,21 @@ smallest compatible resolution.**
 | `XPC-CONF-013` | `Library_PRD_v1.md` **L1014**, `LIB-24.2`; `ARCHITECTURE_RULINGS.md` **L290**; `PRD_OWNERSHIP_MODEL.md` §11 (Privacy Owner, **constituted, holder VACANT**) | Public Live Occupancy requires a **completed privacy review** that does not exist, and the Privacy Owner role has **no holder recorded** | ⛔ **DEFERRED — OPEN** (`XPC-OD-005`) | **Privacy Owner** | V1 excludes the feature entirely (`XPC-CONF-009`), so V1 is **not blocked**. The review is required only if Public Live Occupancy is tiered to V2 |
 | `XPC-CONF-014` | Enterprise Architecture **L992** (`Student Marketplace (V3)`); `DOCUMENTATION_BASELINE.md` (EA is **Rank 6**, *"Descriptive — must follow the PRDs, never lead them"*) | The EA tree shows only a **V3 Student Marketplace** and no V1 library-directory node, so the EA appears to contradict `MASTER_PRD.md` **L171** | ✅ **RESOLVED — precedence applied, EA unedited** | — | ⭐ Under the `ADR-0061`/`ADR-0091` precedent a **higher rank prevails over an EA wave tag without editing the EA**. `MASTER_PRD.md` is **Rank 1**; the EA is **Rank 6** and descriptive. ⛔ **EA is byte-unchanged.** Residual staleness recorded as `XPC-OD-006` |
 
-**Resolved: 9 · Deferred/OPEN: 5.**
+| `XPC-CONF-015` | BC Map **L135**, **L385** (`BC-26` Analytics Read Model, Rank 4); `PRD_REGISTRY.md` **L246** (`PRD-009`, `PLANNED`); §14A.5 *Internal Analytics* (**never-public**); `LIB-14B.22`; BC Map §9 event surface | Supplied C3 requirement adds an **Owner Profile Views summary** to the library profile. Three separate tensions: (a) *Internal Analytics* is on the **frozen never-public list**; (b) `LPP-FR-002`/`004`/`008` forbid non-`14A.5` fields, authentication gates and viewer-varying order; (c) **no profile-view event producer and no lawful edge into `BC-26` exists** | ⚠ **PARTIALLY RESOLVED — presentation reconciled; production DEFERRED** (`XPC-OD-007`) | **Architecture Owner** + **Product Owner** | ⭐ **Analytics ownership reconciled to the owner that already exists — nothing invented.** `BC-26` owns the metric/semantic layer, `CertifiedMetric` and `ReadModel`; `PRD-009` owns the analytics experience. C3 **renders only** (`LPP-FR-035`…`038`) and defines **no** metric semantics. (a) resolved: the summary is an **owner-only overlay outside the public projection** (`LPP-FR-030`, `LPP-XC-015`) — nothing analytic reaches a public response. (b) resolved **without amending** `LPP-FR-002`/`004`/`008`: it is not a profile field, not a read gate, and position **7** is a **reserved slot invariant within each audience class** (C3 §9A.2). (c) ⛔ **not decided** — `XPC-OD-007`; `LPP-XC-011`…`014` forbid C3 minting an analytics system, pipeline, metric semantic, event or edge |
+
+**Resolved: 9 · Partially resolved: 1 · Deferred/OPEN: 5.**
+
+> **`XPC-CONF-015` is the one conflict in this register where the answer already
+> existed and the work was to find it rather than settle it.** A profile-views
+> readout looks like it needs a tracking system. The repository already has an
+> analytics owner at Rank 4 with an explicit *"metric definitions single-sourced
+> from the semantic layer"* invariant, and a registered product owner for the
+> analytics experience. Inventing a counter inside a composition capability that
+> owns no aggregate would have created the second analytics system the
+> requirement explicitly forbids. What genuinely does **not** exist is the
+> *producer* of the view fact and the *edge* to carry it — and that is recorded
+> OPEN rather than minted, following `ADR-0084` and `ADR-0083` §4.5, both of
+> which **refused** to mint an edge to make a consumer list convenient.
 
 ---
 
@@ -295,6 +317,7 @@ never a personal name (`PRD_OWNERSHIP_MODEL.md` §7 rule 4).
 | `XPC-OD-004` | Should `BC-04` Seating become an `E-24` consumer, enabling an offline booking queue? | **Architecture Owner** | Nothing in V1 — C4 excludes offline booking | An `E-24` amendment by ADR. ⛔ **Not requested and not required for V1** |
 | `XPC-OD-005` | The privacy review `LIB-24.2` requires before Public Live Occupancy may be designed | **Privacy Owner** *(role constituted by `ADR-0077`; ⚠ holder **VACANT**)* | Nothing in V1 — V1 excludes the feature | Conduct and record the review **before** any V2 design. `ARCHITECTURE_RULINGS.md` §6: *"must not be invented"* |
 | `XPC-OD-006` | The Enterprise Architecture tree has no V1 library-directory node although `MASTER_PRD.md` **L171** registers module 19 at V1 | **Architecture Owner** | Nothing — precedence resolves it (`XPC-CONF-014`) | An EA refresh. ⚠ **Disclosed, not repaired** — the identical disposition `ADR-0091` gave `XPB-DRIFT-001` |
+| `XPC-OD-007` | **Which context lawfully produces the profile-view fact, over which declared edge — and does `PRD-009` certify `ProfileViews` and `UniqueViewers` as `CertifiedMetric`s of `BC-26`?** Measured: the V1 event surface (BC Map §9) contains **no view event for any aggregate**; the only edge into `BC-26` is **`E-26`** (`BC-27 AI → BC-26, BC-23`), which is not a telemetry ingress; **`PRD-009` is `PLANNED` and absent from disk** | **Architecture Owner** *(producer + edge)* **+ Product Owner** *(`PRD-009` metric definitions)* | C3's §9A engagement summary — `LPP-FR-030`…`LPP-FR-044`, **15 requirements** and `LPP-AC-015`…`022` | Two lawful acts, **neither taken here**: (1) an ADR naming the producer and amending/adding the carrying edge — precedent `ADR-0016` / `ADR-0055`, and note that `ADR-0084` and `ADR-0083` §4.5 both **refused** to mint an edge for convenience; (2) author `PRD-009` defining `ProfileViews` / `UniqueViewers` as `CertifiedMetric`s. ⚠ Note the neighbouring precedent `SM-7.17`: *"`StudentViewed` is deliberately absent — viewing is an **audit** concern, not a domain event"* — so the producer question may resolve toward `BC-24`, not a new emitter. ⛔ **Not decided** |
 
 ---
 
@@ -334,9 +357,9 @@ skipped."* The same form is used here.
 |---|---|---|---|---|---|
 | C1 | 24 | 12 | 24 | **100%** | 0 |
 | C2 | 32 | 16 | 32 | **100%** | 8 (`XPC-OD-001`, `XPC-OD-002`) |
-| C3 | 28 | 14 | 28 | **100%** | 4 (`XPC-OD-003`) |
+| C3 | 44 | 22 | 44 | **100%** | 19 (4 × `XPC-OD-003`, 15 × `XPC-OD-007`) |
 | C4 | 36 | 18 | 36 | **100%** | 0 |
-| **Total** | **120** | **60** | **120** | **100%** | **12** |
+| **Total** | **136** | **68** | **136** | **100%** | **27** |
 
 ⚠⚠ **Two disclosures this table must carry, or it would overstate itself:**
 
@@ -395,3 +418,4 @@ skipped."* The same form is used here.
 | Version | Date | Change |
 |---|---|---|
 | **v0.1** | 2026-09-02 | Created as the Stage-2 cross-part companion to C1–C4. Records the `AR-1` / module 19 determination (§2.3), the 14-item conflict register (§5), the 6 open decisions (§6) and the 246-identifier register set (§1.1). ⛔ No ADR, no edge, no context, no event, no `IMPL-*`, no Rank 1–6 edit, no freeze |
+| **v0.2** | 2026-09-02 | Updated for **C3 v0.2 §9A** (Owner Profile Engagement Summary). Added **`XPC-CONF-015`** (analytics ownership reconciled to the **existing** `BC-26` / `PRD-009` owners — nothing invented) and **`XPC-OD-007`** (no profile-view event producer and no lawful edge into `BC-26`). Register totals **246 → 279**, disclosed in §1.1 rather than silently restated; **246** remains correct for the C1–C4 baseline at `21704ba`. Conflict register **14 → 15**; open decisions **6 → 7**. ⛔ Still no ADR, no edge, no context, no event, no metric definition, no analytics system, no `IMPL-*`, no Rank 1–6 edit, no freeze. `BC-17` unchanged; C1, C2, C4 unchanged |

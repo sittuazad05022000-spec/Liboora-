@@ -1,7 +1,7 @@
 <!--
   PROVENANCE — PRD-021C Part C3 (Library Public Profile)
 
-  Status        : DRAFT — v0.1 (Stage 2)
+  Status        : DRAFT — v0.2 (Stage 2)
   Freeze status : NOT FROZEN. NOT FINAL. NOT APPROVED. NOT BASELINED.
   Lifecycle     : Stage 2 (Draft) ONLY. Stage 3 NOT entered.
 
@@ -16,15 +16,40 @@
   FROZEN / Approved and already own the field set. C3 CONSUMES and CITES
   them. C3 adds no public field and removes no restriction.
 
-  One OPEN decision gates 4 of C3's requirements:
+  Analytics ownership note (v0.2, section 9A)
+  -------------------------------------------
+  The Owner Profile Engagement Summary is a C3 PRESENTATION/READOUT
+  requirement. It is NOT a new analytics domain. Analytics ownership is
+  RECONCILED to the owner that already exists in the repository:
+
+    BC-26 Analytics Read Model  — owns the metric/semantic layer, read-model
+                                  store, projections, reports, exports
+                                  (BC Map L135); owns CertifiedMetric and
+                                  ReadModel (BC Map L385). Rank 4.
+    PRD-009 Analytics & Reports — the registered owner of the analytics
+                                  experience for BC-26, V1, status PLANNED
+                                  (PRD_REGISTRY.md L246). ABSENT from disk.
+
+  C3 renders already-certified metrics and defines NO metric semantics.
+
+  TWO OPEN decisions gate parts of C3:
     XPC-OD-003 — E-22's consumer enumeration omits BC-19 and BC-25, so the
                  public gallery cannot lawfully be served as a FileRef today
                  (Architecture Owner)
+    XPC-OD-007 — No profile-view event producer and no lawful edge into BC-26
+                 exists. Which context produces the profile-view fact, over
+                 which declared edge, and does PRD-009 certify ProfileViews
+                 and UniqueViewers as CertifiedMetrics?
+                 (Architecture Owner + Product Owner)
 
   What this file does NOT do
   --------------------------
     - Creates no bounded context, edge, event, aggregate or invariant.
     - Publishes no field outside the frozen 14A.5 list.
+    - Creates NO analytics system, metric store, database, event pipeline
+      or parallel tracking architecture. Defines NO metric semantics.
+    - Renders NO engagement metric on the public profile surface
+      (14A.5 lists Internal Analytics as NEVER-PUBLIC; LIB-14B.22 repeats it).
     - Amends no FROZEN PRD and no Rank 1-6 artefact.
     - Mints no IMPL-* identifier. Confers no lifecycle stage.
 -->
@@ -33,22 +58,25 @@
 
 ## Library Public Profile
 
-### v0.1 — Stage 2 (Draft)
+### v0.2 — Stage 2 (Draft)
 
 > ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT APPROVED.** Stage 3 has **not** been entered.
-> ⚠⚠ **4 of 28 requirements are CONDITIONAL on an OPEN decision** — see §2.
+> ⚠⚠ **4 of 44 requirements are CONDITIONAL on `XPC-OD-003`** — see §2.
+> ⚠⚠ **15 of 44 requirements are CONDITIONAL on `XPC-OD-007`** — see §9A.1.
 
 | Field | Value |
 |---|---|
 | **PRD** | `PRD-021C` Part **C3** |
 | **Part title** | Library Public Profile |
-| **Version** | **v0.1** |
+| **Version** | **v0.2** |
 | **Status** | **`DRAFT`** — Stage 2 |
 | **Structural classification** | Part of the `AR-1` read composition (module 19). ⛔ **NOT a bounded context** |
 | **Release** | **V1** |
 | **Identifier prefix** | `LPP-*` — collision-checked at **0** occurrences |
 | **Owns** | ⛔ **No entity. No field. No aggregate. No invariant.** Composition rules and presentation semantics only |
-| **Consumes** | `BC-19` Tenancy · `BC-25` Configuration · `BC-29` File & Media *(⚠ conditional)* · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating — projected via `BC-23` |
+| **Consumes** | `BC-19` Tenancy · `BC-25` Configuration · `BC-29` File & Media *(⚠ conditional)* · `BC-06` Library Policy · `BC-02` Membership · `BC-04` Seating — projected via `BC-23` · `BC-26` Analytics Read Model *(⚠ conditional — read-only metric readout, §9A)* |
+| **Analytics ownership** | ⛔ **Not C3's.** Metric/semantic layer = **`BC-26`** (BC Map **L135**, **L385**). Analytics experience = **`PRD-009`** (`PRD_REGISTRY.md` **L246**, `PLANNED`). C3 **renders only** |
+| **Access control** | Public profile = anonymous (`LPP-FR-004`). §9A summary = **`PO-12`**, delegated to `BC-18` (`LPP-FR-032`) |
 | **Cross-part** | [`C0`](./PRD-021C_C0_CROSS_PART_ARCHITECTURE_AND_OPEN_DECISIONS_v0.1.md) · [`C1`](./PRD-021C_C1_MARKETPLACE_FOUNDATION_DRAFT_v0.1.md) · [`C2`](./PRD-021C_C2_LIBRARY_SEARCH_AND_LOCAL_DISCOVERY_DRAFT_v0.1.md) |
 
 ---
@@ -112,11 +140,12 @@ one rather than padded to look substantial.
 
 ---
 
-## §2. ⚠ The open decision that gates part of C3
+## §2. ⚠ The open decisions that gate parts of C3
 
 | Open decision | What is unresolved | Owner | Requirements blocked |
 |---|---|---|---|
 | **`XPC-OD-003`** | `E-22` (BC Map **L331**) enumerates `BC-01`, `BC-10`, `BC-12`, `BC-14` → `BC-29`. **`BC-19` and `BC-25` are absent.** No lawful edge exists today by which tenant branding or a library gallery becomes a `BC-29` `FileRef` | **Architecture Owner** | `LPP-FR-014` … `LPP-FR-017` |
+| **`XPC-OD-007`** | No profile-view event producer exists in the V1 event surface (BC Map §9), and the only edge into `BC-26` is `E-26` (`BC-27 AI → BC-26, BC-23`), which is not a telemetry ingress. `PRD-009` — `BC-26`'s registered owner — is `PLANNED` and absent from disk | **Architecture Owner** *(producer + edge)* **+ Product Owner** *(`PRD-009` metrics)* | `LPP-FR-030` … `LPP-FR-044`; `LPP-AC-015` … `LPP-AC-022` — see **§9A.1** |
 
 ⛔ **No edge is created here.** `E-22`'s source cell is an **enumeration**, not
 the wildcard *"All contexts"* that `E-17`…`E-20` and `E-23` carry. `ADR-0084`
@@ -140,9 +169,14 @@ be implemented until `XPC-OD-003` is decided.
 
 | Register | Range | Count | Contiguous |
 |---|---|---|---|
-| `LPP-FR-*` | `LPP-FR-001` … `LPP-FR-028` | 28 | Yes |
-| `LPP-AC-*` | `LPP-AC-001` … `LPP-AC-014` | 14 | Yes |
-| `LPP-XC-*` | `LPP-XC-001` … `LPP-XC-010` | 10 | Yes |
+| `LPP-FR-*` | `LPP-FR-001` … `LPP-FR-044` | 44 | Yes |
+| `LPP-AC-*` | `LPP-AC-001` … `LPP-AC-022` | 22 | Yes |
+| `LPP-XC-*` | `LPP-XC-001` … `LPP-XC-017` | 17 | Yes |
+
+⚠ **`LPP-FR-029`…`044`, `LPP-AC-015`…`022` and `LPP-XC-011`…`017`** were added
+in **v0.2** for the Owner Profile Engagement Summary (§9A). `LPP-FR-030`…`044`
+(15 requirements) and `LPP-AC-015`…`022` (8 criteria) are ⚠ **CONDITIONAL** on
+`XPC-OD-007`.
 
 ### §3.1 Normative language
 
@@ -347,6 +381,217 @@ order **MUST NOT** appear in any public response (`LIB-18.2`).
 
 ---
 
+## §9A. Owner Profile Engagement Summary
+
+> ⚠⚠ **All 16 requirements in this section are CONDITIONAL on `XPC-OD-007`.**
+> See §9A.1. No profile-view event producer and no lawful edge into `BC-26`
+> exists in the repository today.
+
+### §9A.1 ⭐ The analytics ownership determination
+
+This section is a **presentation/readout requirement of C3**. It is **not** a new
+analytics domain. The repository already has an analytics owner, and C3
+reconciles to it rather than inventing one.
+
+| Concern | Authoritative owner | Measured source |
+|---|---|---|
+| Metric **definition** (what "a profile view" counts as) | **`BC-26` Analytics Read Model** — *"Owns the metric/semantic layer… metric definitions single-sourced from the semantic layer"* | BC Map **L135**, **L385** (Rank 4) |
+| Metric **store, projection, report, export** | **`BC-26`** | BC Map **L135** |
+| The analytics **product surface** (dashboards, detailed analytics) | **`PRD-009` Analytics & Reports** → `BC-26`, `[GENERIC]`, V1 | `PRD_REGISTRY.md` **L246** |
+| Profile-view **event production** | ⚠ **UNDETERMINED** → `XPC-OD-007` | no producer exists — see below |
+| **Rendering** an already-certified metric on the profile | **C3** (this document) | this section only |
+
+`BC-26` is `[GENERIC]`, Release **V1**, and is a **projection** context whose
+own invariant is *"Fully rebuildable from the event log; no projection is a
+system of record"* (BC Map **L385**). It is therefore already exactly the shape
+this requirement needs: a read model that certifies metrics and is never a
+source of truth.
+
+**Two gaps were measured, and neither is closed here:**
+
+1. **`PRD-009` does not exist on disk.** `PRD_REGISTRY.md` **L246** registers it
+   as `PLANNED`. `find docs/ -iname "*009*"` returns no `PRD-009` document. The
+   *owner* of the metric definition is therefore named at Rank 4 (`BC-26`) but
+   the *specification* that would define `ProfileViews` and `UniqueViewers` as
+   `CertifiedMetric`s has not been authored. This is structurally identical to
+   `XPC-OD-002` (`PRD-015`, `BC-23`'s absent owner) and is recorded the same
+   way — as an OPEN decision, not as an assumption.
+
+2. **No profile-view event exists, and C3 cannot produce one.** The V1 event
+   surface (BC Map §9) contains no view event for any aggregate. The naming
+   convention is binding — `<Context>.<Aggregate><PastTenseVerb>` — and every
+   producer in the catalogue is a context that owns an aggregate. C3 owns no
+   aggregate (`LPP-XC-001`) and is already forbidden from emitting any event
+   (`LPP-XC-003`), so C3 cannot be the producer. The only edge into `BC-26` in
+   §7.3 is **`E-26`** (`BC-27 AI → BC-26, BC-23`), which is inbound to AI, not a
+   telemetry ingress for a composition capability.
+
+> **The repository has already reasoned about view events once, and reached the
+> opposite conclusion to a naive tracking design.** `SM-7.17` records that
+> *"`StudentViewed` is deliberately absent — viewing is an **audit** concern
+> (§8.3), not a domain event."* That precedent does not resolve this section, but
+> it does mean the question *"which context may lawfully emit a view fact, and to
+> which consumer"* is a live architectural question with an existing answer for a
+> neighbouring case. Minting `library.ProfileViewed` here — and an edge to carry
+> it — would be exactly the *"duplicate event pipeline"* this requirement
+> forbids. It is recorded as `XPC-OD-007` and left open.
+
+`XPC-OD-007` — **Which context lawfully produces the profile-view fact, over
+which declared edge, and does `PRD-009` certify `ProfileViews` and
+`UniqueViewers` as `CertifiedMetric`s of `BC-26`?**
+**Owner: Architecture Owner** (edge + producer) **and Product Owner**
+(`PRD-009` metric definitions).
+
+### §9A.2 ⚠ Reconciliation with `LPP-FR-002`, `LPP-FR-004` and `LPP-FR-008`
+
+The engagement summary is **viewer-varying**, and three already-authored C3
+requirements forbid viewer-varying content. All three are reconciled **without
+amendment**, because the summary is not part of the public projection at all.
+
+| Requirement | Apparent tension | Reconciliation |
+|---|---|---|
+| `LPP-FR-002` — field set **MUST** be exactly the §14A.5 public list | Is the summary a new profile field? | **No.** It is an **owner-only overlay rendered outside the public projection**. `LPP-FR-030` forbids it from entering the projection. §14A.5's field set is untouched; `LPP-XC-004` still holds |
+| `LPP-FR-004` — profile **MUST** be readable without authentication | Does the summary gate the profile? | **No.** The anonymous response is byte-identical whether or not an owner exists. The overlay is additive **after** a successful `BC-18` decision, never a precondition for reading any public field |
+| `LPP-FR-008` — order **MUST NOT** vary by viewer | Position 7 appears only for owners | **Ordering is invariant within each audience class.** The public order is fixed and identical for every anonymous and every non-owner viewer. Position 7 is a **reserved slot** that is either absent (all public viewers) or occupied by the summary (authorised owner/admin only). No commercial arrangement, locale or session may reorder either rendering |
+
+> **This is the reconciliation that keeps `LPP-FR-008` meaningful.** `LPP-FR-008`
+> exists to stop presentation order becoming a monetisation surface. A reserved
+> slot that is *structurally* owner-only does not create that surface — it cannot
+> be sold, because no amount of payment makes a viewer the owner. What would
+> break `LPP-FR-008` is a slot whose *occupancy* varies by arrangement, and
+> `LPP-FR-029` forbids exactly that.
+
+### §9A.3 Presentation order
+
+`LPP-FR-029` — The profile **MUST** render its groups in exactly this order.
+Position **7** is a **reserved owner-only slot** (§9A.2). The order **MUST NOT**
+vary by viewer within an audience class, by session, by locale or by any
+commercial arrangement (`LPP-FR-008`).
+
+| # | Group | Audience | Governing requirement |
+|---|---|---|---|
+| 1 | Library Identity & Basic Information | Public | `LPP-FR-009`, `LPP-FR-010` |
+| 2 | Photos / Media | Public ⚠ `XPC-OD-003` | `LPP-FR-014`…`017` |
+| 3 | Facilities & Amenities | Public | `LPP-FR-021`, `LPP-FR-022` |
+| 4 | Location, Hours & Contact | Public | `LPP-FR-018`…`020` |
+| 5 | Pricing / Membership Information | Public | `LPP-FR-023`, `LPP-FR-024` |
+| 6 | Availability Preview | Public — **aggregate only** | `LPP-FR-025`; C4 |
+| **7** | **Owner Profile Engagement Summary** | ⛔ **Owner/admin only** ⚠ `XPC-OD-007` | **`LPP-FR-030`…`044`** |
+| 8 | Owner/Admin Profile Controls | ⛔ Owner/admin only | `LIB-14B.27` `PO-12` |
+| 9 | Privacy & Visibility | ⛔ Owner/admin only | §14A.6 |
+| 10 | Profile Actions | Mixed — per `PO-*` | `LIB-14B.27` |
+
+### §9A.4 Non-public by construction
+
+`LPP-FR-030` — The engagement summary **MUST NOT** form part of the public
+profile projection. It **MUST NOT** appear in an anonymous response **in any
+form, including aggregated, derived, inferred, cached, embedded-metadata or
+error-message form** (§14A.5 *Internal Analytics*, **never-public**;
+`LIB-14B.22` — *"Internal analytics, dashboards, occupancy trends"*).
+
+> **This requirement is not defensive drafting; it is the frozen field list
+> speaking.** §14A.5 places *Internal Analytics* on the **never-public** list and
+> `LIB-14B.22` repeats it. A view counter rendered to an anonymous visitor would
+> publish an internal analytic on a public endpoint — which `LPP-XC-004` already
+> forbids C3 from doing. The summary is lawful **only** because it never enters
+> the public surface.
+
+`LPP-FR-031` — The presence or absence of the summary **MUST NOT** be observable
+to an unauthorised caller. Status code, body shape, payload size class, field
+ordering and response timing of the public profile **MUST** be indistinguishable
+whether the summary exists, is empty, or is unavailable (`LPP-FR-026`,
+`LIB-14B.24`, `AR-7`).
+
+`LPP-FR-032` — Rendering the summary is a **protected operation** under
+`LIB-14B.27` **`PO-12`** (*any staff or administrative function*). Access
+**MUST** be delegated to **`BC-18` Identity & Access**. C3 **MUST NOT** evaluate
+any permission locally (`LIB-14B.30`, `LPP-XC-007`, `X-13`).
+
+`LPP-FR-033` — Authorisation **MUST** be evaluated **in addition to**
+authentication. A valid session **MUST NOT** be treated as permission
+(`LIB-14B.29`, `AUTH-7.3`). An authenticated visitor with no owner/admin role in
+**this** library **MUST** be refused.
+
+`LPP-FR-034` — The summary **MUST** be scoped to the requested library's own
+tenant. A request **MUST** carry tenant context and **MUST** be refused where it
+is absent or does not match (`MP-GBR-08`, `SE-1`, `X-13`; `AR-3` **Tenant
+Operational Data** class — *not* the Platform Public Discovery Index class).
+
+> **`LPP-FR-034` is the highest-severity rule in this section.** BC Map §11.1
+> records that *"the single highest-severity failure mode in the entire
+> architecture is a cross-tenant data leak via a capability context."* The public
+> profile is deliberately served with **no caller tenant context** (`AR-3`,
+> Platform Public Discovery Index). Bolting a tenant-scoped metric onto that same
+> endpoint is precisely the shape of that failure mode, which is why the overlay
+> must be resolved on the operational-data path with a mandatory tenant key and
+> never on the discovery-index path.
+
+### §9A.5 Metrics — read, never computed
+
+`LPP-FR-035` — **Total Profile Views MUST** be read as a **`CertifiedMetric`
+of `BC-26`**. C3 **MUST NOT** count, increment, store, cache-as-source,
+aggregate, sample or re-derive it (BC Map **L135**, **L385**).
+
+`LPP-FR-036` — ⚠ **CONDITIONAL.** **Unique Viewers MUST** be rendered **only
+where `BC-26` publishes it as a `CertifiedMetric`**. C3 **MUST NOT** compute
+uniqueness, deduplicate by identifier, fingerprint a device, or infer
+distinctness from any signal. Where the metric is not published, the field
+**MUST** be omitted — **not** shown as zero, unknown or "coming soon".
+
+`LPP-FR-037` — The **period/trend summary** (e.g. *"+18% this week"*) **MUST**
+be a comparison published by `BC-26` over `BC-26`-defined periods. C3 **MUST
+NOT** compute the delta, choose the comparison window, or annualise, smooth or
+project it. The period **MUST** be labelled explicitly; a trend without a stated
+period **MUST NOT** be rendered.
+
+`LPP-FR-038` — C3 **MUST NOT** define the metric semantics — what constitutes a
+view, whether a bot is excluded, whether an owner's own visit counts, or the
+deduplication window. These are `BC-26` semantic-layer concerns and belong to
+`PRD-009` (⚠ `XPC-OD-007`).
+
+> **`LPP-FR-038` is a refusal, and it is deliberate.** A readout that defines its
+> own metric semantics *is* a parallel analytics system, however small. Two
+> surfaces that each decide independently whether a bot counts will disagree, and
+> the owner will be shown *"1.2K"* on the profile and a different number in the
+> analytics dashboard. Declining to define the semantics is the only way the CTA
+> in `LPP-FR-040` can lead somewhere consistent.
+
+### §9A.6 Viewer privacy
+
+`LPP-FR-039` — The summary **MUST NOT** expose individual viewer identities by
+default. It **MUST NOT** render a viewer list, name, avatar, handle, `PersonId`,
+`AccountId`, partial identifier, device identifier, precise timestamp of an
+individual view, or any value from which an individual viewer could be
+re-identified (§14A.5 never-public; `LIB-14B.27` **`PO-11`**; `ID-3`).
+
+`LPP-FR-040` — Where a metric value is small enough that it could identify an
+individual viewer, it **MUST** be suppressed rather than rendered. C3 **MUST
+NOT** define the suppression threshold; the threshold is a `BC-26` semantic-layer
+concern (⚠ `XPC-OD-007`).
+
+`LPP-FR-041` — The summary **MUST NOT** render any social signal — which
+friends, followers, group members or peers viewed the profile — under any
+aggregation (`X-05`, Matrix **L354**; `ID-3`, BC Map **L180**; `LPP-XC-008`).
+
+### §9A.7 The View Analytics CTA
+
+`LPP-FR-042` — The **View Analytics** CTA **MUST** hand off to the analytics
+experience owned by **`PRD-009` / `BC-26`**. C3 **MUST NOT** render detailed
+analytics, a chart, a breakdown, a segment, a funnel, an export or a date-range
+picker inline.
+
+`LPP-FR-043` — The CTA **MUST** be rendered only to a caller already authorised
+under `LPP-FR-032`. For every other caller it **MUST** be **absent**, not
+disabled-with-explanation, not present-and-refusing (`LPP-FR-031`).
+
+`LPP-FR-044` — Where `BC-26` is unavailable or the metric cannot be resolved, the
+summary **MUST** mark itself temporarily unavailable and **MUST NOT** render
+zero, a stale value of unknown age, or an inferred value (`LPP-FR-006`). It
+**MUST** carry the freshness of its own source (`LPP-FR-007`), and **MUST NOT**
+fail the public profile (`LPP-FR-030`).
+
+---
+
 ## §10. Exclusions
 
 ⛔ Each exclusion is a **boundary**, not a backlog item.
@@ -363,6 +608,20 @@ order **MUST NOT** appear in any public response (`LIB-18.2`).
 | `LPP-XC-008` | Show any social signal — friends attending, followers, group membership, peer activity, `PersonId`-keyed data | `X-05` (Matrix **L354**); `ID-3` (BC Map **L180**) |
 | `LPP-XC-009` | Preview, index, cache or acknowledge a Private library | §14A.6; `LIB-14B.23`, `LIB-14B.24` |
 | `LPP-XC-010` | Compute, store, total, discount or prorate a price | `LXC-7`; `LIB-14B.15`, `LIB-14B.18` |
+| `LPP-XC-011` | Create an analytics system, metric store, read-model store, warehouse or reporting database. `BC-26` owns all of these | BC Map **L135**, **L385**; `AR-1` |
+| `LPP-XC-012` | Create an event pipeline, telemetry collector, tracking endpoint, beacon, pixel or parallel tracking architecture | `LPP-XC-003`; BC Map §9 naming convention (binding) |
+| `LPP-XC-013` | Define, own or version any metric semantic — view definition, bot exclusion, deduplication window, suppression threshold or comparison period | BC Map **L385** *(metric definitions single-sourced from the semantic layer)*; `PRD-009` ⚠ `XPC-OD-007` |
+| `LPP-XC-014` | Emit, name or route a profile-view event, or mint an edge to carry one | `LPP-XC-003`; BC Map §7.3; `ADR-0084`, `ADR-0083` §4.5 *(edge-minting refused)*; ⚠ `XPC-OD-007` |
+| `LPP-XC-015` | Render any engagement metric, in any form, on the public profile surface | §14A.5 *Internal Analytics* (**never-public**); `LIB-14B.22` |
+| `LPP-XC-016` | Identify, list, name, count-to-identifiability or re-identify an individual viewer | §14A.5; `LIB-14B.27` `PO-11`; `ID-3` |
+| `LPP-XC-017` | Render detailed analytics, charts, breakdowns, segments, exports or date-range controls inline | `PRD-009` / `BC-26` owns the analytics experience |
+
+> **`LPP-XC-011`…`014` are the four exclusions that make this a readout rather
+> than a second analytics system.** The requirement that produced §9A explicitly
+> forbids a duplicate analytics system, database, event pipeline or parallel
+> tracking architecture. Stating that as prose would have been an intention;
+> stating it as four boundaries with named authorities makes it testable — and
+> makes it visible if a later revision quietly crosses one.
 
 > **`LPP-XC-008` deserves a note, because a "3 of your friends study here" badge
 > is an obvious product idea.** It is structurally forbidden twice: `X-05`
@@ -467,6 +726,67 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **When** the public error response is inspected
 > **Then** it contains no internal identifier, table name, query fragment, stack trace, context name or configuration value.
 
+### §11.1 Owner Profile Engagement Summary — acceptance criteria
+
+⚠ **All 8 criteria below are CONDITIONAL on `XPC-OD-007`** and, like the 14
+above, **0 are proven by an executed test.**
+
+**`LPP-AC-015` — The summary is invisible to the public surface**
+> **Given** a library whose visibility mode is Public and whose owner has a non-zero view count
+> **When** an unauthenticated caller requests its public profile
+> **Then** no engagement metric appears in any form — aggregated, derived, inferred, cached, embedded in metadata or in an error message
+> **And** the response is indistinguishable in status code, body shape, payload size class, field order and response timing from the same profile with an empty or unavailable summary.
+
+**`LPP-AC-016` — Authentication alone does not admit**
+> **Given** an authenticated caller holding a valid session but no owner or admin role in the requested library
+> **When** the caller requests the profile
+> **Then** the engagement summary is **absent** from the response
+> **And** the View Analytics CTA is **absent**, not disabled and not present-and-refusing
+> **And** the authorisation decision was returned by `BC-18`, with no permission evaluated locally.
+
+**`LPP-AC-017` — Cross-tenant refusal**
+> **Given** an authorised owner of library A
+> **When** that caller requests the engagement summary of library B, and separately requests it with tenant context absent
+> **Then** both requests are refused
+> **And** no metric value, existence signal or count for library B is returned in either case.
+
+**`LPP-AC-018` — Metrics are read, never computed**
+> **Given** the engagement summary read path
+> **When** its data sources are traced
+> **Then** Total Profile Views resolves to a `CertifiedMetric` of `BC-26`
+> **And** no counter, increment, aggregation, sample or re-derivation is performed by C3
+> **And** C3 holds no metric store of its own.
+
+**`LPP-AC-019` — Unique Viewers is omitted when uncertified**
+> **Given** a deployment in which `BC-26` does not publish a Unique Viewers `CertifiedMetric`
+> **When** an authorised owner views the summary
+> **Then** the Unique Viewers field is omitted entirely
+> **And** it is not rendered as zero, as unknown, or as "coming soon"
+> **And** no uniqueness is computed, deduplicated, fingerprinted or inferred by C3.
+
+**`LPP-AC-020` — Trend carries an explicit period**
+> **Given** a rendered period/trend summary such as "+18% this week"
+> **When** the value and its label are inspected
+> **Then** both the delta and the comparison period were published by `BC-26`
+> **And** the period is stated explicitly in the rendering
+> **And** no trend is rendered without a stated period
+> **And** C3 performed no delta, smoothing, annualisation or projection.
+
+**`LPP-AC-021` — No individual viewer is identifiable**
+> **Given** an authorised owner viewing the engagement summary
+> **When** the full response payload is enumerated
+> **Then** it contains no viewer name, avatar, handle, `PersonId`, `AccountId`, partial identifier, device identifier or individual-view timestamp
+> **And** it contains no social signal describing which friends, followers, group members or peers viewed the profile
+> **And** where a value is small enough to identify an individual, it is suppressed rather than rendered.
+
+**`LPP-AC-022` — No duplicate analytics architecture exists**
+> **Given** the complete C3 implementation surface
+> **When** it is inspected for analytics infrastructure
+> **Then** C3 declares no metric store, read-model store, warehouse or reporting database
+> **And** C3 declares no event, telemetry collector, tracking endpoint, beacon or pixel
+> **And** C3 defines no metric semantic — view definition, bot exclusion, deduplication window, suppression threshold or comparison period
+> **And** the View Analytics CTA hands off to the `PRD-009` / `BC-26` experience rather than rendering analytics inline.
+
 ---
 
 ## §12. Traceability to authority
@@ -479,16 +799,22 @@ authored specifications of verifiable behaviour, at Stage 2.
 | `LPP-FR-018`…`022` | §14A.5; `LIB-14B.19`, `20`, `21`; `LCFG-1`, `LCFG-6`; BC Map **L101** (`BC-06`) |
 | `LPP-FR-023`…`025` | `LIB-14B.15`…`18`; `LIB-14B.11`…`14`; `LXC-7`; `SEAT-XC-009`, `SEAT-FR-117`; `LIB-7.3` |
 | `LPP-FR-026`…`028` | `LIB-14B.23`, `24`, `25`; `AR-7`; `LIB-DISC-004`; `LIB-18.2`; `AUTH-3.*` |
+| `LPP-FR-029` | `LPP-FR-008`; §9A.2 reconciliation; `LIB-14B.27` `PO-12` |
+| `LPP-FR-030`…`034` | §14A.5 *Internal Analytics* (**never-public**); `LIB-14B.22`, `24`, `27` (`PO-11`, `PO-12`), `29`, `30`; `AR-3` / BC Map §11.1; `AR-7`; `MP-GBR-08`; `SE-1`; `X-13` |
+| `LPP-FR-035`…`038` | BC Map **L135** (`BC-26` owns the metric/semantic layer), **L385** (`CertifiedMetric`, `ReadModel`); `PRD_REGISTRY.md` **L246** (`PRD-009`); ⚠ `XPC-OD-007` |
+| `LPP-FR-039`…`041` | §14A.5; `LIB-14B.27` `PO-11`; `ID-3` (BC Map **L180**); `X-05` (Matrix **L354**) |
+| `LPP-FR-042`…`044` | `PRD_REGISTRY.md` **L246**; BC Map **L135**; `LPP-FR-006`, `LPP-FR-007`, `LPP-FR-031` |
 
 ---
 
 ## §13. Status
 
 **`DRAFT` · Stage 2 · NOT FROZEN · NOT APPROVED · NOT BASELINED · Rank: none.**
-Stage 3 **not** entered. **4 of 28** requirements ⚠ **CONDITIONAL** on
-`XPC-OD-003`. **0** ADRs, **0** contexts, **0** edges, **0** events, **0**
-aggregates, **0** new public fields, **0** `IMPL-*`, **0** Rank 1–6 documents
-modified, **0** lines of code.
+Stage 3 **not** entered. **4 of 44** requirements ⚠ **CONDITIONAL** on
+`XPC-OD-003`; a further **15 of 44** (§9A) ⚠ **CONDITIONAL** on `XPC-OD-007`.
+**0** ADRs, **0** contexts, **0** edges, **0** events, **0** aggregates, **0**
+new public fields, **0** analytics systems, **0** metric definitions, **0**
+`IMPL-*`, **0** Rank 1–6 documents modified, **0** lines of code.
 
 ---
 
@@ -497,3 +823,4 @@ modified, **0** lines of code.
 | Version | Date | Change |
 |---|---|---|
 | **v0.1** | 2026-09-02 | Created. Specifies the public library profile as a **projection and presentation layer** over §14A.5 / §14B.4, duplicating nothing from Library Management. 28 FR (4 conditional) · 14 AC · 10 XC |
+| **v0.2** | 2026-09-02 | Added **§9A Owner Profile Engagement Summary** as a C3 **presentation/readout** requirement — **not** a new analytics domain. Reconciled analytics ownership to the **existing** owner: `BC-26` Analytics Read Model (BC Map **L135**, **L385**) for the metric/semantic layer, `PRD-009` (`PRD_REGISTRY.md` **L246**, `PLANNED`) for the analytics experience. Added the mandated **10-item presentation order** (`LPP-FR-029`) with the summary at position **7** as an owner-only reserved slot, reconciling `LPP-FR-002` / `004` / `008` **without amending them**. Recorded **`XPC-OD-007`** OPEN — no profile-view event producer and no lawful edge into `BC-26` exists. **+16 FR · +8 AC · +7 XC** → 44 FR · 22 AC · 17 XC. Stage held at **2**. `BC-17`, C1, C2, C4 and all Rank 1–6 / FROZEN artefacts **unchanged** |

@@ -1451,7 +1451,7 @@ treats as the "origin/main" the instruction means. ⛔ **No remote was renamed o
 
 | Field | Value |
 |---|---|
-| **Commit SHA** | ⚠ See **§20.1** — a document cannot contain its own commit SHA |
+| **Commit SHA** | ⭐ **`bd0decd3ffc2fc80d9ec4c26156850a1b08ee2a2`** — the commit introducing this record. ⚠ Written by the follow-up commit; see **§20.1** |
 | **Commit message** | `docs: complete PRD-021B B0-B9 consolidated stage 4 requirements review` |
 | **Branch** | `main` |
 | **Remote pushed** | **`github`** → `https://github.com/sittuazad05022000-spec/Liboora-.git` |

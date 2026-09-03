@@ -1454,4 +1454,80 @@ recorded instead of inventions; **6** decisions (`XPC-OD-001`…`006`) left
 explicitly **OPEN** against named owner roles.
 
 ---
+### 15.7 ⭐ Change note — the 2026-09-03 Stage 7 advance
+
+⚠ **This is a SECOND change note, appended beside §15.6 rather than replacing
+it.** §15.6 records the 2026-09-02 append truthfully and is left **byte-unchanged**:
+it says *"Parts C0–C4 registered as `DRAFT` / Stage 2"*, which was accurate on
+its own date. Rewriting it to read `APPROVED` / Stage 7 would delete the record
+of the state the register actually passed through, which is the defect
+`PRD_LIFECYCLE.md` **L177** forbids and the reason every prior cell in §15.1
+carries its superseded text rather than losing it.
+
+⚠ **The version is again deliberately NOT incremented**, on the identical
+reasoning §15.6, §11.7 and §12.5 give: this register's version-discipline defect
+is **pre-existing and systemic**, and bumping the header for this one advance
+would imply it is the only change since the header date, which is false.
+⛔ Disclosed, not repaired.
+
+⚠ **§15's heading and preamble are NOT rewritten and that is deliberate.** They
+still read *"Six Stage-2 files"* and *"2026-09-02"*. Those words are a **true
+record of the append this section was written to document**, not a live claim
+about today's repository; the live claim is in the §15.1 cells, which **are**
+derived statements this act changes the truth of and which **were** therefore
+corrected. This is the same **two-limb test** applied throughout: a statement is
+repaired here only if (1) this act changes whether it is true **and** (2) the
+document is named in the authorising ADR's `Amends` clause. The heading fails
+limb 1 and is left alone; the six cells pass both and were corrected.
+
+⭐ **Appended, not inserted.** This register is cited by line number **581**
+times by plausible measurement; appending below the former last line (**L1458**)
+shifts **0** of them — the `ADR-0079` §8.5 Option A method that §12, §13, §14
+and §15.6 each reused. ⚠ The figure was **measured before writing**, not
+asserted afterwards.
+
+**2026-09-03 — `PRD-021C` Parts C0–C8 advanced from `DRAFT` / Stage 2 to
+`APPROVED` / Stage 7 FROZEN-BASELINED, at Rank 3, under `BASELINE-2026-09-03-A`,
+by `Accepted` [`ADR-0098`](../adr/ADR-0098-prd-021c-c0-c8-library-marketplace-rank-3-baseline.md),
+on a Governance Owner authority conferred for this one act by the human
+principal and recorded at
+[`../../30-product/library-marketplace/PRD-021C_C0_C8_STAGE7_CONFERRAL.md`](../../30-product/library-marketplace/PRD-021C_C0_C8_STAGE7_CONFERRAL.md).**
+
+**Cells corrected — six in §15.1 plus one in §15.4, all seven derived
+statements, each acknowledged as *true when written* rather than silently
+overwritten:**
+
+| Cell | From | To | Why it had to move |
+|---|---|---|---|
+| `Parts` (**L1343**) | five specification files | **C0–C8, nine files, all v0.1, 6,023 lines / 446,994 bytes** | C5–C8 were authored after the append; the cell counted a subject that has since grown |
+| `Status` (**L1346**) | `DRAFT` | **`APPROVED`** | §7 rule 3 — the register must match the repository in the **same commit** as the change |
+| `Lifecycle stage` (**L1348**) | *"Stage 2 (Draft). ⛔ Stage 3 NOT entered"* | **Stage 7 — FROZEN / BASELINED** | Stages 3, 4, 5, 6 and 7 gate records now exist on disk and each returns PASS |
+| `Freeze` (**L1350**) | *"⛔ Not frozen, and none requested"* | ⭐ **FROZEN 2026-09-03 at Rank 3** | ⚠ **Both limbs were accurate when written** — it was not frozen, and no freeze had been requested. The second limb is now false because the principal requested one |
+| `Identifiers` (**L1352**) | 246 | **528 across 30 registers** | C5–C8's registers were added to `TRACEABILITY_MATRIX.md` §2R (v1.23) after the append |
+| `Open decisions` (**L1353**) | six, all OPEN | **eleven — 5 RESOLVED, 6 OPEN** | `ADR-0093`…`ADR-0097` closed five; `XPC-OD-007` later split A/B. ⛔ The split is **not** two new identifiers |
+| §15.4 row 5 (**L1409**) | *"⛔ No, and none is written"* | ⭐ **YES — and it is now WRITTEN** | The answer was true of **the append**, false of the repository after the baseline rows landed |
+
+⛔ **What this change note does NOT do — measured, not asserted:**
+
+1. ⛔ **Confers nothing.** The conferral is in the conferral record; the rank and baseline rows are in `ADR-0098` and `DOCUMENTATION_BASELINE.md` §3.3/§4. **This register is unranked** (§15.4 row 1) and has no power to freeze anything — it **reports** a freeze conferred elsewhere.
+2. ⛔ **Closes none of the six OPEN decisions.** `XPC-OD-004`, `005`, `006`, `008`, `009`, `010` stay **OPEN** against named owner **roles**. `XPC-OD-005` **cannot** be closed by anyone in this act: the **Privacy Owner is VACANT** (`PRD_OWNERSHIP_MODEL.md` **L509**).
+3. ⛔ **Creates no bounded context.** `PRD-021C` still owns **none** — the **second** such admission after `PRD-012a` (`ADR-0060`). Contexts remain **31**, and ⛔ **no `BC-32` was minted** (`ADR-0035` §5.2.5, §15.3).
+4. ⛔ **Creates no integration edge and mints no event.** Edges measured at **29** — `E-01`…`E-26` (§7, **26 rows**) + `E-28`, `E-29`, `E-30`; ⛔ **`E-27` remains permanently vacant, measured at 0 rows.**
+5. ⛔ **Moves no capability between waves.** **C5 Reviews & Ratings stays `V2`** on two independent FROZEN authorities — `Library_PRD_v1.md` **L1016** and `ARCHITECTURE_RULINGS.md` **L291**. `BC-17` stays **V3**.
+6. ⛔ **Touches no booking mechanism.** `PRD-007` is FROZEN and owns seat allocation, reservation, locking and idempotency in full; C4 **L17** and **L100** say so in the subject's own words. C4 composes a **view** and originates no allocation.
+7. ⛔ **Changes no requirement, acceptance criterion, exclusion or ownership record**, and ⛔ **mints no identifier** — 528 stands where 528 was measured. ⛔ **No `IMPL-*` created or altered**; `IMPL-1750`…`1793` are byte-unchanged and the reserve `IMPL-1794`…`1849` stays **empty and unallocated**.
+8. ⛔ **Modifies no frozen document and no subject byte.** All nine parts C0–C8 are **sha256-identical** to their state at `c267489`, and their self-declared `DRAFT` / `NOT FROZEN` headers are **deliberately not repaired** — the fourth consecutive admission to refuse that edit, on `PRD_LIFECYCLE.md` **L161** and **L177**.
+9. ⛔ **Increments no §7 summary count.** The §15.6 reasoning holds: a count edit requires **re-derivation by measurement**, not arithmetic. ⚠ Disclosed, not repaired.
+10. ⛔ **Enters no Stage 8.** `READY`, `IMPLEMENTING` and `VERIFIED` are all **REFUSED**. ⚠ **`FROZEN` is not `VERIFIED`:** **0 of 123** acceptance criteria and **0 of 44** implementation tasks are proven by a test, **0** marketplace files exist under `lib/`, and reverse AC coverage is admitted at its measured **210/258 = 81.4%** with **48 uncovered** — ⛔ **not rounded up, and not closed by minting criteria.**
+11. ⛔ **Repairs no duplicate ordinal.** §3.3 contains one (`PRD-021A` and `PRD-021B` both claim *"sixteenth"*); it is logged as **`GCP-26`** in baseline §6 and **routed, not repaired** — the `Q-A6`/`GCP-20` handling.
+
+**0** existing sections deleted; **1** section appended; **7** derived cells
+corrected; **0** cited lines shifted; **0** ADRs created by this file; **0** Rank
+1–6 documents touched; **0** bounded contexts; **0** edges; **0** events; **0**
+identifiers; **0** `IMPL-*`; **0** open decisions closed; **0** waves moved;
+**0** subject bytes; **0** personal names; **0** standing appointments; **0**
+reserved ADR numbers consumed; **0** lines of application code.
+
+---
+
 

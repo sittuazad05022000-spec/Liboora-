@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Baseline** | **BASELINE-2026-09-02-A** |
-| **Supersedes** | `BASELINE-2026-09-01-B` |
+| **Baseline** | **BASELINE-2026-09-03-A** |
+| **Supersedes** | `BASELINE-2026-09-02-A` |
 | **Status** | **Locked** |
-| **Date** | **2026-09-02** |
-| **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`); re-issued by the **Governance Closure Phase**; extended by the **`PRD-004` Stage 7 freeze**, then by the **`PRD-005` Stage 7 freeze**, then by the **`PRD-007` Stage 7 freeze**, then by the **`PRD-006` Stage 7 freeze**, then by the **`PRD-008` Stage 7 freeze**, then by the **`PRD-013` Stage 7 freeze**, then by the **`PRD-016` Stage 7 freeze**, then by the **`PRD-014` Stage 7 freeze**, then by the **`PRD-023` Stage 7 freeze**, then by the **`PRD-017` Stage 7 freeze**, then by the **`PRD-012a` Stage 7 freeze**, then by the **`PRD-020` Stage 7 freeze**, then by the **`PRD-021A` Stage 7 freeze**, then by the **`PRD-021B` Stage 7 freeze** |
-| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010`, `ADR-0011`, `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`, `ADR-0017`, `ADR-0018`, `ADR-0019`, `ADR-0020`, **`ADR-0033`**, **`ADR-0034`**, **`ADR-0049`**, **`ADR-0050`**, **`ADR-0051`**, **`ADR-0053`**, **`ADR-0054`**, **`ADR-0055`**, **`ADR-0056`**, **`ADR-0060`**, **`ADR-0061`**, **`ADR-0062`**, **`ADR-0063`**, **`ADR-0064`**, **`ADR-0086`**, **`ADR-0087`**, **`ADR-0092`** |
+| **Date** | **2026-09-03** |
+| **Declared by** | Enterprise Architecture review (`DOCUMENTATION_AUDIT-001`); re-issued by the **Governance Closure Phase**; extended by the **`PRD-004` Stage 7 freeze**, then by the **`PRD-005` Stage 7 freeze**, then by the **`PRD-007` Stage 7 freeze**, then by the **`PRD-006` Stage 7 freeze**, then by the **`PRD-008` Stage 7 freeze**, then by the **`PRD-013` Stage 7 freeze**, then by the **`PRD-016` Stage 7 freeze**, then by the **`PRD-014` Stage 7 freeze**, then by the **`PRD-023` Stage 7 freeze**, then by the **`PRD-017` Stage 7 freeze**, then by the **`PRD-012a` Stage 7 freeze**, then by the **`PRD-020` Stage 7 freeze**, then by the **`PRD-021A` Stage 7 freeze**, then by the **`PRD-021B` Stage 7 freeze**, then by the **`PRD-021C` Stage 7 freeze** |
+| **Authority** | `ADR-0008`, `ADR-0009`, `ADR-0010`, `ADR-0011`, `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`, `ADR-0017`, `ADR-0018`, `ADR-0019`, `ADR-0020`, **`ADR-0033`**, **`ADR-0034`**, **`ADR-0049`**, **`ADR-0050`**, **`ADR-0051`**, **`ADR-0053`**, **`ADR-0054`**, **`ADR-0055`**, **`ADR-0056`**, **`ADR-0060`**, **`ADR-0061`**, **`ADR-0062`**, **`ADR-0063`**, **`ADR-0064`**, **`ADR-0086`**, **`ADR-0087`**, **`ADR-0092`**, **`ADR-0098`** |
 
 ---
 

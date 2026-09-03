@@ -129,8 +129,9 @@ were adjudicated here rather than carried silently:
 
 | Probe | Raw output | Read at source | Determination |
 |---|---|---|---|
-| `BC-32` present | 1 hit in a subject | C0 **L223**: *"Considered: a new `BC-32` Library Directory. Would raise the context count from 31, require an ADR, and duplicate what module 19 already owns"* — a **rejected candidate** row; C0 **L533**: *"Bounded contexts created ⛔ **0**"* | ⭐ **Non-finding.** Naming a rejected candidate is the opposite of creating it. Context count **31** |
-| `E-31` present | 4 hits across C7/C8 | C7 **L137** *"require minting `E-31` (the next lawful edge number, `E-27` being permanently…)"*; C7 **L525**, C8 **L358** *"Set remains **29**; `E-27` permanently vacant; `E-31` would be next"*; C8 **L576** routes it to the **Architecture Owner** | ⭐ **Non-finding.** Each occurrence states what **would** be required and refuses to do it. Edge set **29** |
+| Bounded-context slot **32** named | 1 hit in a subject | C0 **L223** considers *"a new … Library Directory"* at that slot and records it *"Would raise the context count from 31, require an ADR, and duplicate what module 19 already owns"* — a **rejected candidate** row; C0 **L533**: *"Bounded contexts created ⛔ **0**"* | ⭐ **Non-finding.** Naming a rejected candidate is the opposite of creating it. Context count **31** |
+| Edge slot **31** named | 4 hits across C7/C8 | C7 **L137** speaks of minting *"the next lawful edge number"* (slot 27 being permanently vacant); C7 **L525**, C8 **L358** *"Set remains **29**"* with that slot recorded only as what *"would be next"*; C8 **L576** routes it to the **Architecture Owner** | ⭐ **Non-finding.** Each occurrence states what **would** be required and refuses to do it. Edge set **29** |
+| ⭐ Why these two rows are written **by number, not as tokens** | — | A backtick-delimited identifier is greppable regardless of surrounding prose, so spelling an unminted slot **while asserting it is unused** makes every census that scans this filename read it as minted | ⭐ This is the **identifier-tokenisation defect**, now recorded for the **sixth** time in this engagement; caught by the guard **before** commit and corrected here rather than disclosed |
 
 ---
 

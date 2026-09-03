@@ -8,7 +8,7 @@
 | **Subject** | `PRD-021C` Local Library Marketplace & Booking — Parts **C0–C8**, nine files, all **v0.1**, **6,023 lines / 446,994 bytes** |
 | **Amends** | `DOCUMENTATION_BASELINE.md` — header (`Baseline`, `Supersedes`, `Date`, `Declared by`, `Authority`), **§3.3** (two rows), **§4** (one Rank 3 row), **§8** (one changelog row); `PRD_REGISTRY.md` **§15** (stale cells corrected, §15.6 appended) |
 | **Baseline** | **`BASELINE-2026-09-03-A`** (supersedes `BASELINE-2026-09-02-A`) — §7 rule 4, a Rank 1–3 document entering |
-| **Rank** | **3** — the **seventeenth** Rank 3 module baseline, and ⭐ **the second admitted for a subject that owns NO bounded context** |
+| **Rank** | **3** — the **eighteenth** Rank 3 module baseline, and ⭐ **the second admitted for a subject that owns NO bounded context**. ⚠ **The ordinal was CORRECTED before this ADR was committed, and the correction is the point:** working notes carried *"seventeenth"*, taken by adding one to the *"**sixteenth**"* that `PRD-021B`'s own §3.3 row claims. Enumerating §3.3's module-baseline rows mechanically in file order instead of trusting the neighbouring claim returns **17 rows**, with `PRD-021B` sitting at position **17** while its row says sixteenth — so incrementing a stale ordinal would have minted a **second** duplicate. See **§5.1** |
 | **Closes** | The Stage 7 gate for `PRD-021C` C0–C8 (`PRD_LIFECYCLE.md` **L159**), and blockers `B7C-1`, `B7C-2`, `B7C-3`, `B7C-4` of [`PRD-021C_C0_C8_STAGE7_BLOCKER.md`](../../30-product/library-marketplace/PRD-021C_C0_C8_STAGE7_BLOCKER.md) |
 | **Does NOT close** | `XPC-OD-004`, `XPC-OD-005`, `XPC-OD-006`, `XPC-OD-008`, `XPC-OD-009`, `XPC-OD-010` — **all six admitted OPEN** (§6). ⛔ Stage 8. ⛔ `READY`, `IMPLEMENTING`, `VERIFIED` |
 | **Subject hashes** | C0 `27722b18f3e2285e` · C1 `c66f8de6eb648d09` · C2 `ea2e3e73f4efab81` · C3 `930ac35443fc5b40` · C4 `6d22b31172f9e75a` · C5 `4327033aae82486d` · C6 `0bd6572931dc104c` · C7 `c90376fcaed9161f` · C8 `1cfbb5e6beb5e639` — ⭐ **all nine byte-unchanged by this admission** |
@@ -177,6 +177,34 @@ which this act changes the truth of, and appends §15.6. This is the same two-li
 (*does this act falsify it? is it a derived statement?*) that left `PRD-020`'s header
 (`D-3`) and A4's provenance unrepaired.
 
+⚠⚠ **A SECOND pre-existing defect, found while deriving this admission's own ordinal, is
+DISCLOSED and deliberately NOT repaired: §3.3 contains a DUPLICATE Rank 3 ordinal.** Two
+rows both claim *"**sixteenth** Rank 3 module baseline"* — `PRD-021A` at **L204** and
+`PRD-021B` at **L206** — measured by extracting every `Rank 3 module baseline` ordinal
+claim in the section rather than reading the two that came to mind. Enumerating §3.3's
+module-baseline rows mechanically in file order gives **17**, in which `PRD-020` is 15
+(and claims *fifteenth*, ✅ correct), `PRD-021A` is 16 (claims *sixteenth*, ✅ correct) and
+**`PRD-021B` is 17 while claiming *sixteenth* — ⛔ off by one**.
+
+**Why this matters more than the row it sits in.** The obvious way to number this
+admission is *"one more than the last one"*. Doing that here would have produced
+*"seventeenth"* — a **third** row in the same section claiming an ordinal already
+claimed, and the second consecutive one produced by the same shortcut. The count was
+therefore **derived from the rows themselves**, not from the neighbouring sentence, and
+`PRD-021C` is the **eighteenth**.
+
+⛔ **`PRD-021B`'s row is NOT edited to say *seventeenth*.** Three grounds, each
+independently sufficient: (i) the row is not this act's subject, and folding an unrelated
+repair into an admission commit is exactly what §6's `GCP-20` note warns leaves a defect
+*"closed with no record of which pass closed it"*; (ii) the row is a **Rank 1** document's
+content and §7 rule 1 requires an ADR **before** the change — this ADR's `Amends` field
+names the header, §3.3 (two new rows), §4 and §8, and **not** L206, so editing it would put
+the change outside its own authority; (iii) `PRD-021B_B0_B9_STAGE7_FREEZE.md` **L262** and
+**L377** cite this row's content as measured fact, and the ordinal is quoted in
+`ADR-0092`. Logged here as **`GCP-26`**, owner **Governance Owner**, for a pass whose
+subject it actually is — the `Q-A6`/`GCP-20` handling precedent, where a stale token in a
+higher-ranked document was **routed, not repaired as a side effect**.
+
 ---
 
 ## 6. Open items admitted OPEN — declared, not hidden
@@ -254,4 +282,4 @@ the identical disclosure `PRD-012a` (*"0 of 128"*), `PRD-020` (*"0 of 62"*), `PR
 
 | Version | Date | Change |
 |---|---|---|
-| **v1.0** | 2026-09-03 | **`PRD-021C` C0–C8 v0.1 admitted at Rank 3 and Stage 7 CONFERRED.** ⭐ **The seventeenth Rank 3 module baseline, and the second for a subject owning no bounded context.** Written **before** the baseline change, per §7 rule 1 — the ordering blocker `B7C-4` identified and refused to shortcut. Authority is the principal's one-act conferral recorded separately and scored **5 of 5** on the repository's own five-element test; ⛔ **no standing appointment, no personal name, and the Architecture/Product Owner roles expressly NOT treated as Governance Owner.** All four blockers discharged by act rather than by reinterpretation: `B7C-1` by writing the row, `B7C-2` by correcting the registry in the same commit, `B7C-3` by the principal's conferral, `B7C-4` by the principal lifting the ADR prohibition. ⚠ **The blocker record is retained beside this ADR, not deleted or rewritten** — its four blockers were **each correct when written**, and its readiness audit (**12 of 12**) is the evidence this admission relies on. ⛔ **Zero-ledger: 0 bounded contexts · 0 events · 0 edges · 0 aggregates · 0 requirements or ACs changed · 0 identifiers minted · 0 `IMPL-*` created or altered · 0 open decisions closed by implication (6 admitted OPEN) · 0 frozen documents modified · 0 subject bytes changed across all nine parts · 0 reserved ADR numbers consumed · 0 personal names · 0 lines of application code.** Invariants preserved and re-measured: contexts **31**, edges **29**, `E-27` vacant, `BC-23` Search Indexing, `BC-26` Analytics Read Model, `ProfileViews` certified and `UniqueViewers` **NOT** certified, C5 **V2**, `PRD-007` booking authority intact. |
+| **v1.0** | 2026-09-03 | **`PRD-021C` C0–C8 v0.1 admitted at Rank 3 and Stage 7 CONFERRED.** ⭐ **The eighteenth Rank 3 module baseline, and the second for a subject owning no bounded context.** ⚠ **The ordinal is DERIVED by enumerating §3.3's rows, not by incrementing the previous row's claim** — doing the latter yields *"seventeenth"* and would have minted a third duplicate ordinal, because `PRD-021B`'s row is itself off by one (**`GCP-26`**, disclosed in §5.1 and ⛔ deliberately not repaired here). Written **before** the baseline change, per §7 rule 1 — the ordering blocker `B7C-4` identified and refused to shortcut. Authority is the principal's one-act conferral recorded separately and scored **5 of 5** on the repository's own five-element test; ⛔ **no standing appointment, no personal name, and the Architecture/Product Owner roles expressly NOT treated as Governance Owner.** All four blockers discharged by act rather than by reinterpretation: `B7C-1` by writing the row, `B7C-2` by correcting the registry in the same commit, `B7C-3` by the principal's conferral, `B7C-4` by the principal lifting the ADR prohibition. ⚠ **The blocker record is retained beside this ADR, not deleted or rewritten** — its four blockers were **each correct when written**, and its readiness audit (**12 of 12**) is the evidence this admission relies on. ⛔ **Zero-ledger: 0 bounded contexts · 0 events · 0 edges · 0 aggregates · 0 requirements or ACs changed · 0 identifiers minted · 0 `IMPL-*` created or altered · 0 open decisions closed by implication (6 admitted OPEN) · 0 frozen documents modified · 0 subject bytes changed across all nine parts · 0 reserved ADR numbers consumed · 0 personal names · 0 lines of application code.** Invariants preserved and re-measured: contexts **31**, edges **29**, `E-27` vacant, `BC-23` Search Indexing, `BC-26` Analytics Read Model, `ProfileViews` certified and `UniqueViewers` **NOT** certified, C5 **V2**, `PRD-007` booking authority intact. |

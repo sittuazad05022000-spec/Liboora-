@@ -203,6 +203,32 @@ understood it — and because a defect that recurs seven times is a property of 
 one author. The standing lesson is written as an invariant in §11: **an unminted slot is named by number, never
 as a token, in every context including transcripts of the guards themselves.**
 
+### 4.5 ⚠⚠ An eighth instance found in `TRACEABILITY_MATRIX.md` — pre-existing, disclosed, NOT edited
+
+Running the same guard across the whole of `TRACEABILITY_MATRIX.md` (not merely across §2R, which returned **0**
+for all eight slots) surfaced **one** live occurrence: the bounded-context slot **32** is spelled as a backticked
+token at **L1634**, inside a `PRD-012a`-era Stage-5 row whose own prose states that the reviewer *"refused to
+create"* it and that *"contexts stay at **31**"*.
+
+| Property | Measurement |
+|---|---|
+| Location | `TRACEABILITY_MATRIX.md` **L1634**, a `PRD-012a` row — **not** §2R, and **not** any PRD-021C row |
+| Count in §2R | **0** — the section registered by this commit is clean on all eight slots |
+| Present at `9af9dab` (`github/main`) | **Yes — 1 occurrence.** Verified by `git show 9af9dab:… \| grep -c` |
+| Introduced by this commit | ⛔ **No.** The count is unchanged; this commit adds **0** occurrences |
+| Effect on the count of contexts | **None.** The context count is read from the bounded-context map, which holds **31** |
+
+- ⭐ **Disclosed, not cured.** Curing it would edit a **`PRD-012a` Stage-5 row** — another PRD's completed record,
+  outside this act's subject. Editing it is neither Stage-5 work for `PRD-021C` nor within the conferral's scope,
+  which is *this specific act only*.
+- ⛔ **Not a collision and not a mint** — no register gained an entry, and the bounded-context map is untouched.
+- Routed as an observation to the **Architecture Owner**, alongside the carried item recorded in §4.2.
+
+⭐⭐ **Why this matters more than the count:** the defect is now attested **eight** times, across **four different
+authors' documents** and **two different PRD lifecycles**. That distribution is the finding. A guard that is run
+only on the file one happens to be writing will keep rediscovering it forever; the remedy belongs in the
+**instrument set**, which is why §11 states it as a standing invariant rather than as a fix applied here.
+
 ---
 
 ## 5. Coverage — every percentage published with its denominator, in the same sentence
@@ -325,6 +351,35 @@ fixture was modified.**
 heuristic (**L295–312**) cannot distinguish a citation from a definition and counts *"§2\* line(s) outside §2O"*.
 §2Q disclosed the same behaviour. ⛔ **Two cheaper alternatives are refused by name:** deleting true evidence
 rows, and editing the checker that judges a neighbouring registration (**§2H.2's named failure**).
+
+### 8.1 ⭐ The predicted enlargement occurred, and was measured against the baseline rather than asserted
+
+The suite was re-run and compared to its output at `9af9dab` (`github/main`) using a detached worktree, so that
+the comparison is between two **executions**, not between an execution and a memory.
+
+| Measure | At `9af9dab` | After this commit | Change |
+|---|---|---|---|
+| Suite totals | **31 / 25 PASS / 6 FAIL** | **31 / 25 PASS / 6 FAIL** | ⭐ **none** |
+| The 6 failing scripts | same 6 | same 6 | ⭐ **none** |
+| `prd020_stage5.py` verdict | FAIL — 2 problems | FAIL — 2 problems | ⭐ **none** |
+| `prd020_stage5.py` problem 1 | `TSF-` in **4** §2\* lines outside §2O | **5** §2\* lines | ⚠ **+1** |
+| `prd020_stage5.py` problem 2 | a set of **8** files | the **same 8 files** (print order only differs) | ⭐ **none** |
+
+⭐⭐ **The single added line was then read, rather than left as a number.** It is §2R's row 5, which cites
+**`TSF-GAP-009`** — a genuine **`PRD-020`** identifier — to explain why one half of `XPC-OD-010` is *blocked
+upstream*. Three facts make the enlargement lawful:
+
+1. **The identifier is not invented.** It is defined in `PRD-020_TRUST_AND_SAFETY.md` and already cited by
+   `PRD-021A`, C0, C7 and C8.
+2. **It is a citation, not a definition.** C0 **L430** records that this inherited gap is *"**DELIBERATELY NOT
+   given an `XPC-OD-*` identifier**"* — so quoting it adopts nothing and mints nothing.
+3. **`TSF` is not one of this subject's nine stems**, so it enters no PRD-021C register; the register-tail guard
+   reports **CLEAN**, and the identifier total is unchanged at **528**.
+
+⛔ **Therefore no failure was introduced, no verdict changed, and the checker was not touched.** The heuristic
+counted a lawful cross-PRD citation as if it were a stray definition — exactly the limitation disclosed above.
+⭐ Recorded because a validator whose numbers move must be **explained**, and the only honest way to explain a
+moved number is to read the line that moved it.
 
 ---
 

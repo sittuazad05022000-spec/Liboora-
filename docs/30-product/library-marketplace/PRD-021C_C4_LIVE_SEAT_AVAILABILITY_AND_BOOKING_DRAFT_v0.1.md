@@ -432,36 +432,42 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **When** an unauthenticated caller reads its availability panel
 > **Then** the aggregate capacity and a coarse indicator are returned
 > **And** no sign-in prompt and no mobile-number request occurs.
+> **Exercises** — `LSB-FR-001`, `LSB-FR-007`
 
 **`LSB-AC-002` — No public path reaches operational seat data**
 > **Given** the public availability endpoint
 > **When** its read path is traced
 > **Then** it resolves only to the public read projection
 > **And** no seat table, allocation table or `BC-04` operational store is reachable from it.
+> **Exercises** — `LSB-FR-002`, `LSB-FR-003`
 
 **`LSB-AC-003` — Precise counts are absent**
 > **Given** a library with 100 seats of which 37 are free
 > **When** an anonymous caller reads availability
 > **Then** the response may contain `100`
 > **And** the response contains neither `37`, nor `63`, nor any percentage, nor any per-seat identifier or state.
+> **Exercises** — `LSB-FR-010`, `LSB-FR-008`
 
 **`LSB-AC-004` — Indicator values come from the closed set**
 > **Given** any library's public availability response over any source state
 > **When** the indicator value is inspected
 > **Then** it is exactly one of *Available*, *Limited*, *Full*, *Unknown*
 > **And** no other value, numeric or textual, appears.
+> **Exercises** — `LSB-FR-008`
 
 **`LSB-AC-005` — Thresholds are not implemented in the presentation layer**
 > **Given** the C4 surface implementation
 > **When** it is inspected for availability logic
 > **Then** it contains no threshold, percentage or boundary computation
 > **And** it receives the indicator already resolved by `BC-04`.
+> **Exercises** — `LSB-FR-009`
 
 **`LSB-AC-006` — Availability is never presence-derived**
 > **Given** a library inside operating hours with zero people currently checked in and all seats unallocated
 > **When** an anonymous caller reads availability
 > **Then** the indicator reflects the allocation-based aggregate
 > **And** no attendance record, check-in event or `E-08` message contributes to the value.
+> **Exercises** — `LSB-FR-004`
 
 **`LSB-AC-007` — Source failure yields *Unknown*, never *Available***
 > **Given** the availability projection is unreachable
@@ -469,23 +475,27 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** availability is presented as temporarily unknown
 > **And** it is not presented as *Available*
 > **And** no cached value of unknown age is shown.
+> **Exercises** — `LSB-FR-006`
 
 **`LSB-AC-008` — A non-publishing library shows no panel**
 > **Given** a library that has not published seat capacity
 > **When** an anonymous caller reads its profile
 > **Then** no availability panel is rendered
 > **And** the absence is not rendered as *Full*, as an error, or as a deficiency.
+> **Exercises** — `LSB-FR-012`
 
 **`LSB-AC-009` — Staleness is disclosed**
 > **Given** an availability projection whose age exceeds `LCFG-6`
 > **When** the panel is rendered
 > **Then** the value is marked possibly stale or shown as *Unknown*
 > **And** it is not presented as authoritative.
+> **Exercises** — `LSB-FR-032`, `LSB-FR-033`
 
 **`LSB-AC-010` — The word "live" is not used**
 > **Given** every public string on the availability surface
 > **When** the strings are inspected
 > **Then** none describes the value as *live*, *real-time* or *current occupancy*.
+> **Exercises** — `LSB-FR-034`
 
 **`LSB-AC-011` — No booking action when self-booking is disabled**
 > **Given** a tenant with `SEAT-CFG-008` at its default **disabled**
@@ -493,12 +503,14 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** no booking action is offered
 > **And** availability and the library's contact information remain visible
 > **And** no booking attempt is made that could fail.
+> **Exercises** — `LSB-FR-016`, `LSB-FR-017`
 
 **`LSB-AC-012` — Booking mode is reported, not simplified**
 > **Given** three tenants configured `Direct`, `HoldThenConfirm` and `ApprovalRequired`
 > **When** an authorised student initiates booking in each
 > **Then** the outcome described to the student matches that tenant's mode
 > **And** no tenant's outcome is described as an immediate confirmed seat unless its mode is `Direct`.
+> **Exercises** — `LSB-FR-018`
 
 **`LSB-AC-013` — Anonymous intent survives authentication and is re-authorised**
 > **Given** an anonymous visitor who initiates booking at library `L`
@@ -507,12 +519,14 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **And** authorisation is evaluated at the moment of resumption
 > **And** the preserved intent carried no credential
 > **And** the intent cannot be redirected to any library other than `L`.
+> **Exercises** — `LSB-FR-020`, `LSB-FR-021`, `LSB-FR-022`
 
 **`LSB-AC-014` — State change during authentication fails cleanly**
 > **Given** an anonymous visitor who initiates booking, and the library becomes Private, is suspended, or exhausts capacity during authentication
 > **When** the intent is resumed
 > **Then** the operation fails with an explanation naming the changed condition
 > **And** it does not proceed on the pre-authentication state.
+> **Exercises** — `LSB-FR-023`
 
 **`LSB-AC-015` — Concurrency yields one success and one distinguishable failure**
 > **Given** two students initiating booking for the same seat simultaneously
@@ -521,6 +535,7 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **And** the other receives an explicit conflict reason
 > **And** the failing client can retry only against freshly read state
 > **And** no silent overwrite and no double success is presented.
+> **Exercises** — `LSB-FR-024`, `LSB-FR-025`
 
 **`LSB-AC-016` — Quota cannot be beaten by racing two surfaces**
 > **Given** one student with `seatQuota` of 1, initiating booking for two different seats concurrently from two sessions
@@ -528,6 +543,7 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** exactly one allocation results
 > **And** the second fails against `SEAT-INV-002`
 > **And** C4 holds no lock of its own and bypasses neither lock.
+> **Exercises** — `LSB-FR-026`
 
 **`LSB-AC-017` — Idempotent retry returns the original result**
 > **Given** a booking initiation forwarded with idempotency key `K` that succeeded
@@ -535,6 +551,7 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** the original result is surfaced
 > **And** exactly one allocation, one history row, one audit event and one notification fact exist
 > **And** C4 did not mint a new key for the retry.
+> **Exercises** — `LSB-FR-028`, `LSB-FR-029`, `LSB-FR-030`
 
 **`LSB-AC-018` — Failures are actionable and leak nothing**
 > **Given** five induced failures: not authorised · self-booking disabled · membership invalid · capacity exhausted · lock timeout

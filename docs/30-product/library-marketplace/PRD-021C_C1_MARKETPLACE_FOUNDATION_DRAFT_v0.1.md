@@ -254,12 +254,14 @@ Given/When/Then form. ⚠ **0 of 12 is proven by a test — no test exists.**
 > **When** it requests the marketplace surface
 > **Then** the surface returns successfully, **and** no authentication challenge is issued
 > **And** the response contains only field groups enumerated in §14A.5.
+> **Exercises** — `LMP-FR-002`, `LMP-FR-003`, `LMP-FR-016`
 
 `LMP-AC-002` — **Only verified, activated, Public libraries appear**
 > **Given** four libraries: (a) Public + verified + activated, (b) Public + unverified, (c) Private + verified + activated, (d) Public + verified + deactivated
 > **When** the marketplace surface is listed anonymously
 > **Then** only (a) appears
 > **And** (b), (c) and (d) are absent from results, from any count and from any aggregate.
+> **Exercises** — `LMP-FR-007`, `LMP-FR-009`
 
 `LMP-AC-003` — **Private library is indistinguishable from non-existent**
 > **Given** a Private library `L` and an identifier `N` that matches no library
@@ -267,12 +269,14 @@ Given/When/Then form. ⚠ **0 of 12 is proven by a test — no test exists.**
 > **Then** both responses have the **same** status code and the **same** body shape
 > **And** neither response reveals that `L` exists
 > **And** the response-time difference is not a reliable signal of existence.
+> **Exercises** — `LMP-FR-008`, `LMP-FR-010`, `LMP-FR-011`
 
 `LMP-AC-004` — **No field is stored by the composition**
 > **Given** the marketplace surface has rendered a library
 > **When** the owning context's value changes (e.g. `BC-25` updates the logo)
 > **Then** the next render reflects the owner's new value
 > **And** no authoritative copy of the field is held by the composition.
+> **Exercises** — `LMP-FR-004`, `LMP-FR-005`
 
 `LMP-AC-005` — **Owner unavailability degrades, never fabricates**
 > **Given** `BC-02` Membership is unavailable
@@ -280,12 +284,14 @@ Given/When/Then form. ⚠ **0 of 12 is proven by a test — no test exists.**
 > **Then** the membership-plan group is omitted
 > **And** the remaining groups render
 > **And** no stale or placeholder plan or price is presented as authoritative.
+> **Exercises** — `LMP-FR-006`
 
 `LMP-AC-006` — **Public surface carries no tenant context**
 > **Given** an anonymous request to the public marketplace surface
 > **When** the request is served
 > **Then** no caller `TenantContext` is required
 > **And** the indexed unit is the `TenantOrganisation` record, not any tenant-owned row.
+> **Exercises** — `LMP-FR-012`, `LMP-FR-001`
 
 `LMP-AC-007` — **Operational read without a tenant predicate fails**
 > **Given** a code path that reads tenant operational data
@@ -293,12 +299,14 @@ Given/When/Then form. ⚠ **0 of 12 is proven by a test — no test exists.**
 > **Then** it fails at runtime
 > **And** it does **not** return rows from more than one tenant
 > **And** it does **not** return an empty success.
+> **Exercises** — `LMP-FR-013`
 
 `LMP-AC-008` — **Tenant operational data never enters the public index**
 > **Given** the public discovery index
 > **When** its contents are enumerated
 > **Then** no student, membership, attendance, fee, staff, analytics or configuration value is present
 > **And** no such value is present in aggregated, derived or inferred form.
+> **Exercises** — `LMP-FR-014`, `LMP-FR-015`
 
 `LMP-AC-009` — **Authentication is demanded only at a protected operation**
 > **Given** an anonymous user browsing the marketplace surface
@@ -306,18 +314,21 @@ Given/When/Then form. ⚠ **0 of 12 is proven by a test — no test exists.**
 > **Then** no authentication is required at any point
 > **When** the user initiates an operation on the §14A.9 / §14B.6.1 list
 > **Then** authentication is required at that moment and not before.
+> **Exercises** — `LMP-FR-016`, `LMP-FR-017`, `LMP-FR-018`
 
 `LMP-AC-010` — **Intent survives authentication**
 > **Given** an anonymous user who initiated a protected operation against library `L`
 > **When** authentication completes successfully
 > **Then** the original operation against `L` resumes
 > **And** the user is not required to re-enter the intent.
+> **Exercises** — `LMP-FR-019`, `LMP-FR-020`
 
 `LMP-AC-011` — **Authorisation is never decided locally**
 > **Given** any protected operation initiated from this surface
 > **When** the permission question is answered
 > **Then** the answer is produced by `BC-18`
 > **And** no permission rule is evaluated inside the composition.
+> **Exercises** — `LMP-FR-021`
 
 `LMP-AC-012` — **Errors disclose nothing internal**
 > **Given** any failing public request

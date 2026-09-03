@@ -799,18 +799,21 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** every populated §14A.5 field is returned
 > **And** no field is blurred, truncated, withheld or gated behind a sign-in prompt
 > **And** no mobile number is requested at any point.
+> **Exercises** — `LPP-FR-004`, `LPP-FR-005`
 
 **`LPP-AC-002` — No field outside the frozen public list**
 > **Given** the rendered public profile of any library
 > **When** the response payload is enumerated field by field
 > **Then** every field appears in the §14A.5 public list
 > **And** no field appears in the §14A.5 never-public list or in `LIB-14B.22`.
+> **Exercises** — `LPP-FR-002`
 
 **`LPP-AC-003` — Every field names an owner**
 > **Given** the public profile projection schema
 > **When** each field is traced to a context
 > **Then** each resolves to exactly one of `BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02`, `BC-04`
 > **And** no field resolves to C3 itself.
+> **Exercises** — `LPP-FR-003`
 
 **`LPP-AC-004` — Partial source failure degrades one group only**
 > **Given** a library whose `BC-02` plan projection is unavailable
@@ -819,23 +822,27 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **And** the plans group is marked temporarily unavailable
 > **And** no stale plan price of unknown age is shown
 > **And** the request does not return a page-level error.
+> **Exercises** — `LPP-FR-006`
 
 **`LPP-AC-005` — Group freshness is reported per group**
 > **Given** a profile whose hours projection updated 30 seconds ago and whose plan projection updated 6 hours ago
 > **When** the profile is rendered
 > **Then** each group's freshness reflects its own source
 > **And** no single page-level freshness value implies the two groups are equally current.
+> **Exercises** — `LPP-FR-007`
 
 **`LPP-AC-006` — Presentation order is invariant**
 > **Given** the same library profile requested by two different anonymous callers, in two locales, in two sessions
 > **When** the field-group order of each response is compared
 > **Then** the order is identical in all four responses.
+> **Exercises** — `LPP-FR-008`, `LPP-FR-029`
 
 **`LPP-AC-007` — Description is rendered as authored**
 > **Given** a library description containing the library's own wording and formatting
 > **When** the profile is rendered
 > **Then** the text matches the `BC-25` value exactly
 > **And** no summarised, translated, rewritten or machine-generated variant is shown.
+> **Exercises** — `LPP-FR-013`
 
 **`LPP-AC-008` — Gallery media is a `BC-29` reference, never a C3-held object**
 > ⭐ **REWRITTEN 2026-09-02.** The original criterion asserted gallery *absence*
@@ -857,11 +864,13 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** the status shows **Open**
 > **And** the value is computed from operating hours, holidays and emergency closures only
 > **And** no attendance or occupancy value contributes to it.
+> **Exercises** — `LPP-FR-020`, `LPP-FR-021`
 
 **`LPP-AC-010` — Emergency closure surfaces within the configured bound**
 > **Given** a library that activates an Emergency Closure at time `T`
 > **When** the public profile is requested at `T + LCFG-6`
 > **Then** the status reflects the closure.
+> **Exercises** — `LPP-FR-021`
 
 **`LPP-AC-011` — Pricing is indicative, never personalised**
 > **Given** a library with one publicly offered plan, one internal plan and one negotiated rate
@@ -869,6 +878,7 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** only the publicly offered plan appears
 > **And** it is marked indicative for public display
 > **And** no student-specific price, discount, balance or personalised offer appears.
+> **Exercises** — `LPP-FR-023`, `LPP-FR-024`
 
 **`LPP-AC-012` — Seat surface stays aggregate and coarse**
 > **Given** a library with 100 seats of which 37 are currently free
@@ -876,6 +886,7 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** the aggregate capacity may be shown
 > **And** availability is expressed only as a coarse indicator such as *Available*, *Limited* or *Full*
 > **And** the number 37, any percentage, any per-seat identifier and any per-seat state are absent from the response.
+> **Exercises** — `LPP-FR-025`
 
 **`LPP-AC-013` — Anti-enumeration responses are indistinguishable**
 > **Given** four identifiers: one non-existent, one Private, one Suspended and one Archived
@@ -883,11 +894,13 @@ authored specifications of verifiable behaviour, at Stage 2.
 > **Then** all four responses share the same status code, the same body shape and the same message
 > **And** the response-time distributions are not separable
 > **And** no response reveals which case occurred.
+> **Exercises** — `LPP-FR-026`, `LPP-FR-027`
 
 **`LPP-AC-014` — Errors leak no internals**
 > **Given** an induced failure in the profile projection read path
 > **When** the public error response is inspected
 > **Then** it contains no internal identifier, table name, query fragment, stack trace, context name or configuration value.
+> **Exercises** — `LPP-FR-028`
 
 ### §11.1 Owner Profile Engagement Summary — acceptance criteria
 
@@ -901,6 +914,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **When** an unauthenticated caller requests its public profile
 > **Then** no engagement metric appears in any form — aggregated, derived, inferred, cached, embedded in metadata or in an error message
 > **And** the response is indistinguishable in status code, body shape, payload size class, field order and response timing from the same profile with an empty or unavailable summary.
+> **Exercises** — `LPP-FR-030`, `LPP-FR-031`
 
 **`LPP-AC-016` — Authentication alone does not admit**
 > **Given** an authenticated caller holding a valid session but no owner or admin role in the requested library
@@ -908,12 +922,14 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **Then** the engagement summary is **absent** from the response
 > **And** the View Analytics CTA is **absent**, not disabled and not present-and-refusing
 > **And** the authorisation decision was returned by `BC-18`, with no permission evaluated locally.
+> **Exercises** — `LPP-FR-032`, `LPP-FR-033`
 
 **`LPP-AC-017` — Cross-tenant refusal**
 > **Given** an authorised owner of library A
 > **When** that caller requests the engagement summary of library B, and separately requests it with tenant context absent
 > **Then** both requests are refused
 > **And** no metric value, existence signal or count for library B is returned in either case.
+> **Exercises** — `LPP-FR-034`
 
 **`LPP-AC-018` — Metrics are read, never computed**
 > **Given** the engagement summary read path
@@ -921,6 +937,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **Then** Total Profile Views resolves to a `CertifiedMetric` of `BC-26`
 > **And** no counter, increment, aggregation, sample or re-derivation is performed by C3
 > **And** C3 holds no metric store of its own.
+> **Exercises** — `LPP-FR-035`, `LPP-FR-038`
 
 **`LPP-AC-019` — Unique Viewers is omitted, unconditionally, in V1**
 > ⭐ **STRENGTHENED 2026-09-02.** The original criterion was conditional on
@@ -935,6 +952,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **And** it is **not** approximated, estimated, bucketed or rounded from `ProfileViews` or any other value
 > **And** no uniqueness is computed, deduplicated, fingerprinted or inferred by C3
 > **And** the rendered `ProfileViews` label reads **views**, not *visitors*, *viewers*, *people* or *unique*.
+> **Exercises** — `LPP-FR-036`
 
 **`LPP-AC-020` — Trend carries an explicit period**
 > **Given** a rendered period/trend summary such as "+18% this week"
@@ -943,6 +961,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **And** the period is stated explicitly in the rendering
 > **And** no trend is rendered without a stated period
 > **And** C3 performed no delta, smoothing, annualisation or projection.
+> **Exercises** — `LPP-FR-037`
 
 **`LPP-AC-021` — No individual viewer is identifiable**
 > **Given** an authorised owner viewing the engagement summary
@@ -950,6 +969,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **Then** it contains no viewer name, avatar, handle, `PersonId`, `AccountId`, partial identifier, device identifier or individual-view timestamp
 > **And** it contains no social signal describing which friends, followers, group members or peers viewed the profile
 > **And** where a value is small enough to identify an individual, it is suppressed rather than rendered.
+> **Exercises** — `LPP-FR-039`, `LPP-FR-040`
 
 **`LPP-AC-022` — No duplicate analytics architecture exists**
 > **Given** the complete C3 implementation surface
@@ -958,6 +978,7 @@ alignment record** and **0** `IMPL-*` identifiers. ⭐ **Unblocked is not proven
 > **And** C3 declares no event, telemetry collector, tracking endpoint, beacon or pixel
 > **And** C3 defines no metric semantic — view definition, bot exclusion, deduplication window, suppression threshold or comparison period
 > **And** the View Analytics CTA hands off to the `PRD-009` / `BC-26` experience rather than rendering analytics inline.
+> **Exercises** — `LPP-FR-038`, `LPP-FR-042`
 
 ---
 

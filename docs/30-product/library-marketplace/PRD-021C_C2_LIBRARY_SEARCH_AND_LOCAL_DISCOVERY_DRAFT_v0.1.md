@@ -335,46 +335,54 @@ Given/When/Then form. ⚠ **0 of 16 is proven by a test — no test exists.**
 > **When** an anonymous client searches the name "Central"
 > **Then** the first two are returned and the third is not
 > **And** the ordering is the relevance ordering supplied by `BC-23`, unmodified.
+> **Exercises** — `LSD-FR-009`, `LSD-FR-001`
 
 `LSD-AC-002` — **City, locality and PIN each return correct results**
 > **Given** libraries in three cities, four localities and five PIN codes
 > **When** a client queries by each of city, locality and PIN in turn
 > **Then** each query returns exactly the libraries matching that value
 > **And** no library outside the value appears.
+> **Exercises** — `LSD-FR-010`, `LSD-FR-011`, `LSD-FR-012`
 
 `LSD-AC-003` — **Nearby discovery requires an explicit grant**
 > **Given** a client that has **not** granted location permission
 > **When** it requests nearby discovery
 > **Then** nearby discovery is not performed
 > **And** name, city, locality and PIN search remain fully available.
+> **Exercises** — `LSD-FR-013`, `LSD-FR-014`
 
 `LSD-AC-004` — **Nearby prioritisation applies when a grant exists**
 > **Given** a client that has granted location permission, and libraries at 0.4 km, 3 km and 20 km
 > **When** it requests nearby discovery
 > **Then** results are prioritised by proximity, nearest first.
+> **Exercises** — `LSD-FR-015`
 
 `LSD-AC-005` — **Anonymous location is not persisted**
 > **Given** an anonymous nearby-discovery request carrying a coordinate
 > **When** the request completes
 > **Then** the coordinate is not stored, not associated with any person, and not used for any later request.
+> **Exercises** — `LSD-FR-016`
 
 `LSD-AC-006` — **Relevance is not re-ordered on a text query**
 > **Given** a text query whose `BC-23` result ordering is `[A, B, C]` in descending relevance
 > **When** C2 renders the result set
 > **Then** the rendered order is `[A, B, C]`
 > **And** no distance, price or availability value has moved an item across a relevance band.
+> **Exercises** — `LSD-FR-025`, `LSD-FR-027`
 
 `LSD-AC-007` — **Non-query browse sort is declared and deterministic**
 > **Given** a filter-only browse with no text query
 > **When** results are ordered by distance ascending
 > **Then** the sort key is shown to the user
 > **And** two identical requests return the same order.
+> **Exercises** — `LSD-FR-023`, `LSD-FR-026`
 
 `LSD-AC-008` — **Availability filter is coarse and non-inferable**
 > **Given** a library with exactly 7 of 60 seats free
 > **When** any sequence of availability-filtered queries is issued
 > **Then** no response, and no difference between responses, reveals the number 7 or the percentage
 > **And** only a coarse indicator is ever returned.
+> **Exercises** — `LSD-FR-021`, `LSD-FR-022`
 
 `LSD-AC-009` — **Fee filter uses `BC-02` values and marks them indicative**
 > **Given** a library whose publicly offered plan is priced in `BC-02`
@@ -382,42 +390,49 @@ Given/When/Then form. ⚠ **0 of 16 is proven by a test — no test exists.**
 > **Then** the value used is `BC-02`'s
 > **And** the displayed price is marked indicative
 > **And** no price is stored or recomputed by C2.
+> **Exercises** — `LSD-FR-018`
 
 `LSD-AC-010` — **Hours filter respects time zone, holidays and emergency closure**
 > **Given** a library in a different time zone with a weekly holiday today and an active emergency closure
 > **When** an "open now" filter is applied
 > **Then** the library is excluded
 > **And** the computation used `BC-06` values in the library's configured time zone.
+> **Exercises** — `LSD-FR-019`
 
 `LSD-AC-011` — **Excluded libraries never appear in results, counts or facets**
 > **Given** one Public+activated library and one each of Private, Draft, Pending, Suspended, Archived
 > **When** an unfiltered browse and every facet are inspected
 > **Then** only the Public+activated library appears
 > **And** no facet count, total, or aggregate reflects the other five.
+> **Exercises** — `LSD-FR-030`, `LSD-FR-031`
 
 `LSD-AC-012` — **Total platform library count is not disclosed**
 > **Given** an unfiltered anonymous browse
 > **When** the response and its pagination metadata are inspected
 > **Then** no value discloses the total number of libraries on the platform
 > **And** the cursor is opaque and reveals no offset or ordinal.
+> **Exercises** — `LSD-FR-029`
 
 `LSD-AC-013` — **Search never reads a domain table**
 > **Given** the search execution path
 > **When** its data access is inspected
 > **Then** it reads only the `BC-23` projection through the query port
 > **And** it performs no read against a `BC-01`…`BC-09` or `BC-19` table.
+> **Exercises** — `LSD-FR-006`, `LSD-FR-007`
 
 `LSD-AC-014` — **Projection update is idempotent**
 > **Given** a projection-feeding event delivered twice with the same event identifier
 > **When** both deliveries are processed
 > **Then** the projection contains exactly one entry for that library
 > **And** no duplicate result appears in search.
+> **Exercises** — `LSD-FR-005`
 
 `LSD-AC-015` — **Empty result is not an error**
 > **Given** a composable filter combination that matches no library
 > **When** the query executes
 > **Then** an empty result set is returned successfully
 > **And** no error is raised and no internal detail is disclosed.
+> **Exercises** — `LSD-FR-024`
 
 `LSD-AC-016` — **No result is personalised**
 > **Given** two anonymous clients issuing an identical query with identical location grants

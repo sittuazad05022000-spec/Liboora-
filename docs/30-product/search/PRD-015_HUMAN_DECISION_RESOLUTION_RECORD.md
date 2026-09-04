@@ -4345,3 +4345,345 @@ direction already resolves it.
    ⭐ `H-B` is now **well-specified** rather than under-specified — real progress, ⛔ not closure.
 4. ⛔ **`STAGE 3 — NOT READY.` 5 of 16 conditions satisfied.** The packet is **four items**, and this
    time the reduction is **genuine**, not arithmetic.
+
+---
+
+# PART XVII — ⭐⭐⭐ THE `SRCHAO-F5` DISCOVERY: `H-B`'s ROUTE WAS WRONG, AND THE CORRECTION SHRINKS IT FROM SIX FROZEN AMENDMENTS TO ONE OPEN ACT
+
+| Field | Value |
+|---|---|
+| **Act** | 🔁 **Stage-3 decision-execution pass.** Decisions 1–8 executed where repository authority already supports them; the rest prepared |
+| **Predecessor commit** | `49a5689` (Part XVI) |
+| **Subject** | `PRD-015_SEARCH_INDEXING.md` — sha256 `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544`, **byte-unchanged** |
+| **Result** | ⭐⭐⭐ **`H-B`'s LEGAL ROUTE IS CORRECTED — and it is much narrower than Parts XV and XVI both believed.** `SRCHAO-F5 = OPTION A` is a **CLOSED Architecture Owner ruling** making the declared script an **ANALYZER property**, so ⛔ **no frozen PRD needs amending at all.** `H-B` is **still BLOCKED**, but on **one** Architecture Owner act, not six frozen-document amendments |
+| **`H-A`** | ✅ **CLOSED** — re-confirmed from Rank 3 §14B **L90**; 14/14 owners mapped |
+| **`H-B`** | ⛔ **BLOCKED** — ⭐ **route corrected**; 0 of 14 declarations exist |
+| **`H-C`** | ⛔ **BLOCKED** — 0 authoritative facts on both conjuncts |
+| **`H-D`** | ⛔ **BLOCKED** — at the **office**, not the value |
+| **`H-E`** | ⛔ **NOT REACHED** — precondition unmet |
+| **Artefacts created** | ⛔ **NONE.** 0 ADRs · 0 PRDs · 0 identifiers · 0 code · 0 `IMPL-*` |
+| **Verdict** | ⚠ **B — CONDITIONAL / NOT CONFERRED** (**sixteenth** consecutive) |
+
+> ⚠⚠ **THIS PART CORRECTS THE LEGAL ROUTE PARTS XV AND XVI BOTH ASSERTED FOR `H-B`.** Both parts stated that
+> `H-B` required **six frozen-PRD amendments** under `PRD_LIFECYCLE.md` §4. ⭐ **That was wrong**, and the reason
+> is that neither part read [`PRD-015_F5_CLASSIFICATION_DECISION_PACKET.md`](./PRD-015_F5_CLASSIFICATION_DECISION_PACKET.md)
+> §11 — the document that **already decided** the question *"is the declared script a field-schema property or an
+> analyzer property?"*
+>
+> ⭐ **The instruction executed by this pass is what exposed it.** Its **Decision 2** asserted that a canonical
+> language/script scope was *already established*. Verifying that claim led to `SRCHPO-1`, and `SRCHPO-1` led to
+> `ADR-0099` **C-3**, whose authority column reads **`SRCHAO-F5 = Option A` — already CLOSED**. ⛔ **Rule 7 bars
+> rewriting adverse findings; it does not bar correcting my own erroneous legal reasoning when the repository
+> contradicts it.** The prior text stands in Parts XV and XVI; this Part records why it is wrong.
+
+## 145. ✅ `H-A` — **CLOSED.** Re-confirmed, not re-litigated
+
+Decision 1 directed that `Facilities & Amenities → BC-06` be treated as closed by existing authority, that
+⛔ **no ADR be created merely to formalize it**, and that the Rank-3 §14B evidence be cited. All three are
+satisfied by Part XVI §135 and re-verified this pass:
+
+| Check | Measurement |
+|---|---|
+| The authoritative locus | [`14B-Public-Library-Preview.md`](../library/14B-Public-Library-Preview.md) **L90** — `\| Facilities \| Facility list with optional notes \| BC-06 \|`, in a table whose third column is headed **`Owning context`** |
+| Its rank | **Rank 3**, baselined — `DOCUMENTATION_BASELINE.md` **L250**, **L151**, **L293** |
+| Rank direction | §14B (Rank 3) **outranks** `AR-1` (Rank 4) — Dependency Matrix `L2` |
+| ADR created | ⛔ **0** — `ADR-INDEX.md` **L167** reserves an ADR for a decision that **changes** ownership; this changes nothing |
+| Frozen PRDs modified | ⛔ **0** |
+| ⭐ Independent corroboration | `PRD-015_F5_CLASSIFICATION_DECISION_PACKET.md` §4.2 names the owning set as *"`BC-19`, `BC-25`, `BC-29`, **`BC-06`**, `BC-02`, `BC-04`"* — **six contexts, `BC-06` among them.** ⭐⭐ **This is a THIRD independent witness, and it predates Part XVI** |
+
+⭐⭐ **The third witness is worth stating plainly.** Part XVI closed `H-A` on §14B alone. This pass finds that the
+`F-5` packet **independently** enumerated the same six owning contexts — including `BC-06` — which means the
+Part XV *"unowned"* finding was contradicted by **two** documents, not one.
+
+## 146. ⭐⭐⭐ `H-B` — **BLOCKED, on a CORRECTED and much NARROWER route**
+
+### 146.1 What `SRCHAO-F5 = OPTION A` actually decided
+
+`PRD-015_F5_CLASSIFICATION_DECISION_PACKET.md` §11 poses exactly one question and records its answer:
+
+> `OPTION A` : *is the "declared script" an **ANALYZER property**, owned under `P2` / Architecture Owner authority?*
+> `OPTION B` : *is it a **§14A FIELD-SCHEMA property**, whose classification belongs to the Product Owner?*
+
+```
+STATUS        : CLOSED - RULING RECORDED 2026-09-04
+                (OPTION A - see human fields below)
+Classification ruling - A or B ..... OPTION A
+                                     "SRCHAO-F5 = OPTION A"
+                                     F-5 = Analyzer Property.
+CONFERRAL : CONFERRED  (Option A)
+```
+
+The ruling's own text, recorded verbatim at `PRD-015_CONSOLIDATED_ARCHITECTURE_COMPLETION.md` §2.1:
+
+> **"SRCHAO-F5 = OPTION A"** · `F-5` = Analyzer Property · Architecture Owner is the authority ·
+> Analyzer **MUST** consume an authoritative declared script · Analyzer **MUST NOT** infer/detect script from
+> content · Index और query **MUST** use the same authoritative script source · *Script का actual value invent मत करो।*
+
+### 146.2 ⭐⭐⭐ Why this narrows `H-B` — the consequence Parts XV and XVI missed
+
+**Option B was NOT selected.** Option B was the route that would have made the script a **§14A field-schema
+property** — and *that* is the route requiring amendment of the six frozen owning PRDs. The `F-5` packet
+records the consequence of Option A expressly:
+
+| Consequence of Option A | Source |
+|---|---|
+| ⭐⭐ *"**`SRCH-XC-001` is not engaged at all**, because an analyzer property is not a §14A field. The single hardest constraint in the subject is simply **not triggered**"* | `F-5` packet §4.2 **PROS** |
+| ⭐⭐ *"**Amends nothing.** No frozen document is touched. `P2` is already an open Stage-3 parameter set"* | *ibid.* |
+| ⭐⭐ *"`AR-1`'s seven owning contexts are **NOT intruded upon** … ⛔ **not** a field-schema addition to fields owned by `BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02`, `BC-04`"* | `CONSOLIDATED` §2.3 |
+| The authority | **Architecture Owner (ARB)** — corroborated by subject **L980** (`SRCH-GAP-002` → Architecture Owner) and PO record **L101** |
+
+⇒ ⭐⭐⭐ **CORRECTED FINDING: `H-B` does NOT require six frozen-PRD amendments.** It requires **one**
+Architecture Owner act — naming the artefact that declares the script, and supplying the 14 values — inside
+`P2`, which is *already* an open Stage-3 parameter set owned by that same office.
+
+⛔ **Parts XV and XVI's `H-B` route (six frozen amendments under §4) is WITHDRAWN as the wrong route.** The
+frozen PRDs are **not** the locus, because the ruling classified the property out of them.
+
+### 146.3 ⛔ And `H-B` is STILL BLOCKED — the residual, named by the ruling itself
+
+⭐ **The ruling closed the CLASSIFICATION and expressly refused the VALUE.** Both the packet and the
+consolidated record disclose the identical residual:
+
+| Residual | Recorded at |
+|---|---|
+| ⛔ **The script VALUE for any field** — *"NOT SUPPLIED and NOT INVENTED. Expressly prohibited by the ruling's own terms"* | `CONSOLIDATED` §2.4 |
+| ⛔⭐ **WHICH artefact is the "authoritative declared script" source** — *"**NOT NAMED by the ruling** … The declaring artefact **does not yet exist**"* | *ibid.*, and blocker **`B1`** at **L450** |
+| The packet's own verdict on constraint 1 | ⚠ *"**SATISFIED AS TO KIND** — … ⛔ **The declaring ARTEFACT is not named**; residual disclosed"* |
+
+`ADR-0099` §3.3 states the same fact as *"A dependency this ADR cannot discharge"*:
+
+> *"`C-3` and `C-4` both require an **authoritative declared script per field** … ⛔ **the per-field binding
+> values do not yet exist**, measured at **0 hits repository-wide**."*
+
+⭐ **And its next sentence is the exact discipline this pass must observe:** *"this ADR is lawful and complete
+as a governance act, and the configuration it governs is **not yet implementable**. Those are two different
+facts and collapsing them would be the error `SRCHPO-A2` warns about."*
+
+### 146.4 ⭐ THE COMPLETE 14-FIELD MATRIX — owner, owning PRD, declaration status
+
+Owning-PRD column derived from `PRD_REGISTRY.md` §6 (**L455-459**) and the frozen rows at **L242** / **L244**.
+
+| # | §14A.5 public field | Owning context | Owning PRD | PRD status | Script declaration | Locus under Option A |
+|---|---|---|---|---|---|---|
+| 1 | Library Name | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 2 | Logo | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 3 | Cover Image | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 4 | Gallery | `BC-29` | `PRD-017` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 5 | Description | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 6 | Business Address | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 7 | Map Location | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 8 | Operating Hours | `BC-06` | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 9 | Weekly Holidays | `BC-06` | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 10 | ⭐ **Facilities & Amenities** | ⭐ **`BC-06`** | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 11 | Membership Plans & Pricing | `BC-02` | `PRD-005` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 12 | Seat Capacity (Optional) | `BC-04` | `PRD-007` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 13 | Library Status | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+| 14 | Business Contact Information | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | `P2` / Architecture Owner |
+
+**Owner distribution:** `BC-19` **5** · `BC-25` **3** · `BC-06` **3** · `BC-29` **1** · `BC-02` **1** · `BC-04` **1** = **14** ✅
+**Owning PRDs:** `PRD-013` 5 · `PRD-023` 3 · `PRD-002` 3 · `PRD-017` 1 · `PRD-005` 1 · `PRD-007` 1 = **six distinct**, all `FROZEN`
+**Declarations present: 0 of 14. Declarations inferred by this pass: 0 of 14.**
+
+⚠ **A registry staleness is disclosed, not repaired.** `PRD_REGISTRY.md` §6's bucket row lumps
+`BC-01`…`BC-05` into *"(unwritten `PRD-004`…`021`)"*, yet **L242** and **L244** show `BC-02` → `PRD-005`
+and `BC-04` → `PRD-007`, **both `FROZEN`**. ⭐ **The specific rows are right and the bucket row is stale**;
+the matrix above uses the specific rows. Routed to the Governance Owner. ⛔ **Not edited by this pass.**
+
+### 146.5 ⛔ Decision 3's five steps — executed, and step 4 obeyed
+
+| Step | Result |
+|---|---|
+| 1. Identify authoritative owning context | ✅ **14/14** — §14B **L83-92** |
+| 2. Identify legitimate owning PRD | ✅ **14/14** — registry §6 + **L242**/**L244** |
+| 3. Determine whether a declaration exists | ✅ **0 of 14 exist** — re-measured repository-wide |
+| 4. ⛔ **If absent, DO NOT infer** | ⭐ **OBEYED. 0 values inferred, defaulted or assumed.** The *"Latin for all 14"* shortcut is refused a **fourth** time |
+| 5. Prepare the exact owner action | ✅ §153 item `H-B` |
+
+⭐ **Decision 3's own closing bar is honoured verbatim:** *"Do not close `H-B` merely because the recommended
+language/script scope exists."* `SRCHPO-1` supplies a **script SET**; `SRCH-FR-024` **L416** needs a per-field
+script **FUNCTION**. ⭐ **A set is not a function** — `PRD-015_F5_OWNERSHIP_RULING.md` **L101**, and the PO
+record's own §2.4 says the same. **`H-B` stays open.**
+
+## 147. ✅ Decision 2 — the language/script scope, VERIFIED as already established
+
+Decision 2 asserted a canonical scope already exists. ⭐ **Verified true — it is not taken on trust:**
+
+| Claim in Decision 2 | Repository authority | Verdict |
+|---|---|---|
+| English → Latin; Hindi → Devanagari | **`SRCHPO-1`** — *"V1 canonical supported languages/scripts = exactly two: English (Latin script) and Hindi (Devanagari script). This is a **closed set** for V1"* (`PO_DECISION_RESOLUTION_RECORD.md` **L57**) | ✅ **CONFIRMED** |
+| Hinglish supported as query behaviour where validated | **`SRCHPO-2`** (**L58**) | ✅ **CONFIRMED** |
+| Hinglish is **NOT** a third canonical language | **`SRCHPO-2`** — *"Explicitly **NOT**: a third canonical language · a separate BC · a separate index"* | ✅ **CONFIRMED** |
+| *"where technically validated"* is load-bearing | **`SRCHPO-3`** — *"permitted, not required"* | ✅ **CONFIRMED** |
+| Script binding consumed, never inferred | **`ADR-0099` C-3** + the `SRCHAO-F5` ruling's own limb 4 | ✅ **CONFIRMED** |
+| Corroboration | `ADR-0100` **L224**: *"English → **Latin**, Hindi → **Devanagari**, *where applicable*"* | ✅ |
+
+⛔ **0 additional canonical languages invented. 0 per-field script declarations invented.**
+
+## 148. ⛔ `H-C` — **BLOCKED.** Both conjuncts re-measured at zero
+
+Decisions 4 and 5 supplied **recommended governance wording** and expressly labelled it *"a proposed decision,
+NOT a completed Product Owner act"*. ⭐ **That self-limitation is honoured: the wording is recorded as a
+PROPOSAL and is NOT treated as authority.**
+
+| Conjunct | Measurement this pass | Status |
+|---|---|---|
+| **A — V1 operational corpus definition** | `grep -riE "V1 operational corpus (is\|=\|shall be\|means)"` → **2 hits, BOTH of them this record's own BLANK packet templates** (**L4085**, **L4328**). ⭐⭐ **My own placeholders were the only "definitions" in the repository** — measured, not assumed | ⛔ **ABSENT** |
+| Every substantive mention is a disclosure of **absence** | `ADR-0100` **L203** *"because the **'V1 operational corpus' is nowhere defined**"* · `ADR-0101` **L244** *"⛔ No `V1 operational corpus` definition ⇒ `P8-C` stays unverifiable"* | ⛔ |
+| The one real corpus definition | `PRD-017` **L1619** — a *"declared **fixture** corpus of handwritten notes"*. ⭐ Different corpus, different PRD, different sense. **Decision 4's own wording excludes it**: *"Fixture, example, test, or unrelated declared corpora do not automatically constitute the operational corpus"* | ⛔ **NOT the operational corpus** |
+| **B — ZWNJ corpus fact** | `grep -riE "corpus.{0,40}ZWNJ\|ZWNJ.{0,40}corpus"` filtered of refusals → **1 hit, and it is this record's own §137 refusal text.** `ADR-0099` **L183**: `\| ZWJ/ZWNJ exception list supplied \| **0** \|` | ⛔ **ABSENT** |
+
+⛔ **`H-C` is NOT closed.** Decision 5's own bar: *"Do not mark `H-C` closed until the Product Owner has
+legitimately supplied **both** A and B."* Neither is supplied. ⛔ **0 corpus contents invented.**
+
+## 149. ⛔ `H-D` — **BLOCKED at the OFFICE.** The four objects held apart, as Decision 6 requires
+
+Decision 6 required four objects be distinguished. ⭐ **Held apart and measured separately:**
+
+| # | Object | State | Evidence |
+|---|---|---|---|
+| **1** | **Target value** — `99.9% monthly` | ✅ **IDENTIFIED, pre-approved, NOT invented** | `ADR-0100` §3.2; matches `authentication/prd-v2/11-NFR…` **L67**; sits below `BC-18`'s 99.95%, *"the correct direction"* |
+| **2** | **Authority / office** — SRE / OBSERVABILITY | ⛔ **NOT CONSTITUTED** | Rank 1 `MP-NFR-01` (`MASTER_PRD.md` **L495**) assigns Availability to **`SRE / OBSERVABILITY`**; `grep -ciE 'SRE\|Observability' PRD_OWNERSHIP_MODEL.md` = **0** |
+| **3** | **Office holder** | ⛔ **NONE** | No holder anywhere; §7 rule 4 forbids recording a name |
+| **4** | **Ratification** | ⛔ **NOT PERFORMED** | `ADR-0100` **L163**: `→ P7 availability: OPEN. Owner: SRE / OBSERVABILITY. Value pre-approved, awaiting the right office.` |
+
+⭐⭐ **The distinction is the whole finding.** Object 1 is *done*. Objects 2, 3 and 4 are not. ⛔ **Pre-approval
+of a VALUE is not authority of an OFFICE**, and `ADR-0100`'s own words — *"awaiting the right office"* — bar
+reading object 1's completeness as objects 2–4's.
+
+### 149.1 Decision 7's three mechanisms — determined separately, none self-executed
+
+| Mechanism | Lawful route | State |
+|---|---|---|
+| **1. Constitute SRE / Observability** | ⭐ Two precedents exist and they **diverge**. `ADR-0077` (Privacy Owner): `Deciders` = *"**Architecture Review Board**, acting through the **Architecture Owner**"* under §5's *"Only the Architecture Owner approves"*. `ADR-0080` (Governance Owner): self-constituted, lawful **only because** *"it is already named as `Deciders` in three **Accepted** ADRs, so the authority pre-exists this document"* | ⛔ **BLOCKED.** ⭐ **Measured: `Deciders` rows naming SRE or Observability across all 89 ADRs = 0** ⇒ `ADR-0080`'s route is **unavailable**. `ADR-0077`'s route needs the **ARB**, and `grep -rniE "ARB is (now )?(seated\|constituted\|filled)"` = **0 hits** repository-wide |
+| **2. Appoint its holder** | `PRD_OWNERSHIP_MODEL.md` — **11** `appoint` occurrences, **every one a refusal** (L356, L398, L421, L472, L510, L566, L586, L629) | ⛔ **BLOCKED.** **L356**/**L421**: *"**constituting an office does not fill it**, and nothing in this document appoints anyone"* |
+| **3. Holder ratifies the target** | Requires 1 **and** 2 | ⛔ **NOT REACHED** |
+
+⛔ **Governance Owner cannot substitute** — §10.1 **L418**: *"**Never decides** ⛔ Boundaries, ranks or permitted
+edges (**Architecture Owner**) · … ⛔ its own conferral, and ⛔ its own scope."* Decision 7's own bar —
+*"Do not allow Governance Owner to decide its own prohibited scope"* — is therefore satisfied by refusal.
+
+⭐ **Decision 7's fallback executed:** *"If the Architecture Review Board is required and vacant, produce the
+exact human-action packet required for ARB constitution/appointment."* → §153 item `H-D`.
+
+### 149.2 ⭐ The §12.1 mechanism — tested as a route, and correctly REFUSED for `H-D`
+
+⭐⭐ **This pass tested a route that looked promising and rejected it on measurement.**
+`PRD_OWNERSHIP_MODEL.md` **§12.1** records a **per-act conferral**: a vacant office *"is filled **for this act
+only** by direct conferral from the human principal"* — and this is **exactly** how `SRCHAO-F5` was lawfully
+closed while the ARB sat vacant.
+
+⛔ **It does NOT close `H-D`, for a reason measured rather than asserted:** §12.1 is a conferral *mechanism*,
+not a conferral. It operates only when *"the human principal"* has actually conferred, **naming the act**
+(`ADR-0033` §7.1: *"a conferral for one act is not a standing licence"*). The instruction executed by this
+pass confers **nothing** — it directs that decisions be executed *"where they are already supported by
+repository authority"* and expressly forbids inventing human consent.
+
+⭐ **Stated plainly: §12.1 is the route `H-D` will travel, and only the human principal can put it in motion.**
+That is now the precise, minimal ask in §153 — a genuine narrowing over Part XVI, which named the ARB seat
+as the ask without identifying the one-act alternative.
+
+## 150. ⛔ `H-E` — **NOT REACHED.** Its own precondition is unmet
+
+Decision 8 gates the reviewer appointment on *"After all substantive Stage-3 blockers are resolved"*.
+`H-B`, `H-C` and `H-D` are open ⇒ ⛔ **the precondition fails and the act is not attempted.** Mechanism
+verified for completeness only:
+
+| Check | Measurement |
+|---|---|
+| Roles are distinct | ✅ `ADR-0054` **L148** — *"Those are different roles."* `Architecture reviewer` = **0** occurrences in `PRD_OWNERSHIP_MODEL.md`, **1** in `PRD_LIFECYCLE.md` (**L277**, *"Stage 3; authority to require an ADR"*) |
+| `PRD-015`'s Architecture Owner | **`ARB`** — `PRD_OWNERSHIP_MODEL.md` **L197** |
+| Self-appointment | ⛔ **NOT PERFORMED** |
+| Equivalence Architecture Owner ≡ reviewer | ⛔ **NOT asserted** — nothing authorizes it |
+| Conferral artefact | ⛔ **0 files** — `ls docs/30-product/search/*STAGE3_CONFERRAL*` |
+| Required scope | *"`PRD-015` Stage-3 review and conferral act, and nothing else"* — the `PRD-008_STAGE3_CONFERRAL.md` **L7** form |
+
+## 151. 🔁 CONTINUOUS VERIFICATION — recalculated after every finding
+
+| Object | Before | After | Moved? |
+|---|---|---|---|
+| `H-A` | CLOSED | **CLOSED** — third witness found (`F-5` packet §4.2) | ⭐ strengthened |
+| `H-B` route | 6 frozen amendments | ⭐⭐ **1 Architecture Owner act inside `P2`** | ⭐⭐⭐ **CORRECTED** |
+| `H-B` closure | BLOCKED | **BLOCKED** — 0 of 14 | ⛔ no |
+| `H-C` | BLOCKED | **BLOCKED** — the only "definitions" were my own templates | ⛔ no |
+| `H-D` | BLOCKED (ARB seat) | **BLOCKED** — ⭐ §12.1 one-act route identified as the minimal ask | ⭐ narrowed |
+| `H-E` | NOT REACHED | **NOT REACHED** | ⛔ no |
+| `SRCH-GAP-002` | 15 C / 2 P / 1 O | **15 C / 2 P / 1 O** | ⛔ no |
+| `SRCH-GAP-007` | 5 C / 1 P / 1 B | **5 C / 1 P / 1 B** | ⛔ no |
+| `FU-19` / `FU-20` / `FU-21` | unresolved | **unresolved** | ⛔ no |
+| Six architecture checks | 6/6 PASS | **6/6 PASS** | ✅ stable |
+| Subject hash | `fe3093e6…` | **identical** | ✅ |
+| ADR count | 89 | **89** | ✅ |
+| Baseline | `BASELINE-2026-09-03-A` | **unmoved** | ✅ |
+
+⭐ **A new dependency appeared in-loop and was resolved in-loop:** `SRCHAO-F5`'s Option A ruling — previously
+uncited in Parts I–XVI — was found, read, rank-checked and applied. ⛔ **No new blocker was created.**
+
+## 152. ⛔ THE STAGE-3 FINAL GATE — **5 of 15 satisfied**
+
+| # | Condition | Verdict |
+|---|---|---|
+| 1 | Stage 2 COMPLETE | ✅ |
+| 2 | Valid `DRAFT` lifecycle status | ✅ registry **L315** |
+| 3 | Six architecture checks PASS | ✅ **6/6** — `ALIGNMENT` **L718** |
+| 4 | Valid alignment artifact | ✅ (§11.2 stale — disclosed) |
+| 5 | All Stage-3 blocking gaps closed | ⛔ `GAP-002`, `GAP-007` live |
+| 6 | `GAP-002` fully closed | ⛔ 2 PARTIAL + 1 OPEN |
+| 7 | `GAP-007` fully closed | ⛔ 1 PARTIAL + 1 BLOCKED |
+| 8 | All 14 fields have authoritative script declarations | ⛔ **0 of 14** |
+| 9 | V1 operational corpus authoritatively defined | ⛔ |
+| 10 | ZWNJ corpus fact authoritatively established | ⛔ |
+| 11 | SRE/Observability governance valid | ⛔ office unconstituted |
+| 12 | Availability target legitimately ratified | ⛔ *"awaiting the right office"* |
+| 13 | Architecture reviewer legitimately appointed | ⛔ |
+| 14 | Formal Stage-3 conferral actually occurs | ⛔ 0 files |
+| ⭐ | **All ownership decisions authoritative** | ✅ **14/14** |
+
+⛔ **Rule `X3`: *"A gap closes on all limbs, not a majority."*** ⇒ **STAGE 3 — NOT READY.**
+
+## 153. ⭐ THE ONE CONSOLIDATED HUMAN-ACTION PACKET — **four items**
+
+⛔ **Only what genuinely requires human authority.** ⭐ **`H-A` remains OUT** — closed by discovery, not by decision.
+
+| # | Item | Authority required | The exact act | ⭐ Change this pass |
+|---|---|---|---|---|
+| **`H-B`** | Per-field script declarations, 14 of 14 | **Architecture Owner (ARB)** — ⭐ **NOT the six frozen-PRD owners** | Under the **already-closed** `SRCHAO-F5 = Option A`: (1) **name the artefact** that carries the *"authoritative declared script"* (blocker **`B1`**), and (2) declare the script for each of the 14 fields in §146.4, drawn from `SRCHPO-1`'s closed set {Latin, Devanagari}. Inside `P2` — ⛔ **no frozen PRD is amended** | ⭐⭐⭐ **Route corrected: 6 frozen amendments → 1 open Architecture Owner act.** Materially cheaper and lawfully cleaner |
+| **`H-C`** | V1 corpus + ZWNJ, **one** decision, both conjuncts | **Product Owner** (Search Platform) | (A) *"The V1 operational corpus is: ____"* — Decision 4's wording is available as a **proposal to adopt or amend**; (B) *"V1's Devanagari corpus **does / does not** contain authoritative ZWNJ-distinguished names"* — Decision 5's wording likewise. Closes `ADR-0100` **L203** and `ADR-0101` `D-10` | Unchanged; both conjuncts re-measured at **0** |
+| **`H-D`** | SRE / Observability — **three separable acts** | **Human principal** (per `PRD_OWNERSHIP_MODEL.md` **§12.1**) | (i) **Constitute** the office — via ARB per `ADR-0077`'s route, **or** by a §12.1 one-act conferral naming this act; (ii) **appoint** a holder — ⛔ separate from (i); (iii) that holder **ratifies `99.9% monthly`**. ⛔ Value already identified — **do not re-derive** | ⭐ **Narrowed:** §12.1's one-act conferral is identified as a lawful alternative to seating a full ARB — the same mechanism that closed `SRCHAO-F5` |
+| **`H-E`** | Architecture reviewer, scoped | **Human principal** | Appoint an Architecture **reviewer** (⛔ ≠ Architecture Owner) scoped to *"`PRD-015` Stage-3 review and conferral act, and nothing else"*, **after** `H-B`–`H-D`; then the reviewer performs the review and conferral | Unchanged; precondition still unmet |
+
+**Optional, non-blocking (2):** `AR-1` (Rank 4) omits Facilities — **disclosed, not repaired**; an Architecture
+Owner act, ARB vacant, non-blocking because Rank 3 answers. `PRD_REGISTRY.md` §6's bucket row is stale as to
+`BC-02`/`BC-04` — **disclosed, not repaired**; the specific rows **L242**/**L244** are correct.
+
+## 154. ⛔ WHAT THIS PASS DID NOT DO
+
+| ⛔ | Not done |
+|---|---|
+| Human consent invented | **0** |
+| Ownership invented | **0** — `H-A` cited from Rank 3; `H-B`'s locus read off a closed ruling |
+| Script declarations inferred | **0 of 14** — the *"Latin for all 14"* shortcut refused a **fourth** time |
+| Corpus facts invented | **0** |
+| Canonical languages invented | **0** — the closed set of two stands |
+| Availability numbers invented | **0** — `99.9%` cited, ⛔ not ratified |
+| Offices constituted / holders appointed / self-appointments | **0** / **0** / **0** |
+| ADRs created | **0** — `ADR-0102` unopened; count stays **89** |
+| Frozen PRDs modified | **0** — all six byte-identical |
+| Adverse historical findings rewritten | **0** — Parts XV/XVI stand; ⭐ this Part **adds** the correction |
+| `IMPL-*` identifiers · application code | **0** · **0** |
+| Stage 4/5/6/7 entered · freeze · baseline moved | **0** · **0** · **0** |
+| Amend / rebase / reset / force-push | **0** — forward-only |
+| Subject bytes changed | **0** — `fe3093e6…c2c4544` |
+
+## 155. ⭐ TERMINAL STATE
+
+⭐⭐ **This pass moved the boundary without inventing anything.** `H-B`'s legal route was **wrong in two prior
+Parts** and is now corrected against a **closed Architecture Owner ruling**: the declared script is an
+**analyzer property**, so ⛔ **no frozen PRD needs amendment**, and the ask collapses from six frozen
+amendments to **one** act by an office that **already owns `P2`**. `H-D`'s ask narrowed from *"seat an ARB"* to
+*"seat an ARB **or** issue a §12.1 one-act conferral"*.
+
+⛔ **And none of that closes a single gate condition.** Four items remain, each terminating at a **named
+authority that has not acted** — not at missing analysis.
+
+**STAGE 3 — NOT READY.** ⛔ **NOT CONFERRED.** `PRD-015` remains **Stage 2 `DRAFT`**, not frozen, not baselined.
+

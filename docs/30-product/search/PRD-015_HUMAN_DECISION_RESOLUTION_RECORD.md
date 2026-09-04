@@ -1410,3 +1410,246 @@ by PRD-015 §42 as blocking Stage 3, Stage 3 MUST remain CONDITIONAL / NOT CONFE
 **END OF PART IV.** ✅ **`SRCH-GAP-003` CLOSED by authorized declaration; gate 3 shows zero new violations.**
 ⚠ **VERDICT: B — STAGE 3 CONDITIONAL / NOT CONFERRED** — `SRCH-GAP-002` and `SRCH-GAP-007` still block.
 ⛔ **Architecture Owner one-act conferral: NOT READY.**
+
+---
+---
+
+# PART V — CONSOLIDATED HUMAN DECISION + GOVERNANCE RESOLUTION
+
+| Field | Value |
+|---|---|
+| **Part** | **V** — appended to Parts I–IV; ⛔ **no earlier Part rewritten** |
+| **Act performed** | 📋 **HUMAN DECISION RECORDING + EXTERNAL-EVIDENCE ACQUISITION + AUTHORITY CLASSIFICATION + ROUTING** |
+| **Act NOT performed** | ⛔ **No Stage-3 conferral.** ⛔ No frozen artefact modified. ⛔ No Enterprise Architecture edit. ⛔ No value invented |
+| **Predecessor commit** | `8eb3124` (Part IV — `SRCH-GAP-003` closed by authorized declaration) |
+| **Input** | 14 human decision inputs `HD-PRD015-01` … `HD-PRD015-14`, supplied expressly as **human decisions**, ⛔ **not** as pre-existing repository authority |
+| **Subject SHA (re-verified)** | `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — byte-unchanged |
+| **Reopened** | ⛔ **Nothing.** `F-5` Option A, `HD-1`…`HD-16`, `P2U`, `P2-B`, `P2-D`, `P5`, `P6`, `P8-A`, `ENT`, `SRCH-GAP-003 = CLOSED`, `GAP-008 = NON-BLOCKING` all stand |
+| **Verdict** | ⚠ **B — STAGE 3 CONDITIONAL / NOT CONFERRED** *(unchanged from Part IV)* |
+
+⭐⭐⭐ **The load-bearing sentence of Part V, written first so the flattering reading is unavailable.**
+This pass received **fourteen** decisions and **could have reported fourteen closures.** It reports **five**
+closures, **six** decisions that are recorded but **require a separate governance act to take effect**, **one**
+deliberate non-closure the principal himself instructed, and **two** disclosed **stricter-authority conflicts**.
+The reason is `§D` of the instruction: *"Do not pretend they were discovered in the repository."* A human decision
+is **authority over its own content**; it is **not** authority over the **locus** in which that content must be
+written when a **frozen Rank 3 rule** and a **Rank 6 descriptive artefact** already govern that locus.
+
+---
+
+## 48. The fourteen human decisions — recorded, classified, routed
+
+### 48.0 Classification vocabulary used below
+
+Per instruction `§D`, every value carries exactly one of:
+
+| Class | Meaning |
+|---|---|
+**`HUMAN DECISION`** | Supplied by the principal this pass. Recorded as such. ⛔ Not represented as repository-discovered
+**`REPOSITORY AUTHORITY`** | Already binding in the repository before this pass. The human input **confirms** it
+**`EXTERNAL AUTHORITY`** | Supplied by a cited external normative source (here: Unicode)
+**`CONFLICT`** | Contradicts a frozen or higher-authority rule. ⛔ Closure **stopped**, conflict reported
+**`REQUIRES SEPARATE GOVERNANCE ACT`** | Content accepted, but the act that makes it binding belongs to a named office this pass does not hold
+
+---
+
+### 48.1 `HD-PRD015-01` — P2-A analyzer / tokenizer
+
+| | |
+|---|---|
+**Exact human input** | Vendor-neutral logical pipeline: `QUERY → Unicode/script-aware normalization → grapheme-aware tokenization → exact/token/prefix/typo matching`. ⛔ No vendor or engine at architecture level. Engine selection remains a deployment/platform decision. Close architecture-level P2-A **if compatible with `ADR-0099`**; if `ADR-0099` requires a concrete engine-specific configuration, keep that portion OPEN
+**Repository compatibility** | ✅ **Tested against all ten `ADR-0099` §2.2 constraints (L85-94), individually — see §48.1a. Zero contradictions.**
+**Authority classification** | **`HUMAN DECISION`** for the pipeline **order and properties**; **`REQUIRES SEPARATE GOVERNANCE ACT`** for the concrete analyzer/tokenizer specification
+**Downstream impact** | The **logical contract** `BC-23` must satisfy is now declared and testable in shape. `ADR-0099` §2.3's first two OPEN rows (*"The analyzer, by name or by specification"*, *"The tokenizer, by name or by specification"*) are **narrowed, not closed** |
+**Closure status** | ⚠ **PARTIAL.** Architecture-level *logical pipeline* = **RECORDED**. Concrete configuration = **OPEN**, routed to the Architecture Owner under `ADR-0099` §2.1 |
+
+#### 48.1a The ten-constraint compatibility test, run rather than asserted
+
+| # | `ADR-0099` §2.2 constraint | Result against the proposed pipeline |
+|---|---|---|
+`C-1` | Index/query symmetry (`SRCH-FR-023` **L414**) | ✅ The pipeline is stated **once** and is silent on side, so it is applicable identically to both. ⚠ Note: symmetry is a property of *how it is applied*, not of the pipeline text — an implementing act can still violate `C-1` by accident, exactly as `ADR-0099` warns
+`C-2` | Totality and symmetry (`SRCH-BR-008` **L427-429**) | ✅ No asymmetric stage is introduced
+`C-3` | Script **consumed, never inferred** (`SRCHAO-F5` = Option A) | ✅ *"script-aware"* is read as **consuming an authoritative declared script**. ⛔ It is **NOT** read as detecting script. This reading is recorded expressly because the phrase is capable of the forbidden reading
+`C-4` | Script-aware application (`HD-2`) | ✅ Directly restates `HD-2`
+`C-5` | **Grapheme-cluster** counting unit (`HD-5`) | ✅ *"grapheme-aware tokenization"* is congruent; and `P3`/`P4` below count in grapheme clusters
+`C-6` | Vendor-neutral expression (`MP-CON-01`, `MP-CON-03`) | ✅ **This is the decision's own express content.** ⛔ No vendor named
+`C-7` | Tenant partitioning unweakened (`MP-GBR-08`, `SE-1`, `X-13`, `AR-3`, `SRCH-INV-002`/`-004`) | ✅ The pipeline is text-processing only; it touches no index-class or tenant-key rule
+`C-8` | Closed set of two languages (`SRCHPO-1`, `HD-16`) | ✅ Presupposes no third language
+`C-9` | ⛔ **No language detection** (`SRCHPO-2`) | ✅ *script*-aware ≠ *language* detection, and `C-3`'s consumed-declaration reading forecloses the drift
+`C-10` | Declared, not emergent | ✅ The pipeline is a document statement
+
+⚠ **Why this is PARTIAL and not CLOSED, stated plainly.** `ADR-0099` §2.1 holds that the configuration *"MUST be
+established by an **express architecture act** before implementation"*, and lists among the things it is **not**
+established by *"an implementer's choice at build time"*. A **human decision recorded in a resolution record is not
+an Architecture Owner act.** Reporting P2-A as CLOSED would make this record the author of an authority
+`ADR-0099` reserved elsewhere — the precise defect `ADR-0099` §2.3's closing note warns about.
+
+---
+
+### 48.2 `HD-PRD015-02` — P2-C Unicode / `ZWJ` / `ZWNJ`
+
+| | |
+|---|---|
+**Exact human input** | Keep **STRIP-WITH-EXCEPTIONS**. Use authoritative Unicode evidence to define the exact exception behaviour. ⛔ *"The human decision does NOT authorize Claude to invent an exception list."* MUST consult authoritative Unicode material, distinguish Unicode **facts** from Liboora **product policy**, cite the exact source, record only what is supported; keep unsupported detail OPEN
+**Repository compatibility** | ✅ Compatible. `N6` (**L425**) already requires removal of zero-width/control/formatting characters; `P2-C` policy was already decided; `ADR-0099` **L110** routes the exception set *"evidence-bound to the applicable Unicode/product authority"* |
+**Authority classification** | **`EXTERNAL AUTHORITY`** for the Unicode facts in §49; **`REPOSITORY AUTHORITY`** for the strip default (`N6`); **`REQUIRES SEPARATE GOVERNANCE ACT`** for the exception **set content** |
+**Downstream impact** | ⭐ `P2-C`'s policy shape moves from **asserted** to **evidenced** — the first time in this engagement that an external normative citation has been placed under it |
+**Closure status** | ⚠ **PARTIAL.** Policy **shape** = **EVIDENCED / CLOSED**. Exception **set content** and the `N6`×`N4` **ordering** = **OPEN** |
+
+⭐⭐ **What the evidence actually bought, and what it did not.** §49 establishes, from a citable normative
+document, that (a) the joining controls **are** `Default_Ignorable_Code_Point`s, (b) the Unicode-recommended
+default for a **comparison form** is to **ignore / remove** them, and (c) that default is expressly subject to a
+carve-out — *"unless their use is required in a particular domain."* ⭐ **That carve-out is the exception limb of
+strip-with-exceptions, and it is now sourced rather than invented.** ⛔ **What §49 does NOT supply:** any
+enumeration of which Devanagari sequences require `ZWJ`/`ZWNJ`, and any ordering of a diacritic-folding stage
+against a control-removal stage. Those remain `ADR-0099` **L110**, unresolved.
+
+---
+
+### 48.3 `HD-PRD015-03` — P3 typo tolerance
+
+| | |
+|---|---|
+**Exact human input** | maximum edit distance = **1**; minimum token length for typo correction = **3** grapheme clusters. Exact matches remain higher priority. ⛔ *"Do not silently replace them with another number."* If a different authority is required for these values, **record that requirement** rather than pretending the value was repository-discovered |
+**Repository compatibility** | ✅ **No contradiction found, by measurement — see §48.3a** |
+**Authority classification** | **`HUMAN DECISION`** (values) + **`REQUIRES SEPARATE GOVERNANCE ACT`** (the act that makes them binding) |
+**Downstream impact** | `SRCH-BR-012` `C2`/`C3` now have **proposed** values on record with a named provenance |
+**Closure status** | ⚠ **RECORDED, NOT CLOSED.** `SRCH-GAP-002` `P3` stays OPEN pending an Architecture Owner act |
+
+#### 48.3a The contradiction search, and its result
+
+| Test | Method | Result |
+|---|---|---|
+Does any repository authority state a different edit-distance bound? | grep across `docs/` for edit-distance / fuzzy bounds | ⛔ **None.** §36 **L829** records the refusal expressly: *"⛔ No number is invented"*
+Does any repository authority state a different minimum token length? | same | ⛔ **None**
+Do the values satisfy `SRCH-BR-012` `C1`…`C5` (**L565-571**)? | read each constraint against the values | ✅ `C1` untouched (tolerance still excluded on exact-role fields); ✅ `C2` **satisfied** — 3 is *"a declared minimum token length"*, which is exactly what `C2` demands exist; ✅ `C3` **satisfied** — 1 is *"bounded and uniform across consumers"*; ✅ `C4` untouched (§22.2 tier order unchanged); ✅ `C5` untouched (no widening)
+Does any **test** contradict them? | `find test -iname '*search*'` | ⛔ **Zero search tests exist.** `test/` holds `architecture/`, `domain/`, `authentication_conformance_test.dart`, `student_identity_conformance_test.dart`, `widget_test.dart`. ⭐ **Nothing in the test suite can contradict `P3` or `P4`** — stated as a measurement, not as a convenience
+Does `SRCH-FR-033` (**L557-559**) permit distance 1? | read | ✅ It requires matching on *"a **bounded, minor** character difference — insertion, deletion, substitution or transposition"*. **1 is the minimum non-trivial bound** and is the most conservative value satisfying the requirement
+
+⛔ **Why this is RECORDED and not CLOSED — the single most important line in §48.3.** The subject document states
+its own ownership rule at **L574**, verbatim: *"⚠ **C2's minimum length and C3's bound are `SRCH-GAP-002`, owner
+Architecture Owner.** ⛔ Not fabricated here."* The principal's own instruction anticipated this and directed the
+honest outcome: *"If architecture/governance requires a different authority for these values, record that
+requirement rather than pretending the value was repository-discovered."* ✅ **The requirement is recorded. The
+value is not laundered into repository authority.**
+
+---
+
+### 48.4 `HD-PRD015-04` — P4 minimum prefix length
+
+| | |
+|---|---|
+**Exact human input** | minimum prefix length = **3** grapheme clusters. `Lib` may match `Library`; `Li` is not required; `Central Lib` multi-word matching remains supported. Count in the already-decided grapheme-cluster unit |
+**Repository compatibility** | ✅ **Corroborated by the subject's own illustration.** `SRCH-FR-030` (**L518-520**) makes prefix matching a **MUST** and illustrates it with **`Lib` → `Library`** — a **three**-grapheme-cluster prefix. ⭐ The proposed minimum is the exact length of the PRD's own worked example, so the value is congruent with the document rather than merely un-contradicted by it. Multi-word support is unaffected (`N5` tokenization, **L424**). Counting unit matches `C-5`/`HD-5` |
+**Authority classification** | **`HUMAN DECISION`** (value) + **`REQUIRES SEPARATE GOVERNANCE ACT`** (binding act) |
+**Downstream impact** | `SRCH-GAP-002` `P4` has a proposed value with named provenance and documentary corroboration |
+**Closure status** | ⚠ **RECORDED, NOT CLOSED.** Same owner as `P3` (`SRCH-GAP-002`, Architecture Owner) |
+
+⚠ **The corroboration is deliberately not overstated.** `SRCH-FR-030`'s example shows that 3 **works**; it does
+not state that 3 is the **minimum**. An example is not a bound. ⛔ The value therefore remains a human decision,
+not a repository discovery.
+
+---
+
+### 48.5 ⭐⭐⭐ `HD-PRD015-05` — P7 query latency — **CONFLICT OF LOCUS, CLOSURE STOPPED**
+
+| | |
+|---|---|
+**Exact human input** | Target **≤ 2 s** for normal search queries; hard upper bound **≤ 5 s**. Record as a product/architecture NFR proposal **only if compatible with existing NFR governance**. If EA NFR Budgets is the required destination, record there **only if this pass is authorized to modify that artefact**. ⭐ *"If the EA artifact is frozen/protected or requires a separate Architecture Owner act: **DO NOT modify it.** Record the human decision and exact required follow-up."* |
+**Repository compatibility** | ⛔ **The VALUES contradict nothing. The ACT of writing them here would contradict a frozen Rank 3 rule — see §48.5a** |
+**Authority classification** | ⛔ **`REQUIRES SEPARATE GOVERNANCE ACT`** (Architecture Owner), with a **`CONFLICT`** disclosed as to locus |
+**Downstream impact** | `P7`'s latency limb has a recorded human intent and a **named destination and office**. ⛔ It is not binding |
+**Closure status** | ⛔ **NOT CLOSED. EA NOT MODIFIED.** Follow-up recorded at §55 |
+
+#### 48.5a The frozen rule that stops this closure, quoted verbatim
+
+`Library_PRD_v1.md` **L862-864**, `LIB-20.1`, **FROZEN**, Rank 3:
+
+> *"Platform-wide NFR budgets **MUST** be taken from the Enterprise Architecture NFR Budgets document. This PRD
+> **MUST NOT** state a competing latency or availability figure."*
+
+Three measured facts complete the test:
+
+| # | Measurement | Consequence |
+|---|---|---|
+1 | `DOCUMENTATION_BASELINE.md` **L139** classifies `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.3 as **Rank 6 — *"Descriptive — must follow the PRDs, never lead them."*** | The EA is not a scratchpad. Its own baseline row governs how it changes
+2 | The same row records **every** precedent for changing it: `ADR-0042` §4 changed the EA **by exactly one token**, as an **Architecture Owner act**; `ADR-0079` appended below **L2404** and re-resolved **482 citations**; and for `ADR-0061` / `FIL-GAP-015` the conflicts were *"resolved **by precedence**"* — ⭐ *"**the EA was NOT edited**"* | An EA edit is an **Architecture Owner ADR act**. This pass holds no such office
+3 | The destination itself was read: EA **L339-344** contains the NFR Budgets subtree — *Latency Budgets (V1)*, *Availability Targets (V1)*, *Throughput Targets (V2)*, *Cost Budgets (V2)*, *Mobile Performance Budgets (V1)* — and a numeric sweep of the file returned **one unrelated hit at L2485** | ⭐ The destination is **headings with no values**. Writing the first values into an empty Rank 6 budget tree is precisely the act that requires the office |
+
+⚠ **The nuance that cuts against this record's convenience, disclosed rather than buried.** `LIB-20.1`'s **second**
+sentence binds *"This PRD"* — the Library PRD — and not, on its face, `PRD-015`. ⭐ **It does not matter, and here
+is why:** its **first** sentence is stated as a **platform-wide** rule, and `PRD-015` **§36 L826-829** independently
+refuses the same thing in its own voice — *"⚠⚠ **No performance target is stated in this document, and that is a
+deliberate refusal**"*, routing latency/availability to `SRCH-GAP-002`, **owner Architecture Owner**. **Two
+independent authorities, one conclusion.** The closure would fail on either alone.
+
+---
+
+### 48.6 `HD-PRD015-06` — P7 throughput
+
+| | |
+|---|---|
+**Exact human input** | ⛔ **Do NOT invent a QPS number.** Keep throughput as *"must support expected V1 tenant workload without violating the latency budget."* ⛔ Do not manufacture a number merely to close the gap. If a numeric value is mandatory for Stage 3, mark that specific numeric field **OPEN** |
+**Repository compatibility** | ✅ Fully compatible, and congruent with `PRD-015` §36's own refusal. ⚠ Measured: EA **L343** names *Throughput Targets* as **V2**, so no V1 numeric throughput destination even exists |
+**Authority classification** | **`HUMAN DECISION`** — a decision **not** to supply a value, which is itself a lawful decision |
+**Downstream impact** | The qualitative statement stands; the numeric field is expressly OPEN |
+**Closure status** | ⚠ **Qualitative limb RECORDED. Numeric field OPEN by express human instruction.** `P7` cannot close on this limb |
+
+⭐ **This is the decision this pass is most pleased to record, because it costs the report a closure.** A number
+here would have moved `P7` from OPEN to CLOSED with one sentence and no evidence. The principal declined, and the
+declination is preserved as the reason `P7` still blocks.
+
+---
+
+### 48.7 `HD-PRD015-07` — P7 availability
+
+| | |
+|---|---|
+**Exact human input** | **99.9% monthly** availability target for search retrieval. Validate against existing enterprise/platform NFR conventions. ⛔ Do not invent additional availability tiers |
+**Repository compatibility** | ✅ **The value is an EXISTING repository convention, not a new tier — measured, see §48.7a.** ⛔ **But the locus problem of §48.5a applies identically** |
+**Authority classification** | **`REPOSITORY AUTHORITY`** for the *form and tier* `99.9% monthly`; **`HUMAN DECISION`** for *applying it to `BC-23` retrieval*; ⛔ **`REQUIRES SEPARATE GOVERNANCE ACT`** for recording it in the EA |
+**Downstream impact** | `P7`'s availability limb has a value that provably introduces **no new tier** |
+**Closure status** | ⛔ **NOT CLOSED** — same `LIB-20.1` / Rank 6 locus conflict as `HD-PRD015-05` |
+
+#### 48.7a The convention, measured
+
+| Source | Line | Text |
+|---|---|---|
+`docs/30-product/authentication/prd-v2/11-NFR-Compliance-and-Final-Acceptance.md` | **L67** | *"Authentication service availability \| **99.9% monthly**"* |
+*ibid.* | **L68** | *"Session validation availability \| 99.95% monthly"* |
+*ibid.* | **L69** | *"Authorization decision availability \| 99.95% monthly"* |
+`docs/30-product/authentication/prd-v2/01-Purpose-and-Goals.md` | **L213**, **L231** | `KPI-4` ≥ 99.9%; `KPI-12` ≥ 99.9% **monthly** |
+`docs/30-product/authentication/Authentication_PRD_v2.md` | **L320** | same convention |
+
+✅ **`99.9% monthly` is therefore a re-use, not an invention**, and the instruction *"do not invent additional
+availability tiers"* is satisfied **by measurement**: the proposal uses the **lower** of the two tiers already in
+use and creates no third.
+
+⭐⭐ **An unprompted coherence check, recorded because it strengthens the proposal and could have been omitted.**
+`BC-23` asks `BC-18` for an authorization decision **per request** (the `SRCH-GAP-003` declaration closed at Part IV
+§40). `BC-18`'s *authorization decision availability* is **99.95%** (**L69**). A dependent service proposed at
+**99.9%** therefore sits **below** the availability of the dependency it calls — which is the **correct** direction.
+Had the proposal been 99.99%, `BC-23` would have promised more availability than its own critical dependency, and
+this record would have had to report that as a defect.
+
+---
+
+### 48.8 ⭐⭐ `HD-PRD015-08` — P8-B stale serving — **STRICTER EXISTING RULE FOUND AND APPLIED**
+
+| | |
+|---|---|
+**Exact human input** | Maximum ordinary stale-search window = **60 seconds**. Security rule absolute: **REVOKED / PRIVATE / NO-LONGER-ENTITLED content MUST FAIL CLOSED**; stale serving MUST NOT override current entitlement truth; **no cached authorization decision may be used as entitlement truth**. ⭐ *"If the repository already has a stricter value, use the stricter authoritative rule and disclose the conflict"* |
+**Repository compatibility** | ⚠ **Security limb: fully confirmed by existing authority. Window limb: a STRICTER existing rule exists for one event class — see §48.8a** |
+**Authority classification** | Security limb = **`REPOSITORY AUTHORITY`** (the human input **confirms**, it does not create); window limb = **`HUMAN DECISION`** + **`CONFLICT`** (stricter rule for `SEV-9`) + **`REQUIRES SEPARATE GOVERNANCE ACT`** |
+**Downstream impact** | `P8-B`'s security posture is now doubly grounded; the ordinary window carries a mandatory carve-out |
+**Closure status** | ⚠ **Security limb CLOSED (it was already closed). Window limb RECORDED WITH A CARVE-OUT, NOT CLOSED** |
+
+#### 48.8a The stricter rule, and the two false equivalences avoided
+
+| # | Finding | Disposition |
+|---|---|---|
+⭐ **1** | **`SRCH-FR-013` (L354-355) is STRICTER and it is existing authority.** A privacy-mode change (`identity.PersonPrivacyModeChanged`) **MUST** be applied with **no propagation window** — the event is recorded as having **none** (`SEV-9`, BC Map **L427**). §31 **L737-738** reinforces it: *"**Privacy mode has no grace period** … `BC-23` **MUST NOT** define an eventual-consistency allowance for it"* | ✅ **The stricter rule governs.** Per the principal's own instruction, the 60 s ordinary window **MUST carve out `SEV-9`, whose window is ZERO.** Disclosed, not silently overwritten
+⭐ **2** | **`MP-GBR-26`** (`MASTER_PRD.md` **L380**, Rank 1): session revocation is *"**immediate and global** — authoritative-or-absent, with **no propagation window**"* | ✅ Confirms the fail-closed limb at Rank 1. A 60 s window may **never** be read onto a revocation path
+⛔ **3 — FALSE EQUIVALENCE AVOIDED.** `LCFG-6` is also **60 s**, and it would have been effortless to report *"the repository already says 60 s, so `P8-B` is closed by repository authority."* **That would have been wrong.** `CONFIGURATION_GUIDE.md` **L356** defines `LCFG-6` as *"Discovery index propagation"* — **"Removal latency only"** — and **L377** states it *"**must never be consulted on an authorization path**"*, because a propagation window wired into a permission check would breach `MP-GBR-26` *"using a Rank 7 configuration value"* | ⛔ `LCFG-6` (`P6`, **removal latency**, already closed) and `HD-PRD015-08` (`P8-B`, **stale-serving window**) are **different parameters that share a number.** Conflating them would be a category error and is expressly refused
+⛔ **4 — SECOND FALSE EQUIVALENCE AVOIDED.** `LCFG-13` is a *"Public preview cache TTL"* of **300 s** whose rationale ends *"**Never** applies to an authorization decision"* | ⛔ Also not the same parameter. Not used
+✅ **5** | The security limb's three clauses were each matched to pre-existing authority: fail-closed = §35 **L815** (*"⭐ **Fail closed.** ⛔ `BC-23` **MUST NOT** fall back to reading a domain table"*) + BC Map **L330** (*"Search never reads domain tables"*); stale-never-in-caller's-favour = §33 **L793** (*"Staleness **MUST NOT** be resolved in the caller's favour on authorisation … the index never grants access"*); no-cached-authorization = Matrix **L220** (*"ask BC-18, never evaluate or cache"*) + `MP-GBR-26` | ✅ **The human input adds no new security rule. It ratifies three that already bind.** Recorded as confirmation, ⛔ not as a new decision |

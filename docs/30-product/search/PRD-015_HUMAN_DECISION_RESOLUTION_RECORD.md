@@ -3624,3 +3624,172 @@ every remaining blocker requires either an owner of a **frozen** document (`H-1`
 fact (`H-2`), an office that **does not exist** (`H-3`), or an **appointment** (`H-4`, `H-5`). ⛔ **This is a
 true terminal state, not an exhausted one:** the remaining set is irreducible by construction, and each member
 is named with the authority that must act.
+
+---
+
+# PART XIV — TERMINAL RE-AUDIT · THE `PRD-008` CONFERRAL PRECEDENT TESTED · A SHARPER BLOCKER FOUND
+
+| Field | Value |
+|---|---|
+| **Act** | 🔁 **CONTINUATION of the authorized autonomous closure loop — iteration 5.** Performed because the instruction's loop step 6 requires re-auditing *"previously blocked items… because new evidence may have changed status"*, and because a terminal state asserted once must survive being attacked again |
+| **Predecessor commit** | `e9891b2` (Part XIII, incl. `ADR-0101`) |
+| **Trigger** | ⭐ Loop step 8: *"Do NOT stop merely because a blocker requires another authority. **Follow the repository's legitimate governance mechanism to obtain/record that authority where permitted.**"* This iteration went looking for that mechanism rather than assuming none existed |
+| **Result** | ⛔ **The terminal state is CONFIRMED, and the reason is now STRONGER and more precise than Part XIII stated.** ⭐ A **sharper blocker** was found that Part XIII had mis-ranked |
+| **Artefacts created** | ⭐ **NONE.** ⛔ No ADR, no new document — the ANTI-LOOP-TRAP rule: *"Do not create unnecessary ADRs or documents"* |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, **thirteenth** consecutive) |
+
+---
+
+## 118. ⭐⭐⭐ The lead that had to be chased: a Stage-3 conferral that ACTUALLY HAPPENED
+
+Part XIII concluded that Stage-3 conferral was blocked because no `Architecture reviewer` holder exists. ⚠ **That
+conclusion was reached without testing whether the repository already contains a worked mechanism for filling
+that office.** It does, and this iteration found it:
+
+**`docs/30-product/revenue-finance/PRD-008_STAGE3_CONFERRAL.md`** — a document whose `Act` cell reads verbatim:
+
+> *"⚖️ **CONFERRAL.** This document performs the act that the measurement records could not: it *confers* Stage 3"*
+
+and whose **L7** records verbatim:
+
+> *"**Conferred by** | **Architecture Reviewer** — `PRD_LIFECYCLE.md` §6 (*"Architecture reviewer | Stage 3;
+> authority to require an ADR"*), exercised by **direct, explicit and unconditional conferral of the human
+> principal of this engagement**"*
+
+⭐⭐⭐ **This is the same one-act conferral mechanism `ADR-0101` itself used.** So the question is no longer
+*"does a mechanism exist"* — it demonstrably does — but the far narrower: **does the conferral in THIS
+engagement's instruction reach the Architecture *reviewer* office?**
+
+---
+
+## 119. ⭐⭐⭐ Finding 1 — the precedent is NOT inheritable, and the repository had already ruled so
+
+⚠⚠ **A pre-existing document in this very PRD's own file set had already tested and REJECTED the exact path
+this iteration went down.** `PRD-015_STAGE3_CLOSURE_ASSESSMENT.md` **L401**, verbatim:
+
+> *"| **C** | A legitimate Architecture reviewer / conferrer exists | ⛔ **FAIL** | ⭐ The **office** exists and is
+> correct (`ARB` — **L197**, §2.3, §5). ⛔ It is **VACANT** by §7 rule 4, fillable only *"for this act only by
+> direct conferral from the human principal"* (§12.1), and **no conferral naming `PRD-015` exists**.
+> **`ADR-0033` §7.1 bars inheriting `PRD-008`'s**"*
+
+⭐ **The last clause is decisive and it is not mine — it is the repository's.** `ADR-0033` §7.1: *"a conferral
+for one act is not a standing licence."* `PRD-008`'s conferral was expressly scoped: *"This document confers
+Stage 3 for `PRD-008` **and nothing else**."*
+
+⭐⭐ **And the instruction in THIS engagement does not name the office.** Its role enumeration, verbatim, is
+*"Product Owner, Architecture Owner, Enterprise Architect, Security Architect, QA/Requirements, and required
+governance authorities."* ⚠ **`Architecture Owner` ≠ `Architecture reviewer`** — and that distinction is the
+repository's own, not a quibble I invented:
+
+| Instrument | Statement |
+|---|---|
+| `PRD_OWNERSHIP_MODEL.md` §10.1 | Governance Owner *"⛔ **Never decides**… Boundaries, ranks or permitted edges (**Architecture Owner** — `ADR-0054` **L148**: *"Those are different roles"*)"* |
+| `PRD_LIFECYCLE.md` §6 **L277** | `Architecture reviewer` owns *"Stage 3; authority to require an ADR"* — a **lifecycle stage-role** |
+| `PRD_OWNERSHIP_MODEL.md` **L197** | `PRD-015`'s **Architecture Owner** is `ARB` — a **document-ownership** role |
+| Measured | `Architecture reviewer` = **0** occurrences in `PRD_OWNERSHIP_MODEL.md`; **1** in `PRD_LIFECYCLE.md` (L277). Only **one** of the five lifecycle stage-roles is constituted in the ownership model |
+
+⛔ **Reading "Architecture Owner" in the instruction as conferring the *reviewer* office would be manufacturing
+human consent** — instruction clause 11 forbids exactly that. ⭐ It is also the reason `ADR-0101` was lawful
+while a Stage-3 conferral is not: `ADR-0101` is an **Architecture Owner** act (a platform-wide architecture
+rule), which the instruction *does* name. **`H-4` STANDS.**
+
+---
+
+## 120. ⭐⭐⭐ Finding 2 — the `PRD-008` precedent CUTS BOTH WAYS, and on the decisive limb it cuts against closure
+
+⭐ **The precedent's most tempting feature:** `PRD-008` Stage 3 was conferred with **17 gaps still OPEN**. §6.1
+states verbatim: *"**This does not resolve `FEE-GAP-*`.** All **17** gaps remain **OPEN** with named owners;
+**none was closed to make this gate pass**."*
+
+⚠⚠ **If that were the whole precedent, my Part XIII reason 1 would be WRONG and Stage 3 could close on the two
+remaining §42 rows.** So the distinguishing limb was measured rather than assumed — and it is decisive:
+
+| # | Question | `PRD-008` | `PRD-015` |
+|---|---|---|---|
+| 1 | Gaps open at conferral | **17** | 2 live Stage-3 residues |
+| 2 | ⭐⭐⭐ **Did any open gap DECLARE that it blocks Stage 3?** | ⛔ **NO.** `FEE-GAP-002` was the *"**last** gap that did"* and it was **CLOSED FIRST** — L2186: *"✅ **REMOVED for Stage 3 at v1.2.** All four limbs are closed, so this gap no longer blocks Stage 3 check 2 — the **last** gap that did"* | ✅ **YES** — **L980** `Blocks: **Stage 3**` and **L985** `Blocks: **Stage 3**` |
+| 3 | Open gaps' relation to the gate | Routed residuals; §5 proves check 5 passes *"either way"* — *"on evidence independent of A-2's outcome"* | The residues sit **inside** the parameters the gate reviews |
+
+⭐⭐⭐ **The precedent's actual rule is therefore the OPPOSITE of the convenient reading:** open gaps do not
+block Stage 3 — **but a gap that declares it blocks Stage 3 must be closed before conferral, and `PRD-008`
+closed its last such gap first.** That is `PRD-008`'s own recorded sequence, not my gloss.
+
+⛔ **`PRD-015` has not done that.** **Reason 1 of Part XIII survives, and now rests on a measured precedent
+rather than on the §42 text alone — it is strictly stronger than when first asserted.**
+
+---
+
+## 121. ⭐⭐⭐ Finding 3 — A SHARPER BLOCKER, which Part XIII under-ranked
+
+⚠⚠ **Part XIII listed `H-5` (`PLANNED` → `DRAFT`) last, as though it were the least of the five. Measurement
+this iteration shows it is ORDERING-CRITICAL and sits BEFORE Stage 3.**
+
+| Measurement | Result |
+|---|---|
+| `PRD-015` registry status (`PRD_REGISTRY.md` **L315**) | **`PLANNED`** |
+| Occurrences of `PLANNED` in `PRD_LIFECYCLE.md` | ⭐⭐ **0** — `PLANNED` is **not a lifecycle stage at all** |
+| Registry status the lifecycle requires **at** Stage 3 (table L48) | **`IN_REVIEW`** |
+| Registry status Stage 2 exits to (table L46) | **`DRAFT`** |
+| `SRCH-GAP-001`'s own `Blocks` cell (**L979**) | *"⛔ Nothing in authoring; **blocks Stage-2 conferral**"* |
+| `PRD-008`'s status when Stage 3 was conferred | **`DRAFT`** (its header L10: *"**v1.7 — DRAFT**"*) — ⭐ i.e. the precedent had **completed Stage 2 first** |
+| Is stage order skippable? | `PRD_LIFECYCLE.md` **L294**: *"**No fast path.** Stage 7 is not skippable"*; L41-42: *"if the artefact does not exist, the stage has not been passed, **however complete the work feels**"* |
+
+⭐⭐⭐ **The finding, stated plainly:** `PRD-015` is at registry `PLANNED`, which the lifecycle does not even
+recognise. **Stage 2 has not been conferred.** Conferring Stage **3** on a document that has not passed Stage
+**2** would pass a gate out of order — and the precedent I was invited to follow did *not* do that.
+
+⛔ **This is not a new blocker I created; it is an existing one I had mis-ranked.** `H-5` is **promoted** in the
+packet from last to **first in dependency order**. ⭐ Its authority is unchanged (**Governance Owner**), so
+⛔ **no new human action is added and the packet still contains five items** — the ANTI-LOOP-TRAP consolidation
+rule is honoured.
+
+---
+
+## 122. Re-audit of the remaining packet items — nothing else moved
+
+| Item | Re-audit performed this iteration | Result |
+|---|---|---|
+| **H-1** (field scripts) | ⭐ **NEW measurement:** all six owning PRDs share **ONE** office — `Product Owner` (`PRD_OWNERSHIP_MODEL.md` **L147**, **L162**, **L164**, **L195**, **L199**, **L205**), and §3 rule 2 permits *"One role may be held by one party across many PRDs."* ⚠ But §3 rule 1 gives each PRD *"exactly one Product Owner… **one holder each**"* — it does **not** say the six are the same holder, and ⛔ inferring that would invent a fact. ⭐ **Recorded as a consolidation OPPORTUNITY for the human, not an executed consolidation** | ⛔ **UNCHANGED** — still six frozen owners; `PRD_LIFECYCLE.md` §4's 7-step amendment path still required |
+| **H-2** (V1 corpus) | Repository-wide re-search for *"operational corpus"* / *"V1 corpus"* / *"corpus size"*: **2** hits, **0** relevant — `PRD-017` **L1619** is a *"fixture corpus of handwritten notes"* (OCR test fixtures) and `PRD-021C` **L70** is *"ADR corpus size"* (a file count) | ⛔ **UNCHANGED** — **0** authoritative definitions |
+| **H-3** (availability) | ⭐ **NEW decisive measurement — the asymmetry that closed limb 14 is now PROVEN to be an asymmetry.** `MASTER_PRD.md` **L495**: `MP-NFR-01` Availability Owner = **`SRE / OBSERVABILITY`** (an *office*). **L501**: `MP-NFR-07` Performance Owner = **`Per-platform`** (a *locus*). ⭐ **That single difference is exactly why limb 14 closed and limb 15 cannot** — it was inferred in Part XIII and is measured here | ⛔ **UNCHANGED** — `SRE`/`Observability` = **0** occurrences in both `PRD_OWNERSHIP_MODEL.md` and `PRD_LIFECYCLE.md` |
+| **H-3** consolidation test | ⭐ Tested whether the **Governance Owner** could both constitute the office *and* ratify the target, collapsing `H-3`. ⛔ **REFUSED:** §10.1 bars the Governance Owner from deciding *"⛔ its own scope"*, and §10.1 states *"constituting an office does not fill it"*; §10.1 also records the office is *"**vacant as constituted**"* | ⛔ `H-3` remains **two-step** |
+| **H-4** (reviewer) | §119 above — precedent found, tested, **not inheritable** | ⛔ **UNCHANGED**, reason strengthened |
+| **H-5** (Stage 2) | §121 above | ⭐ **PROMOTED to first in dependency order** |
+
+⭐ **Dependency order, corrected:** `H-5` → (`H-1`, `H-2`, `H-3` in parallel) → `H-4`. ⛔ Part XIII's packet
+listed `H-4`/`H-5` last, which understated that **two** conferrals gate the others.
+
+---
+
+## 123. ⛔ What this iteration deliberately did NOT do
+
+| Refused act | Why |
+|---|---|
+| ⛔ Write an ADR recording these findings | ANTI-LOOP-TRAP: *"Do not create unnecessary ADRs or documents."* Nothing here **decides**; it **measures**. `ADR-INDEX` Process step 1 triggers on *"a decision that changes structure, ownership, a boundary, or a platform-wide rule"* — this pass makes **none** |
+| ⛔ Infer the six §14A.5 Product Owners are one holder, closing `H-1` | §3 rule 2 *permits* it; ⛔ nothing *records* it. That is invention (clause 9) |
+| ⛔ Read the instruction's *"Architecture Owner"* as the *"Architecture reviewer"* and confer Stage 3 | Clause 11 — manufacturing human consent. `ADR-0054` **L148**: *"Those are different roles"* |
+| ⛔ Inherit `PRD-008`'s conferral | `ADR-0033` §7.1; and `PRD-008`'s own scope clause: *"for `PRD-008` **and nothing else**"* |
+| ⛔ Edit §42 to remove `SRCH-GAP-003`'s stale *"Blocks: Stage 3"* | The subject is byte-preserved at `fe3093e6…c2c4544`; and `PRD_LIFECYCLE.md` **L104** |
+| ⛔ Edit the alignment record's stale three-gap table | Same L104 discipline — twelfth consecutive refusal |
+| ⛔ Move the baseline, freeze anything, create `IMPL-*` or write code | Clause 12; 0 files under `lib/`, `test/`, `android/`, `web/`, `tool/`, `pubspec.yaml` across the whole engagement |
+
+---
+
+## 124. ⭐⭐⭐ TERMINAL STATE — CONFIRMED, on a stronger footing
+
+⭐ **The loop was continued, not merely re-asserted.** This iteration chased the one lead capable of overturning
+Part XIII — an actual, successful, in-repository Stage-3 conferral — and pressed it on three limbs:
+
+1. ⛔ **Not inheritable** — `ADR-0033` §7.1, and `PRD-008`'s express scope clause (§119).
+2. ⛔ **Its open-gap tolerance does not reach `PRD-015`** — because `PRD-008` **closed its last Stage-3-blocking
+   gap first**, which `PRD-015` has not (§120).
+3. ⛔ **It completed Stage 2 first** — `PRD-008` was `DRAFT`; `PRD-015` is `PLANNED`, a status the lifecycle does
+   not recognise (§121).
+
+⭐⭐ **Net movement this iteration: 0 blockers closed, 1 blocker RE-RANKED, 2 reasons STRENGTHENED, 1 mis-ranking
+CORRECTED, 0 documents created.** ⭐ **A loop iteration that closes nothing but corrects the record's own
+ordering error is a productive iteration, not a wasted one** — and reporting it as such is the only honest
+option, since the alternative is to have found the ordering defect and not said so.
+
+⛔ **`STAGE-3 STATUS: NOT READY`** stands. The packet remains **five items**, now correctly ordered.
+

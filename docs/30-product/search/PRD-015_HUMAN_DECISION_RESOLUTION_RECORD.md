@@ -3027,3 +3027,116 @@ Remaining `SRCH-GAP-007` conjunct: **`FU-20`** (`B1` field-level script values, 
 ⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
 
 **END OF PART X**
+
+---
+
+# PART XI — `FU-20` / `B1` ATTEMPTED CLOSURE · INVENTORY ESTABLISHED · SCRIPT VALUES BLOCKED
+
+| Field | Value |
+|---|---|
+| **Act** | 🔎 **AUTHORIZED PRODUCT OWNER ACT, EXECUTED ONLY AS FAR AS AUTHORITY REACHES.** Step 2 (inventory) ✅ performed; step 4 (script per field) ⛔ refused for want of authority |
+| **Predecessor commit** | `b2afad5` (Part X) |
+| **Authority** | **Product Owner** — `PRD_OWNERSHIP_MODEL.md` **L197**, by direct conferral of the human principal, **scoped to this act** (`ADR-0033` §7.1). ⛔ No standing appointment · ⛔ no personal name (§7 rule 4, **L318**) |
+| **Result** | ⭐ **Inventory precondition CLOSED. `FU-20` RE-CLASSIFIED `OPEN` → ⛔ `BLOCKED`.** 0 script values declared |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, **tenth** consecutive) |
+
+## 94. Step 2 — ⭐ the enumerable field inventory EXISTS and is hereby established **by citation**
+
+⭐⭐ **The precondition Part VIII §73 declared missing is in fact satisfiable — and this pass falsifies its own earlier finding rather than inheriting it.**
+
+| # | Question | Measurement |
+|---|---|---|
+| 1 | Is there an authoritative indexed-field set? | ✅ **YES.** `ADR-0094` (**Accepted**, Rank 2) **L64-65**: *"**§14A.4 / §14A.5** define the **indexable and queryable field set** for V1 library discovery. `BC-23` indexes these fields and no others for the library-discovery surface."* |
+| 2 | Is it **enumerable**? | ✅ **YES.** §14A.5 (**L138-168**) enumerates **16** public fields and **10** never-public exclusions, as discrete prose lines |
+| 3 | Why did §73 measure *"no enumerable field inventory"*? | ⚠ **Because it measured `grep -c '^\|'` = 0 — table ROWS.** §14A.5 enumerates as **prose lines, not table rows.** ⭐ The instrument was wrong, not the repository |
+| 4 | Is there a per-field **owner** map? | ✅ **YES** — `ARCHITECTURE_RULINGS.md` `AR-1` (**L41-50**, Rank 4), verified verbatim this pass |
+
+### 94.1 The inventory, established **by reference** — ⛔ not restated
+
+⛔ **The 16 field names are deliberately NOT reproduced here.** `SRCH-XC-001` (**L158**) forbids `BC-23` to *"define, alter or restate any §14A field"*, and §3 **L145** records the discipline: *"⛔ **NO** — cited, never restated."* The inventory is therefore established as a **citation**, which is the smallest compatible form:
+
+> ⭐ **`SRCHPO-5`** — **The authoritative V1 indexed-field inventory for `BC-23` is the field set enumerated at `14A-Library-Discovery-And-Enrollment.md` §14A.5, lines 138-168, as made indexable by `ADR-0094` L64-65, with per-field ownership as ruled by `ARCHITECTURE_RULINGS.md` `AR-1` L41-50.** ⛔ No field is created, renamed, added, removed or restated. ⛔ Ownership is **NOT** transferred to `BC-23`.
+
+⭐ **This closes the precondition §73 added to `FU-20`** — *"the owning contexts must first publish an enumerable field inventory"* — ✅ **without any context publishing anything**, because `ADR-0094` and `AR-1` already did. §14A remains **byte-unchanged**.
+
+## 95. Step 4 — ⛔ **REFUSED.** Why not one script can lawfully be declared
+
+`AR-1` **L41-50** maps the §14A.5 field set to **six** owning contexts. Their loci were tested for the one property step 4 requires — being **unfrozen**:
+
+| `AR-1` field group | Owning context | Owning PRD | Registry status |
+|---|---|---|---|
+| Library Name · Business Address · Map Location · Library Status · Business Contact Information | `BC-19` Tenancy | `PRD-013` | ⛔ **`FROZEN`** (**L313**) |
+| Logo · Cover Image · Description | `BC-25` Configuration | `PRD-023` | ⛔ **`FROZEN`** (**L337**) |
+| Gallery | `BC-29` File & Media | `PRD-017` | ⛔ **`FROZEN`** (**L317**) |
+| Operating Hours · Weekly Holidays | `BC-06` Library Policy | `PRD-002` | ⛔ **`FROZEN`** (registry §3.3, *Current status*) |
+| Membership Plans & Pricing | `BC-02` Membership | `PRD-005` | ⛔ **`FROZEN`** (**L242**) |
+| Seat Capacity | `BC-04` Seating | `PRD-007` | ⛔ **`FROZEN`** (**L244**) |
+
+⭐⭐⭐ **All six owning loci are FROZEN. There is no unfrozen Product-Owner locus for any §14A.5 field.**
+
+| Route to a script value | Available? | Barrier |
+|---|---|---|
+| Declare on the owning PRD | ⛔ **NO** | All six **FROZEN**; `PRD_LIFECYCLE.md` **L177**: *"**A frozen PRD is never silently modified.** Not for an obvious correction, and not for one that is certainly right"* |
+| Declare on frozen §14A | ⛔ **NO** | Instruction §3; §14A **FROZEN 2026-08-03** under `BASELINE-2026-08-03` |
+| Declare on `PRD-015` | ⛔ **NO** | `SRCH-XC-001` (**L158**); it would also break the Stage-3 hash anchor (`F-5`) |
+| Infer from field names | ⛔ **FORBIDDEN** | Instruction §5; `SRCHAO-F5` Option A; `ADR-0100` **L217** |
+| Read an existing declaration | ⛔ **NONE EXISTS** | `F5` packet **L175**: *"**Zero** of the seven owning contexts declares a script for any field it owns"*; re-measured this pass — **0** hits |
+| Derive from `LCFG-2` locale | ⛔ **REJECTED** | `F5` ruling: *"a tenant set to `en` may hold a Devanagari name"* — the exact case `SRCHPO-1` admits |
+
+⛔ **Instruction §6 therefore governs: *"If any field/script lacks authoritative evidence, leave it OPEN/BLOCKED."*** Not one of the 16 fields has authoritative script evidence. **Zero script values are declared.** ⛔ No value guessed, no value manufactured, no field defaulted to Latin.
+
+### 95.1 ⭐⭐ MATERIAL RE-CLASSIFICATION — `FU-20` is **BLOCKED**, not merely OPEN
+
+| | Before | After |
+|---|---|---|
+| `FU-20` / `B1` | ⛔ **OPEN** — awaiting Product Owner content | ⛔⛔ **BLOCKED** — the owning loci are **all frozen**; content cannot lawfully be supplied anywhere |
+
+⭐ **Self-adverse correction.** Part X §6 recommended as the next lawful act that *"the owning contexts publish an enumerable field inventory **on an unfrozen Product-Owner locus**."* Measured this pass: **that locus does not exist for any of the six owners.** The recommendation was unperformable as written. `FU-20` is not a *pending content decision* — it is **blocked behind six frozen-PRD amendments**, and it joins `FU-21` in the BLOCKED class.
+
+⚠ **The convenient route, named and refused.** Declaring *"Latin for all 16 fields"* was available, superficially harmless, and consistent with `SRCHPO-1`'s first script. It is **refused**: it is name-and-default inference of exactly the kind instruction §5 forbids, and `SRCHPO-1` expressly admits Devanagari content in the same fields, so a blanket Latin default would be **substantively wrong**, not merely unevidenced.
+
+## 96. Closure test — strictly from the repository
+
+| Question | Answer | Authority |
+|---|---|---|
+| Is `FU-20` **CLOSED**? | ⛔ **NO — BLOCKED.** Precondition closed (`SRCHPO-5`); payload unobtainable | §95 |
+| Is `SRCH-GAP-007` **CLOSED**? | ⛔ **NO — OPEN** | §42 **L985** conjunction unsatisfied |
+| Which conjunct remains? | **Conjunct 1** — the §16 half. `SRCH-FR-024` (**L416**) conditions `N1`–`N6` on *"the field's **declared script**"*; **0 of 16** fields carry one | `ADR-0100` **L14**: *"⛔ **Field-level script values**"* remains in the open-limb set |
+| Sub-items | **5 of 7 closed** — ⛔ **UNCHANGED from Part X.** `SRCHPO-5` closes a *precondition*, not a sub-item | §89.3 |
+
+⛔ **`SRCH-GAP-007` is NOT closed on a majority.** 5 of 7 is not 7 of 7 — rule `X3` (**L2360**), applied here against this pass's own result.
+
+## 97. Why no ADR — measured
+
+| Trigger | Applies? |
+|---|---|
+| `ADR-INDEX` Process step 1 — structure / ownership / boundary / platform-wide rule | ⛔ **NO.** `SRCHPO-5` **cites** existing Rank-2 and Rank-4 authority; it creates no field, moves no ownership, alters no boundary |
+| Would declaring scripts require an ADR? | ✅ **YES — six of them** (one per frozen owner). ⛔ **None is created here:** amending a frozen PRD is that PRD's owner's act, not this record's |
+
+⛔ **No ADR created.** `ADR-INDEX.md` untouched — register stays **88 files / 74 accepted**.
+
+## 98. No-invention verification
+
+| Category | Count |
+|---|---|
+| Script values / declarations | ⛔ **0** |
+| Field names created, renamed or restated | ⛔ **0** — inventory established by **citation** only |
+| Vocabulary · aliases · abbreviations · synonyms · transliterations · Hinglish rules | ⛔ **0** — `SRCHPO-4` unchanged |
+| Analyzers · tokenizers · ranking rules · thresholds | ⛔ **0** |
+| APIs · BCs · edges · events · `IMPL-*` | ⛔ **0** |
+| NFR values · corpus size | ⛔ **0** (`99.9%` still **PROPOSED — NOT ratified**) |
+| Persons / office holders | ⛔ **0** |
+| `SRCHPO-1`…`SRCHPO-4` altered | ⛔ **0 — all four preserved verbatim** |
+| `SRCH-GAP-002` / `FU-21` touched | ⛔ **NO** |
+| Freeze · baseline · Stage-3 conferral | ⛔ **NONE** |
+
+## 99. Stage 3 — unchanged
+
+**Stage-3 blocking gaps: 2 — UNCHANGED** (`SRCH-GAP-002`, `SRCH-GAP-007`). Axes **A** ✅ · **B** ⛔ · **C** ⛔ · **D** ⛔.
+
+`SRCH-GAP-007` residue: **`FU-20`** ⛔ BLOCKED (six frozen owners) · **`FU-21`** ⛔ BLOCKED (external evidence).
+⭐ **Both remaining conjuncts of `SRCH-GAP-007` are now BLOCKED rather than OPEN** — the gap cannot close by a Product Owner content act alone.
+
+⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
+
+**END OF PART XI**

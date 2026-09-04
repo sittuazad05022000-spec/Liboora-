@@ -374,6 +374,13 @@ platform/search:
   rank: 5
   imports:
     - { target: contracts, mode: import }
+  ports:
+    # SRCH-GAP-003 — query-time entitlement. BC-23 is NOT entitlement truth:
+    # it asks BC-18 per request and never evaluates or caches the answer.
+    # Declared as a PORT, not an edge: rank 5 -> rank 4 is downward (L2), and
+    # the Matrix already permits SEARCH x IAM as port use, so no BC Map §7
+    # edge is created or required.
+    - platform/identity:policy_decision  # ask BC-18 per request; never evaluate locally; never cache (MP-GBR-26)
   consumes_events: ["*"]
   banned_imports: ["domain/**", "app/**"]     # X-08
   assertions:
@@ -441,7 +448,12 @@ platform/identity:
   # than a general identity API.
   provides_ports:
     - name: policy_decision
-      consumers: [domain/library, domain/social, platform/ai, platform/analytics, platform/workflow]
+      # SRCH-GAP-003 — platform/search added. BC-23 asks BC-18 for a query-time
+      # authorization decision per request; it never evaluates entitlement
+      # locally and never caches the result. Existing tenant scoping (SE-1) and
+      # write-side permission scope (SE-2) are unchanged by this declaration.
+      consumers: [domain/library, domain/social, platform/ai, platform/analytics, platform/workflow, platform/search]
+      constraint: "ask BC-18 per request; never evaluate locally; never cache entitlement truth"
     - name: auth
       consumers: [app]
     - name: account_directory            # A-2

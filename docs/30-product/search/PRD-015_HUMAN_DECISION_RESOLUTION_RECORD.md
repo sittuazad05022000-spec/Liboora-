@@ -2880,3 +2880,150 @@ The office cannot be *appointed at all* — the repository's design admits only 
 | A frozen or ranked document was modified | ⛔ **No.** `Library_PRD_v1.md`, §14A, `MASTER_PRD.md`, EA, BC Map, `ADR-0099`, `ADR-0100`, baseline all byte-unchanged |
 | `PRD_LIFECYCLE.md` **L283** staleness was repaired | ⛔ **No** — disclosed and routed (§83) |
 | Baseline, rank, freeze state or `IMPL-*` changed | ⛔ **No** |
+
+---
+
+# PART X — PRODUCT OWNER `FU-22` DECISION ACT · VOCABULARY DECLARED EMPTY
+
+| Field | Value |
+|---|---|
+| **Act** | ✅ **AUTHORIZED PRODUCT OWNER CONTENT DECISION.** The one act Part VIII §74 identified as available and deliberately did not take |
+| **Predecessor commit** | `3503d60` (Part IX) |
+| **Authority** | **Product Owner** — the office `PRD_OWNERSHIP_MODEL.md` **L197** records for `PRD-015` (`| PRD-015 | Search Indexing | BC-23 | Product Owner | …`), exercised by **direct, explicit conferral of the human principal of this engagement, scoped to this act**. ⛔ **No standing appointment** — `ADR-0033` §7.1: *"a conferral for one act is not a standing licence."* ⛔ **No personal name recorded** — `PRD_OWNERSHIP_MODEL.md` §7 rule 4, **L318** |
+| **Locus** | This append-only record — the mechanism Parts I–IX established. ⛔ **No new ADR**: no rule requires one (see §90) |
+| **Result** | ✅ **`FU-22` CLOSED.** ⛔ **`SRCH-GAP-007` remains OPEN** — outcome **3** of the scope check |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, **ninth** consecutive) |
+
+## 87. The decision, recorded as given
+
+| ID | Decision | Class |
+|---|---|---|
+| ⭐⭐⭐ **`SRCHPO-4`** | **For V1 Search Indexing, `PRD-015` declares NO additional authoritative variant/abbreviation vocabulary.** §20 `V4` — *"Declared **abbreviation / expansion** pairs … only where declared"* (**L545**) — therefore has an **empty declared set** in V1 | `HUMAN DECISION` — Product Owner content |
+
+**Constraints attached by the Product Owner, reproduced as part of the decision:**
+
+| # | Constraint | Compliance |
+|---|---|---|
+| 1 | ⛔ Invent no aliases, abbreviations, synonyms, transliterations, Hinglish vocabulary, Hindi vocabulary or dictionaries | ✅ **Zero** supplied — see §91 |
+| 2 | ⛔ Create no ranking boosts | ✅ **Zero** |
+| 3 | ⛔ Do not interpret examples as vocabulary | ✅ §20's `lib`≡`library` (**L545**) and §16's `Café`≡`Cafe` (**L421**) remain **illustrations in an `Illustration` column**, not declared pairs |
+| 4 | Preserve `SRCHPO-2` — Hinglish / Romanized Hindi is supported **query behaviour**, not a canonical third language | ✅ **Preserved and unamended.** `SRCHPO-2` and `SRCHPO-3` stand verbatim |
+| 5 | ⛔ Do not modify frozen `Library_PRD_v1.md` or §14A | ✅ Both **byte-unchanged** — §92 |
+| 6 | ⛔ Do not resolve `FU-20` / `B1` field-script declarations | ✅ Untouched — and §89 shows this is precisely why `SRCH-GAP-007` stays OPEN |
+| 7 | ⛔ Do not resolve `SRCH-GAP-002` | ✅ Untouched — **12 CLOSED · 2 PARTIAL · 3 OPEN**, unchanged from §77 |
+| 8 | ⛔ Do not confer Stage 3 | ✅ **NOT CONFERRED** |
+
+### 87.1 Why an empty declaration is a lawful closure, not a non-answer
+
+| Test | Result |
+|---|---|
+| Does §20 permit an empty declared set? | ✅ **YES.** `V4` is conditioned *"only where declared"* (**L545**), and **L551-552**: *"**V4 is deliberately narrow.** An undeclared abbreviation table is indistinguishable from invented product vocabulary, which `SRCH-XC-014` forbids"* |
+| Does any requirement **break** if the set is empty? | ⛔ **NO.** `SRCH-BR-011` (**L548-549**) requires equivalence be *"derived from a **declared** rule set or vocabulary"* — `V1`/`V2`/`V3` are **rule classes** that stand independently; only `V4` consumes a vocabulary |
+| Is symmetry preserved? | ✅ `SRCH-FR-032` symmetry is vacuously satisfied over an empty pair set; `SRCH-BR-008` (**L426-428**) governs normalization, not `V4` |
+| Is this the outcome the register anticipated? | ✅ `FU-22` (**L2374**) is worded *"Vocabulary content, **or a formal declaration that V1 has none**"* — this act takes the second branch, which the register itself authorised |
+
+⭐ **Part VIII §74 measured Outcome 2 as *available and deliberately not taken*** — *"a **substantive product decision**… not a formality this pass may supply on the Product Owner's behalf."* It has now been supplied **by the authority that owns it**. ⭐ That is the difference between this Part and Part VIII: the office is the same, but the **content now comes from the principal**, not from the recording agent.
+
+## 88. `FU-22` — ✅ **CLOSED**
+
+| §4 condition | Result | Evidence |
+|---|---|---|
+| Office exists and is non-vacant | ✅ **Product Owner** | `PRD_OWNERSHIP_MODEL.md` **L197** |
+| Act within scope | ✅ *"scope, priority or acceptance"* is Product-Owner-owned | *ibid.* **L83**; §20 **L552**: *"owner **Product Owner**"* |
+| **Content supplied by the authority** | ✅ **YES** — the failing condition in §74 is now satisfied | The declaration is supplied, not inferred |
+| Frozen artifacts untouched | ✅ | §14A and `Library_PRD_v1.md` byte-unchanged |
+
+**Status: `FU-22` = ✅ CLOSED** by `SRCHPO-4`. It is the **fourth** follow-up act to close across the engagement (`FU-3`, `FU-4`, `FU-10` discharged by `ADR-0100`; `FU-16` by `D-7`; `FU-22` here).
+
+## 89. ⭐⭐⭐ SCOPE CHECK — strictly from §42 · outcome **3**
+
+The three permitted outcomes were tested against the **literal** register wording, in order.
+
+**§42 `SRCH-GAP-007`, verbatim (L985):**
+
+> `| **`SRCH-GAP-007`** | The language/script inventory **and** the declared variant/abbreviation vocabulary for §16 and §20 | **Product Owner** (markets) **+ Architecture Owner** (analyzer) | **Stage 3** | §16; §20 V4 |`
+
+| Outcome | Test | Result |
+|---|---|---|
+| 1 — `FU-22` CLOSED | Does the authority supply the content? | ✅ **YES** — §88 |
+| 2 — `SRCH-GAP-007` **CLOSED** | Are **both** conjuncts satisfied? | ⛔ **NO** — see §89.1 |
+| 3 — `SRCH-GAP-007` **OPEN**, `B1`/field-script separately required | — | ✅ ⭐ **THIS ONE** |
+
+### 89.1 Why conjunct 1 is not satisfied — the exact wording
+
+The row is a **conjunction** (*"…inventory **and** the declared … vocabulary"*), scoped *"for **§16** and §20"*. Conjunct 2 (§20 `V4` vocabulary) is now closed. Conjunct 1 is **not**, and the reason is in §16's own operative requirement:
+
+> **`SRCH-FR-024`** (**L416**) — *"Normalization **MUST**, where compatible with **the field's declared script** and language scope:"*
+
+⭐ **§16 does not merely require a *set* of scripts — it conditions every normalization rule `N1`–`N6` on a *per-field* declared script.** `SRCHPO-1` closed the **set** (English/Latin + Hindi/Devanagari, closed). It did **not** supply the per-field binding `SRCH-FR-024` consumes. Measured again this pass: §14A contains **ZERO table rows** and **zero** script declarations (§73). ⛔ **`SRCH-FR-024`'s condition is therefore still inoperable**, and conjunct 1 of `L985` is unsatisfied *within §16*, one of the two sections the row expressly scopes.
+
+**Independent confirmation at Rank 2 — the controlling evidence.** `ADR-0100` (**Accepted**) states in its own `Does NOT close` cell, **L14**:
+
+> *"⛔⛔ **`SRCH-GAP-002` as a whole, and `SRCH-GAP-007` as a whole.** … ⛔ Vocabulary content. ⛔ **Field-level script values.**"*
+
+and at **L8** scopes itself to *"Six of the **seventeen** `SRCH-GAP-002` / `SRCH-GAP-007` parameter limbs"* — a **single combined limb set** in which *field-level script values* is a live member. ⭐ A Rank-2 Accepted ADR therefore places field-level script values **inside** the `GAP-002`/`GAP-007` residue. This pass has **no authority to remove a limb an Accepted ADR records as open**, and does not.
+
+### 89.2 ⭐⭐ SELF-ADVERSE CORRECTION — the prior pass's arithmetic was wrong
+
+⛔ **The immediately preceding expert pass predicted that closing `FU-22` would cut Stage-3 blocking gaps from 2 to 1.** Tested strictly against `L985` and `ADR-0100` **L14**, that prediction is **FALSIFIED**: `SRCH-GAP-007` has a **second live conjunct** (`B1` field-level script values, §16) that `FU-22` does not touch.
+
+| | Predicted | Measured |
+|---|---|---|
+| Stage-3 blocking gaps after `FU-22` | **1** | ⛔ **2 — UNCHANGED** |
+
+⭐ **Recorded self-adversely.** Outcome 2 was the convenient reading and was **available on a narrow construction of *"inventory"*** — it is refused because §16 **L416** and `ADR-0100` **L14** both contradict it. ⛔ **The instruction's *"Do not choose the interpretation by convenience"* is satisfied by choosing the interpretation that yields *less* apparent progress.**
+
+### 89.3 `SRCH-GAP-007` — sub-item recomputation (continuing §59)
+
+| # | Sub-item | Before | After |
+|---|---|---|---|
+| 1 | Language scope (English + Hindi, closed set) | ✅ CLOSED | ✅ CLOSED |
+| 2 | Hinglish non-canonical status | ✅ CLOSED | ✅ CLOSED (⭐ **preserved**, constraint 4) |
+| 3 | Script carrier **mechanism** | ✅ CLOSED | ✅ CLOSED |
+| 4 | Analyzer **architecture contract** | ✅ CLOSED | ✅ CLOSED (`ADR-0100 D-1`) |
+| 5 | ⛔ Field-level **script values** (`B1` / `FU-20`) | ⛔ OPEN | ⛔ **OPEN** — untouched by instruction |
+| 6 | ⛔ Unicode implementation **content** (`FU-21`) | ⛔ OPEN | ⛔ **OPEN** — evidence-bound, unsatisfiable |
+| 7 | **Vocabulary** content | ⛔ OPEN | ⭐ ✅ **CLOSED** — `SRCHPO-4` |
+
+**5 of 7 closed** (was 4 of 7). ⛔⛔ **`SRCH-GAP-007` = OPEN.** ⭐ A gap closes on **all** conjuncts, not a majority — the rule `X3` established (**L2360**) and §77 applied to `SRCH-GAP-002`. Applying it *against* this pass's own result is the same discipline.
+
+## 90. Why no new ADR — measured, not assumed
+
+| Candidate trigger | Applies? |
+|---|---|
+| `ADR-INDEX` Process step 1 — *"a decision that changes structure, ownership, a boundary, or a platform-wide rule requires an ADR"* | ⛔ **NO.** An empty vocabulary set changes no structure, no ownership, no boundary and no platform-wide rule. It supplies **content** into a slot §20 already defines |
+| `ADR-0099` §2.3 routing | ⛔ **NO** — it routes the vocabulary *"to `SRCH-GAP-007`, split owner"* (**L111**), i.e. to the **owner**, not to an ADR |
+| Does any rule require a *Product Owner content* decision to be an ADR? | ⛔ **NO.** Precedent is against it: `SRCHPO-1`/`-2`/`-3` are recorded in `PRD-015_PO_DECISION_RESOLUTION_RECORD.md`, **not** in an ADR |
+| Is the append-only record the established locus? | ✅ **YES** — `HD-1`…`HD-16`, `D-1`…`D-7` and `SRCHRT-*` are all recorded here |
+
+⛔ **No ADR created.** `ADR-INDEX.md` untouched; register stays **88 files / 74 accepted**.
+
+## 91. No-invention verification
+
+| Category | Count | Check |
+|---|---|---|
+| Aliases / abbreviations / expansion pairs | ⛔ **0** | The declaration is the **absence** of a set |
+| Synonyms · transliterations · dictionaries | ⛔ **0** | |
+| Hinglish or Hindi vocabulary entries | ⛔ **0** | `SRCHPO-2` preserved, not extended |
+| Ranking boosts | ⛔ **0** | ⛔ No relevance weight stated anywhere |
+| Examples re-read as vocabulary | ⛔ **0** | `lib`≡`library` (L545) stays an `Illustration` |
+| Script declarations / `U+` codepoints | ⛔ **0** | `FU-20`, `FU-21` untouched |
+| Engines · tokenizers · analyzers · APIs | ⛔ **0** | |
+| NFR values · corpus size · QPS | ⛔ **0** | `99.9%` still **PROPOSED — NOT ratified** |
+| `IMPL-*` · BCs · edges · events | ⛔ **0** | |
+| Persons / office holders | ⛔ **0** | §7 rule 4 observed |
+| Stage 3 conferred | ⛔⛔ **NO** | |
+
+## 92. Protected-artifact integrity
+
+19 files hashed before the write; **19 of 19 byte-identical** after. ⭐ The subject `PRD-015_SEARCH_INDEXING.md` is unchanged, so the Stage-3 freshness anchor `fe3093e6…c2c4544` (`ARCHITECTURE_ALIGNMENT.md` **L12**) still resolves — the `F-5` constraint. §14A, `Library_PRD_v1.md`, `MASTER_PRD.md`, the EA, `ADR-0099`, `ADR-0100`, `ADR-0080`, the baseline and `tool/module_dependencies.yaml` all untouched. **Only this record changed.**
+
+## 93. Stage 3 — unchanged
+
+**Stage-3 blocking gaps: 2 — UNCHANGED** (`SRCH-GAP-002`, `SRCH-GAP-007`). Axis **A** ✅ · **B** ⛔ · **C** ⛔ · **D** ⛔.
+
+Remaining `SRCH-GAP-007` conjunct: **`FU-20`** (`B1` field-level script values, Product Owner / owning contexts — precondition: an enumerable field inventory on an unfrozen PO locus) and **`FU-21`** (Unicode content, blocked on external evidence).
+
+⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
+
+**END OF PART X**

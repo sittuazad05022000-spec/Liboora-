@@ -4687,3 +4687,323 @@ authority that has not acted** — not at missing analysis.
 
 **STAGE 3 — NOT READY.** ⛔ **NOT CONFERRED.** `PRD-015` remains **Stage 2 `DRAFT`**, not frozen, not baselined.
 
+
+---
+---
+
+# PART XVIII — ⭐⭐⭐ `HD-1` READ AT LAST · **`H-B`'s OWNING OFFICE IS CORRECTED A SECOND TIME — AND IN THE OPPOSITE DIRECTION**
+
+| Field | Value |
+|---|---|
+| **Part** | **XVIII** — the seventeenth consecutive governance pass on `PRD-015` |
+| **Act** | 🔁 **Re-test of every remaining blocker against the current repository**, beginning with the one `PRD-015` record never read end-to-end |
+| **Predecessor commit** | `f44e703` (Part XVII) |
+| **Subject** | `PRD-015_SEARCH_INDEXING.md` — ⛔ **byte-unchanged**, `fe3093e6…c2c4544` |
+| **Result** | ⭐⭐⭐ **`H-B`'s OWNING OFFICE IS WRONG IN PART XVII, AND THE ERROR RUNS THE OTHER WAY.** Part XVII moved `H-B` from *six frozen-PRD owners* to *the Architecture Owner inside `P2`*. **`HD-1` — a CLOSED ruling sitting in §2 of this very record — assigns it to the PRODUCT OWNER, via a PO-style declaration record on the `SRCHPO-A3` precedent.** ⭐ And **`B1`'s carrier is NOT unnamed**: `HD-1` names the mechanism. ⛔ **`H-B` is STILL BLOCKED** — on **content**, at **0 of 14** |
+| **Verdict** | ⛔ **B — CONDITIONAL / NOT CONFERRED** — the **seventeenth** consecutive |
+
+## ⚠⚠ OPENING DISCLOSURE — **PART XVII MIS-ASSIGNED `H-B`'s OFFICE, AND PARTS XV–XVII ALL MISSTATED `B1`**
+
+⛔ **This is the second consecutive Part to correct its own predecessor on `H-B`, and the correction is not a
+refinement of Part XVII's — it points the other way.**
+
+Part XVII was right that `SRCHAO-F5 = Option A` demolishes the six-frozen-amendment route. It was **wrong**
+about what replaces it. It concluded *"one Architecture Owner act inside `P2`"* and printed that in **14 of
+14** rows of its matrix. The authority contradicting it was not obscure and was not new: it is **`HD-1`**, a
+**CLOSED** human ruling recorded at **§2** — **4,600 lines above Part XVII** — in the same file Part XVII was
+appending to.
+
+⭐ **Part XVII cited `ADR-0099` §3.3 in support of its own conclusion while omitting that sentence's subject.**
+§3.3 reads *"**`HD-1` decides the mechanism** that will carry it … but ⛔ the per-field binding values do not
+yet exist."* Part XVII quoted the second clause and dropped the first — and the first clause is precisely the
+answer to the question Part XVII declared unanswered.
+
+⛔ **Rule 7 bars rewriting adverse historical findings. It does not bar correcting my own legal reasoning when
+the repository contradicts it.** Part XVII's text stands unedited at **L4347-4689**; this Part records why two
+of its determinations are wrong. ⭐ **Both prior Parts' *adverse* findings — `H-B` BLOCKED, `H-C` BLOCKED,
+`H-D` BLOCKED, `H-E` NOT REACHED, Stage 3 NOT READY — are unchanged. Only the ROUTE and the OFFICE move.**
+
+---
+
+## 156. ⭐⭐⭐ `HD-1` — READ END-TO-END, AND IT IS A CLOSED RULING
+
+### 156.1 The ruling, quoted from §2.1 of this record
+
+> **Use the existing PO-style declaration record mechanism, following the established
+> `SRCHPO-A3` precedent, as the authoritative artefact carrying the per-field script binding.
+> Do NOT modify frozen §14A merely to add the script attribute.**
+
+**Status as recorded at §2.1:** ✅ **MECHANISM CLOSED** · ⚠ **CONTENT OPEN**
+
+### 156.2 ⭐ Why this was missed for three consecutive Parts — stated plainly, not excused
+
+| Cause | Measurement |
+|---|---|
+| `HD-1`'s ruling is in **§2**; Parts XV, XVI and XVII all appended at the **end** of a 4,000+ line file | The record is **4,689** lines; §2 sits at **L51-88** |
+| Parts XV–XVII took `B1` from `CONSOLIDATED` §2.4 and the `F5` packet §11.1, which correctly say the ruling **did not name** the artefact | ⭐ True — but **`F-5`'s ruling** did not name it; **`HD-1`** later did. Two different acts, and the later one answers the earlier one's residual |
+| Part XVII read `ADR-0099` §3.3 and quoted its second clause | ⛔ The first clause names `HD-1` explicitly. **This was an omission in my reading, not an ambiguity in the source** |
+
+⭐ **`FINAL_BLOCKER_RESOLUTION.md` §16's warning was correct in both directions, and I obeyed only one of
+them.** It warns against reading the rulings as closure — which Parts XV–XVII duly did not. ⚠ **But it is
+equally an instruction to read them at all**, and the same paragraph states in terms that all sixteen were
+supplied and *"recorded in `PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md`"*.
+
+### 156.3 ⭐⭐ `B1` is therefore in THREE limbs, not two — and two of them are CLOSED
+
+| Limb | Question | Status | Authority |
+|---|---|---|---|
+| **`B1-a`** | Which scripts **may** be declared? | ✅ **CLOSED** | `SRCHPO-1` (**L57**) — a closed set of two: Latin, Devanagari · `SRCHPO-A3` (**L434**) |
+| ⭐ **`B1-b(i)`** | **Which artefact carries the binding?** | ✅ **CLOSED** | ⭐⭐ **`HD-1`** — a **PO-style declaration record** on the `SRCHPO-A3` precedent. §33 of this record: *"Does a mechanism exist that can carry it without touching frozen §14A? ✅ **YES**"* |
+| **`B1-b(ii)`** | **What does the binding SAY, per field?** | ⛔ **OPEN — HUMAN DECISION REQUIRED** | ⛔ **0 authority. 0 hits repository-wide.** Re-measured this pass |
+
+⛔ **`FINAL_BLOCKER_RESOLUTION.md` §2.3's two-limb split is correct AS AT ITS OWN DATE.** It records that only
+*"a new PO-style declaration record on the `SRCHPO-A3` precedent, or a new ADR, remains structurally
+available"* and expressly **created neither**. ⭐ **`HD-1` subsequently chose the first of those two.** The
+narrowing became a selection. ⛔ **That is a change in the record's state, not a defect in §2.3.**
+
+---
+
+## 157. ⭐⭐⭐ `H-B` — **BLOCKED, and its OWNING OFFICE IS CORRECTED**
+
+### 157.1 ⛔ What Part XVII said, and what the record actually says
+
+| Question | Part XVII (**L4398-4494**) | ⭐ **`HD-1` + §33 of this record** | Verdict |
+|---|---|---|---|
+| Owning office | **Architecture Owner (ARB)** | ⭐⭐ **Product Owner** — *"⭐ **Product Owner** issues the declaration record"* (§33, *Smallest governance remedy*) | ⭐⭐⭐ **CORRECTED** |
+| Locus | Inside **`P2`** | ⭐ **A new PO-style declaration record**, beside §14A on the `SRCHPO-A3` precedent. ⛔ **Not `P2`** | ⭐⭐⭐ **CORRECTED** |
+| Instrument needed | An open Stage-3 parameter act | ⛔ **None** — *"mechanism already precedented; ⛔ no new instrument needed"* (§33) | ⭐ **CORRECTED — and cheaper** |
+| Concurrence | Not addressed | ⚠ **Architecture Owner concurrence per `ADR-0099` `C-3`** — §2.3's own *Remaining dependency* line | ⚠ **ADDED — see §157.3** |
+| Frozen PRDs amended | 0 | ✅ **0** — §33: *"Is frozen §14A modified? ⛔ **NO**"* | ✅ **AGREES** |
+| Fields declared | **0 of 14** | ⛔ **0 of 14** — re-measured | ✅ **AGREES** |
+
+### 157.2 ⭐ Why the Product Owner, and not the Architecture Owner — on the record's own reasoning
+
+⛔ **This is not my inference.** §33 gives the ground in one line: *"writing it requires **a script value per
+field**, which is a **Product Owner** product statement."*
+
+⭐ **And it is coherent with `SRCHAO-F5 = Option A`, not in tension with it** — which is the distinction Part
+XVII collapsed:
+
+| Concept | Owner | Authority |
+|---|---|---|
+| **Classification** — *is declared script an analyzer property?* | **Architecture Owner** | ✅ `SRCHAO-F5 = Option A`, **CLOSED** |
+| **Consumption rule** — *the analyzer must consume, never infer* | **Architecture Owner** | ✅ `ADR-0099` `C-3`, **CLOSED** |
+| ⭐ **The VALUE consumed** — *this field's script is X* | ⭐⭐ **Product Owner** | ⭐ `HD-1` + §33; and `F5` packet §5's own finding that *"an analyzer **CONSUMES** a script declaration and cannot **DEFINE** one"* |
+
+⭐⭐ **The `F5` packet's Search-expert finding is decisive and was recorded a full engagement earlier:** Option A
+is coherent *"only if read as **the Architecture Owner declares WHERE the value comes from**, NOT as the
+analyzer computes it."* ⇒ **Option A settled the WHERE. It never claimed the WHAT.** Part XVII read Option A
+as capturing both, and that is the whole of the error.
+
+### 157.3 ⚠⚠ AN HONEST COUNTER-FINDING — **the correction does NOT free `H-B` from the ARB**
+
+⛔ **I must not present this correction as better news than it is.** §2.3's *Remaining dependency* line reads:
+
+> **Owner:** Product Owner (domain) **with Architecture Owner concurrence per `ADR-0099` `C-3`**.
+
+⇒ ⚠ **`H-B` requires a seated-or-conferred Architecture Owner too** — which is `H-D`'s blocker. **`H-B` and
+`H-D` are therefore COUPLED, and Part XVII listed them as independent packet items.** ⭐ **That coupling is a
+finding against my own correction and is recorded first, not last.**
+
+| What the correction genuinely improves | What it does not |
+|---|---|
+| ⭐ The **primary act** moves to an office that **has already acted 59 times in this engagement** (`SRCHPO-*`) and is **not recorded VACANT anywhere** | ⛔ It does not remove the ARB, whose **concurrence** `HD-1` requires |
+| ⭐ **0 new instruments** — the mechanism is precedented and closed | ⛔ It does not supply **one** of the 14 values |
+| ⭐ The carrier artefact is **named**, so the act is now **specifiable** | ⛔ Specifiable ≠ specified |
+
+### 157.4 ⭐ THE 14-FIELD MATRIX — **corrected in its LOCUS column only**
+
+⛔ **Columns 2-5 of Part XVII §146.4 are re-verified and stand unchanged.** ⭐ **Column 6 — *"Locus under
+Option A"* — was wrong in 14 of 14 rows** and is replaced.
+
+| # | §14A.5 public field | Owning context | Owning PRD | PRD status | Script declaration | ⭐ **CORRECTED locus** |
+|---|---|---|---|---|---|---|
+| 1 | Library Name | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** (`HD-1`) |
+| 2 | Logo | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 3 | Cover Image | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 4 | Gallery | `BC-29` | `PRD-017` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 5 | Description | `BC-25` | `PRD-023` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 6 | Business Address | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 7 | Map Location | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 8 | Operating Hours | `BC-06` | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 9 | Weekly Holidays | `BC-06` | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 10 | ⭐ **Facilities & Amenities** | ⭐ **`BC-06`** | `PRD-002` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 11 | Membership Plans & Pricing | `BC-02` | `PRD-005` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 12 | Seat Capacity (Optional) | `BC-04` | `PRD-007` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 13 | Library Status | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+| 14 | Business Contact Information | `BC-19` | `PRD-013` | `FROZEN` | ⛔ **ABSENT** | ⭐ **PO declaration record** |
+
+**Re-verified:** `BC-19` **5** · `BC-25` **3** · `BC-06` **3** · `BC-29` **1** · `BC-02` **1** · `BC-04` **1** = **14** ✅
+**Declarations present: 0 of 14. Inferred by this pass: 0 of 14.** ⛔ The *"Latin for all 14"* shortcut is refused a **fifth** time, on *a set is not a function* (`F5_OWNERSHIP_RULING` **L101**).
+
+⛔ **`H-B` STATUS: BLOCKED.** Decision 3's bar is unmoved: *"`H-B` closes only when all 14 fields have
+authoritative declarations."* **It has 0.**
+
+---
+
+## 158. `H-A`, `H-C`, `H-D`, `H-E` — RE-TESTED AGAINST THE CURRENT REPOSITORY
+
+### 158.1 `H-A` — ✅ **CLOSED, unchanged, third witness intact**
+
+`14B-Public-Library-Preview.md` **L90** re-read: `| Facilities | Facility list with optional notes | BC-06 |`
+under the **`Owning context`** header. Rank 3, baselined ⇒ outranks `AR-1` (Rank 4). ⛔ **0 ADRs created**;
+`ADR-INDEX.md` **L167**'s change-test is still unmet by a mere ownership restatement.
+
+### 158.2 `H-C` — ⛔ **BLOCKED. And the counts MOVED — inspected, not accepted**
+
+⚠⚠ **Two greps returned higher numbers than Part XVII recorded. Both increases are my own text.**
+
+| Probe | Part XVII | **This pass** | ⭐ What the delta is |
+|---|---|---|---|
+| `V1 operational corpus (is\|=\|shall be\|means)` | 2 | **3** | ⭐ The new hit is **L4650 — Part XVII's own packet row.** All three hits are my own blank templates (L4085, L4328, L4650) |
+| `ZWNJ.{0,40}corpus\|corpus.{0,40}ZWNJ` | 1 | **10** | ⭐ **All ten are inside this record** — refusals, packet rows and gate rows I wrote. ⛔ **0 outside it** |
+
+⭐⭐ **This is the same trap Part XVII caught, one turn later and larger: a governance record that keeps
+restating a missing fact will eventually out-number the authority it is waiting for.** ⛔ **A count is not
+evidence; the lines were opened and read.** **Authoritative definitions: 0. Authoritative ZWNJ corpus facts: 0.**
+
+⛔ **Both conjuncts remain at ZERO.** `ADR-0100` **L203** (*"the 'V1 operational corpus' is nowhere defined"*)
+and `ADR-0101` **L244** stand. Decision 5's bar — *"Do not mark `H-C` closed until the Product Owner has
+legitimately supplied **both**"* — is unmet on both limbs.
+
+### 158.3 `H-D` — ⛔ **BLOCKED at the OFFICE, re-measured**
+
+| Probe | Result |
+|---|---|
+| `ADR-0100` §3.2 **L163** | ⭐ Unchanged: **`→ P7 availability: OPEN. Owner: SRE / OBSERVABILITY. Value pre-approved, awaiting the right office.`** |
+| Rank 1 `MP-NFR-01` (`MASTER_PRD.md` **L495**) | ⭐ Unchanged — owner **`SRE / OBSERVABILITY`** |
+| `Deciders` rows naming SRE or Observability, across **89** ADRs | ⛔ **0** ⇒ `ADR-0080`'s self-constitution route unavailable |
+| `ARB is (now )?(seated\|constituted\|filled)` | ⛔ **0 hits** ⇒ `ADR-0077`'s route needs an office that is vacant |
+| `grep -ciE 'SRE\|Observability' PRD_OWNERSHIP_MODEL.md` | ⛔ **0** — the office is **not constituted** |
+
+⛔ **The four objects stay separate:** (1) the **target value** `99.9% monthly` — ✅ retained, **not** re-invented;
+(2) the **authority/office** — ⛔ unconstituted; (3) the **holder** — ⛔ unappointed; (4) **ratification** — ⛔ not performed.
+⭐ *Pre-approval of a value is not authority of an office.* ⛔ **§12.1's per-act conferral is again refused as
+self-executable** — it is a mechanism that operates only when the human principal has actually conferred,
+naming the act. Nothing in this thread confers.
+
+### 158.4 `H-E` — ⛔ **NOT REACHED, unchanged**
+
+`ls docs/30-product/search/*STAGE3_CONFERRAL*` ⇒ ⛔ **0 files.** `Architecture Owner` ≠ `Architecture reviewer`
+(`ADR-0054` **L148**). ⛔ **No self-appointment; no conferral claimed.** Precondition (`H-B`–`H-D`) unmet.
+
+### 158.5 ⭐ The deferred rulings §16 named — **all four re-verified as still OPEN**
+
+| Ruling | Text re-read this pass | Status |
+|---|---|---|
+| **`HD-7`** (L289) | *"**DEFER.** Do not invent edit-distance or minimum-token-length numbers"* | ⛔ **OPEN** |
+| **`HD-8`** (L293) | *"**DEFER.** Do not convert `Lib → Library` or any example into a numeric threshold"* | ⛔ **OPEN** |
+| **`HD-11`** (L372) | *"**DEFER TO EA NFR BUDGETS.**"* | ⛔ **OPEN** |
+| **`HD-13`** (L375) | *"**DEFER UNTIL `HD-11`.**"* | ⛔ **OPEN** |
+
+⭐ **§16's warning is vindicated by measurement:** four of the sixteen rulings are express deferrals, and each
+is a **live parameter inside `SRCH-GAP-002`**. ⛔ **A DEFER is a decision not to decide. It closes nothing.**
+
+---
+
+## 159. LIMB LEDGERS — RECALCULATED
+
+### 159.1 `SRCH-GAP-002` — ⛔ **NOT CLOSED**
+
+**18 limbs: 15 CLOSED · 2 PARTIAL (7, 17c) · 1 OPEN (15).** ⭐ **`B1-b(i)`'s closure does not move this
+ledger**, because `GAP-002` measures **parameter completeness**, and `HD-1` supplied a **carrier**, not a
+parameter. ⛔ Rule `X3`: *"A gap closes on all limbs, not a majority."*
+
+### 159.2 `SRCH-GAP-007` — ⛔ **NOT CLOSED**
+
+**5 CLOSED · 1 PARTIAL (`FU-21`) · 1 BLOCKED (`FU-20`).**
+
+⭐⭐ **`FU-20` is RE-CHARACTERISED — and this is the one place the correction reaches a registered row.**
+§32 item 1 reads *"Per-field **script declaration carrier** — ⛔ **NO** — mechanism only (`HD-1`) · Owner:
+**Product Owner**."* ⇒ ⭐ **§32 of this record had `H-B`'s office right all along**, and Part XVII's
+*"six frozen owners"* → *"Architecture Owner"* correction contradicted a row already inside the file.
+
+| `FU-20`'s two limbs | Status |
+|---|---|
+| The **carrier** | ✅ **CLOSED** by `HD-1` |
+| The **14 values** | ⛔ **OPEN** — 0 of 14 |
+
+⇒ ⛔ **`FU-20` stays BLOCKED**, but on **one** limb rather than two. ⭐ Genuine progress in specification;
+⛔ **not a closure.** `FU-19` BLOCKED (`H-C`) · `FU-21` PARTIAL — both unchanged.
+
+### 159.3 Six architecture checks — ✅ **6/6 PASS**, unchanged
+
+`PRD-015_ARCHITECTURE_ALIGNMENT.md` §11.1 **L718**: *"6 of 6 PASS as measured. 0 FAIL. 0 BLOCKED."*
+⛔ **And they still do not confer Stage 3** — §13.3's distinction holds: the six checks measure
+**architecture alignment**; `SRCH-GAP-002` measures **parameter completeness**.
+
+---
+
+## 160. ⛔ THE STAGE-3 FINAL GATE — **5 of 15 satisfied**
+
+| # | Condition | Verdict |
+|---|---|---|
+| 1 | Stage 2 COMPLETE | ✅ |
+| 2 | Valid `DRAFT` lifecycle status | ✅ registry **L315** |
+| 3 | Six architecture checks PASS | ✅ **6/6** |
+| 4 | Valid alignment artifact | ✅ (§11.2 stale — disclosed) |
+| 5 | All Stage-3 blocking gaps closed | ⛔ `GAP-002`, `GAP-007` live |
+| 6 | `GAP-002` fully closed | ⛔ 2 PARTIAL + 1 OPEN |
+| 7 | `GAP-007` fully closed | ⛔ 1 PARTIAL + 1 BLOCKED |
+| 8 | All 14 fields have authoritative script declarations | ⛔ **0 of 14** |
+| 9 | V1 operational corpus authoritatively defined | ⛔ **0** (3 hits, all mine) |
+| 10 | ZWNJ corpus fact authoritatively established | ⛔ **0** (10 hits, all mine) |
+| 11 | SRE/Observability governance valid | ⛔ office unconstituted |
+| 12 | Availability target legitimately ratified | ⛔ *"awaiting the right office"* |
+| 13 | Architecture reviewer legitimately appointed | ⛔ 0 files |
+| 14 | Formal Stage-3 conferral actually occurs | ⛔ 0 files |
+| ⭐ | **All ownership decisions authoritative** | ✅ **14/14** |
+
+⭐ **Gate movement this pass: NONE — 5/15, identical to Part XVII.** ⛔ **`B1-b(i)`'s closure changes no gate
+condition**, because no condition asks *"is the carrier named?"* — condition 8 asks whether the **fields are
+declared**. ⭐⭐ **That is the honest result: the pass produced a real correction and zero gate movement, and
+conflating the two would be exactly the error `SRCHPO-A2` warns of.**
+
+⛔ **Rule `X3` ⇒ STAGE 3 — NOT READY.**
+
+---
+
+## 161. ⭐ THE ONE CONSOLIDATED HUMAN-ACTION PACKET — **four items** (⭐ **two now coupled**)
+
+| # | Item | ⭐ **Office (corrected)** | The exact act | Change from Part XVII |
+|---|---|---|---|---|
+| **1** | **`H-B`** — per-field script declarations, 14 of 14 | ⭐⭐ **Product Owner**, with **Architecture Owner concurrence** (`ADR-0099` `C-3`) | ⭐ Issue a **PO-style declaration record** on the `SRCHPO-A3` precedent — the carrier `HD-1` already named, so ⛔ **no new instrument** — binding **each of the 14 fields in §157.4** to one script from `{Latin, Devanagari}`. ⛔ **Frozen §14A and all six owning PRDs untouched** | ⭐⭐⭐ **Office corrected: Architecture Owner → Product Owner.** ⚠ **Now COUPLED to item 3** via the concurrence |
+| **2** | **`H-C`** — V1 corpus + ZWNJ, **one** decision, both conjuncts | **Product Owner** (Search Platform) | (A) *"The V1 operational corpus is: ____"*; (B) *"V1's Devanagari corpus **does / does not** contain authoritative ZWNJ-distinguished names."* Decision 4/5's wordings remain available as **proposals to adopt or amend** | Unchanged. Both conjuncts re-measured at **0** |
+| **3** | **`H-D`** — availability office | **Human principal** | Either (a) **seat the ARB**, then constitute **SRE / Observability** on the `ADR-0077` route; **or** (b) issue a **§12.1 one-act conferral naming this act**. Then that office **ratifies `99.9% monthly`** — ⛔ the value is retained, not re-decided | Unchanged — ⚠ but now also **gates item 1's concurrence** |
+| **4** | **`H-E`** — architecture reviewer | **Human principal** | Appoint an Architecture **reviewer** (⛔ ≠ Architecture Owner) scoped to *"`PRD-015` Stage-3 review and conferral act, and nothing else"*, **after** items 1-3; the reviewer then performs the review and conferral | Unchanged; precondition still unmet |
+
+---
+
+## 162. ⛔ WHAT THIS PASS DID NOT DO
+
+| Refusal | Basis |
+|---|---|
+| ⛔ Did **not** write the PO declaration record, though the carrier is now named | It requires **a script value per field** — §33: *"⛔ **NO**"*; `HDR-X8` and `SRCHGR-X6` both already rejected this exact over-read |
+| ⛔ Did **not** declare Latin for all 14 | *A set is not a function* — refused a **fifth** time |
+| ⛔ Did **not** treat `B1-b(i)`'s closure as `H-B`'s closure | `HD-1`'s own status line: **MECHANISM CLOSED · CONTENT OPEN** |
+| ⛔ Did **not** read §16 as closure | Its own words, and four DEFER rulings re-verified OPEN |
+| ⛔ Did **not** create an ADR | `ADR-INDEX.md` **L167**; register stays **89**, `ADR-0102` unopened |
+| ⛔ Did **not** self-constitute, self-appoint, or invoke §12.1 for itself | `PRD_OWNERSHIP_MODEL.md` §10.1 **L418**; §12.1 is a mechanism, not a conferral |
+| ⛔ Did **not** edit Part XV, XVI or XVII | Rule 7 — append-only; their text stands at **L3795-4689** |
+| ⛔ Did **not** repair four known stalenesses | `AR-1`'s Rank 4 omission · §42's stale **L979**/**L981** · alignment §11.2 · registry §6's bucket row. ⭐ **Disclosed and routed for the seventeenth consecutive pass** |
+| ⛔ Did **not** enter Stage 4-7, freeze, baseline, rank, or write `IMPL-*`/code | Instruction; **0** lines under `lib/`, `test/`, `tool/`, `android/`, `web/` |
+
+**Creates: 0** script values · corpus definitions · ZWNJ facts · availability numbers · offices · appointments ·
+conferrals · ADRs · BCs · edges · `IMPL-*` · code · requirement identifiers.
+
+---
+
+## 163. TERMINAL STATE
+
+⭐⭐⭐ **This pass produced its most consequential finding by reading a file it had cited for three
+consecutive Parts without opening.** `HD-1` is a **CLOSED** ruling that names `B1`'s carrier artefact and
+assigns `H-B` to the **Product Owner** — the opposite office from Part XVII's, and the same one §32 of this
+record had recorded correctly all along.
+
+⛔ **And the gate did not move.** 5 of 15, identical to Part XVII. The correction makes `H-B`'s remaining act
+**specifiable, cheaper and lawfully cleaner**; it supplies **none of the 14 values**, and it **couples `H-B`
+to `H-D`** — a finding that makes the packet harder, not easier, and is recorded for that reason.
+
+⛔ **`STAGE 3 — NOT READY.` VERDICT B — CONDITIONAL / NOT CONFERRED.** The seventeenth consecutive.
+⭐ Subject byte-unchanged. Every frozen PRD, ADR and baseline byte-unchanged. Registry **L315** = `DRAFT`.
+**This is the true terminal state reachable from repository authority; the four items in §161 are human acts.**

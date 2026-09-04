@@ -4101,3 +4101,247 @@ instruction a valid authorization — which it does for `H-5` (registry **L351**
    engagement's own prior work*, disclosed rather than buried.
 4. ⛔ **`STAGE-3 STATUS: NOT READY`** stands. The packet is **five items** — `H-5` discharged (−1) and
    **`H-A`** discovered (+1). ⭐ **It did not shrink, and this Part declines to report that it did.**
+
+---
+
+# PART XVI — ⭐⭐⭐ STAGE-3 FINAL CLOSURE PASS: `H-A` CLOSED BY DISCOVERY; `H-B`…`H-E` MEASURED
+
+| Field | Value |
+|---|---|
+| **Act** | 🔁 **Stage-3 final closure loop.** `H-A` → `H-B` → `H-C`/`H-D` → `H-E`, each pressed to its true limit |
+| **Predecessor commit** | `15ce1cf` (Part XV) |
+| **Result** | ⭐⭐ **`H-A` = CLOSED — and NOT by a decision. By finding the answer already in the repository at Rank 3.** ⛔ `H-B`, `H-C`, `H-D`, `H-E` = **BLOCKED** |
+| **Artefacts created** | ⭐ **NONE.** ⛔ 0 ADRs, 0 offices, 0 appointments, 0 conferrals |
+| **Verdict** | ⛔ **B — CONDITIONAL / NOT CONFERRED** (fifteenth consecutive) |
+
+⚠⚠ **THIS PART RETRACTS A FINDING PART XV PUBLISHED ONE COMMIT AGO.** Part XV §126.2 asserted that
+`Facilities & Amenities` *"has NO owning bounded context"* and raised **`H-A`** to fix it. ⭐ **That
+assertion was WRONG, and the instrument that produced it was too narrow.** The correction is recorded
+in full below rather than quietly dropped, because rule 8 protects append-only evidence and rule 7
+bars rewriting adverse findings — **including findings adverse to my own prior pass.**
+
+## 135. ⭐⭐⭐ `H-A` — **CLOSED.** The owner was already declared, at a HIGHER rank than the instrument I used
+
+### 135.1 What Part XV measured, and why it was insufficient
+
+| Part XV's instrument | Result | ⛔ Defect |
+|---|---|---|
+| `grep -c 'Facilit' ARCHITECTURE_RULINGS.md` | **0** | ⭐ **Correct as a fact, wrong as a conclusion.** `AR-1` is **Rank 4**. Absence from a Rank 4 ruling does **not** establish absence of ownership — a **higher-ranked** document may declare it |
+| `REVIEW_14A.md` **L221** *"unowned"* | Cited as corroboration | ⛔ **Not authority.** `DOCUMENTATION_BASELINE.md` **L154** classifies this file: *"Historical review record — **not part of the specification**"*. ⭐ It is a **2026-08-03 review finding**, and `R-D` was raised **to be fixed** |
+| ⛔ Never searched | — | ⛔ **`14B-Public-Library-Preview.md`** — the one document whose entire subject is the §14A.5 **public** field set |
+
+### 135.2 ⭐ The measured answer — `14B` §14B, `LIB-14B.7`'s table
+
+`14B-Public-Library-Preview.md` **L80-81** (`LIB-14B.7`): *"The preview **MUST** be able to display
+every field in the §14A.5 public list, and **MUST NOT** display any field outside it."* Immediately
+below, **L83-92**, is a table whose third column is headed **`Owning context`**:
+
+> `| Hours | Operating Hours, Weekly Holidays, current open/closed | BC-06 |`
+> ⭐ `| Facilities | Facility list with optional notes | ` **`BC-06`** ` |`
+> `| Plans | Membership Plans & Pricing | BC-02 |`
+
+⭐⭐⭐ **`Facilities` IS assigned an owning context, in the authoritative public-field document, at L90.**
+
+### 135.3 Rank and authority — verified, not assumed
+
+| Test | Measured |
+|---|---|
+| §14B status | **L6**: *"**Approved — authoritative**"* |
+| §14B rank | ⭐ **Rank 3.** `DOCUMENTATION_BASELINE.md` **L250**: `| **3** | **Library PRD v1.1** + §14A + **§14B** + Invitation Security Specification |` |
+| §14B in baseline §3 | ✅ **L151**: *"`14B-Public-Library-Preview.md` \| **v1.0** \| Authoritative"* |
+| Is §14B severable from §14A? | ⛔ **NO** — **L293**: *"'The Library PRD' … `Library_PRD_v1.md` **v1.1** *together with* §14A, **§14B** and the Invitation Security Specification. **All four, never one alone**"* |
+| Rank vs `AR-1` | ⭐ **§14B is Rank 3; `AR-1` is Rank 4.** ⇒ §14B **outranks** the instrument Part XV relied on |
+
+⭐⭐ **So this was never an open architecture question. It was a gap in `AR-1` (Rank 4) that a Rank 3
+document had already filled** — and the rank direction runs the right way, so **no conflict arises**
+and **no ruling is required.**
+
+### 135.4 ⛔ The ADR route, correctly refused
+
+Part XV routed `H-A` to the **vacant** Architecture Owner, requiring an ADR under registry §8 rule 6.
+⭐ **That route is now not merely blocked — it is *unnecessary*, and taking it would have been wrong:**
+
+| Why no ADR | Basis |
+|---|---|
+| ⛔ Nothing is being **decided** | The assignment **pre-exists** at Rank 3. `ADR-INDEX.md` **L167**: an ADR is for *"a decision that **changes** structure, ownership, a boundary, or a platform-wide rule"* — this changes none |
+| ⛔ Nothing is being **added** | Registry §8 rule 6 governs *"adding a BC to a PRD's ownership"*. `BC-06` already owns it |
+| ⭐ The lawful act is **citation**, not creation | Exactly the discipline §3 **L145** records: *"⛔ **NO** — cited, never restated"* |
+
+⚠ **`AR-1`'s omission is a real Rank 4 defect and it is DISCLOSED, NOT REPAIRED.** Editing
+`ARCHITECTURE_RULINGS.md` is an Architecture Owner act and that office is **VACANT**. It is
+**non-blocking** for Stage 3 because a higher-ranked document supplies the answer, and the Dependency
+Matrix `L2` rank-direction rule makes the Rank 3 statement controlling.
+
+### 135.5 ⭐ Re-audit of the field inventory and ownership map (instruction: *"re-audit … once H-A is legitimately resolved"*)
+
+**14 fields → 14 owning contexts. 0 unmapped.**
+
+| Context | Count | Fields |
+|---|---|---|
+| **`BC-19`** Tenancy | **5** | Library Name · Business Address · Map Location · Library Status · Business Contact Information |
+| **`BC-25`** Configuration | **3** | Logo · Cover Image · Description |
+| **`BC-06`** Library Policy | ⭐ **3** | Operating Hours · Weekly Holidays · **Facilities & Amenities** |
+| **`BC-29`** File & Media | **1** | Gallery |
+| **`BC-02`** Membership | **1** | Membership Plans & Pricing |
+| **`BC-04`** Seating | **1** | Seat Capacity (Optional) |
+| **Total** | ⭐ **14 / 14** | ⛔ **0 unowned** |
+
+⭐ **The field count 14 stands** (Part XV §126.1 verified again). ⭐ **The owning-PRD set is
+**six**, unchanged** — `BC-06` → `PRD-002` (`PRD_REGISTRY.md` **L456**), which was already among the six.
+
+## 136. ⛔ `H-B` — **BLOCKED.** All 14 fields now have an owner; **0** have a script
+
+⭐ **`H-A`'s closure genuinely advanced `H-B`**: its blocking precondition — *"the 14th has no owner to
+ask"* — is **gone**. Every field now has a determinate owner. ⛔ **And `H-B` is still blocked, for the
+original reason, re-measured:**
+
+| Locus searched for a per-field script declaration | Hits |
+|---|---|
+| `14A-Library-Discovery-And-Enrollment.md` (the authoritative field set) | **0** — field **names only** |
+| ⭐ `14B-Public-Library-Preview.md` (searched for the first time this pass) | **0** — the single regex hit is *"De**scrip**tion"*, ⭐ **the same false friend the `F5` ruling already caught and excluded** |
+| `Library_PRD_v1.md` · `MASTER_PRD.md` · all six owning PRDs | **0** |
+| ⭐ Repository-wide `script (is\|=\|:) (latin\|devanagari)` | ⛔ **0 files** |
+
+⛔ **And inference is expressly barred by an `Accepted` ADR** — `ADR-0099` **C-3**: *"**Script binding is
+consumed, never inferred.** The configuration MUST consume an **authoritative declared script**; it
+MUST NOT detect script from content."*
+
+⛔ **Route A** (six ADR-borne amendments) — all six loci **FROZEN**; **0** owner authorizations exist;
+`PRD_LIFECYCLE.md` **§4 L222-240** + **L177**. ⛔ **Route B** (one consolidated locus) — Part XII §100's
+six-candidate refusal re-verified. ⭐ **Route B is now *better* than Part XV believed** (no unowned
+field remains to defeat it) but still requires a conferral that does not exist.
+
+⛔ **0 script values declared, inferred or defaulted. The "Latin for all 14" shortcut is refused a
+third time** — `SRCHPO-1` admits Devanagari in these same fields.
+
+## 137. ⛔ `H-C` — **BLOCKED.** Re-measured against the current repository
+
+| Conjunct | Measured now |
+|---|---|
+| 1 — V1 operational corpus **definition** | ⛔ **0.** Every `operational corpus` hit is a *disclosure of absence* (`ADR-0100` **L203** says so expressly) or a *request* for the definition. ⭐ The one real corpus definition in the repository is `PRD-017` **L1619**'s *"declared **fixture** corpus"* for OCR readability — ⛔ **a different corpus, for a different PRD, in a different sense** |
+| 2 — ZWNJ-distinguished names in V1's Devanagari corpus | ⛔ **0 authoritative facts.** `ADR-0099` **L183** measures the exception list as **0** supplied; `ADR-0101` `D-10` refused it with three falsifiable closure conditions |
+
+⛔ **Neither may be derived** from code, examples, assumption or Unicode documentation — the
+instruction's own bar, and rule 1. ⭐ **Both conjuncts sit with ONE office (Product Owner), so ONE
+decision still closes `H-C`.**
+
+## 138. ⛔ `H-D` — **BLOCKED at the office, not at the value.** And the repository says so itself
+
+⭐⭐⭐ **The decisive text was already written by `ADR-0100` §3.2, and it is self-adverse to any
+shortcut here.** Measured verbatim at **L163**:
+
+> **→ `P7` availability: OPEN. Owner: SRE / OBSERVABILITY. Value pre-approved, awaiting the right office.**
+
+| Limb | Status |
+|---|---|
+| The **value** | ⭐ **Pre-approved and coherence-checked** — `99.9% monthly` matches `authentication/prd-v2/11-NFR…` **L67**, and sits *below* `BC-18`'s **99.95%**, which `ADR-0100` verifies is *"the correct direction"* |
+| The **office** | ⛔ **NOT CONSTITUTED.** `grep -ciE 'SRE\|Observability' PRD_OWNERSHIP_MODEL.md` = **0** |
+| The **constitution route** | ⛔ **BLOCKED.** `ADR-0080`'s self-constitution route needs the office to be *already exercised* — measured: **0** of **89** ADRs name SRE/Observability as `Deciders`. `ADR-0077`'s route needs the **Architecture Review Board**, i.e. `ARB` — **VACANT** |
+| ⛔ Governance-Owner substitution | ⛔ **BARRED.** §10.1 **L418**: *"⛔ its own conferral, and ⛔ its own scope"* |
+| The **holder** | ⛔ **NOT APPOINTED**, and separable — **L356**/**L421**: *"**constituting an office does not fill it**"* |
+| The **ratification** | ⛔ **Cannot occur.** `MP-NFR-01` assigns it to an office with no holder |
+
+⭐ **So `H-D` fails on the *narrowest possible* ground — a vacant office, not a missing number.** That
+is the sharpest form of this blocker yet recorded, and it is *worse* for the gate than "the value is
+unknown", because no amount of analysis can supply an office.
+
+## 139. ⛔ `H-E` — **NOT REACHED.** Its own precondition forbids it
+
+The instruction is explicit: *"`H-E` must occur only after all required Stage-3 conditions are
+satisfied"* and *"Only after the Stage-3 substantive blockers are resolved."*
+
+⭐ **`H-B`, `H-C` and `H-D` are unresolved. ⇒ `H-E`'s stated precondition is unmet, so attempting the
+appointment would breach the instruction that authorizes it.** Verified anyway, so the record is complete:
+
+| Test | Measured |
+|---|---|
+| Office exists? | ✅ `PRD_LIFECYCLE.md` §6 **L277** — *"Architecture reviewer \| Stage 3; authority to require an ADR"* |
+| Same as Architecture Owner? | ⛔ **NO** — `ADR-0054` **L148**: *"Those are different roles"*; **0** occurrences of *Architecture reviewer* in the ownership model |
+| Appointment mechanism | ⛔ **11 `appoint` hits, every one a refusal**; the only route is **L584**, *"for this act only"*, by the **human principal** |
+| Existing conferral naming `PRD-015`? | ⛔ **0 files.** `ls docs/30-product/search/*STAGE3_CONFERRAL*` = **0** |
+| ⛔ Self-appointment | ⛔ **REFUSED** — rule 3 |
+
+## 140. ⭐ Continuous verification loop — recalculated after `H-A` (the only action that closed)
+
+| Item | Before Part XVI | After | Basis |
+|---|---|---|---|
+| ⭐ `H-A` unowned field | ⛔ OPEN (raised by Part XV) | ⭐ **CLOSED — RETRACTED as a defect** | §14B **L90**, Rank 3 |
+| Field inventory | 14 fields, **13** mapped | ⭐ **14 fields, 14 mapped** | §135.5 |
+| Owning PRD set | Six + 1 unknown | ⭐ **Six, confirmed** (`BC-06` → `PRD-002`, registry **L456**) | — |
+| `SRCH-GAP-007` sub-item 5 (`FU-20`) | ⛔ BLOCKED **and under-specified** | ⚠ **BLOCKED, but now WELL-SPECIFIED** — a real improvement, ⛔ not a closure | 14 owners known; **0** scripts |
+| `SRCH-GAP-007` sub-item 7 (`FU-21`) | ⚠ PARTIAL | ⚠ **PARTIAL, unchanged** | §16 half needs declared scripts |
+| ⇒ `SRCH-GAP-007` | ⛔ OPEN (5 C · 1 P · 1 B) | ⛔ **OPEN — 5 C · 1 P · 1 B** | Rule `X3` |
+| `SRCH-GAP-002` limb 5 (scripts) | ⛔ OPEN | ⛔ **OPEN** | `H-B` |
+| `SRCH-GAP-002` limb 15 (availability) | ⛔ OPEN | ⛔ **OPEN — sharpened to "vacant office"** | `ADR-0100` **L163** |
+| `SRCH-GAP-002` limbs 7 / 17c | ⚠ PARTIAL | ⚠ **PARTIAL** | `H-C` |
+| ⇒ `SRCH-GAP-002` | ⛔ OPEN (15 C · 2 P · 1 O) | ⛔ **OPEN — 15 C · 2 P · 1 O** | 18 limbs; rule 14 |
+| `FU-19` | ⛔ BLOCKED | ⛔ **BLOCKED** | `H-C` corpus |
+| Six architecture checks | ✅ 6/6 | ✅ **6/6 PASS, 0 FAIL, 0 BLOCKED** | Alignment **L718** |
+| Architecture reviewer | ⛔ VACANT | ⛔ **VACANT** | **0** conferral files |
+| ⭐ **NEW** — `AR-1` Rank 4 omission | *(undetected)* | ⚠ **DISCLOSED, non-blocking** | Rank 3 supplies the answer |
+
+⭐ **A new dependency DID appear and was resolved within the loop** (step 6): `H-A` turned out to
+depend on §14B, a document no prior pass had searched. ⛔ **No new blocker was created.**
+
+## 141. ⛔ STAGE-3 FINAL GATE — all sixteen conditions, independently verified
+
+| # | Condition | Verdict |
+|---|---|---|
+| 1 | Stage 2 COMPLETE | ✅ **YES** |
+| 2 | Valid lifecycle status | ✅ **`DRAFT`** (registry **L315**) |
+| 3 | All six architecture checks pass | ✅ **6/6** |
+| 4 | Alignment artifact exists and is valid | ✅ **YES** (⚠ one stale table, disclosed, **L104**) |
+| 5 | Every applicable §42 Stage-3 blocker closed | ⛔ **NO** — **L980**, **L985** live |
+| 6 | `GAP-002` no remaining open/partial limb | ⛔ **NO** — 1 open, 2 partial |
+| 7 | `GAP-007` no remaining open/blocked limb | ⛔ **NO** — 1 blocked, 1 partial |
+| 8 | `FU-19`/`FU-20`/`FU-21` resolved or formally non-blocking | ⛔ **NO** |
+| 9 | All ownership decisions authoritative | ⭐ **YES** — newly satisfied by `H-A` |
+| 10 | All 14 fields have authoritative script declarations | ⛔ **NO — 0 of 14** |
+| 11 | V1 corpus decision authoritative | ⛔ **NO** |
+| 12 | ZWNJ decision authoritative | ⛔ **NO** |
+| 13 | SRE/Observability governance valid | ⛔ **NO** — office not constituted |
+| 14 | Availability target legitimately ratified | ⛔ **NO** — value pre-approved, office vacant |
+| 15 | Architecture reviewer legitimately appointed | ⛔ **NO** — vacant |
+| 16 | Formal Stage-3 conferral performed | ⛔ **NO** |
+
+> ⛔⛔ **`STAGE 3 — NOT READY.`** ⭐ **5 of 16 satisfied** (was 4; condition 9 newly closed).
+> ⛔ **11 unsatisfied. No conferral is issued.**
+
+## 142. ⛔ What was deliberately NOT done
+
+| Tempting act | ⛔ Refused because |
+|---|---|
+| Keep `H-A` open to preserve a five-item packet | ⛔ Rule 1 + the instruction *"do not invent a route merely to avoid a human action"* — inverted: **do not invent a blocker to avoid retracting an error** |
+| Assign Facilities to `BC-06` *"because it is semantically suitable"* | ⛔ Instruction's express bar. ⭐ It is assigned because **§14B L90 says so at Rank 3** — a citation, not a judgement |
+| Write an ADR for `H-A` anyway, for ceremony | ⛔ `ADR-INDEX.md` **L167** — an ADR is for a decision that **changes** something. ⭐ The `SRCHAO-F5` test applies: *"If the repository already provides the answer, do NOT create a fake human decision merely for ceremony"* |
+| Repair `AR-1`'s Rank 4 omission | ⛔ Architecture Owner act; `ARB` **VACANT**. Disclosed instead |
+| Ratify `99.9%` because `ADR-0100` calls it *"pre-approved"* | ⛔ **L163** itself says *"awaiting the right office"*. Pre-approval of a **value** is not authority of an **office** |
+| Constitute SRE by Governance-Owner derivation | ⛔ §10.1 **L418** *"its own scope"*; **0/89** ADRs name it as `Deciders` |
+| Proceed to `H-E` because `H-A` closed | ⛔ Its precondition is *all* substantive blockers, not one |
+| Declare PASS on 6/6 checks or 5/16 conditions | ⛔ Rule 4; *"Do not claim PASS from majority closure"* |
+
+## 143. ⭐⭐ CONSOLIDATED HUMAN-ACTION PACKET — **four items** (`H-A` genuinely discharged)
+
+| # | Action | Authority that cannot be substituted | Exact decision required |
+|---|---|---|---|
+| **`H-B`** | Declare the **script** for each of the **14** §14A.5 public fields | The **six** owning PRD owners — `BC-19`→`PRD-013`, `BC-25`→`PRD-023`, `BC-29`→`PRD-017`, **`BC-06`→`PRD-002`** (owns 3, incl. Facilities), `BC-02`→`PRD-005`, `BC-04`→`PRD-007`. **All FROZEN** | Six ADR-borne amendments per `PRD_LIFECYCLE.md` **§4 L222-240**, **or** one conferral constituting a single authoritative locus for all 14. ⭐ **Now fully specified — every field has a determinate owner to ask** |
+| **`H-C`** | ONE Product Owner decision, both conjuncts | **Product Owner** | (1) *"The V1 operational corpus is: ____"* (closes `ADR-0100` **L203**) **and** (2) *"V1's Devanagari corpus does / does not contain authoritative ZWNJ-distinguished names"* (closes `ADR-0101` `D-10`) |
+| **`H-D`** | Three separable acts, ⛔ **not** to be collapsed | (a) **ARB via Architecture Owner** · (b) **human principal** · (c) the **SRE holder** | (a) constitute **`SRE / OBSERVABILITY`** from `MP-NFR-01` **L495**, `MP-NFR-09` **L503**, `MP-NFR-12` **L506**, by `ADR-0077`'s derivation route; (b) appoint a holder; (c) that holder ratifies `P7` availability — ⭐ the value **`99.9% monthly`** is already pre-approved and coherence-checked by `ADR-0100` §3.2 |
+| **`H-E`** | Appoint an **Architecture reviewer**, then confer Stage 3 | **Human principal only** (**L584**) | *"The Architecture reviewer office is filled, **for the `PRD-015` Stage-3 review only**, by direct conferral"* — scoped per `ADR-0033` §7.1. ⛔ **Only after `H-B`, `H-C`, `H-D`** |
+
+⚠ **Optional, non-blocking, for the Architecture Owner when constituted:** add `Facilities & Amenities`
+to `AR-1` (Rank 4) so it agrees with §14B (Rank 3). ⛔ **Not required for Stage 3** — the rank
+direction already resolves it.
+
+## 144. ⭐ Terminal state
+
+1. ⭐⭐ **`H-A` is CLOSED, and closed the *right* way — by discovering an existing Rank 3 declaration,
+   not by manufacturing a decision.** The instruction warned *"do not invent a route merely to avoid a
+   human action"*; the mirror-image duty also bound me — **do not preserve a phantom blocker to avoid
+   admitting an error.** ⭐ **A human action was removed from the packet because it was never needed.**
+2. ⚠ **Part XV's §126.2 finding is RETRACTED**, with its defective instrument named (§135.1). The
+   original text stands unedited above; this is a correction by append, per rule 8.
+3. ⛔ **`H-B`, `H-C`, `H-D` are BLOCKED on absent authority; `H-E` is NOT REACHED by its own terms.**
+   ⭐ `H-B` is now **well-specified** rather than under-specified — real progress, ⛔ not closure.
+4. ⛔ **`STAGE 3 — NOT READY.` 5 of 16 conditions satisfied.** The packet is **four items**, and this
+   time the reduction is **genuine**, not arithmetic.

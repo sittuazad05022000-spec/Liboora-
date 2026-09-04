@@ -2120,3 +2120,287 @@ one **stricter existing rule** (`SEV-9` = 0) was found and applied over a human 
 found and resolved **by refusal to write**; and one **new risk** (`SRCHHD-A6`) was found and routed.
 
 ⛔ **What did NOT move, stated because every incentive runs the other way: the verdict.**
+
+---
+---
+
+# PART VI — ARCHITECTURE OWNER DECISION ACT (`ADR-0100`) + GAP-002 / GAP-007 RECOMPUTATION
+
+| Field | Value |
+|---|---|
+| **Part** | **VI** — appended to Parts I–V; ⛔ **no earlier Part rewritten** |
+| **Act performed** | ⚖️ **ARCHITECTURE OWNER DECISION ACT** — `ADR-0100` written and registered, supplying **six** parameter limbs |
+| **Act NOT performed** | ⛔ **No Stage-3 conferral.** ⛔ No frozen artefact modified. ⛔ No Enterprise Architecture edit. ⛔ No value invented. ⛔ `ADR-0099` not superseded |
+| **Predecessor commit** | `454f366` (Part V — fourteen human decisions recorded, 5 closed, 6 routed, 2 conflicts) |
+| **Input** | 14 Architecture Owner decisions `AO-01`…`AO-14` |
+| **Subject SHA (re-verified)** | `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — byte-unchanged |
+| **Verdict** | ⚠ **B — STAGE 3 CONDITIONAL / NOT CONFERRED** *(unchanged)* |
+
+⭐⭐⭐ **The load-bearing paragraph, written first so the flattering reading is unavailable.**
+This pass was handed an **expected outcome table** in §3 of the instruction which predicted
+`P1 = CLOSED`, `P7 latency = 2 s / 5 s`, `P7 availability = 99.9%` and `P8-C = 30 minutes`.
+⛔ **Three of those four predictions do not survive measurement.** Two fail for reasons the
+instruction never contemplated: `P1` has a **second limb** (transport binding) the instruction never
+mentioned, and `P7` availability is owned by an **entirely different office** than the one this act
+exercises. ⭐ **And one prior conclusion of my own was FALSIFIED in this pass** — Part V's reading of
+`LIB-20.1` was **too broad**, and the correction is recorded against my own earlier work in §57.4.
+
+---
+
+## 57. The fourteen Architecture Owner decisions
+
+### 57.1 ⭐ `AO-01` — P1 engine · **SPLIT RESULT**
+
+| | |
+|---|---|
+| **Exact input** | Architecture stays vendor-neutral; engine selection is a deployment decision; close `P1` if compatible with `MP-CON-02` |
+| **Compatibility** | ✅ **`MP-CON-02` verbatim** (`MASTER_PRD.md` **L238**): *"Choosing a BaaS for V1 is a **deployment decision, not an architecture decision**."* Exact match |
+| **Authority** | **REPOSITORY AUTHORITY** (Rank 1) for the engine limb — the decision *restates* existing law rather than making new law |
+| **Closure** | ⚠⚠ **PARTIAL — engine limb CLOSED, transport-binding limb OPEN** |
+
+⭐⭐⭐ **The finding the instruction did not anticipate.** `P1` is **not** one limb. §42 **L980** enumerates
+`SRCH-GAP-002` as *"… rebuild posture, **transport binding**"*, and §37 **L891** assigns it explicitly:
+
+> *"⛔ **No wire format, protocol, endpoint path, field naming convention or serialisation is stated.**
+> … no authority grants `PRD-015` the platform's API-convention decision. **Transport binding is
+> `SRCH-GAP-002` (P1), owner Architecture Owner.**"*
+
+⛔ **Not decided.** The instruction supplied no transport decision, and its own §7 forbids inventing
+*"additional APIs."* A platform-wide API convention decided inside a `BC-23` ADR would bind
+twenty-five other contexts by side effect. → **`FU-16`**.
+
+### 57.2 `AO-02` — P2-A analyzer/tokenizer · ✅ **CLOSED (architecture level)**
+
+Recorded as `ADR-0100` **`D-1`**. Tested against all ten `ADR-0099` §2.2 constraints — `C-1`…`C-10` all
+✅, re-run in this pass rather than inherited from Part V. Routed **through** `ADR-0099` §2.3's own
+authorisation of *"a later Architecture Owner act"*, exactly as the instruction directed.
+⛔ Deployment configuration remains separate. **AUTHORITY: ARCHITECTURE OWNER ACT (`ADR-0100 D-1`).**
+
+### 57.3 `AO-03` — P2-C normalization · ⚠ **PARTIAL**
+
+Policy **STRIP-WITH-EXCEPTIONS** + **grapheme cluster** = `ADR-0100` **`D-2`** ✅.
+
+⭐ **The instruction's own caution was honoured, and it was the correct caution.** It warned: *"Do NOT
+falsely claim that UAX #31 alone establishes Liboora's natural-language search rule."* `ADR-0100` §2.2
+states in terms that UAX #31 governs **identifier syntax**, establishes only that
+strip-with-exceptions is a **recognised Unicode profile shape**, and does **not** establish the
+Liboora rule. ⛔ Exception-set **content** and `N6`×`N4` **ordering** stay **OPEN** per `ADR-0099`
+**L110**. ⛔ **Zero Unicode exceptions invented.**
+
+### 57.4 ⭐⭐⭐ `AO-06` — P7 latency · **MY OWN PART V CONCLUSION FALSIFIED**
+
+| | |
+|---|---|
+| **Exact input** | Target ≤ 2 s, hard bound ≤ 5 s; respect `LIB-20.1`; do not modify the frozen Rank-3 Library PRD |
+| **Authority** | ⚠ **ARCHITECTURE OWNER ACT for the component limb; REQUIRES SEPARATE ACT for platform reconciliation** |
+| **Closure** | ⚠ **Component target DECIDED (`ADR-0100 D`§3.3); platform reconciliation OPEN** |
+
+⭐⭐ **Part V read `LIB-20.1` too broadly, and this pass corrects its own earlier work.** Re-read
+verbatim, `Library_PRD_v1.md` **L862-864** says: *"**Platform-wide** NFR budgets **MUST** be taken from
+the Enterprise Architecture NFR Budgets document. **This PRD** **MUST NOT** state a competing latency
+or availability figure."* The prohibition binds *"**This PRD**"* — the **Library** PRD — and the
+sourcing rule is scoped to *"**platform-wide**"* budgets. A `BC-23` **component** target is neither.
+⭐ **Measured precedent:** `Authentication_PRD_v2` §11.3 carries component NFR figures *inside a module
+PRD*, including *"Maximum tolerable continuous outage | 30 minutes"*.
+
+⚠⚠ **But a second, larger fact emerged that no prior pass in this engagement had measured:**
+
+> ⛔⛔ **The Enterprise Architecture NFR Budgets document DOES NOT EXIST.**
+> `find docs/ -iname "*NFR*" -o -iname "*budget*"` returns **exactly one** file —
+> `authentication/prd-v2/11-NFR-Compliance-and-Final-Acceptance.md`. EA **L339-344** carries
+> `NFR Budgets (V1)` as **headings with zero values**. `DOCUMENTATION_BASELINE.md` **L191** lists
+> *"NFR Budgets"* among `PRD-023`'s **five ⛔ hard-external blockers**.
+
+⭐ **This retires, on evidence, the "EA locus" framing Parts IV and V both used.** The obstacle was
+never that the EA is frozen — it is **Rank 6 and amendable by ADR** under EA §10.5, as `ADR-0079`
+proves. The real obstacle is that **the destination artifact has never been written**. ⛔ And the EA
+still must not receive a *first-instance* budget: `ADR-0079` holds it *"records a determination made
+at Rank 1 — it does not make one."* → **`FU-17`** (commission the NFR Budgets document).
+
+### 57.5 ⭐⭐⭐ `AO-07` — P7 availability · **WRONG OFFICE**
+
+⭐ **Rank 1 `MP-NFR-01`** (`MASTER_PRD.md` **L495**) assigns *"Availability — per-function availability
+targets with SLOs, SLIs and error budgets"* to owner **SRE / OBSERVABILITY**. The Architecture Owner is
+a **different office**; `ADR-0054` **L148** holds of two adjacent governance roles *"Those are different
+roles."*
+
+⛔ **This act therefore cannot confer it, and does not.** ⭐ The **value is validated**: `99.9% monthly`
+is an existing convention (`11-NFR-…` **L67**), and the coherence check holds — `BC-18`'s
+authorization-decision availability is **99.95%**, so a dependent search service at **99.9%** sits
+*below* its dependency, the correct direction. **CLASS: REQUIRES SEPARATE GOVERNANCE ACT** → **`FU-18`**.
+
+### 57.6 `AO-04`, `AO-05`, `AO-09`, `AO-11` · ✅ **ALL FOUR CLOSED**
+
+| ID | Value | Locus | Result |
+|---|---|---|---|
+`AO-04` (P3) | edit distance **1**; min token **3** graphemes | `ADR-0100` **`D-3`** | ✅ **CLOSED** — ⭐ `SRCH-BR-012` **L574** named the Architecture Owner for C2/C3; **this act is that owner supplying them**. `C1`,`C3`,`C4`,`C5` preserved verbatim |
+`AO-05` (P4) | min prefix **3** graphemes | `ADR-0100` **`D-4`** | ✅ **CLOSED** — ⚠ `SRCH-FR-030`'s `Lib`→`Library` example is *consistent* but did not establish it; recorded as this act's decision, ⛔ not as a repository discovery |
+`AO-09` (P8-B) | 60 s ordinary; **0 / fail closed** on authorization | `ADR-0100` **`D-5`** | ✅ **CLOSED** — stricter `SEV-9`/`MP-GBR-26` preserved; ⛔ `LCFG-6` and `LCFG-13` refused as false equivalences |
+`AO-11` (P8-D) | closed INCREMENTAL / FULL trigger lists | `ADR-0100` **`D-6`** | ✅ **CLOSED** — ⛔ no extra trigger; §34 equivalence and no-re-admission preserved |
+
+### 57.7 `AO-08` P7 throughput · ⛔ **OPEN by instruction** · `AO-10` P8-C · ⚠ **target only**
+
+`AO-08`: qualitative form recorded; ⛔ **no QPS invented**; numeric limb OPEN by express instruction.
+
+`AO-10`: 30-minute target recorded (`ADR-0100` §3.5). ⚠ **Self-adverse:** because *"the V1 operational
+corpus"* is nowhere defined, the target is **currently unverifiable** — no test can pass or fail it.
+⛔ **No corpus size invented.** A target that cannot be measured is **not** counted as a closed
+parameter. → **`FU-19`**.
+
+### 57.8 `AO-12` B1 script · ⛔ **NOT CLOSED** · `AO-13` vocabulary · ⛔ **OPEN** · `AO-14` Hinglish · ✅ **CLOSED**
+
+`AO-12`: language→script mapping recorded (English→Latin, Hindi→Devanagari, *where applicable*).
+⛔ **Field-level script values NOT closed** — §14A declares **zero** scripts (grep = **0**;
+`F5_CLASSIFICATION_DECISION_PACKET.md` **L175**). ⛔ §14A **FROZEN, NOT modified** (SHA re-verified).
+⛔ Script **NOT** inferred from field names. ⛔ Ownership **NOT** transferred to `BC-23`.
+⚠ **The instruction's conditional was not satisfied:** it authorised creating a PO declaration record
+*"only if this pass is authorized to do so"* — but the owning contexts are the declarants, and this act
+holds **Architecture Owner** authority, not Product Owner authority for seven other contexts.
+⛔ **No declaration fabricated.** → **`FU-20`**.
+
+`AO-13`: **zero** authoritative PO vocabulary sources exist. ⛔ **OPEN.** Nothing invented.
+
+`AO-14`: ✅ **CLOSED** — Hinglish = supported query behaviour where technically validated; ⛔ not a third
+language/index/BC; ⛔ **device locale MUST NOT expand the inventory** (a genuine addition protecting
+`LCFG-2`'s open-ended *"Supported set"* Range).
+
+---
+
+## 58. `SRCH-GAP-002` recomputation — 17 limbs
+
+| # | Limb | Before | After | Locus |
+|---|---|---|---|---|
+1 | P1 engine | ⛔ | ✅ **CLOSED** | `MP-CON-02` (Rank 1) |
+2 | ⭐ P1 **transport binding** | ⛔ | ⛔ **OPEN** | Platform API-convention act |
+3 | P2-A architecture contract | ⚠ | ✅ **CLOSED** | `ADR-0100 D-1` |
+4 | P2-A deployment config | ⛔ | ⛔ OPEN | Deployment |
+5 | P2-B | ✅ | ✅ | preserved |
+6 | P2-C policy | ⚠ | ✅ **CLOSED** | `ADR-0100 D-2` |
+7 | P2-C exception set + `N6`×`N4` order | ⛔ | ⛔ **OPEN** | `ADR-0099` L110 |
+8 | P2-D | ✅ | ✅ | preserved |
+9 | P2U grapheme cluster | ✅ | ✅ | preserved |
+10 | P3 | ⛔ | ✅ **CLOSED** | `ADR-0100 D-3` |
+11 | P4 | ⛔ | ✅ **CLOSED** | `ADR-0100 D-4` |
+12 | P5 = 20 | ✅ | ✅ | `LCFG-12` |
+13 | P6 = 60 s removal only | ✅ | ✅ | `LCFG-6` |
+14 | P7 latency | ⛔ | ⚠ **component decided / platform OPEN** | `ADR-0100` §3.3 + `FU-17` |
+15 | ⭐ P7 availability | ⛔ | ⛔ **OPEN — WRONG OFFICE** | `MP-NFR-01` → SRE |
+16 | P7 throughput numeric | ⛔ | ⛔ OPEN by instruction | — |
+17 | P8-A / P8-B / P8-C / P8-D | mixed | ✅ / ✅ / ⚠ / ✅ | `ADR-0100 D-5`, `D-6` |
+
+**Arithmetic: 11 CLOSED · 2 PARTIAL · 4 OPEN.** *(Part V measured 7 / 6 / 4.)*
+
+⛔⛔ **`SRCH-GAP-002` = OPEN.** ⭐ **Six limbs closed and the gap still does not.** A gap closes when
+**every** limb closes, and four remain — one of which (`P1` transport) this pass **discovered** rather
+than inherited. ⛔ I decline the framing *"11 of 17 — substantially complete"* (`SRCHAO-X3`).
+
+## 59. `SRCH-GAP-007` recomputation
+
+| Sub-item | Result |
+|---|---|
+Language scope (English + Hindi, closed set) | ✅ **CLOSED** |
+Hinglish non-canonical status | ✅ **CLOSED** |
+⭐ Script **carrier mechanism** (PO declaration record, owning context declares) | ✅ **CLOSED** |
+⭐ Analyzer **architecture contract** | ✅ **CLOSED** (`ADR-0100 D-1`) |
+Field-level **script values** | ⛔ **OPEN** — §14A declares zero |
+Unicode implementation **content** | ⛔ **OPEN** — evidence supports the shape, not the set |
+**Vocabulary** content | ⛔ **OPEN** — zero PO sources |
+
+**4 of 7 closed.** ⛔⛔ **`SRCH-GAP-007` = OPEN.**
+
+## 60. Security — 10 verifications, all PASS
+
+All ten §5 checks verified against cited authority and tabulated in `ADR-0100` §4. ⛔ **No violation
+found**, therefore no closure was stopped on security grounds. ⭐ The one residual — UAX #31 §7.3's
+*"does not prevent spoofing issues"*, affecting **discoverability/impersonation** but **not**
+authorization (check 9 holds on `SRCH-FR-005`) — is **routed to `SRCH-GAP-004`**, ⛔ not absorbed.
+
+## 61. Stage 3
+
+**Six checks: 6 / 6 PASS** (ownership exclusive · integration edges · rank direction · authorization
+only through `BC-18` · credential/OTP/session boundary · tenant scoping).
+
+⛔ **And that is not sufficient**, per §6 of the instruction. The §42 `Blocks` column decides:
+
+| Gap | Line | Blocks | Status |
+|---|---|---|---|
+`SRCH-GAP-002` | **L980** | Stage 3 | ⛔ **OPEN** |
+`SRCH-GAP-003` | **L981** | Stage 3 | ✅ CLOSED (Part IV) |
+`SRCH-GAP-007` | **L985** | Stage 3 | ⛔ **OPEN** |
+
+| Axis | Result |
+|---|---|
+**A** — Architecture alignment | ✅ **PASS** — 6/6, and `ADR-0100` adds a declared analyzer contract |
+**B** — Parameter completeness | ⛔ **FAIL** — 4 limbs open, 2 partial |
+**C** — Implementation readiness | ⛔ **FAIL** — no transport binding; §45.1's 8 gates all NOT DONE; 0 search tests exist |
+**D** — Governance/conferral readiness | ⛔ **FAIL** — two §42 Stage-3 rows open |
+
+⚠ **A improved and the verdict did not, which is the correct behaviour.** Architecture alignment was
+never the binding constraint.
+
+> ⚠⚠ **`PRD-015` remains CONDITIONAL / NOT CONFERRED.**
+
+## 62. Findings
+
+**Accepted — `SRCHAO-A1`…`A6`**
+| ID | Finding |
+|---|---|
+`A1` | ⭐⭐⭐ `P1` has a **second limb** (transport binding, §37 **L891**) that no prior pass and no instruction had enumerated |
+`A2` | ⭐⭐⭐ **The EA NFR Budgets document does not exist** — measured, retiring the "frozen EA locus" framing of Parts IV–V |
+`A3` | ⭐⭐⭐ `P7` availability is owned by **SRE / OBSERVABILITY** (Rank 1 `MP-NFR-01`), not the Architecture Owner |
+`A4` | ⭐⭐ `LIB-20.1` is **narrower** than Part V held — binds *"This PRD"* and *"platform-wide"* budgets; **my own prior conclusion corrected** |
+`A5` | `P8-C`'s 30-minute target is **unverifiable** while the V1 corpus is undefined |
+`A6` | ⭐ The pre-pass `ADR-INDEX` `Count` cell was **CORRECT**; my first `ls ADR-*.md` count of 88 was **my instrument's error** (it matched `ADR-INDEX.md` itself) |
+
+**Rejected — `SRCHAO-X1`…`X5`**
+| ID | Rejected claim | Ground |
+|---|---|---|
+`X1` | *"`P1` is closed because the engine limb closed"* | §42 **L980** and §37 **L891** name transport binding |
+`X2` | *"99.9% closes because it matches Authentication"* | A matching value from the **wrong office** is not a conferral (`MP-NFR-01`) |
+`X3` | *"11 of 17 — substantially complete"* | A gap closes on **all** limbs, not a majority |
+`X4` | *"the EA is frozen, so `P7` cannot be routed"* | ⭐ **Falsified this pass** — the EA is Rank 6 and ADR-amendable; the destination simply does not exist |
+`X5` | *"UAX #31 establishes the Liboora normalization rule"* | It governs identifier syntax; the instruction warned against this and the warning was right |
+
+## 63. Follow-up acts (continuing Part V's register)
+
+| ID | Act | Owner | Blocks Stage 3? |
+|---|---|---|---|
+**`FU-16`** | ⭐ Decide `P1` **transport binding** as a platform API-convention act | **Architecture Owner** | ✅ **YES** |
+**`FU-17`** | ⭐ **Commission the Enterprise Architecture NFR Budgets document**, then reconcile the `BC-23` component latency target into it | **Architecture Owner + SRE** | ✅ **YES** |
+**`FU-18`** | ⭐ Confer `P7` availability **99.9% monthly** (value pre-validated) | **SRE / OBSERVABILITY** | ✅ **YES** |
+**`FU-19`** | Define the *"V1 operational corpus"* so `P8-C` becomes verifiable | Architecture Owner + PO | ✅ **YES** |
+**`FU-20`** | Per-field **script declarations** on an unfrozen PO locus | **Product Owner** (owning contexts) | ✅ **YES** |
+**`FU-21`** | `ZWJ`/`ZWNJ` exception set + `N6`×`N4` ordering, evidence-bound | Architecture Owner | ✅ **YES** |
+**`FU-22`** | Vocabulary content, or a formal declaration that V1 has none | **Product Owner** | ✅ **YES** |
+**`FU-23`** | `P7` throughput numeric, if governance requires one | Architecture Owner | ⚠ Only if required |
+**`FU-24`** | `DOCUMENTATION_BASELINE.md` **L248** stale count (72 → **74**) | **Governance Owner** | ⛔ No |
+**`FU-25`** | `PRD-015` registry `PLANNED` → `DRAFT` (`SRCH-GAP-001`) | **Governance Owner** (⚠ `ADR-0080` §2.2: **VACANT**) | ⛔ Blocks Stage **2** |
+
+⛔ **`FU-1`…`FU-15` from Part V stand.** Those superseded by `ADR-0100` are `FU-3` (P3), `FU-4` (P4),
+`FU-10` (P8-D) — ⭐ recorded as **discharged by this act**, not deleted.
+
+## 64. Validation
+
+| Check | Result |
+|---|---|
+Append-only (Parts I–V byte-identical) | ✅ verified by `cmp` |
+Subject `PRD-015` SHA | ✅ `fe3093e6…c2c4544` **unchanged** |
+Frozen artefacts (§14A, `Library_PRD_v1`, `MASTER_PRD`, BC Map, Matrix, baseline, EA) | ✅ **all SHA-unchanged** |
+`ADR-0099` bytes | ✅ **unchanged** — not superseded, not restatused |
+ADR count re-derived independently | ✅ **88 / 74 / 13 / 1 / 0 / 0**, sum closes, unparsed **EMPTY**, unregistered `[]` |
+Register citation cost | ✅ **0** valid citations invalidated (all sit above L122) |
+⚠ **Gate 3** | ⛔ **NOT claimed rerun** — `tool/module_dependencies.yaml` and all validators are **byte-unchanged**, so its inputs are identical to `454f366`. Per §9 of the instruction |
+Pre-existing failures | ⚠ `ADR-0012` nine `app -> domain/library` violations (gate 3 expected-red) and `PRD-019` alignment-hash `PROBLEM` — both **pre-existing**, **unrelated**, ⛔ not repaired |
+Application code | ✅ **0 lines** — `lib/`, `test/`, `android/`, `web/`, `pubspec.yaml` untouched |
+Forbidden content | ✅ **0** vendors · **0** engines · **0** analyzers/tokenizers · **0** QPS · **0** corpus sizes · **0** invented Unicode exceptions · **0** vocabulary · **0** APIs · **0** BCs · **0** edges · **0** events · **0** `IMPL-*` |
+Stages 4 / 5 / 6 / 7 | ⛔ **NOT entered** — `docs/40-implementation/search/` does not exist |
+
+---
+
+⚠ **VERDICT: B — STAGE 3 CONDITIONAL / NOT CONFERRED.** `SRCH-GAP-002` OPEN (11/17 limbs closed);
+`SRCH-GAP-007` OPEN (4/7 sub-items closed). Two §42 Stage-3-blocking rows remain open.
+
+⛔ **ARCHITECTURE OWNER ONE-ACT STAGE-3 CONFERRAL: NOT READY.** Seven follow-up acts block Stage 3;
+three of them (`FU-16`, `FU-17`, `FU-18`) belong to offices this act does **not** hold.
+
+**END OF PART VI**

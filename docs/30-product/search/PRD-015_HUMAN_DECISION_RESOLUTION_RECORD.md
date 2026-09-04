@@ -2551,3 +2551,166 @@ PO script values). One-act conferral: ⛔ **not available** — no eligible conf
 `FU-18` gains the explicit finding that its target office **does not yet exist**.
 
 **END OF PART VII**
+
+---
+
+# PART VIII — AUTHORITY-ACT EXECUTION PASS (PO + AO PENDING DECISIONS ONLY)
+
+| Field | Value |
+|---|---|
+| **Part** | VIII |
+| **Act** | ⚖️ **EXECUTION** — limited to acts whose authority the repository proves available |
+| **Predecessor commit** | `480541d` (Part VII) |
+| **Offices** | `PRD_OWNERSHIP_MODEL.md` **L197**: `PRD-015` \| `BC-23` \| **Product Owner** \| Search Platform \| **ARB** \| Platform Engineering |
+| **Conferral form** | ⭐ One-act only (`ADR-0033` §7.1 — *"a conferral for one act is not a standing licence"*). ⛔ No standing authority, ⛔ no personal name (`PRD_OWNERSHIP_MODEL.md` §7 rule 4) |
+| **Result** | ⭐ **1 of 4 acts executed. 3 recorded OPEN/BLOCKED.** |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, seventh consecutive) |
+
+⭐ **Both offices exist and are non-vacant.** That satisfies §4 conditions 1–3 for *some* acts. It does
+**not** satisfy condition 4 (*"the decision does not belong to another owner"*) or the separate
+requirement that **the authority actually supply the content**. Three acts fail on content, not office.
+
+## 73. `PO-A` — B1 per-field script values · ⛔ **OPEN**
+
+| §4 condition | Result | Evidence |
+|---|---|---|
+| Office exists | ✅ Product Owner | `PRD_OWNERSHIP_MODEL.md` **L197** |
+| Act within scope | ✅ *"Whether a requirement is correct and in scope"* | *ibid.* **L83** |
+| **Content supplied by the authority** | ⛔ **NO** | This act supplies **zero** script values; `PO-A` is phrased conditionally (*"record only the explicitly authorized script values"*) |
+| Frozen artifact untouched | ✅ | §14A **byte-unchanged** |
+
+⭐⭐⭐ **A structural finding that makes the sub-act impossible as posed.** `PO-A` presumes a
+**per-field** declaration. Measured: **§14A contains ZERO table rows** (`grep -c '^|'` → **0**). It is
+**verbatim captured prose** — provenance block: *"RECEIVED VERBATIM · REVIEW COMPLETE · FROZEN
+2026-08-03"*, *"reproduced without addition, deletion, reordering, rewording, normalisation or
+summarisation."* ⛔ **There is no enumerable field inventory anywhere to attach script values to.**
+
+⚠ **A prior measurement is corrected here.** Earlier Parts reported *"§14A `script` occurrences = 1."*
+Re-measured, that single hit is the substring inside **"De*script*ion"** at **L146** — ⛔ **not** a
+script declaration. The true count of script declarations in §14A is **ZERO**.
+
+**Status: `OPEN` — PRODUCT OWNER CONTENT DECISION REQUIRED.** ⛔ No script value invented, ⛔ none
+inferred from a field name, ⛔ no duplicate discovery-owned field created, ⛔ §14A not amended.
+**Required act:** the owning contexts must first publish an enumerable field inventory on an
+unfrozen PO locus, **then** declare a script per field. `FU-20` stands, with this added precondition.
+
+## 74. `PO-B` — V1 variant/abbreviation vocabulary · ⛔ **OPEN (Outcome 3)**
+
+The three permitted outcomes were tested in order:
+
+| Outcome | Test | Result |
+|---|---|---|
+| 1 — authoritative vocabulary exists | Repo-wide search | ⛔ **0 content hits.** Every hit is a pointer to the gap (`STAGE3_CLOSURE_ASSESSMENT` **L197** independently measured **0**) |
+| 2 — PO declares *"V1 has none"* | Is such a declaration supplied? | ⛔ **NO.** `PO-B` offers Outcome 2 **conditionally** — *"if the authority legitimately supplies it"* — and no declaration text is supplied |
+| 3 — no legitimate decision available | — | ✅ **THIS ONE** |
+
+⭐ **Outcome 2 was available and was deliberately not taken.** Declaring *"V1 has no vocabulary"* is a
+**substantive product decision** with real consequences for §20 V4 — not a formality this pass may
+supply on the Product Owner's behalf. Recording it unsupplied would be the exact fabrication §4
+condition 6 forbids.
+
+**Status: `OPEN` — PRODUCT OWNER CONTENT DECISION REQUIRED.** ⛔ Zero abbreviations, aliases,
+synonyms, Hinglish/Hindi vocabulary, transliterations, example words, dictionaries or boosts
+invented. `FU-22` stands.
+
+## 75. ⭐ `AO-A` — `FU-16` P1 transport binding · ✅ **EXECUTED — LIMB CLOSED**
+
+⭐⭐⭐ **This is the one act the repository proves executable, and the measured answer is narrower
+than the act anticipated: there is no `BC-23` transport convention to bind, because `BC-23`
+exposes no API edge.**
+
+**Evidence:**
+
+| # | Measurement | Source |
+|---|---|---|
+| 1 | Open Host Service count across all 31 contexts = **1**, and it is the **API Platform edge** | BC Map **L358** |
+| 2 | `BC-23`'s only map edges: **`E-21`** (`PL`, Event, inbound) and **`E-26`** (`CF`, Sync port, from `BC-27`) | BC Map **L330**, **L335** |
+| 3 | `platform/search` declares **`ports:`** (an inbound consumption of `platform/identity:policy_decision`) and ⛔ **no `provides_ports:` block** | `tool/module_dependencies.yaml` **L373-391** |
+| 4 | `platform/search:retrieval` is consumed as an **internal port** by `platform/ai` | *ibid.* **L286** |
+| 5 | Rank-1 API authority already exists and is not `BC-23`'s to restate | `MASTER_PRD.md` **§20** L405-412 + `MP-CON-04`…`MP-CON-07` L415-418 |
+
+### `D-7` — the determination
+
+⭐ **`BC-23` publishes no public API surface in V1.** Its retrieval capability is an **internal
+port**, and any public exposure of search results occurs at the **API Platform OHS edge**, which is
+**already governed** by `MASTER_PRD.md` §20 and `MP-CON-04`…`MP-CON-07` at **Rank 1**.
+
+Consequently the `P1` transport limb requires **no new convention, at any office**:
+
+| §20 / `MP-CON-*` obligation | Already satisfied inside `PRD-015` by | Consistency |
+|---|---|---|
+| `MP-CON-06` pagination mandatory | `SRCH-FR-039` port-capped pagination | ✅ coherent |
+| `MP-CON-07` permission errors must not disclose existence | `SRCH-FR-038`; §30 S3 existence-oracle defence; §37.2 taxonomy | ✅ coherent |
+| `MP-CON-04` OpenAPI is source of truth | Applies at the **API Platform edge**, ⛔ not at `BC-23` | ✅ no conflict |
+| `MP-CON-05` idempotency at the API edge | Search query is a **read**; ⛔ not a non-idempotent mutation | ✅ not applicable |
+
+⛔ **What this determination does NOT do:** ⛔ no HTTP verb · ⛔ no endpoint path · ⛔ no
+request/response schema · ⛔ no serialisation · ⛔ no field-naming convention · ⛔ no vendor · ⛔ no
+new `BC→BC` edge · ⛔ no new event · ⛔ no new OHS surface · ⛔ no amendment to §20, the BC Map or the
+manifest — **all four are byte-unchanged.**
+
+⭐ **Why no ADR is created.** `ADR-INDEX` Process step 1 requires an ADR for *"a decision that changes
+structure, ownership, a boundary, or a platform-wide rule."* This determination changes **none** of
+the four — it records that **existing Rank-1 authority already governs** and that `BC-23` adds
+nothing. Per `ADR-0079`'s holding, such an act *"records a determination"* rather than making one.
+⛔ `ADR-0100` is **not** amended (protected, byte-unchanged); ⛔ no `ADR-0101` is opened; ⛔ the ADR
+register is **not** touched.
+
+**Status: `FU-16` = ✅ CLOSED.** `GAP-002` limb 2 closes.
+
+## 76. `AO-B` — `FU-21` `ZWJ`/`ZWNJ` exception set · ⛔ **BLOCKED — AUTHORITY NOT AVAILABLE**
+
+| §4 condition | Result | Evidence |
+|---|---|---|
+| Office exists (ARB) | ✅ | `PRD_OWNERSHIP_MODEL.md` **L197** |
+| Act within scope | ✅ analyzer/normalization is Architecture-governed | `ADR-0099` §2.1-2.2 |
+| **Evidence binding satisfiable** | ⛔ **NO** | `ADR-0099` **L110** routes this *"evidence-bound to the applicable Unicode/product authority"* |
+
+⭐ **The blocking condition is the evidence binding, not the office.** `ADR-0099` **L110** requires
+the exception set and the `N6`×`N4` ordering to be bound to **the applicable Unicode *and product*
+authority**. The product half is `SRCHPO-1`'s Devanagari scope — but **no Devanagari product
+authority states which joining controls are semantically required in Liboora's field content**, and
+`PO-A`/`PO-B` above both failed to produce one.
+
+⛔ **UAX #31 cannot substitute, and this pass does not let it.** As `ADR-0100` §2.2 already records,
+UAX #31 governs **programming-language identifier syntax**; it establishes strip-with-exceptions as
+a **recognised profile shape** only. ⛔ *"Default ignorables"* is **not** silently converted into a
+complete Liboora policy, and no exception is invented.
+
+**Status: `OPEN` — HUMAN ARCHITECTURE DECISION REQUIRED**, jointly evidence-bound with a product
+statement on Devanagari joining-control semantics. `FU-21` stands.
+
+## 77. Recomputation (only the six permitted items)
+
+| Item | Before | After | Basis |
+|---|---|---|---|
+| **`FU-16`** | OPEN | ✅ **CLOSED** | §75 `D-7` |
+| **`FU-20`** | OPEN | ⛔ **OPEN** (+ new precondition: no field inventory exists) | §73 |
+| **`FU-21`** | OPEN | ⛔ **OPEN / BLOCKED** — evidence binding | §76 |
+| **`FU-22`** | OPEN | ⛔ **OPEN** — Outcome 3 | §74 |
+| **`SRCH-GAP-002`** | 11 C / 2 P / 4 O | ⭐ **12 CLOSED · 2 PARTIAL · 3 OPEN** → still ⛔ **OPEN** | limb 2 closed |
+| **`SRCH-GAP-007`** | 4 of 7 | **4 of 7 — UNCHANGED** → ⛔ **OPEN** | §73, §74 |
+
+⛔ **`SRCH-GAP-002` remains OPEN.** Open limbs: 4 (P2-A deployment config — **DEPLOYMENT-ONLY**),
+7 (exception set + ordering), 15 (P7 availability). Partial: 14 (latency), 17c (P8-C).
+⭐ **One limb closed and the gap did not** — a gap closes only when every limb closes.
+
+## 78. Untouched by instruction (§7)
+
+⛔ `FU-17` EA NFR Budgets · ⛔ `FU-18` P7 availability (**99.9% NOT ratified**; remains **PROPOSED**)
+· ⛔ `FU-19` P8-C corpus · ⛔ Governance Owner (⛔ not appointed, ⛔ not simulated) · ⛔ no reviewer
+role assigned · ⛔ **no Stage-3 conferral**. All authority domains untouched.
+
+## 79. Stage 3
+
+**Stage-3 blocking gaps: 2 — UNCHANGED** (`SRCH-GAP-002`, `SRCH-GAP-007`). Axis **A** ✅ · Axis **B**
+⛔ · Axis **C** ⛔ (SRE/Observability locus absent; Governance Owner **VACANT**, `ADR-0080` §2.2;
+reviewer roles unassigned, `PGA-08`) · Axis **D** ⛔.
+
+⭐ **Conferral remains impossible for a reason no parameter act can cure:** the conferring offices
+are vacant or unconstituted. Remaining blockers require **SRE** (`FU-18`), **EA + AO** (`FU-17`),
+**PO** (`FU-19` joint, `FU-20`, `FU-22`), **AO** (`FU-21`) and **Governance** (conferral) authority.
+
+⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
+
+**END OF PART VIII**

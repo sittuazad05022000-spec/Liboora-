@@ -3793,3 +3793,311 @@ option, since the alternative is to have found the ordering defect and not said 
 
 ⛔ **`STAGE-3 STATUS: NOT READY`** stands. The packet remains **five items**, now correctly ordered.
 
+
+---
+
+# PART XV — ⭐⭐⭐ FINAL HUMAN GOVERNANCE ACTION PASS: `H-5` EXECUTED, `H-1`…`H-4` MEASURED
+
+| Field | Value |
+|---|---|
+| **Act** | 🔁 **Authorized final governance-action pass.** `H-5` performed under lawful conferral; `H-1`, `H-2`, `H-3`, `H-4` processed only as far as actual authority permits |
+| **Predecessor commit** | `0a6e2df` (which carried `PRD_REGISTRY.md` §16 — the `H-5` act) |
+| **Result** | ⭐ **`H-5` = DONE and LAWFUL.** ⛔ **`H-1`, `H-2`, `H-3`, `H-4` = BLOCKED**, each on a *measured* absent authority — ⛔ **not** on missing analysis |
+| **Artefacts created** | ⭐ **NONE.** ⛔ 0 ADRs, 0 PRDs, 0 offices, 0 appointments, 0 conferrals beyond `H-5`'s |
+| **Verdict** | ⛔ **B — CONDITIONAL / NOT CONFERRED** (fourteenth consecutive) |
+
+⚠⚠ **This Part contains a finding ADVERSE TO THIS ENGAGEMENT'S OWN PRIOR WORK** (§126) and a
+**correction of a number this record itself published nine times** (§126.1). Both are recorded because
+rule 7 forbids modifying `PRD-015` *"to hide, rewrite or erase adverse findings"*, and that bar binds
+findings adverse to **me** exactly as it binds findings adverse to the subject.
+
+## 125. ⭐ `H-5` — **DONE.** The transition was lawful, and the reason is narrower than it looks
+
+⭐⭐⭐ **The decisive fact is that `PRD-015`'s own header ALREADY read `DRAFT`.** Measured: **L11**
+`| **Version** | **v0.1 — DRAFT** |`; file present at **95,608 bytes**. The register read `PLANNED`
+at **L315**. So the two disagreed, and the register **itself** rules who loses:
+
+> **Header L11** — *"Where this register disagrees with a PRD, **the PRD is right and this register is a defect**"*
+> **§8 rule 5** — *"If this register disagrees with a PRD, **fix this register**."*
+
+⭐ **`H-5` was therefore NOT an advancement of `PRD-015`. It was the repair of a register defect** —
+the register was made to agree with a document that had said `DRAFT` since 2026-09-03. That
+reframing matters, because it is the *only* framing under which the act needs no readiness judgement.
+
+### 125.1 The four `ADR-0043` §8.2 conditions, re-measured against `PRD-015` — not carried over
+
+| # | Condition (verbatim from `ADR-0043` §8.2) | Measured for `PRD-015` |
+|---|---|---|
+| 1 | *"`GCP-14` already records its own reconciliation … **`PRD-004` v1.4 is the decisive counter-example**"* | ✅ Unchanged — `GCP-14` sits at registry **L343-L346**; the reconciliation is textual, not case-specific |
+| 2 | *"**The register names the deciding authority** (L351): 'governance owner of `PRD_REGISTRY.md` + `PRD_LIFECYCLE.md`.' **That authority is conferred for this act**"* | ✅ **L351** measured verbatim; conferral present in the governing instruction (§125.2) |
+| 3 | *"The §2.1 L42 evidence test is met on the facts: 'a document on disk with a version header'"* | ✅ **Measured, not assumed**: file exists; **L11** carries the version header |
+| 4 | *"**`PRD-022` is the executed precedent**, moved `PLANNED` → `DRAFT` on the same test at registry v1.9"* | ✅ Four executed precedents now: `PRD-004` v1.4, `PRD-022` v1.9, `PRD-008`, `PRD-019` |
+
+### 125.2 ⭐ The `L726-727` objection — the one limb that could have voided this act
+
+⚠⚠ **`PRD-015`'s own `SRCH-GAP-001` cites registry L726-727 as its basis, and L726-727 states a
+three-limb refusal.** It was tested limb by limb rather than waved past:
+
+| Limb (registry **L724-729**) | Applies to `H-5`? |
+|---|---|
+| (i) *"**D-A is an allocation decision, not a readiness decision**"* | ⛔ **NO** — that limb is about `PRD-021A`'s allocation, a different act |
+| (ii) *"**no authority was conferred for this act** as `ADR-0043` §8.2 conferred one for `PRD-008`"* | ⭐ **DISTINGUISHED — and this is the whole hinge.** That refusal was refusing to act *without* conferral. Here conferral **is** present. `ADR-0043` §8.2 condition 2 makes exactly this distinction: *"The v2.0 refusal was refusing to act **without** it — not asserting the move was wrong"* |
+| (iii) *"the three prior `PLANNED` → `DRAFT` moves … were **transitions of an already-registered row**, whereas this is an **initial registration**"* | ⭐ **INAPPLICABLE, measured.** `PRD-015` **had an already-registered row** at **L315** before this act (verified at `b9aaf5b`: `` | `PRD-015` | Search Indexing | **`BC-23`** | … | `PLANNED` | ``). It is the *transition* class, **not** the initial-registration class |
+
+⭐ **So `H-5` falls in the permitted class on limb (iii) as a matter of measured fact, and on limb (ii)
+because the conferral the refusal demanded is present.** Had `PRD-015` been unregistered, limb (iii)
+would have barred it and `H-5` would be **BLOCKED**.
+
+### 125.3 Execution method — and why it was append, not insertion
+
+⭐⭐ **Citation cost was measured BEFORE editing, not after.** **64** unique line-citations point into
+`PRD_REGISTRY.md`. **12** sit below §10's change-history table at **L656** — including citations
+inside **`Accepted`** ADRs (`ADR-0085` **L744**; `ADR-0087` **L704**/**L744**/**L768**; `ADR-0092`
+**L1163**/**L1164**) and inside `DOCUMENTATION_BASELINE.md` (**L768**).
+
+> ⛔ **A change-history row inserted at L656 — the method `ADR-0043` §8.2 used — would have
+> silently misdirected all 12.** ⭐ **The register's own §§11, 12, 13, 14 and 15 each solved this
+> exact problem by appending a section instead.** That precedent was followed.
+
+**Verified after the write:** append at EOF (**+93** lines, new **§16**) plus **3** in-place cell
+rewrites (**L315**, **L545**, **L546**). **All 64 citation anchors re-measured byte-identical — 0 shifted.**
+
+### 125.4 ⛔ What `H-5` does **not** do
+
+| ⛔ Not claimed |
+|---|
+| ⛔ **Stage 3 NOT entered and NOT conferred.** Stage 3's status is `IN_REVIEW`; the register reads `DRAFT` |
+| ⛔ **No `SRCH-GAP-*` closed by fiat**; **0** subject bytes changed (hash `fe3093e6…c2c4544`) |
+| ⛔ **`GCP-14`'s wording defect NOT closed** — the register still holds two incompatible `DRAFT` tests, and `ADR-0043` §8.2's *"saying so is the whole point"* applies verbatim here |
+| ⛔ **No standing appointment** — `ADR-0033` §7.1: *"a conferral for one act is not a standing licence"* |
+| ⚠ **Registry header still reads `v2.1` / `2026-08-05`** — ⭐ the identical disclosed posture of §§11-15, none of which bumped the header either (§11 is dated 2026-08-25 under a v2.1 header). Consistent with precedent, **disclosed rather than silently patched** |
+
+⭐⭐ **`SRCH-GAP-001` — its stated condition is now satisfied in fact.** Its text is *"A `PLANNED` →
+`DRAFT` transition needs conferred authority"*; authority was conferred and the transition is
+recorded. ⛔ **The §42 row at L979 is NOT edited** — `PRD_LIFECYCLE.md` **L104** requires dispositions
+to be *recorded*, and the subject is hash-anchored for Stage 3. The row is **stale, disclosed here, not rewritten.**
+
+## 126. ⛔⛔ `H-1` — **BLOCKED.** And a finding adverse to this record's own prior arithmetic
+
+### 126.1 ⭐⭐⭐ CORRECTION — the field count is **14**, not **16**
+
+⚠⚠ **This record has published "16 §14A.5 fields" repeatedly — at L3056, L3086, L3096, L3104,
+L3163, L3313, L3323, L3579 and in the §94 table. Re-measured directly, the number is 14.**
+
+| Instrument | Result |
+|---|---|
+| Fields between §14A.5's two sentinel sentences (*"may be publicly accessible"* → *"shall never be publicly accessible"*) | ⭐ **14** |
+| Non-empty lines in the range **L138-168** — the range §94 cited | **16** |
+| ⭐ Why the two differ | **L166** is the sentinel sentence *"The following information shall never be publicly accessible:"* and **L168** is *"Student Information"* — ⛔ **an exclusion, not a public field.** The prior count included **2 lines that are not public fields** |
+| Never-public exclusions | **10** ✅ (that figure was correct) |
+
+⭐ **The 14, enumerated by citation — ⛔ not restated as a definition** (`SRCH-XC-001` **L158**):
+*Library Name · Logo · Cover Image · Gallery · Description · Business Address · Map Location ·
+Operating Hours · Weekly Holidays · Facilities & Amenities · Membership Plans & Pricing · Seat
+Capacity (Optional) · Library Status · Business Contact Information.*
+
+⭐⭐ **Independent corroboration — the correct figure was already in the repository.**
+`PRD-015_F5_OWNERSHIP_RULING.md` **L134-137** lists the same field set and enumerates exactly
+**14** names. ⇒ **The error was in this record's arithmetic, not in the repository.**
+
+### 126.2 ⭐⭐⭐ A SECOND, MORE SERIOUS FINDING — one of the 14 fields has **NO OWNER AT ALL**
+
+`H-1` presupposes *"six frozen owning PRD loci"* covering every field. **That presupposition is false, measured.**
+
+`ARCHITECTURE_RULINGS.md` `AR-1` (**L41-50**, Rank 4) maps field groups to contexts. Counting the
+fields it actually names: `BC-19` 5 + `BC-25` 3 + `BC-29` 1 + `BC-06` 2 + `BC-02` 1 + `BC-04` 1 = **13**.
+
+> ⛔⛔ **`Facilities & Amenities` appears in NO row of `AR-1`.** Measured: `grep -c 'Facilit'
+> ARCHITECTURE_RULINGS.md` = **0**. ⭐ **13 of 14 fields are mapped. The fourteenth is unmapped.**
+
+⭐ **And the repository already knew.** `REVIEW_14A.md` **L221**:
+
+> `| Facilities & Amenities | **unowned** | no context claims it — see R-D |`
+
+`REVIEW_14A.md` **L376** (`R-D`) states the consequence in terms that hit `BC-23` directly:
+*"No `LibraryType` or `Facility` register exists … **Free-text filters cannot be indexed consistently.**"*
+
+⚠ **A competing candidate exists and is NOT sufficient to close this.** `Library_PRD_v1.md`
+**L1095** (Rank 3, FROZEN) reads `| Facility reference list and associations | BC-06 | **Owns** |`,
+and **L1085** calls its table *"the authoritative answer to 'who owns this field?'"*.
+
+| Reading | Assessment |
+|---|---|
+| `BC-06` owns Facilities via `Library_PRD_v1.md` **L1095** | ⚠ **Arguable, NOT established.** L1095 assigns the *"facility reference list and associations"* — a **domain register** — ⛔ not the **§14A.5 public profile field**. `AR-1` is the ruling that maps *public fields* to contexts, and it omits this one |
+| Rank check | `Library_PRD_v1.md` = **Rank 3**; `ARCHITECTURE_RULINGS.md` = **Rank 4**. ⚠ Rank 3 is **higher**, which strengthens the `BC-06` reading — but the two instruments answer **different questions**, so this is a **conflict to be ruled on**, ⛔ not one I may resolve |
+| ⛔ May I resolve it? | ⛔ **NO.** Mapping a public field to a bounded context is an **architecture** act. `PRD_REGISTRY.md` §8 rule 6: adding a BC to a PRD's ownership *"is an architecture change requiring an ADR"*. Owner = **Architecture Owner (`ARB`)**, which is **VACANT** |
+
+⭐⭐⭐ **Consequence for `H-1`: it cannot be discharged even if all six owners acted.** Six owners
+declaring scripts would cover **13** fields. The **fourteenth has no owner to ask.** ⇒ `H-1` as
+previously framed was **not merely blocked — it was under-specified**, and would have failed a
+completeness check under rule 14 (*"a blocker closes only when every required conjunct is actually satisfied"*).
+
+### 126.3 Route A and route B, both tested
+
+| Route | Result |
+|---|---|
+| **A** — explicit owner authorization for six ADR-borne amendments | ⛔ **BLOCKED.** All six loci **FROZEN** (registry **L313**, **L337**, **L317**, §3.3 **L146**, **L242**, **L244**). `PRD_LIFECYCLE.md` **§4 L222-240** requires 7 steps beginning *"Write an ADR — **BEFORE** the change"*; **L177**: *"**A frozen PRD is never silently modified.**"* ⭐ **No authorization from any of the six owners exists** — measured: **0** script declarations across every `PRD-013`/`PRD-023`/`PRD-017`/`PRD-002`/`PRD-005`/`PRD-007` file |
+| **B** — one authoritative locus carrying all fields | ⛔ **BLOCKED.** Part XII §100's six-candidate test re-verified and still standing; and ⭐ route B is now **strictly worse than believed**, because a single locus would still leave `Facilities & Amenities` **without an owner competent to declare its script** |
+
+⛔ **0 script values declared. 0 inferred. The "Latin for all" shortcut is refused again** — `SRCHPO-1`
+expressly admits Devanagari in these same fields, so a blanket Latin default would be **substantively
+wrong**, not merely unevidenced.
+
+## 127. ⛔ `H-2` — **BLOCKED.** Zero authoritative definitions, measured
+
+**`grep -riE 'operational corpus'` across `docs/` returns 3 files, and ⭐ every hit is a *disclosure of
+absence*, not a definition:**
+
+| Locus | Text | Is it a definition? |
+|---|---|---|
+| `ADR-0100` **L200** | *"full rebuild **≤ 30 minutes** for the V1 operational corpus"* | ⛔ **NO** — a target *referencing* the term |
+| `ADR-0100` **L203** | *"because the **'V1 operational corpus' is nowhere defined**, this target is …"* | ⛔ **NO** — ⭐ an **express self-adverse disclosure of absence** |
+| `ADR-0101` **L244** | *"⛔ No `V1 operational corpus` definition ⇒ `P8-C` stays unverifiable."* | ⛔ **NO** — the same absence, restated |
+
+⛔ **Conjunct 2** — whether V1's Devanagari corpus contains authoritative ZWNJ-distinguished names —
+remains **0-evidence**. `ADR-0101` `D-10` refused it with three falsifiable closure conditions, and
+⛔ **none may be satisfied from Unicode documentation, code, examples or assumption** (rule 1; the
+instruction's own *"Do not derive either fact from code, examples, assumptions or Unicode documentation"*).
+
+⭐ **Both conjuncts belong to ONE office — Product Owner — so ONE decision closes `H-2`.** The exact
+packet is at §133 `H-C`.
+
+## 128. ⛔⛔ `H-3` — **BLOCKED.** The office cannot lawfully be constituted by the Governance Owner
+
+⭐ **The three Rank-1 rules that would ground a §9.2-class derivation are real and were measured verbatim:**
+
+| Rule | `MASTER_PRD.md` | Owner cell |
+|---|---|---|
+| `MP-NFR-01` Availability | **L495** | **`SRE / OBSERVABILITY`** |
+| `MP-NFR-09` Observability | **L503** | **`OBSERVABILITY`** |
+| `MP-NFR-12` Business continuity | **L506** | **`SRE`** |
+
+⇒ The derivation's *evidential* limb is satisfied: three existing Rank-1 rules name an office that
+`PRD_OWNERSHIP_MODEL.md` defines **0** times (measured: `grep -ciE 'SRE|Observability'` = **0**).
+
+### 128.1 ⛔ But the *authority* limb fails — and the two precedents diverge
+
+**Both prior office-constitutions were examined for their `Deciders`:**
+
+| ADR | Constituted | `Deciders` | Why that authority was competent |
+|---|---|---|---|
+| `ADR-0077` | `Privacy Owner` | **Architecture Review Board, acting through the Architecture Owner** | §5: *"**Only the Architecture Owner approves**"* a Rank 1–5 document change |
+| `ADR-0080` | `Governance Owner` | **Governance owner** | ⭐ Lawful **only** by a special fact: *"it is **already named as `Deciders` in three Accepted ADRs**, so the authority **pre-exists** this document and only its *definition* is missing"* (§2.4: *"⛔ **Not circular, because the authority is not created here**"*) |
+
+⭐⭐⭐ **The `ADR-0080` route is measurably unavailable to `SRE / OBSERVABILITY`.** Measured:
+`Deciders` rows naming SRE or Observability across all **89** ADRs = **0**. ⇒ The office is **not**
+already-exercised, so there is no pre-existing authority for it to merely write down.
+
+⭐⭐ **That leaves only the `ADR-0077` route — whose decider is the Architecture Review Board acting
+through the Architecture Owner. For `PRD-015` that is `ARB` (`PRD_OWNERSHIP_MODEL.md` **L197**),
+which is VACANT** (§7 rule 4; fillable *"for this act only"* by direct conferral, **L584**).
+
+⛔ **And the Governance Owner may NOT substitute itself.** §10.1 **L418** bars it from deciding
+*"⛔ Boundaries, ranks or permitted edges (**Architecture Owner**)"* and — decisively —
+*"**⛔ its own conferral, and ⛔ its own scope**"*. Constituting a **seventh role** in the ownership
+model is a change to the model's own scope.
+
+### 128.2 ⛔ Constitution ≠ ratification — the collapse the instruction warned against, refused
+
+Even had the office been constituted, **`MP-NFR-01`'s availability target would remain BLOCKED**:
+
+> `PRD_OWNERSHIP_MODEL.md` **L356** / **L421**: *"**constituting an office does not fill it**, and
+> nothing in this document appoints anyone."* · **L398**/**L472**: *"A holder is appointed — ⛔ **No.** Vacant."*
+> `ADR-0077`: *"**Constituting a role is not exercising it.**"*
+
+⭐ **So `H-3` is a TWO-act item, and I hold authority for neither.** The instruction's warning —
+*"do not collapse constitution and ratification into one invented act"* — is honoured by refusing both.
+
+## 129. ⛔ `H-4` — **BLOCKED.** No appointment mechanism is available to me, and I do not self-appoint
+
+| Test | Measured |
+|---|---|
+| Does the `Architecture reviewer` office exist? | ✅ **YES** — `PRD_LIFECYCLE.md` §6 **L277**: *"Architecture reviewer \| Stage 3; authority to require an ADR"* |
+| Is it the same as `Architecture Owner`? | ⛔ **NO.** `ADR-0054` **L148**, quoted in §10.1: *"**Those are different roles**"*. `Architecture reviewer` = **0** occurrences in `PRD_OWNERSHIP_MODEL.md` |
+| Is there an appointment mechanism? | ⛔ **NO general one.** **11** `appoint` hits in the ownership model, and ⭐ **every one is a refusal**: **L356**, **L398**, **L421**, **L472**, **L510**, **L566**, **L586**, **L629** — *"no holder appointed"*, *"§7 rule 4 forbids recording a name"* |
+| Is there a scoped route? | ⭐ **YES, exactly one** — **L584**: filled *"**for this act only**"* by **direct conferral from the human principal**. ⛔ That is a human act. `ADR-0033` §7.1: *"a conferral for one act is not a standing licence"* |
+| Does a conferral naming `PRD-015` Stage 3 exist? | ⛔ **NO** — re-measured. `PRD-008_STAGE3_CONFERRAL.md` **L7** confers for *"`PRD-008` **and nothing else**"*, and `PRD-015_STAGE3_CLOSURE_ASSESSMENT.md` **L401** already ruled that *"`ADR-0033` §7.1 **bars inheriting `PRD-008`'s**"* |
+| ⛔ Self-appointment | ⛔ **REFUSED** — rule 3. ⚠ The instruction's own per-item text names the **Architecture Owner**; `H-4` needs the **Architecture reviewer**. ⭐ **Reading one as the other is precisely the conflation `ADR-0054` L148 forbids**, and it is the difference between `ADR-0101` (lawful, an Architecture **Owner** act) and a Stage-3 conferral (unlawful here) |
+
+## 130. ⭐ Blocker ledger — recalculated after `H-5` (rule 13), not carried forward
+
+| Item | Before | After `H-5` | Basis |
+|---|---|---|---|
+| Registry status | ⛔ `PLANNED` | ⭐ **`DRAFT`** | `PRD_REGISTRY.md` **L315** + §16 |
+| **Stage 2** | ⚠ Draft written, status unconferred | ⭐ **COMPLETE** | Gate met: **§0.1 L57**, **§0.4 L80**, §44.1 registers 42/14/6/16/78/9 all contiguous, §45.3 self-audit **11/11 ✅** — **and** the status now records it |
+| `SRCH-GAP-001` | ⛔ OPEN — *"blocks Stage-2 conferral"* | ⭐ **CONDITION SATISFIED IN FACT** (row **L979** stale, disclosed §125.4, ⛔ not rewritten) | Authority conferred; transition recorded |
+| **Stage 3 eligibility** | ⛔ Ineligible — status not even `DRAFT` | ⚠ **ELIGIBLE TO BE ASSESSED, NOT PASSED** | Stage 3's status is `IN_REVIEW`; register reads `DRAFT` |
+| Six architecture checks | ✅ 6/6 | ✅ **6/6 PASS, 0 FAIL, 0 BLOCKED** (re-measured, alignment §11.1 **L704-718**) | ⛔ Necessary, **not** sufficient — rule 4 |
+| `SRCH-GAP-002` (18 limbs) | 15 C · 2 P · 1 O | ⛔ **UNCHANGED** | `H-1`/`H-2`/`H-3` all blocked; limb 15 needs an **SRE holder** |
+| `SRCH-GAP-007` (7 sub-items) | 5 C · 1 P · 1 B | ⛔ **UNCHANGED, and now known to be WIDER** | §126.2: the conjunct spans **14** fields, one of which has **no owner** |
+| `FU-19` / `FU-20` / `FU-21` | BLOCKED / BLOCKED / PARTIAL | ⛔ **UNCHANGED** | `FU-20` gated on `H-1`, now under-specified per §126.2 |
+| Architecture reviewer | ⛔ Office exists, **VACANT** | ⛔ **UNCHANGED — VACANT** | **L584**; no conferral naming `PRD-015` |
+| ⭐ **NEW** — `Facilities & Amenities` ownership | *(undetected)* | ⛔ **OPEN — unowned public field** | `AR-1` **L41-50** omits it; `REVIEW_14A.md` **L221** *"unowned"* |
+
+## 131. ⛔ Stage-3 gate — the decision, and the reason it is not close
+
+⭐ **Stage 2 is now legitimately complete — a real advance, and the first in fourteen passes.** But
+`PRD_LIFECYCLE.md` **L41-42** governs: *"A gate is not an opinion — if the artefact does not exist,
+the stage has not been passed, **however complete the work feels**."*
+
+| Required conjunct | Status |
+|---|---|
+| Stage 2 legitimately complete | ⭐ **YES** — newly satisfied by `H-5` |
+| Every applicable blocker closed | ⛔ **NO** — `GAP-002` limb 15, `GAP-007` sub-items 5 & 7, and the new unowned-field finding |
+| Written alignment artifact valid | ⚠ **YES, with a disclosed stale table** (§11.2's three-gap list) — **L104** requires recording, ⛔ not repair by me |
+| All architecture conditions satisfied | ✅ **6/6** |
+| Architecture reviewer legitimately appointed | ⛔ **NO** — **VACANT** |
+| The required review/conferral actually occurred | ⛔ **NO** — 0 conferrals naming `PRD-015` |
+
+> ⛔⛔ **`STAGE 3 NOT READY.`** ⭐ Two of six conjuncts satisfied; **four not**. ⛔ **No formal
+> conferral is issued, and none could lawfully be issued by me.**
+> ⭐ **`PRD-008`'s precedent, correctly applied, points the same way**: it was conferred only *after*
+> `FEE-GAP-002` — **L2186**, *"the **last** gap that did"* block Stage 3 — was **closed**. `PRD-015`
+> has **two** such rows live (**L980**, **L985**).
+
+## 132. ⛔ What was deliberately NOT done
+
+| Tempting act | ⛔ Refused because |
+|---|---|
+| Constitute `SRE / OBSERVABILITY` by Governance-Owner derivation | §10.1 **L418**: *"⛔ its own scope"*; **0** ADRs name it as `Deciders`, so `ADR-0080`'s route is unavailable |
+| Appoint an Architecture reviewer, or read *Architecture Owner* as *reviewer* | Rule 3; `ADR-0054` **L148** |
+| Treat the six owners as one holder because all six cells read `Product Owner` | §3 rule 2 *permits* it; ⛔ nothing **records** it. Inferring = invention (rule 1) |
+| Map `Facilities & Amenities` to `BC-06` from `Library_PRD_v1.md` **L1095** | Architecture act; registry §8 rule 6 requires an ADR; `ARB` **VACANT** |
+| Declare *"Latin"* for the 14 fields | `SRCHPO-1` admits Devanagari in those fields ⇒ **substantively wrong**, not merely unevidenced |
+| Silently fix the "16 fields" figure, or edit the stale **L979**/§11.2 tables | Rule 7 + rule 8; **L104**. ⭐ **Corrected in the open (§126.1) instead** |
+| Bump the registry header to v2.2 | ⛔ Would shift cited lines; §§11-15 set the opposite precedent. Disclosed §125.4 |
+| Declare `STAGE 3 PASS` on 6/6 checks | Rule 4 — and §13.3's standing distinction: the six checks measure **architecture alignment**, `SRCH-GAP-002` measures **parameter completeness** |
+
+## 133. ⭐⭐ THE CONSOLIDATED HUMAN-ACTION PACKET — **five items**
+
+⚠⚠ **SELF-CORRECTION, made in the open.** A draft of this heading read *"four items (was five)"*.
+**That is wrong, and the arithmetic is stated rather than quietly fixed:** `H-5` is discharged (5 − 1 = 4),
+but §126.2 discovered **`H-A`**, a genuinely new item (4 + 1 = **5**). ⭐ **The packet did NOT shrink.**
+Writing *"four"* would have been the flattering direction — rule `X3`: *"A gap closes on **all** limbs,
+not a majority"*, and a packet does not shrink merely because one item left it.
+
+⚠ **Ordered by dependency. `H-A` is now first because §126.2 proved it gates `H-B`.**
+
+| # | Action | Required authority | Exact decision required |
+|---|---|---|---|
+| **`H-A`** ⭐ **NEW** | Rule the owning context for the **`Facilities & Amenities`** §14A.5 public field | **Architecture Owner (`ARB`)** — vacant; fill *"for this act only"* (**L584**) | *"The §14A.5 public field `Facilities & Amenities` is owned by `BC-__`"* — resolving `AR-1` **L41-50**'s omission against `Library_PRD_v1.md` **L1095**. Requires an ADR (registry §8 rule 6) |
+| **`H-B`** | Declare the **script** for each of the **14** §14A.5 public fields (⚠ **14, not 16** — §126.1) | The **owning PRD owners** — 13 fields across six **FROZEN** PRDs, + the 14th pending `H-A` | Either six ADR-borne amendments per `PRD_LIFECYCLE.md` **§4 L222-240**, **or** a conferral constituting one authoritative locus. ⛔ Blocked until `H-A` names the 14th owner |
+| **`H-C`** | ONE Product Owner decision, **both conjuncts** | **Product Owner** | (1) *"The V1 operational corpus is defined as: ____"* (closing `ADR-0100` **L203**) **and** (2) *"V1's Devanagari corpus does / does not contain authoritative ZWNJ-distinguished names"* (closing `ADR-0101` `D-10`) |
+| **`H-D`** | Two separable acts, ⛔ **not** to be collapsed | (a) office: **`ARB` via Architecture Owner** (`ADR-0077`'s route) · (b) holder: **human principal** | (a) constitute **`SRE / OBSERVABILITY`** from `MP-NFR-01` **L495**, `MP-NFR-09` **L503**, `MP-NFR-12` **L506**; (b) appoint a holder, who then ratifies the availability target |
+| **`H-E`** | Appoint an **Architecture reviewer** for `PRD-015` Stage 3 | **Human principal only** (**L584**) | *"The Architecture reviewer office is filled, **for the `PRD-015` Stage-3 review only**, by direct conferral"* — ⛔ scoped, per `ADR-0033` §7.1 |
+
+⛔ **No item may be discharged by an AI instruction unless the repository's own mechanism makes that
+instruction a valid authorization — which it does for `H-5` (registry **L351** + `ADR-0043` §8.2) and
+⛔ for none of `H-A`…`H-E`.**
+
+## 134. ⭐ Terminal state
+
+1. ⭐ **`H-5` is DONE and lawful** — and it is the **first substantive governance advance in fourteen
+   passes**, because it was the only remaining item whose authority the repository itself confers.
+2. ⛔ **`H-1`…`H-4` are BLOCKED on absent human authority, not on absent analysis.** Each was pressed
+   to the exact point where the next step required an office that is vacant or a fact that is undefined.
+3. ⭐⭐ **This pass made the position WORSE-but-TRUER in two ways**: the field count fell **16 → 14**,
+   and a **fourteenth field with no owner** was discovered. ⭐ Both are *corrections of this
+   engagement's own prior work*, disclosed rather than buried.
+4. ⛔ **`STAGE-3 STATUS: NOT READY`** stands. The packet is **five items** — `H-5` discharged (−1) and
+   **`H-A`** discovered (+1). ⭐ **It did not shrink, and this Part declines to report that it did.**

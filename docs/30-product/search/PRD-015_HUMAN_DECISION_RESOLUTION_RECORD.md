@@ -669,3 +669,259 @@ not yet executable. It is **not** marked CLOSED.
 **END OF RECORD.** ⭐ Sixteen rulings are recorded faithfully. **Five close completely; eleven
 close a model and name what still blocks it.** ⛔ Nothing was invented to make the count look
 better.
+
+---
+---
+
+# PART II — FINAL CLOSURE & STAGE-3 READINESS PASS (appended 2026-09-04)
+
+| Field | Value |
+|---|---|
+| **Act** | 🔍 **ASSESSMENT, not conferral** |
+| **Subject** | `PRD-015_SEARCH_INDEXING.md` — sha256 `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544`, **byte-unchanged** |
+| **Predecessor** | `ffee6f7` — HD-1…HD-16 recorded; `ADR-0099` accepted |
+| **Form** | ⭐ **APPENDED to this consolidated record**, ⛔ not a new file. `PRD-015_STAGE3_CLOSURE_ASSESSMENT.md` **L504** forbids editing itself in place (*"⛔ This record must not be edited in place either"*), and `PRD-015_ARCHITECTURE_ALIGNMENT.md` §17 forbids editing its findings; so the lawful locus for a *new* assessment is a supplement, and the instruction's *"prefer updating the existing consolidated record"* selects **this** one |
+| **Verdict** | ⚠ **B — STAGE 3 CONDITIONAL** |
+
+## 18. The decisive measurement: the subject's own `Blocks` column
+
+⭐⭐⭐ **This pass's central question — whether the remaining items *legally* block Stage 3 — is answered by the subject itself, not by inference.** §42's gap register (**L977**) carries a column literally headed **`Blocks`**, and it is populated per row:
+
+| Gap | Owner (as registered) | Its own `Blocks` value | ⇒ Stage-3 blocking? |
+|---|---|---|---|
+| `SRCH-GAP-002` | **Architecture Owner** | **"Stage 3**; nothing in Stage 2" (**L980**) | ✅ **YES — by the subject's own declaration** |
+| `SRCH-GAP-003` | **Architecture Owner** | **"Stage 3**; and any tenant-operational surface" (**L981**) | ✅ **YES** |
+| `SRCH-GAP-007` | **Product Owner** (markets) **+ Architecture Owner** (analyzer) | **"Stage 3"** (**L985**) | ✅ **YES** |
+| `SRCH-GAP-008` | ⛔ **"No owner exists"** | ⛔ **"Nothing in V1"** (**L986**) | ⛔ **NO** |
+
+⭐⭐ **This is the finding that decides the pass, and it cuts BOTH ways — which is why it is stated before any verdict.**
+
+- It **refutes** the flattering reading that the deferred items are "merely implementation detail" and therefore non-blocking. They are implementation *content*, but the subject has **classified them as Stage-3 blocking**, and `SRCHCL-X2`'s standing reason applies: ⛔ **a review may not downgrade its own subject's declared blockers.** Doing so would let a reviewer manufacture readiness by re-labelling.
+- It **also refutes** the pessimistic reading that `SRCH-GAP-008` blocks Stage 3. Its own row says **"Nothing in V1"**. ⛔ It must **not** be counted against Stage 3.
+
+⛔ **The instruction's own guard is therefore satisfied in both directions:** *"Do not treat implementation details as architecture blockers unless repository governance explicitly says they block Stage 3."* Here governance **does** say so, in a column built for exactly this purpose.
+
+## 19. Re-audit of all remaining blockers
+
+Classification per the instruction's six categories. **`Blocks S3?`** is taken from §42 / §45.1 where the subject speaks, never from analogy.
+
+| ID | Exact remaining issue | Authoritative evidence exists? | Prior blocker actually resolved? | Category | **Blocks S3?** | Minimum remedy |
+|---|---|---|---|---|---|---|
+| **B1** | Per-field script binding has no carrier artefact | ⚠ Mechanism yes (HD-1, `SRCHPO-A3`); content **0 hits repo-wide** | ⚠ **Partly** — mechanism CLOSED, content not | **IMPLEMENTATION DETAIL** (content) + **GOVERNANCE** (carrier unwritten) | **YES** — feeds `SRCH-GAP-002`/`-007` | PO-style declaration record naming a script per §14A.5 field |
+| **P2-B** | Devanagari's positively-authorized rules | ⛔ None | ✅ Scope CLOSED by HD-3 | **IMPLEMENTATION DETAIL** | **YES** — inside `SRCH-GAP-002` | Rule enumeration under `ADR-0099` |
+| **P2-C** | ZWJ/ZWNJ exception set **and ordering** | ⛔ None | ✅ Policy CLOSED by HD-4 | **EXTERNAL AUTHORITY** (Unicode/product) | **YES** — inside `SRCH-GAP-002` | Cite the exception table from the authority; ⛔ do not draft it |
+| **P2-A** | Analyzer/tokenizer configuration values | ✅ **Authority** now closed by `ADR-0099` | ✅ **Authority limb YES**; config no | **IMPLEMENTATION DETAIL** | **YES** — the largest part of `SRCH-GAP-002` | Architecture Owner issues the config under `ADR-0099` |
+| **P3** | Edit distance, minimum token length | ⛔ None | ⚠ DEFERRED by HD-7 | **IMPLEMENTATION DETAIL** | **YES** — named in `SRCH-GAP-002` **L980** | Architecture Owner decision |
+| **P4** | Prefix threshold | ⛔ None | ⚠ DEFERRED by HD-8 | **IMPLEMENTATION DETAIL** | **YES** — named in **L980** | Architecture Owner decision |
+| **P7** | Latency / availability targets | ✅ **Route** closed (`LIB-20.1`); destination holds **ZERO** values | ✅ Route YES; values no | **EXTERNAL AUTHORITY** (EA NFR doc) | **YES** — named in **L980** | Author the EA NFR budgets; ⛔ never here |
+| **P8-B** | Stale-serving window | ⛔ None | ✅ **Posture** CLOSED by HD-12 (fail closed) | **IMPLEMENTATION DETAIL** | **YES** — "rebuild posture", **L980** | Architecture Owner sets the window |
+| **P8-C** | Rebuild duration | ⛔ None | ⚠ DEFERRED, blocked by HD-11 | **EXTERNAL AUTHORITY** | **YES** | Follows P7 |
+| **P8-D** | Full/incremental selection rule | ⛔ None | ✅ **Modes** CLOSED by HD-14 | **IMPLEMENTATION DETAIL** | **YES** | Architecture Owner states the rule |
+| **ENT** | Query-time entitlement **mechanism** | ⛔ None — ⭐ `SRCHCL-A3`: **no `BC-23`→`BC-18` edge and no `search:` module block exist** | ✅ **Rule** CLOSED by HD-15 | ⭐⭐ **ARCHITECTURE BLOCKER** — needs a **Rank-4 act**, not a value | ✅ **YES** — `SRCH-GAP-003` | A Rank-4 act (BC Map edge **or** an ADR establishing the mechanism) |
+| **VOC** | Variant/abbreviation vocabulary contents | ⛔ None — `SRCHCL-X3`: `LCFG-2`'s range is literally *"Supported set"*, which **defers** it | ✅ **Scope** CLOSED by HD-16 (English+Hindi) | **IMPLEMENTATION DETAIL** + **EXTERNAL AUTHORITY** (PO markets) | **YES** — `SRCH-GAP-007` | PO declares markets; AO declares analyzer inventory |
+| **R1** | Tenant-isolation / public-purity verification | ✅ Registered as `T-I`, `T-J` (§33); cadence BC Map **L453** | ✅ **Document limb CLOSED** | ⭐ **EXECUTION PENDING** | ⛔ **NO** — a test run is Stage 8, not Stage 3 | Execute `T-I`/`T-J`; ⛔ not a Stage-3 gate |
+| **`SRCH-GAP-008`** | Anonymous-surface query-volume abuse | ⛔ **No owner exists**; `XPC-OD-010` OPEN | ⛔ Never resolved | ⭐⭐ **GOVERNANCE BLOCKER** | ⛔ **NO** — its own row says **"Nothing in V1"** | See §20 |
+| **`SRCH-GAP-002`** | All eight implementation parameters as **one** item | ⚠ 2 of 8 decided (`LCFG-12`, `LCFG-6`) | ⛔ **NO** — `SRCHCL-X2` bars part-closure | **IMPLEMENTATION DETAIL**, Stage-3-classified | ✅ **YES** (**L980**) | Architecture Owner decisions on the 6 undecided |
+| **`SRCH-GAP-003`** | Entitlement mechanism | ⛔ None | ⛔ **NO** | ⭐ **ARCHITECTURE BLOCKER** | ✅ **YES** (**L981**) | Rank-4 act |
+| **`SRCH-GAP-007`** | Language/script + vocabulary inventory | ⚠ Scope only (HD-16) | ⛔ **NO** — `SRCHCL-X3` | **EXTERNAL AUTHORITY** + detail | ✅ **YES** (**L985**) | PO + AO declaration |
+
+⚠ **`SRCH-GAP-009` is noted for completeness though outside the named list:** §14A declares no field-precedence order; its `Blocks` value is **"Nothing"** (**L987**) ⇒ **NON-BLOCKING**, owner **Product Owner**.
+
+## 20. Fresh ownership audit of the four gaps
+
+⛔ **No owner assigned by analogy. ⛔ No `BC-` created to give a gap an owner.**
+
+| Gap | Lawful owner found? | Evidence | Disposition |
+|---|---|---|---|
+| `SRCH-GAP-002` | ✅ **YES — Architecture Owner** | Registered **L980**; corroborated by `PRD_OWNERSHIP_MODEL.md` **L197** (`PRD-015` → Architecture Owner = **ARB**) | Owner exists; the **decisions** do not. ⇒ not a governance blocker |
+| `SRCH-GAP-003` | ✅ **YES — Architecture Owner** | **L981**; **L197** | Owner exists; needs a **Rank-4 act** |
+| `SRCH-GAP-007` | ✅ **YES — Product Owner + Architecture Owner** | **L985**; **L197** | Owner exists; needs a declaration |
+| `SRCH-GAP-008` | ⛔ **NO** | **L986** *"No owner exists"*; **L770** *"recorded, not assigned"*; `XPC-OD-010` **OPEN** | ⭐⭐ **GOVERNANCE BLOCKER — see the finding below** |
+
+### 20.1 ⭐⭐ `SRCH-GAP-008` — a NEW measurement corrects the standing record
+
+⚠⚠ **The subject records `SRCH-GAP-008` as unowned. That is now measurably out of date, and the correction is reported rather than applied to the frozen-by-convention subject.**
+
+**`ADR-0098` L222** — a **baselined Rank-2 ADR** — carries the row:
+
+> `XPC-OD-010` bot/scraping defence │ ⛔ **OPEN** — *"NOT resolved by C7"* │ **Architecture Owner**
+
+⭐ **`XPC-OD-010` — the very decision `SRCH-GAP-008` names as its basis — HAS an owner: the Architecture Owner.** Therefore:
+
+- The **decision** `SRCH-GAP-008` waits on is **owned**. What is absent is the **decision**, not the office.
+- ⭐ This is the **same shape** as `SRCHCL-X1`/`HD-6`: *an office is not an act*, and conversely **the absence of an act is not the absence of an office**.
+- ⛔ **`SRCHCL-X6` is NOT reopened**, and its refusal stands undisturbed: it rejected borrowing an owner from the *invitation* rate limits `ICFG-7`…`ICFG-10`, an **adjacent register**. This finding is different in kind — it reads the owner off `SRCH-GAP-008`'s **own cited basis** (`XPC-OD-010`), not off a neighbour.
+
+**Minimum lawful remedy:** record in the subject's §42 that `SRCH-GAP-008`'s basis decision `XPC-OD-010` is Architecture-Owner-owned per `ADR-0098` **L222**. ⛔ **NOT DONE HERE** — that is an edit to the subject, whose SHA this pass is required to preserve. **Routed to the Architecture Owner, disclosed with both the stale value and the corrected one named**, on the `GCP-25` precedent (*repair only what your own pass caused*). This pass did not cause it.
+
+⭐ **And it changes no verdict:** `SRCH-GAP-008` blocks **nothing in V1** either way. Its status moves from *"unowned governance blocker"* to *"owned, undecided, non-blocking for Stage 3"* — a **narrowing**, recorded because it is true, not because it helps.
+
+## 21. Stage-3 six checks — re-run
+
+| # | Check | Authority | Result | Evidence |
+|---|---|---|---|---|
+| 1 | Context ownership exclusive | BC Map §3 | ✅ **PASS** | `BC-23` sole owner; `AR-1` L39-50 *"references, never duplicates"*; ⛔ 0 duplicate BCs |
+| 2 | Every integration edge exists in §7 | BC Map §7 | ✅ **PASS** | Consumes `E-21`; ⛔ **0 edges minted** by this or any prior pass |
+| 3 | Rank direction downward | Matrix `L2` | ✅ **PASS** | Rank 1 `MP-CON-02` respected by HD-9; `ADR-0099` at Rank 2 amends only `ADR-INDEX.md` |
+| 4 | No authorisation outside `BC-18` | `X-13` | ✅ **PASS** | HD-15 **strengthens** it: `BC-23` holds no entitlement truth; `SRCH-FR-040` (**L644**) re-evaluates per page |
+| 5 | No credential / OTP / session outside `BC-18` | `ID-1` | ✅ **PASS** | Subject contains **0** such requirements |
+| 6 | Tenant scoping correct | `MP-GBR-08`, `X-13` | ✅ **PASS** | `SRCH-INV-002` (**L286**), `SRCH-INV-004` (**L324**) — tenant data *"MUST NEVER enter"* the public index |
+
+### ✅ **6 of 6 PASS** — and the four things that result does NOT mean
+
+⭐⭐⭐ **The instruction's central demand is that these four not be conflated. They are held apart here explicitly:**
+
+| Dimension | Instrument | Result |
+|---|---|---|
+| **Architecture alignment** | The six checks above | ✅ **6/6 PASS** |
+| **Parameter completeness** | `SRCH-GAP-002`/`-003`/`-007`, self-classified *"Stage 3"* | ⛔ **FAIL — 3 gaps open** |
+| **Implementation readiness** | §45.1 gates 1–8 | ⛔ **FAIL — 8 of 8 not done** |
+| **Stage-3 governance conferral** | §12 limbs **A/B/C/D** | ⛔ **FAIL — A, B, C each fail independently** |
+
+⛔ **A 6/6 alignment result is evidence for exactly one of these four rows.** Conferring on it would confer on the wrong evidence.
+
+## 22. The formal closure test, re-applied
+
+⭐ Re-applied against `PRD-015_STAGE3_CLOSURE_ASSESSMENT.md` §12 — **the authoritative four-limb test**, ⛔ not a test invented by this pass.
+
+| Limb | Requirement | Prior (2026-09-03) | **Now** | What changed |
+|---|---|---|---|---|
+| **A** | Blocking gaps resolved **or** lifecycle-classified non-blocking | ⛔ FAIL | ⛔ **FAIL** | ⚠ **Unchanged.** `SRCH-GAP-002`/`-003`/`-007` still OPEN and still self-classified *"Stage 3"*. ⭐ 2 of 8 P-parameters had authority before; now **3 of 8** — `P2-A`'s **authority** limb closed by `ADR-0099` — but its **values** did not, and `SRCHCL-X2` bars part-closing a whole item |
+| **B** | Required Architecture / Product Owner decisions present | ⛔ FAIL (**0**) | ⚠ **FAIL — but materially narrowed** | ⭐⭐ **This is the real movement of the last two passes.** Sixteen rulings were supplied and `ADR-0099` was accepted, so it is no longer true that **0** decisions exist. What remains missing is **content**, and B asks for the *decisions the gaps name* — parameter values, the entitlement mechanism, the analyzer inventory — which are still **0** |
+| **C** | A legitimate Architecture reviewer / conferrer exists | ⛔ FAIL | ⛔ **FAIL** | ⚠ **Unchanged, and decisive.** The office exists (**L197**, `ARB`) but is **VACANT** under §7 rule 4, fillable *"for this act only by direct conferral from the human principal"* (§12.1). ⛔ **No conferral naming Stage 3 for `PRD-015` exists.** `SRCHAO-F5` was spent on the F-5 classification; the sixteen rulings conferred **content decisions, not a stage**. `ADR-0033` **§7.1**: *"a conferral for one act is not a standing licence"* |
+| **D** | Therefore formally conferrable | ⛔ FAIL | ⛔ **FAIL** | Follows from A + B + C |
+
+⚠ **Limb C would fail even if A and B both passed**, because it is a governance limb and no substantive work can discharge it. That single fact is what makes the verdict **B**, not **A**.
+
+## 23. ⛔ VERDICT: **B — STAGE 3 CONDITIONAL**
+
+**Architecture is aligned; genuine governance and authority blockers remain.**
+
+⭐ **Why not A (READY):** three gaps the subject **itself** classifies as *"Stage 3"* are open (**L980**, **L981**, **L985**), and limb **C** has no conferral. ⛔ *"Do NOT confer Stage 3 merely because 6/6 checks pass."*
+
+⭐ **Why not C (BLOCKED):** the instruction's test for C is *"a material architecture / ownership / security dependency remains unresolved."* Measured against that:
+
+- **Architecture:** ✅ 6/6 PASS; ⛔ 0 unauthorized edges; ⛔ 0 duplicate contexts; vendor-neutrality settled at Rank 1 by HD-9.
+- **Ownership:** ✅ every Stage-3-blocking gap **has a registered owner** (§20). ⛔ **No unowned Stage-3 blocker exists** — and `SRCH-GAP-008`, the one item that *was* recorded unowned, is **non-blocking for V1** and its basis decision is in fact **owned** (§20.1).
+- **Security:** ✅ checks 4, 5, 6 PASS; HD-12's **fail-closed** posture and HD-15's *no entitlement truth in `BC-23`* both **tighten** rather than weaken it.
+
+⚠ **The one item that comes closest to C is `SRCH-GAP-003`/ENT**, and it is reported as the pass's most serious finding: per `SRCHCL-A3` it needs a **Rank-4 act** — *no `BC-23`→`BC-18` edge and no `search:` module block exist*. It is nonetheless **owned** (Architecture Owner) and **structurally identified**, which is the difference between *conditional* and *blocked*: the mechanism is undecided, not un-ownable. ⛔ **This pass did not mint that edge to make the verdict look better.**
+
+## 24. Architecture closure — what is now CLOSED
+
+| Closed | Instrument |
+|---|---|
+| `F-5` script classification = **Option A** | `SRCHAO-F5` conferral (not reopened) |
+| `P2-A` **authority** locus | ⭐ **`ADR-0099`** (Rank 2, Accepted) |
+| `P1` **architecture** limb — vendor-neutral | HD-9 + Rank 1 `MP-CON-02` |
+| `P2U` length unit = **grapheme cluster** | HD-5 — the only ruling closed outright |
+| `P2-D` normalization **model** = script-aware | HD-2 |
+| `P2-B` **scope** = script-conditional | HD-3 |
+| `P2-C` **policy** = strip-with-exceptions | HD-4 |
+| `P5` page-size cap = `LCFG-12` (**20**) | Rank 3, Security-owned |
+| `P6` = `LCFG-6` (**60 s**), removal latency only | Rank 3; `SEV-9`'s absent window **by design** (BC Map **L427**) |
+| `P7` **route** = `LIB-20.1` → EA NFR | `Library_PRD_v1.md` **L862** |
+| `P8-A` rebuild equivalence | `SRCH-INV-005`, `T-M` |
+| `P8-B` **posture** = fail closed | HD-12 |
+| `P8-D` **modes** = full + incremental | HD-14 |
+| `ENT` **rule** = source-system authz at query time | HD-15, §27's nine requirements |
+| `VOC` **scope** = English + Hindi | HD-16 |
+| `R1` **document** limb — obligations registered as `T-I`, `T-J` | §33 |
+| Six Stage-3 alignment checks | ✅ **6/6 PASS** |
+
+## 25. Deferred implementation details — and why they still block
+
+⚠⚠ **This section deliberately contradicts the most attractive available conclusion, and the reason is evidentiary.**
+
+The instruction rightly warns: *"do NOT keep a blocker artificially OPEN if the architecture itself is already lawfully decided and the missing detail belongs to a later implementation stage."* Applying that faithfully required testing whether the repository classifies these details as later-stage. **It does not.**
+
+| Item | Belongs to implementation? | Yet blocks Stage 3, because |
+|---|---|---|
+| P2-A config, P2-B rules, P2-C exceptions, P3, P4, P8-B window, P8-D rule | ✅ Yes, all content | ⛔ **`SRCH-GAP-002`'s own `Blocks` cell reads "Stage 3"** (**L980**), and it registers them as **ONE item over eight parameters**. `SRCHCL-X2` refused part-closure precisely so that *"six undecided parameters"* are not reported as decided |
+| ENT mechanism | ⚠ Partly — but needs a **Rank-4 act** | ⛔ **`SRCH-GAP-003`: "Stage 3"** (**L981**). An edge/mechanism is architecture, not a parameter |
+| VOC contents | ✅ Yes | ⛔ **`SRCH-GAP-007`: "Stage 3"** (**L985**) |
+| P7 / P8-C values | ✅ Yes — and owned **externally** | ⛔ Named inside `SRCH-GAP-002` **L980**. ⚠ Stating a number here would **breach `LIB-20.1`** |
+
+**Genuinely NON-blocking, and not counted against Stage 3:**
+
+| Item | Why it does not block |
+|---|---|
+| `SRCH-GAP-008` | Its own row: ⛔ **"Nothing in V1"** (**L986**) |
+| `SRCH-GAP-009` | Its own row: ⛔ **"Nothing"** (**L987**) |
+| `R1` execution (`T-I`, `T-J`) | ⭐ **EXECUTION PENDING** — running a test is Stage 8. Registered obligations satisfy Stage 3 |
+| `SRCH-GAP-004`/`-005`/`-006` | All ⛔ **"Nothing in V1"** |
+
+⭐ **The honest summary: the deferral is lawful, but it is not free.** The subject chose to register its parameters as a Stage-3 blocking item. A reviewer may not undo that choice; only the **Architecture Owner** can, by deciding the parameters or by re-classifying the gap.
+
+## 26. Security + QA — final compact review
+
+| Area | Status | Evidence |
+|---|---|---|
+| Tenant isolation | ✅ **PASS** | `SRCH-INV-002` **L286**; `SRCH-INV-004` **L324**; `MP-GBR-08` |
+| `BC-18` authorization | ✅ **PASS** | `X-13` intact; HD-15 keeps entitlement truth out of `BC-23`; ⛔ 0 edges minted |
+| Query/index symmetry | ⚠ **PARTIAL** | Rule mandatory (`SRCH-FR-023`, `SRCH-BR-008`); ⛔ the symmetric rule set is un-authored |
+| Declared-script trust | ⚠ **PARTIAL** | Option A bars inference; ⛔ no carrier artefact exists (B1) |
+| Normalization collision | ⛔ **BLOCKED** | ⚠ **Unowned collision risk carried forward, not silently dropped**; depends on P2-B/P2-C |
+| Entitlement | ⛔ **BLOCKED** | `SRCH-GAP-003`; `SRCHCL-A3` — Rank-4 act absent |
+| Stale serving | ⚠ **PARTIAL** | ✅ Fail-closed for revoked/private (HD-12; `SEV-9` + `SRCH-FR-013`); ⛔ window undecided |
+| English/Hindi scope | ✅ **PASS** | HD-16; `SRCHPO-1`/`-2`; ⛔ no third index, no detection engine |
+| ZWJ/ZWNJ | ⛔ **BLOCKED** | HD-4 policy closed; ⛔ exception set **and ordering** absent — ordering is itself a correctness risk |
+| Typo / prefix behaviour | ⚠ **PARTIAL** | Requirements preserved (`SRCH-BR-012`, T4); ⛔ parameters deferred ⇒ `T-I`, `SRCH-AC-024` registered but not yet executable |
+| Anonymous-surface abuse | ⛔ **NON-BLOCKING** | `SRCH-GAP-008` — *"Nothing in V1"*; basis decision **owned** per §20.1 |
+
+**PASS 4 · PARTIAL 4 · BLOCKED 3 · NON-BLOCKING 1.** ⛔ No security item was upgraded to make the verdict cleaner.
+
+## 27. Integrity
+
+| Item | Result |
+|---|---|
+| Subject SHA256 | ✅ `fe3093e6…c2c4544` — **byte-unchanged** before and after |
+| Protected files | ✅ Frozen PRDs, frozen ADRs, baselines, ownership model, registry — **byte-unchanged** |
+| Unauthorized BC | ✅ **0** — contexts stay **31**; ⛔ no `BC-32` |
+| Unauthorized edge | ✅ **0** — ⛔ `BC-23`→`BC-18` **NOT** minted, though it would have discharged `SRCH-GAP-003` |
+| Unauthorized API | ✅ **0** |
+| Invented values | ✅ **0** — 0 thresholds, 0 exception tables, 0 normalization rules, 0 analyzers, 0 tokenizers, 0 vendors, 0 NFR numbers, 0 durations, 0 vocabularies |
+| Invented script behaviour | ✅ **0** — Option A honoured; ⛔ no script inferred or assigned |
+| `IMPL-*` | ✅ **0** |
+| Code | ✅ **0 lines** |
+| Stage | ⛔ Stages 4–7 **NOT** entered · ⛔ **NOT** frozen, baselined or ranked · registry **L315** still `PLANNED` |
+| ⚠ Routed #1 | `SRCH-GAP-008` ownership correction (§20.1) — **disclosed, not applied**; would require editing the subject |
+| ⚠ Routed #2 | `DOCUMENTATION_BASELINE.md` §4 **L248** still reads *"72 accepted"* vs the register's **73**. ⛔ **NOT repaired** — a protected baseline, and §4 confers rank by identifier, never by count |
+| ⚠ Routed #3 | `SRCHCL-C1`, `SRCHCL-C2` remain OPEN — ⛔ not repaired by this pass |
+| ⚠ Disclosed | ⛔ No `prd015_*` validator exists in `tool/docs_check/`; ⛔ none created |
+
+## 28. Findings registered by this pass
+
+| ID | Finding | Class |
+|---|---|---|
+| **`SRCHFC-A1`** | ⭐⭐⭐ §42 carries a per-row **`Blocks`** column; the Stage-3 question is answered by the subject's own classification, not by reviewer inference | **ACCEPTED** |
+| **`SRCHFC-A2`** | ⭐⭐ `SRCH-GAP-008`'s basis decision `XPC-OD-010` **is owned** (Architecture Owner, `ADR-0098` **L222**); the *"no owner exists"* record is out of date — **routed, not applied** | **ACCEPTED** |
+| **`SRCHFC-A3`** | ⭐ Limb **B** is materially narrowed but not discharged: sixteen rulings + `ADR-0099` mean decisions are no longer **0**, yet the decisions the gaps *name* remain **0** | **ACCEPTED** |
+| **`SRCHFC-A4`** | ⭐ Limb **C** would fail even if A and B passed — no substantive work can discharge a conferral limb | **ACCEPTED** |
+| **`SRCHFC-A5`** | `R1` is **EXECUTION PENDING**, not a Stage-3 blocker: registered obligations `T-I`/`T-J` satisfy Stage 3; running them is Stage 8 | **ACCEPTED** |
+| **`SRCHFC-X1`** | *Proposed:* Stage 3 is **READY**, because every open item is implementation detail that belongs to a later stage | ⛔ **REJECTED** — the subject's own `Blocks` cells read *"Stage 3"* for `SRCH-GAP-002`/`-003`/`-007`. `SRCHCL-X2`: a review may not downgrade its subject's declared blockers |
+| **`SRCHFC-X2`** | *Proposed:* Stage 3 is **BLOCKED**, because normalization, entitlement and ZWJ/ZWNJ are BLOCKED in §26 | ⛔ **REJECTED** — every one is **owned** and the six checks PASS. *Blocked* requires an unresolved **ownership or architecture** dependency; undecided-but-owned content is **conditional** |
+| **`SRCHFC-X3`** | *Proposed:* `ADR-0099` closes `SRCH-GAP-002`'s `P2-A`, so the gap can be part-closed | ⛔ **REJECTED** — `ADR-0099` closes the **authority**, expressly not the values, and `SRCHCL-X2` bars part-closing a one-item, eight-parameter gap |
+| **`SRCHFC-X4`** | *Proposed:* mint the `BC-23`→`BC-18` edge to discharge `SRCH-GAP-003` and reach READY | ⛔ **REJECTED** — `SRCHPO-X4`, `SRCHCL-X4`, `X-13`, BC Map **L292**. ⛔ Inventing the remedy to obtain the verdict is the exact failure the instruction's *"do not invent a solution merely to make it ready"* forbids |
+| **`SRCHFC-X5`** | *Proposed:* `SRCH-GAP-008` blocks Stage 3, since it is unowned and security-relevant | ⛔ **REJECTED** — its own row reads **"Nothing in V1"** (**L986**). Severity is not the same as gate scope |
+| **`SRCHFC-X6`** | *Proposed:* the sixteen rulings amount to a Stage-3 conferral | ⛔ **REJECTED** — `ADR-0033` **§7.1**; `SRCHCL-X1`. Content decisions are not a stage conferral |
+
+⭐ **Six of eleven findings are rejections, each with its reason**, per `PRD_LIFECYCLE.md` **L104-106**: *"A review that records only accepted findings is indistinguishable from a review that found nothing."*
+
+## 29. Minimum lawful path to **A — STAGE 3 READY**
+
+⛔ **Recorded as a route, not as work performed. This pass performs none of it.**
+
+1. **Architecture Owner** decides the six undecided `SRCH-GAP-002` parameters (P2-A config, P2-B, P2-C, P3, P4, P8-B, P8-D) under **`ADR-0099`** — ⇒ limb **A** partly, limb **B** partly.
+2. **A Rank-4 act** (BC Map edge **or** an ADR) establishes the query-time entitlement mechanism ⇒ `SRCH-GAP-003`.
+3. **Product Owner** declares markets; **Architecture Owner** declares the analyzer/vocabulary inventory ⇒ `SRCH-GAP-007`.
+4. **EA NFR budgets** authored, so P7/P8-C route lawfully to values ⇒ `LIB-20.1` satisfied.
+5. **B1's** carrier artefact written, binding a declared script per §14A.5 field.
+6. ⭐ **A one-act conferral from the human principal, naming Stage 3 for `PRD-015`** ⇒ limb **C**. ⚠ **Steps 1–5 cannot substitute for step 6, and step 6 cannot substitute for steps 1–5.**
+
+---
+
+**END OF PART II.** ⚠ **VERDICT: B — STAGE 3 CONDITIONAL.** ✅ **6 of 6 alignment checks PASS.**
+⛔ **NOT CONFERRED** — limbs **A**, **B**, **C** each fail independently.
+⛔ **`PRD-015` remains v0.1 `DRAFT`, registry `PLANNED`. NOT frozen · NOT baselined · NOT ranked · Stages 4–7 NOT entered.**
+⛔ **Nothing was invented to make Stage 3 reachable.**

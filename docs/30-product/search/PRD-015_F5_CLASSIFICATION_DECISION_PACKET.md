@@ -524,28 +524,92 @@ CONSTRAINTS THE RULING MUST SATISFY  (evidence, not choices)
   HUMAN FIELDS - TO BE COMPLETED BY THE CONFERRED AUTHORITY
 ================================================================
 
-Authority relied upon .............. BLANK
-Classification ruling - A or B ..... BLANK
-Selected owner ..................... BLANK
-Source of the script value ......... BLANK
-Content-derivation permitted? ...... BLANK
-Index + query bound in this act? ... BLANK
-Under B - declaring authority ...... BLANK
-Architecture Owner (role) .......... BLANK
-Date ............................... BLANK
-Conferral reference ................ BLANK
-Rationale .......................... BLANK
+Authority relied upon .............. Express ruling of the human
+                                     principal, supplied in the
+                                     PRD-015 consolidated
+                                     architecture completion pass,
+                                     section "HUMAN DECISION
+                                     PROVIDED", naming this act.
+                                     Mechanism: PRD_OWNERSHIP_MODEL
+                                     12.1 - a vacant office is
+                                     filled "for this act only by
+                                     direct conferral from the
+                                     human principal".
+Classification ruling - A or B ..... OPTION A
+                                     "SRCHAO-F5 = OPTION A"
+                                     F-5 = Analyzer Property.
+Selected owner ..................... Architecture Owner (ARB)
+                                     - office, not a person
+                                       (7 rule 4)
+                                     - corroborated: subject L980;
+                                       PO record L101
+Source of the script value ......... An AUTHORITATIVE DECLARED
+                                     SCRIPT, consumed by the
+                                     analyzer.
+                                     "Analyzer MUST consume an
+                                      authoritative declared
+                                      script."
+                                     RESIDUAL - the declaring
+                                     ARTEFACT is NOT named by the
+                                     ruling, and the VALUE is
+                                     expressly not to be invented
+                                     ("Script का actual value
+                                      invent मत करो").
+Content-derivation permitted? ...... NO - EXPRESSLY PROHIBITED
+                                     "Analyzer MUST NOT infer/
+                                      detect script from content."
+Index + query bound in this act? ... YES - EXPRESSLY BOUND
+                                     "Index और query MUST use the
+                                      same authoritative script
+                                      source."
+Under B - declaring authority ...... NOT ENGAGED - Option B was
+                                     not selected.
+Architecture Owner (role) .......... Architecture Owner (ARB)
+                                     - no personal name recorded
+Date ............................... 2026-09-04
+Conferral reference ................ PRD-015_CONSOLIDATED_
+                                     ARCHITECTURE_COMPLETION.md
+                                     section 2 - the ruling is
+                                     recorded verbatim there
+Rationale .......................... Recorded as supplied. The
+                                     ruling settles CLASSIFICATION
+                                     only, which is what
+                                     ARCHITECTURE_RULINGS.md L18
+                                     permits: "settles ownership,
+                                     classification and boundaries
+                                     only". It creates no
+                                     requirement, no value and no
+                                     rule.
 
 ================================================================
-  CONFERRAL : NOT CONFERRED
+  CONFERRAL : CONFERRED  (Option A)
+  SCOPE     : this act only - ADR-0033 7.1
+              "A conferral for one act is not a
+               standing licence."
+  STATUS    : CLOSED
 ================================================================
 ```
 
-⛔ **11 human fields. ALL BLANK.** ⛔ **This packet fills none.**
+⭐ **11 human fields. ALL COMPLETED from the supplied ruling.** ⛔ **No field is inferred, extended or filled beyond the text.**
 
-### 11.1 Why no human field was filled
+### 11.1 The four constraints — tested against the supplied text
 
-Instruction §1 forbids choosing the classification. §8 measured **0 of 5** experts able to clear it. §8's matrix measured **0 of 2** options unconditionally established. ⭐ **A ruling is genuinely required; it is not ceremony.** ⛔ Filling any field would be inventing a decision.
+| # | Constraint | Verdict |
+|---|---|---|
+| **1** | Name the **SOURCE** of the script value | ⚠ **SATISFIED AS TO KIND** — *"an authoritative declared script"*, consumed not computed. ⛔ **The declaring ARTEFACT is not named**; residual disclosed |
+| **2** | State whether **content-derivation** is permitted | ✅ **SATISFIED** — expressly **PROHIBITED** |
+| **3** | Bind **INDEX and QUERY** in the same act | ✅ **SATISFIED** — *"the **same** authoritative script source"* |
+| **4** | Under **Option B**, name the declaring authority | ✅ **NOT ENGAGED** — Option B not selected |
+
+⭐ **3 of 4 satisfied outright; 1 satisfied as to kind with a disclosed residual; 0 violated.**
+
+### 11.2 What this ruling does NOT decide
+
+⛔ It does **not** supply a script **value** for any field — expressly forbidden by its own final limb.
+⛔ It does **not** name the artefact that declares the script — recorded as blocker **B1** in the consolidated record.
+⛔ It does **not** decide `P2-D` (script-aware vs uniform). It **unblocks** the question and **constrains** the answer.
+⛔ It does **not** confer Stage 3 — `ADR-0033` **§7.1**, *"A conferral for one act is not a standing licence."*
+⛔ It does **not** decide `P2-A`, `P2-B`, `P2-C`, `P2U`, `P3`, `P4`, `P1`, `P7`, `P8`, `ENT`, `VOC`, `R1` or `R2`.
 
 ---
 

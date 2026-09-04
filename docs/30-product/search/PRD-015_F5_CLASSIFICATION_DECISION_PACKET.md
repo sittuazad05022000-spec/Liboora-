@@ -5,11 +5,11 @@
 | **Document** | `PRD-015` `F-5` Architecture Owner **classification decision packet** |
 | **Subject** | `docs/30-product/search/PRD-015_SEARCH_INDEXING.md` — sha256 `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` |
 | **Scope** | ⭐ **ONE question only** — is the *declared script* required by `SRCH-FR-024` an **ANALYZER property** (`P2`, Architecture Owner) or a **§14A FIELD-SCHEMA property** (Product Owner)? |
-| **Type** | ⚠ **Decision PREPARATION packet.** ⛔ **NOT a decision.** ⛔ **NOT a recommendation adopted.** ⛔ **NOT an ADR** |
+| **Type** | ⭐ **Decision preparation packet, now bearing the RECORDED RULING** (§11). ⛔ **NOT an ADR** |
 | **Rank** | ⛔ **NONE.** This record holds no rank and confers none |
-| **Conferral** | ⛔ **NOT CONFERRED** |
-| **Decides** | ⛔ **NOTHING.** `P2-D`, `P2-B`, `P2U`, `P2-A`, `P3`, `P4`, `P1`, `P7`, `P8`, `ENT`, `VOC`, `R1`, `R2` are **untouched** |
-| **Date** | 2026-09-03 |
+| **Conferral** | ⭐ **CONFERRED — `SRCHAO-F5` = OPTION A** (§11). ⚠ Scope: **this act only** — `ADR-0033` **§7.1** |
+| **Decides** | ⭐ **`F-5` ONLY.** ⛔ `P2-D`, `P2-B`, `P2-C`, `P2U`, `P2-A`, `P3`, `P4`, `P1`, `P7`, `P8`, `ENT`, `VOC`, `R1`, `R2` remain **NOT DECIDED** |
+| **Date** | 2026-09-03 · ⭐ **ruling recorded 2026-09-04** |
 | **Version** | v1.0 |
 
 ---
@@ -482,7 +482,8 @@ OWNER         : Architecture Owner (ARB)
                 - ownership model L197 (role holder assigned)
                 - ownership model L284 "Only the Architecture
                   Owner approves"
-STATUS        : OPEN - AWAITING CLASSIFICATION RULING
+STATUS        : CLOSED - RULING RECORDED 2026-09-04
+                (OPTION A - see human fields below)
 
 THE SINGLE QUESTION
 ----------------------------------------------------------------
@@ -642,11 +643,11 @@ Rationale .......................... Recorded as supplied. The
 | V23 | **0** values / rules / algorithms created | ✅ |
 | V24 | **0** new identifiers minted (`SRCHAO-F5` reused) | ✅ |
 | V25 | Classification **NOT chosen** | ✅ |
-| V26 | Human decision **NOT filled** — 11 BLANK | ✅ |
+| V26 | Human decision — ⭐ **filled 2026-09-04 from the supplied ruling**; 11 of 11 completed, ⛔ none inferred | ⭐ **UPDATED** |
 | V27 | Stage 4 **NOT entered** | ✅ |
 | V28 | `PRD-015` **NOT frozen / baselined / ranked** | ✅ |
 | V29 | No commit amended; no force-push | ✅ |
-| V30 | Conferral = **NOT CONFERRED** | ✅ |
+| V30 | Conferral = ⭐ **CONFERRED (Option A)**, scope **this act only** (`ADR-0033` §7.1) | ⭐ **UPDATED** |
 | V31 | Authority **not** inherited by analogy — `SRCH-GAP-009` and `AR-1`/`AR-3` recorded, **not applied** | ✅ |
 | V32 | ⚠ No `prd015_*` validator exists — **disclosed, not created** | ⚠ **DISCLOSED** |
 
@@ -657,12 +658,16 @@ Rationale .......................... Recorded as supplied. The
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-09-03 | **Created.** `F-5` **Architecture Owner classification decision packet**, scoped to **ONE** question. All fourteen §3 authorities (**A**–**N**) re-opened **independently from the files**, ⛔ not from prior summaries. Ten concepts held separate; ⭐ **`F-5` confirmed to be concept 5 (script) ONLY** and ⛔ not expanded into language, analyzer, tokenizer or normalization ownership. ⭐⭐⭐ **THREE new measurements not present in any prior `PRD-015` record:** (1) ⭐⭐⭐ **`ARCHITECTURE_RULINGS.md` `AR-1` L41-50 contains a PER-FIELD OWNING-CONTEXT TABLE for the exact §14A.5 field set** — the fields are owned by **SEVEN** contexts (`BC-19`, `BC-25`, `BC-29`, `BC-06`, `BC-02`, `BC-04`, `BC-23`), **four by FROZEN PRDs**, under the rule *"each field remains owned by its existing context — Discovery **references, never duplicates**"*; ⇒ **Option B does NOT reduce to *"§14A declares it"*** and carries an unresolved *which-authority* sub-question, and *Library Name* — §14A.4's primary search target — belongs to **`BC-19`/`PRD-013`, FROZEN**; measured further that **0** of `PRD-013`/`PRD-017`/`PRD-023` declares a script for any field it owns. (2) ⭐⭐ **`PRD_OWNERSHIP_MODEL.md` L88: *"The Product Owner is not the default answer"*** — which forbids resolving `F-5` to the Product Owner merely because the analyzer route is contested, and is recorded as a **CON against Option B**. (3) ⭐⭐ **`SRCHPO-A3` (L434) is a Product-Owner precedent for supplying script scope WITHOUT editing FROZEN §14A** (delivered via a separate PO record, §14A byte-unchanged) — which **materially weakens Option B's largest CON**, and is disclosed even though it favours the option this packet does not adopt. ⭐ Also recorded: the **grammatical possessive** *"the **field's** declared script"* is evidence of **where the value is read**, ⛔ **explicitly NOT treated as conferral of authority**, because that would be the resolve-by-analogy error §1 forbids. ⭐⭐⭐ **`OPTION C` fully tested and BOTH LIMBS REJECTED BY EXISTING REQUIREMENTS:** **C-1** *(permanently undefined)* fails **4 of 4** — `SRCH-FR-024`, `SRCH-BR-008` totality, `SRCH-FR-023`, `SRCH-AC-050`; **C-2** *(analyzer infers)* fails **5 of 6** including the **express prohibition** `SRCHPO-2` **L58** *"Do not invent language detection"*, `SRCHPO-X6`, `SRCH-BR-011`, and the fact that *"**declared**"* is the operative word in `SRCH-FR-024`. ⭐ **Honest note recorded against Option A: `SRCH-BR-008` ALONE does not forbid inference** — the prohibition is product-side — stated so the ruling does not over-rely on BR-008. ⛔ **NO third ownership model invented.** **Five-expert review: 0/5 cleared · 0/5 chose a classification · 0/5 invented an owner · 0/5 invented a value · 0/5 filled a human field · 2/5 produced new material findings · 3/5 converged that the ruling MUST name the value's SOURCE.** ⭐⭐ **Search expert's decisive technical finding: an analyzer CONSUMES a script declaration and cannot DEFINE one, so Option A is coherent only if read as *the Architecture Owner declares where the value comes from*, NOT as *the analyzer computes it*** — under which reading `SRCHPO-2`'s prohibition survives Option A intact. ⭐⭐ **Security DECLINES to claim `F-5`** but requires that index and query be **bound in the same act** because symmetry **is** a security property, and notes Option B is **stronger on exact-tier identity safety** (a declared attribute is not attacker-influenceable, per `P2` record **L878**). ⭐ **QA: BOTH options leave Devanagari acceptance-uncovered** — `SRCH-AC-024`'s four cases are **all Latin** — a **pre-existing** defect neither option creates nor repairs; and **Option B offers the stronger audit surface** (a published Rank-3 product statement vs unpublished Stage-3 analyzer config). ⭐ **`PRD-023` re-tested and again REJECTED**: `ADR-0017` §3.1's six items exclude script/language/locale/collation/analyzer/field-schema; note stated precisely that *Description* **is** a `BC-25` branding value under `AR-1` and `PRD-023` **still** does not own its script — *"a configuration platform owns how a value RESOLVES, not what a field IS."* **13-criterion decision matrix: both options repository-supported, mutually exclusive, ⛔ 0 of 2 selected.** ⭐ **Dependency graph measured INVARIANT under the classification** — only the owner differs; `F-5` → `P2-D` → `P2-B` **REQUIRED**, `P2U`/`P2-C` **PARALLEL**, `P2-A` blocked on its **own** evidence, **`P4` REMAINS BLOCKED**. ⛔ **`SRCHAO-F5` NOT re-minted** — the existing identifier is reused and this packet supplies its option analysis; **11 human fields, ALL BLANK**, plus **4 constraints the ruling must satisfy**, each carried on cited evidence rather than choice. ⛔ **Creates 0 owners, 0 roles, 0 persons, 0 authorities, 0 BCs, 0 edges, 0 APIs, 0 ADRs, 0 `IMPL-*`, 0 code, 0 values, 0 rules, 0 identifiers.** ⛔ **Subject byte-unchanged; 9 prior records byte-unchanged; §14A, `PRD-013`, `PRD-017`, `PRD-023` and every frozen PRD untouched; `ARCHITECTURE_RULINGS.md`, `PRD_REGISTRY.md`, `PRD_OWNERSHIP_MODEL.md`, BC Map and `MASTER_PRD.md` byte-unchanged; `ADR-0088`/`0089`/`0090` still RESERVED; no commit amended; no force-push; Stage 4 NOT entered; `PRD-015` NOT frozen, NOT baselined, NOT ranked; registry **L315** still `PLANNED`.** ⛔ **CLASSIFICATION NOT CHOSEN. HUMAN DECISION NOT FILLED. CONFERRAL = NOT CONFERRED.** |
+| **v1.1** | 2026-09-04 | ⭐⭐⭐ **RULING RECORDED — `SRCHAO-F5` = OPTION A.** The human principal supplied an express ruling naming this act, in the `PRD-015` consolidated architecture completion pass: *"`SRCHAO-F5` = **OPTION A**"* — `F-5` = **Analyzer Property**; **Architecture Owner** is the authority; the analyzer **MUST consume** an authoritative **declared** script; the analyzer **MUST NOT** infer or detect script from content; index **and** query **MUST** use the **same** authoritative script source; ⛔ the script's actual **value** must **not** be invented. Recorded on the `PRD_OWNERSHIP_MODEL.md` **§12.1** per-act mechanism (*"filled for this act only by direct conferral from the human principal"*), as an **office** with ⛔ **no personal name** (**§7 rule 4**). **§11's four constraints tested against the supplied text: 3 satisfied outright, 1 satisfied AS TO KIND, 0 violated** — constraint 2 (content-derivation) ✅ **expressly PROHIBITED**; constraint 3 (index+query bound) ✅ **expressly BOUND**; constraint 4 (Option-B declarant) ✅ **NOT ENGAGED**; ⚠ constraint 1 (name the SOURCE) **satisfied as to kind only** — *"an authoritative declared script"* establishes that the value is **declared elsewhere and consumed**, ⛔ but the **declaring artefact is not named**, and re-measurement confirms **0** of §14A / `PRD-013` / `PRD-017` / `PRD-023` declares a script for any field it owns ⇒ **the declaring artefact does not yet exist**, disclosed as residual blocker **B1** in the consolidated record. ⭐ **Recorded consequences:** `SRCH-XC-001` is **NOT engaged** (an analyzer property is not a §14A field, so §14A stays **FROZEN** and byte-unchanged); ⭐⭐ `AR-1`'s **seven owning contexts are NOT intruded upon**, and its rule *"Discovery **references, never duplicates**"* is undisturbed; ⭐⭐ the ruling is **stronger** than `SRCHPO-2` **L58** because it prohibits **script** inference expressly, closing the `P2`-record gap that *script* detection and *language* detection are different objects; ⭐⭐⭐ the **"Model A" attacker-influenceable script surface** (`P2` record **L878**) is **eliminated**, and the **query-side asymmetry** (`P2` record **L448** — *"the query side has **no field at all**"*) is **cured** by binding both sides to one source; **Option C both limbs remain REJECTED**, `C-2` now by **express prohibition**. ⛔ **The ruling decides `F-5` ONLY.** It does **not** supply a script value, does **not** name the declaring artefact, does **not** decide `P2-D` (it **unblocks** and **constrains** it), and ⛔ **does NOT confer Stage 3** — `ADR-0033` **§7.1**, *"**A conferral for one act is not a standing licence**"*, with `SRCHCL-X1`'s *"an office is not an act."* ⛔ **0 script values, 0 rules, 0 units, 0 thresholds, 0 owners, 0 personal names, 0 BCs, 0 edges, 0 APIs, 0 ADRs, 0 `IMPL-*`, 0 code and 0 new identifiers created; `SRCHAO-F5` reused, not re-minted.** ⛔ **Subject byte-unchanged; every frozen PRD/ADR and baseline byte-unchanged; registry L315 still `PLANNED`; Stage 4/5/6/7 NOT entered; `PRD-015` NOT frozen, NOT baselined, NOT ranked.** ⭐ **`F-5` = CLOSED. STAGE 3 = NOT CONFERRED.** |
 
 ---
 
 **END OF PACKET**
 
-⛔ **CLASSIFICATION: NOT CHOSEN.**
-⛔ **HUMAN DECISION: NOT FILLED — 11 fields BLANK.**
-⛔ **CONFERRAL: NOT CONFERRED.**
-⛔ **`P2-D`, `P2-B`, `P2U`, `P2-A`, `P3`, `P4`, `P1`, `P7`, `P8`, `ENT`, `VOC`, `R1`, `R2`: NOT DECIDED.**
+⭐ **CLASSIFICATION: OPTION A — the declared script is an ANALYZER property.**
+⭐ **HUMAN DECISION: RECORDED — 11 of 11 fields completed from the supplied ruling.**
+⭐ **CONFERRAL: CONFERRED — scope *this act only*, `ADR-0033` §7.1.**
+⛔ **`P2-D`, `P2-B`, `P2-C`, `P2U`, `P2-A`, `P3`, `P4`, `P1`, `P7`, `P8`, `ENT`, `VOC`, `R1`, `R2`: NOT DECIDED.**
+⛔ **STAGE 3: NOT CONFERRED.**
+
+⭐ Full audit: [`PRD-015_CONSOLIDATED_ARCHITECTURE_COMPLETION.md`](PRD-015_CONSOLIDATED_ARCHITECTURE_COMPLETION.md)

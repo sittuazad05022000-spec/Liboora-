@@ -862,3 +862,242 @@ was derived on its own evidence** (`SRCH-BR-012` **C2**'s *"minimum token length
 
 ⛔ **5 of 5 BLOCKED or CANNOT CLEAR. 0 of 5 produced a normalization rule, Unicode form, counting unit or `P4`
 value.**
+
+---
+
+## 12. Phase 11 — human decision matrix
+
+⚠ **Statuses used: `AUTHORITATIVE` · `RECOMMENDED` · `BLOCKED` · `DEFERRED` · `OPEN`.**
+⛔ **Nothing is labelled `CLOSED` unless a repository authority or a valid conferral actually closes it.**
+
+| Decision ID | Question | Repository authority | Current status | Evidence | Expert recommendation | Security impact | Product impact | QA impact | Dependencies | Human decision required |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **`SRCHAO-P2a`** | Where do the normalization rules **live** — declared in `BC-23`, or delegated to an engine? | ⚠ **Constrains, does not decide.** `SRCH-FR-023` *"declared rule set"*; `SRCH-BR-008` totality; **`SRCH-AC-050`** *"each rule is checked"*; `SRCH-FR-034` determinism | ⛔ **OPEN** | **A1**, **A9**, **A10**, **A18**; **B11** | ⚠ `RECO` **only** — declared `BC-23`-owned artefact; engine as **executor, never definition**. ⛔ **NOT an approval** | ⚠ `R7` names `P2` (**A32**); a declared set is **auditable**, a vendor analyzer is not | ⚠ Indirect — determines whether behaviour can be reviewed before release | ⭐⭐ **DECISIVE** — an un-enumerable set makes `SRCH-AC-050` untestable | `P1` = **OPTIONAL** (declaration limb `NO DEPENDENCY`) | ⭐ **YES — Architecture Owner** |
+| **`SRCHAO-P2b`** | Is `N1` case folding **declared not applicable** to Devanagari, or allowed to silently no-op? | ⛔ **NONE** on Devanagari (**F-4**) | ⛔ **BLOCKED** | **A3**, **A27** (Latin); **B2** unicameral; **B12** | ⛔ **NONE.** ⭐ Only the *auditability difference* is documented (§9.3) | ⛔ Low direct | ⛔ **NONE** — no user-visible change either way for a script with no case | ⭐⭐ **HIGH** — *"not applicable"* is checkable; a silent no-op is **not** | **F-5** = **REQUIRED**; `P2-D` = **REQUIRED** | ⭐ **YES — Architecture Owner** |
+| **`SRCHAO-P2c`** | `ZWJ` / `ZWNJ` (`U+200D`/`U+200C`) policy under `N6` — blanket removal, or a **named exception**? | ⚠ **PARTIAL** — `N6` + `E6` fix the **direction** (removal); ⛔ **no** code point or exception is named (**F-3**) | ⛔ **OPEN** | **A8**, **A31**; **B6**, **B13**; §8.2 | ⛔ **NONE.** ⭐ Re-framed: `E6` already settles direction ⇒ the question is a **named exception**, ⛔ not retention-as-policy | ⭐⭐ **HIGH — both directions.** Removal ⇒ **collision** risk on distinct Devanagari names; exception ⇒ reopens the **spoofing** surface `E6` closes | ⚠ Devanagari name matching correctness | ⛔ **HIGH** — no `ZWJ`/`ZWNJ` criterion exists | `P2-D` = **REQUIRED**; **F-1** = **OPTIONAL**; ⚠ `N6`×`N4` **order** (§8.2) is a sub-question | ⭐ **YES — Architecture Owner + Security** |
+| **`SRCHAO-P2d`** | **Script-aware** or **uniform** normalization? — and, prior to it, ⭐⭐ **does a field have a declared script, and who declares it?** | ⚠ **`SRCH-FR-024` permits** script-conditional behaviour; ⛔ **F-5**: **nothing declares a field's script** | ⛔ **BLOCKED** | **A2**, **A16**; **F-5**, **F-7**; §5.2, §10.1 | ⚠ `RECO` — ⛔ **neither model**; ⭐ **resolve F-5 first**. ⛔ **NOT an approval** | ⚠ Script determination is **attacker-influenceable** input under Model A | ⭐ **CO-OWNED** — §14A is a **FROZEN product contract** and `SRCH-XC-001` bars `BC-23` from defining its fields | ⭐⭐ **DECISIVE** — **0 of 6** rules can be shown **total** while **F-5** is open | ⚠ **F-5** = **REQUIRED**; blocks `P2-B`, `P2-C`, `P2-U` | ⭐⭐ **YES — Architecture Owner + Product Owner** (§14A limb) |
+| **`SRCHAO-P2U`** | What **unit** counts a normalized character/token length? | ⛔ **NONE — measured 0 hits** (**F-2**, §6) | ⛔ **BLOCKED** | §6.1 candidates all ⛔ **NONE**; **B9** matras; **D9** undefined *"character"* precedents | ⛔ **NONE.** ⛔ **No unit proposed** | ⚠ Feeds enumeration surface via `P4` — ⛔ **no value preferred** | ⚠ Determines what a user must type before prefix matching begins | ⭐⭐ Determines whether `P3`/`P4` criteria can be written at all | `P2-D` = **REQUIRED**; **F-1**, **F-6**, **F-9** = **REQUIRED** | ⭐⭐ **YES — Architecture Owner** |
+| **`SRCHAO-P2e`** ⭐ *(surfaced by this record, ⛔ not a new authority)* | Is the `N1`…`N6` **pipeline ORDER** declared — specifically `N6` before or after `N4`? | ⛔ **NONE** — §16 is a **table of rules**, ⛔ not a sequence | ⛔ **OPEN** | §8.2 | ⛔ **NONE.** ⛔ **No order asserted** | ⚠ Order can change whether a format character survives into a token | ⛔ Low | ⚠ Two implementations could both claim `N1`–`N6` compliance and differ | Sub-question of `SRCHAO-P2c` | ⚠ **YES — Architecture Owner** (⭐ may be answered inside `P2a`) |
+| **`SRCHAO-P2f`** ⭐ *(carried forward from prior records, ⛔ unchanged)* | Is **Hinglish** tolerance validated and enabled in V1, or **deferred**? | ✅ `SRCHPO-2`/`SRCHPO-3` — *"permitted, **not required**"* | ⛔ **DEFERRED** ⚠ *(the only `DEFERRED` row — and it is deferred by an existing Product decision, ⛔ not by this record)* | **A25**, **A26**; **B7**, **B14** | ⛔ **NONE** — ⛔ no transliteration rule, stemmer or language-detection method proposed (**E2**) | ⚠ Loose transliteration would widen the match surface | ✅ **Already bounded** by `SRCHPO-3`: *"An implementation that cannot validate it **MUST NOT** claim it"* | ⚠ Un-validatable ⇒ **not claimable** | `P2-A`, `P2-D` | ⚠ **YES — Architecture Owner** (validate-and-enable, or defer) |
+| **`SRCHAO-P2g`** ⭐ *(context row — ⛔ NOT this record's to decide)* | ⚠ `SRCHPO-1` places **two scripts in V1**; EA **L1546** tags `Multi-Language Support` **V3** | ⚠ **CONFLICT** — Rank 6 descriptive vs a `PRD-015` Product decision | ⛔ **OPEN** | **D3**, **F-8** | ⛔ **NONE** — ⛔ EA is descriptive; `ADR-0046` §9: *"corroboration, not grounds"* | ⛔ None | ⚠ Roadmap-expectation mismatch | ⛔ None | — | ⚠ **YES — Architecture Owner + Product Owner**, ⛔ **outside `P2`** |
+
+⛔ **Nothing above is `AUTHORITATIVE`. Nothing above is `CLOSED`. `SRCHAO-P2a` and `SRCHAO-P2d` carry a
+`RECOMMENDED` posture — and per `SRCHPO-X5` and `ADR-0046` §9, ⛔ a recommendation is not an approval.**
+
+---
+
+## 13. Phase 12 — Architecture Owner decision forms
+
+> ## ⛔ ALL HUMAN FIELDS ARE BLANK AND MUST REMAIN BLANK
+>
+> ⛔ **No field below is pre-filled, hinted, defaulted or suggested.** ⛔ A blank human decision **remains
+> blank**. ⛔ Filling any field requires an **Architecture Owner** act with its **own conferral**
+> (`ADR-0046` §9). ⚠ Per `PRD_OWNERSHIP_MODEL.md` §7 rule 4 (**L318**), the owner field records a **role**,
+> ⛔ **never a personal name**.
+
+### `SRCHAO-P2a` — analyzer configuration source
+
+```
+QUESTION        : Where does the normalization rule set live — declared in BC-23, or delegated to an engine?
+STATUS          : OPEN
+OPTIONS         : (i) Declared, BC-23-owned, engine-independent rule set; engine executes only
+                  (ii) Engine-owned analyzer configuration
+                  (iii) Other — to be stated by the Architecture Owner
+RECOMMENDATION  : (i)  — RECOMMENDATION ONLY, NOT AN APPROVAL
+
+Decision            : ______________________________ BLANK
+Selected option     : ______________________________ BLANK
+Architecture Owner  : ______________________________ BLANK   (role, never a personal name)
+Conferral           : ______________________________ BLANK
+Rationale           : ______________________________ BLANK
+Date                : ______________________________ BLANK
+```
+
+### `SRCHAO-P2b` — Devanagari case-folding
+
+```
+QUESTION        : Is N1 case folding DECLARED NOT APPLICABLE to Devanagari, or allowed to silently no-op?
+STATUS          : BLOCKED  (depends on F-5 and SRCHAO-P2d)
+OPTIONS         : (i) Declared NOT APPLICABLE to Devanagari
+                  (ii) Applied uniformly; no-ops on Devanagari by Unicode property
+                  (iii) Other — to be stated by the Architecture Owner
+RECOMMENDATION  : NONE.  Devanagari is unicameral (packet L145). NO Devanagari case-folding rule is invented
+                  here. Only the auditability difference is documented (section 9.3).
+
+Decision            : ______________________________ BLANK
+Selected option     : ______________________________ BLANK
+Architecture Owner  : ______________________________ BLANK
+Conferral           : ______________________________ BLANK
+Rationale           : ______________________________ BLANK
+Date                : ______________________________ BLANK
+```
+
+### `SRCHAO-P2c` — ZWJ / ZWNJ policy
+
+```
+QUESTION        : Do U+200D (ZWJ) and U+200C (ZWNJ) warrant a NAMED EXCEPTION to N6, whose removal
+                  direction is already fixed by N6 + E6?
+STATUS          : OPEN
+SUB-QUESTION    : Is the N1..N6 pipeline ORDER declared — is N6 applied before or after N4?   (SRCHAO-P2e)
+OPTIONS         : (i) Blanket removal, no exception (N6 as written)
+                  (ii) Named, symmetric exception for U+200C / U+200D
+                  (iii) Other — to be stated by the Architecture Owner
+RECOMMENDATION  : NONE.  Both limbs satisfy SRCH-BR-008 symmetry; the trade is collision risk versus
+                  spoofing risk and the repository supplies no rule for either.  N6 IS NOT MODIFIED.
+
+Decision            : ______________________________ BLANK
+Selected option     : ______________________________ BLANK
+Architecture Owner  : ______________________________ BLANK
+Security (co-owner) : ______________________________ BLANK
+Conferral           : ______________________________ BLANK
+Rationale           : ______________________________ BLANK
+Date                : ______________________________ BLANK
+```
+
+### `SRCHAO-P2d` — script-aware vs uniform normalization
+
+```
+QUESTION        : Script-aware normalization, or uniform normalization?
+PRIOR QUESTION  : Does a field have a DECLARED SCRIPT, and who declares it?   (F-5 — 0 repository hits)
+STATUS          : BLOCKED  (depends on F-5)
+OPTIONS         : (i) Script-aware — rules may differ by script
+                  (ii) Uniform — one pipeline for all supported scripts
+                  (iii) Other — to be stated by the Architecture Owner
+RECOMMENDATION  : NEITHER MODEL.  Resolve F-5 first — both models are defined in terms of a predicate the
+                  repository does not populate.  RECOMMENDATION ONLY, NOT AN APPROVAL.
+NOTE            : The F-5 limb may require a Product Owner act, because SRCH-FR-017 names FROZEN 14A.4/
+                  14A.5 as the field contract and SRCH-XC-001 bars BC-23 from defining 14A fields.
+
+Decision            : ______________________________ BLANK
+Selected option     : ______________________________ BLANK
+Architecture Owner  : ______________________________ BLANK
+Product Owner (14A) : ______________________________ BLANK
+Conferral           : ______________________________ BLANK
+Rationale           : ______________________________ BLANK
+Date                : ______________________________ BLANK
+```
+
+### `SRCHAO-P2U` — counting / measurement unit required for `P4`
+
+```
+QUESTION        : In what unit is a normalized character / token length counted?
+STATUS          : BLOCKED
+MEASURED        : No authoritative P2 counting unit exists.  (section 6.2 — 0 repository hits)
+CANDIDATES      : Unicode code point | Unicode scalar value | UTF-16 code unit | grapheme cluster |
+                  normalized token character | normalized token unit | other repository-defined unit
+RECOMMENDATION  : NONE.  NO UNIT IS PROPOSED, PREFERRED, RANKED OR HINTED AT.
+CONSEQUENCE     : P4 remains blocked because its numeric value cannot be interpreted unambiguously.
+
+Decision            : ______________________________ BLANK
+Selected option     : ______________________________ BLANK
+Architecture Owner  : ______________________________ BLANK
+Conferral           : ______________________________ BLANK
+Rationale           : ______________________________ BLANK
+Date                : ______________________________ BLANK
+```
+
+⛔ **5 forms · 5 questions · 29 human fields · ALL BLANK.**
+
+---
+
+## 14. Phase 13 — `P4` HANDOFF
+
+# ⭐⭐⭐ `P4` HANDOFF
+
+`FACT` — `P2` → `P4` = **REQUIRED**, independently verified in §10.3 from `SRCH-FR-030` + `N5` + §36 **L836**/**L839**
++ `SRCHPO-1`.
+
+⛔ **`P4` STATUS: REMAINS BLOCKED.** ⛔ **`P4` VALUE: NOT DECIDED.** ⛔ **No `P4` value is recommended, proposed,
+ranked or hinted at anywhere in this record.**
+
+### 14.1 The seven items `P2` must deliver before `P4` can be decided
+
+| # | Required handoff item | Current state | Which `P2` decision supplies it |
+|---|---|---|---|
+| **1** | **Authoritative normalization rules** — `N1`–`N6` enumerable, deterministic and **total** over **both** V1 scripts | ⛔ **NOT DELIVERED** — §5.3: **5 of 6 FAIL**, 1 **CONDITIONAL**, 0 pass unconditionally | `SRCHAO-P2a` (location) · `SRCHAO-P2b` (`N1`) · `SRCHAO-P2c` (`N6`) · `SRCHAO-P2d` (applicability) |
+| **2** | **Authoritative tokenization boundary** — the `N5` word/token boundary rule for **each** V1 script | ⛔ **NOT DELIVERED** — `SRCHPO-5`: *"deliberately **not** defined"*; **B5**: Devanagari boundaries *"not identical"* to Latin (**F-6**) | `SRCHAO-P2a` · `SRCHAO-P2d` |
+| **3** | ⭐⭐ **Authoritative counting unit** | ⛔ **NOT DELIVERED** — ⛔ **"No authoritative `P2` counting unit exists"** (§6.2, **F-2**) | `SRCHAO-P2U` |
+| **4** | **Index / query symmetry, provable per rule** — sufficient for `SRCH-AC-050` to complete its per-rule iteration | ⛔ **NOT DELIVERED** — §5.2: the applicability predicate is undefined, and **differently** undefined on each side. ⭐ **`SRCH-AC-050` is currently UNSATISFIABLE** | `SRCHAO-P2d` (**F-5**) · `SRCHAO-P2a` (enumerability) |
+| **5** | **Devanagari treatment** — matra, combining marks, nukta, conjuncts, virama, grapheme and token boundaries, danda under `N3` | ⛔ **NOT DELIVERED** — §7.2: **10 features, 0 repository authorities**; §7.3: **0** Devanagari acceptance cases exist | `SRCHAO-P2b` · `SRCHAO-P2c` · `SRCHAO-P2d` |
+| **6** | **`ZWJ` / `ZWNJ` treatment** — whether `U+200C`/`U+200D` carry a named exception to `N6`, and the `N6`×`N4` order | ⛔ **NOT DELIVERED** — direction fixed by `E6`; ⛔ exception question **OPEN** (**F-3**); ⛔ order unspecified (§8.2) | `SRCHAO-P2c` · `SRCHAO-P2e` |
+| **7** | **Script policy** — script-aware or uniform, **and** whether a field declares a script and who declares it | ⛔ **NOT DELIVERED** — ⛔ **F-5**: **0** repository hits for a per-field script declaration | `SRCHAO-P2d` (⚠ **Architecture Owner + Product Owner**) |
+
+⛔ **7 of 7 handoff items NOT DELIVERED.**
+
+### 14.2 ⭐⭐ Why `P4` is blocked **twice over**, not once
+
+`ANALYSIS` — Two independent blockers, each individually sufficient:
+
+1. ⛔ **No unit** (item 3, **F-2**) — an integer with no unit cannot be interpreted, and per **B9** the same
+   integer means different amounts of user-visible text in Latin and Devanagari.
+2. ⛔ **No determinate token** (items 1, 2, 4) — `P4` measures the length of a **normalized token**, and the
+   normalization producing that token is **not total**: `N4`'s Unicode form is un-named and `N5`'s tokenizer is
+   undefined. ⇒ ⭐ **Even if a unit were declared today, the object being measured would still be undefined.**
+
+⭐ `ANALYSIS` — **Minimum unblocking set for `P4`**, stated so the sequencing is not left implicit:
+**`SRCHAO-P2d`** (which requires **F-5**) → **`SRCHAO-P2U`** → **`SRCHAO-P2a`** for the `N4` form and `N5`
+boundary. ⛔ `SRCHAO-P2b` and `SRCHAO-P2c` do **not** block `P4` directly — they are Devanagari-correctness
+decisions — ⚠ **but `P2` as a whole cannot be closed without them**, and `SRCH-AC-050` cannot pass without
+`SRCHAO-P2c`.
+
+⛔ **The integers 1, 2 and 3 are not proposed, recommended, ranked, preferred or hinted at. This record contains
+no candidate `P4` value.**
+
+### 14.3 ⚠ `P3` also awaits `P2` — recorded, ⛔ not decided
+
+`FACT` — §10.2: **`P3` → `P2` = REQUIRED**, because `SRCH-BR-012` **C2** bounds tolerance by *"a declared
+**minimum token length**"* — the same `N5` token and the same absent unit. ⛔ **`P3` is not decided, analysed for
+a value, or recommended here.** ⭐ It is recorded so that `P3` is not mistaken for independently decidable.
+
+---
+
+## 15. Validation
+
+### 15.1 ⚠ Disclosed limitation — no `PRD-015` validator exists
+
+⛔ **`FACT`, disclosed rather than worked around:** `tool/docs_check/` holds **32** entries and
+**no `prd015_*` validator**. `alignment_record_freshness.py`'s `RECORDS` (**L78-88**) covers only `PRD-008` and
+`PRD-019`, so **`PRD-015` is not covered** and neither passes nor fails it. ⛔ **No validator was fabricated,
+extended or registered.** Every check below is **MANUAL** and is labelled so.
+
+### 15.2 Manual integrity checks
+
+| # | Check | Method | Result |
+|---|---|---|---|
+| V1 | **Subject SHA256 unchanged** | `sha256sum` (manual) | ✅ `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` |
+| V2 | `SRCH-FR-024` unchanged | subject untouched (V1) | ✅ |
+| V3 | `SRCH-BR-008` unchanged | subject untouched (V1) | ✅ |
+| V4 | `SRCH-AC-050` unchanged | subject untouched (V1) | ✅ |
+| V5 | `SRCH-AC-030` unchanged | subject untouched (V1) | ✅ |
+| V6 | **No frozen document modified** | `git status` — only one new file | ✅ |
+| V7 | **No `PRD-021A/B/C` modified** | `git status` | ✅ |
+| V8 | **No code** — `lib/`, `pubspec.yaml`, `tool/` | `git status` | ✅ **0 files** |
+| V9 | **No `IMPL-*` created** | manual grep of this record | ✅ **0** |
+| V10 | **No `ADR` created**; `ADR-0088/0089/0090` still reserved | `ls` → **0** files | ✅ |
+| V11 | **No edge (`E-*`) created** | manual | ✅ **0** |
+| V12 | **No `BC-*` created or altered** | manual | ✅ **0** |
+| V13 | **No benchmark, latency, throughput or SLO value** | manual | ✅ **0** |
+| V14 | **No ranking** | this record confers no rank | ✅ |
+| V15 | **No baseline row written** | `DOCUMENTATION_BASELINE.md` untouched | ✅ |
+| V16 | **Stage 4 NOT entered** | subject **L12** still `DRAFT` — Stage 2 | ✅ |
+| V17 | **`PRD-015` NOT frozen** | `PRD_REGISTRY.md` **L315** still `PLANNED` | ✅ |
+| V18 | **No prior `PRD-015` record modified** | `git status` — 6 prior records untouched | ✅ |
+| V19 | **No commit amended, rewritten or force-pushed** | ⭐ the mid-turn auto-backup `b83625e` was **left standing** and built upon with a **new** commit | ✅ |
+| V20 | **No `SRCH-*` requirement identifier created** | ✅ Only `SRCHAO-P2a`…`P2g` — ⭐ **decision-form labels in the established `SRCHAO-*` series**, ⛔ not requirement identifiers, and all **BLANK** | ✅ |
+| V21 | **No normalization rule, Unicode form, counting unit, tokenizer or transliteration rule invented** | manual review of every section | ✅ **0** |
+| V22 | **No `P4` value decided or recommended**; ⛔ `1`/`2`/`3` not proposed | manual review | ✅ **0** |
+| V23 | **No engine, library, stemmer or product named as an answer** | manual review | ✅ **0** |
+| V24 | **Whitespace / conflict-marker clean** | `git diff --check` | ✅ |
+
+### 15.3 What this record created
+
+`FACT` — **Exactly one file:** `docs/30-product/search/PRD-015_P2_ARCHITECTURE_DECISION.md`.
+⛔ **0** other files created, modified, moved or deleted.
+
+---
+
+## 16. Change log
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.0** | 2026-09-03 | **Created.** `P2` **Analyzer / Normalization** architecture decision **preparation** record, dependency-first, scoped to `P2` **ONLY**. **Phase 0:** 11 integrity gates, **all PASS, 0 findings**. **Phase 1:** repository-wide `P2` authority audit — **A = 35 · B = 20 · C = 7 · D = 9 · E = 14 · F = 11**; ⭐⭐ **two homonym traps disarmed** (EA **L755** `NFC` = **Near Field Communication**, 10 hits excluded; repo-wide *"conjunct"* = **governance-gate** conjuncts) plus **3 further false friends** (`package:analyzer`, `ADR-0044` identifier tokenisation, `PRD-012a` security tokenization); ⭐⭐⭐ **measured that *Devanagari* occurs in exactly 5 files — all `PRD-015` decision records — and in NO specification text**, including ⛔ **not the subject**. **Phase 2:** `P2-A`/`B`/`C`/`D` plus **9** candidate controls each tested — **6 assigned to `P2` on evidence, 2 UNKNOWN, and ⭐ query/index symmetry found NOT to be `P2`'s to decide** (a pre-existing MUST with a pre-existing AC). **Phase 3:** per-rule `SRCH-BR-008` check over 6 properties — ⛔ **5 of 6 rules FAIL, 1 CONDITIONAL, 0 pass** ⇒ `P2` **BLOCKED**; ⭐⭐⭐ **decisive finding: `SRCH-FR-024`'s applicability predicate *"the field's declared script"* has ZERO repository authority (F-5) and is undefined DIFFERENTLY on each side — the query side has no field at all**. **Phase 4:** ⛔ **"No authoritative `P2` counting unit exists"** — 0 hits for code point / scalar value / UTF-16 / code unit / grapheme; ⇒ ⛔ **`P4` remains blocked**, and ⭐ **blocked twice over** (no unit **and** no determinate token). **Phase 5:** V1 script scope independently verified; **10** Devanagari features vs **0** authorities; ⭐ **new finding — `SRCH-AC-024`'s four test cases are all Latin, so Devanagari is acceptance-uncovered**. **Phase 6:** ⭐⭐⭐ `ZWJ`/`ZWNJ` **re-framed** — `E6` already fixes `N6`'s **direction**, so the question is a **named exception**, and ⭐ **both limbs are symmetric ⇒ `SRCH-BR-008` does not choose between them; the risk is collision-vs-spoofing**; ⭐ surfaced the **unspecified `N6`×`N4` order**; ⛔ **`N6` NOT modified**. **Phase 7:** Latin authoritative and tested; Devanagari **BLOCKED**; ⭐⭐ answered *"is case folding being incorrectly generalized?"* — **yes, but in the CONFIGURATION, not the requirement**, because `SRCH-FR-024`'s preamble already conditions `N1`; the *"not applicable"* vs silent-no-op distinction documented in `SRCH-AC-050`'s own terms; ⛔ **no Devanagari case-folding rule invented**. **Phase 8:** both models evaluated against 12 criteria — ⭐⭐ **two counter-intuitive findings: Model B does NOT dissolve the `P4` unit problem, and Model A imports a new unowned total-function requirement**; ⛔ **neither model recommended**. **Phase 9:** five-expert review — ⛔ **5/5 BLOCKED or CANNOT CLEAR, 0/5 produced a rule, form, unit or value**; ⭐⭐⭐ **QA finding: `SRCH-AC-050` is currently UNSATISFIABLE**; ⭐⭐ **Security finding: symmetric normalization can still collide two distinct EXACT-tier identifiers, and `SRCH-BR-008` does not catch it**. **Phase 10:** dependency graph over `P1`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`ENT`,`VOC`,`R1`,`R2` — ⭐⭐⭐ **`P2` → `P4` = REQUIRED independently re-verified from `SRCH-FR-030` + `N5` + §36, NOT inherited**; ⭐ **`P3` → `P2` = REQUIRED found on its own evidence**; ⭐ `R7` found to depend on `P2` (reverse direction); ⛔ **dependency NOT propagated** — `P5`,`P6`,`ENT`,`R1`,`R2` = `NO DEPENDENCY`, `P7` = `UNKNOWN`, `P1`,`P8`,`VOC` = `OPTIONAL`. **Phase 11:** 11-column decision matrix, **8 rows** — **0 `AUTHORITATIVE` · 0 `CLOSED` · 2 `RECOMMENDED`-as-to-posture · 3 `BLOCKED` · 1 `DEFERRED` · 4 `OPEN`**. **Phase 12:** **5 blank forms** `SRCHAO-P2a`/`P2b`/`P2c`/`P2d`/`P2U` — **29 human fields, ALL BLANK**. **Phase 13:** explicit **`P4` HANDOFF** — ⛔ **7 of 7 items NOT DELIVERED**, plus the minimum unblocking sequence. ⛔ **Creates: 0 values, 0 normalization rules, 0 Unicode forms, 0 counting units, 0 tokenizers, 0 transliteration rules, 0 engines, 0 `ADR`s, 0 `IMPL-*`, 0 `BC-*`, 0 edges, 0 benchmarks, 0 acceptance criteria, 0 new authorities.** ⛔ **Subject byte-unchanged; 6 prior records byte-unchanged; no frozen document touched; no commit amended; no force-push; Stage 4 NOT entered; `PRD-015` NOT frozen, NOT baselined, NOT ranked; `PRD_REGISTRY.md` L315 still `PLANNED`.** ⛔ **`P2` = BLOCKED. `P4` = REMAINS BLOCKED. `P4` VALUE = NOT DECIDED. CONFERRAL = NOT CONFERRED.** |

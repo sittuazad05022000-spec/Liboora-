@@ -2404,3 +2404,150 @@ Stages 4 / 5 / 6 / 7 | ⛔ **NOT entered** — `docs/40-implementation/search/` 
 three of them (`FU-16`, `FU-17`, `FU-18`) belong to offices this act does **not** hold.
 
 **END OF PART VI**
+
+---
+
+# PART VII — BLOCKER ROUTING & CLOSURE-READINESS PASS (READ/ASSESS/RECORD)
+
+| Field | Value |
+|---|---|
+| **Part** | VII |
+| **Act** | 🔎 **ROUTING / READINESS ONLY** — ⛔ no decision, no closure, no conferral |
+| **Predecessor commit** | `ae6f052` (Part VI + `ADR-0100`) |
+| **Authority held** | ⛔ **NONE.** This pass holds no office and decides nothing |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, sixth consecutive) |
+
+⭐ **This Part closes nothing and is not permitted to.** It records four measurements that
+change the *routing* of open blockers without changing their *state*, and it corrects two
+descriptions of blockers that prior Parts routed to the wrong authority or the wrong scope.
+
+## 65. `FU-16` — `P1` transport binding: RE-ROUTED, still OPEN
+
+⭐⭐⭐ **Finding `SRCHRT-1`: the transport limb was routed to the wrong office by `ADR-0100` §3.1,
+and this pass corrects the routing without closing the limb.**
+
+Measured, not assumed:
+
+| # | Question | Measurement | Source |
+|---|---|---|---|
+| 1 | Does a platform-wide API-convention authority already exist? | ✅ **YES** | `MASTER_PRD.md` **§20 API Standards** (L405-412) |
+| 2 | What does it already fix? | REST conventions, versioned endpoints, consistent response structure, validation errors, permission errors, audit logging; plus **`MP-CON-04`** (OpenAPI is the source of truth), **`MP-CON-05`** (idempotency keys), **`MP-CON-06`** (pagination mandatory), **`MP-CON-07`** (permission errors must not disclose existence) | `MASTER_PRD.md` **L407-418** |
+| 3 | What rank is that authority? | **Rank 1** | `MASTER_PRD.md` |
+| 4 | Does `BC-23` own a public API edge? | ⛔ **NO** | BC Map **L358**: Open Host Service count = **1**, and it is the **API Platform edge** — not `BC-23` |
+| 5 | What are `BC-23`'s only edges? | **`E-21`** (`PL`, Event, inbound) and **`E-26`** (`CF`, Sync port, from `BC-27`) | BC Map **L330**, **L335** |
+
+⭐ **Consequence.** The Architecture Owner does **not** need to invent an API convention for
+`BC-23`, because Rank 1 §20 already supplies one and `BC-23` publishes **no** OHS surface. What
+remains genuinely undecided is narrower than *"transport binding"* suggests: it is the
+**binding of `BC-23`'s query port to the existing §20 conventions**, an act at the **API Platform /
+Architecture Owner** boundary — ⛔ **not** a new platform-wide API decision.
+
+⛔ **NOT closed here, and the reason is exact.** §37.3 (**L891**) states the requirement
+*"no wire format, protocol, endpoint path, field naming convention or serialisation is stated."*
+Recording *which* §20 conventions bind `BC-23`'s port is still a decision, and this pass holds no
+office. ⛔ No HTTP verb, endpoint, schema, serialisation or `BC→BC` edge is stated or implied here.
+
+**Status: `OPEN` — ARCHITECTURE OWNER, narrowed scope.** **Next lawful act:** an Architecture Owner
+record binding the `BC-23` query port to `MASTER_PRD.md` §20 + `MP-CON-04`…`MP-CON-07`, stating no
+new convention. ⭐ **`FU-16`'s scope is hereby reduced; its state is unchanged.**
+
+## 66. `FU-18` — `P7` availability: three facts re-verified independently
+
+| # | Claim under test | Result | Evidence |
+|---|---|---|---|
+| 1 | `MP-NFR-01` assigns availability to SRE / Observability | ✅ **CONFIRMED verbatim** | `MASTER_PRD.md` **L495**: *"Availability \| Per-function availability targets with SLOs, SLIs and error budgets… \| **SRE / OBSERVABILITY**"* |
+| 2 | An SRE/Observability availability artifact exists | ⛔ **FALSE — none exists** | `find docs -iname '*SLO*' -o -iname '*observability*' -o -iname '*sre*'` → only `docs/90-archive/authentication-v1/empty-slots` |
+| 3 | EA NFR Budgets document exists | ⛔ **FALSE — headings only, zero values** | EA **L339-344**; `find` for `*NFR*`/`*budget*` returns exactly one unrelated file |
+| 4 | `LIB-20.1` authorises a `BC-23` component target | ⛔ **NO — and it must not be read that way** | `Library_PRD_v1.md` **L862-864**: binds *"This PRD"*, scoped to *"**Platform-wide** NFR budgets"* |
+
+⭐ **Is 99.9% authoritative?** ⛔ **NO. It is a PROPOSED value.** No SRE/Observability artifact
+records it; no office with `MP-NFR-01` authority has acted. It remains pre-validated and
+coherence-checked only. ⛔ **Not ratified here.**
+
+**Status: `OPEN` — SRE / OBSERVABILITY.** ⛔ Cannot be resolved in this pass or by the Architecture
+Owner. **Next lawful act:** constitute the SRE/Observability locus, then confer the value there.
+
+## 67. `P8-C` — TARGET PRESENT / VERIFICATION BLOCKED
+
+| Question | Measurement |
+|---|---|
+| Is *"V1 operational corpus"* defined anywhere? | ⛔ **NO.** Repo-wide, the phrase occurs **only** in `ADR-0100` L200/L203 and this record — always as the *unverifiable* term itself, never as a definition |
+| Is a rebuild-duration budget declared? | ⛔ **NO.** `PRD-015` **L842** names *"Rebuild availability posture and duration"* as parameter `P8` — a slot, not a value |
+| Is `P7` a prerequisite? | ✅ **YES** — `D-14`: *"`P8`-duration → `P7` … a duration figure is an NFR figure"* |
+| Does `LIB-20.1` supply it? | ⛔ **NO** |
+
+**Status: `TARGET PRESENT / VERIFICATION BLOCKED`.** ⛔ **NOT CLOSED.** ⛔ No corpus size, workload,
+QPS or performance result is invented. **Next lawful act: `FU-19`** — define the corpus, then `FU-17`.
+
+## 68. `SRCH-GAP-007` / `B1` — mechanism vs content
+
+⭐ **The distinction prior Parts collapsed, now stated exactly.** §42 **L985** defines this gap as
+**two** deliverables under **two** owners, and the PO record (**F-3**) already identified it as a
+**three-part** gap:
+
+| Part | Deliverable | Owner | State | Evidence |
+|---|---|---|---|---|
+| 1 | Language/script **inventory** | Product Owner | ✅ **CLOSED** | `SRCHPO-1` — English/Latin + Hindi/Devanagari, closed set |
+| 2 | **Analyzer configuration** for those scripts | Architecture Owner | ✅ **CLOSED (contract)** | `ADR-0100` `D-1`/`D-2`; deployment config remains deployment |
+| 3 | Declared **variant/abbreviation vocabulary** (§20 V4) | **Product Owner** | ⛔ **OPEN** | **L552-553**; `STAGE3_CLOSURE_ASSESSMENT` L197: vocabulary searches → **0 hits** |
+| — | Per-field **script values** (`B1`) | **Product Owner**, owning contexts | ⛔ **OPEN** | §14A `script` occurrences = **1**, ⛔ no declaration |
+
+⚠ **The mechanism is closed; the content is not.** ⛔ A closed mechanism is not a closed gap.
+⛔ §14A is FROZEN and **was not modified** — a declaration would need an unfrozen PO locus (`FU-20`).
+
+## 69. Vocabulary — no authoritative source exists
+
+Searched: `PRD-015`, all 14 search artifacts, PO record, frozen PRDs, ADRs, architecture rulings,
+Configuration Guide, governance records. ⭐ **Every hit is a *pointer to the gap*, never content.**
+
+**Status: `OPEN` — PRODUCT OWNER CONTENT DECISION REQUIRED.** ⭐ **Does it block Stage 3? YES** —
+§42 **L985** `Blocks` = *"Stage 3"*. ⛔ Cannot be deferred. ⛔ No vocabulary invented; examples in
+§20 are **not** authoritative content (`SRCH-XC-014`).
+
+## 70. ⭐ Stage-3 gate semantics — a correction to how prior Parts counted
+
+⭐⭐ **Finding `SRCHRT-2`: §45.1 and §42 gate DIFFERENT things, and conflating them overstates
+the Stage-3 blocker count.**
+
+- **§42 `Blocks` column** is the Stage-3 authority. Rows reading *"Stage 3"*: **`SRCH-GAP-002`**,
+  **`SRCH-GAP-003`** (✅ closed at `8eb3124`), **`SRCH-GAP-007`**. ⇒ **2 open Stage-3 gaps.**
+- **§45.1** is headed *"Gates that must be passed **before implementation**"*, inside a section
+  labelled *"a Stage-2 readiness checklist, NOT an implementation plan"* (**L1368**). Its eight
+  rows include Stage-4/5 conferrals and role vacancies — ⛔ **not** Stage-3 blockers.
+- ⚠ **`SRCH-GAP-009` appears in §45.1 as gate 8 but its §42 `Blocks` cell reads ⛔ *"Nothing"***
+  (**L987**). ⭐ **§42 governs**: `SRCH-GAP-009` is **NOT** Stage-3 blocking. ⛔ It is **not** closed
+  either — it is open and non-blocking.
+
+⭐ **This does not improve the verdict.** Two Stage-3 gaps remain open; two is not zero.
+
+## 71. Axis recomputation
+
+| Axis | Test | Result |
+|---|---|---|
+| **A** | Architecture alignment | ✅ **PASS** (unchanged) |
+| **B** | Required decision/parameter closure | ⛔ **FAIL** — `GAP-002` 4 limbs open + 2 partial; `GAP-007` part 3 + `B1` open |
+| **C** | ⭐ Legitimate conferrer availability | ⛔ **FAIL** — SRE/Observability locus **does not exist** (`FU-18`); Governance Owner **VACANT** (`ADR-0080` §2.2, L85/L242); Stage-3/4/5 reviewer roles unassigned (`PGA-08`) |
+| **D** | Actual conferral state | ⛔ **NOT CONFERRED** |
+
+⭐ **Axis C is the deepest blocker and is not a documentation problem.** Even a perfect parameter
+set could not be conferred today, because two of the required offices are vacant or unconstituted.
+
+**Counts:** open Stage-3 gaps **2** · unresolved blocking follow-ups **7** (`FU-16`…`FU-22`) ·
+missing authority acts **4** (Architecture Owner port-binding; SRE availability; PO vocabulary;
+PO script values). One-act conferral: ⛔ **not available** — no eligible conferrer for Axis C.
+
+⛔⛔ **`PRD-015` remains CONDITIONAL / NOT CONFERRED.**
+
+## 72. Findings and follow-up deltas
+
+| ID | Finding |
+|---|---|
+| **`SRCHRT-1`** | ⭐ `P1` transport was over-scoped. Rank 1 §20 + `MP-CON-04`…`07` already govern API conventions; `BC-23` holds **no OHS edge**. `FU-16` narrowed to a port-binding act |
+| **`SRCHRT-2`** | ⭐ §45.1 (implementation) ≠ §42 (Stage 3). Stage-3 blocking gaps = **2**, not 8 |
+| **`SRCHRT-3`** | 99.9% availability is **PROPOSED, not authoritative** — no SRE artifact exists |
+| **`SRCHRT-4`** | ⭐ Axis **C** fails independently of every parameter: required offices are vacant |
+
+⛔ **No `FU-*` is closed, discharged or added by this Part.** `FU-16` has a **narrowed scope**;
+`FU-18` gains the explicit finding that its target office **does not yet exist**.
+
+**END OF PART VII**

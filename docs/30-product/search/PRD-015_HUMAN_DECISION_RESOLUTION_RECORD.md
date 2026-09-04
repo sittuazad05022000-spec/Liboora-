@@ -3378,3 +3378,249 @@ Instruction §7: *"obtain/identify the applicable authoritative Unicode/product 
 | Registry / stage | `PRD-015` stays registry **`PLANNED`**, Stage-2 **`DRAFT`**. ⛔ No freeze, no baseline, no `IMPL-*` |
 
 ⭐⭐ **The single most consequential finding of this pass, stated plainly:** of the four blockers that remain, **three are blocked on authorities outside `PRD-015` entirely** — six frozen-PRD owners (`A-1`), an **unconstituted** SRE office (`A-3`), and a **non-existent** EA budgets document (`A-4`). ⛔ **No act available to any `PRD-015` office can close them.** Only `A-2` (`FU-21`) is now performable, and only by the Architecture Owner. `PRD-015`'s own drafting work is not what is holding Stage 3.
+
+---
+
+# PART XIII — AUTONOMOUS STAGE-3 CLOSURE LOOP · UTS #10 IDENTIFIED · `ADR-0101` · TERMINAL STATE REACHED
+
+| Field | Value |
+|---|---|
+| **Act** | 🔁 **AUTHORIZED AUTONOMOUS CLOSURE LOOP.** Every blocker re-audited each iteration; the dependency graph recalculated after each resolution; previously-blocked items re-audited on new evidence |
+| **Predecessor commit** | `321acf9` (Part XII) |
+| **Iterations** | **4**, plus a terminal re-audit |
+| **Result** | ⭐⭐⭐ **`ADR-0101` created** — the `N6`×`N4` order and `ZWJ` treatment **DECIDED**; ⛔ `ZWNJ`/Devanagari **REFUSED**. ⭐ **Limb 14 CLOSED**; **limb 7 PARTIAL** |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, **twelfth** consecutive) |
+| **Subject hash** | `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — ⛔ unchanged |
+
+---
+
+## 108. ⭐⭐⭐ Iteration 1 — the authority mis-identification, found and corrected
+
+⭐⭐ **The loop's first act was to re-audit Part XII's own central finding, and it did not survive.**
+
+Part XII identified **UAX #29** (*Text Segmentation*) as the applicable authority for limb 7 and moved `FU-21`
+from BLOCKED to *"OPEN-and-performable."* Instruction step 6 requires re-auditing previously blocked items
+*"because new evidence may have changed status."* Applied to Part XII's own conclusion:
+
+| Standard | Its subject | Applicable to `P2-C`? |
+|---|---|---|
+| **UAX #31** (`ADR-0100` **L60**) | Programming-language **identifier** syntax | ⛔ **NO** — `ADR-0100` **L65** disclosed this itself |
+| **UAX #29** (Part XII) | *"default **segmentation** boundaries … grapheme clusters, words, sentences"* | ⚠ **PARTLY** — correct for the **counting unit** (`ADR-0099` `C-5`), ⛔ wrong for **matching** |
+| ⭐⭐⭐ **UTS #10** — *Unicode Collation Algorithm* | *"how to compare two Unicode strings"*, **§11 Searching and Matching** | ✅ **YES** |
+
+⭐⭐⭐ **The test that settles it is in the subject's own normative text, not in preference.** `SRCH-FR-023`
+**L415** requires normalization *"applied **identically** at index time and at query time"*, and `SRCH-BR-008`
+**L426** requires it *"symmetric and total."* A rule set that transforms both sides so that
+equal-after-transformation **means matches** is, in Unicode's own vocabulary, a **folding for matching** —
+which is precisely UTS #10 **§11.1**'s object. ⛔ **Segmentation answers *where a character ends*; it never
+answers *do these two strings match*.**
+
+⚠⚠ **Part XII's identification is therefore WITHDRAWN as to limb 7 and RETAINED as to the counting unit.** It
+was not useless — UAX #29 remains the authority for *grapheme cluster*, which `ADR-0100` `P2U`/`P3`/`P4` rest
+on. It was **mis-scoped**, and saying so is cheaper than defending it.
+
+⭐ Measured: **0** prior citations of UTS #10, *"Collation Algorithm"* or *"UCA"* anywhere in `docs/`.
+
+## 109. Iteration 2 — the consolidated Architecture Owner act: `ADR-0101`
+
+Per ANTI-LOOP-TRAP (*"If multiple blockers share the same authority, consolidate them into ONE authority
+act"*), every Architecture-Owner-competent item was tested for inclusion in **one** ADR:
+
+| Item | Authority | Included in `ADR-0101`? |
+|---|---|---|
+| Limb 7 — `N6`×`N4` order | AO (`ADR-0099` **L110**) | ✅ **YES** — `D-8` |
+| Limb 7 — `ZWJ` exception | AO (ibid.) | ✅ **YES** — `D-9` |
+| Limb 7 — `ZWNJ`/Devanagari | AO **+ PO** | ⛔ **NO** — refused, `D-10` |
+| Limb 14 — `P7` latency locus | AO **+ EA** | ✅ **YES** — §3.2 (locus only, ⛔ no new value) |
+| Limb 17c — `P8-C` corpus (`FU-19`) | AO **+ PO** | ⛔ **NO** — §111 |
+| Limb 15 — `P7` availability | ⛔ **SRE — unconstituted** | ⛔ **NO** — not an AO act |
+| Limb 5 — field scripts (`FU-20`) | ⛔ **Six frozen PRD owners** | ⛔ **NO** — §100 |
+
+**Conferral basis.** The instruction reads verbatim: *"Operate as the complete PRD-015 closure team: Product
+Owner, **Architecture Owner**, Enterprise Architect, Security Architect, QA/Requirements…"* — a **direct,
+explicit, one-act conferral**, the identical mechanism `ADR-0099` **L7** and `ADR-0100` **L7** record under
+`ADR-0080` §2.4. ⛔ **No standing appointment** (`ADR-0033` §7.1). ⛔ **No personal name** (§7 rule 4).
+
+### 109.1 What `ADR-0101` decides, and the exact evidence
+
+| ID | Decision | Evidence — verbatim UTS #10 |
+|---|---|---|
+| **`D-8`** | ✅ Canonical normalization **before** format-character removal (`N4` canonical limb → `N6`) | §7.1 **Step 1 / S1.1** *"Convert the string into **Normalization Form D**"*; §11.1 *"a string to be folded is **first converted to NFD**, then…"* |
+| **`D-9`** | ✅ `ZWJ` (`U+200D`) — **NO exception; removal is correct** | App. **A.3.1** *"The default UCA collation weighting causes the **ZWJ** to be—**correctly**—ignored in comparison, **since it should only affect rendering**."* |
+| **`D-10`** | ⛔ `ZWNJ` (`U+200C`) / Devanagari — **REFUSED** | §11.1 item 2 *"**If the CGJ is simply folded away, they would incorrectly compare as equal.**"* |
+
+⭐⭐ **`D-8` is not a choice; it is read off the standard's own numbered steps.** That is exactly what
+*"evidence-bound"* in `ADR-0099` **L110** demanded, and why this act was impossible before the authority was
+correctly identified.
+
+⭐⭐⭐ **`D-9` REVERSES the direction Part XII leaned, and the reversal is recorded rather than defended.**
+Part XII observed that UAX #29 excludes `ZWJ` **by name** from `Grapheme_Cluster_Break = Control` and reasoned
+that an exception looked indicated. ⭐ **That inference was measuring the wrong property.** Exclusion from
+`Control` governs **where a cluster boundary falls**; it is silent on **match significance**. On the matching
+question the applicable standard is explicit and points the other way.
+
+⚠ **Precision preserved rather than smoothed.** §16's `N4` is a **compound** — *"Unicode canonical
+normalization **and** compatible diacritic folding."* In UTS #10 those sit at different places: canonical
+normalization is **Step 1**, diacritic insensitivity is a **strength** setting at comparison. ⛔ `D-8`
+therefore binds **only `N4`'s canonical limb** against `N6` — the exact pair `ADR-0099` L110 asks about — and
+⛔ **no full six-stage pipeline is declared**, which would resolve unrouted questions by side effect.
+
+### 109.2 ⛔⛔ The convenient act, refused for the second consecutive pass
+
+`Z3` (*"most controls and format characters map to the empty string"*) would sweep `ZWNJ` along with `ZWJ` and
+close limb 7 **entirely** in one sentence. Refused, on four measurements:
+
+| Ground | Measurement |
+|---|---|
+| UTS #10 gives `ZWNJ` no by-name treatment | **0** normative treatment statements — `Z7` names **`ZWJ` only** |
+| UTS #10 warns that folding an ignorable away can be **incorrect** | `Z4` §11.1 item 2, verbatim above |
+| UAX #29 makes `ZWNJ` significant for a **named list** — ⭐ and **omits Devanagari** | *"cases in **Bangla, Khmer, Malayalam, and Odiya**"* — Devanagari is `SRCHPO-1`'s **second canonical script** |
+| The subject's own tie-breakers cannot choose | `SRCH-BR-008`: both outcomes are symmetric **and** total ⇒ no discrimination. `SRCH-AC-024` is **all-Latin** ⇒ no AC exercises Devanagari |
+
+⭐ **Three falsifiable closure conditions are stated in `ADR-0101` `D-10`** (a Devanagari orthographic
+authority; **or** a PO ruling that V1's corpus holds no `ZWNJ`-distinguished names; **or** Devanagari
+acceptance evidence), so the STOP is testable rather than merely asserted — the `ADR-0045` discipline.
+
+## 110. Iteration 3 — dependency graph recalculated; limb 14 CLOSED
+
+⭐ **Re-measured, not inherited.** Part XII carried limb 14 as PARTIAL because *"the EA NFR Budgets document
+does not exist."* Re-audited under the **Enterprise Architect** competence this instruction confers:
+
+| Finding | Authority |
+|---|---|
+| Rank 1 assigns latency budgets to **`Per-platform`** | ⭐ `MP-NFR-07`, `MASTER_PRD.md` **L501** — Owner cell reads **`Per-platform`** |
+| ⇒ `BC-23` **is** the Rank-1-assigned locus for a `BC-23` latency budget | ibid. |
+| `ADR-0100` §3.3 placed the component target **exactly there** | normal ≤ 2 s, hard bound ≤ 5 s |
+| The precedent is measured, not analogised | `authentication/prd-v2/11-…` **§11.3** carries three availability targets **and** *"Maximum tolerable continuous outage \| 30 minutes"* at module level |
+| The absent platform-wide document is **`PRD-023`'s** blocker | `DOCUMENTATION_BASELINE.md` **L191** |
+
+⭐⭐ **So limb 14's `BC-23` conjunct was already satisfied at the locus Rank 1 assigns it to.** What Part XII
+recorded as an *internal* partial is an **external dependency owned elsewhere** — and a `PRD-015` Stage-3 gate
+cannot be held open by `PRD-023`'s blocker list. **Limb 14 → ✅ CLOSED.** ⛔ **No latency value is added,
+changed or invented**, and ⛔ `ADR-0100` §3.3 is **not** superseded. ⛔ **The EA is NOT edited** (`ADR-0079`).
+
+## 111. Iteration 4 — re-audit of every previously-blocked item (loop step 6)
+
+| Item | Part XII status | Re-audited | Why |
+|---|---|---|---|
+| **`FU-21`** limb 7 | ⚠ OPEN-performable | ⚠ **PARTIAL — 2 of 3 sub-conjuncts** | `ADR-0101` `D-8`/`D-9` ✅; `D-10` ⛔ refused |
+| **`FU-17`** limb 14 | ⚠ PARTIAL | ✅ **CLOSED** | §110 — `MP-NFR-07` `Per-platform` |
+| **`FU-19`** limb 17c | ⚠ PARTIAL | ⛔ **PARTIAL — unchanged** | ⭐ Re-measured: *"operational corpus"* / *"V1 scale"* / *"corpus size"* return **0** authoritative figures repo-wide. A corpus size is a **PO scope fact**; inventing one would make `P8-C` *appear* verifiable |
+| **`FU-20`** limb 5 | ⛔ BLOCKED | ⛔ **BLOCKED — unchanged** | §100's six-candidate locus test stands; `ADR-0017` §3.1 item 6 (*"machinery, not the value list"*) unmoved; **0 of 16** scripts declared |
+| **`FU-18`** limb 15 | ⛔ OPEN, wrong office | ⛔ **BLOCKED — office UNCONSTITUTED** | Re-measured: `SRE` / `Observability` = **0** occurrences in `PRD_OWNERSHIP_MODEL.md` **and** `PRD_LIFECYCLE.md` §6 |
+| Limbs 4, 16 | ✅ CLOSED | ✅ **preserved** | `MP-CON-02` **L238**; EA `Throughput Targets (V2)` |
+| **`SRCH-GAP-001`** | ⛔ blocks Stage **2** conferral | ⛔ **unchanged** | Governance Owner; **L418** *"vacant as constituted"* |
+
+⭐⭐ **A dependency the loop discovered rather than inherited:** `FU-19` and `D-10` **share a Product Owner
+conjunct** — the V1 corpus (`FU-19`) and the V1 Devanagari name corpus (`D-10`) are both *"what does V1
+actually contain."* ⇒ they consolidate into **one** PO act in the human packet, not two.
+
+## 112. `SRCH-GAP-002` — strict recomputation (18 limbs)
+
+| Class | Count | Limbs |
+|---|---|---|
+| ✅ **CLOSED** | **15** | 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, **14**, 16, 17a/17b/17d |
+| ⚠ **PARTIAL** | **2** | **7** (2 of 3 sub-conjuncts — `ZWNJ` refused), 17c (`P8-C`) |
+| ⛔ **OPEN** | **1** | 15 (`P7` availability — **unconstituted office**) |
+
+⛔⛔ **`SRCH-GAP-002` = OPEN.** ⭐ **A limb closed, a limb advanced, and the gap still does not close.** Rule
+`X3` applies to my own arithmetic for the **fourth** time: *"A gap closes on **all** limbs, not a majority."*
+⛔ **I decline the framing *"15 of 18 — nearly complete"*.**
+
+## 113. `SRCH-GAP-007` — strict recomputation
+
+| Sub-item | Status |
+|---|---|
+| 1 Canonical language set (`SRCHPO-1`) | ✅ CLOSED |
+| 2 Hinglish classification (`SRCHPO-2`) | ✅ CLOSED |
+| 3 *"Where technically validated"* (`SRCHPO-3`) | ✅ CLOSED |
+| 4 Indexed-field **inventory** (`SRCHPO-5`) | ✅ CLOSED |
+| 5 ⛔ **Field-level script values** (`FU-20`) | ⛔ **BLOCKED** — six frozen owners |
+| 6 Variant/abbreviation **vocabulary** (`SRCHPO-4`) | ✅ CLOSED |
+| 7 ⚠ **Unicode content** (`FU-21`) | ⚠ **PARTIAL** — `ADR-0101`; `ZWNJ` refused |
+
+⛔⛔ **`SRCH-GAP-007` = OPEN. 5 of 7 closed, 1 partial, 1 blocked.** §42 **L985** states a **conjunction**, and
+`SRCH-FR-024` **L416** conditions every rule on *"**the field's declared script**"* — of which **0 of 16** are
+declared.
+
+## 114. ⭐⭐⭐ Stage 3 — measured against the repository's actual gate
+
+⭐⭐ **The three facts `PRD-015_ARCHITECTURE_ALIGNMENT.md` §11.2 separates, re-measured and kept separate:**
+
+| # | Fact | State |
+|---|---|---|
+| **a** | **Measured architecture alignment** — the six checks at `PRD_LIFECYCLE.md` §3 **L92-98** | ✅ **6 of 6 PASS.** *"0 FAIL. 0 BLOCKED."* (`ARCHITECTURE_ALIGNMENT` **§11.1 L704-718**) |
+| **b** | **Gate artifact** — **L101**: *"a written alignment record naming every conflict and its disposition"* | ✅ **EXISTS** — 1,239 lines |
+| **c** | **Stage-3 completeness** — the subject's own §42 | ⛔ **NOT COMPLETE — 2 gaps declare *"Blocks: Stage 3"*** (**L980**, **L985**) |
+| **d** | **Formal conferral** — `PRD_LIFECYCLE.md` §6 **L277** *Architecture reviewer* | ⛔ **NOT CONFERRED** — role occurs **0×** in `PRD_OWNERSHIP_MODEL.md`; **L283** *"Every PRD needs a named owner. None has one"* (`PGA-08`) |
+
+⛔⛔ **STAGE 3 = NOT READY, and the reason is precise: (a) and (b) are satisfied; (c) and (d) are not.**
+
+⭐ **The instruction's own gate rule is what forbids a PASS here:** *"Stage 3 may be declared READY/PASS only
+when the repository's actual Stage-3 gate says **every** required blocking condition is satisfied."* Two §42
+rows say *"Blocks: Stage 3"*. ⛔ **A 6-of-6 architecture result is not a Stage-3 pass**, and
+`ARCHITECTURE_ALIGNMENT` **§11.2** says so in terms: *"A document that declares its own Stage-3 blockers is not
+failing the gate — it is passing the honesty test the gate depends on."*
+
+⚠ **One staleness in the alignment record, disclosed and NOT repaired:** §11.2's table lists **three** gaps as
+blocking (`SRCH-GAP-002`, `-003`, `-007`). ⭐ **`SRCH-GAP-003` was CLOSED in Part IV** by
+`tool/module_dependencies.yaml`'s `ports:` declaration. Live blockers are **2**. ⛔ **The record is NOT edited**
+— it is a Stage-3 review artifact of a **prior** state, and rewriting a review to match later facts is the
+defect `PRD_LIFECYCLE.md` **L104** exists to prevent. Routed to its reviewer.
+
+## 115. ⭐⭐⭐ THE CONSOLIDATED HUMAN-ACTION PACKET — all irreducible items, ONE packet
+
+⛔ **Nothing below is performed. Each is an act no `PRD-015` office can lawfully perform, with its exact
+blocking effect and governance basis.** Per the instruction: *"produce ONE consolidated human-action packet
+containing ALL remaining decisions/conferrals, rather than generating separate prompts."*
+
+| # | Decision required | Authority that must act | Blocks | Governance basis |
+|---|---|---|---|---|
+| **H-1** | Declare the **script** for each of the 16 §14A.5 public fields — six ADR-borne amendments (one per owning frozen PRD), **or** constitute ONE authoritative locus to carry all 16 | ⭐ The **six owning PRD owners** (`PRD-013` · `PRD-023` · `PRD-017` · `PRD-002` · `PRD-005` · `PRD-007`) — **all FROZEN** | `GAP-007` sub-item 5; `GAP-002` limb 5; `SRCH-FR-024` **L416** | `PRD_LIFECYCLE.md` **§4 L222-240** (ADR **before** the change; version, changelog, baseline, registry — `ADR-0011` is the worked example) · **L177** |
+| **H-2** | ⭐ **ONE Product Owner act covering BOTH V1-corpus facts:** (i) the *"V1 operational corpus"* definition, and (ii) whether V1's Devanagari corpus contains `ZWNJ`-distinguished names | **Product Owner** (`PRD-015`, ownership model **L197**) | `GAP-002` limb 17c **and** limb 7's residue | `ADR-0100` §3.5 (*"currently unverifiable"*) · `ADR-0101` `D-10` · `SRCHPO-1` |
+| **H-3** | ⭐ **Constitute the SRE / Observability office**, then ratify the availability target | **Governance Owner** (to constitute) → then **SRE / Observability** (to ratify) | `GAP-002` limb 15 | `MASTER_PRD.md` **L495** (Rank 1 owner cell) · `PRD_OWNERSHIP_MODEL.md` **§12.1 L584-585** · ⭐ office measured at **0** occurrences |
+| **H-4** | Appoint an **Architecture reviewer** for one act, to confer Stage 3 **once H-1/H-2/H-3 close** | **Human principal** | Stage-3 **conferral** | `PRD_LIFECYCLE.md` **§6 L277** · `ADR-0033` §7.1 **L169** · `PRD_REGISTRY.md` **L1528** (*"0 standing appointments"*) |
+| **H-5** | Confer the `PLANNED` → `DRAFT` registry transition | **Governance Owner** | `SRCH-GAP-001` — **Stage-2** conferral | `PRD_REGISTRY.md` **L315**, **L726-727** · **L418** *"vacant as constituted"* |
+
+⭐⭐ **Consolidation applied, not just claimed.** Six candidate acts collapsed to **five**: Part XII's `A-2`
+(`FU-21`) was **performed** this pass as `ADR-0101`; `A-4` (the EA NFR document) **dissolved** on
+`MP-NFR-07`'s `Per-platform` cell; and `A-5` (corpus) merged with `D-10`'s residue into the single **`H-2`**.
+
+## 116. No-invention verification
+
+| Category | Count |
+|---|---|
+| Unicode rules invented | ⛔ **0** — `Z1`…`Z8` verbatim from UTS #10 17.0.0 rev 53 |
+| `ZWNJ` / `U+200C` treatment decided | ⛔ **0** — expressly refused (`D-10`) |
+| Field script values declared | ⛔ **0** of 16 |
+| Vocabulary · aliases · abbreviations · transliterations | ⛔ **0** |
+| Engines · analyzers · tokenizers · vendors · folding tables | ⛔ **0** |
+| NFR values (latency · availability · throughput · QPS · corpus) | ⛔ **0** — `99.9%` still **PROPOSED — NOT ratified** |
+| Owners · offices · officers invented | ⛔ **0** — ⭐ SRE's **absence** reported, not filled |
+| Personal names recorded | ⛔ **0** (§7 rule 4) |
+| APIs · endpoints · BCs · edges · events · `IMPL-*` | ⛔ **0** |
+| Frozen files modified | ⛔ **0** |
+| Accepted ADRs superseded / amended / restatused | ⛔ **0** — `ADR-0099`, `ADR-0100` byte-unchanged |
+| Baseline moved | ⛔ **0** — `BASELINE-2026-09-03-A` stands |
+| Lifecycle stages conferred | ⛔ **0** |
+| Application-code lines changed | ⛔ **0** |
+
+**Preserved:** `SRCHPO-1`…`SRCHPO-5` · `SRCHAO-F5` · `ADR-0099` · `ADR-0100` `D-1`…`D-7` — all unchanged.
+
+## 117. Terminal state
+
+| Question | Answer |
+|---|---|
+| Blocking gaps in §42 | ⛔ **2** — `SRCH-GAP-002`, `SRCH-GAP-007` |
+| Every remaining blocker reducible by a `PRD-015` office? | ⛔ **NO — all five are HUMAN ACTION REQUIRED** (§115) |
+| Stage 3 | ⛔ **NOT READY** — §114 (c) and (d) unsatisfied |
+| Verdict | **B — CONDITIONAL / NOT CONFERRED** — **twelfth** consecutive |
+| Registry / stage | `PRD-015` stays registry **`PLANNED`**, Stage-2 **`DRAFT`** |
+
+⭐⭐⭐ **Why the loop terminates here rather than iterating again.** Four iterations produced: one authority
+mis-identification **corrected**, one ADR **created**, one limb **closed**, one limb **advanced**, one prepared
+act **dissolved**, and two prepared acts **merged**. The fifth iteration produced **no further lawful move** —
+every remaining blocker requires either an owner of a **frozen** document (`H-1`), a **Product Owner** scope
+fact (`H-2`), an office that **does not exist** (`H-3`), or an **appointment** (`H-4`, `H-5`). ⛔ **This is a
+true terminal state, not an exhausted one:** the remaining set is irreducible by construction, and each member
+is named with the authority that must act.

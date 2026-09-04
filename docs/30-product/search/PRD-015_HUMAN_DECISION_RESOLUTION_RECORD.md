@@ -2714,3 +2714,169 @@ are vacant or unconstituted. Remaining blockers require **SRE** (`FU-18`), **EA 
 ⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
 
 **END OF PART VIII**
+
+---
+
+# PART IX — GOVERNANCE CAPACITY CONSTITUTION PASS
+
+| Field | Value |
+|---|---|
+| **Act** | 🔎 **INVESTIGATION + RECORD.** Authorized to constitute governance capacity **only** where the repository proves a lawful mechanism **and** an actually authorized decision |
+| **Predecessor commit** | `d633adc` (Part VIII) |
+| **Authority held** | ⛔ **NONE CONFERRED.** No conferral instrument was supplied to this pass — see §80.2 |
+| **Result** | ⭐ **0 offices constituted. 0 holders appointed. 3 material corrections to the standing blocker model.** |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, eighth consecutive) |
+
+---
+
+## §80 GOVERNANCE OWNER — RE-VERIFIED
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Does the office **exist**? | ✅ **YES** | `ADR-0080` §2.2 **L83**; `PRD_OWNERSHIP_MODEL.md` **§10.1 L418** (sixth role, `Decides` / `Attests` / `Never decides`) |
+| Is a **holder** appointed? | ⛔ **NO — VACANT** | `ADR-0080` **L85** *"⛔ **It is constituted VACANT**"*; ownership model **L420-421** *"vacant as constituted — constituting an office does not fill it"* |
+| Defining document | `PRD_OWNERSHIP_MODEL.md` §10 (by append), derived by `ADR-0080` | ibid. |
+| Is there a **standing appointment** mechanism? | ⛔ **NO — NONE EXISTS ANYWHERE** | Measured: every `appoint` hit in the governance corpus is a **negation** (*"A holder is appointed \| ⛔ No"* — ownership model **L398**, **L472**, **L510**, **L629**; `ADR-0080` **L242**). `PRD_REGISTRY.md` **L1528**: *"**0** standing appointments"* |
+| Is a **personal name** permissible? | ⛔ **FORBIDDEN** | ownership model §7 rule 4 **L318**: *"**Never** record a personal name. If a name is needed operationally, it belongs in a team directory **outside the repository**"* |
+
+### §80.1 ⭐ The only lawful mechanism, found and quoted
+
+A vacant office is **not** filled by appointment. It is filled **per act**:
+
+> *"The office is recorded **VACANT** at `ADR-0080` **L85**; it is filled **for this act only** by direct conferral from the human principal, on the `ADR-0032` §5.2 / `ADR-0033` §7.2 / `ADR-0036` §8.2 precedent."*
+> — `PRD_OWNERSHIP_MODEL.md` **§12.1 L584-585**
+
+`ADR-0083` **L7** exercises the identical form. `ADR-0033` **L169** bounds it: *"A conferral for one act is not a standing licence."*
+
+### §80.2 ⛔ Determination
+
+**BLOCKED — GOVERNANCE OWNER APPOINTMENT REQUIRES AUTHORIZED HUMAN ACT**
+
+The office cannot be *appointed at all* — the repository's design admits only per-act conferral, and this pass carries no conferral instrument. The precedent form is explicit and quotable (`PRD-008_STAGE3_CONFERRAL.md` **L8** reproduces the principal's words verbatim). **No such words were supplied here.** Manufacturing them would be the fabrication the pass forbids.
+
+---
+
+## §81 ⭐⭐⭐ MATERIAL CORRECTION 1 — THE GOVERNANCE OWNER DOES **NOT** OWN STAGE 3
+
+`PRD_LIFECYCLE.md` **§6 L274-281** assigns stages to **six** roles:
+
+| Stage | Owning role | Line |
+|---|---|---|
+| **Stage 3 — Architecture Review** | ⭐ **Architecture reviewer** | **L277** |
+| Stage 4 — Requirements Review | Requirements reviewer | **L278** |
+| Stage 5 — the matrix | Traceability owner | **L279** |
+| Stages 6 and 8 | Implementation lead | **L280** |
+| **Stage 7; the baseline** | **Governance owner** | **L281** |
+
+⭐⭐ **The Governance Owner owns Stage 7, not Stage 3.** Confirmed independently by `ADR-0048` **L51-52** (a *refusal* record) and by `ADR-0054` **L148**, which holds of the Governance Owner and Architecture Owner that *"Those are different roles."*
+
+⛔ **Correction to this record's own earlier Parts.** Part VII §71 and Part VIII §79 attributed Axis C's failure in part to *"the Governance Owner is VACANT and no conferrer is available."* **The Governance Owner vacancy is not a Stage-3 blocker.** The Stage-3 conferrer is the **Architecture reviewer**. The vacancy is real and remains a **Stage-7** blocker — it was mis-routed one stage. Recorded self-adversely rather than left standing.
+
+⭐ **This does not improve the verdict.** The Architecture reviewer office is *also* unfilled, and Stage 3 is independently blocked by §42's two open gaps.
+
+---
+
+## §82 REVIEWER ROLES — STAGE 3 / 4 / 5
+
+| Stage | Required role | Office exists? | Holder | Appointment mechanism | Status |
+|---|---|---|---|---|---|
+| **3** | **Architecture reviewer** | ✅ lifecycle **L277** | ⛔ none | one-act conferral only | ⛔ **BLOCKED** |
+| **4** | **Requirements reviewer** | ✅ lifecycle **L278** | ⛔ none | one-act conferral only | ⛔ **BLOCKED** |
+| **5** | **Traceability owner** | ✅ lifecycle **L279** | ⛔ none | one-act conferral only | ⛔ **BLOCKED** |
+
+**Offices, not people** — lifecycle **L272**: *"Roles, not people — the repository names no individuals, and this document does not invent any."* They are **global standing roles**, not per-PRD assignments.
+
+### §82.1 ⭐ A second vocabulary, measured — the two role sets are disjoint
+
+| Lifecycle role | Occurrences in `PRD_OWNERSHIP_MODEL.md` |
+|---|---|
+| Architecture reviewer | ⭐ **0** |
+| Requirements reviewer | ⭐ **0** |
+| Traceability owner | ⭐ **0** |
+| Implementation lead | ⭐ **0** |
+| Governance owner | **19** |
+
+⭐ **Only *one* of the five lifecycle stage-roles is constituted in the ownership model.** A repository-wide search for any document equating *Architecture reviewer* with *Architecture Owner* returns **empty**. ⛔ **This pass does not assert the equation** — doing so would merge two offices by side effect, the act `ADR-0054` **L148** forecloses for the adjacent pair.
+
+### §82.2 Precedent — the form that has worked three times
+
+| Record | Conferred by | Line |
+|---|---|---|
+| `PRD-008_STAGE3_CONFERRAL.md` | **Architecture Reviewer**, by *"direct, explicit and unconditional conferral of the human principal"* | **L7** |
+| `PRD-008_STAGE4_CONFERRAL.md` · `PRD-021A_STAGE4_CONFERRAL_2026-09-01.md` · `PRD-021C_C0_C8_STAGE4_CONFERRAL.md` | **Requirements Reviewer**, same form | **L7** each |
+| `PRD-013_STAGE5_CONFERRAL.md` | **Traceability Owner**, same form | **L7** |
+
+⭐ **A one-act conferral CAN satisfy each of these**, and has. ⛔ **Names are not required and are forbidden.** The blocker is therefore **not** a missing person — it is a missing **instrument**.
+
+**BLOCKED — REVIEWER APPOINTMENT REQUIRES AUTHORIZED HUMAN ACT** (all three stages).
+
+---
+
+## §83 ⭐⭐ MATERIAL CORRECTION 2 — `PGA-08` IS CLOSED
+
+| Measurement | Value |
+|---|---|
+| `PGA-08` in `PRD_GAP_ANALYSIS.md` **L391** | ⭐ `~~`PGA-08`~~` — **struck through**, *"✅ **CLOSED 2026-08-04** — resolved role-based, not by naming individuals"* |
+| ibid. **L483** | struck through again — *"**CLOSED 2026-08-04** … role-based, 23 of 23"* |
+| Struck-through instances | **2** |
+
+⛔ **`PGA-08` is NOT an open blocker.** It was closed by constituting **roles**, per `PRD_GAP_ANALYSIS.md` §8.1 **L419-425**.
+
+⚠ **But two sub-facts survive, and both are recorded rather than smoothed:**
+
+1. **`PRD_LIFECYCLE.md` L283 is STALE.** It still reads *"Every PRD needs a named owner. **None has one** — `PGA-08`"* against a register that closed `PGA-08` two years of commits ago. ⛔ **Not repaired here** — the lifecycle document is not this pass's to edit and no conferral exists.
+2. **The narrow rule remains unsatisfied *by design*.** `PRD_GAP_ANALYSIS.md` **L410**: *"Every PRD has a **named** owner \| ⛔ **Not satisfied, by design** \| No personal name exists to record, and recording one would fabricate accountability."*
+
+⭐ **Consequence:** the standing blocker *"reviewer roles unassigned under `PGA-08`"* is **imprecise**. The offices exist and PRD-015 holds role-based owners (`PRD_OWNERSHIP_MODEL.md` **L197**). What is absent is a **conferral instrument**, not an owner.
+
+---
+
+## §84 SRE / OBSERVABILITY LOCUS
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Does it exist as a **constituted office**? | ⛔ **NO** | ⭐ *"SRE"* occurrences: `PRD_OWNERSHIP_MODEL.md` = **0** · `PRD_LIFECYCLE.md` = **0**. It is **not** among the six constituted roles |
+| Where does it appear at all? | Only as an **Owner-cell label** at Rank 1 | `MASTER_PRD.md` **L495** (`MP-NFR-01`, *"SRE / OBSERVABILITY"*) and **L506** (`MP-NFR-12`, *"SRE"*) |
+| Is there a **constitution mechanism**? | ✅ **YES — constitution by derivation** | `ADR-0077` (Privacy Owner) and `ADR-0080` (Governance Owner) are two executed precedents: measure existing rules that demand a role and assign it to nobody, then constitute by **append** |
+| Whose authority constitutes it? | ⭐ **Architecture Owner / ARB**, expressly conferred for the one decision | `ADR-0077` **L7**: *"Authority **expressly conferred for this one decision**; `ADR-0033` §7.1 — not a standing licence over the ownership model"* |
+| Does the **Governance Owner** have this authority? | ⛔ **NO** | ownership model **§10.1 L418**: the Governance Owner *"⛔ Never decides … its own scope"*; role constitution amends the ownership model, an Architecture Owner act |
+| Can it be established **now**? | ⛔ **NO** | The required Architecture-Owner conferral was not supplied. Recorded as a **dependency**, not performed |
+
+⛔ **Nothing about P7 was touched.** No availability target ratified, no `99.9%` adopted, no NFR value created. ⭐ The `MP-NFR-01` route is *evidentially strong* for a future derivation — a Rank-1 obligation assigning a duty to a locus the role model never constitutes is precisely the `ADR-0077` / `ADR-0080` fact pattern.
+
+---
+
+## §85 AUTHORITY GRAPH — EVIDENCE-BACKED EDGES ONLY
+
+| # | Edge | Evidence | State |
+|---|---|---|---|
+| `G-1` | Human principal → one-act conferral of **any** vacant office | ownership model **§12.1 L584-585**; `ADR-0083` **L7** | ✅ mechanism exists · ⛔ **not exercised this pass** |
+| `G-2` | **Architecture reviewer** → Stage-3 conferral | lifecycle **L277**; `PRD-008_STAGE3_CONFERRAL.md` **L7** | ⛔ office unfilled |
+| `G-3` | **Requirements reviewer** → Stage 4 | lifecycle **L278** | ⛔ office unfilled |
+| `G-4` | **Traceability owner** → Stage 5 | lifecycle **L279** | ⛔ office unfilled |
+| `G-5` | **Governance owner** → Stage 7 / baseline / prefix registration | lifecycle **L281**; ownership model **§10.1 L418** | ⛔ VACANT |
+| `G-6` | **Architecture Owner** → constitution of a new role by derivation | `ADR-0077` **L7**; `ADR-0080` | ✅ mechanism exists · ⛔ not conferred |
+| `G-7` | `G-6` → **SRE / Observability** locus | `MASTER_PRD.md` **L495** assigns a duty to an unconstituted locus | ⛔ OPEN |
+| `G-8` | **SRE / Observability** → P7 availability decision | `MP-NFR-01` **L495** | ⛔ blocked by `G-7` |
+| `G-9` | **Product Owner** → script values · vocabulary | ownership model **L83**, **L197** | ✅ office exists · ⛔ content not supplied |
+| `G-10` | **Architecture Owner (ARB)** → transport binding · normalization policy | ownership model **L85**, **L197** | ✅ transport CLOSED (Part VIII `D-7`) · ⛔ ZWJ/ZWNJ evidence-bound |
+
+⛔ **`G-5 → G-2` is NOT an edge.** The Governance Owner cannot confer Stage 3 — §81. ⛔ **The graph is descriptive; it creates no authority.**
+
+---
+
+## §86 ⛔ WHAT THIS PASS DID NOT DO
+
+| Claim | Status |
+|---|---|
+| An office was constituted | ⛔ **No.** Six roles before, six after |
+| A holder was appointed | ⛔ **No.** Zero appointments; zero personal names |
+| The SRE / Observability locus was created | ⛔ **No** — recorded as dependency `G-7` |
+| Stage 3 was conferred | ⛔⛔ **No.** `PRD-015` remains **STAGE 3 — CONDITIONAL / NOT CONFERRED** |
+| Stage 4, 5 or 7 was conferred | ⛔ **No** |
+| Any PRD-015 parameter was decided | ⛔ **No.** P1–P8, vocabulary, script values, Unicode exceptions, corpus size, latency, availability, API all **untouched** |
+| `SRCH-GAP-002` / `SRCH-GAP-007` changed | ⛔ **No.** Both remain **OPEN**; §42 blocking count unchanged at **2** |
+| `FU-17` / `FU-18` / `FU-19` changed | ⛔ **No.** `99.9%` remains **PROPOSED — NOT ratified** |
+| A frozen or ranked document was modified | ⛔ **No.** `Library_PRD_v1.md`, §14A, `MASTER_PRD.md`, EA, BC Map, `ADR-0099`, `ADR-0100`, baseline all byte-unchanged |
+| `PRD_LIFECYCLE.md` **L283** staleness was repaired | ⛔ **No** — disclosed and routed (§83) |
+| Baseline, rank, freeze state or `IMPL-*` changed | ⛔ **No** |

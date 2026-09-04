@@ -439,3 +439,29 @@ grep -rniE "declared script|script code|ISO 15924|Deva\b|Latn|script field|
 ⛔ **HUMAN DECISION REQUIRED: `HD-1`…`HD-16`**
 ⛔ **BLOCKED: `R2` (by `ENT`)**
 ⛔ **STAGE 3: CONDITIONAL — NOT CONFERRED.**
+
+---
+
+## 16. FORWARD NOTE — `HD-1`…`HD-16` HAVE SINCE BEEN RULED (added 2026-09-04)
+
+⚠ **The line above reading `⛔ HUMAN DECISION REQUIRED: HD-1…HD-16` is SUPERSEDED IN SCOPE, and its bytes are deliberately NOT overwritten.** It was true when written and is the evidence of what this pass actually asked. The retain-verbatim convention of `ADR-INDEX.md`'s `Count` cell and of `ADR-0035`'s `D-4` cell governs: a superseded statement is annotated, never deleted.
+
+⭐ **All sixteen decisions were subsequently supplied by the human principal** and are recorded in **one** consolidated record — ⛔ not sixteen files:
+
+> [`PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md`](./PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md)
+
+⭐⭐ **This staleness was caused BY THE LATER PASS ITSELF, which is why it is repaired here rather than routed.** `GCP-25`'s standing rule is *repair only what your own pass caused, disclose and route the rest*; the human-decision pass caused exactly this one line to go stale, so repairing it is that pass's own obligation and not a drive-by edit of a neighbouring document.
+
+⚠⚠ **DO NOT READ THIS NOTE AS CLOSURE OF THE UNDERLYING BLOCKERS.** The distinction the successor record makes its governing principle is that **a ruling can settle a MODEL without settling its CONTENT**, and **eleven of the sixteen rulings are of that shape**. Consequently:
+
+| Still true after the rulings | Evidence |
+|---|---|
+| ⛔ **Stage 3 remains CONDITIONAL — NOT CONFERRED** | Re-run at 6/6 PASS and still withheld, on `ADR-0033` §7.1 (*"a conferral for one act is not a standing licence"*) and on `SRCH-GAP-002`/`-003`/`-007` |
+| ⛔ **`SRCH-GAP-002` is NOT closed** | It measures **parameter completeness**; the six checks measure **architecture alignment**. The rulings closed models, not parameters |
+| ⚠ **`HD-7`, `HD-8`, `HD-11`, `HD-13` are DEFERRED — still OPEN** | Ruled *"DEFER"* by the principal; ⛔ no numbers were minted |
+| ⚠ **`R2` remains BLOCKED** | `HD-15` closed the ENT **rule**; the ENT **mechanism** is still open |
+| ⚠ **`P2-B`/`P2-C`/`P2-D` rule sets, and the `BC-23` configuration, remain OPEN** | `HD-2`/`HD-3`/`HD-4` settled scope and policy; the exception set and rules are evidence-bound and were ⛔ not invented |
+
+⭐ **Closed by the rulings, and only these:** `HD-5` outright (grapheme-cluster counting); the **authority** limb of `P2-A` (by **`ADR-0099`**, created for `HD-6`); the **architecture** limb of `P1` (`HD-9`, vendor-neutral); `P6`'s scope confirmed unchanged (`HD-10`); the **modes** of `P8-D` (`HD-14`); the **scope** of `VOC` (`HD-16`, English + Hindi).
+
+⛔ **This note creates nothing.** 0 values, 0 thresholds, 0 durations, 0 analyzers, 0 tokenizers, 0 vendors, 0 vocabularies, 0 BCs, 0 edges, 0 APIs, 0 `IMPL-*`, 0 requirement identifiers, 0 lines of code. ⛔ **Subject byte-unchanged.** ⛔ **§1–§15 above are byte-unchanged; this section is APPENDED**, so every `§`-form citation into this file — the seven measured in `docs/` at §2.2 (×2), §3.2, §3.3, §3.5 and two whole-file links — still resolves, and **0 line-citations exist into this file** (enumerated across `docs/` and `tool/`, returning none).

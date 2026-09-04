@@ -3140,3 +3140,241 @@ Remaining `SRCH-GAP-007` conjunct: **`FU-20`** (`B1` field-level script values, 
 ⛔⛔ **`PRD-015` remains STAGE 3 — CONDITIONAL / NOT CONFERRED.**
 
 **END OF PART XI**
+
+---
+
+# PART XII — MASTER BLOCKER-RESOLUTION ACT · UAX #29 OBTAINED · TWO LIMBS CLOSED · CONSOLIDATED-LOCUS TEST FAILED
+
+| Field | Value |
+|---|---|
+| **Act** | 🔎 **AUTHORIZED MASTER BLOCKER-RESOLUTION PASS.** Every remaining blocker re-audited; each resolved where an existing authorized act reached it, and routed where it did not |
+| **Predecessor commit** | `a5a22aa` (Part XI) |
+| **Scope** | `SRCH-GAP-002` · `SRCH-GAP-007` · `FU-17`…`FU-22` · authority separation (AO / EA / SRE / PO / Deployment) |
+| **Result** | ⭐⭐ **`FU-21` UNBLOCKED and the applicable authority IDENTIFIED (UAX #29).** ⭐ **Two `GAP-002` limbs CLOSED** (4, 16). ⛔ Both gaps **still OPEN** |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (unchanged, **eleventh** consecutive) |
+| **Subject hash** | `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — ⛔ unchanged |
+
+---
+
+## 100. Instruction §6 — the consolidated-locus test, PERFORMED and FAILED
+
+⭐⭐⭐ **This is the test the instruction put first, and it is the one that decides `FU-20`.** Instruction §6 required, *before* contemplating any frozen-PRD amendment: *"First test whether one consolidated unfrozen authoritative locus can lawfully carry all declarations."*
+
+The hypothesis is attractive: rather than six frozen-PRD amendments, declare all 16 field scripts once, in one unfrozen place. **Every candidate locus was enumerated and tested.**
+
+| Candidate consolidated locus | Unfrozen? | Can it lawfully carry per-field script declarations? |
+|---|---|---|
+| `PRD-023_SETTINGS_AND_CONFIGURATION.md` (`BC-25`) | ⛔ **FROZEN** (`PRD_REGISTRY.md` **L337**) | ⛔ **NO** — frozen, and see the `ADR-0017` bar below |
+| `CONFIGURATION_GUIDE.md` (`docs/20-configuration/`) | ✅ Unfrozen | ⛔ **NO** — **Rank 7**, the lowest rank. A Rank 7 document cannot originate a product attribute binding six Rank 3 PRDs |
+| `PRD-015_SEARCH_INDEXING.md` (this subject) | ✅ Unfrozen (Stage-2 draft) | ⛔ **NO** — `SRCH-XC-001` **L158**: *"`BC-23` **MUST NOT** define, alter or restate any §14A field…"*; `ADR-0100` **L218**: ownership *"is **NOT** transferred to `BC-23`"* |
+| `PRD-015_PO_DECISION_RESOLUTION_RECORD.md` | ✅ Unfrozen | ⛔ **NO** — it is the **`BC-23` PO's** record. The `BC-23` PO does not hold the `BC-19`/`BC-25`/`BC-29`/`BC-06`/`BC-02`/`BC-04` product offices |
+| This record (Part XII) | ✅ Unfrozen | ⛔ **NO** — same defect: wrong office, and `SRCH-XC-001` binds |
+| A **new** consolidated field-attribute document | n/a | ⛔ **NO** — see §100.1 |
+
+### 100.1 ⭐⭐ Why a NEW consolidated document is the trap, not the solution
+
+Creating a new *"Platform Field Script Registry"* was the most tempting available act. It is refused on **measured** grounds, not preference:
+
+| Bar | Evidence |
+|---|---|
+| It would be a **second source of truth** for a §14A attribute | `SRCH-XC-002` **L159**: *"`BC-23` MUST NOT publish a second library-discovery contract. §14A is the contract (`ADR-0094`)."* `ADR-0040` **L166** is the general precedent — a second document restating ownership is the defect |
+| It **moves a requirement** between owners | `ADR-0017` **§3.2**: *"No `LIB-*`, `LCFG-*`, `SID-*`, `SCFG-*` or `ICFG-*` requirement moves into it. **This ADR moves no requirement.**"* The `ADR-0017` precedent had to say this expressly; a script registry would do exactly what it forbids |
+| `BC-25` — the natural consolidator — is **expressly barred from the value list** | ⭐ `ADR-0017` **§3.1 item 6**, verbatim: *"The `LCFG-1`…`LCFG-13` **definitions** stay in the Library PRD; `PRD-023` owns the resolution **machinery, not the value list**."* A per-field script **is** a value, not machinery |
+| It needs its own registration act anyway | `PRD_LIFECYCLE.md` **§2** and `ADR-0017` are the worked example: a new owning document requires an ADR, a registry row and a baseline update — i.e. **more** governance than the six amendments, not less |
+
+⭐⭐⭐ **CONCLUSION — instruction §6's precondition is TESTED and NOT MET.** No consolidated unfrozen authoritative locus exists or can be created without exceeding this pass's authority. The instruction's own fallback therefore governs: *"…unless its actual owner explicitly authorizes an ADR-borne amendment."* **No owner has so authorized.** ⛔ `FU-20` stays **BLOCKED**. ⛔ **0 of 16** scripts declared. `SRCHPO-5` (Part XI) stands unchanged as the inventory authority.
+
+---
+
+## 101. ⭐⭐⭐ `FU-21` — the applicable Unicode authority OBTAINED and IDENTIFIED
+
+Instruction §7: *"obtain/identify the applicable authoritative Unicode/product evidence **before** defining any `ZWJ`/`ZWNJ` exception set or ordering."*
+
+### 101.1 Why the previously-cited authority was the WRONG one
+
+`ADR-0100` cited **UAX #31** and disclosed its limitation honestly (§49.4, `ADR-0100` **L65**): UAX #31 governs **identifiers and pattern syntax**. `BC-23` matches **natural-language names**. That disclosure was correct — and it means UAX #31 was never the *applicable* authority for `FU-21`.
+
+### 101.2 ⭐ The applicable authority
+
+| Field | Value |
+|---|---|
+| **Document** | **UAX #29** — *Unicode Standard Annex #29, Unicode Text Segmentation* |
+| **URL** | `https://www.unicode.org/reports/tr29/` |
+| **Version / Revision / Date** | Unicode **17.0.0** · revision **47** · **2025-08-17** (`https://www.unicode.org/reports/tr29/tr29-47.html`) |
+| **Normative standing (verbatim)** | *"This is a stable document and may be used as reference material or **cited as a normative reference by other specifications**."* |
+| **Integral-part note (verbatim)** | *"A **Unicode Standard Annex (UAX)** forms an integral part of the Unicode Standard…"* |
+| **Why applicable** | Its subject is *"determining default segmentation boundaries between certain significant text elements: grapheme clusters ('user-perceived characters'), words, and sentences"* — **natural-language text**, which is what `BC-23` matches. ⭐ It is also the authority already implicitly relied on: `ADR-0099` `C-5` and `ADR-0100` fix the counting unit as the **grapheme cluster**, a term UAX #29 defines |
+
+### 101.3 Facts established, verbatim — `Y1`…`Y6`
+
+| # | Fact, verbatim from UAX #29 (Unicode 17.0.0, rev 47) |
+|---|---|
+| **`Y1`** | `Grapheme_Cluster_Break` = `Control` is defined as *"General_Category = Format **and not** U+000D CARRIAGE RETURN **and not** U+000A LINE FEED **and not** U+200C ZERO WIDTH NON-JOINER (ZWNJ) **and not** U+200D ZERO WIDTH JOINER (ZWJ) **and not** Prepended_Concatenation_Mark = Yes"* |
+| **`Y2`** | `Grapheme_Cluster_Break` = `Extend` *"includes: … **U+200C ZERO WIDTH NON-JOINER** plus a few General_Category = Spacing_Mark needed for canonical equivalence."* `ZWJ` holds its **own** property value: *"**ZWJ** | U+200D ZERO WIDTH JOINER"* |
+| **`Y3`** | *"The continuing characters include nonspacing marks, the **Join_Controls (U+200C ZERO WIDTH NON-JOINER and U+200D ZERO WIDTH JOINER) used in Indic languages**…"* |
+| **`Y4`** | *"There are cases in **Bangla, Khmer, Malayalam, and Odiya** in which a ZWNJ occurs after a consonant and before a virama or other combining mark. These cases **should not provide an opportunity for a grapheme cluster break**. Therefore, **ZWNJ has been included in the Extend class**."* |
+| **`Y5`** | §6.1 Normalization: *"The boundary specifications are stated in terms of text normalized according to Normalization Form **NFD** … **In practice, normalization of the input is not required.**"* Guarantees: *"There is never a break within a sequence of nonspacing marks"*; *"There is never a break between a base character and subsequent nonspacing marks."* |
+| **`Y6`** | §6.2: *"The 'Ignore' rules **should not be overridden by tailorings**, with the possible exception of remapping some of the Format characters to other classes."* |
+
+### 101.4 ⭐⭐ What UAX #29 ANSWERS and what it still does NOT
+
+| Question `FU-21` asks | UAX #29's answer | Class |
+|---|---|---|
+| Are `ZWJ`/`ZWNJ` distinguishable from ordinary format/control characters, such that a blanket `N6` strip is wrong? | ✅ **ANSWERED — YES, decisively.** `Y1` **excludes both by name** from `Control`; `Y2` places `ZWNJ` in `Extend` and gives `ZWJ` its own class. A blanket removal of format characters that swept up `ZWJ`/`ZWNJ` would **contradict** the applicable standard | ✅ **AUTHORITATIVE FACT** |
+| Is there a **principled basis** for an exception set at all (versus invention)? | ✅ **ANSWERED — YES.** `Y3` and `Y4` state that these are **Join_Controls used in Indic languages** and that removing them at a break position is incorrect | ✅ **AUTHORITATIVE FACT** |
+| ⛔ Which **specific** `ZWJ`/`ZWNJ` sequences must be retained for **Devanagari**? | ⛔ **NOT ANSWERED.** `Y4` enumerates **Bangla, Khmer, Malayalam, Odiya** — ⚠ **Devanagari is NOT in that list.** On aksaras UAX #29 says only that *"tailorings for aksaras may need to be script-, language-, font-, or context-specific to be useful"* | ⛔ **LIBOORA PRODUCT/ARCHITECTURE POLICY — OPEN** |
+| ⛔ Does `N6` (control removal) run **before** or **after** `N4` (diacritic folding)? | ⚠ **PARTIALLY ANSWERED.** `Y5` states the specifications are *stated in terms of* NFD while *"normalization of the input is **not required**"* — i.e. UAX #29 is **order-insensitive by construction** for its own boundary determination. ⛔ It does **not** order `PRD-015`'s `N1`…`N6` stages, which are a **different** rule set | ⛔ **LIBOORA ARCHITECTURE DECISION — OPEN** (`ADR-0099` **L110**) |
+
+### 101.5 `FU-21` — status change, precisely stated
+
+| | Before | After |
+|---|---|---|
+| **Applicable authority** | ⛔ **UNIDENTIFIED** — UAX #31 cited with its inapplicability disclosed | ✅ **IDENTIFIED — UAX #29**, Unicode 17.0.0 rev 47, normatively citable |
+| **`FU-21` classification** | ⛔ **BLOCKED** — *"evidence-bound"*, evidence absent | ⚠ **UNBLOCKED / OPEN** — the evidence condition in `ADR-0099` **L110** is **SATISFIED**; the decision is now **performable** by the Architecture Owner |
+| **Exception set defined here?** | — | ⛔ **NO.** `0` code points declared as a Liboora exception set |
+| **`N6`×`N4` order defined here?** | — | ⛔ **NO** |
+
+⭐⭐ **This is a real advance and its limit is stated exactly.** `ADR-0099` **L110** bound the `ZWJ`/`ZWNJ` item *"evidence-bound to the applicable Unicode/product authority."* That authority is now identified, versioned and quoted. ⛔ **But identifying the authority is not exercising the office.** Defining the exception set is an **Architecture Owner** act; this pass holds Product Owner recording authority only. `FU-21` moves from **BLOCKED** to **OPEN-and-performable** — ⛔ **not to CLOSED**, and `GAP-002` limb 7 stays **OPEN**.
+
+⚠ **The convenient act, named and refused.** `Y1` and `Y2` would support a Liboora exception set of exactly `{U+200C, U+200D}`, and writing it would close limb 7 in one line. It is refused twice over: (i) `Y4`'s script list **omits Devanagari**, the very script `SRCHPO-1` makes canonical, so the inference is unevidenced for Liboora's actual corpus; and (ii) the office is wrong.
+
+---
+
+## 102. `SRCH-GAP-002` — remaining limbs, re-audited with authority separation (instruction §8)
+
+| # | Limb | True owning authority — **from repository governance** | Status this pass |
+|---|---|---|---|
+| **4** | `P2-A` **deployment** configuration | ⭐ **NOT an office — a deployment act.** Rank 1 `MP-CON-02` **L238**: *"Choosing a BaaS for V1 is a **deployment decision, not an architecture decision**"* | ✅ **CLOSED AS NON-BLOCKING** — §102.1 |
+| **7** | `P2-C` `ZWJ`/`ZWNJ` exception set + `N6`×`N4` ordering | **Architecture Owner** (`ADR-0099` **L110**) | ⚠ **OPEN — now performable** (§101) |
+| **14** | `P7` latency platform reconciliation | **EA + Architecture Owner** — `FU-17` | ⚠ **PARTIAL — unchanged.** EA NFR Budgets document does not exist (EA **L339-344**, zero values) |
+| **15** | `P7` **availability** | ⭐⭐ **SRE / Observability** — Rank 1 `MP-NFR-01` (`MASTER_PRD.md` **L495**) | ⛔ **OPEN — WRONG OFFICE, and the office is UNCONSTITUTED.** §102.2 |
+| **16** | `P7` throughput numeric | ⭐ **Deferred by the EA itself to V2** | ✅ **CLOSED AS OUT-OF-SCOPE** — §102.3 |
+| **17c** | `P8-C` rebuild verifiability | **AO + PO** joint — `FU-19` corpus definition | ⚠ **PARTIAL — unchanged** |
+
+### 102.1 ⭐ Limb 4 — CLOSED as non-blocking for Stage 3
+
+`P2-A` **deployment** configuration is not withheld for want of a decision; it is **assigned elsewhere by Rank 1**. `MP-CON-02` **L238** makes the engine/BaaS choice *"a **deployment** decision, not an architecture decision"*, and `MP-CON-01` **L237** requires vendors to *"live behind ports, wired at the composition root."* `ADR-0100` `D-1` already closed the **architecture contract** (limb 3) as a vendor-neutral logical pipeline.
+
+⭐ **Tested against the Stage-3 criteria, not asserted.** `PRD_LIFECYCLE.md` **§3 L88-106** lists Stage 3's checks: context ownership, edge existence, rank direction, authorization locus, credential locus, tenant scoping. ⛔ **A deployment-time vendor configuration is not among them, and cannot be** — Stage 3 *"validates the PRD against Ranks 1–5"*, and a composition-root wiring value is not a ranked-document statement. **Limb 4 is CLOSED for Stage-3 purposes: it is correctly assigned, correctly deferred, and blocks nothing this gate tests.**
+
+### 102.2 ⭐⭐ Limb 15 — the honest finding: the office does NOT EXIST (instruction §5)
+
+`P7` availability is owned by **SRE / Observability** (Rank 1 `MP-NFR-01`, **L495**). Measured this pass:
+
+| Measurement | Result |
+|---|---|
+| `SRE` or `Observability` as a constituted office in `PRD_OWNERSHIP_MODEL.md` | ⛔ **0 occurrences** |
+| … in `PRD_LIFECYCLE.md` §6 Roles | ⛔ **0 occurrences** |
+| Constituted offices | **six** — Product Owner, Architecture Owner, Domain Owner, Technical Owner (§2.2), Privacy Owner (§9), Governance Owner (§10) |
+
+⭐ **So `SRE / Observability` exists only as a Rank-1 Owner-cell label, with no constituted office to exercise it.** This is not a gap in `PRD-015`; it is a gap in the **ownership model**. Per instruction §5, the smallest lawful act is **not** to guess a value but to name the authority act required — see §104. ⛔ **The `99.9%` figure remains PROPOSED — NOT ratified**, exactly as recorded since Part V.
+
+### 102.3 ⭐ Limb 16 — CLOSED as out-of-scope for V1
+
+`P7` throughput was previously *"OPEN by instruction"* — i.e. open only because a prior instruction excluded it, never because authority was missing. **Measured this pass:** the Enterprise Architecture's own NFR Budgets tree (**L339-344**) scopes its entries by version, verbatim:
+
+```
+├── NFR Budgets (V1)
+│   ├── Latency Budgets (V1)
+│   ├── Availability Targets (V1)
+│   ├── Throughput Targets (V2)      ← V2
+│   ├── Cost Budgets (V2)
+│   └── Mobile Performance Budgets (V1)
+```
+
+⭐⭐ **`Throughput Targets` is scoped `(V2)` by the architecture itself.** `PRD-015` is a **V1** document. A V1 PRD cannot be blocked at Stage 3 by a budget the architecture defers to V2 — and stating a V1 throughput number would **contradict** that scoping. ⛔ **No QPS figure is invented.** **Limb 16 is CLOSED as out-of-scope for V1**, on the EA's own version scoping, not on convenience.
+
+### 102.4 `SRCH-GAP-002` — strict recomputation (instruction §12)
+
+| Class | Count | Limbs |
+|---|---|---|
+| ✅ **CLOSED** | **14** | 1, 2, 3, **4**, 5, 6, 8, 9, 10, 11, 12, 13, **16**, 17a/17b/17d |
+| ⚠ **PARTIAL** | **2** | 14 (`P7` latency), 17c (`P8-C`) |
+| ⛔ **OPEN** | **2** | 7 (`ZWJ`/`ZWNJ` + ordering — **now performable**), 15 (`P7` availability — **unconstituted office**) |
+
+⛔⛔ **`SRCH-GAP-002` = OPEN.** Two limbs closed this pass (4, 16) and **the gap still does not close.** Rule `X3` applies to my own arithmetic: *"A gap closes on **all** limbs, not a majority."* ⛔ I decline the framing *"14 of 18 — substantially complete"*.
+
+---
+
+## 103. `SRCH-GAP-007` — strict recomputation
+
+§42 **L985** states a **conjunction**: *"The language/script inventory **and** the declared variant/abbreviation vocabulary for §16 and §20."*
+
+| Sub-item | Status |
+|---|---|
+| 1 | Canonical language set (`SRCHPO-1`) | ✅ CLOSED |
+| 2 | Hinglish classification (`SRCHPO-2`) | ✅ CLOSED |
+| 3 | *"Where technically validated"* (`SRCHPO-3`) | ✅ CLOSED |
+| 4 | Indexed-field **inventory** (`SRCHPO-5`) | ✅ CLOSED — Part XI |
+| 5 | ⛔ **Field-level script values** (`B1` / `FU-20`) | ⛔ **BLOCKED** — §100 |
+| 6 | Variant/abbreviation **vocabulary** (`SRCHPO-4`) | ✅ CLOSED — Part X |
+| 7 | ⛔ **Unicode implementation content** (`FU-21`) | ⚠ **OPEN — now performable** (§101) |
+
+⛔⛔ **`SRCH-GAP-007` = OPEN. 5 of 7 closed.** The remaining conjunct is the **§16 half**: `SRCH-FR-024` **L416** conditions every normalization rule on *"**the field's declared script**"*, and **0 of 16** scripts are declared. ⭐ **Sub-item 7 improved from BLOCKED to performable, which is progress inside a conjunct — not closure of it.**
+
+---
+
+## 104. Instruction §5 — the smallest lawful authority acts, PREPARED not performed
+
+⛔ **Nothing below is executed here.** Each is the minimal act that would let the named blocker close, with the exact governance basis.
+
+| # | Blocker | Smallest lawful act | Who must act | Governance basis |
+|---|---|---|---|---|
+| **A-1** | `FU-20` / `B1` · limb 5 | Six ADR-borne amendments (one per owning frozen PRD) declaring the script for the fields it owns — **or** a human-principal conferral constituting one authoritative locus to carry all 16 | The **six owning PRD owners**, each for its own fields | `PRD_LIFECYCLE.md` **§4 L222-240** (ADR **before** the change; version, changelog, baseline, registry — the `ADR-0011` worked example) · **L177** |
+| **A-2** | `FU-21` · limb 7 | An Architecture Owner ADR defining the `ZWJ`/`ZWNJ` exception set and the `N6`×`N4` order, **citing UAX #29 (17.0.0 rev 47)** and disclosing that `Y4`'s script list omits Devanagari | **Architecture Owner** | `ADR-0099` **§2.3 L110** — evidence condition now ✅ **SATISFIED** (§101) |
+| **A-3** | `FU-18` · limb 15 | ⭐ **First constitute the office.** An ADR adding **SRE / Observability** to `PRD_OWNERSHIP_MODEL.md` as a constituted office — **or** a one-act conferral from the human principal — **then** ratify the availability target | **Governance Owner** (model amendment) → then **SRE / Observability** | `MASTER_PRD.md` **L495** (Rank 1 owner cell) · `PRD_OWNERSHIP_MODEL.md` **§12.1 L584-585** (*"filled **for this act only** by direct conferral from the human principal"*) |
+| **A-4** | `FU-17` · limb 14 | Create the **EA NFR Budgets** document with V1 latency/availability values | **EA + Architecture Owner** | EA **L339-344** (headings, zero values) · `DOCUMENTATION_BASELINE.md` **L191** |
+| **A-5** | `FU-19` · limb 17c | Define the *"V1 operational corpus"* so `P8-C`'s 30 min becomes verifiable | **AO + PO**, jointly | `ADR-0100` §3.6 · record `A5` **L2352** |
+| **A-6** | Stage-3 conferral itself | Appoint an **Architecture reviewer** for one act | **Human principal** | `PRD_LIFECYCLE.md` **§6 L277** · `ADR-0033` §7.1 **L169** (*"A conferral for one act is not a standing licence"*) · `PRD_REGISTRY.md` **L1528** (*"**0** standing appointments"*) |
+
+---
+
+## 105. Why no ADR is created by this Part (instruction §11)
+
+`ADR-INDEX.md` Process step **1**: *"A decision that changes structure, ownership, a boundary, or a platform-wide rule requires an ADR **before** implementation."* Tested against **each** act this Part performs:
+
+| This Part's act | Structure? | Ownership? | Boundary? | Platform rule? | ADR required? |
+|---|---|---|---|---|---|
+| Identifies UAX #29 as the applicable authority (§101) | ⛔ | ⛔ | ⛔ | ⛔ — cites an external standard; decides no Liboora rule | ⛔ **NO** |
+| Closes limb 4 as non-blocking (§102.1) | ⛔ | ⛔ — `MP-CON-02` already assigns it | ⛔ | ⛔ — applies Rank 1, creates nothing | ⛔ **NO** |
+| Closes limb 16 as out-of-scope for V1 (§102.3) | ⛔ | ⛔ | ⛔ | ⛔ — applies the EA's own `(V2)` scoping | ⛔ **NO** |
+| Records the consolidated-locus test failure (§100) | ⛔ | ⛔ — **declines** to move ownership | ⛔ | ⛔ | ⛔ **NO** |
+| Re-classifies `FU-21` BLOCKED → OPEN (§101.5) | ⛔ | ⛔ — owner unchanged (AO) | ⛔ | ⛔ | ⛔ **NO** |
+
+⭐ **The measured precedent for this shape is `ADR-0045`** — an accepted ADR whose entire content is *"`FEE-GAP-010` **CANNOT** be resolved from repository authority — a measured STOP"*, routing the decision to its true owner. ⚠ **But `ADR-0045` was authored by the office that held the routing question.** The acts here are recordings by the PO decision-recording agent, and the established locus for those is **this append-only record** (`HD-1`…`HD-16`, `D-1`…`D-7`, `SRCHPO-1`…`SRCHPO-5`, `SRCHRT-*`). ⛔ **Creating an ADR to record a routing this record already carries would itself be the second-source-of-truth defect.** ADR register unchanged: **88 files / 74 accepted**.
+
+---
+
+## 106. No-invention verification (instruction §3)
+
+| Category | Count | Note |
+|---|---|---|
+| Field script values declared | ⛔ **0** | Of 16 — §100 |
+| `ZWJ`/`ZWNJ` exception-set code points declared as Liboora policy | ⛔ **0** | `Y1`/`Y2` quoted as **Unicode facts**, ⛔ not adopted as a Liboora rule |
+| `N6`×`N4` orderings declared | ⛔ **0** | |
+| Vocabulary / aliases / abbreviations / transliterations | ⛔ **0** | `SRCHPO-4` preserved |
+| Analyzers · tokenizers · engines · vendors | ⛔ **0** | |
+| NFR values (latency · availability · throughput · QPS · corpus) | ⛔ **0** | `99.9%` remains **PROPOSED — NOT ratified** |
+| APIs · endpoints · BCs · edges · events | ⛔ **0** | |
+| `IMPL-*` identifiers | ⛔ **0** | |
+| Owners · offices · officers invented | ⛔ **0** | ⭐ SRE's **absence** is reported, not filled |
+| ADRs created | ⛔ **0** | §105 |
+| Unicode rules invented | ⛔ **0** | Every fact `Y1`…`Y6` is verbatim from UAX #29 17.0.0 rev 47 |
+| Frozen files modified | ⛔ **0** | 22/22 byte-identical |
+| Application code lines changed | ⛔ **0** | |
+
+**Preserved decisions (instruction §9):** `SRCHPO-1` · `SRCHPO-2` · `SRCHPO-3` · `SRCHPO-4` · `SRCHPO-5` · `SRCHAO-F5` · `ADR-0099` · `ADR-0100` `D-1`…`D-7` — all unchanged.
+
+---
+
+## 107. Stage 3 — eligibility re-measured (instruction §4, §10, §12)
+
+| Question | Answer |
+|---|---|
+| Blocking gaps in §42 | ⛔ **2 — `SRCH-GAP-002` and `SRCH-GAP-007`.** UNCHANGED |
+| Is Stage 3 **eligible**? | ⛔ **NO.** Both gaps declare *"**Blocks:** Stage 3"* (**L980**, **L985**) |
+| Is Stage 3 conferred here? | ⛔⛔ **NO** — expressly forbidden by instruction §10, and no reviewer is appointed |
+| Verdict | **B — CONDITIONAL / NOT CONFERRED** — **eleventh** consecutive |
+| Registry / stage | `PRD-015` stays registry **`PLANNED`**, Stage-2 **`DRAFT`**. ⛔ No freeze, no baseline, no `IMPL-*` |
+
+⭐⭐ **The single most consequential finding of this pass, stated plainly:** of the four blockers that remain, **three are blocked on authorities outside `PRD-015` entirely** — six frozen-PRD owners (`A-1`), an **unconstituted** SRE office (`A-3`), and a **non-existent** EA budgets document (`A-4`). ⛔ **No act available to any `PRD-015` office can close them.** Only `A-2` (`FU-21`) is now performable, and only by the Architecture Owner. `PRD-015`'s own drafting work is not what is holding Stage 3.

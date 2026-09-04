@@ -925,3 +925,208 @@ The instruction rightly warns: *"do NOT keep a blocker artificially OPEN if the 
 ⛔ **NOT CONFERRED** — limbs **A**, **B**, **C** each fail independently.
 ⛔ **`PRD-015` remains v0.1 `DRAFT`, registry `PLANNED`. NOT frozen · NOT baselined · NOT ranked · Stages 4–7 NOT entered.**
 ⛔ **Nothing was invented to make Stage 3 reachable.**
+
+---
+---
+
+# PART III — CONSOLIDATED GOVERNANCE RESOLUTION PASS (appended 2026-09-04)
+
+| Field | Value |
+|---|---|
+| **Act** | 🔍 **AUDIT + ROUTING, not conferral** |
+| **Subject** | sha256 `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — **byte-unchanged** |
+| **Predecessor** | `e337aff` — Part II verdict **B** |
+| **Verdict** | ⚠ **B — STAGE 3 CONDITIONAL** (unchanged) — ⭐ but **one blocker's remedy is now precisely identified**, and **one prior structural finding is FALSIFIED** |
+| **Reopened** | ⛔ **Nothing.** `F-5` Option A, `HD-1`…`HD-16`, `P2U`, `P5`, `P6`, `P8-A`, ENT policy and the English+Hindi scope are all carried forward untouched |
+
+## 30. ⭐⭐⭐ TASK 1 — `SRCH-GAP-003`: the mechanism EXISTS as a port, and a prior finding is FALSIFIED
+
+⚠⚠ **This pass's most significant measurement contradicts a finding this engagement previously accepted, and the correction is reported against my own prior record.**
+
+`PRD-015_STAGE3_CLOSURE_ASSESSMENT.md` **L32** (finding **`F-3`**) and **L161** state:
+
+> *"BC Map §7 contains **no `BC-23` → `BC-18` edge**, and there is **no `search:` module block**"* … *"⛔ **There is no `search:` block**"*
+
+⭐ **The first half is TRUE. The second half is FALSE, and it is falsified by direct measurement:**
+
+| Question | Measured evidence | Result |
+|---|---|---|
+| Does a search module block exist? | **`tool/module_dependencies.yaml` L373** — `platform/search:` with `rank: 5`, `banned_imports`, and assertions **`SE-1`**, **`SE-2`** | ✅ **IT EXISTS** |
+| Is `SEARCH → IAM` a permitted direction? | `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` **L140** — `R5 SEARCH` × `IDENTITY & ACCESS` = **`◇`** (permitted port use); rank **5 → 4** satisfies `L2` | ✅ **PERMITTED** |
+| Does an authorization port already exist for exactly this purpose? | **`identity.policy_decision`** — declared at manifest **L443**; consumed by **six** modules at Matrix **L193** (*"authorisation check"*), **L220** (⭐ *"ask BC-18, never evaluate or cache"*), **L248**, **L272**, **L290**, **L305** | ✅ **EXISTS, NAMED, IN USE** |
+| Is `platform/search` among its declared consumers? | Manifest **L443**: `[domain/library, domain/social, platform/ai, platform/analytics, platform/workflow]` | ⛔ **ABSENT** |
+| Is a `BC-23`→`BC-18` **edge** required? | ⛔ **NO** — `ADR-0033`; `ADR-0035` **L238**/**L427**; `PRD-008` **L878**: **14 of 17** `library_management` ports have **no** numbered edge. ⭐ **Ports are not edges** | ⛔ **NOT REQUIRED** |
+
+⭐⭐ **The consequence is a genuine narrowing, and it is the most useful output of this pass:** `SRCH-GAP-003` does **not** need a new mechanism, a new port name, a new API, a new event, or a BC Map edge. **The mechanism already exists** (`identity.policy_decision`), the **direction is already lawful** (Matrix `◇`, 5→4), the **write side is already enforced** (`SE-2`: *"every index write carries a permission scope"*), and the **declaring block already exists** (L373). What is missing is a **two-line declaration** in the manifest.
+
+### 30.1 The minimum lawful governance act
+
+| Field | Determination |
+|---|---|
+| **Category** | **(c) another existing governance artifact** — ⛔ **not (a) a BC Map edge**, ⛔ **not (b) an ADR** |
+| **The act** | Add `platform/identity:policy_decision` to `platform/search`'s ports, and add `platform/search` to `provides_ports.policy_decision.consumers`. ⭐ Precedent form: amendments **`A-2`** (`account_directory`) and **`A-3`** (`notification_address`) in the **same file** |
+| **Constraint to carry** | ⭐ The `person_identity` discipline **verbatim** (Matrix **L220**): ***"ask `BC-18` per request; never evaluate or cache"*** — reinforced by `MP-GBR-26` and `X-13` |
+| **Authority** | ⭐ **Architecture Owner.** ⚠ **Security Platform should be informed** — this is an authorization gap |
+| **Status here** | ⛔ **DECISION REQUIRED — NOT PERFORMED** |
+
+⛔⛔ **This pass did NOT make that amendment, and the reason is stated rather than glossed:** `tool/module_dependencies.yaml` is **build-enforcing** — a malformed edit breaks CI for **every** module — and your instruction authorises no artefact creation absent an explicit human decision. ⭐ **The remedy is identified with citations so the owner can act in one step; it is not executed.**
+
+⛔ **`BC-23`→`BC-18` edge: NOT created.** Shape (1) is refused on BC Map **L292**/**L453** and on the measurement that **ports are not edges**. ⛔ `E-27` remains permanently vacant and is not reusable.
+
+⚠ **Honest limitation:** the mechanism is *available*, not *declared*. Until the two lines exist, `BC-23` has **no declared query-time authorization path** while `SE-2` already binds its **write** path — an asymmetry that is itself the finding. ⇒ **`SRCH-GAP-003` remains OPEN and still blocks Stage 3** per §42 **L981**.
+
+## 31. TASK 2 — `SRCH-GAP-002`: all eight P-parameters
+
+| P | Parameter | Classification | Authority / exact missing input |
+|---|---|---|---|
+| **P1** | Engine / index technology | ⭐ **CLOSED (architecture) by explicit human decision** + **DEFERRED (selection)** | HD-9 = vendor-neutral; Rank 1 `MP-CON-02` — selection is a **deployment** decision. ⛔ Measured **0** hits for any engine name across `docs/` |
+| **P2** | Analyzer / tokenizer configuration | ⚠ **Authority CLOSED (`ADR-0099`) · content OPEN HUMAN DECISION** | **Missing:** the configuration itself — token boundaries, per-script rule bindings. Owner **Architecture Owner** under `ADR-0099` §2.3 |
+| **P3** | Edit-distance bound + min token length | ⚠ **DEFERRED by explicit human decision (HD-7)** | **Missing:** two numbers. ⛔ Measured **0** hits for `levenshtein|edit.distance|damerau|fuzziness`. Owner **Architecture Owner** |
+| **P4** | Minimum prefix length | ⚠ **DEFERRED by explicit human decision (HD-8)** | **Missing:** one number. ⛔ `SRCH-AC-030`'s `Lib`→`Library` is an **example, not a threshold** |
+| **P5** | Page-size cap | ✅ **CLOSED by repository authority** | `LCFG-12` = **20**, range 5–50, owner **Security** — `CONFIGURATION_GUIDE.md` **L362**; `14B` **L342**/**L374**. ⚠ Residual is **traceability** (`SRCHCL-C2`), not decision |
+| **P6** | Removal latency | ✅ **CLOSED by repository authority — removal latency ONLY** | `LCFG-6` = **60 s**, range 0–300 s, owner **Security** — `CONFIGURATION_GUIDE.md` **L356**; `Library_PRD_v1.md` **L721**. ⛔ **Not** a general propagation budget; `SEV-9` has none **by design** (BC Map **L427**) |
+| **P7** | Latency / throughput / availability | ⚠ **BLOCKED by another unresolved dependency** | Route **CLOSED** (`LIB-20.1`, `Library_PRD_v1.md` **L862**). **Missing:** the **EA NFR Budgets** values — EA **L339-344** measured to hold **ZERO** numbers. ⛔ Stating one here would **breach `LIB-20.1`** |
+| **P8-A** | Rebuildability / correctness | ✅ **CLOSED by repository authority** | `SRCH-INV-005`; BC Map **L453** (*"tested quarterly, not assumed"*); obligation `T-M` |
+| **P8-B** | Stale-serving window | ⚠ **Posture CLOSED (HD-12) · window OPEN HUMAN DECISION** | **Missing:** the window value. ⭐ Revoked/private **fail closed** — `SEV-9` + `SRCH-FR-013` are the limiting condition |
+| **P8-C** | Rebuild duration | ⚠ **BLOCKED by P7 / HD-11** | ⭐ A duration **is** a latency figure ⇒ routed by `LIB-20.1` to the empty EA document |
+| **P8-D** | Full + incremental selection rule | ⚠ **Modes CLOSED (HD-14) · rule OPEN HUMAN DECISION** | **Missing:** the selection rule and its triggers. ⛔ Not invented |
+
+⭐ **Tally: 3 of 8 rows carry authoritative values or closed architecture** (P5, P6, P8-A) — **up from 2**, because `ADR-0099` closed P2's *authority* and HD-9 closed P1's *architecture*. ⛔ **`SRCH-GAP-002` is NOT closed**, and ⛔ **not part-closed**: `SRCHCL-X2` bars part-closing a gap registered as **one item over eight parameters**. ⇒ **still blocks Stage 3** per **L980**.
+
+## 32. TASK 3 — `SRCH-GAP-007`: language, script, analyzer, vocabulary
+
+| # | Item | Established by repository authority? | Owner | Exact missing input |
+|---|---|---|---|---|
+| 1 | Per-field **script declaration carrier** | ⛔ **NO** — mechanism only (HD-1) | Product Owner (declaration) | The artefact **and** a script value per §14A.5 field — see §33 |
+| 2 | Analyzer / tokenizer **configuration** | ⛔ **NO** — authority only (`ADR-0099`) | **Architecture Owner** | The configuration; ⛔ 0 analyzer/tokenizer names exist repo-wide |
+| 3 | Exact **Unicode normalization rules** | ⛔ **NO** | **Architecture Owner** + **external Unicode authority** | The rule set. ⭐ Repository policy requires citing an authoritative Unicode/product source **before** claiming exact behaviour; ⛔ none is cited anywhere |
+| 4 | **ZWJ/ZWNJ** exception set **and order** | ⛔ **NO** — policy only (HD-4) | **External authority** (Unicode/product), applied by Architecture Owner | The exception list **and its ordering**. ⚠ Ordering is itself a correctness risk (`N6`×`N4`) |
+| 5 | **Vocabulary contents** | ⛔ **NO** — scope only (HD-16) | **Product Owner** (markets) **+ Architecture Owner** (analyzer) | The variant/abbreviation entries |
+
+**Language scope — ✅ CLOSED and preserved exactly:**
+
+| Aspect | Recorded position | Evidence |
+|---|---|---|
+| V1 canonical set | **English (Latin) + Hindi (Devanagari)** — a **closed set of two** | `SRCHPO-1` (**L57**); HD-16 |
+| Hinglish / Romanized Hindi | ⭐ **Supported *query behaviour* where technically validated — NOT a third canonical language** | `SRCHPO-2` (**L58**); `SRCHPO-3` (**L59**): *"where technically validated"* is **permissive, not required** |
+| ⛔ Not authorised | ⛔ No third canonical language · ⛔ no third index · ⛔ no transliteration engine · ⛔ no language-detection engine | `SRCHPO-X6` ⛔ REJECTED; `SRCH-BR-011` |
+| Normalization applicability | **Script-aware** (HD-2), **script-conditional** case folding (HD-3) | ⛔ No fictional Devanagari case folding; ⚠ HD-3's guard against the **empty-branch** inference preserved |
+| `F-5` Option A | ✅ **PRESERVED** — script is **consumed, never inferred** | ⛔ Not reopened |
+
+⛔ **`LCFG-2` does NOT close this.** Measured at `CONFIGURATION_GUIDE.md` **L352**: default `en`, range literally **"Supported set"** — which **defers** the very inventory `SRCH-GAP-007` requires, and is a **locale default**, not an analyzer/script inventory. ⭐ `SRCHCL-X3` already rejected this route and **stands**. ⇒ **still blocks Stage 3** per **L985**.
+
+## 33. TASK 4 — B1: the per-field script carrier
+
+| Question | Finding |
+|---|---|
+| Does a mechanism exist that can carry it **without** touching frozen §14A? | ✅ **YES — the PO-style declaration record**, on the **`SRCHPO-A3`** precedent: *"`SRCHPO-1` supplies §16 N3/N4 with a declared script domain **for the first time**"* (PO record **L112**) |
+| Why it does not require a §14A edit | ⭐ `AR-1` (**L39-50**): *"Discovery **references, never duplicates**"*. A declaration record **binds** a script to a field name that §14A already declares; it does **not** add an attribute to §14A |
+| Is frozen §14A modified? | ⛔ **NO.** `14A-Library-Discovery-And-Enrollment.md` **byte-unchanged**; its only lexical `script` hit remains the substring inside *"Description"* (measured: **1**) |
+| **Required content** | For each §14A.5 field: the field name (as §14A declares it) **+** exactly one declared script from the closed set `{Latin, Devanagari}` **+** the declaring authority |
+| Can this pass write it? | ⛔ **NO** — writing it requires **a script value per field**, which is a **Product Owner** product statement. ⭐ `F-5` **Option A** forbids inferring script, so inventing the bindings is doubly barred |
+| **Smallest governance remedy** | ⭐ **Product Owner** issues the declaration record (mechanism already precedented; ⛔ no new instrument needed) |
+
+**Status: ⚠ MECHANISM CLOSED · ⛔ CONTENT OPEN — DECISION REQUIRED (Product Owner).** It feeds `SRCH-GAP-007` and `SRCH-GAP-002`, so it **contributes to** the Stage-3 block without being a separately registered gap.
+
+## 34. TASK 5 — `SRCH-GAP-008`: routing confirmed, non-blocking preserved
+
+| Check | Result |
+|---|---|
+| Does `ADR-0098` assign `XPC-OD-010` to the Architecture Owner? | ✅ **CONFIRMED** — `ADR-0098` **L222**: *"`XPC-OD-010` bot/scraping defence │ ⛔ **OPEN** — "NOT resolved by C7" │ **Architecture Owner**"* |
+| Is `XPC-OD-010` itself closed? | ⛔ **NO** — `ADR-0098` **L13** admits it **OPEN**, one of six not closed by that baseline |
+| Status of `SRCH-GAP-008` | ⭐ **OWNED / ROUTED — DECISION PENDING.** The *office* exists; the *decision* does not |
+| ⛔ Forced closure? | ⛔ **NO.** Ownership is not a decision — the same discipline as `SRCHCL-X1` (*an office is not an act*) |
+| **Does it block Stage 3?** | ⛔ **NO — EXPLICITLY PRESERVED.** §42 **L986**: `Blocks` = ⛔ *"Nothing in V1"*; §30 **L770**: *"recorded, not assigned"* |
+| Subject text | ⚠ Still reads *"No owner exists"* — ⛔ **NOT edited** (subject SHA must hold). **Routed** to the Architecture Owner with both values named, on the `GCP-25` precedent |
+
+⛔ **`SRCHCL-X6` is not reopened** — it refused borrowing an owner from the *invitation* rate limits (`ICFG-7`…`ICFG-10`), an adjacent register. This reads the owner off the gap's **own cited basis**.
+
+## 35. TASK 6 — Stage-3 readiness, recomputed on four separate axes
+
+### A. Architecture alignment — the six checks
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Ownership exclusive | ✅ **PASS** | `BC-23` sole owner (BC Map **L132**); `AR-1` |
+| 2 | Required edges present | ✅ **PASS** | `E-21` (**L330**) and `E-26` (**L335**) both inbound and declared; ⭐ the entitlement dependency is a **port**, and ports need no edge (`ADR-0033`); ⛔ **0 edges minted** |
+| 3 | Rank direction | ✅ **PASS** | ⭐ `SEARCH` rank **5 → 4** `IAM` satisfies Matrix `L2`; Rank 1 `MP-CON-02` respected by HD-9 |
+| 4 | Authorization only in `BC-18` | ✅ **PASS** | `X-13`; `identity.policy_decision` is **`BC-18`'s** port; HD-15 keeps entitlement truth out of `BC-23`; subject defines **0** permissions and **0** roles |
+| 5 | Credential / OTP / session only `BC-18` | ✅ **PASS** | `ID-1`; subject holds **0** such requirements |
+| 6 | Tenant scoping | ✅ **PASS** | `SRCH-INV-002` (**L286**), `SRCH-INV-004` (**L324**); ⭐ **`SE-1`** — *"every index name is tenant-prefixed"* — is **machine-enforced** at manifest **L379** |
+
+### ✅ **6 of 6 PASS** — and the other three axes, held strictly apart
+
+| Axis | Instrument | Result |
+|---|---|---|
+| **B. Parameter completeness** | `SRCH-GAP-002`/`-003`/`-007`, `Blocks` = *"Stage 3"* | ⛔ **FAIL — 3 gaps open** |
+| **C. Implementation readiness** | §45.1 gates 1–8 | ⛔ **FAIL — 0 of 8 done** |
+| **D. Governance conferral readiness** | Closure-test limbs **A/B/C/D** | ⛔ **FAIL — A, B, C fail independently** |
+
+## 36. ⛔ FINAL VERDICT: **B — STAGE 3 CONDITIONAL / NOT CONFERRED**
+
+⭐ **Unchanged from Part II — and unchanged *despite* this pass producing genuinely favourable evidence.** The `platform/search` discovery makes `SRCH-GAP-003` far cheaper to close than any prior record believed, but **cheap to close is not closed**:
+
+| Why not **A (READY)** | Why not **C (BLOCKED)** |
+|---|---|
+| `SRCH-GAP-002`/`-003`/`-007` are open and **the subject itself** classifies each as blocking Stage 3 (**L980**, **L981**, **L985**). ⛔ A review may not downgrade its subject's declared blockers (`SRCHCL-X2`). Limb **C** additionally has **no conferral**: the office is `ARB` (**L197**) but **VACANT** under §7 rule 4, fillable *"for this act only"* (§12.1); `ADR-0033` §7.1 bars inheriting `SRCHAO-F5` | Every Stage-3 blocker **has a registered owner**; 6/6 alignment PASS; ⭐ **`SRCH-GAP-003`'s mechanism now proven to EXIST**, needing a two-line declaration rather than new architecture; security posture **tightened** by HD-12 and HD-15; ⛔ 0 unowned Stage-3 blockers |
+
+⛔ **The verdict was not improved to reflect the good news, and it was not withheld to look rigorous.** It follows from the §42 `Blocks` column and the conferral limb.
+
+## 37. Readiness statement for a future one-act conferral
+
+⛔ **NOT READY — and therefore no readiness statement is issued.** Your instruction conditions it on *"if and ONLY IF all repository-defined Stage-3 blockers are genuinely closed"*; three are open. The **precise sequence** to reach READY:
+
+| # | Act | Authority | Closes |
+|---|---|---|---|
+| 1 | Two-line manifest declaration (§30.1) — ⭐ **the single highest-value act available** | **Architecture Owner** (inform Security) | `SRCH-GAP-003` |
+| 2 | Decide P2 config, P3, P4, P8-B window, P8-D rule under `ADR-0099` | **Architecture Owner** | most of `SRCH-GAP-002` |
+| 3 | Author **EA NFR Budgets** values | EA NFR document owner | P7, P8-C |
+| 4 | Cite the authoritative Unicode/product source for normalization + ZWJ/ZWNJ | **External authority** → Architecture Owner | `SRCH-GAP-007` (3, 4) |
+| 5 | Issue the per-field script declaration record; declare markets + vocabulary | **Product Owner** | B1, `SRCH-GAP-007` (1, 5) |
+| 6 | ⭐ **A one-act conferral from the human principal naming Stage 3 for `PRD-015`** | **Human principal** | limb **C** |
+
+⚠ **Steps 1–5 cannot substitute for step 6, and step 6 cannot substitute for steps 1–5.**
+
+## 38. Findings registered by this pass
+
+| ID | Finding | Class |
+|---|---|---|
+| **`SRCHGR-A1`** | ⭐⭐⭐ **`platform/search` module block EXISTS** (manifest **L373**) with assertions `SE-1`/`SE-2`. `SRCHCL-A3`/`F-3`'s *"there is no `search:` module block"* is **FALSIFIED** | **ACCEPTED — corrects a prior record** |
+| **`SRCHGR-A2`** | ⭐⭐ `SRCH-GAP-003` needs **no new mechanism**: `identity.policy_decision` exists (**L443**), is used by six modules, and `SEARCH→IAM` is `◇` at 5→4. The gap is a **two-line declaration**, not missing architecture | **ACCEPTED** |
+| **`SRCHGR-A3`** | ⭐ **No BC Map edge and no ADR are required** for the entitlement path — ports are not edges (`ADR-0033`; 14 of 17 `library_management` ports lack one). Remedy category = **(c)** | **ACCEPTED** |
+| **`SRCHGR-A4`** | ⚠ **Asymmetry named:** `SE-2` already binds `BC-23`'s **write** path to a permission scope while its **query** path has no declared authorization port | **ACCEPTED — security finding** |
+| **`SRCHGR-A5`** | `SRCH-GAP-008` is **OWNED/ROUTED, decision pending** (`ADR-0098` **L222**), and remains ⛔ **non-blocking** | **ACCEPTED** |
+| **`SRCHGR-A6`** | P-parameter tally rises **2 → 3 of 8** (P1 architecture, P2 authority added); ⛔ the gap still does not part-close | **ACCEPTED** |
+| **`SRCHGR-X1`** | *Proposed:* since the port exists and the direction is lawful, `SRCH-GAP-003` is **effectively closed** ⇒ Stage 3 READY | ⛔ **REJECTED** — `platform/search` is **absent** from `policy_decision.consumers` (**L443**). *Available* is not *declared*; `PRD-023` **L963**/**L164** treat non-declaration as **forbidden by omission**, so the undeclared call would be unlawful, not merely undocumented |
+| **`SRCHGR-X2`** | *Proposed:* make the two-line manifest amendment now, since it is small and precedented | ⛔ **REJECTED** — an **Architecture Owner** act on a **build-enforcing** file; your instruction bars artefact creation absent an explicit authorized decision. ⭐ Identified, cited, **not executed** |
+| **`SRCHGR-X3`** | *Proposed:* Hinglish support implies a transliteration or detection capability may be specified | ⛔ **REJECTED** — `SRCHPO-2`/`-3`: *"where technically validated"* is permissive; `SRCHPO-X6` already rejected this; `SRCH-BR-011` forbids it |
+| **`SRCHGR-X4`** | *Proposed:* `LCFG-2` closes the language inventory limb of `SRCH-GAP-007` | ⛔ **REJECTED** — its range is literally *"Supported set"*, which **defers** the set; and it is a locale default, not a script/analyzer inventory (`SRCHCL-X3` stands) |
+| **`SRCHGR-X5`** | *Proposed:* `E-26` (`BC-27 AI → BC-23`, *"permission-aware ports only"*) already supplies the query-time entitlement mechanism | ⛔ **REJECTED** — `E-26` is **inbound to** `BC-23` and serves **`BC-27`'s** retrieval; it neither states how `BC-23` evaluates a **source system's** decision nor names `BC-18`. ⭐ An adjacent permission-aware port is not this mechanism |
+| **`SRCHGR-X6`** | *Proposed:* write the per-field script declaration record now, since HD-1 named the mechanism | ⛔ **REJECTED** — it requires a script **value per field**, a Product Owner statement; `F-5` Option A forbids inferring it |
+
+⭐ **Six of twelve are rejections, each with its reason** — `PRD_LIFECYCLE.md` **L104-106**.
+
+## 39. Integrity
+
+| Item | Result |
+|---|---|
+| Subject SHA256 | ✅ `fe3093e6…c2c4544` **byte-unchanged** |
+| Frozen PRDs / ADRs / baselines / registries / ownership model | ✅ **byte-unchanged** |
+| `tool/module_dependencies.yaml` | ✅ **byte-unchanged** — ⛔ the identified two-line amendment **NOT applied** |
+| `LIBOORA_MODULE_DEPENDENCY_MATRIX.md` · BC Map | ✅ **byte-unchanged** |
+| New BC | ✅ **0** — contexts stay **31** |
+| New edge | ✅ **0** — ⛔ `BC-23`→`BC-18` **not** created, though it would have "helped" |
+| New API / port / event | ✅ **0** — ⭐ the entitlement path reuses an **existing** port name |
+| Invented values / Unicode rules / vendors / NFR numbers / thresholds / vocabulary | ✅ **0** |
+| Invented script behaviour | ✅ **0** — `F-5` Option A honoured |
+| `IMPL-*` / code | ✅ **0 / 0 lines** |
+| Lifecycle | ⛔ v0.1 `DRAFT`, registry `PLANNED`; ⛔ Stages 4–7 not entered; ⛔ not frozen/baselined/ranked |
+| ⚠ Routed, not repaired | `SRCH-GAP-008` owner text in the subject · `SRCHCL-A3`/`F-3` falsification (both prior records carry **no-in-place-edit** rules) · `DOCUMENTATION_BASELINE.md` **L248** *"72 accepted"* vs **73** · `SRCHCL-C1`, `SRCHCL-C2` |
+| ⚠ Disclosed | ⛔ No `prd015_*` validator in `tool/docs_check/`; ⛔ none created |
+
+---
+
+**END OF PART III.** ⚠ **VERDICT: B — STAGE 3 CONDITIONAL / NOT CONFERRED.** ✅ **6/6 alignment PASS.**
+⭐ **`SRCH-GAP-003`'s remedy is now precisely identified as a two-line manifest declaration — ⛔ and deliberately NOT performed.**
+⛔ **Architecture Owner one-act conferral: NOT READY.**
+⛔ **Nothing reopened · nothing invented · no frozen artefact touched.**

@@ -1653,3 +1653,470 @@ this record would have had to report that as a defect.
 ⛔ **3 — FALSE EQUIVALENCE AVOIDED.** `LCFG-6` is also **60 s**, and it would have been effortless to report *"the repository already says 60 s, so `P8-B` is closed by repository authority."* **That would have been wrong.** `CONFIGURATION_GUIDE.md` **L356** defines `LCFG-6` as *"Discovery index propagation"* — **"Removal latency only"** — and **L377** states it *"**must never be consulted on an authorization path**"*, because a propagation window wired into a permission check would breach `MP-GBR-26` *"using a Rank 7 configuration value"* | ⛔ `LCFG-6` (`P6`, **removal latency**, already closed) and `HD-PRD015-08` (`P8-B`, **stale-serving window**) are **different parameters that share a number.** Conflating them would be a category error and is expressly refused
 ⛔ **4 — SECOND FALSE EQUIVALENCE AVOIDED.** `LCFG-13` is a *"Public preview cache TTL"* of **300 s** whose rationale ends *"**Never** applies to an authorization decision"* | ⛔ Also not the same parameter. Not used
 ✅ **5** | The security limb's three clauses were each matched to pre-existing authority: fail-closed = §35 **L815** (*"⭐ **Fail closed.** ⛔ `BC-23` **MUST NOT** fall back to reading a domain table"*) + BC Map **L330** (*"Search never reads domain tables"*); stale-never-in-caller's-favour = §33 **L793** (*"Staleness **MUST NOT** be resolved in the caller's favour on authorisation … the index never grants access"*); no-cached-authorization = Matrix **L220** (*"ask BC-18, never evaluate or cache"*) + `MP-GBR-26` | ✅ **The human input adds no new security rule. It ratifies three that already bind.** Recorded as confirmation, ⛔ not as a new decision |
+
+---
+
+### 48.9 `HD-PRD015-09` — P8-C rebuild duration
+
+| | |
+|---|---|
+**Exact human input** | Full rebuild should complete within **30 minutes** for the **V1 operational corpus**. A target/budget, **not** a guarantee for arbitrary corpus sizes. ⛔ **Do not invent corpus size.** If EA NFR governance requires a different format or a capacity-based definition, **preserve the human intent and record the exact required form** |
+**Repository compatibility** | ⛔ **Same locus conflict as `HD-PRD015-05`.** A rebuild-duration budget is a **platform NFR budget**, and `LIB-20.1` (**L862-864**, FROZEN) requires such budgets to be *"taken from the Enterprise Architecture NFR Budgets document"*. §34 **L805** independently routes rebuild posture to `SRCH-GAP-002`: *"⛔ **Not decided here**"* |
+**Authority classification** | ⛔ **`REQUIRES SEPARATE GOVERNANCE ACT`** (Architecture Owner) |
+**Downstream impact** | `P8-C` has a recorded human intent with an explicit self-limiting qualifier |
+**Closure status** | ⛔ **NOT CLOSED. EA NOT MODIFIED.** Follow-up at §55 |
+
+✅ **The instruction's *"do not invent corpus size"* is satisfied, and the satisfaction is checkable.** The phrase
+*"the V1 operational corpus"* is recorded **exactly as supplied**, with **no** document count, row count, index
+size, byte figure or growth rate attached anywhere in Part V. ⚠ **This is also, honestly, the weakness of the
+value:** a duration target whose denominator is undefined is not yet measurable. That is a property of the input,
+disclosed here rather than papered over, and it is a second independent reason `P8-C` cannot be reported CLOSED.
+
+---
+
+### 48.10 `HD-PRD015-10` — P8-D rebuild selection rule
+
+| | |
+|---|---|
+**Exact human input** | Both modes exist. **INCREMENTAL** for: ordinary additions, ordinary updates, ordinary removals, routine index refresh. **FULL** for: index corruption, unrecoverable generation inconsistency, schema/mapping incompatibility, analyzer/tokenization configuration change that invalidates existing index contents, explicit migration requiring complete regeneration. If repository authority already defines a stricter rule, **preserve the stricter rule.** ⛔ Do not invent additional triggers |
+**Repository compatibility** | ✅ **No contradiction. Stricter-rule search performed and returned nothing — measured: grep for full-rebuild / incremental-rebuild / reindex across the subject and `ARCHITECTURE_RULINGS.md` returned ZERO hits.** ⚠ Two **constraints** on any rebuild do exist and are preserved intact — see below |
+**Authority classification** | **`HUMAN DECISION`** (the selection rule) + **`REQUIRES SEPARATE GOVERNANCE ACT`** (binding act, `SRCH-GAP-002` `P8`) |
+**Downstream impact** | ⭐ The **fourth FULL trigger is architecturally significant**: *"analyzer/tokenization configuration change that invalidates existing index contents"* is exactly the operational consequence of `ADR-0099` §2.2 `C-1` (index/query symmetry). ✅ The two decisions are mutually coherent — a later analyzer act now has a declared rebuild consequence |
+**Closure status** | ⚠ **RECORDED, NOT CLOSED** |
+
+✅ **Two existing constraints preserved, neither weakened by the proposed rule:**
+
+| Constraint | Source | Interaction with the proposed rule |
+|---|---|---|
+Rebuild **MUST NOT** re-admit removed documents — replay MUST honour `*Deleted` (`SRCH-FR-011`), anonymisation (`SRCH-FR-012`), privacy mode (`SRCH-FR-013`), eligibility loss (`SRCH-FR-014`) | §34 **L803-804** | ✅ Untouched. The rule selects **which** mode runs; it does not license either mode to re-admit
+A rebuilt index **MUST** be **equivalent** to the incrementally maintained one for matching and ordering | §34 **L801-802** | ⭐ **This is the constraint that makes the proposed rule non-arbitrary.** Because both modes must yield equivalent results, the choice between them is genuinely an *operational* selection and not a semantic one — which is why a selection rule is lawful to state at all |
+
+---
+
+### 48.11 `HD-PRD015-11` — B1 per-field script
+
+| | |
+|---|---|
+**Exact human input** | Use the already-approved **PO-style declaration-record** mechanism. V1: English searchable content → **Latin** *where applicable*; Hindi searchable content → **Devanagari** *where applicable*. ⛔ **Do NOT infer script from field names.** For multilingual fields, record the applicable script scope **explicitly** rather than guessing. ⛔ Do NOT modify frozen §14A. ⛔ Do NOT transfer ownership to `BC-23`. If an owning context must supply its field-level declaration, **record the required declaration and owner** |
+**Repository compatibility** | ✅ Mechanism compatible (`SRCHPO-A3` declaration-record precedent; `SRCHAO-F5` = Option A: script **consumed, never inferred**). ⛔ **But the field-level content does not exist and cannot be supplied here — see §48.11a** |
+**Authority classification** | Mechanism = **`REPOSITORY AUTHORITY`**; script→language mapping = **`HUMAN DECISION`**; ⛔ per-field declarations = **`REQUIRES SEPARATE GOVERNANCE ACT`** (each owning context, as Product Owner) |
+**Downstream impact** | `B1` has a mechanism, a mapping and a named owner set. ⛔ It has **zero** actual field declarations |
+**Closure status** | ⛔ **NOT CLOSED.** `SRCH-GAP-007` sub-item 3 remains OPEN |
+
+#### 48.11a Why no field declaration could lawfully be written here
+
+| # | Measurement | Consequence |
+|---|---|---|
+1 | `PRD-015_F5_CLASSIFICATION_DECISION_PACKET.md` **L175**: *"**Zero** of the seven owning contexts declares a script for any field it owns"* | The carrier is empty at source
+2 | `14A-Library-Discovery-And-Enrollment.md` — grep for declared-script / `script:` = **ZERO hits**; SHA `fb29657c9edb32f973d75b28fb38a70fc3b45c8080a948c228a5c5f3d1bbbae0` **byte-unchanged this pass** | ✅ Frozen §14A **not modified**, as instructed
+3 | The instruction itself forbids the only available shortcut: ⛔ *"Do NOT infer script from field names"* | ⭐ **Without name-inference and without an owner declaration, there is no third source.** Writing declarations would require exactly the inference the principal forbade
+4 | ⛔ *"Do NOT transfer ownership to `BC-23`"*, and `SRCH-XC-014` (**L341**) already forbids `BC-23` hardcoding *"any consumer's field names, surface or product vocabulary"* | Human instruction and repository exclusion agree
+
+⭐ **The honest shape of `B1` after this pass:** the **mechanism** is settled, the **mapping rule** is settled, the
+**owner** is named, and the **payload is empty**. Three of four limbs closed does not close the item, because the
+empty limb is the one Stage 3 needs.
+
+---
+
+### 48.12 `HD-PRD015-12` — language scope
+
+| | |
+|---|---|
+**Exact human input** | Canonical V1 = **English + Hindi**. Hinglish / Romanized Hindi = supported **query behaviour only**, *where technically validated*. It is **NOT** a third canonical language, **NOT** a third canonical index, **NOT** a new BC, **NOT** an automatic vocabulary expansion. ⭐ **Device locale MUST NOT expand the `BC-23` V1 language inventory** |
+**Repository compatibility** | ✅ **Confirms existing authority on every limb.** `SRCHPO-1` (closed set of two) · `SRCHPO-2` (Hinglish = query behaviour, not canonical) · `SRCHPO-3` (*"where technically validated"*) · `HD-16` · `ADR-0099` `C-8`/`C-9`. ⚠ On device locale: grep for device-locale / system-locale in `CONFIGURATION_GUIDE.md` and `MASTER_PRD.md` = **ZERO hits**, so the clause **forecloses a drift path rather than resolving a conflict** |
+**Authority classification** | **`REPOSITORY AUTHORITY`** for the two-language scope and Hinglish classification; **`HUMAN DECISION`** for the device-locale non-expansion clause |
+**Downstream impact** | ✅ **`SRCH-GAP-007` sub-item 1 (language scope) is CLOSED.** ⭐ The device-locale clause additionally protects `LCFG-2`, whose Range at **L352** is the open-ended *"Supported set"* — a phrase that would otherwise be the natural vector for locale-driven inventory growth |
+**Closure status** | ✅ **CLOSED** |
+
+⭐⭐ **The device-locale clause is the most valuable thing in this decision, and its value is not obvious.**
+`LCFG-2` (**L352**) sets Language default `en` with Range *"Supported set"* — a **deferred** inventory. Nothing in
+the repository previously said that a device's locale could not enlarge that set. The clause is therefore a
+**genuine addition** rather than a restatement, and it is classified as a `HUMAN DECISION` for exactly that reason.
+
+---
+
+### 48.13 `HD-PRD015-13` — vocabulary
+
+| | |
+|---|---|
+**Exact human input** | English + Hindi scope. ⛔ **Do NOT invent vocabulary.** ⛔ Do NOT automatically add synonyms, aliases, abbreviations, transliteration dictionaries or Hinglish dictionaries. Record vocabulary content **only if an authoritative Product Owner source exists**; otherwise keep vocabulary content **OPEN** |
+**Repository compatibility** | ✅ Compatible and confirmatory. §20 **L551-553**: *"⚠ **V4 is deliberately narrow.** An undeclared abbreviation table is indistinguishable from invented product vocabulary, which `SRCH-XC-014` forbids"*; `SRCH-BR-011` (**L548-549**) requires equivalence to derive from *"a **declared** rule set or vocabulary"* and forbids inference from usage or any learned model |
+**Authority classification** | **`REPOSITORY AUTHORITY`** for the prohibition; **`HUMAN DECISION`** for the express instruction to keep content OPEN |
+**Downstream impact** | The **rule classes** `V1`…`V4` (**L541-544**) remain required; the **inventory** remains absent |
+**Closure status** | ⛔ **OPEN by express human instruction.** `SRCH-GAP-007` sub-item 6 remains OPEN |
+
+#### 48.13a The authoritative-source search, and its result
+
+A repository-wide grep for synonym / abbreviation / transliteration terms across `docs/30-product/`, excluding
+`PRD-015*`, returned **no product-vocabulary source of any kind.** Every hit was one of: an English-prose use of
+the word *"synonym"* in a terminology table (`PRD-006` **L42** — *"**SHALL** — Synonym of **MUST**"*), a governance
+note about a prose abbreviation (`PRD-023_STAGE1_DISCOVERY.md` **L421**, **L624**;
+`PRD-004_FINAL_FREEZE_CLOSURE_REPORT.md` **L125**), or a warning **against** inventing vocabulary (`PRD-020`
+**L402**: *"inventing a synonym for a governed term is how a ubiquitous language decays"*).
+
+⛔ **Result: zero authoritative Product Owner vocabulary sources exist.** Therefore, per the human instruction's own
+conditional, the vocabulary content stays **OPEN**. ⭐ **`V4`'s own illustration — `lib` ≡ `library`, "only where
+declared" — was available and was NOT adopted as a vocabulary entry**, because an illustration inside a rule-class
+table is not a declared vocabulary.
+
+---
+
+### 48.14 `HD-PRD015-14` — conferral
+
+| | |
+|---|---|
+**Exact human input** | ⛔ *"This prompt **DOES NOT** confer Stage 3."* Even if every blocker closes, report only **READY FOR ARCHITECTURE OWNER ONE-ACT CONFERRAL**. A separate direct human conferral is required |
+**Repository compatibility** | ✅ Consistent with `ADR-0033` §7.1 (*"A conferral for one act is not a standing licence"*), `SRCHCL-X1` (*"an office is not an act"*) and `PRD_LIFECYCLE.md` **L88-106** |
+**Authority classification** | **`REPOSITORY AUTHORITY`** + **`HUMAN DECISION`** — a withholding, which requires no further authority to be effective |
+**Downstream impact** | ⛔ **Binding on this pass.** No conferral performed |
+**Closure status** | ✅ **OBSERVED** |
+
+⚠ **This clause turns out to be moot on the facts, and that is worth stating.** `HD-PRD015-14` matters only if the
+blockers close. **They do not close** (§53). So the ceiling the principal imposed was never reached — the pass
+stops **below** it, on the evidence, not merely at it.
+
+---
+
+## 49. ⭐⭐⭐ THE UNICODE EVIDENCE — cited, not invented
+
+### 49.1 The source
+
+| Field | Value |
+|---|---|
+**Document** | Unicode® Standard Annex **#31**, *"Unicode Identifier and Pattern Syntax"* |
+**URL** | `https://www.unicode.org/reports/tr31/` |
+**Version** | **Unicode 17.0.0** |
+**Revision** | **43** — `https://www.unicode.org/reports/tr31/tr31-43.html` |
+**Date** | **2025-08-20** |
+**Editors** | Mark Davis, Robin Leroy |
+**Status (verbatim)** | *"This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium. **This is a stable document and may be used as reference material or cited as a normative reference by other specifications.**"* |
+**Standing note (verbatim)** | *"A **Unicode Standard Annex (UAX)** forms an **integral part of the Unicode Standard**, but is published online as a separate document."* |
+**Related normative documents cited by UAX #31** | **UTS #39** *Unicode Security Mechanisms*; **UTR #36** *Unicode Security Considerations*; **UTS #55** *Unicode Source Code Handling* |
+
+✅ **This satisfies `ADR-0099` L110's requirement that the exception decision be *"evidence-bound to the applicable
+Unicode/product authority."*** It is a normative, citable, versioned, dated source — not a blog, not a vendor
+document, not a recollection.
+
+### 49.2 ⭐ The UNICODE FACTS — §2.3 *Layout and Format Control Characters*, quoted verbatim
+
+| # | Fact, verbatim from UAX #31 §2.3 |
+|---|---|
+**U-1** | *"Certain Unicode characters are known as Default_Ignorable_Code_Points. These include variation selectors and **characters used to control joining behavior**, bidirectional ordering control, and alternative formats for display (having the General_Category value of Cf)."* |
+**U-2** | *"While not all Default_Ignorable_Code_Points are in XID_Continue, the variation selectors and **joining controls _are_ included in XID_Continue**."* |
+**U-3** | *"**The joining controls are used in the orthographies of some languages**, as well as in emoji ZWJ sequences."* |
+**U-4** | *"Because variation selectors and joining controls request a difference in display but do not guarantee it, they do not work well in general-purpose identifiers. **A profile should be used to remove them from general-purpose identifiers** (along with other Default_Ignorable_Code_Points), **unless their use is required in a particular domain**, such as in a profile that includes emoji."* |
+**U-5** | *"**Comparison.** In any environment where the display form for identifiers differs from the form used to compare them, **Default_Ignorable_Code_Points should be ignored for comparison**. For example, this applies to case-insensitive identifiers."* |
+**U-6** | *"An implementation of UAX31-R4 and UAX31-R5 … that compares identifiers under the **identifier caseless match** defined by **D147**, that is, **canonical decomposition (NFD) followed by the toNFKC_Casefold operation, ignores Default_Ignorable_Code_Points**."* |
+**U-7** | *"The **General Security Profile** defined in Section 3.1 … in **UTS #39**, Unicode Security Mechanisms … **excludes all Default_Ignorable_Code_Points by default**, including variation selectors."* |
+**U-8** | §7.3 **Default-Ignorable Exclusion Profile**, verbatim: *"The default-ignorable exclusion profile for default identifiers consists of the exclusion of the code points with property Default_Ignorable_Code_Point from the sets Start and Continue in definition UAX31-D1."* With the note: *"While it reduces the attack surface, excluding default-ignorable code points **does not prevent spoofing issues**."* |
+**U-9** | §1.3 *Display Format*: *"Implementations may use a format for **displaying** identifiers that differs from the internal form used to **compare** identifiers."* |
+
+### 49.3 ⭐⭐ What the facts DO and DO NOT establish — the boundary the instruction demanded
+
+| Question | Answer from UAX #31 | Class |
+|---|---|---|
+Are `ZWJ` / `ZWNJ` `Default_Ignorable_Code_Point`s? | ✅ **Yes** — `U-1` (*"characters used to control joining behavior"*), `U-2` (*"joining controls"*) | **UNICODE FACT** |
+Is **stripping** them the recommended default for a **comparison** form? | ✅ **Yes** — `U-5` (*"should be ignored for comparison"*), `U-8` (a standard profile exists that excludes them), `U-7` (the security profile excludes them **by default**) | **UNICODE FACT** |
+Does Unicode itself contemplate **exceptions** to that default? | ✅ **Yes, expressly** — `U-4`: *"**unless their use is required in a particular domain**"*, and *"For such a profile it may be useful to explicitly retain or even add certain Default_Ignorable_Code_Points"* | **UNICODE FACT** |
+Are joining controls linguistically meaningful in some orthographies? | ✅ **Yes** — `U-3`: *"used in the orthographies of some languages"* | **UNICODE FACT** |
+Does the split between a **display** form and a **comparison** form have Unicode standing? | ✅ **Yes** — `U-9`, `U-5` | **UNICODE FACT** |
+⛔ Which **specific** `ZWJ`/`ZWNJ` sequences must be retained for **Devanagari** in Liboora's corpus? | ⛔ **NOT ANSWERED.** UAX #31 names no script-specific retention list. `U-3` says *"some languages"* without enumerating them | ⛔ **LIBOORA PRODUCT POLICY — OPEN** |
+⛔ Does the `N6` control-removal stage run **before** or **after** the `N4` diacritic-folding stage? | ⛔ **NOT ANSWERED.** `U-6` describes **one** composite operation (NFD → `toNFKC_Casefold`) for identifier caseless match, which is **not** the same as `PRD-015`'s `N1`…`N6` rule set, and UAX #31 does not order Liboora's stages | ⛔ **LIBOORA ARCHITECTURE DECISION — OPEN** (`ADR-0099` **L110**) |
+⛔ Is `PRD-015` search matching an *"identifier"* in UAX #31's sense at all? | ⚠ **Strictly, no.** UAX #31 governs **identifiers and pattern syntax**. `BC-23` matches **natural-language names and text** | ⚠ **DISCLOSED LIMITATION — see §49.4** |
+
+### 49.4 ⚠⚠ The limitation of this evidence, disclosed because it weakens the case
+
+⭐ **The most important paragraph in §49, and the one a less careful pass would omit.**
+
+UAX #31's scope is **identifiers and pattern syntax** — programming-language variables, domain names, hashtags. It
+is **not** a specification for **natural-language full-text search**. `BC-23` matches library names, branch names
+and descriptive text. So `U-1`…`U-9` are **directly authoritative** on three things and **analogically
+persuasive** on the fourth:
+
+| Applicability | Basis |
+|---|---|
+✅ **Directly authoritative** — that `ZWJ`/`ZWNJ` **are** `Default_Ignorable_Code_Point`s | A property assignment in the Unicode Character Database. Script- and domain-independent |
+✅ **Directly authoritative** — that joining controls are **orthographically used** in some languages | `U-3`, a factual statement about writing systems |
+✅ **Directly authoritative** — that a **display form may differ from a comparison form**, and that in the comparison form default-ignorables **should be ignored** | `U-5`, `U-9`. ⭐ **This maps exactly onto `SRCH-FR-023`'s index-time/query-time *comparison* form** |
+⚠ **Analogically persuasive, NOT directly authoritative** — that Liboora's search normalization should adopt the strip-with-exceptions **shape** | UAX #31 recommends this for **identifiers**. Liboora's search is not an identifier system. The **shape** transfers by analogy; ⛔ the **recommendation** does not transfer as a mandate |
+
+✅ **Consequence, stated conservatively:** the evidence is sufficient to show that `P2-C`'s **strip-with-exceptions
+policy is a recognised, standards-grounded shape** and that its **exception limb is not an invention**. ⛔ It is
+**not** sufficient to fix the exception **set**, and it does **not** convert `P2-C` into a closed parameter. The
+`ADR-0099` **L110** routing stands.
+
+---
+
+## 50. ⭐ `SRCH-GAP-002` — all fifteen P-rows recomputed with §D classification
+
+| Row | Parameter | Value / disposition after this pass | §D authority class | Closed? | Blocks Stage 3? |
+|---|---|---|---|---|---|
+**P1** | Engine / index technology | ⛔ No vendor. **Deployment decision**, not architecture (`MP-CON-02` **L238**: *"Choosing a BaaS for V1 is a **deployment decision, not an architecture decision**"*) | `REPOSITORY AUTHORITY` | ✅ **CLOSED** | ⛔ No |
+**P2-A** | Analyzer / tokenizer | Logical pipeline **recorded** (§48.1); concrete configuration **OPEN** | `HUMAN DECISION` + `REQUIRES SEPARATE GOVERNANCE ACT` | ⚠ **PARTIAL** | ⭐ **YES** |
+**P2-B** | Script-conditional Latin case folding | Preserved from prior pass | `HUMAN DECISION` (`HD-2`, prior) | ✅ **CLOSED** | ⛔ No |
+**P2-C** | `ZWJ`/`ZWNJ` handling | Policy = strip-with-exceptions, **now evidenced** (§49); exception **set** + `N6`×`N4` ordering **OPEN** | `EXTERNAL AUTHORITY` (facts) + `REQUIRES SEPARATE GOVERNANCE ACT` (set) | ⚠ **PARTIAL** | ⭐ **YES** |
+**P2-D** | Script-aware normalization | Preserved | `HUMAN DECISION` (prior) | ✅ **CLOSED** | ⛔ No |
+**P2U** | Counting unit = grapheme cluster | Preserved (`HD-5`, `ADR-0099` `C-5`) | `HUMAN DECISION` (prior) | ✅ **CLOSED** | ⛔ No |
+**P3** | Edit distance = **1**; min token length = **3** grapheme clusters | **Recorded**; no contradiction; **L574** names the Architecture Owner | `HUMAN DECISION` + `REQUIRES SEPARATE GOVERNANCE ACT` | ⚠ **RECORDED, NOT CLOSED** | ⭐ **YES** |
+**P4** | Min prefix length = **3** grapheme clusters | **Recorded**; corroborated by `SRCH-FR-030`'s own `Lib`→`Library` example | `HUMAN DECISION` + `REQUIRES SEPARATE GOVERNANCE ACT` | ⚠ **RECORDED, NOT CLOSED** | ⭐ **YES** |
+**P5** | Max page size cap | **20** = `LCFG-12` (**L362**) | `REPOSITORY AUTHORITY` | ✅ **CLOSED** | ⛔ No |
+**P6** | Projection lag / removal latency | **60 s** = `LCFG-6` (**L356**), **removal latency only**; `SEV-9` = zero | `REPOSITORY AUTHORITY` | ✅ **CLOSED** | ⛔ No |
+**P7-lat** | Query latency | 2 s target / 5 s hard — **recorded, NOT written** | ⛔ `REQUIRES SEPARATE GOVERNANCE ACT` + `CONFLICT` (locus, `LIB-20.1`) | ⛔ **NOT CLOSED** | ⭐ **YES** |
+**P7-thr** | Throughput | Qualitative only; ⛔ numeric field **OPEN by human instruction** | `HUMAN DECISION` (a withholding) | ⛔ **OPEN** | ⭐ **YES** |
+**P7-avl** | Availability | **99.9% monthly** — an existing convention (L67); ⛔ locus blocked | `REPOSITORY AUTHORITY` (tier) + `REQUIRES SEPARATE GOVERNANCE ACT` (locus) | ⛔ **NOT CLOSED** | ⭐ **YES** |
+**P8-A** | Rebuildability / correctness | Preserved | `REPOSITORY AUTHORITY` | ✅ **CLOSED** | ⛔ No |
+**P8-B** | Stale-serving posture | Fail-closed = **CLOSED**; 60 s window **recorded with a mandatory `SEV-9` = 0 carve-out** | `REPOSITORY AUTHORITY` (security) + `CONFLICT`/stricter (window) | ⚠ **PARTIAL** | ⭐ **YES** |
+**P8-C** | Rebuild duration | 30 min for *"the V1 operational corpus"* — recorded, ⛔ NOT written | ⛔ `REQUIRES SEPARATE GOVERNANCE ACT` + `CONFLICT` (locus) | ⛔ **NOT CLOSED** | ⭐ **YES** |
+**P8-D** | Rebuild selection rule | Full + incremental with the supplied triggers — **recorded** | `HUMAN DECISION` + `REQUIRES SEPARATE GOVERNANCE ACT` | ⚠ **RECORDED, NOT CLOSED** | ⭐ **YES** |
+
+### 50.1 The arithmetic, stated so it cannot be misread
+
+| Count | Rows |
+|---|---|
+✅ **Fully CLOSED** | **7** — `P1`, `P2-B`, `P2-D`, `P2U`, `P5`, `P6`, `P8-A` |
+⚠ **PARTIAL / RECORDED but NOT closed** | **6** — `P2-A`, `P2-C`, `P3`, `P4`, `P8-B`, `P8-D` |
+⛔ **NOT CLOSED** | **4** — `P7-lat`, `P7-thr`, `P7-avl`, `P8-C` |
+
+⛔⛔ **`SRCH-GAP-002` STATUS: OPEN.** §42 **L980** classifies it as blocking **Stage 3**. ⭐ **A gap is a single
+register row.** It closes when **every** parameter it owns is decided — not when a majority are. **Ten of
+seventeen limbs are undecided or unwritten**, so the row stays OPEN and Stage 3 stays blocked.
+
+⚠ **The tempting arithmetic, named and refused:** 7 closed of 17 could be presented as *"progress from 3 to 7,
+more than doubling."* That framing is available and is **not** adopted, because `SRCH-GAP-002` does not close
+partially and Stage 3 does not open partially.
+
+---
+
+## 51. `SRCH-GAP-007` — six sub-items recomputed
+
+§42 **L985** defines the gap as *"The language/script inventory **and** the declared variant/abbreviation
+vocabulary for §16 and §20"* — a **conjunction**, owner **Product Owner** (markets) **+ Architecture Owner**
+(analyzer), Blocks **Stage 3**.
+
+| # | Sub-item | Disposition after this pass | §D class | Closed? |
+|---|---|---|---|---|
+1 | **Language inventory** | ✅ English + Hindi, closed set; Hinglish = query behaviour only; ⭐ device locale MUST NOT expand it | `REPOSITORY AUTHORITY` + `HUMAN DECISION` | ✅ **CLOSED** (§48.12) |
+2 | **Script inventory** | ✅ Latin (English) + Devanagari (Hindi) — the mapping rule | `HUMAN DECISION` | ✅ **CLOSED** (§48.11) |
+3 | ⛔ **Per-field script declarations (`B1`)** | ⛔ **ZERO exist.** Seven owning contexts, none declaring; name-inference forbidden; §14A frozen and unmodified | `REQUIRES SEPARATE GOVERNANCE ACT` (per owning context) | ⛔ **OPEN** |
+4 | **Normalization rule content per script** | ⛔ `HD-3` Devanagari rule content unresolved; `ADR-0099` §2.3 row 3 | `REQUIRES SEPARATE GOVERNANCE ACT` | ⛔ **OPEN** |
+5 | **`ZWJ`/`ZWNJ` exception set + `N6`×`N4` ordering** | ⚠ Policy shape now **EVIDENCED** (§49); set and ordering unresolved; `ADR-0099` **L110** | `EXTERNAL AUTHORITY` (shape) + `REQUIRES SEPARATE GOVERNANCE ACT` (content) | ⛔ **OPEN** |
+6 | ⛔ **Variant/abbreviation vocabulary** | ⛔ **OPEN by express human instruction**; zero authoritative PO sources exist (§48.13a) | `HUMAN DECISION` (a withholding) | ⛔ **OPEN** |
+
+⛔⛔ **`SRCH-GAP-007` STATUS: OPEN.** ✅ **Two of six sub-items closed this pass** — a real movement, and the first
+time the language and script inventories have both been settled. ⛔ **Four remain open, and the gap's own text is a
+conjunction**, so it cannot close while the vocabulary limb is empty. §42 **L985** classifies it as blocking
+**Stage 3**.
+
+---
+
+## 52. ⭐⭐ §G SECURITY — eight verifications, each run against a cited authority
+
+⚠ **Instruction:** *"If any of these is contradicted, do NOT close the affected blocker."*
+
+| # | Verification | Method and authority | Result |
+|---|---|---|---|
+**G-1** | `BC-18` remains the **sole** authorization authority | BC Map **L127**: `BC-18` *"Owns credentials, sessions, devices, OTP, roles, permissions, **policy decisions**, consent"*. `X-13` bars a non-`BC-18` context from evaluating authorisation. Matrix **L220** requires *"ask BC-18, never evaluate or cache"* | ✅ **CONFIRMED.** ⛔ No decision in this pass adds an authorization authority |
+**G-2** | `BC-23` **never grants access** | §27 **L680-696**; §31 **L793-794** *"the index never grants access"*; `SRCH-INV-001` (`BC-23` holds no source of truth, and therefore no entitlement truth) | ✅ **CONFIRMED** |
+**G-3** | `BC-23` never **evaluates** entitlement locally | The Part IV `SRCH-GAP-003` declaration in `tool/module_dependencies.yaml` carries the constraint verbatim: *"ask BC-18 per request; never evaluate locally; never cache entitlement truth"* | ✅ **CONFIRMED** — and this pass **did not modify** that declaration |
+**G-4** | ⛔ No **cached** authorization decision is used as entitlement truth | Matrix **L220** + `MP-GBR-26` (**L380**, Rank 1, *"no propagation window"*) + `LCFG-13`'s rationale (*"**Never** applies to an authorization decision"*) | ✅ **CONFIRMED.** ⭐ `HD-PRD015-08`'s 60 s window is a **stale-content** window, ⛔ **NOT** an authorization-cache window — the distinction is recorded at §48.8a rows 3-4 |
+**G-5** | Stale index data cannot expose **revoked / private / unentitled** content | §35 **L815** fail-closed, no domain-table fallback; §33 **L793** staleness never resolved in the caller's favour; `SRCH-FR-013` `SEV-9` = **zero** window; `SRCH-FR-014` eligibility loss ⇒ removal; §27's **per-request, per-page** re-evaluation (`SRCH-FR-040`) | ✅ **CONFIRMED.** ⭐ Note the layered defence: even inside the 60 s stale window, §27 re-evaluation runs at query time, so a stale **document** cannot become a stale **permission** |
+**G-6** | **Tenant isolation** via `SE-1` unaffected | `SE-1` (*"every index name is tenant-prefixed"*, `X-13`) and `SE-2` (*"every index write carries a permission scope"*) are unchanged in the manifest; `SRCH-BR-004` (**L320**) requires the tenant key in every tenant-operational index identity; `SRCH-INV-002`/`-004` keep the two index classes disjoint | ✅ **CONFIRMED.** ⛔ **No decision in this pass touches an index name, index class or tenant key** |
+**G-7** | Exact / prefix / fuzzy matching cannot **bypass** authorization | `SRCH-BR-012` `C5` (**L571**): tolerance *"**MUST NOT** widen authorisation, tenant scope or field eligibility"*; `SRCH-FR-042` (**L654**) makes an authorisation-emptied result **indistinguishable** from a genuinely empty one; §28 row 4 (**L722**) bars pagination/error/count disclosure | ✅ **CONFIRMED.** ⭐ `P3` = 1 and `P4` = 3 are **matching-breadth** parameters that operate **strictly inside** `C5`'s envelope. A tolerance value cannot widen authorisation because `C5` forbids it categorically, at any value |
+**G-8** | ⭐⭐ **Normalization does not create an authorization identity collision** | Reasoned against four cited authorities — see §52.1 | ✅ **CONFIRMED**, with one **routed risk** disclosed |
+
+### 52.1 ⭐⭐⭐ `G-8` in full — the one verification that required reasoning, not lookup
+
+**The risk, stated precisely.** Normalization by construction makes distinct input strings **equal** in the
+comparison form. If an authorization decision were keyed on a **normalized** value, two different real-world
+entities could collapse into one authorization identity — and a caller entitled to A would see B.
+
+**Why the risk does not materialise, on four independent grounds:**
+
+| # | Ground | Authority |
+|---|---|---|
+1 | ⭐ **Authorization is not keyed on any normalized text at all.** Every index document carries *"the identifier of its owning aggregate"*, and any authoritative value **MUST** be resolved against the owning context using **that identifier** | `SRCH-FR-005` (**L300**); §33 **L791-792** |
+2 | ⭐ **The authorization decision is not made by `BC-23` and not made from index content.** `BC-23` asks `BC-18` per request | Matrix **L220**; Part IV §40; `G-1`…`G-4` above |
+3 | **Normalization is expressly scoped to *matching*, not to identity or authorisation.** §16 **L546-548**: *"Two strings that normalize identically **are** the same term at the EXACT tier"* — a **term**, not an entity, and not a permission | §16; `SRCH-BR-008` |
+4 | **A collision in the comparison form produces at worst a false-positive *candidate*, which §27 then filters.** `SRCH-FR-040` re-evaluates authorisation **per page**, and `SRCH-FR-042` makes the filtered result indistinguishable | §27; `SRCH-FR-040`; `SRCH-FR-042` |
+
+✅ **Conclusion: normalization can create a *matching* collision. It cannot create an *authorization identity*
+collision, because authorization identity is the owning aggregate's identifier (`SRCH-FR-005`) and the decision is
+`BC-18`'s (Matrix L220) — neither of which passes through the normalizer.**
+
+⚠ **The residual risk, disclosed and routed rather than dismissed.** UAX #31 `U-8` itself warns that excluding
+default-ignorables *"**does not prevent spoofing issues**"*, and `U-2` notes joining controls are inside
+`XID_Continue`. ⭐ **So a normalization profile that strips `ZWJ`/`ZWNJ` makes two visually-distinct library names
+collide as search *terms*.** That is a **discoverability / impersonation-surface** concern — a library could be
+made to surface under a competitor's normalized name.
+
+| Aspect | Disposition |
+|---|---|
+Is it an **authorization** breach? | ⛔ **No** — grounds 1-4 above hold |
+Is it a **product/trust-safety** concern? | ⚠ **Potentially yes**, and it is **NOT** resolved by this pass |
+Does an owner exist? | ⚠ Adjacent to **`SRCH-GAP-004`** (§42 **L982**) — *"⭐ **Keyword stuffing** in §14A.5 public text inflating text-query relevance"*, owner **Architecture Owner** (analyzer) **+ Product Owner** (acceptable use), Blocks ⛔ *"Nothing in V1"* |
+Disposition | ⭐ **Recorded as a new finding `SRCHHD-A6` (§54) and routed to the `SRCH-GAP-004` owners.** ⛔ Not silently absorbed into `SRCH-GAP-004`, because that row's text is about keyword stuffing, not normalization collision, and rewriting an existing gap row is not this record's act |
+
+⭐ **This is the finding this pass would most easily have missed, and it emerged only because UAX #31 was actually
+read rather than cited.** `U-8`'s spoofing caveat is the sentence that raised it.
+
+---
+
+## 53. ⭐⭐⭐ STAGE 3 — the six checks, then the four axes, held rigorously apart
+
+### 53.1 The six `PRD_LIFECYCLE.md` L88-106 architecture checks
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+1 | Every requirement traceable to an architecture element | ✅ **PASS** | `SRCH-FR-*`, `SRCH-BR-*`, `SRCH-INV-*` allocated to `BC-23`; `E-21`/`E-26` edges declared; `platform/search` declared in the manifest with `ports` (Part IV) |
+2 | No architectural contradiction | ✅ **PASS** | Zero new contradictions. ⭐ Two **locus** conflicts (`LIB-20.1` × `P7`/`P8-C`) were found and **resolved by refusal to write**, which is precisely the `ADR-0061`/`FIL-GAP-015` precedent recorded at baseline **L139**: *"resolved by precedence, the EA was NOT edited"* |
+3 | Bounded-context ownership declared | ✅ **PASS** | `BC-23` owns index lifecycle (BC Map **L132**, **L453**); ⛔ no ownership transferred to `BC-23` this pass (§48.11) |
+4 | Dependency direction lawful | ✅ **PASS** | Gate 3 was byte-identical before/after Part IV's manifest edit; **this pass changed no manifest file at all** (§56) |
+5 | Rejected findings recorded **as rejected, with reasons** | ✅ **PASS** | §54.2 — eight rejections, each with a stated ground |
+6 | Cross-cutting concerns allocated | ✅ **PASS** | Security §52 (8/8); tenancy `SE-1`/`SE-2`; audit `E-20`; configuration `LCFG-*` |
+
+⭐ **RESULT: 6 / 6 architecture checks PASS.**
+
+### 53.2 ⛔⛔ Why 6/6 is NOT Stage 3 — the instruction's own §H rule, applied
+
+The instruction states: ⛔ *"6/6 architecture checks alone does **NOT** equal Stage-3 completion. Stage 3 is READY
+**ONLY IF** every row that `PRD-015` §42 classifies as 'Blocks Stage 3' is genuinely closed."*
+
+**The §42 `Blocks` column, read row by row (header at L977):**
+
+| Gap | §42 `Blocks` value | Line | Status after this pass | Verdict |
+|---|---|---|---|---|
+`SRCH-GAP-001` | *"⛔ Nothing in authoring; **blocks Stage-2 conferral**"* | **L979** | OPEN — registry still `PLANNED` (`PRD_REGISTRY.md` **L315**) | ⛔ Not a Stage-3 row |
+**`SRCH-GAP-002`** | ⭐ **"Stage 3**; nothing in Stage 2" | **L980** | ⛔ **OPEN** — 10 of 17 limbs undecided (§50) | ⛔⛔ **BLOCKS STAGE 3** |
+`SRCH-GAP-003` | *"Stage 3; and any tenant-operational surface"* | **L981** | ✅ **CLOSED** at Part IV `8eb3124` | ✅ Cleared |
+`SRCH-GAP-004` | ⛔ *"Nothing in V1"* | **L982** | OPEN | ⛔ Not a Stage-3 row |
+`SRCH-GAP-005` | ⛔ *"Nothing in V1"* | **L983** | OPEN | ⛔ Not a Stage-3 row |
+`SRCH-GAP-006` | ⛔ *"Nothing in V1"* | **L984** | OPEN | ⛔ Not a Stage-3 row |
+**`SRCH-GAP-007`** | ⭐ **"Stage 3"** | **L985** | ⛔ **OPEN** — 4 of 6 sub-items open (§51) | ⛔⛔ **BLOCKS STAGE 3** |
+`SRCH-GAP-008` | ⛔ *"Nothing in V1"* | **L986** | OPEN, **NON-BLOCKING** (preserved) | ⛔ Not a Stage-3 row |
+`SRCH-GAP-009` | ⛔ *"Nothing"* | **L987** | OPEN | ⛔ Not a Stage-3 row |
+
+⛔⛔⛔ **THREE rows carry a Stage-3 block. ONE is closed. TWO remain open. STAGE 3 IS NOT READY.**
+
+### 53.3 The §12 four-limb closure test — axes held apart, not averaged
+
+| Axis | Question | Result | Reason |
+|---|---|---|---|
+**A** | Are all blocking gaps resolved or lifecycle-classified? | ⛔ **NO** | `SRCH-GAP-002` and `SRCH-GAP-007` are both **genuinely open**, not merely unclassified |
+**B** | Are the required Architecture-Owner / Product-Owner decisions **present**? | ⛔ **NO** | ⭐ **This is the axis this pass moved most, and it still fails.** Fourteen human decisions were recorded; **six** require a separate governance act, and the acts have **not occurred**. A recorded intent is not a present decision |
+**C** | Does a legitimate conferrer exist? | ✅ **YES** | The Architecture Owner role exists and is exercisable; `ADR-0099` §2.1 names it expressly |
+**D** | **Is Stage 3 therefore conferrable?** | ⛔ **NO** | **D requires A ∧ B ∧ C.** A fails, B fails |
+
+⚠ **Why the axes are not averaged, stated because averaging is the natural temptation.** Three of four axes could
+be reported as *"C passes and B is 8/14 satisfied"*, giving a favourable-sounding fraction. ⛔ **The test is
+conjunctive.** `D = A ∧ B ∧ C`. One failing axis is decisive, and two are failing.
+
+### 53.4 ⛔ VERDICT
+
+| | |
+|---|---|
+**Verdict** | ⚠⚠ **B — STAGE 3 CONDITIONAL / NOT CONFERRED** |
+**Change from Part IV** | ⛔ **UNCHANGED** |
+**Architecture-Owner one-act conferral** | ⛔ **NOT READY** |
+**Why unchanged despite fourteen decisions and a normative external citation** | ⭐ **Because verdict B is a function of the §42 blocking rows, and two of them are still open.** Part III held B when the evidence was favourable; Part IV held B after closing a real blocker; Part V holds B after recording fourteen decisions. ✅ **The verdict has now survived three consecutive passes of improving evidence, which is the only reason it is worth anything** |
+
+---
+
+## 54. Findings of this pass
+
+### 54.1 ✅ ACCEPTED
+
+| ID | Finding |
+|---|---|
+**`SRCHHD-A1`** | ⭐⭐⭐ **`LIB-20.1` (`Library_PRD_v1.md` L862-864, FROZEN) is the controlling authority on `P7` and `P8-C`, and it forbids this pass from writing them.** Platform NFR budgets *"**MUST** be taken from the Enterprise Architecture NFR Budgets document"*; a PRD *"**MUST NOT** state a competing latency or availability figure"* |
+**`SRCHHD-A2`** | ⭐⭐ **An EA edit is an Architecture Owner act, established by the EA's own baseline row.** `DOCUMENTATION_BASELINE.md` **L139**: Rank 6, *"Descriptive — must follow the PRDs, never lead them"*; precedents `ADR-0042` (one token, AO act), `ADR-0079` (append + 482 citations re-resolved), `ADR-0061`/`FIL-GAP-015` (*"the EA was NOT edited"*) |
+**`SRCHHD-A3`** | ⭐⭐⭐ **UAX #31 (Unicode 17.0.0, rev 43, 2025-08-20) supplies the authoritative Unicode basis for `P2-C`'s strip-with-exceptions shape**, and its *"unless their use is required in a particular domain"* clause is the sourced exception limb. ⭐ It does **NOT** supply the Devanagari exception set or the `N6`×`N4` ordering |
+**`SRCHHD-A4`** | ⭐ **`99.9% monthly` is an existing repository convention, not a new tier** — Authentication PRD v2 **L67**; and it sits **below** `BC-18`'s 99.95% authorization-decision availability (**L69**), which is the correct direction for a dependent service |
+**`SRCHHD-A5`** | ⭐⭐ **`SRCH-FR-013` / `SEV-9` is a STRICTER existing rule than the proposed 60 s stale window, and it governs.** Privacy-mode change has **zero** propagation window (**L354-355**, §31 **L737-738**). The 60 s ordinary window carries a mandatory `SEV-9` = 0 carve-out |
+**`SRCHHD-A6`** | ⭐⭐ **NEW RISK, ROUTED:** a normalization profile that strips `Default_Ignorable_Code_Point`s makes visually-distinct names collide as search **terms** (UAX #31 `U-8`: exclusion *"does not prevent spoofing issues"*). ⛔ **Not** an authorization breach (§52.1 grounds 1-4). ⚠ **A discoverability / impersonation-surface concern**, routed to the **`SRCH-GAP-004` owners** (Architecture Owner + Product Owner) |
+**`SRCHHD-A7`** | ⛔ **Zero authoritative Product Owner vocabulary source exists anywhere in `docs/30-product/`** — measured; every hit was prose usage or a warning against invention |
+**`SRCHHD-A8`** | ⛔ **Zero search tests exist** (`find test -iname '*search*'` → nothing), so nothing in the test suite can corroborate **or** contradict `P3`/`P4`. Stated as a measured limitation of the corroboration, not as a convenience |
+**`SRCHHD-A9`** | ⭐ **`P8-D`'s fourth FULL trigger is architecturally coherent with `ADR-0099` `C-1`** — *"analyzer/tokenization configuration change that invalidates existing index contents"* is the operational consequence of the index/query symmetry constraint. A later analyzer act now has a declared rebuild consequence |
+**`SRCHHD-A10`** | ⭐ **The device-locale non-expansion clause is a genuine addition, not a restatement** — measured: zero occurrences of device-locale / system-locale governance in `CONFIGURATION_GUIDE.md` or `MASTER_PRD.md`, while `LCFG-2`'s Range (**L352**, *"Supported set"*) left the inventory open-ended |
+
+### 54.2 ⛔ REJECTED — recorded as rejected, with reasons (`PRD_LIFECYCLE.md` check 5)
+
+| ID | Rejected proposition | Ground for rejection |
+|---|---|---|
+**`SRCHHD-X1`** | *"Fourteen human decisions arrived, therefore fourteen blockers close."* | ⛔ A human decision is authority over **content**, not over **locus**. Six required a separate governance act |
+**`SRCHHD-X2`** | *"`LCFG-6` is already 60 s, so `P8-B` closes on repository authority."* | ⛔ **Category error.** `LCFG-6` is *"Discovery index propagation — **removal latency only**"* (**L356**) and *"must **never** be consulted on an authorization path"* (**L377**). Different parameter, same number |
+**`SRCHHD-X3`** | *"Write 2 s / 5 s / 30 min into the EA NFR Budgets tree — it is empty, so nothing is overwritten."* | ⛔ **The emptiness is the problem, not the licence.** Writing the first values into a Rank 6 budget tree is the Architecture Owner act `LIB-20.1` reserves. The principal expressly forbade it |
+**`SRCHHD-X4`** | *"`SRCH-FR-030`'s `Lib` → `Library` example proves the minimum prefix is 3."* | ⛔ **An example is not a bound.** It shows 3 works; it does not state 3 is minimal. Recorded as corroboration only |
+**`SRCHHD-X5`** | *"`V4`'s `lib` ≡ `library` illustration is a declared vocabulary entry."* | ⛔ An illustration inside a rule-class table is not a declared vocabulary. §20 **L551** forbids exactly this inference |
+**`SRCHHD-X6`** | *"Derive per-field scripts from field names — `name_en` is obviously Latin."* | ⛔ **Doubly forbidden:** the human instruction says *"Do NOT infer script from field names"*, and `SRCHAO-F5` = Option A requires script to be **consumed, never inferred** |
+**`SRCHHD-X7`** | *"7 of 17 P-rows closed, up from 3 — report `SRCH-GAP-002` as substantially closed."* | ⛔ A gap is **one register row**. §42 **L980** blocks Stage 3 while **any** limb is undecided. *Substantially closed* is not a status the register defines |
+**`SRCHHD-X8`** | *"6/6 architecture checks pass, so Stage 3 is ready."* | ⛔ Expressly refused by the instruction's §H, and independently by §53.2: two §42 Stage-3-blocking rows remain open |
+**`SRCHHD-X9`** | *"Normalization collision is an authorization defect — halt `P2-C`."* | ⛔ **Overstated.** §52.1 grounds 1-4 show authorization identity is the owning aggregate's identifier (`SRCH-FR-005`) and the decision is `BC-18`'s. It is a **product/trust-safety** concern, and it is routed as `SRCHHD-A6`, not escalated as a security breach |
+**`SRCHHD-X10`** | *"UAX #31 mandates strip-with-exceptions for Liboora search."* | ⛔ **Scope overreach.** UAX #31 governs **identifiers and pattern syntax**, not natural-language full-text search (§49.4). The shape transfers by analogy; the mandate does not |
+
+---
+
+## 55. ⭐⭐ EXACT REQUIRED FOLLOW-UP ACTS — the routing table
+
+⚠ Per instruction: *"Record the human decision and the exact required follow-up."* Each row below states **what
+is missing**, **which authority supplies it**, **who owns it**, and **whether it blocks Stage 3**.
+
+| # | Missing input | Required act | Authority / owner | Blocks Stage 3? |
+|---|---|---|---|---|
+**FU-1** | The analyzer and tokenizer, **by name or by specification** | An express **Architecture Owner act** under `ADR-0099` §2.1, satisfying `C-1`…`C-10` | **Architecture Owner** | ⭐ **YES** (`P2-A`) |
+**FU-2** | The **`ZWJ`/`ZWNJ` exception set** for Devanagari, and the **`N6` × `N4` ordering** | An express Architecture Owner act, **evidence-bound** (`ADR-0099` **L110**). ✅ §49 supplies the Unicode facts; ⛔ the product-domain retention list is still required | **Architecture Owner** + **Product Owner** (domain requirement) | ⭐ **YES** (`P2-C`) |
+**FU-3** | **Ratification of `P3`** — edit distance 1, min token length 3 grapheme clusters | An Architecture Owner act. `SRCH-BR-012` **L574** names the office expressly | **Architecture Owner** | ⭐ **YES** (`P3`) |
+**FU-4** | **Ratification of `P4`** — min prefix length 3 grapheme clusters | *ibid.* | **Architecture Owner** | ⭐ **YES** (`P4`) |
+**FU-5** | ⭐ **Latency budget 2 s / 5 s written into the EA NFR Budgets tree** (`Latency Budgets (V1)`, EA **L340**) | An **Architecture Owner ADR act** editing a **Rank 6** artefact, in the `ADR-0042` / `ADR-0079` form. ⛔ **NOT performable by this record** (`LIB-20.1`) | **Architecture Owner** | ⭐ **YES** (`P7-lat`) |
+**FU-6** | ⭐ **Availability 99.9% monthly written into `Availability Targets (V1)`** (EA **L341**) | *ibid.* ✅ Value pre-validated as an existing convention (§48.7a) | **Architecture Owner** | ⭐ **YES** (`P7-avl`) |
+**FU-7** | A **numeric throughput** value, **if** Stage 3 requires one | ⛔ **Expressly withheld by the principal** (`HD-PRD015-06`). ⚠ EA **L343** classifies *Throughput Targets* as **V2**, so no V1 destination exists | **Architecture Owner** (V2) | ⭐ **YES** (`P7-thr`), by withholding |
+**FU-8** | ⭐ **Rebuild duration 30 min written to the EA**, and a **defined V1 corpus basis** for it | An Architecture Owner ADR act, **plus** a capacity definition. ⛔ Corpus size **not invented here** | **Architecture Owner** | ⭐ **YES** (`P8-C`) |
+**FU-9** | **Ratification of the `P8-D` rebuild selection rule**, with the `SEV-9` = 0 carve-out preserved | An Architecture Owner act | **Architecture Owner** | ⭐ **YES** (`P8-D`) |
+**FU-10** | ⭐⭐ **Per-field script declarations (`B1`)** for every indexed field | A **declaration record per owning context**, in the `SRCHPO-A3` form. ⛔ Frozen §14A **MUST NOT** be edited; ⛔ ownership **MUST NOT** move to `BC-23`; ⛔ scripts **MUST NOT** be inferred from field names | ⭐ **Each owning context, as Product Owner** — seven contexts, currently **zero** declarations (`F5` packet **L175**) | ⭐ **YES** (`SRCH-GAP-007` sub-item 3) |
+**FU-11** | The **Devanagari normalization rule content** (`HD-3`) | An Architecture Owner act, evidence-bound (`ADR-0099` §2.3 row 3) | **Architecture Owner** | ⭐ **YES** (`SRCH-GAP-007` sub-item 4) |
+**FU-12** | ⭐ The **variant / abbreviation vocabulary** inventory | A **Product Owner declaration**. ⛔ Zero authoritative sources exist today (§48.13a); ⛔ nothing may be invented (`SRCH-BR-011`, `SRCH-XC-014`) | **Product Owner** | ⭐ **YES** (`SRCH-GAP-007` sub-item 6) |
+**FU-13** | Disposition of the **normalization-collision discoverability risk** (`SRCHHD-A6`) | Assessment by the `SRCH-GAP-004` owners | **Architecture Owner** (analyzer) + **Product Owner** (acceptable use) | ⛔ **NO** — `SRCH-GAP-004` blocks *"Nothing in V1"* (**L982**) |
+**FU-14** | `PRD-015` registry status `PLANNED` → `DRAFT` | A **Governance Owner** act (`SRCH-GAP-001`). ⚠ `ADR-0080` §2.2 records the Governance Owner as **VACANT** | **Governance Owner** | ⛔ **NO** — blocks **Stage-2 conferral** (**L979**) |
+**FU-15** | ⭐⭐ **The Stage-3 conferral itself** | A **separate, express human conferral**. ⛔ `HD-PRD015-14`: *"This prompt DOES NOT confer Stage 3"* | **Architecture Owner** / principal | ⭐ **YES**, and **last** — `FU-1`…`FU-12` must precede it |
+
+⭐ **Twelve of fifteen follow-ups block Stage 3, and eleven of those belong to the Architecture Owner or an owning
+context. Not one of them is performable by this record.**
+
+---
+
+## 56. Integrity — what this pass did and did not touch
+
+| Check | Result |
+|---|---|
+**Files modified** | ⭐ **Exactly ONE** — `docs/30-product/search/PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md` (this file), **append-only** |
+**Append-only verified** | ✅ `head -1412` of the new file is **byte-identical** to `git show 8eb3124:<path>` — Parts I-IV untouched |
+**Subject `PRD-015_SEARCH_INDEXING.md`** | ✅ SHA `fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` — **byte-unchanged** |
+**Enterprise Architecture (Rank 6)** | ⛔ **NOT MODIFIED** — SHA `34761df5…` unchanged. ⭐ **This is the single most important integrity line in Part V** |
+**`Library_PRD_v1.md` (FROZEN)** | ⛔ **NOT MODIFIED** — SHA `a587c65e…` |
+**Frozen §14A** | ⛔ **NOT MODIFIED** — SHA `fb29657c…` |
+**`tool/module_dependencies.yaml`** | ⛔ **NOT MODIFIED this pass** — SHA `2d8711dd…`, identical to `8eb3124`. ⭐ Part IV's authorized declaration stands untouched |
+**BC Map · Dependency Matrix · `DOCUMENTATION_BASELINE.md`** | ⛔ **NOT MODIFIED** |
+**`ADR-0099` · `ADR-0098` · `ADR-INDEX.md`** | ⛔ **NOT MODIFIED** |
+**`CONFIGURATION_GUIDE.md` · `PRD_REGISTRY.md` · `PRD_LIFECYCLE.md`** | ⛔ **NOT MODIFIED** |
+**`PRD-015_PO_DECISION_RESOLUTION_RECORD.md` · `PRD-015_STAGE3_CLOSURE_ASSESSMENT.md`** | ⛔ **NOT MODIFIED** (both forbid in-place edits of themselves) |
+**Validators `check_module_boundaries.dart` · `gates.sh`** | ⛔ **NOT MODIFIED, NOT WEAKENED** |
+**Gate 3** | ⚠ **Not re-run, and the reason is stated:** no manifest, Dart or `tool/` file was changed this pass, so gate 3's inputs are byte-identical to `8eb3124`, where its output was verified byte-identical before/after. ⛔ Re-running would test nothing new |
+**Application code** | ⛔ **ZERO lines.** `lib/`, `test/`, `android/`, `web/`, `ios/`, `pubspec.yaml` all untouched — as in every prior pass of this engagement |
+**Forbidden content sweep on Part V** | ✅ No `IMPL-*` identifier · ⛔ no vendor, engine, analyzer or tokenizer **name** · ⛔ no `BC → BC` arrow edge · ⛔ no HTTP-verb API · ⛔ no QPS figure · ⛔ no corpus size · ⛔ no new `SRCH-*` requirement, invariant, exclusion or acceptance criterion minted |
+**Stages entered** | ⛔ **Stage 3 NOT conferred. Stages 4, 5, 6, 7 NOT entered.** `docs/40-implementation/search/` does not exist and was not created |
+
+---
+
+**END OF PART V.**
+
+⚠ **VERDICT: B — STAGE 3 CONDITIONAL / NOT CONFERRED.** Two §42 Stage-3-blocking rows remain open:
+**`SRCH-GAP-002`** (10 of 17 parameter limbs undecided or unwritten) and **`SRCH-GAP-007`** (4 of 6 sub-items open).
+
+⛔ **ARCHITECTURE OWNER ONE-ACT CONFERRAL: NOT READY.** Fifteen follow-up acts are recorded at §55; twelve block
+Stage 3; ⛔ **none is performable by this record.**
+
+✅ **What did move:** the language inventory and the script mapping are **CLOSED**; `P2-C`'s policy shape is now
+**EVIDENCED** against a normative Unicode citation; four parameters gained recorded values with named provenance;
+one **stricter existing rule** (`SEV-9` = 0) was found and applied over a human value; two **locus conflicts** were
+found and resolved **by refusal to write**; and one **new risk** (`SRCHHD-A6`) was found and routed.
+
+⛔ **What did NOT move, stated because every incentive runs the other way: the verdict.**

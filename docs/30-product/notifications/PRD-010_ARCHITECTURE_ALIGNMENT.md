@@ -356,3 +356,146 @@ V1 = **In-App + Push only**. `MP-SCOPE-09` and §22 tier SMS-general/Email/Whats
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-09-05 | ⭐⭐ **Created as the Stage-3 alignment record for `PRD-010`, discharging prior blocker B1 (artefact absent).** All **6** lifecycle checks re-run against the live repository: **6 PASS**, **0 contradictions** of any Rank 1–5 rule. ⭐⭐⭐ **Prior finding F1 (rank direction INDETERMINATE) is RESOLVED** — the `BC-22` ⇄ `platform/communication` mapping, absent from both the BC Map and the Matrix, is established by **triangulation** across three live documents (`DEVELOPER_HANDOFF` **L189**, `IAC-23`, `REVIEW_14A` **`CC-5`**), giving rank **5** → `contracts` **0** and → `platform/identity` **4**: both strictly downward. ⭐⭐⭐ **Prior blocker B2 is RECONCILED CLAUSE BY CLAUSE (§8)**: the subject **contradicts nothing** and independently converges on **`CM-1`** and **`CM-2`** from Rank-1 rules, but ⛔ **`CM-3`/`EBR-1030` — an unresolvable address must fail the delivery only, never the emitting business operation — has NO corresponding requirement**, so `NTF-AL-B2` is **ACCEPTED** with two additive corrections (`C-1`, `C-2`) routed to a subject **v0.2**; ⛔ **the subject was NOT edited here**, because Stage 3 dispositions conflicts and does not rewrite the PRD. ⚠⚠ **A pre-existing `L2` anomaly is DISCLOSED and NOT repaired** — `platform/communication` (rank 5) ports to `platform/integration` (**also rank 5**) while Matrix **§3.2** declares only **two** clusters, both within **R8**, and the yaml `exceptions` block contains no such entry; `platform/ai` (rank 6) is the lawful contrast case. Recorded as **`NTF-AL-F2`**, owner **Architecture Owner**, on the `ADR-0098` §5.1 *"routed, not repaired"* precedent — ⛔ and it is expressly **NOT** allowed to fail the subject, which asserts only downward dependencies. ⚠ **`NTF-GAP-021`'s subject text is measured STALE** — `PRD-019` is **v0.4 DRAFT with 111 `ITG-*` identifiers**, not *"0 identifiers"*; ⚠ and `PRD_REGISTRY.md` **contradicts itself** (L319 v0.1 vs L545 v0.4), which is **disclosed, not fixed**, being a Governance Owner act. ⭐ **All 23 `NTF-GAP-*` dispositioned with owners and 0 closed**; `NTF-GAP-002` (no fourth scope without an ADR), `005` (six absent events), `006` (BC Map **L437** vs Auth §10 — **two Rank-3 documents disagree**), `011` (`messaging.MessageSent` verified **not** routed to `BC-22`) each **re-verified independently** rather than accepted from the draft. ⭐ **9 candidate findings REJECTED with reasons (§10)**, including two that would have wrongly failed the subject. Role model confirmed **Owner · Manager · Reception Staff** with no Staff inheritance; WhatsApp confirmed **external redirect only**; catalogue re-verified **13/13 real events, 0 invented**. ⛔ **Mandate observed absolutely: 0 PRD bytes changed (`sha256` `b5b0d41d…507105` verified before and after), 0 ADRs created or modified, 0 frozen documents, 0 registry or baseline updates, 0 identifiers registered, 0 gaps closed, 0 events invented, 0 authorization scopes invented, 0 implementation tasks, 0 lines of application code.** |
+
+---
+
+# SUPPLEMENT v1.1 — `PRD-010` v0.1a → **v0.2** RE-VERIFICATION
+
+⛔ **The v1.0 record above is NOT rewritten.** It stands as the alignment finding made against
+v0.1a. This supplement records only what changed and what was re-tested, on the append-only
+precedent of `PRD-006_ARCHITECTURE_ALIGNMENT_V19_SUPPLEMENT.md` and
+`PRD-013_ARCHITECTURE_ALIGNMENT_SUPPLEMENT.md`.
+
+| Field | Value |
+|---|---|
+| **Subject version** | **v0.1a → v0.2** |
+| **Subject `sha256` before** | `b5b0d41da61b8e99d705275a1d2f949de566e4c670b4dc16e1e24a4d16507105` |
+| **Subject `sha256` after** | `f0b61e0dee82e623deb521278f00d45618438cc161ece950c5bd8ad5d1944513` |
+| **Subject size** | 620 → **689** lines · **115 → 117** identifiers (**+2**, no renumbering) |
+| **Re-verified at** | `0040d62` |
+| **Date** | 2026-09-05 |
+| **Result** | ✅ **ALIGNED — Stage 3 PASS (6 of 6). `NTF-AL-B2` DISCHARGED.** |
+
+---
+
+## 14. What the author changed — measured, not asserted
+
+| Correction | Applied | Evidence in v0.2 |
+|---|---|---|
+| ⭐⭐ **`C-1`** | ✅ **YES** | New invariant **`NTF-INV-011`** (§19) carrying `CM-3` verbatim; new **§19.1** explaining the boundary; new criterion **`NTF-AC-009`** |
+| ⭐⭐ **`C-2`** | ✅ **YES** | New **§6.1** *"The authoritative module contract — `platform/communication`"* — rank **5**, `contracts` (0), both ports, `A-3`, `consumes_events`, `banned_imports`, and a `CM-1`/`CM-2`/`CM-3` → requirement mapping table |
+| ⚠ **`NTF-AL-F3`** stale `PRD-019` | ✅ **YES** | Corrected in **4** places to **v0.4 `DRAFT`, 111 `ITG-*`** |
+
+### 14.1 ⭐ `C-1` was verified NOT to be a duplicate before it was added
+
+| Probe against v0.1a | Result |
+|---|---|
+| `fail the emitting` · `emitting operation` · `roll ?back` · `originating (business )?operation` · `never fail` | ⛔ **0 hits** |
+
+⇒ ⭐ **No equivalent requirement existed**, so `C-1` adds rather than restates. The subject's §19.1
+further distinguishes it from `NTF-FR-003` (payload sufficiency — a **different trigger**, stating no
+emitter boundary). ✅ **Correctly applied.**
+
+### 14.2 ⭐⭐ `NTF-INV-011` — text tested against `CM-3`
+
+> *"Where a notification cannot be delivered because its notification address cannot be resolved,
+> that failure **MUST** fail **only that notification delivery**, and **MUST NOT** fail, roll back,
+> abort, retry or otherwise render unsuccessful the originating business operation that emitted the
+> business fact."*
+
+| `CM-3` limb | Carried? |
+|---|---|
+| *"fails the delivery only"* | ✅ *"only that notification delivery"* |
+| *"never fails the emitting operation"* | ✅ *"MUST NOT fail… the originating business operation that emitted the business fact"* |
+| `EBR-1030` boundary preserved | ✅ cited by ID in the requirement and in `NTF-AC-009` |
+
+⭐ **Atomic** (one obligation), ⭐ **testable** (`NTF-AC-009` asserts the emitting aggregate's
+post-state is unchanged), ⛔ **no scope expansion** — it constrains failure propagation only.
+
+---
+
+## 15. ⭐⭐⭐ `NTF-AL-B2` — RE-TESTED AND **DISCHARGED**
+
+| Clause | v1.0 finding | ⭐ v0.2 measurement |
+|---|---|---|
+| Rank 5 | ⚠ not stated | ✅ **cited** (§6.1) |
+| `imports: contracts` | ⚠ not stated | ✅ **cited** |
+| Port `connector` | ⚠ implied | ✅ **named** |
+| Port `notification_address` / `A-3` | ⚠ **material omission** | ✅ **cited** — 3 occurrences |
+| `consumes_events: ["*"]` | ✅ aligned | ✅ aligned **and now cited** |
+| `banned_imports` | ✅ aligned | ✅ aligned **and now cited** |
+| **`CM-1`** | ✅ aligned, **uncited** | ✅ **cited + mapped** → `NTF-INV-003`/`-FR-004`/`-FR-009` |
+| **`CM-2`** | ✅ aligned, **uncited** | ✅ **cited + mapped** → `NTF-FR-058`/`-FR-004` |
+| ⛔ **`CM-3` / `EBR-1030`** | 🚫 **NO REQUIREMENT (grep 0)** | ✅ **`NTF-INV-011`** + **`NTF-AC-009`** — `CM-3` ×5, `EBR-1030` ×4 |
+
+> ### ✅ **`NTF-AL-B2` — DISCHARGED.** All three module assertions are now stated **and** cited; the one absent normative rule is present as an atomic, testable invariant.
+
+---
+
+## 16. The six checks — re-run against v0.2
+
+| # | Check | Result | Evidence at v0.2 |
+|---|---|---|---|
+| 1 | Context ownership exclusive | ✅ **PASS** | Still **1** claimant of `DeliveryMessage`; all 3 `Conversation` refs remain prohibitions/citations; ⛔ §6.1 claims **no** new aggregate |
+| 2 | Every edge exists in §7 | ✅ **PASS** | Same **4** edges (`E-14`/`E-16`/`E-23`/`E-25`); ⛔ **0 new edges** — `NTF-XC-004` intact. ⭐ §6.1 cites **ports**, which are not `E-*` edges |
+| 3 | Rank direction downward | ✅ **PASS — now stated, not merely true** | §6.1 records rank **5** → `contracts` **0** and → `platform/identity` **4**. ⭐ **Improvement**: v0.1a satisfied this only implicitly |
+| 4 | No authorisation outside `BC-18` | ✅ **PASS** | `NTF-INV-004` intact; ⛔ `NTF-INV-011` grants no permission and decides nothing |
+| 5 | No credential/OTP/session outside `BC-18` | ✅ **PASS** | **12** credential terms, unchanged, all prohibitions/citations. ⭐ **Strengthened**: §6.1 names `A-3` as the *mechanism* behind `MP-GBR-34` |
+| 6 | Tenant scoping correct | ✅ **PASS** | 5 tenancy requirements unchanged; ⛔ `NTF-INV-011` is tenant-neutral |
+
+### 16.1 Register integrity
+
+| Register | v0.1a | v0.2 | Contiguity |
+|---|---|---|---|
+| `NTF-FR-*` | 65 | 65 | ✅ `001`–`065` |
+| `NTF-BR-*` | 3 | 3 | ✅ |
+| ⭐ `NTF-INV-*` | 10 | **11** | ✅ `001`–`011` |
+| `NTF-XC-*` | 6 | 6 | ✅ |
+| ⭐ `NTF-AC-*` | 8 | **9** | ✅ `001`–`009` |
+| `NTF-GAP-*` | 23 | **23** | ✅ — ⛔ **0 closed** |
+| **Total** | **115** | ⭐ **117** | **0 missing · 0 out-of-range · 0 duplicate definitions · 0 renumbered** |
+
+⭐ Verified by row-start probe: `NTF-INV-011`, `NTF-FR-003`, `NTF-FR-009` each have **exactly one**
+definition; further bold occurrences are prose citations.
+
+---
+
+## 17. Findings carried forward — status **UNCHANGED**
+
+| Item | Status after v0.2 |
+|---|---|
+| ⚠ **`NTF-AL-F2`** rank-5 → rank-5 port | ⛔ **OPEN — NOT fixed**, correctly. ⭐ v0.2 §6.1 **discloses** it and states that **no requirement depends on its lawfulness**; owner **Architecture Owner** |
+| `NTF-GAP-002` platform scope | ⛔ **OPEN** — `MP-GBR-21`; ⛔ no fourth scope invented |
+| `NTF-GAP-005` six missing events | ⛔ **OPEN** — ⛔ **0 events invented** |
+| `NTF-GAP-006` BC Map **L437** vs Auth §10 | ⛔ **OPEN** — two Rank-3 documents still disagree; **Architecture Owner** |
+| `NTF-GAP-011` `messaging.MessageSent` | ⛔ **OPEN** — re-verified: consumers `BC-13`, `BC-26`; ⛔ `BC-22` absent; ⛔ **no trigger invented** |
+| ⚠ `NTF-GAP-021` Push / `BC-31` | ⛔ **OPEN — refined, not closed.** ⭐ Facts corrected to **v0.4 `DRAFT`, 111 `ITG-*`**; form specifiable, **guarantees not** until `PRD-019` is conferred |
+| Other 17 gaps | ⛔ **OPEN**, owners unchanged |
+| ⚠ `PRD_REGISTRY.md` L319 v0.1 vs L545 v0.4 | ⛔ **Disclosed, NOT repaired** — Governance Owner act |
+| Stage-4 items | ⚠ **DEFERRED** — gap-pointer requirements, defaults/ranges, AC coverage **9 / ~84** |
+
+---
+
+## 18. Supplement verdict
+
+> ## ✅ **ALIGNED — Stage 3 PASS (6 of 6)**
+
+**`NTF-AL-B2` DISCHARGED.** **0 contradictions** of any Rank 1–5 rule. **6/6 checks PASS**, with
+check 3 **improved from implicit to explicitly cited**. **+2 identifiers, 0 renumbered, 0 gaps
+closed** (23 remain OPEN with owners). **`NTF-AL-F2` correctly left OPEN** and now *disclosed inside
+the subject*. **1 registry inconsistency disclosed, not repaired.**
+
+⭐ **Stage 3 gate satisfied.** `PRD-010` may proceed to **Stage 4 — Requirements Review**, whose gate
+will require every configurable to carry *"a default and a range"* — the seven gap-pointer
+requirements and the AC register are the known Stage-4 work.
+
+⛔ Status remains **v0.2 `DRAFT`**; `PRD_REGISTRY.md` remains **`PLANNED`**; baseline unchanged; no
+approval or freeze claimed.
+
+---
+
+## 19. Supplement change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-09-05 | ⭐⭐ **Supplement appended after the subject's v0.1a → v0.2 amendment; the v1.0 record above is preserved unrewritten.** ⭐⭐⭐ **`NTF-AL-B2` re-tested clause by clause and DISCHARGED**: `CM-3`/`EBR-1030` — absent at v0.1a (**grep 0**) — is now carried by atomic invariant **`NTF-INV-011`** and testable criterion **`NTF-AC-009`**, and all of rank 5, `contracts`, both ports, `A-3`, `consumes_events`, `banned_imports`, `CM-1` and `CM-2` are now **cited** in the subject's new §6.1 with a clause→requirement mapping. ⭐ **`C-1` was verified non-duplicative before acceptance** — a five-pattern probe against v0.1a returned **0 hits**, and the subject's §19.1 distinguishes it from `NTF-FR-003` (payload sufficiency, a different trigger). ⭐ **All six checks re-run**: **6 PASS**, with **check 3 improved from implicitly satisfied to explicitly cited**. **Registers verified: 115 → 117 identifiers, all six contiguous, 0 missing, 0 out-of-range, 0 duplicate definitions, 0 renumbered** — confirmed by a row-start definition probe. ⛔ **Nothing was closed or cured that lacked authority**: `NTF-AL-F2` remains **OPEN** (and is now *disclosed inside the subject*, with the explicit statement that no requirement depends on it), all **23** `NTF-GAP-*` remain **OPEN** with owners, `NTF-GAP-021` is **refined not closed**, and the `PRD_REGISTRY.md` v0.1/v0.4 self-contradiction is **disclosed not repaired** as a Governance Owner act. ⛔ **0 ADRs created or modified · 0 frozen documents · 0 baseline · 0 registry status · 0 BC Map · 0 `MASTER_PRD` · 0 dependency matrix · 0 `module_dependencies.yaml` · 0 `IMPL-*` · 0 lines of application code.** |

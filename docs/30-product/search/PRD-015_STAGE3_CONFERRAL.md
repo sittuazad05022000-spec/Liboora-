@@ -209,3 +209,30 @@ else.**
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-09-05 | ⭐⭐⭐ Created. The **Stage-3 review and conferral** for `PRD-015`, performed by the Architecture reviewer designated under `ADR-0104` and **within that designation's scope only**. **Verdict: PASS — 16 of 16** gate conditions, each individually evidenced rather than inherited. ⭐⭐ **Both gap ledgers were RECOMPUTED, not carried forward**, because the prior tallies pre-dated `ADR-0102`/`ADR-0103`/Supplement C: **`SRCH-GAP-002` 15 C · 2 P · 1 O → 18 of 18 CLOSED** (limb **7** by `SRCHPO-19` via `ADR-0101` `D-10`'s own falsifiability route 2; limb **15** by `ADR-0102`'s conferral and `99.9% monthly` ratification; limb **17c** by `SRCHPO-18`, which removes the **exact** dependency `ADR-0100` §3.5 stated — *"verifiability OPEN **pending a corpus definition**"* — with the `≤ 30 minutes` target **carried across untouched and NOT re-derived**), and **`SRCH-GAP-007` 5 C · 1 P · 1 B → 7 of 7 CLOSED** (sub-item **5** `FU-20` by `SRCHPO-16`+`SRCHPO-17`+`SRCHAO-HB1`, ⚠ satisfied at **3 of 3** because `SRCHPO-16` corrected the denominator **by authority** — the other 11 units take `exact`/`filter`/`none`, for which a script is *meaningless*, not merely absent; sub-item **7** `FU-21` by `ADR-0101` plus `SRCHPO-19`). ⚠⚠ **SIX OPEN ITEMS ARE DECLARED IN §4 rather than absorbed into the PASS** — `SRCHPO-A11` (script-**selection** mechanism, Architecture Owner, `ADR-0099` §2.3) · `SRE-GAP-001` (SLO/SLI/error budget, all authority **V2**) · `HD-2`/`HD-3`/`HD-4` rule **content** · the four **DEFER** rulings `HD-7`/`HD-8`/`HD-11`/`HD-13` · `P1` transport binding, `P7` latency reconciliation and `P7` throughput numeric · and **verification**, at **0** acceptance criteria proven — none of which is a Stage-3 alignment condition. ⚠ **§4.1 records that this conferral is CONDITIONAL on a fact remaining true:** `SRCHPO-19` is a **V1 corpus fact**, and its falsification re-opens `D-10`, `GAP-002` limb 7 and `GAP-007` sub-item 7. ⛔ **0 thresholds, durations, SLIs, SLOs, error budgets, Unicode rules, owners, offices or authorities are invented.** ⛔ **No personal name** (§7 rule 4); ⛔ the reviewer claims **no Architecture Owner power** (`ADR-0054` **L148**) and `ADR-0103`'s ARB conferral does **not** extend here (`ADR-0033` §7.1). ⛔ **No baseline re-issue** — `BASELINE-2026-09-03-A` stands; Stage 3 is an alignment gate, **freeze is Stage 7** and is not performed. ⛔⛔ **Stages 4–7 expressly NOT entered**: no Stage-4 review exists, `PRD-015` has **no** `TRACEABILITY_MATRIX.md` inventory and **no** `prd015_*` checker, **0** `IMPL-*` are allocated, and `DOCUMENTATION_BASELINE.md` §3 holds **no** admitting row. ⛔ `PRD-015` remains **`DRAFT`** and **`PLANNED`**, **not frozen, not ranked, not verified**. ⛔ **0** application-code files created. |
+
+---
+
+## 9. ⚠ Version-control disclosure — one commit in this pass was not mine
+
+⚠⚠ **Disclosed rather than presented as deliberate version control**, on the precedent
+`PRD-017_STAGE5_CONFERRAL.md` §8 established for the identical platform behaviour.
+
+Commit **`4204fc3`**, message *"genspark auto-backup"*, was created by the platform **without
+instruction** while this pass's commit command was in flight. It captured exactly this pass's three
+files — the human decision record (**+176**), `SUPPLEMENT_C` (**+203**) and this conferral record
+(**+211**), **+590 / −0** — which is why the working tree read clean before my own commit ran.
+
+| Check on `4204fc3` | Result |
+|---|---|
+| Files captured | ⭐ **exactly the 3 intended**; ⛔ 0 others |
+| Deletions | ⛔ **0** — append-only preserved |
+| Governance directory (`docs/00-governance/`) touched | ⛔ **0 files** |
+| Application code / `IMPL-*` introduced | ⛔ **0 / 0** |
+| Append-only re-verified after the fact | ✅ human record **L1-5971 byte-identical** |
+| Protected baseline re-verified | ✅ **14 / 14 OK** |
+| Subject hash | ✅ `fe3093e6…c2c4544` **unchanged** |
+
+⭐⭐ **It was NOT amended, rebased, reset or force-pushed.** The engagement's integrity rules forbid
+all four, and a commit that already exists in history is evidence of what happened. ⭐ The intended
+commit message is therefore recorded in the **following** forward-only commit, and this section
+exists so that no later reader mistakes `4204fc3` for an unexplained or unattributed change.

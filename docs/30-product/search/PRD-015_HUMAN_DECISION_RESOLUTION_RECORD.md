@@ -6294,3 +6294,160 @@ Stages 5–7.**
 | Stages 5 · 6 · 7 | ⛔ **NOT ENTERED** — barred by §11 sequencing |
 | `PRD-015` status | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
 | Subject hash · frozen bytes · Rank 1 · code · `IMPL-*` | ⛔ **unchanged · 0 · 0 · 0 · 0** |
+
+---
+
+# PART XXVI — STAGES 4·5·6 CONFERRED/GREEN · ⛔ STAGE 7 **BLOCKED** ON AN UNOWNED GAP
+
+| Field | Value |
+|---|---|
+| **Part** | **XXVI** — twenty-fifth consecutive governance pass |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"STAGE 4 → STAGE 7 COMPLETE LIFECYCLE LOOP"* — continue whenever the next action is *"authorized and mechanically derivable"*; ⛔ never invent authority, owners, thresholds, SLO/SLI, APIs or requirements; stop only at the lawful Stage-7 terminal state **or** a genuine human dependency |
+| **Predecessor commit** | `32164de` (+ platform auto-backup `5e5241c`, disclosed §215) |
+| **Carriers created** | `PRD-015_STAGE4_CONFERRAL.md` · `TRACEABILITY_MATRIX.md` **§2S** (v1.24) · `PRD-015_STAGE5_CONFERRAL.md` · `PRD-015_IMPLEMENTATION_TASKS.md` · **3** committed gate scripts · `PRD-015_STAGE7_FREEZE_READINESS.md` |
+| **Result** | ⭐ **Stage 4 CONFERRED · Stage 5 CONFERRED · Stage 6 gate PASS.** 🚫 **Stage 7 BLOCKED — 9 of 11** |
+| **Verdict** | **B — BLOCKED at Stage 7 / terminal state (B)** |
+
+---
+
+## 211. ⭐ STAGE 4 — CONFERRED
+
+The Requirements Reviewer office was conferred by explicit one-act human act, in the
+`PRD-008_STAGE4_CONFERRAL.md` **L7-10** form. ⭐ **Adoption was not blind:** checks 3 and 4 were
+**re-derived** before conferral — `SRCH-CFG-*` re-measured empty, AC↔obligation mapping re-computed
+at **0 uncovered · 0 orphan · 78/78**. ⛔ Obligation count **78 → 78**.
+
+---
+
+## 212. ⭐⭐ STAGE 5 — CONFERRED, WITH TWO INSTRUMENT DEFECTS DISCLOSED
+
+Matrix **§2S** registers **8 registers · 165 identifiers · 78 obligation-bearing**, all contiguous
+from `001`, **0** duplicates, **0** collisions in three directions. Matrix **v1.23 → v1.24**.
+
+⭐⭐ **Two independent committed instruments**, `prd015_traceability.py` (line-form) and
+`prd015_stage5.py` (section-scoped), **neither importing the other**, both **exit 0**, both **exit 1
+before §2S existed**, both reaching **78/78/165** by different routes.
+
+### 212.1 ⚠⚠ Two of my own probes could not fail, and both are disclosed
+
+| # | Defect | Fix |
+|---|---|---|
+| **1** | The §2S existence probe was the bare substring `"2S."` — and **my own changelog row cites "§2S.4"**, so it **survived deletion of the very section it was meant to detect** | anchored to `^## 2S\.` |
+| **2** | The register probes searched the **whole matrix file**, which the changelog row masked — so de-registering `SRCH-XC-*` or `SRCH-CFG-*` passed | scoped to the **§2S section body** |
+
+⭐ **Mutation tested: 7 injected, 7 caught** after the fixes.
+
+⚠ **A third miss was a HARNESS defect, not a gate blind spot**, and the distinction is preserved:
+M3 first renamed only §2S.1's table row while `SRCH-CFG-*` also appears in §2S.3 — ⭐ **the gate was
+correct to pass; the test was wrong.** Re-run against all occurrences, both fail loudly.
+
+⭐ **`SRCH-INV-005`'s lawful restatement** (defined L358 §11, restated L798 §34) is **reported by
+line number, not failed** — on the `PRD-023` `CNF-INV-*` precedent. ⛔ **The subject was not edited
+to silence a checker.**
+
+---
+
+## 213. ⭐⭐ STAGE 6 — GATE PASS, AND RULE 2 MOVED THE RANGE BY 56
+
+⭐ **`IMPL-1850`…`1873`** — **24** tasks, contiguous, one row per number; **`1874`…`1899`** declared
+reserve, not allocated.
+
+⚠⚠ **The lifecycle's own allocation table (L147-153) is STALE and was not used** — it ends at
+*"`IMPL-227`+ Unallocated"*. The frontier was measured by the **task-row rule**: **846** numbers
+used, highest **`IMPL-1794`**.
+
+| Number above the frontier | What it actually is |
+|---|---|
+| `1800` | a `PRD-021B` census row reading *"0 — empty"* — ⭐ a **declaration**, not a use |
+| `1801` | `PRD-021C` prose about this exact hazard |
+| `1849` | ⭐⭐ the **last number of `PRD-021C`'s declared growth reserve** |
+
+⭐⭐⭐ **Rule 2 therefore moved the start from 1795 to 1850**: `PRD-021C` reserved `1794`…`1849`, and
+rule 2 requires leaving the previous group room to grow **contiguously**, so the reserve is
+**cleared**, not consumed. ⛔ **A naïve census would have started at `IMPL-1802`, inside another
+module's reserve.**
+
+⭐ Gate measured: **24/24** tasks trace to a defined obligation · **0** orphans · **78/78**
+obligations claimed · **0** identifiers minted · **7/7** mutations caught.
+
+⚠ **Six tempting tasks were named and REFUSED** (analyzer selection, Devanagari rules, edit-distance
+bound, a search API, SLIs/error budget, the dual-script selection rule) and ⛔ **all nine
+`SRCH-GAP-*` carry no task** — a task cannot resolve a gap.
+
+⛔⛔ **0 lines of application code.** Code is **Stage 8**.
+
+---
+
+## 214. 🚫⛔ STAGE 7 — **BLOCKED. 9 of 11.**
+
+| Conditions 1–9 | ✅ **ALL PASS** — Stage 3/4 conferrals, Stage 5/6 gates green, subject byte-unchanged |
+|---|---|
+| ⛔ **10 — every open gap has a named owner** | 🚫 **`SRCH-GAP-008` — the subject's own §42 says `⛔ No owner exists`** |
+| ⛔ **11 — baseline row + admitting ADR** | 🚫 **0 and 0** — freeze is *"conferred, not claimed"*; Governance Owner is **VACANT** (`ADR-0080` L85) |
+
+⭐ **8 of 9 gaps ARE owned.** ⛔ **I did not nominate an owner for the ninth** — that is fabricated
+authority, and its upstream `XPC-OD-010` is OPEN too, so the question is unowned in **two**
+documents.
+
+### 214.1 ⚠⚠ `SRCH-S7-01` — A FINDING AGAINST MY OWN STAGE-3 CONFERRAL
+
+⭐⭐ **`SRCH-GAP-003`'s `Blocks` cell reads *"Stage 3"*, and the Stage-3 conferral closed only
+`SRCH-GAP-002` and `SRCH-GAP-007`.**
+
+⭐ A defence exists — `GAP-003` bites on a **tenant-operational** surface, which
+`SRCH-INV-002`/`SRCH-FR-019` exclude from the V1 **public** index. ⚠⚠ **But I do not resolve the
+tension in my own favour: the Stage-3 conferral did not address `SRCH-GAP-003` explicitly, and it
+should have.** Raised as `SRCH-S7-01` rather than left for a later reader.
+
+⛔ **The Stage-3 conferral is NOT amended or retracted** — the remedy for a decision record is a new
+record, never a silent rewrite.
+
+---
+
+## 215. ⚠ PLATFORM AUTO-BACKUP COMMITS — DISCLOSED, NOT CONCEALED
+
+Two commits in this pass are **not mine**, created by the platform without instruction while my own
+commands were in flight:
+
+| Commit | Captured |
+|---|---|
+| `bd09b14` | Stage-4 conferral, matrix §2S, both Stage-5 checkers |
+| `5e5241c` | the Stage-6 task document and `prd015_task_coverage.py` |
+
+⭐ **Neither was amended, rebased, reset or force-pushed** — all four are forbidden, and a commit in
+history is evidence of what happened. Verified after the fact: **0 deletions**, **0** files outside
+the intended set, append-only preserved, protected baseline **14/14**, subject hash unchanged.
+⭐ Precedent: `PRD-017_STAGE5_CONFERRAL.md` §8.
+
+---
+
+## 216. TEN REFUSALS
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not freeze, add a baseline row, or create an admitting ADR |
+| 2 | ⛔ Did not nominate an owner for `SRCH-GAP-008` |
+| 3 | ⛔ Did not borrow `ADR-0102`/`0103`/`0104`'s conferrals for Stage 7 |
+| 4 | ⛔ Did not resolve `SRCH-S7-01` in my own favour |
+| 5 | ⛔ Did not amend or retract the Stage-3 conferral |
+| 6 | ⛔ Did not invent an API, event, schema, threshold, SLO, SLI, analyzer or vendor |
+| 7 | ⛔ Did not create a task for any `SRCH-GAP-*`; named 6 tempting tasks and refused them |
+| 8 | ⛔ Did not consume `PRD-021C`'s `IMPL-1794`…`1849` reserve |
+| 9 | ⛔ Did not edit the subject to silence a checker; disclosed 2 instrument defects instead |
+| 10 | ⛔ Did not write application code, and did not claim *"frozen"*, *"baselined"* or *"verified"* |
+
+---
+
+## 217. TERMINAL STATE
+
+| Stage | State |
+|---|---|
+| 3 | ✅ **CONFERRED — 16/16** |
+| 4 | ✅ **CONFERRED — 6/6** |
+| 5 | ✅ **CONFERRED** — matrix §2S, 2 gates exit 0, 7/7 mutations |
+| 6 | ✅ **GATE PASS** — `IMPL-1850`…`1873`, 24 tasks, 78/78, 7/7 mutations |
+| ⛔ **7** | 🚫 **BLOCKED — 9 of 11.** Two named human acts required |
+| 8 · 9 | ⛔ **NOT ENTERED** — code is Stage 8 |
+| `PRD-015` | `DRAFT` / `PLANNED` — ⛔ **not frozen, ranked, baselined or verified**; 0 of 78 criteria proven |
+| Subject hash · frozen bytes · code · new `IMPL-*` beyond the allocation | ⛔ **unchanged · 0 · 0 · 0** |

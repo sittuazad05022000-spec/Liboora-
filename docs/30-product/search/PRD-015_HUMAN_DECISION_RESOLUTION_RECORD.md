@@ -6625,3 +6625,109 @@ explicit **Architecture Owner** clarification. ⛔ **The Stage-3 conferral is no
 | `SRCH-S7-01` | ⛔ **OPEN** — not resolved in my favour |
 | `PRD-015` | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
 | Subject hash · frozen bytes · code · `IMPL-*` | ⛔ **unchanged · 0 · 0 · 0** |
+
+---
+
+# PART XXVIII — ⚠ PROVENANCE DISCLOSURE: PART XXVII WAS COMMITTED BY A **FIFTH** PLATFORM AUTO-BACKUP
+
+| Field | Value |
+|---|---|
+| Trigger | Not a human decision. A **process fact** about how Part XXVII entered history |
+| Human act supplied | ⛔ **NONE** |
+| Governance effect | ⛔ **ZERO** — no gate moves, no verdict changes, no owner named |
+| Why recorded | ⭐ Because the **commit message** attached to Part XXVII is not the one this engagement authored |
+
+---
+
+## 226. ⚠⚠ THE FACT
+
+The commit that this engagement composed for Part XXVII — beginning *"PRD-015 Stage 7 re-verified
+9/11 BLOCKED, and a factual error in my own Part XXVI CORRECTED BY APPEND"* — **was interrupted
+before it executed**. Verification then established:
+
+| Probe | Result |
+|---|---|
+| `HEAD` at interruption | `3903c6f` |
+| `HEAD` on re-verification | ⚠ **`e6d8c58`** — author *"Sittu Azad"*, subject **`genspark auto-backup`** |
+| `e6d8c58` numstat | `+174 / 0` record · `+44 / 0` STAGE7 = ⭐ **exactly the intended `+218 / −0`** |
+| Working tree | ✅ **clean** — nothing staged, nothing unstaged |
+| Content in `HEAD` | ✅ `6627` and `273` lines — ⭐ **byte-for-byte what was authored** |
+
+⇒ ⭐⭐ **The content is intact and committed. Only the message is not mine.** The platform's
+auto-backup captured the append while the authored commit was in flight.
+
+### 226.1 ⛔ WHY NO `git commit --amend`, NO REWRITE, NO SECOND COMMIT OF THE SAME BYTES
+
+| Tempting act | ⛔ Refused because |
+|---|---|
+| `git commit --amend` to attach the authored message | ⛔ **Rewrites published history.** `e6d8c58` is already the tip; amending changes a commit's identity — the exact class of silent rewrite the parent record's **§14** forbids |
+| Re-run the interrupted commit verbatim | ⛔ **Would be empty** — the bytes are already in `HEAD`. A commit asserting new work where none exists is a **false record** |
+| Revert and re-commit under the authored message | ⛔ **Manufactures churn** to cosmetically improve a log line, and briefly removes a correction that is already lawfully recorded |
+| Say nothing, since content is correct | ⛔ **The defect is the provenance, not the content.** Silence would leave a reader unable to tell an authored act from a platform artefact |
+
+⭐ Established precedent inside this very engagement, followed again: `PRD-017_STAGE5_CONFERRAL.md`
+**§8**, and this engagement's own `PRD-015_STAGE7_FREEZE_READINESS.md` **§10** (three earlier
+auto-backups `bd09b14`, `5e5241c`, `f3c399f`) — ⭐ **disclose, do not amend.**
+
+---
+
+## 227. ⭐ THE COMPLETE AUTO-BACKUP LEDGER FOR THIS ENGAGEMENT — now **FIVE**
+
+| # | Commit | Captured | Authored message attached? | Disclosed at |
+|---|---|---|---|---|
+| 1 | `4204fc3` | Stage-3 work in flight | ⛔ No | Part XXIV |
+| 2 | `bd09b14` | `PRD-015_STAGE4_CONFERRAL.md` | ⛔ No | STAGE7 **§10** |
+| 3 | `5e5241c` | `PRD-015_IMPLEMENTATION_TASKS.md` | ⛔ No | STAGE7 **§10** |
+| 4 | `f3c399f` | `PRD-015_STAGE7_FREEZE_READINESS.md` | ⛔ No | STAGE7 **§10** |
+| 5 | ⚠ **`e6d8c58`** | ⭐ **Part XXVII + STAGE7 §11** | ⛔ **No** | ⭐ **THIS PART** |
+
+⚠ **Pattern, stated once and not speculated beyond the evidence:** every interruption in this
+engagement has been followed by a platform commit capturing the in-flight bytes under a generic
+message. ⭐ The bytes have been correct **5 / 5** times; the messages have been mine **0 / 5**.
+
+---
+
+## 228. ⭐ INTEGRITY SUITE RE-RUN **AFTER** THE AUTO-BACKUP — because a commit this engagement did not author must not be trusted on faith
+
+| Probe | Expected | Measured |
+|---|---|---|
+| Subject `sha256` | `fe3093e6…c2c4544` | ✅ **MATCH — hash-lock intact** |
+| Protected baseline (14 files, `/tmp/p22_before.txt`) | 0 changes | ✅ **14 / 14 unchanged** |
+| `docs/00-governance/` diff `3903c6f..HEAD` | 0 | ✅ **0** |
+| `lib/` `test/` `web/` `android/` `pubspec.yaml` diff | 0 | ✅ **0** |
+| Append-only, record `L1-6453` | identical | ✅ **PASS** (`cmp` vs `/tmp/p28_old.md`) |
+| Append-only, STAGE7 `L1-229` | identical | ✅ **PASS** (`cmp` vs `/tmp/s7_old.md`) |
+| Gate `prd015_traceability.py` | exit 0 | ✅ **0** |
+| Gate `prd015_stage5.py` | exit 0 | ✅ **0** |
+| Gate `prd015_task_coverage.py` | exit 0 | ✅ **0** |
+
+⇒ ⭐⭐ **The auto-backup committed the intended bytes and nothing else.** No protected file, no
+governance file, no line of application code, and no frozen byte moved.
+
+---
+
+## 229. ⛔ WHAT THIS PART DOES NOT CHANGE
+
+| Item | State — ⛔ **UNCHANGED** |
+|---|---|
+| Stage 7 verdict | 🚫 **BLOCKED — 9 / 11** |
+| Condition 10 · `SRCH-GAP-008` | ⛔ **OPEN** — Architecture Owner act named, ⛔ not performed |
+| Condition 11 · baseline row + admitting ADR | ⛔ **OPEN** — Governance Owner ⚠ **VACANT** |
+| `SRCH-S7-01` | ⛔ **OPEN** — ⭐ still not resolved in this engagement's own favour |
+| `SRE-GAP-001` | ⛔ **OPEN** |
+| Owners nominated · blockers manufactured · identifiers minted | ⛔ **0 · 0 · 0** |
+
+⭐ **A provenance disclosure is not progress.** It buys no gate. It is recorded because the
+alternative — letting a platform artefact stand unlabelled as an authored governance act — would
+corrupt the audit trail more than the missing message does.
+
+---
+
+## 230. TERMINAL STATE — PART XXVIII
+
+| Item | State |
+|---|---|
+| Part XXVII content | ✅ **committed, intact, byte-correct at `e6d8c58`** |
+| Part XXVII authored message | ⚠ **lost to interruption — disclosed here, ⛔ NOT recovered by rewrite** |
+| History | ⭐ **forward-only — 0 amends, 0 rebases, 0 force-pushes to `github`** |
+| ⛔ **Stage 7** | 🚫 **BLOCKED — 9 / 11.** ⭐ Three human acts remain, named at §223 |

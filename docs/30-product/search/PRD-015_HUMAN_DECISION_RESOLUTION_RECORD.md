@@ -5408,3 +5408,185 @@ requiring PO **and** Architecture Owner concurrence), `H-C` (corpus definition +
 ⛔ **`PRD-015` remains v0.1 `DRAFT`, registry `PLANNED`, Stage 3 NOT CONFERRED.**
 
 **End of Part XX.**
+
+---
+
+# PART XXI — `H-B` PRODUCT OWNER ADOPTION RECORDED · CONCURRENCE LEFT OPEN
+
+| Field | Value |
+|---|---|
+| **Part** | **XXI** — twentieth consecutive governance pass |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"PRD-015 — H-B SCRIPT BINDING — PRODUCT OWNER ADOPTION"* — bind the three `text`-role units to **Latin + Devanagari**; use the `HD-1` / `SRCHPO-A3` mechanism; then obtain and record Architecture Owner concurrence under `ADR-0099` `C-3` |
+| **Act** | ⭐⭐⭐ **RECORDING A SECOND ACTUAL PRODUCT OWNER DECISION** — and ⛔ **REFUSING to manufacture the concurrence limb** |
+| **Predecessor commit** | `ba95c25` |
+| **Carrier created** | `PRD-015_PO_DECISION_RESOLUTION_RECORD_SUPPLEMENT_B.md` — `SRCHPO-17` |
+| **Result** | ⭐ **`H-B` script bindings 3/3 COMPLETE.** ⛔⛔ **`H-B` itself NOT CLOSED** — the concurrence limb is **OPEN**, and under rule `X3` a gap closes on all limbs, not a majority |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (twentieth) |
+
+---
+
+## 177. ⭐⭐⭐ THE DUAL-SCRIPT QUESTION — RAISED AGAINST MYSELF, TESTED, AND CLEARED
+
+### 177.1 ⚠⚠ The adverse reading is recorded first, because I found it before I wrote anything
+
+The instruction binds each of the three `text` units to **two** scripts. Three separate authorities
+speak of the field's declared script in the **singular**:
+
+| Authority | Wording | Number |
+|---|---|---|
+| `ADR-0099` **`C-3`** (**L87**) | *"MUST consume **an** authoritative declared script"* | singular |
+| `ADR-0099` **`C-4`** (**L88**) | *"applied according to **the field's** authoritative declared script"* | singular |
+| `HD-2` (§3.1) | *"according to **the** authoritative declared script associated with the field"* | singular |
+
+⛔ **And every obvious escape was already closed**: content-detection is prohibited four times over
+(`C-3`, `C-9`, `SRCHPO-2`, `SRCHAO-F5 = Option A`); a per-language index is expressly not authorised
+by the parent PO record §2.3; and dropping one script fails `SRCHPO-1`'s two-member inventory **and**
+Part XIX §164's own *"Devanagari reachable somewhere"* test.
+
+⭐ **I did not resolve this by preferring the instruction.** I measured it.
+
+### 177.2 ⭐⭐⭐ `SRCHPO-A9` — the measurement that clears it
+
+| Measurement | Result |
+|---|---|
+| `exactly one script\|single script\|one script per\|only one script` over `docs/` | ⭐⭐⭐ **0 relevant hits** — the single hit means a *shell* script, in `PRD-007` **L260** |
+| `exactly one` in the subject `PRD-015_SEARCH_INDEXING.md` | **8 hits** — index class, ordering, implementation, ⭐ **match role** |
+
+⭐⭐⭐ **The contrast is the finding.** `SRCH-AC-018` (**L1066**) states cardinality-one **expressly**:
+*"**then** exactly one match role — text, exact or filter — is declared for it."* That is what a
+cardinality rule looks like in this repository. **No such sentence exists for script.** ⇒ The
+singular articles are **grammatical, not normative** — they identify *which* declaration governs a
+normalization decision, not *how many* scripts a field may declare.
+
+⚠ **The limit of that finding, stated rather than smoothed.** An absence is an absence. It
+establishes only that ⛔ **no authority is breached** — not that a two-member binding is
+affirmatively blessed. The binding is **not unlawful**; it is **unaddressed as to mechanism**.
+
+### 177.3 ⭐⭐ `SRCHPO-A10` — the repository had already met this exact value
+
+`PRD-015_P2_ARCHITECTURE_DECISION.md` **L691** already contemplated *"a **mixed-script field value**
+(a Hindi name containing a Latin acronym)"* and recorded that *"**that sub-question is itself
+unaddressed by any authority**."*
+
+⭐ **A Hindi library name containing a Latin acronym is unit 1 of this very binding.** ⇒ The adoption
+**describes a corpus fact that pre-existed it**. And Supplement A §4 (**L175-176**) had already
+written that a lawful `H-B` act *"may bind these three units to either script, **in any
+combination**."* This act is the one my own prior record contemplated.
+
+### 177.4 ⭐⭐⭐ `SRCHPO-A11` — the residual, named and routed, NOT closed
+
+⭐ **`HD-3` is why the two-member binding is coherent.** `HD-3` applies normalization
+**script-conditionally at the RULE level** — *"Latin case folding applies where relevant to
+Latin-script content… Do NOT apply a fictional Latin case-folding operation to Devanagari"* — while
+forbidding the reading that Devanagari gets none. A **per-rule** conditional does not require the
+**field** to hold exactly one script; it requires each rule to have a defined disposition.
+
+⛔ **But that is coherence, not mechanism.** By what declared rule the analyzer selects between the
+Latin and Devanagari rule sets for a given token — with detection forbidden — is an **analyzer**
+question, owned by the Architecture Owner and OPEN at `ADR-0099` §2.3. ⚠ **This pass writes no
+disposition table, names no analyzer, and invents no selection rule.**
+
+---
+
+## 178. ⭐ WHY THE PRODUCT OWNER LIMB WAS RECORDED ANYWAY
+
+The instruction's own conditional governed: *"record the PO declaration **only if that act is
+independently lawful**."* `HD-1` §2.3's routing splits the act into two limbs attributed to two
+offices:
+
+> **Owner:** Product Owner (domain) **with Architecture Owner concurrence per `ADR-0099` `C-3`**.
+
+| Legality test | Result |
+|---|---|
+| Acting office matches the routing's named owner for this limb | ✅ Product Owner (domain) — not recorded VACANT anywhere |
+| Carrier is the mechanism the closed ruling `HD-1` selected | ✅ `SRCHPO-A3` precedent — ⛔ 0 new mechanisms |
+| Values drawn from existing authority, not invented | ✅ both are `SRCHPO-1` members — ⛔ 0 new values |
+| Frozen documents amended | ⛔ **0 bytes** |
+| Any measured authority breached | ⛔ **NO** — §177.2 |
+| Completes the `C-3` act | ⛔⛔ **NO** — §179 |
+
+⇒ ⭐ **The declaration is lawful and is recorded. The act it belongs to is incomplete.**
+
+---
+
+## 179. ⛔⛔ ARCHITECTURE OWNER CONCURRENCE — **OPEN.** NOT MANUFACTURED
+
+| Measurement | Result |
+|---|---|
+| `PRD-015`'s Architecture Owner | ⭐ **`ARB`** — `PRD_OWNERSHIP_MODEL.md` **L197** |
+| Seated ARB | ⛔ **0 hits** |
+| Concurrence artefacts for this act | ⛔ **0** |
+| ⭐ `concur` inside `ADR-0099` | ⛔⛔ **0 occurrences** |
+
+⭐⭐ **The last row is this pass's sharpest refusal.** `ADR-0099` `C-3` is a **constraint on the
+configuration**; the concurrence **requirement** lives in `HD-1` §2.3's routing. An ADR cannot supply
+concurrence to an act performed after it, and I did not read it as doing so (`SRCHPO-X16`).
+
+⛔ **Nor did I treat `SRCHAO-F5 = Option A` as standing concurrence** — `SCOPE: this act only`, and
+its own §11.2 states it *"does not supply a script value for any field."*
+
+### 179.1 `H-D` re-measured — still **BLOCKED**, and still **COUPLED** to `H-B`
+
+| Measurement | Result |
+|---|---|
+| `SRE` / `Observability` in `PRD_OWNERSHIP_MODEL.md` | ⛔ **0** |
+| ADR `Deciders` rows naming SRE/Observability (89 ADRs) | ⛔ **0** |
+| Seated ARB | ⛔ **0** |
+
+⭐ **The coupling is my own prior finding (§157, L4804-4806) and it holds:** *"`H-B` requires a
+seated-or-conferred Architecture Owner too — which is `H-D`'s blocker."*
+
+---
+
+## 180. `H-B` GATE — RE-RUN
+
+| # | Condition | Result |
+|---|---|---|
+| 1 | Unit set authoritatively fixed | ✅ **3** (`SRCHPO-16`) |
+| 2 | Every unit carries a declared script | ✅ **3 of 3** |
+| 3 | Values are `SRCHPO-1` members | ✅ 2 of 2 used · ⛔ 0 non-members |
+| 4 | Devanagari reachable | ✅ **PASSES** (Part XIX §164's failed test) |
+| 5 | Actual PO act | ✅ **YES** |
+| 6 | Lawful carrier | ✅ Supplement B |
+| 7 | 0 frozen bytes | ✅ |
+| 8 | No third language/script | ✅ **0** |
+| 9 | ⭐⭐ Architecture Owner concurrence | ⛔⛔ **OPEN** |
+
+### ⚠⚠ `H-B` — **NOT CLOSED.** PO limb **8/8** · concurrence limb **0/1**
+
+⛔ **Rule `X3`:** *"A gap closes on all limbs, not a majority."*
+
+⛔ **Gate conditions 1-15 and 7b of the Stage-3 gate were NOT re-run this pass.** The instruction
+scoped this act to `H-B`. Stage 3 stays at **5 of 16** with `H-B` now *specified and half-satisfied*
+rather than wholly blocked — ⚠ **which is progress in the ask, not in the conferral.**
+
+---
+
+## 181. TEN REFUSALS
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not manufacture Architecture Owner concurrence |
+| 2 | ⛔ Did not read `ADR-0099` as self-concurring — `concur` = 0 hits |
+| 3 | ⛔ Did not treat `SRCHAO-F5 = Option A` as a standing licence |
+| 4 | ⛔ Did not assign a script to any of the other **11** units |
+| 5 | ⛔ Did not create a third language, script, locale or tag |
+| 6 | ⛔ Did not invent a transliteration or Romanization rule |
+| 7 | ⛔ Did not invent script or language detection |
+| 8 | ⛔ Did not write an `N1`–`N6` disposition table or name an analyzer |
+| 9 | ⛔ Did not resolve `H-C`, `H-D` or `H-E` |
+| 10 | ⛔ Did not claim Stage 3 READY, and did not freeze, baseline or rank anything |
+
+---
+
+## 182. TERMINAL STATE
+
+| Item | State |
+|---|---|
+| `H-B0` | ✅ **CLOSED** (Part XX, `SRCHPO-16`) |
+| **`H-B` script bindings** | ⭐ **3 of 3 — COMPLETE** |
+| **`H-B` overall** | ⛔⛔ **NOT CLOSED** — concurrence OPEN |
+| `H-C` · `H-D` · `H-E` | ⛔ **BLOCKED / NOT REACHED** — untouched this pass |
+| Stage 3 | ⚠ **NOT READY / NOT CONFERRED** — **5 of 16** |
+| Frozen bytes · ADRs · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0** |

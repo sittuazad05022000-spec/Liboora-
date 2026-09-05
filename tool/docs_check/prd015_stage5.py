@@ -174,18 +174,29 @@ def main():
     # Matrix registration - the Stage 5 gate itself.
     # ------------------------------------------------------------------
     matrix = load(MATRIX)
-    if "2S." not in matrix:
-        fail("TRACEABILITY_MATRIX.md has no section 2S - the gate is the "
-             "registration, not the intention to register")
+    # Anchored heading probe - see the note in prd015_traceability.py. The
+    # bare substring "2S." also occurs in the changelog row's own citations,
+    # so it survives deletion of the section it is meant to detect.
+    if not re.search(r"^## 2S\.", matrix, re.M):
+        fail("TRACEABILITY_MATRIX.md has no section 2S heading - the gate is "
+             "the registration, not the intention to register")
     else:
+        # Scope to the 2S section body - see the note in
+        # prd015_traceability.py. A whole-file probe is masked by the
+        # changelog row, which names every register in prose.
+        m2s = re.search(r"^## 2S\.(.*?)^## ", matrix, re.M | re.S)
+        section = m2s.group(1) if m2s else ""
+        if not section.strip():
+            fail("section 2S is present but empty")
         for k in OBLIGATION_KINDS + ["AC", "GAP"]:
-            if "SRCH-%s-*" % k not in matrix:
+            if "SRCH-%s-*" % k not in section:
                 fail("matrix section 2S does not register SRCH-%s-*" % k)
         for k in EMPTY_KINDS:
-            if "SRCH-%s-*" % k not in matrix:
+            if "SRCH-%s-*" % k not in section:
                 fail("matrix section 2S does not register SRCH-%s-* as EMPTY" % k)
-        if str(obligation_total) not in matrix:
-            fail("matrix does not publish obligation total %d" % obligation_total)
+        if str(obligation_total) not in section:
+            fail("matrix section 2S does not publish obligation total %d"
+                 % obligation_total)
 
     # ------------------------------------------------------------------
     print("PRD-015 Search Indexing - Stage 5 registration check (route B)")

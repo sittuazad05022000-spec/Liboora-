@@ -198,19 +198,32 @@ def main():
 
     # --- matrix registration --------------------------------------------
     matrix = "\n".join(read(MATRIX))
-    if "2S." not in matrix:
-        fail("TRACEABILITY_MATRIX.md has no section 2S - "
+    # The existence probe must match the SECTION HEADING, anchored at line
+    # start - not the bare substring "2S.". Mutation test M1 deleted the whole
+    # section and this check still passed, because the changelog row cites
+    # "section 2S.4" and the substring survived. A probe that cannot fail is
+    # not a probe; disclosed in matrix section 2S.6.
+    if not re.search(r"^## 2S\.", matrix, re.M):
+        fail("TRACEABILITY_MATRIX.md has no section 2S heading - "
              "the Stage 5 gate is the registration, not the intention to register")
     else:
-        # The matrix must publish the same totals this script computes.
-        for kind in OBLIGATION_KINDS + ["AC"]:
+        # Scope the register checks to the 2S SECTION BODY. Checking the whole
+        # file is unsafe: the changelog row names every register in prose, so a
+        # whole-file probe survives deletion of the registration row it is
+        # meant to detect. Mutation tests M2/M3 were missed for exactly that
+        # reason; disclosed in matrix section 2S.6.
+        m = re.search(r"^## 2S\.(.*?)^## ", matrix, re.M | re.S)
+        section = m.group(1) if m else ""
+        if not section.strip():
+            fail("section 2S is present but empty")
+        for kind in OBLIGATION_KINDS + ["AC", "GAP"] + EMPTY_KINDS:
             token = "SRCH-%s-*" % kind
-            if token not in matrix:
-                fail("TRACEABILITY_MATRIX.md section 2S does not register %s" % token)
+            if token not in section:
+                fail("matrix section 2S does not register %s" % token)
         expect = str(obligation_total)
-        if expect not in matrix:
+        if expect not in section:
             fail(
-                "TRACEABILITY_MATRIX.md does not publish the obligation total %s"
+                "matrix section 2S does not publish the obligation total %s"
                 % expect
             )
 

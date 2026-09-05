@@ -271,3 +271,43 @@ premise is a defect even when the conclusion happens to be right.
 records that this engagement's own **L749**, **L755** and finding **`SRCHFC-A2`** (**L898**) had
 already established the correct position — making the §3.1 error a **regression**, not a discovery
 failure.
+
+---
+
+## 12. ⭐⭐⭐ SUPERSEDED AS TO VERDICT — STAGE 7 IS NOW **CONFERRED 11/11**
+
+⚠ **This document's verdict — *"BLOCKED — 9 of 11"* — was TRUE WHEN WRITTEN and is now superseded.**
+It is **retained unamended** as the readiness assessment it was; the conferral is recorded separately
+at [`PRD-015_STAGE7_CONFERRAL.md`](./PRD-015_STAGE7_CONFERRAL.md).
+
+| Condition | This document | ⭐ Now |
+|---|---|---|
+| **10** — named owners | 🚫 **BLOCKED**, 8/9 | ✅ **PASS — 9/9** by `ADR-0105` |
+| **11** — baseline row + admitting ADR | 🚫 **ABSENT** | ✅ **PASS** — `ADR-0106`, recorded **before** the row |
+
+### 12.1 ⚠⚠ CORRECTION of §11.1 — the *"cheaper remedy"* I recommended **DOES NOT EXIST**
+
+§11.1 stated the remedy for condition 10 was *"an **Architecture Owner** act adopting `ADR-0098`
+L222"* and called it *"cheaper than §7 ACT 1"*. ⛔⛔ **That was wrong, on three measured grounds:**
+
+| # | Ground |
+|---|---|
+| 1 | ⛔ **L222 never routed the question here.** `grep -c "PRD-015"` on L222 = **0**, while **L221** routes `XPC-OD-009` *"to `PRD-015` when authored"* — ⭐ the omission is deliberate |
+| 2 | ⛔ **`ADR-0098` §6 is a register of items *"admitted OPEN"*** under `ADR-0020` §4 — it assigns a **routing target**, not an act |
+| 3 | ⛔ **The owner is a TWO-role pairing** — `PRD-021C_C0` **L428**: *"Architecture Owner **with the Security reviewer role**"*. L222's single cell would have **dropped the Security limb** |
+
+⇒ ⭐⭐ **The actual remedy was a *Product Owner* act naming the role — not an Architecture Owner act
+adopting L222.** ⛔ §11.1 is **not rewritten**; the correction is recorded here and, more fully, at
+`PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md` **Part XXIX §232**.
+
+### 12.2 ⭐ What §11.1 got RIGHT, and is preserved
+
+✅ Its core holding stands: **`XPC-OD-010` is OPEN but OWNED**, and ⛔ that does **not** transfer
+ownership to `SRCH-GAP-008`, whose own row still reads *"No owner exists."* ⭐ **That refusal was
+correct then and is why `ADR-0105` was needed now.**
+
+### 12.3 ⛔ What the conferral does NOT change in this document
+
+⛔ **`SRCH-S7-01` (§4) remains OPEN** and is **still not resolved in this engagement's favour**; the
+Stage-3 conferral is ⛔ **not amended, retracted or restatused**. ⛔ **Stage 8 is NOT entered — 0 of
+78 acceptance criteria proven.**

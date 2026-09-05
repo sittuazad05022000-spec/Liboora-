@@ -2969,6 +2969,132 @@ subject** — these are the same nine files the Stage-4 conferral verified.
 ---
 
 
+## 2S. Identifier inventory — Search Indexing (`PRD-015`, the `BC-23` discovery index)
+
+**Stage 5 — CLAIMS registration.** Registered 2026-09-05, matrix **v1.23 → v1.24**, under the
+Stage-5 conferral at `docs/30-product/search/PRD-015_STAGE5_CONFERRAL.md`.
+
+⚠⚠ **The pre-commit measurement is published WITH ITS REGEX**, per the §2K/§2L lesson, because a
+bare `grep -c 'SRCH-'` is unsafe for this prefix — the token also occurs inside `SRCHPO-*` and
+`SRCHAO-*`, the Product-Owner and Architecture-Owner decision registers, which are **not** PRD
+identifiers. Anchored:
+`grep -cE '(^\|[^A-Za-z-])SRCH-(FR|BR|INV|EVT|XC|CFG|AC|GAP)-[0-9]+'` → **0**, so **165 identifiers
+in a document whose Stage 3 and Stage 4 are CONFERRED were registered nowhere**.
+
+### 2S.1 The registers
+
+| Register | Members | Range | Contiguous from 001 | Duplicate definitions | Notes |
+|---|---|---|---|---|---|
+| `SRCH-FR-*` | **42** | `001`–`042` | ✅ | **0** | functional requirements |
+| `SRCH-BR-*` | **14** | `001`–`014` | ✅ | **0** | business rules |
+| `SRCH-INV-*` | **6** | `001`–`006` | ✅ | **0** | invariants — ⚠ one lawful restatement, §2S.4 |
+| `SRCH-XC-*` | **16** | `001`–`016` | ✅ | **0** | exclusions |
+| `SRCH-AC-*` | **78** | `001`–`078` | ✅ | **0** | acceptance criteria, all Given/When/Then |
+| `SRCH-GAP-*` | **9** | `001`–`009` | ✅ | **0** | ⛔ **all 9 remain OPEN** — registration is not resolution |
+| `SRCH-EVT-*` | ⭐ **0** | — | — | — | ⭐ **EMPTY, verified** — §2S.3 |
+| `SRCH-CFG-*` | ⭐ **0** | — | — | — | ⭐ **EMPTY, verified** — §2S.3 |
+
+⭐ **Obligation-bearing: 42 + 14 + 6 + 16 = 78.** ⭐ **Total identifiers: 165.** ⛔ **0 retired.**
+⛔ **Zero collisions in all three directions** (§2S.5).
+
+### 2S.2 ⭐⭐ Coverage — 78 / 78 = 100.0 %, computed in BOTH directions
+
+| Measurement | Value |
+|---|---|
+| Obligation-bearing identifiers | **78** |
+| `SRCH-AC-*` defined | **78** |
+| Distinct obligations cited in AC `Verifies` cells | **78** |
+| ⛔ Obligations with **no** criterion | ⭐ **0** |
+| ⛔ Criteria citing a **non-existent** obligation | ⭐ **0** |
+
+⭐⭐ **This is the first inventory in this matrix to register 100.0 % criterion coverage**, and the
+figure is published for what it is: **every obligation has a criterion**. ⚠⚠ **It does NOT mean any
+criterion is satisfied — 0 of 78 are proven by a passing test**, because no implementation exists.
+`SID-4.56`: *"a rule that cannot be checked SHALL be treated as unmet."* Both gate scripts print the
+coverage on every run and fail if it drifts.
+
+### 2S.3 ⭐ Two registers are registered AS EMPTY rather than omitted
+
+⚠ **An omitted empty register is indistinguishable from an oversight**, which is why both are
+registered and both are enforced as tests.
+
+| Register | Why it is empty | Verified |
+|---|---|---|
+| `SRCH-EVT-*` | ⭐ **`BC-23` publishes no domain event.** `SRCH-FR-004` requires every index to be populated *"from events on `E-21` only"* and `SRCH-INV-001` holds that `BC-23` *"holds **no** source of truth"* — a pure **projection consumer** produces no event | `grep -cE '\bSRCH-EVT-[0-9]+'` → **0** |
+| `SRCH-CFG-*` | ⭐ **`BC-23`'s configuration carriage belongs to `BC-25`.** `ADR-0017` gives `BC-25` parameters and validation; `ADR-0099` §2.4 records that `LCFG-6` and `LCFG-12` are *"the shape `BC-25` carriage actually takes for `BC-23`"*. The `PRD-023` precedent is exact — that module *owns configuration and owns no configurable* | `grep -cE '\bSRCH-CFG-[0-9]+'` → **0** |
+
+⛔ **No number is burned in either register** — deliberately unlike `TEN-CFG-001`, which was issued
+then retired. Stage 5 **looked** for authoritative evidence requiring one and found none. ⭐ Both
+checkers **fail** if a numbered member ever appears.
+
+### 2S.4 ⚠ `SRCH-INV-005` — one lawful RESTATEMENT, disclosed rather than failed
+
+Both gate scripts report, and neither fails on:
+
+> `SRCH-INV-005`: **1 definition at line 358** (§11 *Index lifecycle*), **1 restatement at line 798**
+> (§34 *Rebuild and recovery*).
+
+⭐ **A restatement in a later topical section is not a register collision**, and `PRD-023` does the
+same with `CNF-INV-001`…`004` defined and enforced in one section. ⚠ **It is reported by line number
+anyway**, for two reasons: an undisclosed restatement is indistinguishable from an accidental second
+definition, and a restatement that later **drifts** from its definition is a real defect this output
+makes visible.
+
+⛔ **The subject was NOT edited to remove it.** `PRD-015_SEARCH_INDEXING.md` is hash-locked at
+`fe3093e60a3fae5516f0f65c9c62ac2bb28bdfa514a5b1870352d9bdbc2c4544` across the Stage-3 and Stage-4
+conferrals; changing a byte would invalidate both measurements — the precise drift
+`alignment_record_freshness.py` exists to catch.
+
+### 2S.5 ⭐⭐ Collision safety — three directions, and the hazard here is REAL
+
+| Direction | Test | Result |
+|---|---|---|
+| **Inward** | does another prefix end in something that makes `X-SRCH-` parse as a member? `[A-Za-z0-9]-SRCH-` | ⭐ **0** |
+| **Reverse** | is `SRCH-` embedded in a longer token? `(?<=[A-Za-z0-9])SRCH-` | ⭐ **0** |
+| **Bare form** | is the ambiguous `SRCH-n` form used? `\bSRCH-\d+\b` | ⭐ **0** |
+
+⚠⚠ **The reverse hazard for this prefix is NOT manufactured — it is genuine, unlike §2L's, which was
+measured absent.** `SRCHPO-1`…`19`, `SRCHPO-A1`…`A12`, `SRCHPO-X1`…`X17`, `SRCHPO-C1`/`C2` and
+`SRCHAO-F5`/`SRCHAO-HB1` all begin with the four characters `SRCH`. ⭐ **A loose `SRCH` scan would
+sweep 60+ decision-register identifiers into a PRD inventory** and report a phantom count. The
+anchored regex published above requires the `-` and one of the eight sub-registers, so it matches
+**0** of them.
+
+### 2S.6 The two gate instruments, and why there are two
+
+| Script | Route | Exit |
+|---|---|---|
+| `tool/docs_check/prd015_traceability.py` | classifies **LINES** by their own form; requires the em-dash separator that every definition uses and no prose citation does | **0** |
+| `tool/docs_check/prd015_stage5.py` | splits the document at `## ` **and** `### ` into **SECTIONS**, gathers per-section, then unions; also runs the three collision directions and compares the PRD's **self-published** total | **0** |
+
+⭐⭐ **Neither imports the other, and they reach 78 / 78 / 165 by different strategies.** §2H.2 names
+the failure the pair exists to avoid: *"a checker written in the same pass as the register it checks,
+by the same author, verifies agreement with itself."*
+
+⚠ **Both were run BEFORE this section existed and both exited 1** — *"has no section 2S — the gate is
+the registration, not the intention to register"* — while still computing 78 / 78. ⭐ **A gate that
+cannot fail is not a gate.**
+
+⚠⚠ **A DEFECT IN THE FIRST VERSION OF THESE SCRIPTS IS DISCLOSED RATHER THAN SMOOTHED OVER.** The
+initial `check_register` treated **any** repeated em-dash form as a duplicate **definition** and
+failed on `SRCH-INV-005`. Root-causing it by **reading L358 and L798** — not by adjusting a regex
+until it passed — showed the PRD was **right** and the instrument's *model* was wrong: a definition
+and a topical restatement are different things. ⭐ **No PRD content was changed to make a checker
+pass.**
+
+### 2S.7 ⛔ What this registration does NOT do
+
+| ⛔ Not done |
+|---|
+| ⛔ **No `IMPL-*` range allocated** — that is Stage 6. `docs/40-implementation/search/` **does not exist** |
+| ⛔ **No freeze** — Stage 7. `DOCUMENTATION_BASELINE.md` §3 contains **no** row admitting `PRD-015` |
+| ⛔ **No verification** — registered is not verified; **0 of 78** criteria proven |
+| ⛔ **All 9 `SRCH-GAP-*` remain OPEN**, as do `SRCHPO-A11`, `SRE-GAP-001`, the four **DEFER** rulings, and the `P1`/`P7` limbs |
+| ⛔ **`PRD-015` stays `DRAFT` / `PLANNED`** — `PRD_REGISTRY.md` **L315** unchanged |
+| ⛔ **Subject byte-unchanged**; **0** application-code files touched |
+
+---
+
 ## 3. Chapter map
 
 | Ch | Title | `AUTH` | `BR` | `XC` | `AC` | Implementation task | Status |

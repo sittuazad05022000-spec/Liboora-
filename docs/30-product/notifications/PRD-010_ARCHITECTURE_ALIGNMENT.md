@@ -499,3 +499,106 @@ approval or freeze claimed.
 | Version | Date | Change |
 |---|---|---|
 | **v1.1** | 2026-09-05 | ⭐⭐ **Supplement appended after the subject's v0.1a → v0.2 amendment; the v1.0 record above is preserved unrewritten.** ⭐⭐⭐ **`NTF-AL-B2` re-tested clause by clause and DISCHARGED**: `CM-3`/`EBR-1030` — absent at v0.1a (**grep 0**) — is now carried by atomic invariant **`NTF-INV-011`** and testable criterion **`NTF-AC-009`**, and all of rank 5, `contracts`, both ports, `A-3`, `consumes_events`, `banned_imports`, `CM-1` and `CM-2` are now **cited** in the subject's new §6.1 with a clause→requirement mapping. ⭐ **`C-1` was verified non-duplicative before acceptance** — a five-pattern probe against v0.1a returned **0 hits**, and the subject's §19.1 distinguishes it from `NTF-FR-003` (payload sufficiency, a different trigger). ⭐ **All six checks re-run**: **6 PASS**, with **check 3 improved from implicitly satisfied to explicitly cited**. **Registers verified: 115 → 117 identifiers, all six contiguous, 0 missing, 0 out-of-range, 0 duplicate definitions, 0 renumbered** — confirmed by a row-start definition probe. ⛔ **Nothing was closed or cured that lacked authority**: `NTF-AL-F2` remains **OPEN** (and is now *disclosed inside the subject*, with the explicit statement that no requirement depends on it), all **23** `NTF-GAP-*` remain **OPEN** with owners, `NTF-GAP-021` is **refined not closed**, and the `PRD_REGISTRY.md` v0.1/v0.4 self-contradiction is **disclosed not repaired** as a Governance Owner act. ⛔ **0 ADRs created or modified · 0 frozen documents · 0 baseline · 0 registry status · 0 BC Map · 0 `MASTER_PRD` · 0 dependency matrix · 0 `module_dependencies.yaml` · 0 `IMPL-*` · 0 lines of application code.** |
+
+---
+
+# SUPPLEMENT v1.2 — ⚠ CORRECTION OF TWO STAGE-4 FORECASTS PUBLISHED IN THIS RECORD
+
+⛔ **Supplements v1.0 and v1.1 are NOT rewritten.** This entry corrects two **forecast figures** the
+reviewer published about Stage-4 workload. ⛔ **No Stage-3 verdict changes** — both figures are
+*preview* statements about Stage 4, and neither is a Stage-3 check.
+
+| Field | Value |
+|---|---|
+| Trigger | ⭐ Reviewer self-audit of figures published without measurement |
+| Subject bytes changed | ⛔ **0** — `PRD-010` `sha256` `f0b61e0dee82e623deb521278f00d45618438cc161ece950c5bd8ad5d1944513` unchanged |
+| Stage-3 result | ✅ **UNCHANGED — PASS 6/6, `NTF-AL-B2` DISCHARGED** |
+| Verified at | `6a5fb3d` |
+
+---
+
+## 20. ⚠⚠ Correction 1 — obligation count is **85**, not *"~84"*
+
+§18 and the accompanying report stated AC coverage as *"9 / ~84 obligations"*. Measured:
+
+| Register class | Count |
+|---|---|
+| `NTF-FR-*` | 65 |
+| `NTF-BR-*` | 3 |
+| `NTF-INV-*` | 11 |
+| `NTF-XC-*` | 6 |
+| ⭐ **Obligation-bearing total** | ⭐ **85** |
+| `NTF-AC-*` | 9 |
+| `NTF-GAP-*` | 23 |
+| **Grand total** | **117** ✅ reconciles exactly |
+
+⇒ ⭐ **AC coverage is `9 / 85 = 10.6%`.** The *"~84"* was an unmeasured estimate carrying a tilde;
+⭐ it is now an exact figure. ⛔ **Stage-3 impact: none** — AC coverage is a **Stage-4** gate concern.
+
+---
+
+## 21. ⚠⚠⚠ Correction 2 — there are **13** gap-pointer obligations, not **7**
+
+§18 and the report named **seven** (`NTF-FR-017`, `-037`, `-040`, `-044`, `-049`, `-054`, `-065`).
+A mechanical probe — obligation rows whose text defers to an `NTF-GAP-*` — returns **13**:
+
+| # | Requirement | Defers to |
+|---|---|---|
+| 1 | `NTF-FR-017` | `NTF-GAP-007` bulk ceiling |
+| 2 | ⭐ `NTF-FR-021` | `NTF-GAP-010` Student→Staff inbound |
+| 3 | ⭐ `NTF-FR-022` | `NTF-GAP-011` unread-message trigger |
+| 4 | ⭐ `NTF-FR-028` | `NTF-GAP-012` redirect auditability |
+| 5 | ⭐ `NTF-FR-029` | `NTF-GAP-013` redirect ownership |
+| 6 | `NTF-FR-037` | `NTF-GAP-014` localization |
+| 7 | `NTF-FR-040` | `NTF-GAP-015` mandatory classification |
+| 8 | ⭐ `NTF-FR-041` | `NTF-GAP-016` `BC-25` contested |
+| 9 | `NTF-FR-044` | `NTF-GAP-017` push `delivered` semantics |
+| 10 | `NTF-FR-049` | `NTF-GAP-018` retry values |
+| 11 | `NTF-FR-054` | `NTF-GAP-019` config key split |
+| 12 | ⭐ `NTF-FR-055` | `NTF-GAP-002` platform scope |
+| 13 | `NTF-FR-065` | `NTF-GAP-020` SLO/SLI |
+
+⚠⚠ **The published figure understated the Stage-4 workload by six.** ⭐ Recorded because a Stage-4
+reviewer relying on *"seven"* would have found six more than expected.
+
+### 21.1 ⭐ But they are NOT all the same kind — and this matters for Stage 4
+
+Examined individually, the 13 fall into **three classes**:
+
+| Class | Members | Stage-4 disposition |
+|---|---|---|
+| ⚠ **A — Genuinely unspecified value** (the real Stage-4 work: *"every configurable has a default and a range"*) | `NTF-FR-017`, `-037`, `-040`, `-044`, `-049`, `-054`, `-065` — ⭐ **7** | ⚠ **Must gain a default + range, or be withdrawn** |
+| ⭐ **B — States a real, testable obligation and merely *cites* an open gap** | `NTF-FR-041` (*"Preference storage **MUST** use the `BC-25` settings hierarchy"* — testable now; contested ownership noted), `NTF-FR-055` (*"Platform-wide announcements are **NOT V1**"* — a testable exclusion) | ✅ **No change needed** |
+| ⭐ **C — Deliberate scope disclaimer, not a requirement at all** | `NTF-FR-021`, `-022`, `-028`, `-029` — each records that a capability is **not created here** and routes it | ⚠ **Stage 4 should consider re-classing these**, since `PRD_LIFECYCLE` Stage 4 requires *"every exclusion states what must be impossible"* |
+
+⇒ ⭐⭐ **The original figure of seven was right about class A and silent about B and C.** The
+corrected reading: **7 requirements need a default and a range**; **2 are already testable**; **4 are
+disclaimers that may belong in the non-scope section rather than the requirement register**.
+
+⚠ **Class C is a new Stage-4 finding**, registered here rather than in the subject: ⛔ **no
+requirement is renumbered or re-classed by this supplement**, because re-classing a requirement is an
+authoring act, not a review act.
+
+---
+
+## 22. ⛔ What this supplement does NOT change
+
+| Item | State |
+|---|---|
+| Stage-3 verdict | ✅ **PASS 6/6 — unchanged** |
+| `NTF-AL-B2` | ✅ **DISCHARGED — unchanged** |
+| `NTF-AL-F2` | ⛔ **OPEN — unchanged** |
+| 23 `NTF-GAP-*` | ⛔ **all OPEN — 0 closed** |
+| Subject bytes · identifiers | ⛔ **0 changed · 117 unchanged** |
+| Registry · baseline · ADRs · code | ⛔ **0 · 0 · 94 unchanged · 0** |
+
+⭐ **Neither correction touches a Stage-3 check.** Both are forecasts about Stage 4, and both are now
+measured rather than estimated.
+
+---
+
+## 23. Supplement change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.2** | 2026-09-05 | ⚠⚠ **Reviewer self-audit: two Stage-4 forecast figures published in §18 and the accompanying report were unmeasured, and both are corrected here by append.** ⭐ **Correction 1** — the obligation-bearing count is **85**, not *"~84"*: `65` FR + `3` BR + `11` INV + `6` XC, reconciling exactly to the 117 total with 9 AC and 23 GAP ⇒ AC coverage is **`9 / 85 = 10.6%`**. ⭐⭐⭐ **Correction 2 — there are 13 gap-pointer obligations, not 7**; the published figure **understated the Stage-4 workload by six** (`NTF-FR-021`, `-022`, `-028`, `-029`, `-041`, `-055` were omitted). ⭐⭐ **But the 13 are not homogeneous, and examining them individually produced a new Stage-4 finding**: **class A** (7) are genuinely unspecified values that must gain *"a default and a range"*; **class B** (2 — `NTF-FR-041`, `NTF-FR-055`) already state real, testable obligations and merely *cite* an open gap, so they need no change; **class C** (4 — `NTF-FR-021`, `-022`, `-028`, `-029`) are deliberate scope **disclaimers** rather than requirements, and Stage 4 should consider whether they belong in the non-scope section, since its gate requires *"every exclusion states what must be impossible"*. ⇒ ⭐ the original *"seven"* was correct **about class A** and silent about B and C. ⛔ **Nothing was re-classed or renumbered** — re-classing a requirement is an authoring act, not a review act. ⛔ **0 subject bytes changed** (`sha256` `f0b61e0d…944513` verified), **0 Stage-3 checks affected, verdict PASS 6/6 unchanged, `NTF-AL-B2` still DISCHARGED, `NTF-AL-F2` still OPEN, all 23 gaps still OPEN, 0 ADRs, 0 registry, 0 baseline, 0 frozen documents, 0 `IMPL-*`, 0 lines of application code.** |

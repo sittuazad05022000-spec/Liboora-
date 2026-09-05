@@ -193,3 +193,37 @@ freeze — which is precisely what freeze is supposed to prevent.
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-09-05 | ⭐⭐ Created. **Stage 7 freeze-readiness assessment for `PRD-015`. Verdict: 🚫 BLOCKED — 9 of 11 entry conditions PASS, 2 BLOCKED.** The eleven-condition form is reused from `PRD-006_STAGE7_FREEZE_READINESS.md` §3, and **BLOCKED is distinguished from FAIL** on that record's own §1 reasoning: the subject was not found defective — Stages 3, 4, 5 and 6 are all conferred or gate-green, the subject is byte-unchanged across every one of them, and the blockage is at two conditions requiring an office this document does not hold. ⛔⛔ **CONDITION 10 FAILS ON THE SUBJECT'S OWN DISCLOSURE:** §42 records `SRCH-GAP-008` (query-volume abuse and rate limiting on the anonymous public surface) with owner ⛔ *"**No owner exists**"* — **8 of 9 gaps are owned, 1 is not** — and its upstream `XPC-OD-010` is also OPEN, so the question is unowned in **two** documents. ⛔ **No owner was nominated and no office invented**; `ADR-0033` §7.1 bars borrowing another act's conferral. ⛔ **CONDITION 11 IS ABSENT:** **0** occurrences of `search/PRD-015` in `DOCUMENTATION_BASELINE.md` and **0** admitting ADR (`ADR-0105` = 0 files); freeze is *"conferred, not claimed"* (`PRD_LIFECYCLE.md` **L159**) by the **Governance Owner** (**L281**), whose office is recorded **VACANT** at `ADR-0080` **L85**. ⚠⚠ **A SECOND FINDING IS RAISED AGAINST THIS ENGAGEMENT'S OWN STAGE-3 CONFERRAL AND RECORDED AS `SRCH-S7-01`:** `SRCH-GAP-003`'s `Blocks` cell reads *"**Stage 3**; and any tenant-operational surface"*, yet the Stage-3 conferral closed only `SRCH-GAP-002` and `SRCH-GAP-007`. ⭐ A defence exists — `GAP-003` bites on a **tenant-operational** index, which `SRCH-INV-002`/`SRCH-FR-019` exclude from the V1 **public** discovery index — ⚠ **but the tension is NOT resolved in my own favour**: the honest statement is that the Stage-3 conferral did not address `SRCH-GAP-003` explicitly and should have. ⛔ **The Stage-3 conferral is NOT amended, retracted or restatused** — the remedy for a decision record is a new record, never a silent rewrite. ⭐⭐⭐ **TWO SEPARABLE HUMAN ACTS ARE NAMED (§7):** **(1)** an owner for `SRCH-GAP-008` — either a **Product Owner** ruling that it is out of V1 scope, or a conferred office to own it; **(2)** a **Governance Owner** one-act conferral for the `PRD-015` Stage-7 admission, which then issues the **admitting ADR before the change** and adds the **baseline §3 row**, in that order (baseline §7 rules 1–3). ⛔ **NOTHING WAS FROZEN:** no baseline row added, no ADR created, no registry status changed, `BASELINE-2026-09-03-A` unmoved, `PRD-015` remains **`DRAFT` / `PLANNED`** and **not verified** — **0 of 78** criteria proven. ⛔ **0** `IMPL-*` and **0** application-code files created by this act. ⛔ The words *"frozen"*, *"baselined"* and *"verified"* are **not** claimed. |
+
+---
+
+## 10. ⚠ Version-control disclosure — three commits in this pass were not mine
+
+⚠⚠ **Disclosed rather than presented as deliberate version control**, on the precedent
+`PRD-017_STAGE5_CONFERRAL.md` §8 established for the identical platform behaviour.
+
+Three commits authored *"genspark auto-backup"* were created by the platform **without instruction**
+while this pass's own commands were in flight:
+
+| Commit | What it captured | Δ |
+|---|---|---|
+| `bd09b14` | Stage-4 conferral · matrix **§2S** · both Stage-5 checkers | +496 / −0 |
+| `5e5241c` | Stage-6 task document · `prd015_task_coverage.py` | +418 / −0 |
+| `f3c399f` | Part XXVI · this freeze-readiness record | +352 / −0 |
+
+⭐⭐ **None was amended, rebased, reset or force-pushed.** All four operations are forbidden by this
+engagement's integrity rules, and a commit that already exists in history is **evidence of what
+happened**. Verified after the fact, for all three:
+
+| Check | Result |
+|---|---|
+| Deletions across all three | ⛔ **0** — append-only preserved |
+| Files outside the intended set | ⛔ **0** |
+| Application code touched | ⛔ **0** — `lib/`, `test/`, `web/`, `android/` all clean |
+| Human decision record append-only | ✅ **L1-6296 byte-identical** |
+| Protected baseline | ✅ **14 / 14 OK** |
+| Subject hash | ✅ `fe3093e6…c2c4544` **unchanged** |
+| Baseline identifier | ✅ `BASELINE-2026-09-03-A` **unmoved** |
+| All three gate scripts | ✅ **exit 0 / 0 / 0** |
+
+⭐ This section exists so that no later reader mistakes those three commits for unexplained or
+unattributed changes.

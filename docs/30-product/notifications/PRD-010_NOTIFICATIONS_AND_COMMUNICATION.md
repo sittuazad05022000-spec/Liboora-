@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `docs/30-product/notifications/PRD-010_NOTIFICATIONS_AND_COMMUNICATION.md` |
-| **Version** | **v0.1** |
+| **Version** | **v0.2** |
 | **Status** | ⛔ **`DRAFT`** — ⛔ **not reviewed, not conferred, not frozen, not baselined, not ranked** |
 | **Date** | 2026-09-05 |
 | **Bounded context** | **`BC-22` Notification Delivery** `[GENERIC]`, family *Communication*, **V1** — BC Map **L131** |
@@ -153,7 +153,48 @@ Domain contexts (BC-01..BC-20, BC-13, BC-18, BC-19)
 `[EVIDENCE]` BC Map **L205** — `DeliveryMessage` (`BC-22`) vs `FeedItem` *"owned by `BC-22`'s inbox
 projection"* ⇒ ⭐ **the in-app inbox projection is `BC-22`'s**, and this draft claims no more.
 
-### 6.1 Requirements
+### 6.1 ⭐⭐ The authoritative module contract — `platform/communication`
+
+`[EVIDENCE]` **`BC-22` is implemented by the module `platform/communication`.** The mapping appears
+in neither the BC Map nor the Dependency Matrix, and is established by three live documents:
+`DEVELOPER_HANDOFF.md` **L189** (*"emit a fact (`LEV-*`), let `BC-22` deliver it"*),
+`INVITATION_SECURITY_SPECIFICATION.md` **`IAC-23`**, and `REVIEW_14A.md` **`CC-5`**.
+
+`tool/module_dependencies.yaml` **L392-410** is therefore binding on this PRD:
+
+| Element | Authoritative value |
+|---|---|
+| **Rank** | **5** |
+| Imports | `contracts` (rank **0**) — ⭐ downward, `L2` satisfied |
+| Port | `platform/integration:connector` — the `BC-31` egress route |
+| ⭐ Port | **`platform/identity:notification_address`** — **AMENDMENT `A-3`**, *"the narrow, purpose-limited delivery-address port… resolves ONE address for ONE queued delivery, at delivery time"*; ⭐⭐ *"**this port is the reason no event ever carries a number**"*. Constraint (**L462-464**): *"one address, one queued delivery, resolved at delivery time, **never retained by the caller**"* |
+| Events | `consumes_events: ["*"]` — ⭐ `PL` consumption over `E-23`, ⛔ not an import |
+| Banned imports | `["domain/**", "app/**"]` |
+
+⭐ **The three module assertions, and where this PRD carries each:**
+
+| Assertion | Authoritative rule | Carried by |
+|---|---|---|
+| **`CM-1`** | *"`notification_address` is called with an `AccountId` and a delivery purpose; **never with a number, never in bulk, never to test existence**"* | `NTF-INV-003` (no number) · `NTF-FR-004` (per-delivery, never a cached list) · `NTF-FR-009` (no existence/enumeration) |
+| **`CM-2`** | *"**no resolved address is persisted, cached, indexed or logged** by this platform"* | `NTF-FR-058` (bars phone/email from bodies, events **and logs**) · `NTF-FR-004` |
+| ⭐⭐ **`CM-3`** | *"an unresolvable address **fails the delivery only; it never fails the emitting operation**"* — **`EBR-1030`** | ⭐ **`NTF-INV-011`** (§19) |
+
+⚠ **`A-3` is the mechanism behind `MP-GBR-34`.** Rank 1 forbids a mobile number in any event; `A-3`
+is *how* that is achieved — the address is resolved at delivery time through a purpose-limited port,
+so no event ever needs to carry one. ⭐ `NTF-INV-003` states the rule; this section names the
+mechanism.
+
+⚠ **One pre-existing manifest condition is DISCLOSED and NOT relied upon:** `platform/communication`
+(rank 5) declares a port to `platform/integration` (**also rank 5**), while Dependency Matrix **§3.2**
+declares only two same-rank clusters, **both within R8**. Recorded as **`NTF-AL-F2`** in
+`PRD-010_ARCHITECTURE_ALIGNMENT.md` §4.4, owner **Architecture Owner**. ⛔ **This PRD neither created
+it nor may cure it** — amending the manifest is an ADR act (Matrix **L54**) — and ⛔ **no requirement
+here depends on that port being lawful**; `NTF-FR-031` states only that Push egress traverses `BC-31`,
+per `MASTER_PRD` **L229**.
+
+---
+
+### 6.2 Requirements
 
 | ID | Requirement |
 |---|---|
@@ -409,9 +450,26 @@ per-recipient state.
 | **`NTF-FR-047`** | Only **transient** failures retry; permanent failures terminate as `failed`. |
 | **`NTF-FR-048`** | Restart **MUST NOT** re-deliver work already in `sent`. |
 | **`NTF-FR-049`** | ⚠ Retry counts, backoff and dedup window are **`NTF-GAP-018`** — ⛔ **no numbers invented.** |
+| ⭐⭐ **`NTF-INV-011`** | **The emitting-operation failure boundary.** Where a notification cannot be delivered because its notification address cannot be resolved, that failure **MUST** fail **only that notification delivery**, and **MUST NOT** fail, roll back, abort, retry or otherwise render unsuccessful the originating business operation that emitted the business fact. `[EVIDENCE]` `tool/module_dependencies.yaml` **`CM-3`** — *"an unresolvable address fails the delivery only; it never fails the emitting operation"* — and **`EBR-1030`** |
 
 ⭐ **`NTF-INV-007` is the single highest-value invariant here**: `MembershipExpiringSoon` is
 inherently repeatable, and a naive scheduler would notify daily.
+
+### 19.1 ⭐⭐ `NTF-INV-011` — why the boundary belongs here, and what it protects
+
+⭐ **`NTF-INV-011` protects OTHER bounded contexts, not `BC-22`.** A membership renewal, a fee
+posting or a check-in emits a fact over `E-23` and is then **complete**; whether a notice about it
+reaches anyone is `BC-22`'s problem alone. ⛔ **Without this invariant a failed address lookup could
+propagate backwards and roll back a paid renewal** — the precise harm `CM-3` exists to prevent.
+
+| Distinction | Requirement |
+|---|---|
+| A **template field** is missing from the event payload | **`NTF-FR-003`** — fail the notification, record it, ⛔ never query a domain context |
+| ⭐ The **notification address** cannot be resolved | ⭐⭐ **`NTF-INV-011`** — fail that delivery only, ⛔ never the emitting operation |
+
+⚠ **These are different triggers and were verified not to duplicate each other**: `NTF-FR-003`
+governs payload sufficiency and states no boundary protecting the emitter; `NTF-INV-011` states the
+boundary and says nothing about payloads.
 
 ---
 
@@ -481,12 +539,21 @@ business facts"* — expressed against a mechanism that actually exists.
 | `BC-01` Enrollment / `PRD-004` | ✅ FROZEN | Source events |
 | `BC-02`/`BC-03`/`BC-04`/`BC-05` | ✅ FROZEN | Source events |
 | `BC-20` Billing / `PRD-022` | ⚠ `DRAFT` | Source events |
-| ⛔ **`BC-31` Integration / `PRD-019`** | ⚠ **`DRAFT`, 0 identifiers issued** | ⭐⭐ **Push delivery depends on it** ⇒ **`NTF-GAP-021`** |
+| ⚠ **`BC-31` Integration / `PRD-019`** | ⚠ **v0.4 `DRAFT`** — **111 `ITG-*` identifiers issued** (54 obligation-bearing + 54 `ITG-AC-*` + 3 `ITG-GAP-*`); ⛔ not architecture-reviewed, not frozen | ⭐⭐ **Push delivery depends on it** ⇒ **`NTF-GAP-021`**. ⚠ *Corrected at v0.2 — the v0.1 reading "`DRAFT`, 0 identifiers issued" was **stale**; see §32 v0.2* |
 | `BC-26` Analytics | ⚠ unwritten | Not required for V1 |
 
 ⭐⭐ **`NTF-GAP-021` is a hard scheduling fact**: `MASTER_PRD` **L229** routes Push through `BC-31`,
-and `PRD-019` is a `DRAFT` with **0 identifiers**. ⇒ **V1 Push cannot be fully specified until
-`PRD-019` matures.** Reported rather than assumed away.
+and `PRD-019` is **v0.4 `DRAFT`** — ⭐ carrying **111 `ITG-*` identifiers**, so the dependency is
+**real, declared and substantiated**, ⛔ but **not frozen** and ⛔ **not architecture-reviewed**
+(`PRD-019` §1: *"NOT approved. NOT architecture-reviewed. NOT frozen"*). ⇒ ⭐ **V1 Push egress is
+specifiable in form** — `NTF-FR-031` traverses `BC-31` per `MASTER_PRD` **L229**, and the
+`platform/integration:connector` port is **declared** in the manifest — ⛔ **but it cannot be relied
+on for delivery guarantees until `PRD-019` is conferred.** Reported rather than assumed away.
+
+⚠ **A pre-existing registry inconsistency is disclosed, not repaired:** `PRD_REGISTRY.md` **L319**
+records `PRD-019` at **v0.1** while **L545** records **v0.4**. The subject document's own header
+(**v0.4**) is treated as controlling, per the registry's §8 rule 5 — *"If this register disagrees
+with a PRD, fix this register"* — ⛔ **which is a Governance Owner act and is NOT performed here.**
 
 ---
 
@@ -551,7 +618,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | `NTF-GAP-018` | Retry/backoff/dedup-window values | **Architecture Owner** | Retry |
 | `NTF-GAP-019` | Platform vs tenant configuration keys | **Architecture Owner** | §20 |
 | `NTF-GAP-020` | Notification SLO/SLI | **SRE/Observability** | Observability |
-| ⭐ `NTF-GAP-021` | Push depends on `PRD-019`, a `DRAFT` with **0 identifiers** | **Product + Architecture Owner** | V1 Push |
+| ⭐ `NTF-GAP-021` | Push depends on `PRD-019` — **v0.4 `DRAFT`, 111 `ITG-*` identifiers**, ⛔ not architecture-reviewed, not frozen | **Product + Architecture Owner** | V1 Push delivery guarantees |
 | `NTF-GAP-022` | Tenant suspended mid-dispatch | **Architecture Owner** | Edge case |
 | `NTF-GAP-023` | Same `eventId`, different payload | **Architecture Owner** | Dedup |
 
@@ -569,6 +636,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | `NTF-AC-006` | Given the WhatsApp redirect is used, when communication history is queried, then no WhatsApp message record exists. |
 | `NTF-AC-007` | Given a guardian outside `guardianOf` for a student, when a notice for that student is produced, then the guardian receives nothing and the denial is indistinguishable from not-found. |
 | `NTF-AC-008` | Given a transient channel failure, when retried to success, then exactly one user-visible notification exists. |
+| ⭐⭐ `NTF-AC-009` | Given a business operation that emits a fact over `E-23`, when the notification address for a recipient **cannot be resolved**, then that delivery record terminates as `failed`, **and** the originating business operation remains successful and un-rolled-back — verified by asserting the emitting aggregate's post-state is unchanged from the success path. `[EVIDENCE]` `NTF-INV-011`, `CM-3`, `EBR-1030` |
 
 ---
 
@@ -587,7 +655,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | 9 | *Set a 500-recipient bulk cap* | ⛔ **Broke.** Arbitrary ⇒ `NTF-GAP-007` |
 | 10 | *Reuse `PRD-015`'s Latin+Devanagari binding for templates* | ⛔ **Broke.** `SRCHPO-17` is search-scoped ⇒ `NTF-GAP-014` |
 | 11 | *Reuse `ADR-0102`'s SRE office for notification SLOs* | ⛔ **Broke.** One-act conferral, `ADR-0033` §7.1 ⇒ `NTF-GAP-020` |
-| 12 | *Assume Push is specifiable* | ⛔ **Broke.** `BC-31`/`PRD-019` is DRAFT with 0 identifiers ⇒ `NTF-GAP-021` |
+| 12 | *Assume Push is specifiable* | ⚠ **Partly broke.** `BC-31`/`PRD-019` is **v0.4 DRAFT** — ⭐ 111 identifiers and a declared `connector` port, so the **form** is specifiable, ⛔ but delivery **guarantees** are not until it is conferred ⇒ `NTF-GAP-021` *(refined at v0.2)* |
 | 13 | *Call the role "Staff"* | ⚠ **Corrected** to **Reception Staff** (`Library_PRD_v1` L596) |
 | 14 | *Own the audit trail of communications* | ⛔ **Broke.** `BC-24` ⇒ `NTF-INV-006` |
 | 15 | *Own notification preferences storage* | ⚠ **Narrowed** to `BC-25` ⇒ `NTF-FR-041`, `NTF-GAP-016` |
@@ -616,5 +684,6 @@ deliberately incomplete at v0.1** and Stage 4 will require 1:1 obligation covera
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.2** | 2026-09-05 | ⭐⭐ **REQUIRED CORRECTION applied — the two additive amendments accepted at `NTF-AL-B2` in [`PRD-010_ARCHITECTURE_ALIGNMENT.md`](PRD-010_ARCHITECTURE_ALIGNMENT.md) §8.3, and nothing else.** ⭐⭐⭐ **`C-1` — the emitting-operation failure boundary is now stated: new invariant `NTF-INV-011`** requires that an unresolvable notification address fail **only that delivery** and ⛔ **never** fail, roll back, abort or retry the originating business operation, carrying `tool/module_dependencies.yaml` **`CM-3`** / **`EBR-1030`** verbatim; supported by new **§19.1**, which explains that the invariant **protects other bounded contexts, not `BC-22`** — without it a failed address lookup could roll back a paid membership renewal — and by new acceptance criterion **`NTF-AC-009`**, which asserts the emitting aggregate's post-state is unchanged. ⭐ **Verified NOT a duplicate before adding**: a repository-wide probe for an existing failure-boundary requirement (`fail the emitting`, `emitting operation`, `roll back`, `originating operation`, `never fail`) returned **0 hits**, and §19.1 records the distinction from `NTF-FR-003`, which governs **payload sufficiency** and states no emitter boundary. ⭐⭐ **`C-2` — the authoritative module contract is now cited in new §6.1**: `platform/communication`, **rank 5**, `imports: contracts` (rank 0), ports `platform/integration:connector` and **`platform/identity:notification_address`** under **AMENDMENT `A-3`** with its *"one address, one queued delivery… never retained by the caller"* constraint (**L462-464**), `consumes_events: ["*"]`, `banned_imports`, and a clause-by-clause table mapping **`CM-1`** → `NTF-INV-003`/`-FR-004`/`-FR-009`, **`CM-2`** → `NTF-FR-058`/`-FR-004`, **`CM-3`** → `NTF-INV-011`. ⭐ §6.1 also records that **`A-3` is the mechanism behind `MP-GBR-34`** — the address is resolved at delivery time, which is *why* no event need carry a number. ⚠ **`NTF-AL-F2` is DISCLOSED in §6.1 and expressly NOT relied upon or cured** — the pre-existing rank-5→rank-5 `platform/integration` port is an Architecture-Owner-owned manifest condition, and no requirement here depends on its lawfulness. ⚠ **The stale `PRD-019` fact is corrected in 4 places, re-measured from the document itself**: **v0.4 `DRAFT`** with **111 `ITG-*` identifiers** (54 obligation-bearing + 54 `ITG-AC-*` + 3 `ITG-GAP-*`), replacing v0.1's *"`DRAFT`, 0 identifiers"*; `NTF-GAP-021` is **refined, not closed** — Push egress is specifiable **in form** (declared `connector` port, `MASTER_PRD` **L229**) but ⛔ **its delivery guarantees are not, until `PRD-019` is conferred**. ⚠ **A pre-existing `PRD_REGISTRY.md` self-contradiction is disclosed, not repaired** (**L319** v0.1 vs **L545** v0.4) — resolving it is a **Governance Owner** act. ⛔ **NOTHING ELSE CHANGED: 0 requirements redesigned, 0 identifiers renumbered, 0 `NTF-GAP-*` closed (23 remain OPEN), Platform Admin authorization untouched, 0 business events invented, `messaging.MessageSent → BC-22` NOT invented, WhatsApp scope unchanged, `NTF-AL-F2` NOT fixed.** ⛔ **0 BC Map · 0 `MASTER_PRD` · 0 frozen PRDs · 0 baseline · 0 registry status · 0 dependency matrix · 0 `module_dependencies.yaml` · 0 ADRs created or modified · 0 `IMPL-*` · 0 lines of application code.** Status remains **`DRAFT`**; ⛔ no approval or freeze claimed; `PRD_REGISTRY.md` remains **`PLANNED`**. |
 | **v0.1a** | 2026-09-05 | ⚠ **Self-audit of the author's own published counts and cross-references — three defects found and repaired, two false alarms cleared.** ⭐ **All six registers verified CONTIGUOUS and complete by measurement**, not by assertion: `NTF-FR-001`…`065` (65) · `NTF-BR-001`…`003` (3) · `NTF-INV-001`…`010` (10) · `NTF-XC-001`…`006` (6) · `NTF-AC-001`…`008` (8) · `NTF-GAP-001`…`023` (23) — **0 missing, 0 out-of-range, 0 duplicate definitions**, and all **23** gaps confirmed present in the §28 table. ⚠⚠ **THREE BROKEN CROSS-REFERENCES REPAIRED** — they cited the *drafting brief's* 56-section outline rather than this document's actual 32 sections: *"see §29"* → **§13** (Student↔Student messaging; §29 is Acceptance Criteria), and two citations of a non-existent *"§35.3"* → **§5 N7** and an explicit `AUTH-10.3` / `MASTER_PRD` §22 citation respectively. ⭐ **Two apparent duplicates were investigated and CLEARED as legitimate**: `NTF-FR-009` appears twice as one definition plus one prose citation, and `NTF-GAP-003` is deliberately cited by **two** catalogue rows (`MembershipExpiringSoon` and `FeeDueRaised`) because one unresolved timing decision governs both. ⭐ **Every remaining `§` reference was verified to be either internal and ≤32, or externally qualified** (`MASTER_PRD` §22, BC Map §8, `DOCUMENTATION_BASELINE` §3.5). ⛔ **No requirement text, register membership, gap, verdict, ownership finding or evidence citation was changed** — this entry corrects pointers and publishes measured counts only. ⛔ Status remains **`DRAFT`**; ⛔ 0 approvals, 0 conferrals, 0 baseline rows, 0 ADRs, 0 frozen documents touched, 0 `IMPL-*`, 0 code. |
 | **v0.1** | 2026-09-05 | ⭐⭐ **Created at Stage 2 as a DRAFT.** Catalogue built **only** from BC Map §8 events already routed to `BC-22`. ⭐⭐⭐ **Three brief-contradicting findings recorded:** (1) Student↔Student messaging is owned by **`BC-12`** under **FROZEN** `PRD-021B` ⇒ integration-only, and `messaging.MessageSent` is **not routed to `BC-22`** (`NTF-GAP-011`); (2) **SMS/Email/WhatsApp are V2** by Rank-1 `MP-SCOPE-09`, WhatsApp Business **V3** by EA L1502/L1821 ⇒ V1 integrated channels are **exactly In-App + Push**; (3) ⭐ **"Platform Admin" has 0 occurrences** in the BC Map, ownership model and Auth PRD, and `MP-GBR-21` **closes** the scope register to `self`/`guardianOf`/`tenantWide` ⇒ ⛔ **no Platform Admin role created**, platform broadcast blocked at `NTF-GAP-002`, and platform-level *configuration* routed through the real `BC-25` instead. ⛔ **Six requested notifications have no source event** and are registered at `NTF-GAP-005` rather than invented. ⚠ **A contradiction between BC Map L437 and Auth PRD §10 is disclosed** (`NTF-GAP-006`) and ⛔ not resolved in the author's favour. ⛔ **0 timings, 0 bulk limits, 0 retry values, 0 SLOs invented.** ⛔ Authority **not borrowed** from `PRD-015`'s `SRCHPO-17` or `ADR-0102`. **23 gaps registered, each with a named owner.** ⛔ **No approval, no conferral, no freeze, no baseline row, no admitting ADR, no frozen document touched, no historical record modified, no `IMPL-*`, no application code.** Status **`DRAFT`**; `PRD_REGISTRY.md` still shows `PLANNED` and ⛔ **was not modified.** |

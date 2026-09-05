@@ -6451,3 +6451,177 @@ the intended set, append-only preserved, protected baseline **14/14**, subject h
 | 8 · 9 | ⛔ **NOT ENTERED** — code is Stage 8 |
 | `PRD-015` | `DRAFT` / `PLANNED` — ⛔ **not frozen, ranked, baselined or verified**; 0 of 78 criteria proven |
 | Subject hash · frozen bytes · code · new `IMPL-*` beyond the allocation | ⛔ **unchanged · 0 · 0 · 0** |
+
+---
+
+# PART XXVII — ⚠⚠ CORRECTION OF PART XXVI · STAGE 7 RE-VERIFIED **9/11**, BLOCKED
+
+| Field | Value |
+|---|---|
+| **Part** | **XXVII** — twenty-sixth consecutive governance pass |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"Resolve the current PRD-015 Stage-7 blockers in a governance-safe, evidence-first manner"* — read-only discovery first; ⛔ *"A missing human decision is a blocker, not an invitation to manufacture a technical decision."* |
+| **Act** | ⭐⭐ **CORRECTING A FACTUAL ERROR IN MY OWN PART XXVI**, and re-verifying the Stage-7 gate. ⛔ **No blocker resolved; no authority claimed** |
+| **Predecessor commit** | `3903c6f` |
+| **Result** | ⭐ Discovery contradicted a premise **I myself wrote**. Stage 7 re-verified **9 / 11 — still BLOCKED** |
+| **Verdict** | **B — BLOCKED / self-correction recorded** |
+
+---
+
+## 218. ⚠⚠⚠ THE ERROR IN PART XXVI, STATED PLAINLY
+
+**Part XXVI §214 (L6390) asserts:**
+
+> *"its upstream `XPC-OD-010` is OPEN too, so the question is **unowned in two documents**."*
+
+⛔⛔ **That is FALSE as to ownership, and I wrote it.**
+
+`ADR-0098` — **`Accepted`**, 2026-09-03, **Rank 2** — **L222** reads:
+
+> `XPC-OD-010` bot/scraping defence | ⛔ **OPEN** — *"NOT resolved by C7"* | **Architecture Owner**
+
+⭐ `XPC-OD-010` is **OPEN but OWNED.** ⛔ **I conflated *open* with *unowned*.**
+
+### 218.1 ⭐⭐ The contrast is deliberate in that same table, which makes the error worse
+
+`ADR-0098` **L218** — two rows above — reads:
+
+> `XPC-OD-005` … | **Privacy Owner** ⚠ role **VACANT** (`PRD_OWNERSHIP_MODEL.md` **L509**)
+
+⇒ ⭐⭐ **`ADR-0098` distinguishes *owned-but-open* from *owner-vacant* explicitly**, and places
+`XPC-OD-010` in the **first** category. The distinction was on the page; I did not read it.
+
+### 218.2 ⚠⚠ And this record ALREADY knew it — the contradiction was internal
+
+| Site | What it says |
+|---|---|
+| **L749** | *"⭐ **`XPC-OD-010` — the very decision `SRCH-GAP-008` names as its basis — HAS an owner: the Architecture Owner.**"* |
+| **L755** | *"**Minimum lawful remedy:** record in the subject's §42 that `SRCH-GAP-008`'s basis decision `XPC-OD-010` is Architecture-Owner-owned per `ADR-0098` **L222**. ⛔ **NOT DONE HERE**"* |
+| **L898** | finding **`SRCHFC-A2`** — *"the **"no owner exists"** record is out of date — **routed, not applied**"* — status **ACCEPTED** |
+
+⭐⭐⭐ **So Part XXVI contradicted an ACCEPTED finding in its own file, twenty-two sections earlier.**
+⛔ That is not a discovery failure; it is a **regression**, and it is recorded as such rather than
+quietly overwritten.
+
+⛔ **Part XXVI is NOT edited, retracted or restatused.** Its bytes are the record of what it said.
+The remedy for a decision record is *"a new record or a supplement — never a silent rewrite"*
+(parent PO record §14). ⭐ **This Part is that new record.**
+
+---
+
+## 219. ⭐ WHAT THE CORRECTION DOES **NOT** DO — condition 10 still fails
+
+⚠⚠ **The tempting move was to treat `ADR-0098` L222 as closing Stage-7 condition 10. It does not,
+and the reason is precise.**
+
+| Question | Answer |
+|---|---|
+| Is `XPC-OD-010` owned? | ✅ **YES** — Architecture Owner |
+| Is `SRCH-GAP-008` therefore owned? | ⛔⛔ **NO** — its **own** §42 row still reads *"No owner exists"* |
+| Can I make the subject say otherwise? | ⛔ **NO** — that edits the **hash-locked** subject and invalidates the Stage-3, -4, -5 and -6 measurements |
+| Does an owned *basis decision* transfer ownership to the *dependent gap*? | ⚠ **Not automatically.** `XPC-OD-010` asks *"which context owns bot/scraping defence"*; `SRCH-GAP-008` asks about **query-volume abuse on the `BC-23` search surface**. Related, ⛔ **not identical** |
+
+⭐ **The honest statement:** the *"no owner exists"* text is **stale**, and the remedy is an
+**Architecture Owner act** adopting `ADR-0098` L222 for `SRCH-GAP-008` — ⭐ which is a **cheaper**
+route than a Product Owner scope ruling, and is now named as such. ⛔ **I did not perform it.**
+
+---
+
+## 220. ⛔ CONDITION 11 — the Governance Owner mechanism EXISTS and does NOT reach here
+
+⭐ Discovery found the settled mechanism and its precedent, rather than assuming none existed:
+
+| Evidence | Finding |
+|---|---|
+| `ADR-0080` §2.2 rule 2 (**L85**) | Governance Owner constituted **VACANT** |
+| `ADR-0080` §2.4 | the vacant-office remedy is **direct conferral from the human principal, for one act** |
+| `PRD-021C_C0_C8_STAGE7_CONFERRAL.md` | ⭐ the **working precedent** — that exact form, executed by `ADR-0098` |
+
+⛔⛔ **But its Scope row forecloses reuse in terms:**
+
+> *"⭐ **`PRD-021C` Parts C0–C8 only, and the Stage-7 freeze act only.** ⛔ Not `PRD-021A`, not
+> `PRD-021B`, not any other subject, not any later stage."*
+
+and its instruction: *"it is not standing authority."*
+
+⭐ **So the mechanism is known, precedented and available — and simply has not been invoked for
+`PRD-015`.** ⛔ `ADR-0102`/`0103`/`0104` do not reach it either; none names Stage 7 or this office.
+
+---
+
+## 221. ⚠ `SRCH-S7-01` — re-examined, and NOT resolved in my favour
+
+| Limb | Measurement |
+|---|---|
+| Does `SRCH-INV-002` (**L286**) confine documents to one index class? | ✅ **YES** |
+| Does `SRCH-FR-019` (**L383**) confine the public index to public fields? | ✅ **YES** |
+| Do they therefore prove `SRCH-GAP-003` cannot bite on V1? | ⚠⚠ **NOT PROVEN** — `GAP-003`'s `Blocks` cell says *"Stage 3; **and any tenant-operational surface**"*, and ⛔ **no authoritative record states `GAP-003` is non-blocking for the V1 public index** |
+
+⭐ **The defence is plausible, not dispositive.** ⇒ **`SRCH-S7-01` stays OPEN** and requires an
+explicit **Architecture Owner** clarification. ⛔ **The Stage-3 conferral is not amended.**
+
+---
+
+## 222. ⭐ STAGE-7 GATE — COMPLETE SUITE RE-RUN, NOT ONLY THE FAILING TWO
+
+| # | Condition | Result |
+|---|---|---|
+| 1 | Stage 3 review exists | ✅ |
+| 2 | Stage 3 **conferral** — 16/16 | ✅ |
+| 3 | Stage 4 review exists — 6/6 | ✅ |
+| 4 | Stage 4 **conferral** | ✅ |
+| 5 | Stage 5 gates | ✅ **exit 0 · exit 0** |
+| 6 | Stage 6 gate | ✅ **exit 0** |
+| 7 | Subject unchanged | ✅ `fe3093e6…c2c4544` |
+| 8 | Stage 3 verdict PASS | ✅ |
+| 9 | Stage 4 verdict PASS | ✅ |
+| **10** | Every open gap owned | 🚫 **BLOCKED** — `SRCH-GAP-008`'s own row; ⚠ **stale**, §219 |
+| **11** | Baseline row + admitting ADR | 🚫 **BLOCKED** — **0** / **0**; GO vacant |
+
+### 🚫 **9 of 11. `11/11` does NOT genuinely pass. STAGE 7 REMAINS BLOCKED.**
+
+⛔ **Rule `X3`** — *"A gap closes on all limbs, not a majority."*
+
+---
+
+## 223. ⭐ THREE HUMAN ACTS REQUIRED — one now cheaper than Part XXVI stated
+
+> **ACT 1 — `SRCH-GAP-008`'s owner.** ⭐ **Preferred, and newly identified:** an **Architecture
+> Owner** act adopting `ADR-0098` **L222** as `SRCH-GAP-008`'s owner, since its basis decision is
+> already Architecture-Owner-owned. **Alternative:** a **Product Owner** ruling that anonymous-surface
+> rate limiting is **out of V1 scope**.
+>
+> **ACT 2 — Governance Owner**, one act, scoped *"`PRD-015` Stage-7 admission act only"*, in the
+> `PRD-021C_C0_C8_STAGE7_CONFERRAL.md` form. That office then issues the **admitting ADR before the
+> change**, then the **baseline §3 row** (baseline §7 rules 1–3).
+>
+> **ACT 3 — `SRCH-S7-01`.** Architecture Owner confirmation that `SRCH-GAP-003` does not block the
+> V1 public index.
+
+---
+
+## 224. SEVEN REFUSALS
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not treat `ADR-0098` L222 as closing condition 10 |
+| 2 | ⛔ Did not edit the hash-locked subject to correct its stale *"no owner exists"* row |
+| 3 | ⛔ Did not nominate an owner for `SRCH-GAP-008` |
+| 4 | ⛔ Did not reuse `PRD-021C`'s Governance Owner conferral, whose Scope row forbids it |
+| 5 | ⛔ Did not resolve `SRCH-S7-01` in my own favour |
+| 6 | ⛔ Did not edit, retract or restatus Part XXVI — corrected by **append** |
+| 7 | ⛔ Did not freeze, baseline, rank, verify, or write code |
+
+---
+
+## 225. TERMINAL STATE
+
+| Item | State |
+|---|---|
+| Stages 3 · 4 · 5 · 6 | ✅ **CONFERRED / GATE PASS** |
+| ⛔ **Stage 7** | 🚫 **BLOCKED — 9 / 11** |
+| ⚠ **Part XXVI L6390** | ⭐ **CORRECTED by this Part** — `XPC-OD-010` is **owned**, not unowned |
+| `SRCH-GAP-008` | ⛔ **OPEN, own row stale** — Architecture Owner act named |
+| `SRCH-S7-01` | ⛔ **OPEN** — not resolved in my favour |
+| `PRD-015` | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
+| Subject hash · frozen bytes · code · `IMPL-*` | ⛔ **unchanged · 0 · 0 · 0** |

@@ -227,3 +227,47 @@ happened**. Verified after the fact, for all three:
 
 ⭐ This section exists so that no later reader mistakes those three commits for unexplained or
 unattributed changes.
+
+---
+
+## 11. ⚠⚠ CORRECTION to §3.1 — `XPC-OD-010` IS owned
+
+**§3.1 of this record states:**
+
+> *"Its upstream is also OPEN: `XPC-OD-010` … so the question is **unowned in two** documents, not
+> one."*
+
+⛔⛔ **That is wrong as to ownership.** `ADR-0098` — **`Accepted`**, Rank 2 — **L222**:
+
+> `XPC-OD-010` bot/scraping defence | ⛔ **OPEN** — *"NOT resolved by C7"* | **Architecture Owner**
+
+⭐ `XPC-OD-010` is **OPEN but OWNED**; I conflated *open* with *unowned*. ⚠ **The distinction is
+explicit two rows above in that same table** — **L218** marks `XPC-OD-005`'s owner *"⚠ role
+**VACANT**"* — so `ADR-0098` separates *owned-but-open* from *owner-vacant*, and puts `XPC-OD-010`
+in the first group.
+
+⛔ **§3.1 is NOT rewritten.** Its bytes are the record of what this document said; the remedy is a
+correction **appended**, never a silent edit.
+
+### 11.1 ⭐ Condition 10 nevertheless STILL FAILS — and the reason is narrower than §3.1 gave
+
+| Question | Answer |
+|---|---|
+| Is `XPC-OD-010` owned? | ✅ **YES** |
+| Is `SRCH-GAP-008` therefore owned? | ⛔ **NO** — its own §42 row still reads *"No owner exists"* |
+| Are the two questions identical? | ⚠ **No** — `XPC-OD-010` asks *which context owns bot/scraping defence*; `SRCH-GAP-008` asks about **query-volume abuse on the `BC-23` search surface** |
+| May this document correct the subject's row? | ⛔ **NO** — the subject is **hash-locked** across Stages 3–6 |
+
+⇒ ⭐ **The blocker is a STALE RECORD plus a missing act, not an absent owner.** The remedy is
+therefore **cheaper than §7 ACT 1 stated**: an **Architecture Owner** act adopting `ADR-0098` L222 as
+`SRCH-GAP-008`'s owner, rather than a Product Owner scope ruling. ⭐ Both remain lawful; the former
+is narrower. ⛔ **Neither was performed here.**
+
+⭐ **The verdict is unchanged: Stage 7 remains BLOCKED at 9 of 11.** This correction improves the
+*accuracy of the reason*, not the *outcome* — and is recorded because a blocker stated on a false
+premise is a defect even when the conclusion happens to be right.
+
+⚠ Cross-referenced at `PRD-015_HUMAN_DECISION_RESOLUTION_RECORD.md` **Part XXVII §218**, which
+records that this engagement's own **L749**, **L755** and finding **`SRCHFC-A2`** (**L898**) had
+already established the correct position — making the §3.1 error a **regression**, not a discovery
+failure.

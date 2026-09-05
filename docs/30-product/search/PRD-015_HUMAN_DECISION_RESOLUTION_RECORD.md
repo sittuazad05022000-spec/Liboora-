@@ -5969,3 +5969,179 @@ remain open but are **not** Stage-3 gate conditions.
 | Stage 3 | ⚠ **NOT READY / NOT CONFERRED** — **12 of 16** |
 | Stages 4–7 | ⛔ **NOT ENTERED** |
 | Frozen bytes · Rank 1 · `PRD_OWNERSHIP_MODEL` · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0 · 0** |
+
+---
+
+# PART XXIV — ⭐⭐⭐ `H-C` CLOSED · ALL FIVE BLOCKERS CLOSED · **STAGE 3 CONFERRED, 16 / 16**
+
+| Field | Value |
+|---|---|
+| **Part** | **XXIV** — twenty-third consecutive governance pass, and ⭐ **the terminal one for Stage 3** |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"H-C HUMAN DECISION — CLOSE THE FINAL FACTUAL BLOCKER"* — an explicit Product Owner adoption of **both** conjuncts; *"Record this as the single lawful H-C decision and close H-C. Then re-run all dependent Stage-3 checks, including the designated Architecture reviewer review/conferral."* ⛔ *"Do not invent any additional Unicode rule, SLI/SLO, threshold, authority, owner, or decision."* |
+| **Act** | ⭐⭐⭐ **RECORDING THE FINAL PRODUCT OWNER DECISION, THEN PERFORMING THE STAGE-3 REVIEW** |
+| **Predecessor commit** | `50d3720` |
+| **Carriers created** | ⭐ **`SUPPLEMENT_C`** (`SRCHPO-18`, `SRCHPO-19`) · ⭐⭐⭐ **`PRD-015_STAGE3_CONFERRAL.md`** |
+| **Result** | ⭐⭐⭐ **STAGE 3 — READY AND CONFERRED. 16 of 16.** ⛔ Stages 4–7 **NOT** entered |
+| **Verdict** | ⭐⭐⭐ **A — PASS / CONFERRED** — ⭐ **the first non-`B` verdict in twenty-three passes** |
+
+---
+
+## 198. ⭐⭐ `H-C` — CLOSED ON BOTH CONJUNCTS, IN ONE DECISION
+
+| Conjunct | ID | Closes |
+|---|---|---|
+| **(A)** V1 operational corpus definition | ⭐ **`SRCHPO-18`** | `ADR-0100` **L203** · gate condition **9** |
+| **(B)** `ZWNJ` corpus fact — *does not contain* | ⭐ **`SRCHPO-19`** | `ADR-0101` **`D-10`** · gate condition **10** |
+
+⭐ **Both arrived in ONE act**, which is what Part XVII held non-separable and what `ADR-0100` and
+`ADR-0101` jointly required.
+
+### 198.1 ⭐⭐⭐ `D-10` closed on its OWN published terms — the point that matters most
+
+`ADR-0101` **L188-198** published a **falsifiability list** of three closing routes. `SRCHPO-19` is
+**route 2**, verbatim: *"A **Product Owner** ruling that Liboora's V1 Devanagari corpus does not
+contain `ZWNJ`-distinguished names, making the question non-arising for V1."*
+
+| Route | Used? |
+|---|---|
+| 1 — Unicode Ch. 12.1 / CLDR tailoring | ⛔ **NOT USED** — and `HD-3` §4.3 bars Unicode as product authority |
+| ⭐ **2 — Product Owner corpus ruling** | ✅ **THIS ONE** — by the office the list nominated |
+| 3 — a Devanagari test corpus | ⛔ **NOT USED** — *"currently does not exist"* |
+
+⛔⛔ **No Unicode rule is invented, extended or asserted, and no `ZWJ` statement is stretched to
+cover `ZWNJ`** — which `D-10` itself called *"inventing a Unicode rule."*
+
+### 198.2 ⭐ The delta from the reviewed proposal, disclosed — `SRCHPO-A12`
+
+The adopted (A) adds *"**unless explicitly designated**"* to the definition Part XIX §165 reviewed.
+⭐ **That makes it strictly better**: it converts a silent default into an **auditable designation
+act**, the same discipline `SRCH-FR-017` applies to field eligibility. ⛔ I did not silently treat
+the adopted text as identical to the reviewed text.
+
+### 198.3 ⚠ Scope guarded — `SRCHPO-X17` REJECTED
+
+⛔ **`SRCHPO-19` does NOT settle whether `ZWNJ` is orthographically significant in Devanagari
+generally.** It is a **V1 corpus fact**. ⚠ **If the V1 corpus later acquires such names, `SRCHPO-19`
+is falsified and `D-10` re-opens** — recorded in Supplement C §2.2 and in the conferral §4.1.
+
+---
+
+## 199. ⭐⭐⭐ THE TWO GAP LEDGERS — RECOMPUTED, AND BOTH NOW CLOSE
+
+⚠⚠ **I recomputed both from their limb lists rather than carrying the tallies forward, because the
+prior figures pre-dated `ADR-0102`, `ADR-0103` and Supplement C.** The result surprised me, and the
+reason is recorded rather than presented as expected.
+
+### 199.1 `SRCH-GAP-002` — **15 C · 2 P · 1 O → 18 of 18 CLOSED**
+
+| Limb | Prior | ⭐ Now | By |
+|---|---|---|---|
+| **7** Unicode content (3 sub-conjuncts) | ⚠ PARTIAL — `ZWNJ` refused | ✅ **CLOSED** | `SRCHPO-19` |
+| **15** `P7` availability | ⛔ OPEN — unconstituted office | ✅ **CLOSED** | `ADR-0102` |
+| **17c** `P8-C` verifiability | ⚠ PARTIAL | ✅ **CLOSED** | ⭐⭐ `SRCHPO-18` |
+
+⭐⭐⭐ **Limb 17c is the one I nearly missed, and it closes on `ADR-0100`'s own stated dependency.**
+Its §3.5 reads: *"because the **"V1 operational corpus"** is nowhere defined, this target is
+**currently unverifiable** … → **`P8-C`: target DECIDED; verifiability OPEN pending a corpus
+definition.**"*
+
+⇒ The **target** (`≤ 30 minutes`) was already `ADR-0100`'s. Its verifiability was OPEN for **exactly
+one stated reason**, and `SRCHPO-18` removes that reason. ⛔ **No duration, corpus size or threshold
+is invented or re-derived** — the figure is carried across untouched.
+
+### 199.2 `SRCH-GAP-007` — **5 C · 1 P · 1 B → 7 of 7 CLOSED**
+
+| Sub-item | Prior | ⭐ Now | By |
+|---|---|---|---|
+| **5** `FU-20` field-level script values | ⛔ BLOCKED — carrier ✅ / values ⛔ | ✅ **CLOSED** | `SRCHPO-16` + `SRCHPO-17` + `SRCHAO-HB1` |
+| **7** `FU-21` Unicode content | ⚠ PARTIAL | ✅ **CLOSED** | `ADR-0101` + `SRCHPO-19` |
+
+⚠⚠ **`FU-20` is satisfied at 3, not 14 — and that is not a shortfall.** `SRCHPO-16` measured, from
+`SRCH-FR-018` match roles and `SRCH-FR-017`'s opt-in eligibility, that only **3** of 14 §14A.5 fields
+take a `text` role. The other 11 take `exact`/`filter`/`none`, for which a script is **meaningless,
+not merely absent**. ⭐ **The denominator was corrected by authority, not reduced for convenience** —
+and that correction is `H-B0`'s whole contribution.
+
+---
+
+## 200. ⭐⭐⭐ THE STAGE-3 GATE — 16 OF 16
+
+| # | Condition | Before | ⭐ After |
+|---|---|---|---|
+| 1 | Stage 2 COMPLETE | ✅ | ✅ |
+| 2 | Lifecycle status `DRAFT` | ✅ | ✅ |
+| 3 | Six architecture checks PASS | ✅ | ✅ **6/6** |
+| 4 | Valid alignment artifact | ✅ | ✅ |
+| 5 | All Stage-3 blocking gaps closed | ⛔ | ✅ **CLOSED** |
+| 6 | `SRCH-GAP-002` fully closed | ⛔ 16 C · 1 P · 1 O | ✅ **18 / 18** |
+| 7 | `SRCH-GAP-007` fully closed | ⛔ 6 C · 1 B | ✅ **7 / 7** |
+| **7b** | Which fields bear a script settled | ✅ | ✅ `SRCHPO-16` |
+| 8 | Declarations exist | ✅ | ✅ **3/3** |
+| 9 | V1 corpus defined | ⛔ **0 facts** | ✅ ⭐ **`SRCHPO-18`** |
+| 10 | `ZWNJ` fact established | ⛔ **0 facts** | ✅ ⭐ **`SRCHPO-19`** |
+| 11 | SRE governance valid | ✅ | ✅ `ADR-0102` |
+| 12 | Availability ratified | ✅ | ✅ `99.9% monthly` |
+| 13 | Architecture Owner concurrence | ✅ | ✅ `SRCHAO-HB1` |
+| 14 | Reviewer appointed | ✅ | ✅ `ADR-0104` |
+| 15 | Formal Stage-3 conferral occurs | ⛔ 0 files | ✅ ⭐⭐⭐ **`PRD-015_STAGE3_CONFERRAL.md`** |
+| ⭐ | Ownership decisions authoritative | ✅ | ✅ **14/14** |
+
+### ⭐⭐⭐ **STAGE 3 — READY AND CONFERRED. 16 of 16.**
+
+⭐⭐ **Rule `X3` is satisfied on its own terms for the first time in this engagement.** ⛔ This is
+**not** a majority claim — every condition is individually evidenced in the conferral record. The
+same rule that forced twenty-two consecutive `B` verdicts is what makes this `A` verdict meaningful.
+
+---
+
+## 201. ⚠⚠ WHAT THE CONFERRAL DOES **NOT** MEAN
+
+⭐ **Stage 3 is an architecture-alignment gate. It confers alignment and nothing else.** Six items
+remain OPEN and are declared in the conferral §4 rather than absorbed:
+
+| # | Open item | Owner |
+|---|---|---|
+| 1 | ⛔ **`SRCHPO-A11`** — script-**selection** mechanism | Architecture Owner, `ADR-0099` §2.3 |
+| 2 | ⛔ **`SRE-GAP-001`** — SLO / SLI / error budget (all authority **V2**) | SRE / Observability |
+| 3 | ⛔ `HD-2` / `HD-3` / `HD-4` rule **content** | Architecture Owner |
+| 4 | ⛔ `HD-7` · `HD-8` · `HD-11` · `HD-13` — four **DEFER** rulings | per ruling |
+| 5 | ⛔ `P1` transport binding · `P7` latency reconciliation · `P7` throughput numeric | Architecture Owner / EA |
+| 6 | ⛔ **Verification — 0 acceptance criteria proven** | Stage 5+ |
+
+⛔ **Stages 4–7 are NOT entered:** no Stage-4 review exists · `PRD-015` has **no**
+`TRACEABILITY_MATRIX.md` inventory and **no** `prd015_*` checker · **0** `IMPL-*` allocated ·
+`DOCUMENTATION_BASELINE.md` §3 holds **no** admitting row. ⛔ `PRD-015` remains **`DRAFT`** and
+**`PLANNED`**, ⛔ **not frozen, not ranked, not baselined, not verified.**
+
+---
+
+## 202. TEN REFUSALS — THE LAST SET
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not invent a Unicode rule; used `D-10`'s **own** route 2 |
+| 2 | ⛔ Did not stretch a `ZWJ` statement to cover `ZWNJ` |
+| 3 | ⛔ Did not let `SRCHPO-19` be read as a general Devanagari ruling (`SRCHPO-X17`) |
+| 4 | ⛔ Did not present the adopted (A) as identical to the reviewed proposal (`SRCHPO-A12`) |
+| 5 | ⛔ Did not invent or re-derive `P8-C`'s `≤ 30 min`, any corpus size, SLI, SLO, error budget or threshold |
+| 6 | ⛔ Did not inherit the gap tallies — both ledgers **recomputed** |
+| 7 | ⛔ Did not present `FU-20` at 3/3 without explaining the corrected denominator |
+| 8 | ⛔ Did not close `SRCHPO-A11` or `SRE-GAP-001`, and did not absorb them into the PASS |
+| 9 | ⛔ Did not record a personal name, or claim Architecture **Owner** power for the reviewer |
+| 10 | ⛔ Did not enter Stages 4–7, freeze, baseline, rank, or create `IMPL-*` or code |
+
+---
+
+## 203. TERMINAL STATE
+
+| Item | State |
+|---|---|
+| `H-A` · `H-B0` · **`H-B`** · ⭐ **`H-C`** · **`H-D`** · **`H-E`** | ✅ ⭐⭐⭐ **ALL CLOSED** |
+| `SRCH-GAP-002` | ✅ **CLOSED — 18/18** |
+| `SRCH-GAP-007` | ✅ **CLOSED — 7/7** |
+| ⭐⭐⭐ **Stage 3** | ✅ **READY AND CONFERRED — 16/16** |
+| ⚠ `SRCHPO-A11` · `SRE-GAP-001` · `HD-2`/`3`/`4` content · 4 DEFERs · `P1`/`P7` · verification | ⛔ **OPEN — declared, not absorbed** |
+| Stages 4–7 | ⛔ **NOT ENTERED** |
+| `PRD-015` status | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
+| Frozen bytes · Rank 1 · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0** |

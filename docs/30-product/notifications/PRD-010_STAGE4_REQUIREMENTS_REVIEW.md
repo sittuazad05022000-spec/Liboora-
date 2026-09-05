@@ -214,3 +214,102 @@ CONFERRED"* on exactly this reasoning, and waited.
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-09-05 | ⭐⭐ **Created as the Stage-4 requirements-review measurement record for `PRD-010` v0.2, following the 8 persisted Stage-4 precedents in this repository.** ⛔ **Verdict: NOT READY — one of six checks FAILS.** ⭐⭐ **Check 3 fails on 7 of 7 Class-A configurables**, none of which carries a default, range or unit, and for which ⛔ **no authoritative value exists anywhere in the repository** — each row explicitly refuses to invent one ⇒ the remedy is a **product/architecture/SRE decision**, and ⛔ **this record proposes no value**. ✅ **Checks 5 and 6 PASS cleanly**: the 15 rows naming other bounded contexts all constrain **`BC-22`'s own conduct** rather than restating another PRD's rules, and the V1 channel set (*"exactly In-App and Push"*) matches Rank-1 `MP-SCOPE-09` exactly. ⚠ **Checks 1, 2 and 4 PASS in substance with partials**: **0 / 85** vague terms, **0** orphan acceptance criteria, **0** duplicate definitions, **0** atomicity breaches. ⭐⭐⭐ **Two prior hypotheses were tested rather than assumed, and one was refuted**: Class A **confirmed 7/7**, but **Class C refuted in detail** — only `NTF-FR-021` and `NTF-FR-022` are disclaimers, while **`NTF-FR-028` is an open question** and **`NTF-FR-029` an ownership caveat**, so *"state what must be impossible"* cannot be met by rewording alone. ⭐⭐ **A new finding, `S4-N3`**: **16** obligations carry no `MUST`/`SHALL` — three more than the 13 gap-pointers — of which ⭐ **6 are properly normative by prohibitive construction** (*"No X may Y"*, *"Only transient failures retry"*) and need **no** correction; a naive *"add MUST to all 16"* fix would have damaged them. ⭐ **AC coverage measured at `9 / 85 = 10.6%` raw but ≈11 / 85 (≈13%) by content**, since two criteria each cover two obligations; ⚠ **8 of 9 carry no explicit requirement ID** — non-blocking at Stage 4 but **material for Stage 5's bidirectional gate**. ✅ **The Stage-4 gate itself — *"conflicts closed or explicitly deferred with a reason and an owner"* — is SATISFIED at 23/23**, which is why the verdict is **NOT READY rather than BLOCKED**: seven values are *missing*, not *wrong*. ⛔⛔ **Stage 4 is NOT CONFERRED and this record cannot confer it** — conferral belongs to the **Requirements Reviewer** (`PRD_LIFECYCLE.md` §6 **L278**), on the `PRD-015_STAGE4_REQUIREMENTS_REVIEW.md` precedent. ⛔ **0 subject bytes, 0 alignment bytes, 0 requirements touched, 0 gaps closed, 0 ADRs, 0 registry, 0 baseline, 0 architecture, 0 code, 0 values invented.** |
+
+---
+
+# SUPPLEMENT v1.1 — ⚠ CORRECTION: THE REMEDY MECHANISM I DESCRIBED WAS **INVERTED**
+
+⛔ **The v1.0 record above is NOT rewritten.** Its verdict, its six check results and its seven
+findings are unchanged. This supplement corrects **one procedural claim** I made about *how* the
+`S4-B1` remedy must be executed.
+
+| Field | Value |
+|---|---|
+| Trigger | ⭐ Reviewer self-audit of an unproven procedural assertion |
+| Verdict impact | ⛔ **NONE** — Stage 4 remains 🚫 **NOT READY**; `S4-B1` still blocking |
+| Subject bytes changed | ⛔ **0** — `sha256` `f0b61e0dee82e623deb521278f00d45618438cc161ece950c5bd8ad5d1944513` |
+| Verified at | `83dbe6c` |
+
+---
+
+## 11. ⚠⚠ What I claimed, and why it was wrong
+
+I reported the lawful remedy path as:
+
+> *"an ADR carrying the human decision → a `CONFIGURATION_GUIDE` block → then the PRD requirement
+> cites the slot"*
+
+⛔⛔ **That ordering is inverted.** `CONFIGURATION_GUIDE.md` **L9** states its own standing:
+
+> *"**Authority** | **Subordinate to the PRDs.** This guide sets values **within** the envelope they
+> define; **it cannot change the envelope**"*
+
+And **L451-455** records the actual `FIL-CFG-*` precedent verbatim:
+
+> *"**Declared by** `PRD-017_FILE_AND_MEDIA.md` **§8.5, which publishes fifteen `FIL-CFG-*` slots.**
+> This section supplies values for **ten** of them. **Authority:** `ADR-0057`, which closes
+> `FIL-GAP-014` by **recording Product-Owner-supplied values rather than inventing them**."*
+
+### 11.1 ⭐ The correct order — three steps, and the PRD moves **first**
+
+| Step | Act | Owner | Evidence |
+|---|---|---|---|
+| **1** | ⭐ **The PRD declares the configurable *slots*** — e.g. an `NTF-CFG-*` register, each slot naming its requirement, and each requiring *"a declared default and range"* | **PRD-010 author** | `PRD-017` **§8.5**; `FIL-FR-074` |
+| **2** | The **ADR** records the human-supplied **values** for those slots | **Product / Architecture / SRE Owner** | `ADR-0057` |
+| **3** | `CONFIGURATION_GUIDE` **supplies the values into the declared slots**, each with `Slot`, `Owner`, `Provenance`, value+range, rationale | **Configuration Owner** | **L484-500** |
+
+⇒ ⭐⭐ **The guide can only fill slots a PRD has already published.** My v1.0 description had the
+guide leading and the PRD citing afterwards, which would have had a **subordinate** document define
+an envelope it *"cannot change"*.
+
+### 11.2 ⭐⭐ A material consequence I had missed
+
+`NTF-CFG-*` count in `PRD-010` = **0**, and in `CONFIGURATION_GUIDE` = **0**.
+
+⇒ ⚠⚠ **`S4-B1` therefore has an authoring limb as well as an authority limb**, and only the
+authority limb was reported at v1.0:
+
+| Limb | Owner | Blocked on |
+|---|---|---|
+| **(a)** Declare the `NTF-CFG-*` slots in `PRD-010` — ⭐ **step 1**, needs **no** external decision | **PRD-010 author** | ⭐ **Nothing** — this is authorable today |
+| **(b)** Supply the seven **values** | Product / Architecture / SRE | ⛔ **Three human acts** |
+
+⭐ **Step (a) is genuinely unblocked.** ⛔ **It was not performed here**, because the governing task
+was authority resolution and §5 conditions all authoring on *"after all seven decisions are formally
+recorded"* — which remains **0 of 7**. ⚠ It is recorded so the author does not wait on authority for
+a step that does not require it.
+
+### 11.3 ⭐ One precedent worth carrying into step (a)
+
+`PRD-017` §8.5 publishes nine values and states plainly that **eight satisfy** the default-and-range
+rule *"and one does not"* — `FIL-CFG-006` carries a range but no default — adding:
+
+> *"The exception is named here rather than in a footnote, because a subsection that opens by
+> claiming all nine comply and then discloses an exception is internally contradictory."*
+
+⇒ ⭐⭐ **A Stage-4 check-3 register may lawfully contain a declared, reasoned exception.** That is a
+materially easier target than *"all seven values must exist first"*, and it is the shape `PRD-010`'s
+`NTF-CFG-*` register should take.
+
+---
+
+## 12. ⛔ What this supplement does NOT change
+
+| Item | State |
+|---|---|
+| Stage-4 verdict | 🚫 **NOT READY — unchanged** |
+| `S4-B1` | 🚫 **Blocking — unchanged**, now with limbs (a) and (b) separated |
+| Checks 1–6 results | ⛔ **unchanged** (2 PASS · 3 PARTIAL · 1 FAIL) |
+| `S4-N1`…`S4-N4` | ⛔ **unchanged** |
+| Stage 3 | ✅ **PASS 6/6** — untouched |
+| Subject · ACs · gaps | ⛔ **0 bytes · 9 · 23 OPEN** |
+| ADRs · registry · baseline · code | ⛔ **94 · `PLANNED` · 0 · 0** |
+| Values invented | ⛔ **0** |
+
+---
+
+## 13. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.1** | 2026-09-05 | ⚠⚠ **Reviewer self-audit: the procedural remedy path published at v1.0 was INVERTED, and is corrected here by append.** I had described the mechanism as *ADR → `CONFIGURATION_GUIDE` → PRD citation*; ⛔ **but `CONFIGURATION_GUIDE.md` L9 declares itself *"subordinate to the PRDs… it cannot change the envelope"***, and **L451-455** records the real `FIL-CFG-*` precedent: the values are *"**Declared by** `PRD-017` **§8.5, which publishes fifteen slots**"*, with `ADR-0057` then *"recording Product-Owner-supplied values rather than inventing them"*. ⇒ ⭐ **The correct order is: (1) the PRD declares the `*-CFG-*` slots, (2) an ADR records the human-supplied values, (3) the guide fills the declared slots** with `Slot`/`Owner`/`Provenance`/value+range/rationale (**L484-500**). ⭐⭐ **A material consequence v1.0 missed:** `NTF-CFG-*` = **0** in both `PRD-010` and the guide, so **`S4-B1` has an authoring limb as well as an authority limb** — limb **(a)**, declaring the slots, requires **no external decision and is authorable today**; limb **(b)**, the seven values, still needs **three human acts**. ⛔ **Limb (a) was NOT performed here**, because the governing task conditioned all authoring on all seven decisions being recorded, which remains **0 of 7** — it is recorded so the author does not wait on authority for a step that needs none. ⭐ **A further precedent is carried forward:** `PRD-017` §8.5 declares nine configurables and states that **eight comply with the default-and-range rule and one does not** (`FIL-CFG-006`), naming the exception in the text *"because a subsection that opens by claiming all nine comply and then discloses an exception is internally contradictory"* ⇒ **a check-3 register may lawfully carry a declared, reasoned exception**, a materially easier target than requiring all seven values up front. ⛔ **Verdict unchanged: Stage 4 NOT READY, `S4-B1` blocking, checks 2 PASS / 3 PARTIAL / 1 FAIL, Stage 3 PASS 6/6 untouched, 0 subject bytes, 0 ACs changed, 23 gaps OPEN, 0 ADRs, 0 registry, 0 baseline, 0 code, 0 values invented.** |

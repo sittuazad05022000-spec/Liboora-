@@ -47,7 +47,7 @@ its evidence, because the repository outranks the brief.
 
 ⇒ ⛔⛔ **`PRD-010` does NOT own Student↔Student messaging, one-to-one chat, group chat, unread/read
 state of conversations, or block/report.** All are `BC-12`/`BC-11`/`BC-13`, and `PRD-021B` is frozen.
-`PRD-010` owns only the **notification about** a message — see §29.
+`PRD-010` owns only the **notification about** a message — see **§13**.
 
 ### 2.2 ⭐⭐⭐ FINDING 2 — SMS, Email and WhatsApp are **V2**, not V1
 
@@ -62,7 +62,7 @@ state of conversations, or block/report.** All are `BC-12`/`BC-11`/`BC-13`, and 
 mandatory.** `MASTER_PRD` is **Rank 1**. A V1 `PRD-010` that shipped an Email or general-SMS channel
 would contradict Rank 1. ⇒ **V1 integrated channels are exactly two: In-App and Push.**
 
-⚠ **And OTP SMS is NOT `BC-22`'s** — see §35.3.
+⚠ **And OTP SMS is NOT `BC-22`'s** — see **§5 N7**.
 
 ### 2.3 ⭐⭐⭐ FINDING 3 — *"Platform Admin"* does **not exist** in the authoritative vocabulary
 
@@ -119,7 +119,7 @@ observability · ✅ Audit **via `BC-24`**
 | N4 | **Email channel** | ⛔ **V2** — `MP-SCOPE-09`, §22 |
 | N5 | **General-purpose SMS** | ⛔ **V2** — `MP-SCOPE-09`, §22 |
 | N6 | **WhatsApp Business / Cloud API, webhooks, credentials, delivery tracking, inbound, history, templates, billing** | ⛔ **V3** — EA **L1502**, **L1821** |
-| N7 | OTP generation **and OTP SMS delivery** | `BC-18` / Auth PRD — §35.3 |
+| N7 | OTP generation **and OTP SMS delivery** | `BC-18` / Auth PRD — `AUTH-10.3`; `MASTER_PRD` §22 assigns OTP SMS to authentication, not to `BC-22` as a general channel |
 | N8 | Provider credentials, vendor contracts, outbound retries to third parties | **`BC-31` Integration** — BC Map L140 |
 | N9 | The immutable audit record itself | **`BC-24`** — BC Map L133 |
 | N10 | Settings hierarchy, feature flags, secret references | **`BC-25`** — BC Map L134; `PRD-023` **FROZEN** |
@@ -616,4 +616,5 @@ deliberately incomplete at v0.1** and Stage 4 will require 1:1 obligation covera
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.1a** | 2026-09-05 | ⚠ **Self-audit of the author's own published counts and cross-references — three defects found and repaired, two false alarms cleared.** ⭐ **All six registers verified CONTIGUOUS and complete by measurement**, not by assertion: `NTF-FR-001`…`065` (65) · `NTF-BR-001`…`003` (3) · `NTF-INV-001`…`010` (10) · `NTF-XC-001`…`006` (6) · `NTF-AC-001`…`008` (8) · `NTF-GAP-001`…`023` (23) — **0 missing, 0 out-of-range, 0 duplicate definitions**, and all **23** gaps confirmed present in the §28 table. ⚠⚠ **THREE BROKEN CROSS-REFERENCES REPAIRED** — they cited the *drafting brief's* 56-section outline rather than this document's actual 32 sections: *"see §29"* → **§13** (Student↔Student messaging; §29 is Acceptance Criteria), and two citations of a non-existent *"§35.3"* → **§5 N7** and an explicit `AUTH-10.3` / `MASTER_PRD` §22 citation respectively. ⭐ **Two apparent duplicates were investigated and CLEARED as legitimate**: `NTF-FR-009` appears twice as one definition plus one prose citation, and `NTF-GAP-003` is deliberately cited by **two** catalogue rows (`MembershipExpiringSoon` and `FeeDueRaised`) because one unresolved timing decision governs both. ⭐ **Every remaining `§` reference was verified to be either internal and ≤32, or externally qualified** (`MASTER_PRD` §22, BC Map §8, `DOCUMENTATION_BASELINE` §3.5). ⛔ **No requirement text, register membership, gap, verdict, ownership finding or evidence citation was changed** — this entry corrects pointers and publishes measured counts only. ⛔ Status remains **`DRAFT`**; ⛔ 0 approvals, 0 conferrals, 0 baseline rows, 0 ADRs, 0 frozen documents touched, 0 `IMPL-*`, 0 code. |
 | **v0.1** | 2026-09-05 | ⭐⭐ **Created at Stage 2 as a DRAFT.** Catalogue built **only** from BC Map §8 events already routed to `BC-22`. ⭐⭐⭐ **Three brief-contradicting findings recorded:** (1) Student↔Student messaging is owned by **`BC-12`** under **FROZEN** `PRD-021B` ⇒ integration-only, and `messaging.MessageSent` is **not routed to `BC-22`** (`NTF-GAP-011`); (2) **SMS/Email/WhatsApp are V2** by Rank-1 `MP-SCOPE-09`, WhatsApp Business **V3** by EA L1502/L1821 ⇒ V1 integrated channels are **exactly In-App + Push**; (3) ⭐ **"Platform Admin" has 0 occurrences** in the BC Map, ownership model and Auth PRD, and `MP-GBR-21` **closes** the scope register to `self`/`guardianOf`/`tenantWide` ⇒ ⛔ **no Platform Admin role created**, platform broadcast blocked at `NTF-GAP-002`, and platform-level *configuration* routed through the real `BC-25` instead. ⛔ **Six requested notifications have no source event** and are registered at `NTF-GAP-005` rather than invented. ⚠ **A contradiction between BC Map L437 and Auth PRD §10 is disclosed** (`NTF-GAP-006`) and ⛔ not resolved in the author's favour. ⛔ **0 timings, 0 bulk limits, 0 retry values, 0 SLOs invented.** ⛔ Authority **not borrowed** from `PRD-015`'s `SRCHPO-17` or `ADR-0102`. **23 gaps registered, each with a named owner.** ⛔ **No approval, no conferral, no freeze, no baseline row, no admitting ADR, no frozen document touched, no historical record modified, no `IMPL-*`, no application code.** Status **`DRAFT`**; `PRD_REGISTRY.md` still shows `PLANNED` and ⛔ **was not modified.** |

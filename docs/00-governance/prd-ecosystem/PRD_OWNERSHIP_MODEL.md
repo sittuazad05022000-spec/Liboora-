@@ -642,3 +642,79 @@ line **L331** and the 35 citations to **L85**. ⛔ **No holder appointed, no per
 conferred, no document frozen, no requirement or AC created, and no open decision resolved.** ⚠ §11's ADR count
 (*"73 … before and after"*) is stale at **74** and is **disclosed above rather than edited**, for the citation reason
 this document has now given five times.
+
+---
+
+## 13. ⭐ A seventh role — `SRE / Observability` — constituted and conferred for one act (2026-09-05)
+
+> **Recorded by APPEND, for the reason §9, §10, §11, §11.5 and §12 all give.** Re-measured this pass:
+> citations point into this document at **L68, L69, L85 (×35), L102, L107, L139, L144, L159, L197,
+> L284** and **L331**. Appending below **L644** invalidates **0**; inserting a row into §2.2's role
+> table would silently misdirect every citation beneath it, in **Accepted** ADRs and in
+> `DOCUMENTATION_BASELINE.md`. **No existing line of this document is modified by this section.**
+
+### 13.1 Authority and scope
+
+**`SRE / Observability`**, the office **Rank 1** already names. Executed by
+[`ADR-0102`](../adr/ADR-0102-sre-observability-office-conferred-for-prd-015-p7-availability-ratification.md).
+
+⭐ **The role vocabulary is reused, not invented** — §2.3's rule is satisfied at **Rank 1**:
+`MASTER_PRD.md` **L495** assigns `MP-NFR-01` *Availability* to **`SRE / OBSERVABILITY`** verbatim, as
+do `MP-NFR-09` (**L503**) and `MP-NFR-12` (**L506**). Measured before this section existed:
+`grep -ciE 'SRE|observabilit'` over this document returned **0**, so the office named by three Rank 1
+obligations was **defined nowhere**.
+
+The office is filled **for this act only** by direct conferral from the human principal, on the
+`ADR-0032` §5.2 / `ADR-0033` §7.2 / `ADR-0036` §8.2 / §12.1 precedent. The conferral directed, in
+these words:
+
+> *"I, as the human principal, explicitly confer and authorize the SRE / OBSERVABILITY office for the
+> PRD-015 P7 availability-ratification act only. The authorized office shall ratify the already
+> pre-approved target of 99.9% monthly availability, without re-deriving or changing the value. This
+> is a one-act conferral only. No standing authority, no self-appointment, no personal name
+> recording, and no invented authority."*
+
+⛔ **No ARB quorum, attendee list, sign-off date or Security review is asserted. No holder is
+appointed and no personal name is recorded** (§7 rule 4). ⭐ **One holder**, per §3 rule 1. ⛔ Outside
+this act the office is **VACANT** — `ADR-0033` §7.1: *"a conferral for one act is not a standing
+licence."*
+
+| Role | Decides | Confirms | ⛔ Does NOT decide |
+|---|---|---|---|
+| **SRE / Observability** | Per-function availability targets, SLOs, SLIs and error budgets; what constitutes an availability breach; observability signal obligations | That an availability target demanded by an existing Rank 1 obligation has been **ratified**, so a gate conditioned on it can be evaluated | ⛔ Boundaries, ranks or permitted edges (**Architecture Owner**) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ document status or freeze (**Governance Owner**) · ⛔ personal-data permissibility (**Privacy Owner**) · ⛔ its own conferral |
+
+### 13.2 What was decided, and what was deliberately not
+
+✅ **RATIFIED:** `PRD-015`'s `P7` availability target at **`99.9% monthly`** — the value
+**pre-approved and coherence-checked** by `ADR-0100` §3.2, ⛔ **carried across unchanged and NOT
+re-derived**. This closes `ADR-0100` §3.2 **L163**'s *"`P7` availability: OPEN … awaiting the right
+office."*
+
+⚠⚠ **`SRE-GAP-001` — OPEN.** `MP-NFR-01` requires *"targets with **SLOs, SLIs and error budgets**"*.
+This act ratifies the **target** only; the **SLO**, **SLI** and **error budget** are **NOT
+specified**, because defining an SLI is new content rather than ratification of a pre-approved value,
+and a one-act conferral may not produce it. **Owner: this office. Requires a separate act.**
+
+⛔ **Constituting and conferring an office is not exercising it beyond the conferred act.** No other
+availability target, on any other module, is set, changed, confirmed or pre-judged. ⛔ **`H-B`'s
+Architecture Owner concurrence is NOT supplied** — that is the **ARB** (**L197**), a different office
+(`ADR-0054` **L148**), and this conferral does not reach it.
+
+### 13.3 ⚠ Change-history row — recorded HERE, not inserted into §8
+
+⚠⚠ **The row belongs in §8's changelog table, and it is deliberately NOT written there.** Citations
+into this document were enumerated mechanically before the write and **five sit BELOW §8's table** —
+**L353**, **L356**, **L418**, **L419** and **L509**. Inserting a row after **L334** shifts every one
+of them by one and silently misdirects them. §9.4, §10.4 and §12's preamble each recorded the same
+constraint; this section applies it rather than rediscovering it.
+
+⭐ **The row, in §8's format, to be merged by any later pass that repairs the citation families
+wholesale** (routed to `ADR-0075` §8.5 Option B):
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.4** | 2026-09-05 | ⭐⭐ **A seventh role — `SRE / Observability` — is constituted and conferred FOR ONE ACT ONLY, under `Accepted` [`ADR-0102`](../adr/ADR-0102-sre-observability-office-conferred-for-prd-015-p7-availability-ratification.md).** ⭐ **The derivation is the strongest of the three appended roles, because its vocabulary comes from Rank 1:** `MASTER_PRD.md` **L495** assigns `MP-NFR-01` *Availability* to **`SRE / OBSERVABILITY`** verbatim, as do `MP-NFR-09` (**L503**) and `MP-NFR-12` (**L506**) — and measured before §13 existed, `grep -ciE 'SRE\|observabilit'` over this document returned **0**, so an office named by **three Rank 1 obligations** was defined nowhere. §2.3's *"role vocabulary is reused, not invented"* rule is therefore satisfied **at Rank 1**, not by analogy. ⭐ **The conferral is quoted verbatim in §13.1** and is the **only** authority claimed, on the `ADR-0032` §5.2 / `ADR-0033` §7.2 / `ADR-0036` §8.2 / §12.1 precedent. ⛔ **No ARB quorum, attendee list, sign-off date or Security review is asserted; no holder is appointed and no personal name is recorded** (§7 rule 4); outside the conferred act the office is **VACANT** (`ADR-0033` §7.1 — *"not a standing licence"*). ✅ **One item IS closed, because this office is its only required authority:** `PRD-015`'s **`P7` availability target is RATIFIED at `99.9% monthly`**, the value **pre-approved and coherence-checked** by `ADR-0100` §3.2 and ⛔ **carried across unchanged, NOT re-derived** — closing `ADR-0100` §3.2 **L163**'s *"OPEN … awaiting the right office"* and `PRD-015`'s human-decision blocker **`H-D`** on all three of its limbs (office · holder · ratification). ⚠⚠ **A NEW GAP IS RAISED RATHER THAN HIDDEN — `SRE-GAP-001` is OPEN:** `MP-NFR-01` demands *"targets with **SLOs, SLIs and error budgets**"* and this act supplies **only the target**; defining an SLI is new content, not ratification of a pre-approved value, and a one-act conferral may not produce it. ⛔⛔ **`H-B`'s Architecture Owner concurrence is NOT supplied and the `H-B`/`H-D` coupling does NOT discharge** — `H-B` needs the **ARB** (**L197**), which `ADR-0054` **L148** holds is a *different role*; the coupling was a **shared blocker, never a shared authority**. ⚠ **Executed by APPEND (§13), not by rows in §2.1/§2.2/§2.3/§5/§8** — the constraint is now measured twice: citations reach **L85 (×35)**, L68, L69, L102, L107, L139, L144, **L197**, L284, L331 **and, below §8's table, L353, L356, L418, L419, L509**, so a §8 row insert would misdirect five live citations; the row is therefore recorded at **§13.3** and routed. ⚠ **§2's arithmetic is now stale by three** (*"Four distinct answers"*, *"a fifth would have no rule to serve"*) — the clause is a **conditional test** all three derivations *satisfy*, so the reasoning survives and only the count is stale; **disclosed and routed, not silently patched**, per §9.4 and §10.4. ⛔ **No PRD, requirement, register or acceptance criterion is created, modified or withdrawn; no §2.2/§5/§8 line and no §§4.1–4.4 PRD row is touched; no rank, edge or boundary is altered; `MASTER_PRD.md` is byte-unchanged and NOT amended; no document is frozen or baselined** — `BASELINE-2026-09-03-A` stands. ⛔ **`PRD-015` Stage 3 is NOT conferred**; `H-C` and `H-E` are untouched; **0** `IMPL-*` identifiers and **0** application-code files were created. |
+
+⚠ **This document's `Version` field (L6) still reads `v1.1` and is NOT edited** — it has been stale
+since v1.2 for the same citation reason, a pre-existing condition disclosed by `ADR-0077` §8 and
+carried forward unrepaired here. ⛔ **Not introduced by this pass.**

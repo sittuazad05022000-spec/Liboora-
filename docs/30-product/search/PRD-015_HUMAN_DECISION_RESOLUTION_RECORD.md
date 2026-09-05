@@ -5590,3 +5590,165 @@ rather than wholly blocked — ⚠ **which is progress in the ask, not in the co
 | `H-C` · `H-D` · `H-E` | ⛔ **BLOCKED / NOT REACHED** — untouched this pass |
 | Stage 3 | ⚠ **NOT READY / NOT CONFERRED** — **5 of 16** |
 | Frozen bytes · ADRs · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0** |
+
+---
+
+# PART XXII — `H-D` CLOSED BY ACTUAL HUMAN CONFERRAL · `H-B` CONCURRENCE STILL OPEN
+
+| Field | Value |
+|---|---|
+| **Part** | **XXII** — twenty-first consecutive governance pass |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"H-D HUMAN DECISION — AUTHORIZE & RATIFY"* — an explicit first-person conferral of the **SRE / OBSERVABILITY** office for the `PRD-015` `P7` availability-ratification act only, with ratification of `99.9% monthly`; *"Record the lawful act, close H-D, and re-test the dependent H-B concurrence gate. Do not resolve H-C or H-E."* |
+| **Act** | ⭐⭐⭐ **RECORDING AN ACTUAL HUMAN-PRINCIPAL CONFERRAL** — the first office-constituting act in this engagement |
+| **Predecessor commit** | `9c68e65` |
+| **Carrier created** | ⭐ **`ADR-0102`** — *"The SRE / Observability office is conferred for one act only, and it ratifies `PRD-015`'s `P7` availability target at `99.9% monthly`"* |
+| **Result** | ⭐⭐⭐ **`H-D` → CLOSED on all three limbs.** ⛔⛔ **`H-B` concurrence remains OPEN** — the coupling was a *shared blocker*, never a *shared authority* |
+| **Verdict** | **B — CONDITIONAL / NOT CONFERRED** (twenty-first) |
+
+---
+
+## 183. ⭐⭐⭐ THE TWO-MESSAGE SEQUENCE — WHY THE FIRST WAS REFUSED AND THE SECOND RECORDED
+
+⚠⚠ **This section exists because the distinction is the whole basis of both dispositions, and a
+later reader must be able to test it rather than take it on trust.**
+
+| | Message A (refused) | ⭐ Message B (recorded) |
+|---|---|---|
+| Grammatical form | third person — *"Human Principal … constitute/authorize **करे**"*; *"authority … **ratify करे**"* | ⭐ **first person** — *"**I**, as the human principal, **explicitly confer and authorize**"* |
+| Contained its own hold | ⭐ *"Human authorization **मिलने तक** `H-D` को OPEN ही रखो"* | ⛔ none — it directs *"Record the lawful act, **close H-D**"* |
+| Substantive act stated | ⛔ **NO** — it *described acts to be performed* | ✅ **YES** — office, scope and ratification all stated |
+| Matches the four precedents | ⛔ **NO** | ✅ **YES** — §183.1 |
+| Disposition | ⛔ **0 files changed**; `H-D` held **OPEN** | ⭐ **`ADR-0102`** |
+
+⭐⭐ **The earlier refusal is therefore vindicated, not reversed.** It was correct for exactly as long
+as no conferral existed — the posture `ADR-0036` §8.2 records for its own question 2: *"the refusal
+is discharged by authority arriving, not overturned."*
+
+### 183.1 The form matches every conferral precedent this repository has
+
+| Precedent | The words recorded | Shape |
+|---|---|---|
+| `ADR-0032` §5.2 | *"resolved/accepted according to Architecture Owner authority"* | operative act |
+| `ADR-0033` §7.2 | *"…`E-27`/`O-C` ruling ko Architecture Owner authority ke according resolve karo"* | operative act |
+| `ADR-0036` §8.2 | *"3-day renewal protection remains mandatory V1."* | substantive value |
+| `PRD_OWNERSHIP_MODEL.md` §12.1 | *"Register the prefixes `LCM-`, `LCG-`, …"* | operative act |
+| ⭐ **This conferral** | *"I … explicitly confer and authorize the SRE / OBSERVABILITY office … shall ratify … 99.9% monthly"* | ⭐ **office + scope + act** |
+
+---
+
+## 184. THE FOUR OBJECTS — ALL FOUR NOW DISPOSED
+
+⭐ Five prior passes held `H-D` blocked by keeping these four strictly apart. All four now resolve,
+and **each by its own warrant**:
+
+| # | Object | Before | ⭐ After |
+|---|---|---|---|
+| 1 | **Target value** `99.9% monthly` | ✅ pre-approved (`ADR-0100` §3.2) | ✅ **RATIFIED — carried across unchanged, ⛔ NOT re-derived** |
+| 2 | **Office** | ⛔ **0** occurrences in `PRD_OWNERSHIP_MODEL.md` | ⭐ **CONSTITUTED** as §13, the **seventh** role |
+| 3 | **Holder** | ⛔ unappointed | ⭐ **filled for this act only** — ⛔ **no personal name** (§7 rule 4) |
+| 4 | **Ratification** | ⛔ 0 artefacts | ⭐ **PERFORMED** — `ADR-0102` §3.2 |
+
+⭐⭐ **The derivation is the strongest of the three appended roles, and that is measurable.**
+`MASTER_PRD.md` **L495** — **Rank 1** — names `SRE / OBSERVABILITY` as `MP-NFR-01`'s owner *verbatim*,
+as do `MP-NFR-09` (**L503**) and `MP-NFR-12` (**L506**), while the ownership model defined it **0**
+times. ⇒ §2.3's *"role vocabulary is reused, not invented"* rule is satisfied **at Rank 1**, not by
+analogy — unlike the Privacy Owner, which had to reach to a Rank 5 line.
+
+---
+
+## 185. ⚠⚠ `SRE-GAP-001` — RAISED AGAINST MY OWN CLOSURE
+
+⭐ **`MP-NFR-01` asks for three things and this act supplies one.** Its Rank 1 text is *"Per-function
+availability targets with **SLOs, SLIs and error budgets**."*
+
+| Element | State |
+|---|---|
+| **Availability target** | ✅ **RATIFIED — `99.9% monthly`** |
+| **SLO** | ⛔ **NOT SPECIFIED** |
+| **SLI** | ⛔ **NOT SPECIFIED** |
+| **Error budget** | ⛔ **NOT SPECIFIED** |
+
+⚠ **Why not supplied.** The conferral authorized **one act** — ratification of a pre-approved value
+*"without re-deriving or changing the value."* An SLI definition is **new content**, not a
+ratification; `ADR-0033` §7.1 bars a one-act conferral from producing it, and inventing one would be
+exactly the *"invented authority"* the instruction forbids.
+
+⭐⭐ **Why `H-D` closes anyway, stated precisely.** `H-D`'s ask — §158.3 and the Part XIX packet item
+3 — is *"(a) constitute the office; (b) appoint a holder; (c) that holder ratifies `99.9% monthly`."*
+**All three limbs are performed.** The SLO/SLI/error-budget content was **never one of `H-D`'s
+limbs**; it is a **new** item, raised here rather than left invisible.
+
+---
+
+## 186. ⛔⛔ `H-B` RE-TESTED — THE COUPLING WAS A SHARED BLOCKER, NOT A SHARED AUTHORITY
+
+⭐ §157 (**L4804-4806**) recorded: *"`H-B` requires a seated-or-conferred Architecture Owner too —
+which is `H-D`'s blocker. **`H-B` and `H-D` are therefore COUPLED.**"*
+
+⚠⚠ **Re-tested this pass, and the coupling does NOT discharge:**
+
+| Test | Result |
+|---|---|
+| Does `H-B` need the **SRE / Observability** office? | ⛔ **NO** |
+| Which office does `H-B`'s concurrence limb need? | ⭐ the **Architecture Owner** = **ARB** (`PRD_OWNERSHIP_MODEL.md` **L197**) |
+| Does this conferral reach the ARB? | ⛔⛔ **NO** — it is scoped *"for the `PRD-015` `P7` availability-ratification act only"* |
+| `ADR-0054` **L148** | *"Those are **different roles**"* |
+| `ADR-0033` §7.1 | *"a conferral for one act is not a standing licence"* |
+
+⭐⭐⭐ **So the correct reading of the coupling is refined, not honoured blindly.** `H-D` blocked `H-B`
+because **both awaited a human conferral act** — not because one office could serve both. `H-D`'s
+conferral **names a different office and cannot travel.** ⇒ **`H-B` concurrence is now blocked on its
+own account**, and its blocker is narrower than before: it needs an **ARB conferral**, nothing else.
+
+⛔ **Reading this conferral as reaching the ARB would be the precise defect `ADR-0033` §7.1 names.**
+
+---
+
+## 187. STAGE-3 GATE — THE ONE CONDITION THAT MOVES
+
+⛔ **Only the conditions this act touches were re-run.** The instruction scoped the pass to `H-D`.
+
+| Condition | Before | ⭐ After |
+|---|---|---|
+| `P7` **availability** ratified by its owning office | ⛔ **OPEN** | ✅ **CLOSED — `99.9% monthly`** |
+| `H-B` script bindings | ✅ 3/3 (Part XXI) | ✅ **3/3** |
+| `H-B` Architecture Owner concurrence | ⛔ OPEN | ⛔⛔ **STILL OPEN** — §186 |
+| `H-C` corpus + `ZWNJ` | ⛔ BLOCKED | ⛔ **UNTOUCHED** |
+| `H-E` Architecture reviewer | ⛔ NOT REACHED | ⛔ **UNTOUCHED** |
+
+### ⭐ Stage 3 — **6 of 16** *(was 5 of 16)*
+
+⛔ **NOT READY. NOT CONFERRED.** ⚠ **One condition moved; ten remain.** `SRE-GAP-001` is a **new**
+open item created by this pass and is counted as such, not netted out.
+
+---
+
+## 188. EIGHT REFUSALS
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not re-derive, recalculate or re-propose `99.9% monthly` |
+| 2 | ⛔ Did not invent an SLO, SLI or error budget — `SRE-GAP-001` raised instead |
+| 3 | ⛔ Did not record a personal name, initials or handle (§7 rule 4) |
+| 4 | ⛔ Did not assert an ARB quorum, attendee list, sign-off date, Security or Privacy review |
+| 5 | ⛔ Did not treat the conferral as standing authority beyond the one act |
+| 6 | ⛔ Did not let the conferral reach the ARB, and so did **not** close `H-B` |
+| 7 | ⛔ Did not resolve `H-C` or `H-E` |
+| 8 | ⛔ Did not amend `MASTER_PRD.md`, any frozen document, any baseline or any rank; did not claim Stage 3 READY |
+
+---
+
+## 189. TERMINAL STATE
+
+| Item | State |
+|---|---|
+| `H-A` · `H-B0` | ✅ **CLOSED** |
+| **`H-B` script bindings** | ✅ **3 / 3** |
+| **`H-B` overall** | ⛔⛔ **OPEN** — ARB concurrence only |
+| `H-C` | ⛔ **BLOCKED** — untouched |
+| ⭐⭐⭐ **`H-D`** | ✅ **CLOSED** — office · holder · ratification |
+| `H-E` | ⛔ **NOT REACHED** — untouched |
+| ⚠ **`SRE-GAP-001`** | ⛔ **OPEN** — new this pass |
+| Stage 3 | ⚠ **NOT READY / NOT CONFERRED** — **6 of 16** |
+| Frozen bytes · Rank 1 · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0** |

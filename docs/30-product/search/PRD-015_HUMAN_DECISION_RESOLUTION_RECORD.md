@@ -5007,3 +5007,227 @@ to `H-D`** — a finding that makes the packet harder, not easier, and is record
 ⛔ **`STAGE 3 — NOT READY.` VERDICT B — CONDITIONAL / NOT CONFERRED.** The seventeenth consecutive.
 ⭐ Subject byte-unchanged. Every frozen PRD, ADR and baseline byte-unchanged. Registry **L315** = `DRAFT`.
 **This is the true terminal state reachable from repository authority; the four items in §161 are human acts.**
+
+---
+---
+
+# PART XIX — ⚠⚠ PROPOSAL REVIEW ONLY · **THREE PROPOSED DECISIONS RECEIVED, ZERO ADOPTED — AND DECISION 2 FAILS TWO CLOSED RULINGS**
+
+| Field | Value |
+|---|---|
+| **Part** | **XIX** — the eighteenth consecutive governance pass on `PRD-015` |
+| **Act** | ⚠ **PROPOSAL REVIEW.** A *"HUMAN DECISION EXECUTION PACKET"* supplied three proposed decisions **and expressly disclaimed itself as authority.** This Part validates them against repository authority. ⛔ **It adopts none** |
+| **Predecessor commit** | `4de6fa0` (Part XVIII) |
+| **Subject** | `PRD-015_SEARCH_INDEXING.md` — ⛔ **byte-unchanged**, `fe3093e6…c2c4544` |
+| **Result** | ⛔⛔ **DECISION 2 — *"declare all 14 fields Latin"* — IS NOT MERELY UNADOPTED; IT CONFLICTS WITH TWO CLOSED RULINGS AND WITH §14A's OWN FIELD LIST.** ⭐ Reviewed **because** the packet asked for validation, and the finding is adverse to the recommendation it carries |
+| **Verdict** | ⛔ **B — CONDITIONAL / NOT CONFERRED** — the **eighteenth** consecutive |
+
+## ⚠⚠ OPENING DISCLOSURE — **THE PACKET DISCLAIMS ITSELF, AND THAT DISCLAIMER IS HONOURED**
+
+The packet states in its own terms:
+
+> *"The following are PROPOSED DECISIONS for human review. They are **NOT repository facts merely because
+> this prompt contains them**."*
+> *"The agent may **NOT** treat this prompt itself as human authority."*
+> *"Do **NOT** treat this prompt as the conferral itself."*
+
+⭐ **Therefore no act is adopted, and none is recorded as adopted.** ⭐ **But the packet also expressly
+authorises what this Part does do:** *"validate these proposed decisions against existing records"* and
+*"prepare append-only decision text."* ⛔ **Validation is not adoption, and this Part performs only the first.**
+
+⭐⭐ **The review produced a genuinely adverse finding on the packet's own strongest recommendation.** That is
+recorded first, before the two proposals that survive review.
+
+---
+
+## 164. ⛔⛔ DECISION 2 REVIEWED — **"ALL 14 = LATIN" FAILS ON TWO INDEPENDENT GROUNDS**
+
+⭐ **The packet was right to flag this as needing explicit adoption and right that it is not an inference.**
+⚠ **But adoption alone would not make it lawful, and the packet asked for validation — so here it is.**
+
+### 164.1 ⛔ GROUND 1 — it would contradict `SRCHPO-1` + `HD-16`, both CLOSED
+
+| Authority | Text | Consequence for *"all 14 = Latin"* |
+|---|---|---|
+| **`SRCHPO-1`** (PO record **L57**) | *"V1 canonical supported languages/scripts = exactly two: **English (Latin script) and Hindi (Devanagari script)**. This is a **closed set** for V1"* | ⛔ Declaring **every** field Latin makes the **Devanagari** half of the closed set **unreachable by any field** |
+| **`HD-16`** (§12.3, **CLOSED**) | *"**ENGLISH + HINDI** vocabulary scope. **Preserve the V1 language inventory already established.**"* | ⛔ A 14/14-Latin binding does not *preserve* a two-language inventory; it **operationally reduces it to one** |
+| **`HD-3`** (§4.1, **CLOSED**) | *"Latin case folding applies where relevant to Latin-script content. … **Do not claim this means 'no normalization' for Devanagari**; other explicitly authorized normalization rules remain applicable."* | ⛔⛔ `HD-3` legislates **for Devanagari content in these fields.** If no field is ever Devanagari, `HD-3`'s operative half governs **the empty set** — and `HD-3` was written expressly to foreclose that reading |
+
+⭐⭐ **`HD-3` is the decisive one, and it is a ruling by the same authority the packet asks to adopt Decision 2.**
+§4.2 of this record already named this exact failure mode: *"The ruling could have been read as 'Devanagari is
+not normalized.' **It expressly forecloses that reading**."* ⛔ **Declaring all 14 fields Latin achieves by
+data-binding precisely what `HD-3` forbade by rule.** A later act may not hollow out an earlier closed ruling
+by making its subject matter unreachable.
+
+⚠ **This is NOT the claim the packet correctly forbade.** ⛔ I do **not** claim *"Devanagari is forbidden"* —
+the opposite: **Devanagari is authoritatively IN SCOPE**, and that is why a blanket Latin binding is the
+problem. ⛔ I also do **not** claim a third language, and ⛔ I infer **no** field's script.
+
+### 164.2 ⛔ GROUND 2 — ⭐ **§14A.5's list is NOT 14 text fields.** At least four are non-textual
+
+⭐⭐ **A NEW MEASUREMENT, not present in any prior Part.** §14A.5 (**L134-189**) was re-read in full this pass.
+It is a bare field-name list — and the names themselves show that *"declared script"* is **not meaningful for
+every member**:
+
+| # | Field | Nature | Is a *script* declaration meaningful? |
+|---|---|---|---|
+| 2 | **Logo** | an image | ⛔⛔ **NO** — an image has no script |
+| 3 | **Cover Image** | an image | ⛔⛔ **NO** |
+| 4 | **Gallery** | a collection of images | ⛔⛔ **NO** |
+| 7 | **Map Location** | a geographic coordinate/pin | ⛔ **DOUBTFUL** — not free text |
+| 13 | **Library Status** | an enumerated state | ⛔ **DOUBTFUL** — an enum is not language content |
+| 1, 5, 6, 14 | Library Name · Description · Business Address · Business Contact Information | free text | ✅ **YES** |
+| 8, 9, 10, 11, 12 | Operating Hours · Weekly Holidays · Facilities & Amenities · Membership Plans & Pricing · Seat Capacity | mixed structured/text | ⚠ **PARTLY** |
+
+⛔ **Assigning `Script = Latin` to *Logo*, *Cover Image* and *Gallery* would declare a language property of a
+binary asset.** ⭐ That is not a Product Owner judgement call the packet can cure by adoption — it is a
+**category error**, and adopting it would put an incoherent statement into the authoritative carrier.
+
+⚠⚠ **AND THIS IS A FINDING AGAINST MY OWN PRIOR SIX PARTS.** Parts XV-XVIII each printed *"14 fields ·
+0 of 14 declared"* and treated the denominator as settled. ⭐ **The denominator was never verified.** The true
+question — *how many of §14A.5's fields are script-bearing at all?* — has **0 authority** in the repository.
+⛔ **I do not now answer it**; §14A.5 supplies no types, and inventing a text/non-text split would be exactly
+the inference every ruling forbids. It is recorded as a **new open question**.
+
+### 164.3 ⭐ What Decision 2 would need in order to be lawful
+
+| Requirement | Status |
+|---|---|
+| An explicit Product Owner adoption | ⛔ **NOT SUPPLIED** — the packet disclaims itself |
+| ⭐ A prior determination of **which** §14A.5 fields are script-bearing | ⛔ **0 authority** — §164.2's new open question |
+| ⭐ Consistency with `SRCHPO-1` / `HD-16` / `HD-3` — i.e. Devanagari reachable somewhere | ⛔ **FAILS** as drafted |
+| Architecture Owner concurrence, `ADR-0099` `C-3` | ⛔ **NOT SUPPLIED** — gated on `H-D` |
+
+⛔ **`H-B` STATUS: BLOCKED.** ⭐ **And its ask is now better specified than before:** the Product Owner must
+first settle **which fields bear a script**, then bind those fields across **both** members of the closed set
+as the V1 inventory requires.
+
+---
+
+## 165. ✅ DECISION 3 REVIEWED — **conjunct A is COHERENT; conjunct B is correctly left OPEN**
+
+### 165.1 ⭐ Conjunct A survives review
+
+> *"**V1 operational corpus** means the actual V1 production/public library metadata corpus designated for
+> operational indexing by `PRD-015`. Fixtures, examples, templates, and test-only data are not automatically
+> part of the V1 operational corpus unless explicitly designated as such."*
+
+| Test | Result |
+|---|---|
+| Contradicts any closed ruling? | ✅ **NO** |
+| ⭐ Consistent with `PRD-017` **L1619**'s *"declared **fixture** corpus"*? | ✅ **YES** — it **excludes** fixtures by name, which is the distinction Decision 4 of the earlier packet also drew |
+| Consistent with `ADR-0100` **L203** / `ADR-0101` **L244**? | ✅ **YES** — it supplies exactly the definition both record as missing |
+| Does it invent a corpus **fact**? | ✅ **NO** — it defines a **term**, which is the lawful PO act |
+
+⭐ **Recorded as a well-formed proposal that would close conjunct A on adoption.** ⛔ **It is not adopted.**
+
+### 165.2 ⭐⭐ Conjunct B — the packet refuses to answer it, and that refusal is CORRECT
+
+The packet says the ZWNJ conjunct *"requires an ACTUAL FACTUAL ANSWER"* and instructs: ⛔ *"DO NOT invent yes;
+no; unknown."* ⭐ **That is precisely right, and it matches `ADR-0101` L188-194's own falsifiability list**,
+re-read this pass, whose limb 2 is *"a **Product Owner** ruling that Liboora's V1 Devanagari corpus does not
+contain `ZWNJ`-distinguished names."*
+
+⭐ **Re-measured this pass:** ZWNJ-corpus hits outside this record = **1**, and it is `ADR-0101` **L193** —
+a statement of what *would* close it. ⇒ ⛔ **Authoritative corpus facts: 0.**
+
+⛔ **`H-C` STATUS: BLOCKED** — conjunct A proposed-but-unadopted, conjunct B factually unanswered.
+⭐ **Decision 5's bar holds: both conjuncts, one decision.**
+
+---
+
+## 166. ⛔ DECISION 1 REVIEWED — **`H-D` remains BLOCKED at the conferral, exactly as the packet anticipates**
+
+⭐ **The packet's own conditionals are unsatisfied on their own terms:** *"**IF** the authorized human
+principal actually has lawful authority"* · *"**only if** lawfully authorized"* · *"Do NOT treat this prompt
+as the conferral itself."*
+
+| Object | State, re-measured this pass |
+|---|---|
+| Target value `99.9% monthly` | ✅ **Retained. 0 recalculation, 0 substitution** |
+| SRE / Observability **office** | ⛔ **NOT CONSTITUTED** — `grep -ciE 'SRE\|Observability' PRD_OWNERSHIP_MODEL.md` = **0** |
+| **Holder** | ⛔ **NONE** — 0 appointments; ⛔ no personal name (§7 rule 4) |
+| **§12.1 conferral naming this act** | ⛔ **NOT ISSUED** — the packet supplies proposed *wording*, and expressly not the act |
+| **Ratification** | ⛔ **NOT PERFORMED** — 0 ratification artefacts |
+| `Deciders` naming SRE/Obs across **89** ADRs | ⛔ **0** ⇒ `ADR-0080`'s self-constitution route unavailable |
+| ARB seated | ⛔ **0 hits** ⇒ `ADR-0077`'s route needs a vacant office |
+
+⛔ **The packet's fallback is therefore the operative branch:** *"If the §12.1 route is not legally available
+to the actual human principal, STOP `H-D` and report the lawful alternative."* ⭐ **Reported at §168 item 3.**
+⛔ **No improvisation.**
+
+---
+
+## 167. ⛔ THE STAGE-3 GATE — **5 of 16 satisfied** (⭐ one condition ADDED by this pass)
+
+| # | Condition | Verdict |
+|---|---|---|
+| 1 | Stage 2 COMPLETE | ✅ |
+| 2 | Lifecycle status `DRAFT` | ✅ |
+| 3 | Six architecture checks PASS | ✅ **6/6** |
+| 4 | Valid alignment artifact | ✅ (§11.2 stale — disclosed) |
+| 5 | All Stage-3 blocking gaps closed | ⛔ |
+| 6 | `GAP-002` fully closed | ⛔ 15 CLOSED · 2 PARTIAL · 1 OPEN |
+| 7 | `GAP-007` fully closed | ⛔ 5 CLOSED · 1 PARTIAL · 1 BLOCKED |
+| ⭐ **7b** | **Which §14A.5 fields are script-bearing is authoritatively settled** | ⛔ **NEW — 0 authority** (§164.2) |
+| 8 | Script-bearing fields all have authoritative declarations | ⛔ **0 declared** |
+| 9 | V1 operational corpus authoritatively defined | ⛔ proposed, unadopted |
+| 10 | ZWNJ corpus fact established | ⛔ **0** |
+| 11 | SRE/Observability governance valid | ⛔ office unconstituted |
+| 12 | Availability ratified | ⛔ not performed |
+| 13 | Architecture Owner concurrence recorded | ⛔ not supplied |
+| 14 | Architecture reviewer appointed | ⛔ 0 files |
+| 15 | Formal Stage-3 conferral occurs | ⛔ 0 files |
+| ⭐ | All ownership decisions authoritative | ✅ **14/14** |
+
+⚠⚠ **The gate DENOMINATOR ROSE, 15 → 16.** ⭐ **The honest reading: reviewing the proposals revealed a
+prerequisite nobody had measured, so `PRD-015` is further from Stage 3 than Part XVIII believed — not closer.**
+⛔ **I record that rather than suppress it.** Rule `X3` ⇒ **STAGE 3 — NOT READY.**
+
+---
+
+## 168. ⭐ THE ONE CONSOLIDATED HUMAN-ACTION PACKET — **five items** (⭐ one NEW, and it comes FIRST)
+
+| # | Item | Lawful authority | The exact act |
+|---|---|---|---|
+| ⭐ **0** | **NEW — `H-B0`: which §14A.5 fields bear a script?** | **Product Owner** (field semantics) | Determine, for each of the 14 §14A.5 fields, whether a *declared script* is meaningful. ⭐ *Logo*, *Cover Image*, *Gallery* are images; *Map Location* and *Library Status* are not free text. ⛔ **This pass does not answer it** — §14A.5 declares no types |
+| **1** | **`H-B`** — declarations for the script-bearing fields | **Product Owner** + **Architecture Owner concurrence** (`ADR-0099` `C-3`) | Bind each script-bearing field to one of `{Latin, Devanagari}` via the existing PO-style declaration record (carrier closed by `HD-1`; ⛔ no new instrument; ⛔ frozen §14A + six owning PRDs untouched). ⚠⚠ **A 14/14-Latin binding is NOT lawful as drafted** — §164.1 |
+| **2** | **`H-C`** — one decision, both conjuncts | **Product Owner** | (A) ⭐ Decision 3's definition **survives review** and would close this limb on adoption; (B) ⛔ the ZWNJ corpus fact requires an **actual** yes/no from PO knowledge |
+| **3** | **`H-D`** — availability governance | **Human principal**, then the constituted office | Either seat the ARB → constitute SRE/Observability (`ADR-0077` route), **or** issue a §12.1 one-act conferral **naming this act**; then that office ratifies `99.9% monthly`. ⛔ Value retained, not re-decided. ⚠ **Also gates item 1's concurrence** |
+| **4** | **`H-E`** — architecture reviewer | **Human principal** | Appoint an Architecture **reviewer** (⛔ ≠ Owner), scoped to *"`PRD-015` Stage-3 review and conferral act, and nothing else"*, **after** 0-3 |
+
+---
+
+## 169. ⛔ WHAT THIS PASS DID NOT DO
+
+| Refusal | Basis |
+|---|---|
+| ⛔ Did **not** treat the packet as authority | Its own words, three times |
+| ⛔ Did **not** adopt Decision 1, 2 or 3 | No human adoption supplied |
+| ⛔ Did **not** write the PO declaration record | ⭐ Now doubly barred: no adoption **and** the drafted content fails §164.1 |
+| ⛔ Did **not** declare Latin for all 14 | ⭐ Refused a **sixth** time — and for the **first time on substantive grounds**, not merely absent authority |
+| ⛔ Did **not** answer §164.2's new question | §14A.5 supplies no types; a text/non-text split would be invention |
+| ⛔ Did **not** invent the ZWNJ fact, an office, a holder, a conferral or a ratification | Instruction; `PRD_OWNERSHIP_MODEL.md` §10.1 **L418** |
+| ⛔ Did **not** create an ADR | Register stays **89**; `ADR-0102` unopened |
+| ⛔ Did **not** touch `AR-1` or the registry bucket row | ⭐ §XI — disclosed, non-blocking, deliberately left |
+| ⛔ Did **not** edit Parts I-XVIII | Append-only; their text stands at **L1-5009** |
+| ⛔ Did **not** freeze, baseline, rank, enter Stage 4-7, write `IMPL-*` or code | **0** lines under `lib/`, `test/`, `tool/`, `android/`, `web/` |
+
+**Creates: 0** script values · corpus definitions · ZWNJ facts · availability numbers · offices · holders ·
+conferrals · concurrences · ratifications · ADRs · `IMPL-*` · code.
+
+---
+
+## 170. TERMINAL STATE
+
+⭐⭐⭐ **The most useful thing this pass did was find that the packet's recommended decision would have been
+unlawful even if adopted** — it hollows out `HD-3`, operationally reduces `SRCHPO-1`'s two-script inventory to
+one, and assigns a language property to three image fields.
+
+⭐⭐ **And it found a prerequisite six consecutive Parts had missed:** *"0 of 14"* assumed all 14 fields bear a
+script. §14A.5 never says so. The gate denominator rose **15 → 16**, and `PRD-015` is **further** from Stage 3
+than before this review — which is the correct result of an honest review, not a regression to conceal.
+
+⛔ **`STAGE 3 — NOT READY. HUMAN AUTHORITY REQUIRED.` VERDICT B — CONDITIONAL / NOT CONFERRED.** Eighteenth
+consecutive. ⭐ Subject byte-unchanged · frozen PRDs, ADRs and baseline byte-unchanged · registry **L315**
+`DRAFT`. **The five items in §168 are human acts, and item 0 is now the first of them.**

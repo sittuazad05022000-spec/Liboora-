@@ -6145,3 +6145,152 @@ remain OPEN and are declared in the conferral §4 rather than absorbed:
 | Stages 4–7 | ⛔ **NOT ENTERED** |
 | `PRD-015` status | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
 | Frozen bytes · Rank 1 · code · `IMPL-*` | ⛔ **0 · 0 · 0 · 0** |
+
+---
+
+# PART XXV — STAGE 4 MEASURED **6/6 PASS** · ⛔ NOT CONFERRED — THE REQUIREMENTS REVIEWER OFFICE
+
+| Field | Value |
+|---|---|
+| **Part** | **XXV** — twenty-fourth consecutive governance pass |
+| **Date** | 2026-09-05 |
+| **Instruction** | *"PRD-015 — STAGE 4 → STAGE 7 COMPLETE LIFECYCLE LOOP"* — proceed sequentially and lawfully; ⛔ *"NEVER invent human decisions, authority, owners… requirements, acceptance criteria"*; ⛔ *"If an actual human decision is required, stop at that exact human dependency"* |
+| **Act** | ⭐⭐ **STAGE 4 REQUIREMENTS REVIEW PERFORMED AND MEASURED** — and ⛔ **conferral REFUSED for want of the office** |
+| **Predecessor commit** | `abcab49` |
+| **Carrier created** | ⭐ **`PRD-015_STAGE4_REQUIREMENTS_REVIEW.md`** |
+| **Result** | ⭐ **6 of 6 Stage-4 checks PASS.** ⛔⛔ **STAGE 4 NOT CONFERRED** — terminal state **(B)** |
+| **Verdict** | **B — MEASURED PASS / NOT CONFERRED** |
+
+---
+
+## 204. ⭐⭐ STAGE 4 — ALL SIX CHECKS MEASURED
+
+`PRD_LIFECYCLE.md` **L108-119** defines exactly six checks:
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Every requirement testable | ✅ **78/78** carry a GWT criterion |
+| 2 | Every exclusion states impossibility | ✅ **16/16**, ⛔ 0 disguised deferrals |
+| 3 | Every configurable has default + range | ✅ **VACUOUS** — `SRCH-CFG-*` **EMPTY (0)** |
+| 4 | Every AC maps to a requirement | ✅ ⭐⭐ **78/78 = 100.0 %, both directions** |
+| 5 | No requirement restates another PRD's | ✅ **0** foreign definitions |
+| 6 | Business rules vs Rank 1 | ✅ **0** contradictions across 14 `SRCH-BR-*` |
+
+⭐ **Check 3 passes *vacuously* and is recorded as such**, not as a pass on the merits: `ADR-0017` and
+`ADR-0099` §2.4 place `BC-23`'s configuration carriage in `BC-25`'s `LCFG-*`, on the `PRD-023`
+precedent — *"owns configuration, owns no configurable."* ⛔ **No `SRCH-CFG-*` was minted.**
+
+⭐ `SRCH-EVT-*` is **also EMPTY**, correctly: `SRCH-FR-004` + `SRCH-INV-001` make `BC-23` a **pure
+projection consumer**, which publishes no domain event. ⛔ **No event invented.**
+
+---
+
+## 205. ⚠⚠ TWO INSTRUMENT DEFECTS IN MY OWN CENSUS — BOTH CHANGED THE ANSWER
+
+⭐⭐ **Recorded before the counts, because a count from a broken instrument is worse than none.**
+
+| # | Defect | How it surfaced |
+|---|---|---|
+| **1** | First census reported **45 `SRCH-FR`** (stated: 42) and duplicates at `FR-4`, `FR-12`, `BR-1`, `INV-1/3/4/5`, `XC-16` | ⭐ The capture group was reading a **truncated prefix** of `SRCH-FR-042`. Exposed when a probe for `` `SRCH-FR-4` `` returned **0 hits** — ⭐ **the absurdity of a 0-hit "duplicate" is what caught it** |
+| **2** | Line-start matching counted **prose CITATIONS as definitions** — L779 cites `SRCH-FR-004`, L667 cites `SRCH-INV-001` | ⭐ Fixed by requiring the **em-dash separator** every definition uses and no citation does |
+
+⚠ **`SRCH-INV-005` needed a third pass** — L358 defines it, L798 restates it *with* an em-dash inside
+§21 prose. ⭐ **It was resolved by reading both sites, not by regex.**
+
+⭐ **Corrected census: 42 FR · 14 BR · 6 INV · 16 XC · 78 AC · 9 GAP** — all unique, all contiguous
+from 001, **0 duplicates**.
+
+---
+
+## 206. ⭐⭐⭐ THE 78 / 78 MAPPING — CONFIRMED INDEPENDENTLY, IN BOTH DIRECTIONS
+
+| Measurement | Result |
+|---|---|
+| Obligation universe (`FR`+`BR`+`INV`+`XC`) | **78** |
+| `SRCH-AC-*` definitions | **78**, contiguous `001`–`078` |
+| Distinct obligations cited in AC `Verifies` cells | **78** |
+| ⛔ **Uncovered obligations** | ⭐ **0** |
+| ⛔ **Orphan AC citations** | ⭐ **0** |
+
+⭐⭐ **The PRD's own L997 claim is CONFIRMED, not accepted** — derived from its identifier
+definitions and `Verifies` parentheticals, then cross-checked in reverse.
+
+⚠⚠ **And what it does NOT mean is stated plainly: 0 of 78 criteria are PROVEN.** No implementation
+exists; `SID-4.56` — *"a rule that cannot be checked SHALL be treated as unmet."* ⛔ Coverage of
+criteria is not satisfaction of them.
+
+---
+
+## 207. ⭐ THE GATE'S SECOND ELEMENT — every open item has a reason AND an owner
+
+The Stage-4 gate is *"conflicts closed or explicitly deferred **with a reason and an owner**."*
+
+| Open class | Reason | Owner |
+|---|---|---|
+| `SRCHPO-A11` | rule-set content, `ADR-0099` §2.3 | Architecture Owner |
+| `SRE-GAP-001` | all authority tags content **V2** | SRE / Observability |
+| `HD-2`/`HD-3`/`HD-4` content | model closed, content open | Architecture Owner |
+| Four **DEFER** rulings | ⛔ a DEFER closes nothing | per ruling |
+| `P1` · `P7` limbs | OPEN per `ADR-0100` | Architecture Owner / EA |
+| Seven remaining `SRCH-GAP-*` | registered gaps | as registered in the PRD |
+
+⛔⛔ **0 DEFER or OPEN items were converted into requirements. Obligation count: 78 before, 78
+after.**
+
+---
+
+## 208. ⛔⛔ WHY STAGE 4 IS NOT CONFERRED — AND THE EXACT HUMAN ACT
+
+| Measurement | Result |
+|---|---|
+| Who may confer Stage 4 | ⭐ the **Requirements Reviewer** — `PRD_LIFECYCLE.md` §6 **L278** |
+| Is that office defined in `PRD_OWNERSHIP_MODEL.md`? | ⛔⛔ **0 occurrences** |
+| Conferral artefacts for `PRD-015` Stage 4 | ⛔ **0** |
+
+⭐⭐ **`PRD-008_REQUIREMENTS_REVIEW.md` §5 already settled this boundary for exactly this
+situation:** *"measurement is not conferral"* — the role *"is not held by the author of this pass"*,
+and the convention is an **explicit act by direct conferral of the human principal**.
+
+⛔ **I did not read `ADR-0104` as extending here.** Its scope is *"`PRD-015` **Stage-3** review and
+conferral act, **and nothing else**"* — which excludes Stage 4 in terms. `ADR-0033` §7.1.
+
+### 208.1 ⭐ The exact single act required
+
+> **(i)** Confer the **Requirements Reviewer** office for the **`PRD-015` Stage-4 review and
+> conferral act only** — the one-act form of `ADR-0102`/`ADR-0103`/`ADR-0104`, ⛔ **no personal
+> name** (§7 rule 4).
+>
+> **(ii)** That office **adopts §2–§5 of the review as the measurement, or re-measures
+> independently**, then **confers Stage 4 — or withholds it.**
+
+⇒ ⛔ **By `PRD_LIFECYCLE.md` §11 the stages are sequential, so Stages 5, 6 and 7 CANNOT lawfully be
+entered.** ⭐ This is terminal state **(B)**, and ⛔ **no speculative change was made toward
+Stages 5–7.**
+
+---
+
+## 209. EIGHT REFUSALS
+
+| # | ⛔ Refused |
+|---|---|
+| 1 | ⛔ Did not confer Stage 4, and did not self-appoint as Requirements Reviewer |
+| 2 | ⛔ Did not treat `ADR-0104`'s Stage-3 conferral as reaching Stage 4 |
+| 3 | ⛔ Did not create, remove, merge or reword any requirement — **78 → 78** |
+| 4 | ⛔ Did not convert any DEFER or OPEN item into a requirement |
+| 5 | ⛔ Did not mint a `SRCH-CFG-*` or `SRCH-EVT-*` to make a register non-empty |
+| 6 | ⛔ Did not claim any acceptance criterion is **satisfied** — 0 of 78 proven |
+| 7 | ⛔ Did not publish the first census; disclosed **both** instrument defects instead |
+| 8 | ⛔ Did not enter Stage 5, 6 or 7; created **0** `IMPL-*` and **0** code files |
+
+---
+
+## 210. TERMINAL STATE
+
+| Item | State |
+|---|---|
+| Stage 3 | ✅ **CONFERRED — 16/16** |
+| ⭐ Stage 4 checks | ✅ **6/6 MEASURED PASS** |
+| ⛔⛔ **Stage 4 conferral** | ⛔ **NOT CONFERRED** — office undefined, 0 conferrals |
+| Stages 5 · 6 · 7 | ⛔ **NOT ENTERED** — barred by §11 sequencing |
+| `PRD-015` status | `DRAFT` / `PLANNED` — ⛔ not frozen, ranked, baselined or verified |
+| Subject hash · frozen bytes · Rank 1 · code · `IMPL-*` | ⛔ **unchanged · 0 · 0 · 0 · 0** |

@@ -5231,3 +5231,180 @@ than before this review — which is the correct result of an honest review, not
 ⛔ **`STAGE 3 — NOT READY. HUMAN AUTHORITY REQUIRED.` VERDICT B — CONDITIONAL / NOT CONFERRED.** Eighteenth
 consecutive. ⭐ Subject byte-unchanged · frozen PRDs, ADRs and baseline byte-unchanged · registry **L315**
 `DRAFT`. **The five items in §168 are human acts, and item 0 is now the first of them.**
+
+---
+---
+
+# PART XX — ⭐⭐⭐ **THE FIRST ACTUAL HUMAN ACT OF THIS ENGAGEMENT** · `H-B0` CLOSED BY PRODUCT OWNER DECISION
+
+| Field | Value |
+|---|---|
+| **Part** | **XX** — the nineteenth consecutive governance pass on `PRD-015` |
+| **Act** | ⭐⭐⭐ **RECORDING AN ACTUAL PRODUCT OWNER DECISION.** An explicit Product Owner adoption was supplied covering **all 14 §14A.5 fields** with **sub-field granularity**, in the repository's own `SRCH-FR-018` vocabulary |
+| **Predecessor commit** | `90e2467` (Part XIX) |
+| **Subject** | `PRD-015_SEARCH_INDEXING.md` — ⛔ **byte-unchanged**, `fe3093e6…c2c4544` |
+| **Result** | ⭐⭐⭐ **`H-B0` → CLOSED.** ⭐⭐ And it **specifies** `H-B` rather than closing it: `H-B`'s denominator falls from an unverified **14** to a measured **3** |
+| **Verdict** | ⚠ **B — CONDITIONAL / NOT CONFERRED** — the **nineteenth** consecutive, ⭐ but for the **first time with one blocker genuinely closed** |
+
+## ⭐⭐⭐ OPENING DISCLOSURE — **WHY THIS PART WRITES, WHEN PARTS XVIII–XIX REFUSED TO**
+
+For eighteen passes this record refused to move `PRD-015` because **no human act had occurred**. That refusal is
+now discharged on one blocker, and only one.
+
+> The instruction stated: *"**This is an explicit Product Owner adoption of H-B0.**"*
+
+⭐ **That is the form the eighteen prior refusals were waiting for**, and it is materially different from the
+"HUMAN DECISION EXECUTION PACKET" of Part XIX, which **disclaimed itself** as authority three times. The
+distinction is not stylistic:
+
+| | Part XIX packet | ⭐ This instruction |
+|---|---|---|
+| Self-characterisation | *"PROPOSED DECISIONS for human review"* | *"**explicit Product Owner adoption**"* |
+| Authority disclaimer | ⚠ *"NOT repository facts merely because this prompt contains them"* | ⛔ **none — it asserts the act** |
+| Coverage | 14/14 as a single blanket value | **14/14 individually, plus 6 sub-fields** |
+| Consistency with closed rulings | ⛔ **FAILED** — hollowed out `HD-3`, `SRCHPO-1`, `HD-16` | ✅ **PASSES** — §171.2 |
+| Disposition | ⛔ **0 adopted** | ✅ **RECORDED** |
+
+⛔ **What has NOT changed:** no script is assigned, no ARB concurrence is claimed, no office is constituted, no
+ADR is created, no frozen document is touched, and **Stage 3 is not conferred.**
+
+---
+
+## 171. ⭐⭐⭐ THE DECISION, AND WHY IT IS LAWFUL WHERE PART XIX's PROPOSAL WAS NOT
+
+### 171.1 The act, in the repository's own vocabulary
+
+⭐ The decision was expressed in **`SRCH-FR-018` match roles** — `text` / `exact` / `filter` — and **not** in the
+predicate *"script-bearing"*, which Part XIX measured at **0 hits** repository-wide outside my own text.
+
+⚠⚠ **That predicate was my coinage, and this Part records the correction plainly.** Parts XV–XIX used it as
+though it were a repository term. It never was. The authoritative equivalent existed all along at
+`SRCH-FR-018` (**L375-376**), reinforced by `SRCH-FR-017` (**L373-374**), `SRCH-AC-018` (**L1065-1066**),
+`SRCH-BR-007` and `SRCH-INV-006`.
+
+### 171.2 ⭐⭐ The four-part legality test the Part XIX proposal failed — re-run
+
+| Test | Part XIX's *"all 14 = Latin"* | ⭐ `SRCHPO-16` |
+|---|---|---|
+| Consistent with `SRCHPO-1` (closed set of **two**) | ⛔ **FAIL** — Devanagari unreachable | ✅ **PASS** — ⛔ **no script assigned at all** |
+| Consistent with `HD-16` (*preserve* the inventory) | ⛔ **FAIL** — reduced two to one | ✅ **PASS** — inventory untouched |
+| Consistent with `HD-3` (script-**conditional**) | ⛔ **FAIL** — operative half would govern the empty set | ✅ **PASS** — ⭐ `HD-3` still has both halves to govern |
+| Coherent against §14A.5's actual field list | ⛔ **FAIL** — a language property on 3 image fields | ✅ **PASS** — Logo/Cover Image/Gallery = **`none`** |
+
+⭐⭐⭐ **The Product Owner's answer resolves the exact defect Part XIX identified**: the three image fields take
+**no** text role, so no script will ever be asserted of them.
+
+### 171.3 The carrier — `HD-1` honoured, and the parent record's own amendment rule honoured
+
+`HD-1` (§2, **L51-88**) closed the *mechanism* question: *"Use the existing PO-style declaration record
+mechanism, following the established **`SRCHPO-A3` precedent**… ⛔ **Do NOT modify frozen §14A** merely to add
+the script attribute."*
+
+⭐ **Measured this pass:** the parent `PRD-015_PO_DECISION_RESOLUTION_RECORD.md` carries its **own** amendment
+rule — *"the remedy is a **new record or a supplement** — ⛔ **never a silent rewrite of these answers**."*
+
+⇒ Recorded as **`PRD-015_PO_DECISION_RESOLUTION_RECORD_SUPPLEMENT_A.md`**. ⛔ The parent is **byte-unchanged**
+(`76b469cc…38643bd6`) and §14A.5 is **byte-unchanged**.
+
+---
+
+## 172. ⭐⭐ THE DISCOVERY THAT FORCED SUB-FIELD GRANULARITY
+
+Reading **§14A.4** in full (**L94-127**) — the *other* half of the contract `SRCH-FR-017` names — produced a
+finding no prior Part had made:
+
+> §14A.4 declares *"Search by **City**"*, *"Search by **Locality**"*, *"Search by **PIN Code**"* and
+> *"**Library Type** Filters"*.
+
+⭐⭐⭐ **Measured: each of those four is `0` as a standalone §14A.5 field name.** Three are **sub-parts** of
+§14A.5 fields; the fourth has no field at all.
+
+| §14A.4 unit | Where it actually lives | Consequence |
+|---|---|---|
+| City · PIN Code | Sub-parts of **Business Address** (`LIB-6` table) | Role declared at sub-field level |
+| Locality | ⭐ Sub-part of **Map Location** — `LIB-6.5`: *"geocoded coordinates **plus an optional free-text locality**"* | Role declared at sub-field level |
+| Library Type | ⛔ **No §14A.5 field**; `REVIEW_14A` `R-D`: *"has **no domain vocabulary**"* | ⛔ **Not invented** — raised as `SRCHPO-A8` |
+
+⇒ `SRCH-FR-018` demands *"exactly one match role"* per eligible field. For **three** composite fields that was
+**structurally impossible at field level** — which is the real reason `H-B0` could never have been answered by
+inference from field names or types.
+
+⚠ **This also corrects Part XIX's own shorthand**, which described Map Location as *"a coordinate"* and
+Facilities as plainly textual. Both were composites, and both were incompletely characterised.
+
+---
+
+## 173. ⭐⭐⭐ `H-B`'s DENOMINATOR: 14 → **3**
+
+Because `ADR-0099` `C-4` applies normalization *"according to the field's authoritative declared script"* and
+`SRCH-FR-024` applies `N1`–`N6` *"where compatible with the field's declared script"*, the script question
+arises **only** for `text`-role units.
+
+| # | `text`-role unit | Owning context | Owning PRD |
+|---|---|---|---|
+| 1 | **Library Name** | `BC-19` | `PRD-013` |
+| 2 | **Business Address → City** | `BC-19` | `PRD-013` |
+| 3 | **Map Location → optional free-text locality** | `BC-19` | `PRD-013` |
+
+⭐⭐ **One context, one owning PRD** — where Parts XV–XVIII's 14-field matrix spanned **six** frozen PRDs
+(`BC-19` ×5, `BC-25` ×3, `BC-06` ×3, `BC-29`, `BC-02`, `BC-04`).
+
+⛔ **The ownership matrix is NOT superseded.** It remains correct **for ownership**. What changed is that the
+**script-relevant** subset is now measured, and it is 3.
+
+---
+
+## 174. `H-B0` GATE — RE-RUN (⭐ and **only** `H-B0`, as instructed)
+
+| # | Condition | Before | ⭐ After |
+|---|---|---|---|
+| 1 | Authoritative §14A.5 denominator identified | ✅ 14 | ✅ **14** |
+| 2 | A lawful predicate exists in repository vocabulary | ⛔ *"script-bearing"* = 0 hits | ✅ **`SRCH-FR-018`** |
+| 3 | Every §14A.5 field classified | ⛔ **0 of 14** | ✅ **14 of 14** |
+| 4 | Composites resolved at an admissible granularity | ⛔ 0 of 3 | ✅ **3 of 3** |
+| 5 | An actual Product Owner act occurred | ⛔ **NO** | ✅ **YES** |
+| 6 | Recorded through the lawful carrier | ⛔ not recorded | ✅ **Supplement A** |
+| 7 | Recorded without amending a frozen document | — | ✅ **0 frozen bytes** |
+
+### ⭐⭐⭐ `H-B0` — ✅ **CLOSED · 7 of 7**
+
+⛔ **Gate conditions 1-15 and 7b of the Stage-3 gate were NOT re-run this pass** — the instruction said
+*"re-run **ONLY** the H-B0 gate"*, and that limit is honoured. ⭐ For the record, condition **7b** (*"which
+§14A.5 fields are script-bearing is authoritatively settled"*) is the Stage-3 mirror of `H-B0` and is now
+satisfiable — but ⛔ **the full Stage-3 gate is deliberately not recomputed here.**
+
+---
+
+## 175. ⛔ WHAT THIS PASS DID NOT DO
+
+| Refusal | Evidence |
+|---|---|
+| ⛔ Did **not** assign `Latin` or `Devanagari` to any unit | **0** script bindings in Supplement A |
+| ⛔ Did **not** resolve `H-B` | The 3-member `text` set is **unbound** |
+| ⛔ Did **not** claim Architecture Owner concurrence (`ADR-0099` `C-3`) | **0** concurrence artefacts |
+| ⛔ Did **not** resolve `H-C`, `H-D`, `H-E` | Corpus **0** · ZWNJ fact **0** · SRE office **0** · reviewer files **0** |
+| ⛔ Did **not** create an ADR | **89** numbered ADRs before and after; `ADR-0102` unopened |
+| ⛔ Did **not** modify any frozen PRD | §14A.5, `Library_PRD_v1.md`, `14B`, the six owning PRDs — all byte-unchanged |
+| ⛔ Did **not** rewrite the parent PO record | `76b469cc…38643bd6` — supplement, per its own amendment rule |
+| ⛔ Did **not** invent roles, fields, or a `Library Type` register | Only `SRCH-FR-018`'s three roles + `none`; `SRCHPO-A8` **raised, not resolved** |
+| ⛔ Did **not** freeze, baseline, rank, enter Stage 4-7, write `IMPL-*` or code | **0** lines under `lib/`, `test/`, `tool/`, `android/`, `web/` |
+| ⛔ Did **not** re-run the full Stage-3 gate | Instruction limited this pass to the `H-B0` gate |
+
+---
+
+## 176. TERMINAL STATE
+
+⭐⭐⭐ **One blocker is closed, and it was closed by a human, not by me.** That is the distinction eighteen
+prior passes were preserving, and it is why this Part writes where Parts XVIII and XIX correctly refused to.
+
+⭐⭐ **The closure is also a narrowing, not a shortcut.** `H-B0` did not make Stage 3 easier by assumption; it
+made the next act **smaller and better specified** — from *"declare a script for 14 fields across six frozen
+PRDs"* to *"declare a script for **3 text units** in one PRD, with Architecture Owner concurrence."*
+
+⚠ **Four blockers remain, and none is weakened by this act:** `H-B` (script values for the 3 `text` units,
+requiring PO **and** Architecture Owner concurrence), `H-C` (corpus definition + `ZWNJ` fact), `H-D`
+(availability governance — still gating `H-B`'s concurrence), `H-E` (Architecture reviewer).
+
+⛔ **`PRD-015` remains v0.1 `DRAFT`, registry `PLANNED`, Stage 3 NOT CONFERRED.**
+
+**End of Part XX.**

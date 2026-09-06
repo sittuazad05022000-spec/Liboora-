@@ -825,3 +825,148 @@ Check 3: **1 of 7 satisfied** · **1 unit+floor authoritative with a labelled re
 | Version | Date | Change |
 |---|---|---|
 | **v1.5** | 2026-09-05 | ⭐⭐⭐ **Comparative 1 · 2 · 3 · 4 · 5 analysis performed against the MEASURED runtime rather than against documents, and one fact decides it: THE V1 RETRY LOOP HAS NO DELAY BETWEEN ATTEMPTS** — 0 hits for `Future.delayed`/`sleep`/`Timer` in `services.dart` **L196-221** and 0 delay primitives in `job_runtime.dart`; the single `await Future.wait` (**L124**) is inside **`drain()`**, not the loop. ⇒ ⭐⭐⭐ **the budget is consumed in an immediate burst, which INVERTS the "more attempts = more resilient" intuition**: without spacing, a larger budget buys **N near-simultaneous calls to the same failing provider**. ⭐ **On that measurement: `1` rejected** (renders `NTF-FR-047`'s retry obligation inoperative, and `FIL-CFG-014` itself calls 1 *"no retry, permitted for diagnostics"*); **`2` defensible and the strongest rival** but addresses only the shortest fault with nothing favouring it over 3; **`4` rejected** (no evidence distinguishes it from 3; the 4th immediate attempt adds load, not a wider window); ⛔⛔ **`5` rejected twice over** — as 4 amplified, **and** because ⭐ the repository's only `5` is **ADVERSARIAL** (`AUTH-3.9`, bounding an **attacker's guesses**, listed at `CONFIGURATION_GUIDE` **L41** among values *"not configurable"*), so borrowing it would import a security-throttle rationale into a fault-tolerance slot. ⇒ ⭐⭐ **`[RECOMMENDED — NOT AUTHORITATIVE]` 3 total attempts, range 1–5**, with `5` acceptable as a range **ceiling** though rejected as a **default**. ⛔⛔ **STILL NOT FIXABLE, for a SUBSTANTIVE reason:** with no delay the budget consumes ≈ 3 × (provider timeout) and **neither factor exists** — `NTF-CFG-007` is OWED (`NTF-GAP-026`) and the provider timeout is `NTF-GAP-017` (absent FCM documentation, `ADR-0045` condition) ⇒ ⭐⭐ **a value fixed now could be PARTLY UNREACHABLE once a deadline is chosen** (2nd/3rd attempt never tried), **exactly the defect class `INV-18`/`INV-20` prevent**. ⇒ ⭐⭐⭐ **ORDERING IS SUBSTANTIVE: `NTF-CFG-007` before or with `NTF-CFG-004`** — one decision, two limbs, proven by `ADR-0057` setting `FIL-CFG-015` (120 s) and `FIL-CFG-014` (3) **in the same act**. ⚠⚠ **TWO SELF-LIMITING DISCLOSURES rather than leaving them for a reader:** (1) `job_runtime_port_test.dart` **L43**'s `const int _retryBound = 3` is, by its own comment, *"the recorded **`FIL-CFG-014`** default"* ⇒ ⛔ a **`PRD-017` fixture, NOT `PRD-010` authority** — citing an executing test as ratification for another context manufactures authority from a fixture; (2) BC Map **L453** rebuildability is binding, but `every_projection_rebuildable_test.dart` covers **Analytics only** (0 hits for `BC-22`/`inbox`/`FeedItem`) and `lib/platform/` has **no `communication` module** ⇒ the In-App fallback underpinning the `3` recommendation is **specified but NOT YET EXECUTABLY PROVEN** for `BC-22`. ✅ **`NTF-FR-047` CONFIRMED unchanged**; ✅ **`NTF-INV-011`/`CM-3`/`EBR-1030` CONFIRMED unchanged** (`module_dependencies.yaml` **L409-410**); ⛔ **backoff stays OWED**; ⚠ **`NTF-GAP-025` recorded NON-BLOCKING** for the budget (it governs post-exhaustion behaviour, not attempt count). ⛔⛔ **Verdict: exact retry budget remains OWED — but its status improves from "no defensible value" to "one recommended value with a stated derivation, awaiting joint ratification with the deadline".** Check 3 = 1 of 7 satisfied + 1 unit/floor authoritative with a labelled recommendation + 5 owed; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **26 gaps OPEN**. ⛔ **0 values made authoritative, 0 gaps closed, 0 identifiers minted or renumbered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** §1-36 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.6 — adversarial loop: STOP CONDITION B reached, and the blocker is categorical
+
+> ⛔ **Append-only.** §1-43 above are preserved byte-identical.
+
+---
+
+## 44. The loop, and what it disproved
+
+| Iteration | Proposal | Outcome |
+|---|---|---|
+| **1** | `3` total attempts, range `1–5`, pending a single `NTF-CFG-007` deadline (my v0.6 position) | ⛔ **DISPROVED as to completeness** — three coupled structural defects, below |
+| **2** | Revised: the clock is **two** bounds, the terminals need a **declared mapping**, and quiet hours are **unslotted** | ✅ **Survives** — but yields **STOP CONDITION B**, not a value |
+
+⭐ **The number survived; the framing did not.** `3`, range `1–5`, unit *total attempts including the
+first*, floor `≥ 1`, and the retry-storm finding are all **unchanged**.
+
+---
+
+## 45. ⛔⛔ DISPROOF 1 — a single deadline cannot express a deferrable notification
+
+| Fact | Source |
+|---|---|
+| *"Quiet hours **MUST defer, never drop**, a deferrable notification."* | `NTF-FR-039` — subject **L423** |
+| *"`deadline` bounds the **whole job**; on expiry the runtime moves it to `JobState.failed`"* | `job_runtime.dart` **L107-110** |
+| Deadline re-checked **before every attempt**; on expiry → terminal `failed`, `reasonCode: deadline_exceeded` | `services.dart` **L190-201** |
+
+⇒ ⭐⭐⭐ **A notification deferred overnight by quiet hours would exceed any delivery-sized deadline and
+terminate `failed` — converting a "defer, never drop" obligation into a DROP.**
+
+⇒ ⛔ **The transport clock and the notification's validity clock CANNOT be the same value.**
+`NTF-CFG-007`, as I framed it at v0.5 (*"the whole-job bound"*), is **not one parameter**:
+
+1. **Attempt/transport budget** — how long one delivery pipeline may run. *This* is what bounds
+   `NTF-CFG-004`.
+2. **Notification validity horizon** — how long a deferred-but-still-wanted notification remains worth
+   sending. *This* is what `NTF-FR-039` and the `expired` state require.
+
+⛔ **Neither is invented here.** The finding is that **the slot was under-specified by its own author**,
+and a value chosen against the old framing would have silently broken a stated requirement.
+
+---
+
+## 46. ⛔ DISPROOF 2 — four lifecycle terminals, two runtime terminals
+
+§18 declares `delivered | failed | expired | cancelled`. `JobState` has **two** terminal members, and
+`failed` **conflates two causes**: *"Attempts exhausted, **or the deadline expired**"*
+(`job_runtime.dart` **L62-63**).
+
+⇒ ⛔ `expired` and `cancelled` have **no runtime representation**, yet **`NTF-FR-042`** (monotonicity)
+and **`NTF-FR-064`** (observability of retry counts and failures) both require the distinction — the
+same distinction `CONFIGURATION_GUIDE` **L892** insists on for `PRD-017`: *"objects moved to `FAILED`
+**by timeout**, distinct from failure by error … a timeout failure is invisible to the student as a
+**cause**."*
+
+⭐ `JobOutcome.reasonCode` is the available carrier (`deadline_exceeded` vs `retries_exhausted`,
+`services.dart` **L197** / **L226**) — but **the 2 → 4 mapping is an unmade architecture decision**,
+not a value.
+
+---
+
+## 47. ⚠ DISPROOF 3 — quiet hours have no slot, and a Rank-1 / Rank-6 disagreement
+
+| Measurement | Result |
+|---|---|
+| Quiet-hours parameters in §20.1 | ⛔ **ZERO** (0 occurrences of *"quiet"*) |
+| Rank 1 | **`MP-GBR-35`**: quiet hours *"are owned by `BC-22` and apply to **every channel**"* |
+| Rank 4 | BC Map **L131**: `BC-22` *"Owns … quiet hours"* |
+| Rank 6 | EA **L1447**: *"Quiet Hours & DND **(V2)**"* |
+
+⇒ ⭐ **`MP-CON-08`** governs: the EA is *"descriptive, not prescriptive"* and a disagreement is
+*"**a defect to be raised, not a choice to be made**."* ⇒ **RAISED, not resolved.** ⛔ **No quiet
+window invented; no slot minted** — minting one would presuppose the V1/V2 answer that `MP-CON-08`
+reserves.
+
+---
+
+## 48. ⭐⭐⭐ Why this is STOP CONDITION B and not procedural caution
+
+v1.5 said the number was blocked on two **unknown quantities** (deadline, provider timeout). That was
+true but **incomplete**. The loop shows the real blocker is **categorical**:
+
+> ⛔ **No arithmetic over any repository value can decide whether the delivery clock is ONE bound or
+> TWO, or how four lifecycle terminals map onto two runtime terminals.** These are **classification**
+> decisions, not measurements. A number supplied now would be attached to a parameter whose **meaning
+> is not yet fixed**.
+
+⭐ **This is a stronger and more useful result than "the value is owed"**: it identifies *why* no
+further investigation can close it, and it names the **minimum** decision that unblocks everything.
+
+---
+
+## 49. The exact missing decisions — minimum set, in dependency order
+
+| # | Decision | Owner | Unblocks |
+|---|---|---|---|
+| **1** | ⭐⭐ **Is the delivery clock ONE bound or TWO?** If two, split `NTF-CFG-007` into a transport budget and a validity horizon | **Architecture Owner** | `NTF-CFG-004`, `NTF-CFG-007`, `NTF-FR-039` |
+| **2** | ⭐ **Map `JobState`'s 2 terminals onto §18's 4** (`reasonCode` is the available carrier) | **Architecture Owner** | `NTF-FR-042`, `NTF-FR-064`, `expired`/`cancelled` |
+| **3** | **Transport budget value**, then `NTF-CFG-004` = **3** (range `1–5`) — ratified **in the same act**, on the `ADR-0057` precedent | **Architecture Owner** | Stage-4 check 3 |
+| **4** | Quiet hours **V1 or V2** — the `MP-GBR-35` / EA **L1447** disagreement | **Architecture Owner** + **Product Owner** | `NTF-FR-039`, any quiet slot |
+| **5** | Manifest: add `platform/services:job_runtime` to `platform/communication` — **`A-3` shape, no `L2` waiver** (rank 3 → rank 5 is downward) | **Architecture Owner** | Consumability |
+
+⚠ **Decisions 1 and 2 are prerequisites for 3.** Supplying a number before them would fix a value
+against an undefined parameter.
+
+---
+
+## 50. Unchanged confirmations
+
+| Item | Status |
+|---|---|
+| **Retry unit** | ✅ **Total attempts including the first** — `job_runtime.dart` **L104-106** (rank 0) |
+| **Floor** | ✅ **`≥ 1`**, executable — `services.dart` **L152-159**, citing `INV-21` |
+| **`NTF-FR-047`** | ✅ **CONFIRMED** — transient retry; permanent terminates `failed` |
+| **`NTF-INV-011` / `CM-3` / `EBR-1030`** | ✅ **CONFIRMED** — `module_dependencies.yaml` **L409-410**; isolation preserved |
+| **Idempotency** | ✅ Duplicate `JobKey` runs work **exactly once** — `services.dart` **L163-165**; pinned by executing test |
+| **Backoff** | ⛔ **OWED** — 0 schedules at Rank 1–5; adapter implements none; EA **L1808** places it at **V2** |
+| **`NTF-GAP-025` (DLQ)** | ⚠ **OPEN, NON-BLOCKING** — post-exhaustion handling only, does not change attempt count |
+| **Recommendation** | ⭐ **`3`, range `1–5`** — survives, `[RECOMMENDED — NOT AUTHORITATIVE]` |
+
+---
+
+## 51. Verdict
+
+⛔⛔ **STOP CONDITION B — PROVEN INSUFFICIENCY.** The exact deadline **cannot** be derived, and the
+retry budget **cannot** be finalised, because `NTF-CFG-007`'s **meaning** is undecided — not because
+its number is unknown.
+
+Check 3: **1 of 7 satisfied** · **1 unit+floor authoritative with a surviving recommendation** ·
+**5 owed**. Stage 3 **PASS 6/6**. **27 gaps OPEN.** Stage 4 **NOT READY, NOT CONFERRED**.
+
+⛔ **0 values invented · 0 slots minted · 0 gaps closed · 0 renumbered · 0 ADRs (94) · 0 manifest ·
+0 BC Map · 0 `MASTER_PRD` · 0 EA · 0 frozen PRDs · 0 `CONFIGURATION_GUIDE` · 0 baseline · 0 registry ·
+0 application code · 0 test code.**
+
+---
+
+## 52. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.6** | 2026-09-05 | ⛔⛔ **ADVERSARIAL LOOP RUN AGAINST MY OWN v1.5 POSITION — THE NUMBER SURVIVES, THE FRAMING IS DISPROVED, AND THE RESULT IS STOP CONDITION B.** Confirmed unchanged: unit (**total attempts incl. first**), floor (**`≥ 1`**, executable), the **`3` / range `1–5`** recommendation, and the retry-storm finding. ⛔ **Three coupled structural defects found that v1.5 never contemplated.** ⭐⭐⭐ **DISPROOF 1 — a single `JobRuntime` deadline CANNOT express a deferrable notification:** `NTF-FR-039` demands quiet hours *"**defer, never drop**"* and quiet hours are **hours**, while the runtime deadline *"bounds the **whole job**; on expiry … `JobState.failed`"* (`job_runtime.dart` **L107-110**, re-checked per attempt at `services.dart` **L190-201**) ⇒ a notification deferred overnight would terminate `failed`, **converting a defer obligation into a DROP** ⇒ ⛔ **the transport clock and the validity clock cannot be one value**, so **`NTF-CFG-007` was UNDER-SPECIFIED BY ITS OWN AUTHOR at v0.5** and must be split into an **attempt/transport budget** and a **notification validity horizon**; ⛔ neither invented. ⭐⭐ **DISPROOF 2 — four lifecycle terminals, two runtime terminals:** §18 declares `delivered`/`failed`/`expired`/`cancelled` but `JobState` has **two**, and `failed` **conflates** *"attempts exhausted, **or the deadline expired**"* (**L62-63**) ⇒ `expired` and `cancelled` have **no runtime representation** although `NTF-FR-042` and `NTF-FR-064` require the distinction — the same one `CONFIGURATION_GUIDE` **L892** insists on for `PRD-017` (*"by timeout, distinct from failure by error"*); ⭐ `JobOutcome.reasonCode` is the available carrier but **the 2→4 mapping is an unmade architecture decision**. ⚠ **DISPROOF 3 — quiet hours have ZERO slots** (measured 0 occurrences of *"quiet"* in §20.1) although **Rank-1 `MP-GBR-35`** and **BC Map L131** assign them to `BC-22`, while **EA L1447** places them at **V2**; **`MP-CON-08`** makes that *"a defect to be **raised**, not a choice to be made"* ⇒ **raised, not resolved**, ⛔ **no window invented, no slot minted** (minting would presuppose the V1/V2 answer). ⇒ ⭐⭐⭐ **STOP CONDITION B, and stronger than v1.5's result:** v1.5 blamed two **unknown quantities**; the loop shows the blocker is **CATEGORICAL** — *no arithmetic over any repository value can decide whether the clock is one bound or two, or how four terminals map onto two*. A number supplied now would attach to a parameter **whose meaning is not yet fixed**. ⭐ **`NTF-GAP-027` minted** carrying all three defects; **five minimum Architecture Owner decisions** published in dependency order, with **1 and 2 as prerequisites for 3**. ✅ Confirmed unchanged: `NTF-FR-047`, `NTF-INV-011`/`CM-3`/`EBR-1030` (isolation preserved), idempotent `JobKey` (`services.dart` **L163-165**, test-pinned); ⛔ **backoff stays OWED**; ⚠ **`NTF-GAP-025` NON-BLOCKING**; ⭐ manifest amendment is **one line, `A-3` shape, NO `L2` waiver** (rank 3 → rank 5 downward). ⛔⛔ **0 values invented, 0 slots minted (CFG stays 7), 0 gaps closed (27 OPEN), 0 identifiers renumbered, 0 requirements reworded, 0 ACs changed, 0 lifecycle states altered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**. §1-43 preserved byte-identical (`cmp` PASS). |

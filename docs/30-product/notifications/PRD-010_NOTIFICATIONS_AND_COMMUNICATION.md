@@ -298,7 +298,7 @@ permission to communicate with them"* — and `MP-GBR-22` is its Rank-1 anchor.
 | **`NTF-FR-014`** | A dispatch **MUST** be cancellable while any recipient remains in `queued`. |
 | **`NTF-FR-015`** | Partial failure **MUST NOT** fail the operation; per-recipient state is authoritative and the operation reports `partially_failed`. |
 | **`NTF-FR-016`** | Re-submitting the same `OperationId` **MUST** be idempotent and **MUST NOT** re-deliver. |
-| **`NTF-FR-017`** | ⚠ Recipient-count ceiling and rate limit are **`NTF-GAP-007`** — ⛔ **no number is proposed** |
+| **`NTF-FR-017`** | A bulk dispatch **MUST** be refused when its resolved recipient count exceeds the configured ceiling (**`NTF-CFG-001`**: default **200**, range **1–500**). ⛔ `BC-22` **MUST NOT** define a dispatch rate or throughput limit — that is `NTF-XC-008`. ⭐ **Updated at v0.14: `NTF-GAP-007` is CLOSED** (ceiling ratified, `ADR-0108` §7.1; rate limb withdrawn, `ADR-0110` §2), so the prior *"no number is proposed"* text was stale. |
 
 ---
 
@@ -421,7 +421,7 @@ elsewhere. On the evidence, it plausibly does.
 |---|---|
 | **`NTF-FR-038`** | Each catalogue entry **MUST** be classified **mandatory** or **optional**. Optional entries honour opt-out; mandatory entries **MUST NOT** be opt-outable. |
 | **`NTF-FR-039`** | Quiet hours **MUST** defer, never drop, a deferrable notification. |
-| **`NTF-FR-040`** | ⚠ Which entries are mandatory is **`NTF-GAP-015`** — a Product Owner call. ⛔ **No classification asserted.** |
+| **`NTF-FR-040`** | Every catalogue entry **MUST** carry a class from the closed set **{`mandatory`, `optional`}**, and an entry with no class **MUST NOT** be dispatchable. ⭐ **Updated at v0.14: the per-entry register is COMPLETE at §20.6** (all 13 entries; `ADR-0109` §5), so the prior *"no classification asserted"* text was stale. ⚠ Reminder **timing** remains `NTF-GAP-003` **`[OWED — PO]`** — a distinct question from class. |
 | **`NTF-FR-041`** | Preference storage **MUST** use the `BC-25` settings hierarchy rather than a private store. `[EVIDENCE]` BC Map L134; ⚠ contested ownership — `NTF-GAP-016` |
 
 ---
@@ -449,7 +449,7 @@ per-recipient state.
 | **`NTF-FR-046`** | Concurrent workers **MUST NOT** both deliver; the idempotency record **MUST** be claimed atomically before dispatch. |
 | **`NTF-FR-047`** | Only **transient** failures retry; permanent failures terminate as `failed`. |
 | **`NTF-FR-048`** | Restart **MUST NOT** re-deliver work already in `sent`. |
-| **`NTF-FR-049`** | ⚠ **NARROWED at v0.11.** Retry **count** is RATIFIED (`NTF-CFG-004` = 3, range 1–5; `ADR-0108` §3). **Backoff** is **NOT configurable in V1** and deferred to V2 (`ADR-0108` §4.1). The **dedup window** is no longer a configurable — see `NTF-FR-066`. ⛔ Remaining owed limb: the **transport deadline** `NTF-CFG-007` (`NTF-GAP-026`). ⛔ **No numbers invented.** |
+| **`NTF-FR-049`** | Retry **MUST** be bounded by `NTF-CFG-004` (**3** total attempts, range **1–5**, including the first) and **MUST NOT** be scheduled by `BC-22` — the runtime owns the loop (`job_runtime.dart` **L17-19**). `BC-22` **MUST NOT** implement or configure a backoff schedule in V1 (`ADR-0108` §4.1). ⭐ **Restated at v0.14 as an obligation** rather than a pointer. ⚠ The transport deadline is `NTF-FR-067`; its provider limb is `NTF-GAP-017` **`[OWED — EXTERNAL EVIDENCE]`**. |
 | ⭐⭐ **`NTF-FR-066`** | **Deduplication-record retention is FIXED and NOT configurable.** A deduplication record for key `(eventId, recipientId, channel, templateId)` **MUST** exist for as long as the `FeedItem` it protects exists, and **MUST NOT** exist thereafter. **No operator or administrator setting exposes this retention**, and **no `NTF-CFG-*` identifier carries it.** `[EVIDENCE]` `ADR-0108` §4.2; `BCM-22-INV-1` (BC Map **§18.4**); precedents `SEAT-FR-202` (*"fixed, not configurable"*) and `ITG-FR-017` (*"not configurable"*). ⚠ **The numerical `FeedItem` lifetime bounds are NOT stated here and are NOT invented** — they are the unresolved bounded decision **`NTF-OBD-001`** (`NTF-GAP-028`, Architecture Owner). |
 | ⭐⭐ **`NTF-FR-067`** | **Every `JobRuntime` submission MUST carry a deadline, and that deadline MUST exceed the retry budget's worst-case run.** `BC-22` **MUST** pass `deadline` on every submission (`job_runtime.dart` **L113-114**, `required Duration deadline`) and it **MUST** satisfy `deadline > NTF-CFG-004 x (BC-31 per-attempt bound)`. **Runtime contract, NOT an operator setting** — the provider-facing bound is `BC-31`'s (BC Map **L140**; `NTF-XC-006`). ⚠ The `BC-31` per-attempt number is **`[OWED — EXTERNAL EVIDENCE]`** (`NTF-GAP-017`), so the inequality is **stated and testable but not yet satisfiable**. ⛔ Asserts **no** latency guarantee (`NTF-RTD-001`). |
 | ⭐⭐ **`NTF-INV-011`** | **The emitting-operation failure boundary.** Where a notification cannot be delivered because its notification address cannot be resolved, that failure **MUST** fail **only that notification delivery**, and **MUST NOT** fail, roll back, abort, retry or otherwise render unsuccessful the originating business operation that emitted the business fact. `[EVIDENCE]` `tool/module_dependencies.yaml` **`CM-3`** — *"an unresolvable address fails the delivery only; it never fails the emitting operation"* — and **`EBR-1030`** |
@@ -486,7 +486,7 @@ through `BC-25`, which is real.
 | **`NTF-FR-051`** | ⭐⭐ **Configuration MUST NOT be able to invent a business fact.** No configuration path may cause `BC-22` to emit or synthesize a domain event. Configuration selects **behaviour for facts that already occurred**. `[EVIDENCE]` `MP-GBR-33`, `E-23` |
 | **`NTF-FR-052`** | Configuration **MUST NOT** widen an audience beyond `MP-GBR-21`'s three scopes. |
 | **`NTF-FR-053`** | Configuration changes **MUST** be audited via `BC-24`. |
-| **`NTF-FR-054`** | ⚠ Which configuration keys are platform-level vs tenant-level is **`NTF-GAP-019`** — `BC-25` ownership is recorded **contested** (`PRD_REGISTRY.md` L148). |
+| **`NTF-FR-054`** | `BC-22` **MUST** resolve every configuration value through the `BC-25` settings hierarchy, and **MUST NOT** define, override or publish a value's **resolution order** or platform-vs-tenant level. ⭐ **Restated at v0.14 as a testable prohibition** — `[DERIVED]` from FROZEN **`FIL-XC-009`** (`PRD-017` **L302**: a module *"**MUST NOT** define a configuration value's default, range or **resolution order**"*) and `ADR-0017` §2.5, which assigns the resolution property to `PRD-023`. ⚠ **Which keys are platform- vs tenant-level remains `NTF-GAP-019`** (`BC-25` ownership recorded contested) — **`[OWED — BC-25 / PRD-023]`** — but that is `BC-25`'s determination, and this row's obligation on `BC-22` is complete and falsifiable without it. |
 
 ⭐ **`NTF-FR-051` is exactly the boundary the brief demanded** — *"Platform Admin must NOT redefine
 business facts"* — expressed against a mechanism that actually exists.
@@ -1055,7 +1055,7 @@ with a PRD, fix this register"* — ⛔ **which is a Governance Owner act and is
 
 | ID | Requirement |
 |---|---|
-| **`NTF-XC-004`** | `BC-22` consumes over **`E-23`** (`PL`, Event) only. ⛔ No new edge is created by this PRD. `[EVIDENCE]` BC Map L332, L292 |
+| **`NTF-XC-004`** | `BC-22` **MUST NOT** consume a domain fact over any edge other than **`E-23`** (`PL`, Event), and **MUST NOT** create, require or assume a new integration edge. ⭐ **Restated at v0.14 to state an impossibility** rather than a scope description, per Stage-4 check 2 (*"an exclusion is not a deferral"*). `[EVIDENCE]` BC Map **L332**, **L292**; §7's rule that an edge absent from the table *"does not exist"* |
 | **`NTF-XC-005`** | `BC-22` **MUST NOT** call a domain context synchronously to enrich a notification. |
 | **`NTF-XC-006`** | Push egress **MUST** traverse `BC-31`; ⛔ no direct vendor call. |
 | ⭐ **`NTF-XC-007`** | `BC-22` **MUST NOT** emit an audit event, a `DeliveryMessage`, a `FeedItem` or any stored record for use of the external WhatsApp redirect. It is a **UI action over already-visible contact data** (`NTF-FR-023`) and is **not** a `BC-22` auditable action (`NTF-FR-028`). `[EVIDENCE]` FROZEN `AUD-FR-003` / `AUD-XC-011`; `ADR-0109` §2 |

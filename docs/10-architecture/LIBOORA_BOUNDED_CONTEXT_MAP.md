@@ -990,3 +990,80 @@ leave the new fact resting on an *absence* rather than a *declaration*.
 - ⛔ Does **not** re-issue the baseline — this file is **Rank 4** (`DOCUMENTATION_BASELINE.md` §7 rule 4).
 - ⛔ Does **not** confer any lifecycle stage on `PRD-021C` or any of its parts — all remain **DRAFT at
   Stage 2**, **NOT FROZEN**, **NOT APPROVED**, **NOT BASELINED**; Stage 3 is **not** entered.
+
+---
+
+## 18. ⭐ `ADR-0107` Extension — `BC-22` Notification Delivery aggregates registered (V1)
+
+Admitted by [`ADR-0107`](../00-governance/adr/ADR-0107-bc-22-two-root-aggregate-declaration.md)
+§3 on Architecture Owner decisions **AO-1**…**AO-5**. ⭐ **Appended rather than inserted
+into §8** — §8's table carries the §15.5 warning that a mid-table insert invalidates
+hundreds of line-citations. **§8's table is byte-unchanged.**
+
+⚠ **Why this section exists at all.** `BC-22` held an ownership row (**L131**) and a
+ubiquitous-language row (**L205**) but **no §8 row** — measured at **0**, against **17**
+contexts that had one. Without a declared aggregate and entity set there was no artefact to
+which a durability or retention obligation could attach.
+
+### 18.1 Aggregates
+
+| Context | Aggregate root(s) | Key entities / VOs | Invariants enforced synchronously inside the boundary |
+|---|---|---|---|
+| **BC-22 Notification Delivery** | `FeedItem` · `DeliveryMessage` | `NotificationCategory`, `TemplateRef`, `ChannelSet`, `DeliveryState`, `ReadState` | **One `FeedItem` per recipient-notification; one `DeliveryMessage` per recipient-channel delivery** (`ADR-0107` §3.2) · `read` is a `FeedItem` property and applies to **In-App only** · `DeliveryState` transitions are **monotonic** — a delivered `DeliveryMessage` never returns to queued · a recipient set is bounded by **exactly one** `TenantId` |
+
+⛔ **`FeedItem` and `DeliveryMessage` are two separate transaction boundaries.** §8's rule
+— *"one aggregate, one database transaction, no exceptions"* — applies to **each** root.
+
+⭐ **A two-root context is an existing pattern, not a new one:** §8 already declares
+`BC-04` (`SeatAllocation` · `SeatLayout`), `BC-11` (`Friendship` · `BlockList`), `BC-18`
+(`Account` · `AccessPolicy`) and `BC-20` (`Subscription` · `SubscriptionInvoice`), and
+§15.5 adds `BC-15` (`Community` · `Group`).
+
+### 18.2 Cross-root rule
+
+| Rule | Statement |
+|---|---|
+| **`BCM-22-R1`** | ⛔ **No requirement may oblige a single database transaction to span a `FeedItem` and a `DeliveryMessage`.** Each is its own boundary. A design requiring both to be mutated atomically must be re-modelled, not granted an exception. |
+
+### 18.3 Deduplication record — deliberately not an aggregate
+
+The idempotency/deduplication record keyed `(eventId, recipientId, channel, templateId)`
+is **infrastructure**, not an aggregate of either root. §9.1 (**L447**) requires *"a
+processed-events table **or equivalent**"*, and the obligation to claim it *"atomically
+before dispatch"* is an **atomicity and ordering** requirement, **not** a same-aggregate
+requirement — the same shape as `BC-04`'s gate **G3**, evaluated *"before any mutation"*.
+
+### 18.4 Durability and system-of-record status
+
+| Invariant | Statement |
+|---|---|
+| **`BCM-22-INV-1`** | A `FeedItem` **MUST** be durably persisted at creation and **MUST** survive process restart; it **MUST** be reconstructible from the authoritative event log such that a rebuild yields an identical set of `FeedItem`s for a given tenant and recipient; and it **MUST NOT** be treated as a system of record — no consumer may read a `FeedItem` as the authoritative statement of the business fact it reports, which remains the emitting context's. |
+| **`BCM-22-INV-2`** | `BC-22`'s `read` state applies **only** to a `FeedItem` — a notification item in the in-app inbox. It is **NOT** conversation read state, **NOT** message read state and **NOT** a `DeliveryReceipt`. `BC-22` **MUST NOT** create, store, read, moderate or infer the read state of a `Conversation` or `Message`. |
+
+⚠⚠ **`BCM-22-INV-1` exists because §9.1's Replay row does NOT reach `BC-22`.** That row
+(**L453**) reads *"Every projection **(BC-26)** and index **(BC-23)** must be rebuildable
+from the log"* — parenthetically **scoped**, and corroborated by `MASTER_PRD.md` **L474**
+(`MP-GBR-37`, Analytics) and by `every_projection_rebuildable_test.dart`, which covers
+Analytics only. ⛔ **§9.1 is NOT amended by this section**; `BCM-22-INV-1` states the
+obligation for `BC-22` without altering the Replay row's own scope.
+
+⚠ **Durability is not retention.** `BCM-22-INV-1` fixes that a `FeedItem` **exists and is
+rebuildable**. It fixes **no lifetime**, and none is stated anywhere in this section.
+
+### 18.5 What this section does not do
+
+- ⛔ Does **not** edit §8's table — byte-unchanged.
+- ⛔ Does **not** move any existing aggregate ownership. `Conversation`, `Message`,
+  `DeliveryReceipt` and `RetentionPolicy` remain **`BC-12`'s** (**L378**); `Friendship`,
+  `BlockList` and `RateLimitCounter` remain **`BC-11`'s** (**L377**); `ModerationCase` and
+  its entities remain **`BC-13`'s** (**L379**).
+- ⛔ Does **not** add a context, an `E-*` edge, a port, a permission or an event — context
+  count stays **31**.
+- ⛔ Does **not** state any retention period, TTL, timeout, attempt count or numeric bound.
+- ⛔ Does **not** vary §9.1's Event Delivery Contract, including its Replay row.
+- ⛔ Does **not** resolve `NTF-GAP-013` (redirect ownership), which stays **OPEN** and
+  assigned to the Architecture Owner.
+- ⛔ Does **not** re-issue the baseline — this file is **Rank 4**
+  (`DOCUMENTATION_BASELINE.md` §7 rule 4).
+- ⛔ Does **not** confer any lifecycle stage on `PRD-010`, which remains **`DRAFT`**,
+  **Stage 4 NOT CONFERRED**, **Stage 5 NOT ENTERED**, registry **`PLANNED`**.

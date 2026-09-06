@@ -1177,3 +1177,94 @@ right** — the same class of error as the defect above, in the opposite directi
 | Version | Date | Change |
 |---|---|---|
 | **v1.8** | 2026-09-05 | ⚠⚠ **CITATION AUDIT OF MY OWN SUPPLEMENTS v1.3–v1.7 — TWO `JobRuntime` LINE REFERENCES WERE WRONG AND I REPEATED THEM EIGHT TIMES IN THIS RECORD.** Measured with `grep -n` rather than re-asserted: the retry-unit sentence (*"`retryBudget` is the **total** attempts permitted, **including the first**"*) is at **L103-104**, cited as *L104-106*; the deadline sentence (*"`deadline` bounds the whole job; on expiry … `JobState.failed`"*) is at **L105-107**, cited as *L107-110*. ⛔ **Corrected HERE by supplement, NOT by editing §1-59**, whose defective numbers are deliberately preserved — this record is append-only and the parent doctrine is that *"the remedy is a new record or a supplement — never a silent rewrite."* ⭐ **Ten further occurrences in the subject ARE corrected in place** (`PRD-010` **v0.9**), because that document is a live `DRAFT` rather than an append-only record — and the asymmetry is stated so it does not look like inconsistency. ⭐ **Why this warranted a supplement rather than a silent fix:** every load-bearing claim from v1.3 onward — that the retry **unit** is *repository-authoritative* rather than borrowed from `FIL-CFG-014`, and that **one transport clock** suffices — depends on a reader **opening the file and seeing the sentence**; ⛔ **a citation that does not resolve is indistinguishable from an invented quotation**, the precise failure this engagement refuses everywhere else. ✅ **The QUOTED TEXT was re-verified verbatim in every instance** — only the pointers moved ⇒ **0 findings, 0 verdicts, 0 values, 0 gap statuses change**. ⚠ **A FALSE ALARM is also recorded rather than buried:** the first probe for the §54 citation (**L45-51**) returned **0 hits** and briefly looked like a third defect, but the file reads **`Deliberately`** (capitalised) and the probe was case-sensitive — re-measurement located the passage at **L47**, inside the cited block, so **acting on the first probe would have "corrected" a citation that was already right**, the same error class in the opposite direction. ✅ **Eight citations re-verified and CONFIRMED**: `job_runtime.dart` L45-51 / L62-63 / L82; BC Map L205; `services.dart` L152-159 / L163-165 / L196-221; `NTF-FR-014`. ⛔⛔ **VERDICT UNCHANGED IN EVERY RESPECT:** ONE transport clock; NO lifecycle mapping required; `NTF-CFG-004` **`[RECOMMENDED]` 3, range 1–5** with value **OWED**; `NTF-CFG-007` **OWED**; backoff **OWED**; `NTF-GAP-025` **OPEN, non-blocking**; `NTF-GAP-027` limb 3 **OPEN**; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **27 gaps OPEN**. ⛔ **0 values invented, 0 slots minted, 0 gaps closed, 0 identifiers renumbered, 0 requirements reworded, 0 ACs changed, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 matrix, 0 CONFIGURATION_GUIDE, 0 frozen PRDs, 0 baseline, 0 registry, 0 application code, 0 test code.** §1-59 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.9 — Stage 4→7 execution attempted; Stage 4 re-run from scratch; verdict unchanged
+
+> ⛔ **Append-only.** §1-64 above are preserved byte-identical.
+
+---
+
+## 65. What was attempted, and the single measurement that decided it
+
+A full **Stage 4 → Stage 7** advance was directed, *"only by following the repository's existing
+governance."* Stage 4 was re-run **from scratch** against `PRD_LIFECYCLE.md` **L108-119**, and Stages 5,
+6 and 7 were located in the authority and tested for **entry eligibility**.
+
+⭐⭐⭐ **The decisive measurement is new to this pass and is the root cause of everything below:**
+
+> `grep -rl "NTF-CFG\|NTF-GAP\|PRD-010" docs/00-governance/adr/` → ⛔⛔ **0 files, across all 94 ADRs.**
+
+⇒ **No Product Owner, Architecture Owner, SRE or Requirements Reviewer act exists for `PRD-010`
+anywhere in the repository.** Every value it needs is **unowned**. This is why no amount of further
+authoring can advance the stage.
+
+---
+
+## 66. Stage 4 re-run — six checks, re-measured
+
+| # | Check | Result | Movement vs v1.6 |
+|---|---|---|---|
+| 1 | Every requirement testable | ⚠ **PARTIAL** | unchanged |
+| 2 | Every exclusion states what must be impossible | ⚠ **PARTIAL** | unchanged |
+| 3 | Every configurable has a default and a range | ⛔ **FAIL — 1 of 7 satisfied** | unchanged |
+| 4 | Every AC maps to a requirement | ⚠ **PARTIAL** — **0 orphans**, coverage **9/85** | unchanged |
+| 5 | No requirement restates another PRD's | ✅ **PASS** | unchanged |
+| 6 | Business rules do not contradict Rank 1 | ✅ **PASS** | unchanged |
+
+**Gate** *(conflicts deferred with a reason and an owner)*: ✅ **SATISFIED 27/27** — re-counted.
+
+⛔⛔ **STAGE 4 REMAINS NOT READY / NOT CONFERRED.** Conferral belongs to the **Requirements Reviewer**
+(§6 **L278**), and this record cannot confer it.
+
+---
+
+## 67. ⭐⭐ Stages 5–7 not entered — and the mechanical work deliberately refused
+
+| Stage | Gate | Entry test | Result |
+|---|---|---|---|
+| **5** | prefixes registered in `TRACEABILITY_MATRIX.md` §2, mechanically verified, zero collisions | **`NTF-` = 0** occurrences | ⛔ **NOT ENTERED** |
+| **6** | an `IMPL-*` range allocated, every task tracing to requirements | **0** `IMPL-*` for `PRD-010` | ⛔ **NOT ENTERED** |
+| **7** | a row in `DOCUMENTATION_BASELINE.md` §3 at an assigned rank | **0** baseline rows | ⛔ **NOT ENTERED** |
+
+⭐⭐ **Registering the `NTF-` prefix and allocating `IMPL-227`+ were both mechanically possible and were
+deliberately NOT done.** Stage 5's gate presupposes a **conferred** Stage 4; performing its mechanical
+half against a NOT-READY subject would create a matrix row implying a completed review that does not
+exist. ⛔ **That is the cosmetic completeness the instruction expressly forbids**, and it is recorded as
+a refusal rather than an omission so a later reader does not read it as incomplete work.
+
+---
+
+## 68. Stage-7 matrix result
+
+**9 of 14 gates PASS · 5 FAIL.** Gates **2** (Stage 4 not conferred), **3** (no Stage 5), **4** (no
+Stage 6), **5** (no approvals — 0 of 94 ADRs) and **9** (unresolved mandatory blockers) are **each
+independently fatal**.
+
+⇒ ⛔⛔ **`STAGE 7 NOT CONFERRED — AUTHORITY OWED`.**
+
+Full matrix, evidence and the seven owed decisions:
+[`PRD-010_STAGE4_TO_STAGE7_EXECUTION_RECORD.md`](PRD-010_STAGE4_TO_STAGE7_EXECUTION_RECORD.md).
+
+---
+
+## 69. Configuration register — unchanged, restated for the record
+
+| ID | Value | Status | Authority |
+|---|---|---|---|
+| `NTF-CFG-002` | **`en`** | ✅ **[AUTHORITATIVE]** | Product — `Library_PRD_v1.md` **L717** |
+| `NTF-CFG-004` | **3**, range **1–5** | ⚠ **[RECOMMENDED — NOT AUTHORITATIVE]**; unit + floor **[AUTHORITATIVE]** | Architecture Owner |
+| `NTF-CFG-001`, `-003` | ⛔ none | **[OWED]** | Product Owner |
+| `NTF-CFG-005`, `-006`, `-007` | ⛔ none | **[OWED]** | Architecture Owner |
+
+⛔ **0 values converted from [RECOMMENDED] to [AUTHORITATIVE].**
+
+---
+
+## 70. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.9** | 2026-09-05 | ⛔⛔ **A full Stage 4 → Stage 7 advance was directed and the governance-correct outcome is a REFUSAL: `STAGE 7 NOT CONFERRED — AUTHORITY OWED`.** Stage 4 was **re-run from scratch** against `PRD_LIFECYCLE.md` **L108-119** — **2 PASS · 3 PARTIAL · 1 FAIL**, deferral gate **re-counted and SATISFIED 27/27**, verdict **unchanged**. ⭐⭐⭐ **The decisive measurement is new to this pass: `grep -rl` across all **94** ADRs returns **0 files** referencing `PRD-010`, `NTF-CFG-*` or `NTF-GAP-*`** ⇒ **no Product Owner, Architecture Owner, SRE or Requirements Reviewer act exists for this PRD anywhere in the repository**, so every value it needs is **unowned** and no amount of further authoring can advance the stage. Stages 5, 6 and 7 were **located in the authority and tested for entry eligibility** rather than skipped: **`NTF-` = 0** in `TRACEABILITY_MATRIX.md`, **0** `IMPL-*` allocated, **0** baseline rows ⇒ all three **NOT ENTERED**. ⭐⭐ **Registering the `NTF-` prefix and allocating `IMPL-227`+ were mechanically possible and DELIBERATELY REFUSED** — Stage 5's gate presupposes a **conferred** Stage 4, and performing its mechanical half against a NOT-READY subject would create a matrix row implying a review that does not exist, which is precisely the cosmetic completeness the instruction forbids; recorded as a **refusal**, not an omission. Stage-7 matrix: **9 of 14 PASS, 5 FAIL**, with gates 2/3/4/5/9 each **independently fatal**. A **decision package** for the owed authorities is published (retry `3`/`1–5` with its full derivation and the `5`-is-adversarial rejection; deadline **OWED** with no number invented; backoff's three options with **none chosen**; the one-line `A-3`-shape manifest amendment needing **no `L2` waiver**), plus **seven owed decisions in dependency order** — ⛔ **none agent-actionable, none manufactured**. ⛔ **`NTF-GAP-027` limb 3 untouched** (an `MP-CON-08` *"defect to be raised"*); ⛔ **`NTF-GAP-025` confirmed non-blocking**. New companion record created: `PRD-010_STAGE4_TO_STAGE7_EXECUTION_RECORD.md`. ⛔⛔ **0 values invented · 0 [RECOMMENDED] converted to [AUTHORITATIVE] · 0 gaps closed (27 OPEN) · 0 identifiers minted or renumbered · 0 requirements reworded · 0 ACs changed · 0 ADRs (94) · 0 manifest · 0 BC Map · 0 `MASTER_PRD` · 0 EA · 0 dependency matrix · 0 `CONFIGURATION_GUIDE` · 0 `TRACEABILITY_MATRIX` · 0 `IMPL-*` · 0 frozen PRDs · 0 baseline · 0 registry (`PLANNED`) · 0 application code · 0 test code.** Subject **v0.9 `DRAFT`** byte-unchanged (`sha256 343857f3…b99bb1`). Highest legitimately completed stage: **Stage 3 (PASS 6/6)**. §1-64 preserved byte-identical (`cmp` PASS). |

@@ -9,7 +9,7 @@
 | **Prior stage** | ✅ Stage 5 conferred by [`PRD-010_STAGE5_CONFERRAL.md`](PRD-010_STAGE5_CONFERRAL.md) · registered at [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) **v1.25 §2T** |
 | **Authority** | **Implementation Lead**, exercised by direct, explicit and unconditional conferral of the human principal of this engagement (§0) |
 | **Baseline** | ⛔ **No baseline re-issue.** `PRD-010` is `DRAFT` and holds no rank |
-| **Verdict** | ✅ **GATE SATISFIED — both halves present: a range is allocated, and every task traces back to requirements** |
+| **Verdict** | ✅ **GATE SATISFIED — both halves present: a range is allocated, and every task traces back to requirements** · ⚠ self-audit repair applied at v1.1 (§4 count corrected 13/13 → measured **12/13**) |
 | **Date** | 2026-09-05 |
 
 ---
@@ -125,7 +125,7 @@ before Stage 8 verification.
 |---|---|---|---|---|---|
 | `IMPL-1926` | Emit per-tenant delivery telemetry — attempted / succeeded / failed-terminal / suppressed-duplicate, carrying no forbidden identifier | `NTF-FR-065`, `NTF-AC-012` | P2 | — | 1913 |
 | `IMPL-1927` | Enforce `NTF-INV-011` — an unresolvable address fails only that delivery, never the emitting operation | `NTF-INV-011`, `CM-3` | P1 | — | 1913 |
-| `IMPL-1928` | Enforce the WhatsApp-redirect exclusions — no `DeliveryMessage`, no `FeedItem`, no audit event, no stored content | `NTF-XC-007`, `NTF-FR-023`, `NTF-FR-026` | P2 | — | — |
+| `IMPL-1928` | Enforce the WhatsApp-redirect exclusions — no `DeliveryMessage`, no `FeedItem`, no audit event, no stored content, and ⛔ **no communication-history record** | `NTF-XC-007`, `NTF-FR-023`, `NTF-FR-026`, `NTF-FR-063` | P2 | — | — |
 | `IMPL-1929` | Assert `BC-22` publishes no rate/throughput limit and no configuration resolution order | `NTF-XC-008`, `NTF-FR-054` | P3 | — | — |
 
 **Count: 30 tasks · `IMPL-1900`…`IMPL-1929` · contiguous · 0 duplicates · 0 orphans.**
@@ -141,12 +141,33 @@ Rule 4 requires this mapping explicitly.
 | **A** foundations | 1900–1909 | `NTF-FR-006`, `-042`, `-043`, `NTF-XC-004`, `-005` | `NTF-INV-001`, `-008`, `BCM-22-INV-1`, `-INV-2`, `BCM-22-R1` | `NTF-AC-003` |
 | **B** dispatch/dedup/retry | 1910–1919 | `NTF-FR-013`, `-015`, `-017`, `-038`, `-040`, `-045`, `-046`, `-047`, `-049`, `-066`, `-067` | `NTF-INV-007` | `NTF-AC-001`, `-002`, `-008`, `-010`, `-011` |
 | **C** channels/content/consent | 1920–1925 | `NTF-FR-023`, `-027`, `-035`, `-037`, `-043`, `-044` | `BCM-22-INV-2` | `NTF-AC-004`, `-007`, `-013` |
-| **D** observability/boundaries | 1926–1929 | `NTF-FR-026`, `-054`, `-065`, `NTF-XC-007`, `-008` | `NTF-INV-011` | `NTF-AC-009`, `-012` |
+| **D** observability/boundaries | 1926–1929 | `NTF-FR-026`, `-054`, `-063`, `-065`, `NTF-XC-007`, `-008` | `NTF-INV-011` | `NTF-AC-006`, `-009`, `-012` |
 
-⭐ **Coverage of the acceptance register: 13 / 13 criteria are exercised by at least one task.**
+⭐ **Coverage of the acceptance register: 12 / 13 criteria are exercised by at least one task — measured,
+not asserted.** The measurement is reproducible: extract `NTF-AC-*` from the §4 table above and compare
+against the PRD's `NTF-AC-*` register.
+
+```
+sed -n '/^| \*\*A\*\* foundations/,/^| \*\*D\*\*/p' PRD-010_STAGE6_IMPLEMENTATION_TASKS.md \
+  | grep -oE 'NTF-AC-[0-9]{3}' | sort -u        # expand the -00n shorthand by row first
+```
+
+| Result | Criteria |
+|---|---|
+| ✅ **Covered — 12** | `NTF-AC-001`, `-002`, `-003`, `-004`, `-006`, `-007`, `-008`, `-009`, `-010`, `-011`, `-012`, `-013` |
+| ⚠ **Uncovered — 1** | `NTF-AC-005` |
+
 ⚠ `NTF-AC-005` is exercised by no task **and that is deliberate** — it tests the §11 permission matrix,
 which is expressly `[PROPOSED]` and blocked on `NTF-GAP-008` (`BC-18` authority). Assigning it a task
 would imply an authority that does not exist.
+
+> ⚠⚠ **Disclosure — this line previously read "13 / 13", and that was wrong.** The claim was written
+> before the §4 table was mechanically expanded. On measurement, §4 named **11** criteria, `NTF-AC-006`
+> was **uncovered and undisclosed**, and `IMPL-1928` did not cite `NTF-FR-063` — the requirement
+> `NTF-AC-006` verifies. The defect was **a missing citation plus a false count, not a missing task**:
+> `IMPL-1928` already enforces the WhatsApp-redirect exclusions that `NTF-FR-063` states. The repair
+> added `NTF-FR-063` to `IMPL-1928`, added `NTF-AC-006` to wave D, and ⭐ **corrected the count downward
+> to the measured 12/13 rather than upward to the claim.** No task was invented to make a number true.
 
 ---
 
@@ -187,4 +208,5 @@ would imply an authority that does not exist.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-09-05 | ⚠⚠ **Self-audit repair — one defect found by mechanical measurement of my own v1.0 claim, and corrected downward.** §4 asserted *"13 / 13 criteria are exercised"*; expanding the `-00n` shorthand per wave row measured **11**, so the count was false and **`NTF-AC-006` was uncovered and undisclosed**. Root cause: `IMPL-1928` enforced the WhatsApp-redirect exclusions but did **not cite `NTF-FR-063`** — the requirement `NTF-AC-006` verifies (*"MUST NOT appear in communication history"*). ⭐ **The defect was a missing citation plus a false count, not a missing task** — so the repair added `NTF-FR-063` to `IMPL-1928` and `NTF-AC-006` to wave D, and ⭐⭐ **corrected the headline to the measured `12 / 13` rather than inflating the evidence to match the claim. No task was invented to make a number true.** The single remaining uncovered criterion `NTF-AC-005` stays deliberately unassigned (`[PROPOSED]` §11 matrix, blocked on `NTF-GAP-008`). §4 now publishes the reproducing command so the number can be re-measured rather than believed. ⛔ Range, task count, waves, priorities and dependency edges **unchanged**: still `IMPL-1900`…`1929`, 30 tasks, 0 orphans. Subject PRD **byte-unchanged** (`63326045fefe8328`); all checkers exit 0; frozen/Rank-1/Rank-4 byte-unchanged. |
 | **v1.0** | 2026-09-05 | Created. **Stage 6 gate SATISFIED** — both halves present. ⭐ **`IMPL-1900`…`IMPL-1929` allocated**: 30 contiguous tasks in four waves, one row per number, **0 reuse**, **0 overlap** with the eleven existing allocations. ⚠ **The next-free number was measured, not assumed** — the highest allocated is `IMPL-1873` (`PRD-015`), and `PRD-015_IMPLEMENTATION_TASKS.md` **L67** already declares `IMPL-1900`+ unallocated; `IMPL-1874`…`1899` is left as `PRD-015`'s growth room per rule 2. All four **L139-146** allocation rules checked individually, including `Priority`/`Blocks`/`Blocked by` on every task and the §4 group→requirement→invariant→acceptance mapping. ⭐ **Every task traces to at least one `NTF-*` obligation; 0 orphans; 13/13 acceptance criteria exercised** — with **`NTF-AC-005` deliberately unassigned** because it tests a `[PROPOSED]` permission matrix blocked on `NTF-GAP-008`, and giving it a task would imply absent `BC-18` authority. ⚠⚠ **Four tasks are recorded as BLOCKED with their owners named** (`IMPL-1915`/`GAP-028`, `IMPL-1918`/`GAP-017`, `IMPL-1919`/`GAP-029`, `IMPL-1917`/`T-29` manifest port) rather than being written as though executable. ⭐ **T-29 documents the one-line manifest amendment and expressly does NOT perform it** — Rank 4 needs an ADR first, and it is the Architecture Owner's act. ⛔ **0 gaps closed (7 OPEN) · subject PRD byte-unchanged · matrix unchanged · nothing ranked, baselined or frozen · registry `PLANNED` · Stage 7 NOT conferred · 0 code · 0 tests · BC Map §8/§18 intact · `ADR-0107`…`0110` preserved.** |

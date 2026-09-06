@@ -716,3 +716,112 @@ itself.
 | Version | Date | Change |
 |---|---|---|
 | **v1.4** | 2026-09-05 | ⛔⛔ **MY OWN v1.3 MERITS ARGUMENT IS FALSIFIED AND WITHDRAWN — I asserted that a notification is *"not regenerable"* with *"no second copy"* without measuring the channel set.** The refuting evidence was inside the subject: **13 of 13** §8 catalogue rows name **In-App** and **ZERO** are Push-only; BC Map **L205** makes the inbox `FeedItem` *"owned by `BC-22`'s inbox projection"*; and BC Map **L453** (Rank 4) requires *"every projection … must be **rebuildable from the log**"* under the **at-least-once** contract at **L446-447**. ⇒ ⭐⭐⭐ **a failed Push is NOT a lost notification.** ⇒ The domains are **NOT inverted** — both have a surviving copy and a regeneration path — so `FIL-CFG-014`'s reasoning **shape** does transfer and **`3` is MORE defensible than v1.3 said**. ⚠ Recorded although it weakens my earlier position; ⛔ **verdict unchanged**, because the surviving objection is **authority (`ADR-0033` §7.1), not merit**. ⭐⭐ **TWO REAL CONSTRAINTS DERIVED and recorded as constraints, not values:** floor **≥ 1 total attempt** (already binding via `INV-21` and the **executable** `ArgumentError` at `services.dart` **L152-159**), and a **ceiling inequality** — *attempts × per-attempt duration ≤ job `deadline`* (`job_runtime.dart` **L107-110**; `services.dart` **L190-201** re-checks before each attempt) ⇒ an over-large budget is **partly unreachable**. ⛔⛔ **THE NUMBER IS NOT DERIVABLE FOR A STRUCTURAL REASON:** the inequality needs two quantities that do not exist — a notification **job deadline** (0 at any rank) and the **provider's** acknowledgement behaviour (`NTF-GAP-017`, blocked by absent FCM documentation, the `ADR-0045` condition). ⭐⭐ **`PRD-017` could derive `3` ONLY because `ADR-0057` had already fixed `FIL-CFG-015` at 120 s**, making the inequality solvable; `PRD-010` has **no companion deadline**, so the derivation is **structurally unavailable**, not merely unauthorised. ⚠ **`4` and `5` were tested and rejected** — nothing distinguishes them from `3` on evidence, and choosing the larger because notification *feels* important would be a preference presented as a derivation; ⛔ the adversarial **5** (`AUTH-3.9`) is **not a candidate**, bounding an attacker's guesses and listed at `CONFIGURATION_GUIDE` **L41** among values *"not configurable"*. ⭐⭐ **`NTF-CFG-007` MINTED (delivery job deadline)** on the **`FIL-CFG-015` precedent** — the `JobRuntime` contract **requires** a deadline per submission, so `BC-22` cannot lawfully submit without one and the attempt count is otherwise **unbounded in time**; ⭐ **`NTF-GAP-026` minted** as its carrier and as the **blocking companion** for `NTF-CFG-004`'s upper bound. ✅ **A RANGE is confirmed as the right shape** (floor fixed at **1**, upper bound owed); ✅ **backoff stays OWED**; ⚠ **DLQ stays UNRULED** (`NTF-GAP-025`); ⭐ the **minimum `job_runtime` amendment is ONE LINE** in the `A-3` shape, needing **no `L2` waiver** since rank 3 → rank 5 is strictly downward. ⛔⛔ **VERDICT: exact retry budget remains OWED; the unit and floor are established, the numeric value is not authorised.** Check 3 = **1 of 7 satisfied + 1 unit/floor authoritative + 5 owed**; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **26 gaps OPEN**. ⛔ **0 values invented, 0 authority manufactured, 0 gaps closed, 0 renumbered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 code.** §1-29 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.5 — comparative 1–5 analysis: `3` recommended, and the reason it still cannot be fixed
+
+> ⛔ **Append-only.** §1-36 above are preserved byte-identical.
+
+---
+
+## 37. ⭐⭐⭐ The measurement that decides the comparison
+
+Prior passes reasoned about the retry budget from **documents**. This pass measured the **runtime**, and
+found the governing fact:
+
+| Probe | Result |
+|---|---|
+| `Future.delayed` · `sleep` · `Timer` in the **retry loop** | ⛔ **NONE** — `services.dart` **L196-221**: deadline check → `attempts++` → `await work()` → catch → **loop immediately** |
+| Delay primitives in the **port contract** | ⛔ **NONE** — `job_runtime.dart`: 0 hits for `delay`, `Timer`, `interval` |
+| The one `await Future.wait` | ⭐ **L124, inside `drain()`** — a shutdown/test join point, ⛔ **not** the attempt loop |
+
+⇒ ⭐⭐⭐ **At V1 the whole budget is consumed in an immediate, tight burst.** This **inverts** the
+intuitive argument that "more attempts = more resilient": with no spacing, a larger budget buys **N
+near-simultaneous calls to the same failing provider**, not a wider recovery window.
+
+---
+
+## 38. Comparative assessment
+
+| Budget | Verdict |
+|---|---|
+| **1** | ⛔ **Rejected.** Lawful (`services.dart` **L152-159**) and `FIL-CFG-014` itself calls 1 *"no retry, permitted for diagnostics"* — but it renders `NTF-FR-047`'s retry obligation **inoperative** |
+| **2** | ⚠ **Defensible; the strongest rival.** Absorbs a single dropped packet. ⛔ But with zero spacing it addresses only the shortest fault, and **nothing in the repository favours 2 over 3** |
+| **3** | ⭐ **Best available V1 choice.** The **reasoning** transfers (not the number): *"three attempts absorb transient faults … without masking a deterministic failure"* — valid **because** a durable fallback exists, which §30 established `PRD-010` has |
+| **4** | ⛔ **Rejected.** No evidence distinguishes it from 3; with no backoff the 4th immediate attempt adds provider load without a materially different time window |
+| **5** | ⛔⛔ **Rejected twice over.** As 4, amplified — **and** ⭐ the repository's only `5` is **adversarial**: `AUTH-3.9` bounds an **attacker's guesses** and `CONFIGURATION_GUIDE` **L41** lists it among values *"**not configurable**"*. Borrowing it would import a security-throttle rationale into a fault-tolerance slot |
+
+⇒ ⭐⭐ **`[RECOMMENDED — NOT AUTHORITATIVE]` 3 total attempts, range 1–5.** ⚠ **`5` is acceptable as a
+range ceiling although rejected as a default** — a range bounds what an operator may set; it does not
+endorse the extreme.
+
+---
+
+## 39. ⛔⛔ Why it still cannot be fixed — substantive, not procedural
+
+⭐ **With no inter-attempt delay, the budget consumes ≈ 3 × (provider timeout). Neither factor exists:**
+
+| Missing factor | Status |
+|---|---|
+| Notification job **deadline** | ⛔ **OWED** — `NTF-CFG-007` / `NTF-GAP-026` |
+| Provider **timeout / ack model** | ⛔ **`NTF-GAP-017`** — blocked by absent FCM documentation (`ADR-0045` condition) |
+
+⇒ ⭐⭐ **A budget fixed now could be PARTLY UNREACHABLE the instant a deadline is chosen.** If the
+deadline is shorter than 3 × timeout, the 2nd or 3rd attempt is **never tried** and the configured
+value is a fiction — **exactly the defect class `INV-18` and `INV-20` exist to prevent**.
+
+⇒ ⭐⭐⭐ **Ordering is substantive: `NTF-CFG-007` must be decided BEFORE or WITH `NTF-CFG-004`.** They
+are **one decision with two limbs**, and `PRD-017` is the proof — `ADR-0057` set the **120 s** timeout
+and the **3**-attempt bound **in the same act**.
+
+---
+
+## 40. ⚠⚠ Two self-limiting disclosures
+
+**1 — The executing test is NOT authority.** `test/architecture/job_runtime_port_test.dart` **L43**
+declares `const int _retryBound = 3`, and a careless reading would present that as ratification. Its
+own comment names it *"the recorded **`FIL-CFG-014`** default"* ⇒ ⛔ a **`PRD-017` test fixture**.
+Citing an executing test as authority for a different bounded context is manufacturing authority from
+a fixture.
+
+**2 — The In-App fallback is specified but not yet executably proven for `BC-22`.** §30 rested the
+`3` recommendation on BC Map **L453** rebuildability. That rule is Rank 4 and binding, but
+`every_projection_rebuildable_test.dart` covers **Analytics only** (**0** hits for `BC-22`, `inbox`,
+`FeedItem`) and `lib/platform/` contains **no `communication` module**. ⇒ The recommendation rests on
+the **specification**, and the distinction is stated rather than blurred.
+
+---
+
+## 41. Confirmations requested
+
+| Item | Status |
+|---|---|
+| **`NTF-FR-047`** | ✅ **CONFIRMED, unchanged** — *"Only **transient** failures retry; permanent failures terminate as `failed`."* (subject **L450**) |
+| **`NTF-INV-011` / `CM-3` / `EBR-1030`** | ✅ **CONFIRMED, unchanged** — `module_dependencies.yaml` **L409-410**: *"an unresolvable address fails the delivery only; it never fails the emitting operation."* |
+| **Backoff** | ⛔ **OWED** — 0 schedules at Rank 1–5; adapter implements none; EA places *"Retry & Backoff"* at **V2** |
+| **`NTF-GAP-025` (DLQ)** | ⚠ **OPEN but NON-BLOCKING** for the budget — it governs what happens **after** exhaustion, not how many attempts occur |
+
+---
+
+## 42. Verdict
+
+⛔⛔ **The exact retry budget remains OWED.** ⭐ **But this pass changes its status**: it is no longer
+*"no defensible value"* — it is **one recommended value (`3`, range `1–5`) with a stated technical
+derivation, awaiting joint ratification with the deadline.**
+
+Check 3: **1 of 7 satisfied** · **1 unit+floor authoritative with a labelled recommendation** ·
+**5 owed**. Stage 3 **PASS 6/6**. **26 gaps OPEN.** Stage 4 **NOT READY, NOT CONFERRED**.
+
+⛔ **0 values made authoritative · 0 gaps closed · 0 identifiers minted or renumbered · 0 ADRs (94) ·
+0 manifest · 0 BC Map · 0 `MASTER_PRD` · 0 frozen PRDs · 0 `CONFIGURATION_GUIDE` · 0 baseline ·
+0 registry · 0 code · 0 test code.**
+
+---
+
+## 43. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.5** | 2026-09-05 | ⭐⭐⭐ **Comparative 1 · 2 · 3 · 4 · 5 analysis performed against the MEASURED runtime rather than against documents, and one fact decides it: THE V1 RETRY LOOP HAS NO DELAY BETWEEN ATTEMPTS** — 0 hits for `Future.delayed`/`sleep`/`Timer` in `services.dart` **L196-221** and 0 delay primitives in `job_runtime.dart`; the single `await Future.wait` (**L124**) is inside **`drain()`**, not the loop. ⇒ ⭐⭐⭐ **the budget is consumed in an immediate burst, which INVERTS the "more attempts = more resilient" intuition**: without spacing, a larger budget buys **N near-simultaneous calls to the same failing provider**. ⭐ **On that measurement: `1` rejected** (renders `NTF-FR-047`'s retry obligation inoperative, and `FIL-CFG-014` itself calls 1 *"no retry, permitted for diagnostics"*); **`2` defensible and the strongest rival** but addresses only the shortest fault with nothing favouring it over 3; **`4` rejected** (no evidence distinguishes it from 3; the 4th immediate attempt adds load, not a wider window); ⛔⛔ **`5` rejected twice over** — as 4 amplified, **and** because ⭐ the repository's only `5` is **ADVERSARIAL** (`AUTH-3.9`, bounding an **attacker's guesses**, listed at `CONFIGURATION_GUIDE` **L41** among values *"not configurable"*), so borrowing it would import a security-throttle rationale into a fault-tolerance slot. ⇒ ⭐⭐ **`[RECOMMENDED — NOT AUTHORITATIVE]` 3 total attempts, range 1–5**, with `5` acceptable as a range **ceiling** though rejected as a **default**. ⛔⛔ **STILL NOT FIXABLE, for a SUBSTANTIVE reason:** with no delay the budget consumes ≈ 3 × (provider timeout) and **neither factor exists** — `NTF-CFG-007` is OWED (`NTF-GAP-026`) and the provider timeout is `NTF-GAP-017` (absent FCM documentation, `ADR-0045` condition) ⇒ ⭐⭐ **a value fixed now could be PARTLY UNREACHABLE once a deadline is chosen** (2nd/3rd attempt never tried), **exactly the defect class `INV-18`/`INV-20` prevent**. ⇒ ⭐⭐⭐ **ORDERING IS SUBSTANTIVE: `NTF-CFG-007` before or with `NTF-CFG-004`** — one decision, two limbs, proven by `ADR-0057` setting `FIL-CFG-015` (120 s) and `FIL-CFG-014` (3) **in the same act**. ⚠⚠ **TWO SELF-LIMITING DISCLOSURES rather than leaving them for a reader:** (1) `job_runtime_port_test.dart` **L43**'s `const int _retryBound = 3` is, by its own comment, *"the recorded **`FIL-CFG-014`** default"* ⇒ ⛔ a **`PRD-017` fixture, NOT `PRD-010` authority** — citing an executing test as ratification for another context manufactures authority from a fixture; (2) BC Map **L453** rebuildability is binding, but `every_projection_rebuildable_test.dart` covers **Analytics only** (0 hits for `BC-22`/`inbox`/`FeedItem`) and `lib/platform/` has **no `communication` module** ⇒ the In-App fallback underpinning the `3` recommendation is **specified but NOT YET EXECUTABLY PROVEN** for `BC-22`. ✅ **`NTF-FR-047` CONFIRMED unchanged**; ✅ **`NTF-INV-011`/`CM-3`/`EBR-1030` CONFIRMED unchanged** (`module_dependencies.yaml` **L409-410**); ⛔ **backoff stays OWED**; ⚠ **`NTF-GAP-025` recorded NON-BLOCKING** for the budget (it governs post-exhaustion behaviour, not attempt count). ⛔⛔ **Verdict: exact retry budget remains OWED — but its status improves from "no defensible value" to "one recommended value with a stated derivation, awaiting joint ratification with the deadline".** Check 3 = 1 of 7 satisfied + 1 unit/floor authoritative with a labelled recommendation + 5 owed; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **26 gaps OPEN**. ⛔ **0 values made authoritative, 0 gaps closed, 0 identifiers minted or renumbered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** §1-36 preserved byte-identical (`cmp` PASS). |

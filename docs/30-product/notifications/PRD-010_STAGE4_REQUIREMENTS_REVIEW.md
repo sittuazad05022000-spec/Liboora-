@@ -591,3 +591,128 @@ by a **domain-inversion measurement** rather than authority alone.
 | Version | Date | Change |
 |---|---|---|
 | **v1.3** | 2026-09-05 | ⛔⛔ **`NTF-AL-F4` WITHDRAWN AS OVERSTATED on two independently sufficient grounds, both mine.** (1) v1.2 cited **`FIL-XC-017`** as though it bound `BC-22`; it is a **`PRD-017` exclusion binding `BC-29`**, and `PRD-010`'s register carries **no** scheduling prohibition — applying another PRD's frozen exclusion here is the cross-PRD borrow this record refuses elsewhere. (2) v1.2 called the condition *"mirroring `FIL-GAP-015`"* while **`FIL-GAP-015` is CLOSED by `ADR-0058`** (`Accepted`, 2026-08-20), an ADR I never opened before publishing the comparison. ⭐⭐⭐ **The mechanism `NTF-FR-049` needs ALREADY EXISTS:** `JobRuntime` port (`job_runtime.dart` **L100**), registered V1 adapter (`services.dart` **L100**, `di.dart` **L240-243**), and a **strictly downward** lawful edge (`platform/services` **rank 3** → `platform/communication` **rank 5** ⇒ **`L2` satisfied**, no exception needed). ⇒ **`NTF-AL-F4` reduces to ONE narrow manifest amendment** in the **`A-3` shape** (**L715-721**). ⭐⭐⭐ **`NTF-CFG-004`'s unit UPGRADED from precedent-supported to REPOSITORY-AUTHORITATIVE** — the authority is the **rank-0 shared-kernel port contract** (*"`retryBudget` is the **total** attempts permitted, **including the first**"*, **L104-106**), with the **≥ 1 floor enforced EXECUTABLY** (`services.dart` **L152-159**, quoting `INV-21`), not `FIL-CFG-014`, which was **weak authority** for this PRD. ⛔⛔ **The number `3` is REFUSED ON THE MERITS, not merely on authority:** `PRD-017`'s bound rests on `FIL-FR-057`/`FIL-FR-083` — a derivative is *"never the sole copy"* and is *"regenerable"* — whereas ⭐⭐ **a notification is NOT regenerable and has NO second copy**, so the domains have **inverted recovery models** and `3` is derived from an assumption that does not hold here. ⚠ Directionally this argues for a bound **at least as high as 3**, and ⛔ **no number is proposed**. ⭐ **`NTF-CFG-005` (backoff) isolated as the ONE genuinely premature slot** — **0** schedules at Rank 1–5 (all occurrences are refusals or a provider's own policy), the **V1 adapter implements none** (**L189-221** retries immediately), EA places *"Retry & Backoff"* at **V2** (**L1808**) ⇒ a value would have nothing to execute it; v1.2's claim that the **attempt bound** was premature is **withdrawn**. ⚠⚠ **`NTF-GAP-025` minted** — BC Map **L452** mandates *"Retry with backoff → **Dead Letter Queue**"*, `PRD-010` has **0** DLQ occurrences and `BC-28` is **V2**; ⭐ L452 governs the **event backbone** (EVENT PLATFORM, §9.1) not `BC-22`'s **outbound channel** plane, so `NTF-FR-047` does not contradict it — but the question is **unruled** and **not resolved in this record's favour**. ⛔⛔ **Verdict UNCHANGED: Stage 4 NOT READY, NOT CONFERRED; check 3 = 1 of 6 satisfied + 1 unit authoritative; Stage 3 PASS 6/6; 25 gaps OPEN.** ⛔ **0 values invented, 0 authority manufactured, 0 gaps closed, 0 renumbered, 0 ADRs (94), 0 manifest bytes, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 code.** §1-22 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.4 — the retry-budget audit: my "non-regenerable" premise was false, and the number is still not derivable
+
+> ⛔ **Append-only.** §1-29 above are preserved byte-identical.
+
+---
+
+## 30. ⛔⛔ I asserted a durability property of this domain without measuring the channel set
+
+v1.3 refused `FIL-CFG-014`'s value of `3` **partly on the merits**, on the ground that *"a notification
+is **not regenerable** and has **no second copy**"*, and concluded that `PRD-017` and `PRD-010` have
+**inverted recovery models**. ⭐⭐⭐ **Both halves of the premise are false**, and the refuting evidence
+was inside the subject document the whole time:
+
+| Measurement | Result |
+|---|---|
+| §8 catalogue rows naming **In-App** | ⭐ **13 of 13** |
+| Rows that are **Push-only** | ⭐⭐ **ZERO** (11 In-App + Push; 2 In-App only) |
+| In-app inbox ownership | *"`FeedItem` … owned by **`BC-22`'s inbox projection**"* — BC Map **L205** |
+| Projection durability | ⭐⭐ BC Map **L453** (Rank 4): *"every projection … **must be rebuildable from the log**. This is tested quarterly, not assumed"* |
+| Event delivery | **At-least-once**, consumer idempotency mandatory — BC Map **L446-447** |
+
+⇒ ⭐⭐⭐ **A failed Push is not a lost notification.** For every catalogue entry the In-App inbox carries
+the same fact; the inbox is a **rebuildable projection**; the source event persists.
+
+⇒ ⚠⚠ **The correction runs AGAINST my own earlier position and is recorded for that reason.** The two
+domains are **not** inverted — both have a surviving copy and a regeneration path — so the *reasoning
+shape* behind `FIL-CFG-014` (a small bound absorbing transient faults without masking deterministic
+failure, **because** a durable fallback exists) **does** transfer to `PRD-010`. **`3` is more
+defensible than v1.3 said.**
+
+⛔ **The verdict is nonetheless unchanged, because the surviving objection is authority, not merit.**
+`FIL-CFG-014` is a **`PRD-017`-scoped value** owned by that PRD's scope owner; `ADR-0033` **§7.1**
+forbids importing it. ⭐ **What changed is the argument, not the outcome** — and a reviewer who reads
+only v1.3 would have the right verdict for the wrong reason.
+
+---
+
+## 31. ⭐ What IS derivable — two constraints, recorded as constraints
+
+| Bound | Value | Derivation |
+|---|---|---|
+| **Floor** | ⭐ **≥ 1 total attempt** | ⛔ **Not a proposal — already binding.** `INV-21`; and **executably** at `services.dart` **L152-159**, which throws `ArgumentError` on `retryBudget < 1` |
+| **Ceiling constraint** | ⭐⭐ *attempts × per-attempt duration MUST fit inside the job `deadline`* | `job_runtime.dart` **L107-110** (*"`deadline` bounds the whole job"*) + `services.dart` **L190-201** (deadline re-checked **before each attempt**) ⇒ an over-large budget is **partly unreachable**, the defect class `INV-18`/`INV-20` guard elsewhere |
+
+---
+
+## 32. ⛔⛔ Why the exact number is NOT derivable — a specific reason, not a procedural one
+
+⭐⭐⭐ **The ceiling constraint is a function of two quantities that do not exist in this repository:**
+
+1. ⛔ **A notification job deadline.** **0** occurrences at any rank. `NTF-CFG-*` declared none until
+   this pass.
+2. ⛔ **The provider's acknowledgement and retry behaviour** — `NTF-GAP-017`, unresolvable because the
+   repository does not contain FCM's documentation (the `ADR-0045` condition).
+
+⭐⭐ **The decisive asymmetry with `PRD-017`, which is the whole answer to "why not 3":**
+`PRD-017` could derive **3** only because `ADR-0057` had **already fixed its companion timeout at
+120 s** (`FIL-CFG-015`), making *attempts × duration ≤ deadline* a solvable inequality. **`PRD-010` has
+no companion deadline**, so the same derivation is **structurally unavailable** — not merely
+unauthorised.
+
+⇒ ⛔ **Any specific number — 3, 4 or 5 — would be picked, not derived.** ⚠ **`4` and `5` were tested
+and rejected as candidates**: nothing in the repository distinguishes them from `3` on evidence, and
+selecting the larger merely because notification is *"important"* would be a preference presented as a
+derivation. ⛔ **The adversarial `5` (`AUTH-3.9`, 5 verification attempts) is NOT a candidate at all** —
+it bounds an **attacker's guesses**, not transient faults, and `CONFIGURATION_GUIDE` **L41** lists it
+among values that are *"**not configurable**"*.
+
+---
+
+## 33. ⭐⭐ `NTF-CFG-007` minted — the audit exposed a missing obligation
+
+Published on the **`FIL-CFG-015` precedent** — that configurable was *"added at v0.2 **because writing
+the configurable exposed that the obligation was missing**"*.
+
+⭐ **The `JobRuntime` contract REQUIRES a `deadline` on every submission** (`job_runtime.dart`
+**L107-110**). ⇒ `BC-22` **cannot lawfully submit** delivery work without one, and without it
+`NTF-CFG-004`'s attempt count is **unbounded in time** — a delivery could remain non-terminal
+indefinitely, which `NTF-FR-042`'s monotonic lifecycle cannot then guarantee reaches a terminal state.
+
+⇒ **`NTF-GAP-026`** carries it, and records that it is the **blocking companion** for
+`NTF-CFG-004`'s upper bound. ⛔ **No duration proposed.**
+
+---
+
+## 34. Answers to the four subsidiary questions
+
+| Question | Answer |
+|---|---|
+| **Is a range appropriate?** | ✅ **YES — a range is the correct shape.** Every comparable slot publishes one (`LCFG-6` *0–300 s*, `LCFG-12` *5–50*, `FIL-CFG-014` *1–5*). ⭐ Its **floor is already fixed at 1**; its **upper bound is owed** |
+| **Should backoff remain OWED?** | ✅ **YES — unchanged.** **0** schedules at Rank 1–5; the V1 adapter implements **none** (`services.dart` **L189-221** retries immediately); EA places *"Retry & Backoff"* at **V2** (**L1808**) |
+| **Should DLQ apply to outbound delivery?** | ⚠ **UNRULED — `NTF-GAP-025` stays OPEN.** BC Map **L452** binds the **event backbone** (EVENT PLATFORM, §9.1), not `BC-22`'s outbound channel plane; `BC-28`, which *"owns … DLQ"* (**L137**), is **V2**. ⛔ Not resolved in this record's favour |
+| **Minimum `job_runtime` amendment?** | ⭐ **One line**: add `platform/services:job_runtime` to `platform/communication`'s `ports:` list, in the **`A-3` shape** (`amendments_applied` **L715-721**). ⛔ **Not** an exception — `platform/services` **rank 3** → `platform/communication` **rank 5** is **strictly downward**, so **`L2` holds with no waiver** |
+
+---
+
+## 35. Verdict
+
+⛔⛔ **Exact retry budget remains OWED; repository evidence establishes the unit and minimum floor but
+does not authorize the numeric value.**
+
+Check 3 status: **1 of 7 satisfied** (`NTF-CFG-002`) · **1 unit + floor authoritative, value owed**
+(`NTF-CFG-004`) · **5 owed**. Stage 3 **PASS 6/6**. **26 gaps OPEN.** Stage 4 **NOT READY, NOT
+CONFERRED**.
+
+⭐ **Net movement this pass:** a false merits argument was **withdrawn**; two real constraints were
+**derived** (floor already binding, ceiling inequality); the **structural** reason the number is
+underivable was identified; and a **missing obligation** (`NTF-CFG-007`) was exposed by the audit
+itself.
+
+⛔ **0 values invented · 0 authority manufactured · 0 gaps closed · 0 renumbered · 0 ADRs (94) ·
+0 manifest · 0 BC Map · 0 `MASTER_PRD` · 0 frozen PRDs · 0 `CONFIGURATION_GUIDE` · 0 baseline ·
+0 registry · 0 code.**
+
+---
+
+## 36. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.4** | 2026-09-05 | ⛔⛔ **MY OWN v1.3 MERITS ARGUMENT IS FALSIFIED AND WITHDRAWN — I asserted that a notification is *"not regenerable"* with *"no second copy"* without measuring the channel set.** The refuting evidence was inside the subject: **13 of 13** §8 catalogue rows name **In-App** and **ZERO** are Push-only; BC Map **L205** makes the inbox `FeedItem` *"owned by `BC-22`'s inbox projection"*; and BC Map **L453** (Rank 4) requires *"every projection … must be **rebuildable from the log**"* under the **at-least-once** contract at **L446-447**. ⇒ ⭐⭐⭐ **a failed Push is NOT a lost notification.** ⇒ The domains are **NOT inverted** — both have a surviving copy and a regeneration path — so `FIL-CFG-014`'s reasoning **shape** does transfer and **`3` is MORE defensible than v1.3 said**. ⚠ Recorded although it weakens my earlier position; ⛔ **verdict unchanged**, because the surviving objection is **authority (`ADR-0033` §7.1), not merit**. ⭐⭐ **TWO REAL CONSTRAINTS DERIVED and recorded as constraints, not values:** floor **≥ 1 total attempt** (already binding via `INV-21` and the **executable** `ArgumentError` at `services.dart` **L152-159**), and a **ceiling inequality** — *attempts × per-attempt duration ≤ job `deadline`* (`job_runtime.dart` **L107-110**; `services.dart` **L190-201** re-checks before each attempt) ⇒ an over-large budget is **partly unreachable**. ⛔⛔ **THE NUMBER IS NOT DERIVABLE FOR A STRUCTURAL REASON:** the inequality needs two quantities that do not exist — a notification **job deadline** (0 at any rank) and the **provider's** acknowledgement behaviour (`NTF-GAP-017`, blocked by absent FCM documentation, the `ADR-0045` condition). ⭐⭐ **`PRD-017` could derive `3` ONLY because `ADR-0057` had already fixed `FIL-CFG-015` at 120 s**, making the inequality solvable; `PRD-010` has **no companion deadline**, so the derivation is **structurally unavailable**, not merely unauthorised. ⚠ **`4` and `5` were tested and rejected** — nothing distinguishes them from `3` on evidence, and choosing the larger because notification *feels* important would be a preference presented as a derivation; ⛔ the adversarial **5** (`AUTH-3.9`) is **not a candidate**, bounding an attacker's guesses and listed at `CONFIGURATION_GUIDE` **L41** among values *"not configurable"*. ⭐⭐ **`NTF-CFG-007` MINTED (delivery job deadline)** on the **`FIL-CFG-015` precedent** — the `JobRuntime` contract **requires** a deadline per submission, so `BC-22` cannot lawfully submit without one and the attempt count is otherwise **unbounded in time**; ⭐ **`NTF-GAP-026` minted** as its carrier and as the **blocking companion** for `NTF-CFG-004`'s upper bound. ✅ **A RANGE is confirmed as the right shape** (floor fixed at **1**, upper bound owed); ✅ **backoff stays OWED**; ⚠ **DLQ stays UNRULED** (`NTF-GAP-025`); ⭐ the **minimum `job_runtime` amendment is ONE LINE** in the `A-3` shape, needing **no `L2` waiver** since rank 3 → rank 5 is strictly downward. ⛔⛔ **VERDICT: exact retry budget remains OWED; the unit and floor are established, the numeric value is not authorised.** Check 3 = **1 of 7 satisfied + 1 unit/floor authoritative + 5 owed**; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **26 gaps OPEN**. ⛔ **0 values invented, 0 authority manufactured, 0 gaps closed, 0 renumbered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 code.** §1-29 preserved byte-identical (`cmp` PASS). |

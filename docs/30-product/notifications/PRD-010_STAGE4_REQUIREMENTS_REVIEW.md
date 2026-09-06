@@ -1372,3 +1372,119 @@ traceability row, `IMPL-*` range or baseline entry was created, exactly as direc
 | Version | Date | Change |
 |---|---|---|
 | **v2.0** | 2026-09-05 | ⭐⭐ **Authority decision package prepared for all eleven owed lines; TWO items in the instruction's own proposal REJECTED on measured evidence, and the governing authority measurement re-run.** ⛔⛔ **`grep -rl` across all 94 ADRs for `PRD-010`/`NTF-CFG-*`/`NTF-GAP-*` returns 0 files** ⇒ **no authority act has arrived**, so every line remains **[RECOMMENDED]** or **[OWED]** and **0 promotions** were performed. ⭐ **Defect 1 — `NTF-CFG-006` mislabelled** in the instruction as *"configuration authority"*; measured at subject **L523** it is the **deduplication window**, while *"configuration authority"* was `NTF-FR-054`, reclassified **out** of the register at v0.3 under `FIL-XC-009` and `ADR-0017` §2.5 ⇒ evaluated as the dedup window, ⛔ **no new slot created**. ⭐⭐ **Defect 2 — `NTF-CFG-001 = 500, range 1–1000` REJECTED on both limbs.** Range: every comparable ceiling caps at **≤ 500** (`ICFG-5` 50/1–500 · `ICFG-6` 25/1–200 · `ICFG-7` 20/1–100 · `CFG-3` 100/50–500) and `CFG-3`'s own rationale reads *"**Above 500:** the control stops meaning anything."* ⭐⭐ **Default — the sharper objection:** `CONFIGURATION_GUIDE` **L131-132** records an authoritative tenant-sizing fact, *"a single NAT gateway with **sixty to two hundred students** behind it"*, and `NTF-FR-010` bounds a dispatch to one **tenant** ⇒ **500 already exceeds the largest realistic audience and 1000 is 5×** it, so **a ceiling that can never fire is a control in name only** — a stronger ground than "unprecedented". ⇒ **A1 = 200, range 1–500** recommended (default = documented tenant upper bound; ceiling matching both bulk precedents), **A2 = 250** offered and marked **weaker** because its headroom is unevidenced, **A3 = [OWED]**. ⚠ **The rate-limit limb separated and left [OWED]** — `ICFG-7` shows rate is modelled separately and **0** dispatch-rate evidence exists; a slot split is suggested. ⛔ **`NTF-CFG-003` classification NOT asserted** — `mandatory` **removes** opt-out under `NTF-FR-038`, a consent-adjacent Product judgement; the transactional/advisory division offered as **input only**. ✅ `NTF-CFG-004` unit+floor **[AUTHORITATIVE]** (rank-0 contract + executable guard), value **3**/**1–5** **[RECOMMENDED]**, `5` rejected as default (the only `5` is **adversarial**, `AUTH-3.9`, *"not configurable"*). ⚠ `NTF-CFG-005`: **B1 no-backoff-at-V1 + ADR** recommended since fixing behaviour **by omission** is still a decision; **B2 rejected**. ⛔ `NTF-CFG-006` **[OWED]**, bounded below by `NTF-INV-007`; `PRD-019`'s 30 days refused as inapplicable. ⛔⛔ `NTF-CFG-007` **[OWED], no number** — needs the provider timeout (`NTF-GAP-017`); `PRD-017` could derive `3` **only because** `ADR-0057` had fixed its 120 s companion. ⭐ Manifest: **one line**, `A-3` shape, **no `L2` waiver**, **ADR required first** (baseline §7, Rank 4). ⛔ `NTF-GAP-027` limb 3 **raised as an `MP-CON-08` defect**, not decided. ⛔⛔ `NTF-FR-065` **[OWED]** on two grounds — the repository has **never** ratified an SLO, and `ADR-0033` §7.1 bars reusing `ADR-0102`'s `PRD-015`-only office. **All five newly cited line numbers verified current by measurement.** New companion record: `PRD-010_AUTHORITY_DECISION_PACKAGE.md`. ⛔ **Stage 4 re-verified UNCHANGED: 2 PASS · 3 PARTIAL · 1 FAIL, deferral gate 27/27, NOT READY / NOT CONFERRED**; ⛔ **Stages 5/6/7 NOT ENTERED and no traceability row, `IMPL-*` range or baseline entry created**, exactly as directed. ⛔ **0 promotions · 0 authority acts · 0 values invented · 0 gaps closed (27 OPEN) · 0 identifiers minted · 0 ADRs (94) · 0 manifest · 0 frozen PRDs · 0 baseline · 0 registry · 0 matrix · 0 `IMPL-*` · 0 code · 0 tests.** Subject **v0.9 `DRAFT`** byte-unchanged. §1-70 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v2.1 — Stage-4 only: two gates repaired by agent-actionable work; check 3 still FAILS
+
+> ⛔ **Append-only.** §1-75 above are preserved byte-identical.
+> ⛔ **Scope honoured:** Stage 5/6/7 **not entered**; no `TRACEABILITY_MATRIX` row, no `IMPL-*`, no
+> baseline entry, no registry promotion.
+
+---
+
+## 76. What changed, and what deliberately did not
+
+Two defects were **objectively repairable without any human decision**, and both are now fixed in
+subject **v0.10**. ⛔ **No third fix was available** — everything else that blocks Stage 4 is an owed
+decision, and re-wording a missing decision so it *reads* complete is the one thing this scope forbids.
+
+| Fix | Gate affected | Nature |
+|---|---|---|
+| ⭐⭐ **§29 gains a `Verifies` column** — all **9** ACs now name the requirement(s) they test (was **8 of 9** unnamed) | **4** | Factual mapping; each target located and read before citing |
+| ⭐⭐ **Six gap-pointer rows labelled `[OPEN]`** — `NTF-FR-021`, `-022`, `-028`, `-029`, `-044`, `-065` | **1** | Classification of existing text; **0 words of obligation changed** |
+
+⚠⚠ **`NTF-AC-005` is the honest exception.** It tests the §11 permission matrix, which is expressly
+**`[PROPOSED]`** and registered as **`NTF-GAP-008`** pending `BC-18`'s authority. ⇒ Its cell cites the
+**gap**, not a requirement. ⛔ **Force-mapping it to a plausible-looking `NTF-FR-*` would have converted
+a missing authority into apparent coverage** — precisely the failure check 4 exists to catch. That
+refusal is the substantive content of this fix.
+
+---
+
+## 77. Stage-4 gate matrix — re-run against `PRD_LIFECYCLE.md` **L108-119**
+
+| Gate | Result | Evidence | Fix / decision required |
+|---|---|---|---|
+| 1 — Every requirement testable | ⚠ **PARTIAL** *(improved)* | 0/85 vague terms. ⭐ The six untestable rows are now **labelled `[OPEN]`**, so they no longer read as obligations. ⛔ The **underlying decisions are still absent** | `NTF-GAP-010`/`-011`/`-012`/`-013`/`-017`/`-020` — Product / Architecture / SRE |
+| 2 — Every exclusion states what must be impossible | ⚠ **PARTIAL** | `NTF-XC-001`…`-006` each state an impossibility. `NTF-FR-021`/`-022` are disclaimers, now `[OPEN]`-labelled rather than reading as exclusions | Whether they belong in §5 non-scope — **Product Owner** |
+| 3 — Every configurable has a default and a range | ⛔⛔ **FAIL** | **7 slots · 1 satisfied · 6 OWED** (§78) | **Architecture Owner** ×4, **Product Owner** ×2 |
+| 4 — Every AC maps to a requirement | ✅ **PASS** *(repaired)* | ⭐ **9 of 9** ACs carry a `Verifies` cell; **0 orphans**; §29 table verified well-formed at exactly **3 columns**. ⚠ Coverage **9/85 = 10.6%** is a **Stage-5** concern, not this check | ⛔ none for check 4 |
+| 5 — No requirement restates another PRD's | ✅ **PASS** | All 15 rows naming another BC constrain `BC-22`'s **own** conduct; `NTF-CFG-002` **consumes** `LCFG-2` | ⛔ none |
+| 6 — Business rules do not contradict Rank 1 | ✅ **PASS** | V1 channels = exactly In-App + Push (`MP-SCOPE-09`); `MP-GBR-21`/`-33`/`-34`/`-35` honoured | ⛔ none |
+
+**Gate:** *"conflicts closed or explicitly deferred with a reason and an owner"* → ✅ **SATISFIED 27/27.**
+
+⭐ **Movement: check 4 moves PARTIAL → PASS.** Result is now **3 PASS · 2 PARTIAL · 1 FAIL** (was
+2 PASS · 3 PARTIAL · 1 FAIL). ⛔ **Check 3 still fails, so Stage 4 cannot be conferred.**
+
+---
+
+## 78. Configuration matrix — evaluated against the current proposals
+
+| ID | Value | Range | Status | Authority | Evidence |
+|---|---|---|---|---|---|
+| `NTF-CFG-001` | **200** | **1 – 500** | ⚠ **[RECOMMENDED]** | Product Owner | ⭐ **Proposal ACCEPTED as evidence-consistent** — `CONFIGURATION_GUIDE` **L131-132** (*"sixty to two hundred students"*), ceiling matches `ICFG-5` (**1–500**) and honours `CFG-3`'s *"above 500 the control stops meaning anything"*. ⚠ **rate-limit limb still [OWED]** |
+| `NTF-CFG-002` | **`en`** | Supported set | ✅ **[AUTHORITATIVE]** | Product | `Library_PRD_v1.md` **L717** (FROZEN Rank 3); `CONFIGURATION_GUIDE.md` **L352** |
+| `NTF-CFG-003` | ⛔ none | `{mandatory, optional}` | Range **[EVIDENCE]** · default **[OWED]** | Product Owner | ⭐ *"authority required"* **confirmed correct** — `mandatory` **removes** opt-out (`NTF-FR-038`), a consent-adjacent Product judgement |
+| `NTF-CFG-004` | **3** | **1 – 5** | Unit+floor ✅ **[AUTHORITATIVE]** · value ⚠ **[RECOMMENDED]** | Architecture Owner | `job_runtime.dart` **L103-104**; `services.dart` **L152-159** (`INV-21`), **L196-221** |
+| `NTF-CFG-005` | *no configurable backoff at V1* | n/a | ⚠ **[RECOMMENDED]** + **ADR** | Architecture Owner | ⭐ **VERIFIED**: adapter has **0** delay primitives; **0** schedules at Rank 1–5; EA **L1808** places *"Retry & Backoff"* at **V2**. ⚠ **ADR required** because fixing V1 behaviour **by omission** is still a decision |
+| `NTF-CFG-006` | ⛔ none | ⛔ none | **[OWED]** | Architecture Owner | ⭐ **Dedup window** (subject **L523**) — ⛔ **not** "configuration authority"; bounded **below** by `NTF-INV-007` |
+| `NTF-CFG-007` | ⛔ none | ⛔ none | **[OWED]** | Architecture Owner | ⛔ **No number invented** — needs the provider timeout (`NTF-GAP-017`, absent FCM docs) |
+
+⇒ ⭐ **1 of 7 [AUTHORITATIVE]** · **3 [RECOMMENDED]** · **3 [OWED]**. ⛔ **0 promotions.**
+
+---
+
+## 79. Authority mechanism — located, and why it cannot be exercised here
+
+⭐ **The repository's mechanism is precise and was measured, not assumed:**
+
+1. **`PRD_LIFECYCLE.md` §6 L278** — *"Requirements reviewer | Stage 4"*. Conferral is that role's.
+2. **`ADR-0021` D-1 route 1** — *"owner supplies values"*; `ADR-0057` is the worked example, recording
+   **Product-Owner-supplied** values (*"attributed, not derived"*).
+3. **`ADR-0033` §7.1** — *"a conferral for one act is not a standing licence"* ⇒ a fresh, act-scoped
+   conferral is required each time.
+4. **`ADR-0104`** — the precedent for **designating** a Stage-3 reviewer, and it expressly records that
+   *"appointing a reviewer is not performing a review."*
+
+⛔⛔ **Measured this pass: `grep -rl` across all 94 ADRs for `PRD-010` / `NTF-CFG-*` / `NTF-GAP-*`
+returns 0 files.** No PO, AO, SRE or Requirements Reviewer act exists for this PRD. ⇒ ⛔ **The agent
+does not occupy any of those offices and does not simulate one.**
+
+---
+
+## 80. Content readiness vs conferral — reported separately, as directed
+
+| Dimension | Status |
+|---|---|
+| **Content** | ⚠ **NOT objectively complete.** Check 3 fails on **6 of 7** slots; the deficiency is **missing values**, not defective wording |
+| **Formal conferral** | ⛔ **ABSENT.** No Requirements Reviewer act exists |
+
+⭐ **Both are outstanding, so the two do not need to be distinguished in the verdict** — had content
+been complete with only conferral missing, that distinction would carry weight. It does not here, and
+saying so is more useful than implying the work is one signature away.
+
+---
+
+## 81. Verdict
+
+⛔⛔ **`STAGE 4 NOT CONFERRED — AUTHORITY OWED`**
+
+**Gates: 3 PASS · 2 PARTIAL · 1 FAIL.** Deferral gate ✅ **27/27**. Stage 3 **PASS 6/6** untouched.
+⛔ **Stages 5, 6, 7 NOT ENTERED.**
+
+**Remaining decisions:** `NTF-CFG-004` + `NTF-CFG-007` (one act, `ADR-0057` precedent) · `NTF-CFG-005`
+(+ ADR) · `NTF-CFG-006` — **Architecture Owner**. `NTF-CFG-001` ceiling + rate limb · `NTF-CFG-003`
+classification — **Product Owner**. `NTF-FR-065` — **fresh SRE conferral**. `NTF-GAP-027` limb 3 —
+**AO + PO**. Manifest `job_runtime` port — **AO, ADR first**. **Stage-4 conferral** — **Requirements
+Reviewer**.
+
+---
+
+## 82. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v2.1** | 2026-09-05 | ⭐⭐ **STAGE-4-ONLY pass: two gates repaired by genuinely agent-actionable work, and check 4 moves PARTIAL → PASS.** **Fix 1** — subject §29 gains a **`Verifies`** column so **9 of 9** ACs name the requirement(s) they test (was **8 of 9** unnamed), every mapping **located and read before citing**; table verified well-formed at exactly **3 columns**. ⚠⚠ **`NTF-AC-005` is the honest exception** — it tests the §11 matrix, which is expressly **`[PROPOSED]`** / **`NTF-GAP-008`**, so its cell cites the **gap**; ⛔ **force-mapping it would have converted a missing authority into apparent coverage**, and that refusal is the substantive content of the fix. **Fix 2** — six **gap-pointer** rows (`NTF-FR-021`/`-022`/`-028`/`-029`/`-044`/`-065`) labelled **`[OPEN]`**, because each states that a decision is **absent** rather than stating an obligation, so check 1 had been measured against text that **cannot** be testable by construction; ⛔ **0 words of obligation changed and the six gaps remain OPEN with owners unchanged** — re-wording a missing decision into text that reads complete is expressly refused. ⭐ **Gate result now 3 PASS · 2 PARTIAL · 1 FAIL** (was 2 · 3 · 1); deferral gate **27/27**. ⛔⛔ **Check 3 still FAILS — 7 slots, 1 satisfied, 6 owed** — so Stage 4 cannot be conferred. **Configuration proposals evaluated:** ⭐ `NTF-CFG-001` **200 / 1–500 ACCEPTED as evidence-consistent** (the earlier `500 / 1–1000` had been rejected against `CONFIGURATION_GUIDE` **L131-132**, `ICFG-5` and `CFG-3`), with the **rate-limit limb still [OWED]**; ⭐ `NTF-CFG-003` *"authority required"* **confirmed correct** since `mandatory` **removes** opt-out under `NTF-FR-038`; ⭐ `NTF-CFG-005` *"V1 no configurable backoff"* **VERIFIED** (adapter has **0** delay primitives, **0** schedules at Rank 1–5, EA **L1808** puts it at **V2**) **and an ADR is required**, because fixing V1 behaviour **by omission** is still a decision; ⭐ `NTF-CFG-006` **confirmed as the dedup window**, ⛔ **not** *"configuration authority"*; ⛔ `NTF-CFG-007` **[OWED]**, no number invented. ⇒ **1 [AUTHORITATIVE] · 3 [RECOMMENDED] · 3 [OWED]; 0 promotions.** ⭐ **Authority mechanism located precisely** — `PRD_LIFECYCLE.md` §6 **L278** (Stage 4 = Requirements Reviewer), `ADR-0021` D-1 route 1 / `ADR-0057` (*"owner supplies values … attributed, not derived"*), `ADR-0033` §7.1 (no standing licence), `ADR-0104` (*"appointing a reviewer is not performing a review"*) — and ⛔⛔ **`grep -rl` across all 94 ADRs returns 0 files for `PRD-010`**, so no office has acted and the agent occupies none. ⭐ **Content and conferral reported separately as directed**, with the finding that **both** are outstanding — the deficiency is **missing values, not defective wording** — rather than implying the work is one signature away. ⛔ **Scope honoured: Stages 5/6/7 NOT ENTERED; 0 `TRACEABILITY_MATRIX` rows, 0 `IMPL-*`, 0 baseline entries, 0 registry promotion.** ⛔ **0 values invented · 0 promotions · 0 gaps closed (27 OPEN) · 0 identifiers minted or renumbered · 0 requirements reworded · 0 ADRs (94) · 0 manifest · 0 frozen PRDs · 0 BC Map · 0 `MASTER_PRD` · 0 EA · 0 `CONFIGURATION_GUIDE` · 0 application code · 0 test code.** ⚠ A **tenth platform auto-backup** (`a685915`) captured the two content fixes during an interruption — content verified byte-correct, message not the author's, **disclosed not amended**. Subject advances **v0.9 → v0.10 `DRAFT`**. **Verdict: `STAGE 4 NOT CONFERRED — AUTHORITY OWED`.** §1-75 preserved byte-identical (`cmp` PASS). |

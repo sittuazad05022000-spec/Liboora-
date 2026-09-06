@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.24** |
+| **Version** | **v1.25** |
 | **Status** | Active — updated with every requirement implemented |
 | **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** |
 | **Baseline** | **BASELINE-2026-08-04-D** — ⚠ **not re-issued by §2G.** `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier only *"when a Rank 1–3 document changes version"*. `PRD-008` is **byte-unchanged** by this pass, so no baseline change is due, and this matrix is **unranked** — it confers nothing |
@@ -3546,3 +3546,88 @@ protection.
 | **v1.2** | 2026-08-04 | Added the Student Identity identifier inventory (§2B, 343 identifiers, all nine registers verified gap-free), the prefix-collision record (§2B.1, including the `PO-n` / `SPO-n` hazard), the Student Identity chapter map (§3B, 38 rows, four marked ⛔ rather than ⬜), configurable traceability (§6B) and event traceability (§7B). Added `ADR-0011` to §4 with its three amendments to the Identity Triad traced individually. **Added `MP-GBR-02` to §5 as an amended rule** — the first global business rule to appear in this matrix as changed rather than as baseline. Added §8A recording that **existing scaffold code implements the superseded pre-`ADR-0011` identity model** — nullable `Account.personId`, nullable `StudentRecord.personId`, `GlobalStudentProfile` owned by `domain/social`, and 4 of 5 seeded accounts with no identity — and that the rank-7.5 boundary is *declared but unenforced* pending `IMPL-014`. No authentication or Library row changed. No code changed. |
 | **v1.1** | 2026-08-03 | Added the Library identifier inventory (§2A, ~422 identifiers, zero collisions with the authentication register), the Library chapter map (§3A, 22 rows), Library configurable traceability (§6A) and Library event traceability (§7A). Added `ADR-0009` and `ADR-0010` to §4. Named `IMPL-100` as a second enforcer of `MP-GBR-08` and `IMPL-112` as a second consumer of `MP-DEP-03`. Recorded the `INV-n` / `INV-SEC-n` / `INV-XC-n` prefix hazard in §2A.1, and stated `INV-10`…`INV-16` in full with the failure each prevents. No authentication row changed. |
 | v1.0 | 2026-08-02 | Created. 1,517 authentication identifiers mapped. Closes audit finding `G-9`. |
+
+---
+
+## 2T. Identifier inventory — Notifications & Communication (`PRD-010`, the `BC-22` delivery context)
+
+**Stage 5 — CLAIMS registration.** Registered 2026-09-05, matrix **v1.24 → v1.25**, under the
+Stage-5 conferral at `docs/30-product/notifications/PRD-010_STAGE5_CONFERRAL.md`, which in turn
+stands on the **Stage-4 conferral** at `PRD-010_STAGE4_CONFERRAL.md`. ⛔ Registration before that
+Stage-4 conferral would have advanced the chain from its middle (`ADR-0082`).
+
+⚠⚠ **The pre-commit measurement is published WITH ITS REGEX**, per the §2K/§2L/§2S lesson.
+A bare `grep -c 'NTF-'` is unsafe here: the token also occurs in **`NTF-AL-*`** (the Stage-3
+alignment-finding register), **`NTF-OBD-001`** (an unresolved bounded decision) and **`NTF-RTD-001`**
+(a runtime-defect record) — **none of which is a PRD identifier**. Anchored to the seven published
+registers: `grep -coE 'NTF-(FR|BR|INV|XC|AC|GAP|CFG)-[0-9]{3}'` → **0** in this matrix before this
+edit, so **138 identifiers in a document whose Stage 3 and Stage 4 are CONFERRED were registered
+nowhere**.
+
+### 2T.0 The registers
+
+| Register | Members | Range | Contiguous from 001 | Duplicate definitions | Notes |
+|---|---|---|---|---|---|
+| `NTF-FR-*` | **67** | `001`–`067` | ✅ | **0** | functional requirements |
+| `NTF-BR-*` | **3** | `001`–`003` | ✅ | **0** | business rules |
+| `NTF-INV-*` | **11** | `001`–`011` | ✅ | **0** | invariants |
+| `NTF-XC-*` | **8** | `001`–`008` | ✅ | **0** | exclusions — **8 of 8** state an impossibility |
+| `NTF-AC-*` | **13** | `001`–`013` | ✅ | **0** | acceptance criteria, all Given/When/Then, all mapped |
+| `NTF-GAP-*` | **29** | `001`–`029` | ✅ | **0** | ⚠ **7 remain OPEN** — registration is not resolution (§2T.3) |
+| `NTF-CFG-*` | **7** | `001`–`007` | ✅ | **0** | ⭐ **7 declared, 4 configurable** — 3 reclassified NOT configurable (§2T.2) |
+
+⭐ **Obligation-bearing: 67 + 3 + 11 + 8 = 89.** ⭐ **Total identifiers: 138.** ⛔ **0 retired.**
+⛔ **Zero collisions in all three directions** (§2T.4).
+
+### 2T.1 Coverage — published with its denominator, in the same sentence
+
+**13 acceptance criteria against 89 obligation-bearing identifiers = 14.6 %.**
+
+⚠ **This is stated, not hidden.** `PRD-010` is a Stage-4-conferred **`DRAFT`**, not a frozen PRD, and
+`PRD_LIFECYCLE.md`'s Stage-4 check 4 requires that **every criterion map to a requirement** — which
+holds at **13 / 13, zero orphans** — **not** that every requirement carry a criterion. ⭐ The inverse
+direction is therefore **incomplete by design at this stage** and is recorded so no later reader
+mistakes 14.6 % for a defect in the registration.
+
+### 2T.2 ⭐⭐ Seven `NTF-CFG-*` declared, four configurable — the difference is deliberate
+
+| Slot | Class | Basis |
+|---|---|---|
+| `NTF-CFG-001` | ✅ configurable — 200, range 1–500 recipients | Product Owner act, `ADR-0108` §7.1; rate limb withdrawn as `NTF-XC-008` (`ADR-0110` §2) |
+| `NTF-CFG-002` | ✅ configurable — `en`, *Supported set* | ⭐ **Cited, not minted** — resolves to `LCFG-2` (`Library_PRD_v1.md` **L717**, FROZEN Rank 3) |
+| `NTF-CFG-003` | ✅ configurable — {`mandatory`, `optional`} + all 13 per-entry defaults | `ADR-0108` §7.2; per-entry matrix `ADR-0109` §5 |
+| `NTF-CFG-004` | ✅ configurable — 3, range 1–5, total attempts **incl. first** | `ADR-0108` §3 — ⚠ **suspensive condition survives** (§2T.3) |
+| `NTF-CFG-005` | ⛔ **NOT configurable** | Backoff deferred to V2 — `ADR-0108` §4.1 |
+| `NTF-CFG-006` | ⛔ **NOT configurable** | Dedup retention FIXED, bound to `FeedItem` lifetime — `ADR-0108` §4.2, on the `SEAT-FR-202` / `ITG-FR-017` precedent |
+| `NTF-CFG-007` | ⛔ **NOT configurable** | Runtime contract, not an operator setting — `ADR-0109` §4; obligation at `NTF-FR-067` |
+
+⭐ **A withdrawn slot keeps its identifier.** The register is **7** because the append-only doctrine
+forbids reusing `005`, `006` or `007`; check 3's target is **4**.
+
+### 2T.3 ⛔ What this registration does NOT confer
+
+- ⛔ It does **not** close any gap. **7 of 29** `NTF-GAP-*` remain **OPEN**: `-003` (PO), `-010` (PO), `-017` (**EXTERNAL EVIDENCE**), `-019` (`BC-25`/`PRD-023`), `-020` (SRE), `-028` (AO), `-029` (AO + implementation).
+- ⛔ It does **not** rank, baseline or freeze `PRD-010`. Status **`DRAFT`**; `PRD_REGISTRY.md` **`PLANNED`**; `DOCUMENTATION_BASELINE.md` holds **0** `PRD-010` rows.
+- ⛔ It does **not** confer Stage 6 or Stage 7, and allocates **no** `IMPL-*` range.
+- ⚠ It does **not** discharge `NTF-CFG-004`'s **suspensive condition** (`ADR-0108` §3.1): if an `NTF-CFG-007` value is later ratified shorter than 3 × the per-attempt bound, the budget **must** be re-ratified downward.
+- ⚠ It does **not** assert the V1 runtime satisfies the specification. `NTF-GAP-029` records two obligations the adapter does not enforce — the unbounded `await work()` and the unenforced transient/permanent split.
+
+### 2T.4 Collision safety — three directions, measured
+
+| Direction | Probe | Result |
+|---|---|---|
+| 1 — Is `NTF-` declared by any other PRD? | anchored declaration-row scan across `docs/30-product/` | ⭐ **0** — the only non-`PRD-010` hits are **citations** inside `ADR-0107`/`0108`/`0109` list cells, not declarations |
+| 2 — Was `NTF-` already in this matrix? | `grep -coE 'NTF-(FR\|BR\|INV\|XC\|AC\|GAP\|CFG)-[0-9]{3}'` | ⭐ **0** before this edit |
+| 3 — Do the seven registers collide with each other, or with a near-neighbour prefix? | per-register set comparison; `NTF-AL-*` / `NTF-OBD-*` / `NTF-RTD-*` excluded by anchoring | ⭐ **0** — and the exclusion is why the regex is published |
+
+### 2T.5 Subject hashes at registration
+
+| Artefact | sha256 (leading 16) |
+|---|---|
+| `PRD-010_NOTIFICATIONS_AND_COMMUNICATION.md` v0.14 | `63326045fefe8328` |
+| Gate instrument — `tool/docs_check/prd010_traceability.py` | **exit 0** |
+| Gate instrument — `tool/docs_check/prd010_stage5.py` | **exit 0** (after this registration) |
+
+⭐ **Two instruments, mutually non-importing**, per `ADR-0082`'s requirement that the mechanical gate be
+backed by independent checkers: one measures the registers, the other measures Stage-5 *entry
+conditions* — and the second is designed to **fail** while Stage 4 is unconferred.

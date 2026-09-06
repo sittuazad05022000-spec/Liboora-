@@ -336,7 +336,7 @@ PRD's authority.
 | **`NTF-FR-018`** | Students and Parents are **recipients** in V1. They **MUST NOT** initiate tenant communication. `[PROPOSED]` |
 | **`NTF-FR-019`** | A Parent **MUST** receive only notices concerning students within `guardianOf`. `[EVIDENCE]` `MP-GBR-21`, `MASTER_PRD` L111 |
 | **`NTF-FR-020`** | Where a notice concerns a student, the guardian copy **MUST** be a separate delivery record with its own consent and quiet-hours evaluation. |
-| **`NTF-FR-021`** | ⚠ Student→Staff inbound queries are **`NTF-GAP-010`** — ⛔ no two-way surface is created here |
+| **`NTF-FR-021`** | **`[OPEN]`** ⚠ Student→Staff inbound queries are **`NTF-GAP-010`** — ⛔ no two-way surface is created here |
 
 ---
 
@@ -349,7 +349,7 @@ PRD's authority.
 | **`NTF-XC-001`** | `BC-22` **MUST NOT** create, store, read or moderate a `Conversation` or `Message`. Those are `BC-12` aggregates (BC Map **L378**). |
 | **`NTF-XC-002`** | `BC-22` **MUST NOT** evaluate `canMessage`; that is `BC-11` over `E-16` (**L320**). |
 | **`NTF-XC-003`** | `BC-22` **MUST NOT** implement block, report or enforcement; `BC-11`/`BC-13` own them (**L318**). |
-| **`NTF-FR-022`** | ⚠ An **unread-message notification** is a legitimate `BC-22` capability **only if** `BC-12` emits a fact `BC-22` may consume. Measured: **L431** routes `messaging.MessageSent` to **`BC-13` and `BC-26` only** — ⛔ **not `BC-22`** ⇒ **`NTF-GAP-011`**, ⛔ **no edge invented** |
+| **`NTF-FR-022`** | **`[OPEN]`** ⚠ An **unread-message notification** is a legitimate `BC-22` capability **only if** `BC-12` emits a fact `BC-22` may consume. Measured: **L431** routes `messaging.MessageSent` to **`BC-13` and `BC-26` only** — ⛔ **not `BC-22`** ⇒ **`NTF-GAP-011`**, ⛔ **no edge invented** |
 
 ⭐⭐ **This is a real, load-bearing gap.** A notification for a new chat message *looks* obviously in
 scope, but the only event that would carry it is **not routed to `BC-22`**. Adding that route needs
@@ -373,8 +373,8 @@ sends the message inside WhatsApp.
 | **`NTF-FR-025`** | ⛔ **No** WhatsApp Business/Cloud API, provider, webhook, credential, token, template, billing, delivery status, inbound processing or message history. `[EVIDENCE]` EA V3 |
 | **`NTF-FR-026`** | ⛔ **No** WhatsApp message content may be stored in Liboora, and WhatsApp messages **MUST NOT** appear in communication history. |
 | **`NTF-FR-027`** | The action **MUST NOT** place a mobile number into any event. `[EVIDENCE]` `MP-GBR-34` |
-| **`NTF-FR-028`** | ⚠ Whether *use* of the redirect is itself an auditable event is **`NTF-GAP-012`** — it is a **read** of contact data plus an outbound hand-off; `BC-24`'s policy governs, and this PRD **MUST NOT** create a parallel audit. |
-| **`NTF-FR-029`** | ⚠ **Ownership caveat.** Because the redirect is a UI affordance over contact data and **not** a delivery channel, it may belong to the surface that owns the student profile (`BC-01`) rather than `BC-22` ⇒ **`NTF-GAP-013`** |
+| **`NTF-FR-028`** | **`[OPEN]`** ⚠ Whether *use* of the redirect is itself an auditable event is **`NTF-GAP-012`** — it is a **read** of contact data plus an outbound hand-off; `BC-24`'s policy governs, and this PRD **MUST NOT** create a parallel audit. |
+| **`NTF-FR-029`** | **`[OPEN]`** ⚠ **Ownership caveat.** Because the redirect is a UI affordance over contact data and **not** a delivery channel, it may belong to the surface that owns the student profile (`BC-01`) rather than `BC-22` ⇒ **`NTF-GAP-013`** |
 
 ⭐ **`NTF-FR-029` is an honest self-challenge**: the brief asked me to identify if this feature belongs
 elsewhere. On the evidence, it plausibly does.
@@ -436,7 +436,7 @@ per-recipient state.
 |---|---|
 | **`NTF-FR-042`** | State transitions **MUST** be monotonic; a delivered record **MUST NOT** return to queued. |
 | **`NTF-FR-043`** | `delivered` **MUST** mean provider-acknowledged, **not** user-seen. `read` is In-App only. |
-| **`NTF-FR-044`** | ⚠ Push `delivered` semantics depend on FCM's acknowledgement model ⇒ **`NTF-GAP-017`**; ⛔ no guarantee asserted. |
+| **`NTF-FR-044`** | **`[OPEN]`** ⚠ Push `delivered` semantics depend on FCM's acknowledgement model ⇒ **`NTF-GAP-017`**; ⛔ no guarantee asserted. |
 
 ---
 
@@ -973,7 +973,7 @@ repository**, asserting *more* authority than the one conferred act claimed. ⛔
 | **`NTF-FR-062`** | Communication history **MUST** show tenant-scoped sent operations, per-recipient delivery status and read state (In-App). |
 | **`NTF-FR-063`** | ⛔ WhatsApp-redirect messages **MUST NOT** appear in communication history. `[EVIDENCE]` §14 |
 | **`NTF-FR-064`** | Observability **MUST** expose volume, success/failure, retry counts, queue depth, dedup-suppression count, bulk operation status. |
-| **`NTF-FR-065`** | ⚠ SLO/SLI targets are **`NTF-GAP-020`** — an **SRE/Observability** act. ⚠ Note `ADR-0102` conferred that office **for `PRD-015` only** and `ADR-0033` §7.1 forbids reuse ⇒ ⛔ **not borrowed.** |
+| **`NTF-FR-065`** | **`[OPEN]`** ⚠ SLO/SLI targets are **`NTF-GAP-020`** — an **SRE/Observability** act. ⚠ Note `ADR-0102` conferred that office **for `PRD-015` only** and `ADR-0033` §7.1 forbids reuse ⇒ ⛔ **not borrowed.** |
 
 ---
 
@@ -1079,19 +1079,24 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 
 ---
 
-## 29. Acceptance criteria (sample — the register is not complete at v0.1)
+## 29. Acceptance criteria (sample — the register is deliberately incomplete)
 
-| ID | Criterion |
-|---|---|
-| `NTF-AC-001` | Given a `MembershipExpiringSoon` event delivered twice with the same `eventId`, when processed, then exactly **one** user-visible notification exists and the suppression counter increments by 1. |
-| `NTF-AC-002` | Given a dispatch preview showing N recipients, when one loses eligibility before confirmation, then that recipient receives nothing and the operation reports N−1 sent. |
-| `NTF-AC-003` | Given an actor in tenant A, when any audience is resolved, then no recipient from tenant B appears — verified by a cross-tenant fixture. |
-| `NTF-AC-004` | Given any emitted `BC-22` event or payload, when inspected, then it contains no mobile number. |
-| `NTF-AC-005` | Given a Reception Staff account with no explicit grant, when Send-to-All is attempted, then it is denied and the denial is audited. |
-| `NTF-AC-006` | Given the WhatsApp redirect is used, when communication history is queried, then no WhatsApp message record exists. |
-| `NTF-AC-007` | Given a guardian outside `guardianOf` for a student, when a notice for that student is produced, then the guardian receives nothing and the denial is indistinguishable from not-found. |
-| `NTF-AC-008` | Given a transient channel failure, when retried to success, then exactly one user-visible notification exists. |
-| ⭐⭐ `NTF-AC-009` | Given a business operation that emits a fact over `E-23`, when the notification address for a recipient **cannot be resolved**, then that delivery record terminates as `failed`, **and** the originating business operation remains successful and un-rolled-back — verified by asserting the emitting aggregate's post-state is unchanged from the success path. `[EVIDENCE]` `NTF-INV-011`, `CM-3`, `EBR-1030` |
+⚠ **Coverage is measured, not claimed: 9 criteria against 85 obligation-bearing identifiers (10.6%).**
+The register is a **sample** and Stage 5 will require bidirectional coverage. ⭐ **Every criterion now
+names the requirement it verifies**, so Stage-4 check 4 (*"every acceptance criterion maps to a
+requirement"*) is satisfiable by inspection rather than by inference.
+
+| ID | Criterion | ⭐ Verifies |
+|---|---|---|
+| `NTF-AC-001` | Given a `MembershipExpiringSoon` event delivered twice with the same `eventId`, when processed, then exactly **one** user-visible notification exists and the suppression counter increments by 1. | `NTF-INV-007`, `NTF-FR-045` |
+| `NTF-AC-002` | Given a dispatch preview showing N recipients, when one loses eligibility before confirmation, then that recipient receives nothing and the operation reports N−1 sent. | `NTF-FR-011`, `NTF-FR-015` |
+| `NTF-AC-003` | Given an actor in tenant A, when any audience is resolved, then no recipient from tenant B appears — verified by a cross-tenant fixture. | `NTF-INV-008`, `NTF-INV-010` |
+| `NTF-AC-004` | Given any emitted `BC-22` event or payload, when inspected, then it contains no mobile number. | `NTF-FR-058` |
+| `NTF-AC-005` | Given a Reception Staff account with no explicit grant, when Send-to-All is attempted, then it is denied and the denial is audited. | ⚠ §11 matrix — **`NTF-GAP-008`** |
+| `NTF-AC-006` | Given the WhatsApp redirect is used, when communication history is queried, then no WhatsApp message record exists. | `NTF-FR-063` |
+| `NTF-AC-007` | Given a guardian outside `guardianOf` for a student, when a notice for that student is produced, then the guardian receives nothing and the denial is indistinguishable from not-found. | `NTF-FR-057`, `NTF-FR-056` |
+| `NTF-AC-008` | Given a transient channel failure, when retried to success, then exactly one user-visible notification exists. | `NTF-FR-047`, `NTF-INV-007` |
+| ⭐⭐ `NTF-AC-009` | Given a business operation that emits a fact over `E-23`, when the notification address for a recipient **cannot be resolved**, then that delivery record terminates as `failed`, **and** the originating business operation remains successful and un-rolled-back — verified by asserting the emitting aggregate's post-state is unchanged from the success path. `[EVIDENCE]` `NTF-INV-011`, `CM-3`, `EBR-1030` | ⭐⭐ `NTF-INV-011` |
 
 ---
 

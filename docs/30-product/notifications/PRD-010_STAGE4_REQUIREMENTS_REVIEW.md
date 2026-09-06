@@ -1268,3 +1268,107 @@ Full matrix, evidence and the seven owed decisions:
 | Version | Date | Change |
 |---|---|---|
 | **v1.9** | 2026-09-05 | ⛔⛔ **A full Stage 4 → Stage 7 advance was directed and the governance-correct outcome is a REFUSAL: `STAGE 7 NOT CONFERRED — AUTHORITY OWED`.** Stage 4 was **re-run from scratch** against `PRD_LIFECYCLE.md` **L108-119** — **2 PASS · 3 PARTIAL · 1 FAIL**, deferral gate **re-counted and SATISFIED 27/27**, verdict **unchanged**. ⭐⭐⭐ **The decisive measurement is new to this pass: `grep -rl` across all **94** ADRs returns **0 files** referencing `PRD-010`, `NTF-CFG-*` or `NTF-GAP-*`** ⇒ **no Product Owner, Architecture Owner, SRE or Requirements Reviewer act exists for this PRD anywhere in the repository**, so every value it needs is **unowned** and no amount of further authoring can advance the stage. Stages 5, 6 and 7 were **located in the authority and tested for entry eligibility** rather than skipped: **`NTF-` = 0** in `TRACEABILITY_MATRIX.md`, **0** `IMPL-*` allocated, **0** baseline rows ⇒ all three **NOT ENTERED**. ⭐⭐ **Registering the `NTF-` prefix and allocating `IMPL-227`+ were mechanically possible and DELIBERATELY REFUSED** — Stage 5's gate presupposes a **conferred** Stage 4, and performing its mechanical half against a NOT-READY subject would create a matrix row implying a review that does not exist, which is precisely the cosmetic completeness the instruction forbids; recorded as a **refusal**, not an omission. Stage-7 matrix: **9 of 14 PASS, 5 FAIL**, with gates 2/3/4/5/9 each **independently fatal**. A **decision package** for the owed authorities is published (retry `3`/`1–5` with its full derivation and the `5`-is-adversarial rejection; deadline **OWED** with no number invented; backoff's three options with **none chosen**; the one-line `A-3`-shape manifest amendment needing **no `L2` waiver**), plus **seven owed decisions in dependency order** — ⛔ **none agent-actionable, none manufactured**. ⛔ **`NTF-GAP-027` limb 3 untouched** (an `MP-CON-08` *"defect to be raised"*); ⛔ **`NTF-GAP-025` confirmed non-blocking**. New companion record created: `PRD-010_STAGE4_TO_STAGE7_EXECUTION_RECORD.md`. ⛔⛔ **0 values invented · 0 [RECOMMENDED] converted to [AUTHORITATIVE] · 0 gaps closed (27 OPEN) · 0 identifiers minted or renumbered · 0 requirements reworded · 0 ACs changed · 0 ADRs (94) · 0 manifest · 0 BC Map · 0 `MASTER_PRD` · 0 EA · 0 dependency matrix · 0 `CONFIGURATION_GUIDE` · 0 `TRACEABILITY_MATRIX` · 0 `IMPL-*` · 0 frozen PRDs · 0 baseline · 0 registry (`PLANNED`) · 0 application code · 0 test code.** Subject **v0.9 `DRAFT`** byte-unchanged (`sha256 343857f3…b99bb1`). Highest legitimately completed stage: **Stage 3 (PASS 6/6)**. §1-64 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v2.0 — authority decision package prepared; two proposed values REJECTED on evidence; Stage 4 unchanged
+
+> ⛔ **Append-only.** §1-70 above are preserved byte-identical.
+
+---
+
+## 71. What was directed, and what the evidence produced
+
+Recommendations were directed for the eleven owed decision lines, with a starting proposal of
+**`NTF-CFG-001` = 500, range 1–1000**. ⭐⭐ **Two items in the proposal as received are defective, and
+both were found before evaluation began.**
+
+**⭐ Defect 1 — `NTF-CFG-006` is mislabelled.** It arrives as *"configuration authority"*. Measured at
+subject **L523**, `NTF-CFG-006` is the **deduplication window**. *"Configuration authority"* was
+**`NTF-FR-054`**, which subject **v0.3** reclassified **out** of the configuration register under
+`FIL-XC-009` (a module may not define a *"resolution order"*) and `ADR-0017` §2.5 (it belongs to
+`PRD-023`). ⇒ Evaluated as the **dedup window**; ⛔ **no "configuration authority" slot created**, since
+that would re-import an obligation already ruled out of scope.
+
+**⭐⭐ Defect 2 — `500 / 1–1000` is REJECTED on both limbs.** See §72.
+
+---
+
+## 72. ⛔⛔ Why the proposed bulk ceiling fails — and the sharper reason
+
+**The range first.** Every comparable bulk/abuse ceiling in the repository caps at **≤ 500**:
+
+| Precedent | Default | Range |
+|---|---|---|
+| `ICFG-5` outstanding invitations per library | **50** | **1 – 500** |
+| `ICFG-6` acceptances per `IT-3` code | **25** | **1 – 200** |
+| `ICFG-7` invitations per hour per library | **20** | **1 – 100** |
+| `CFG-3` OTP requests per origin/hour | **100** | **50 – 500** |
+
+⇒ `CFG-3`'s own rationale supplies the refutation verbatim: *"**Above 500:** the control stops meaning
+anything."* ⛔ **`1000` exceeds every ceiling in the register.**
+
+**⭐⭐ The default fails for a better reason, and this is the substantive finding.**
+`CONFIGURATION_GUIDE.md` **L131-132** records an authoritative **tenant-sizing** fact:
+
+> *"A study hall is a **single NAT gateway with sixty to two hundred students behind it**."*
+
+And `NTF-FR-010` requires *"All"* to mean *"an explicitly named, **tenant-bounded**, role-filtered
+eligible audience."* ⇒ ⭐ **A bulk dispatch cannot exceed one tenant's population of ~60–200.** So
+**500 already exceeds the largest realistic audience and 1000 is 5×** it. ⛔ **A ceiling that can never
+fire is a control in name only** — which is a stronger objection than "unprecedented".
+
+⇒ ⭐ **Alternative A1: default 200, range 1–500** — the default being the documented upper bound of a
+real tenant, the range ceiling matching both bulk precedents exactly. **A2 = 250** offered and marked
+**weaker** (its headroom is unevidenced). **A3 = [OWED]** if the PO holds tenant population is not yet
+a fixed product fact. ⚠ All three remain **[RECOMMENDED — NOT AUTHORITATIVE]**.
+
+⚠ **The rate-limit limb is separated and left [OWED]** — `NTF-CFG-001` bundles a *count* and a *rate*;
+`ICFG-7` shows the repository models issuing-rate separately, and **0** notification-dispatch rate
+evidence exists at any rank. A slot split is suggested to the PO.
+
+---
+
+## 73. The other lines — summary
+
+| Line | Result |
+|---|---|
+| `NTF-CFG-003` | Range `{mandatory, optional}` **[EVIDENCE]**; ⛔ per-entry default **[OWED]** — marking an entry `mandatory` **removes** opt-out under `NTF-FR-038`, a consent-adjacent Product judgement. The transactional/advisory division is offered as **input**, not an answer |
+| `NTF-CFG-004` | Unit + floor ✅ **[AUTHORITATIVE]**; value **3** / range **1–5** ⚠ **[RECOMMENDED]**; ratify **jointly** with `NTF-CFG-007` (`ADR-0057` precedent) |
+| `NTF-CFG-005` | ⚠ **B1 "no backoff at V1" + ADR** recommended — fixing behaviour **by omission** is still a decision; **B2** (configurable now) ⛔ rejected, nothing would execute a value |
+| `NTF-CFG-006` | ⛔ **[OWED]**, but **bounded below by `NTF-INV-007`**; `PRD-019`'s 30-day retention ⛔ refused as inapplicable |
+| `NTF-CFG-007` | ⛔ **[OWED] — no number**; the inequality needs the provider timeout (`NTF-GAP-017`, absent FCM docs) |
+| `job_runtime` | ⭐ one line, `A-3` shape, **no `L2` waiver**; ✅ **ADR required first** (baseline §7, Rank 4) |
+| `NTF-GAP-027` limb 3 | ⛔ **[OPEN]** — raised as an **`MP-CON-08` defect**, not decided |
+| `NTF-FR-065` | ⛔ **[OWED]** — the repository has **never** ratified an SLO, and `ADR-0033` §7.1 bars reusing `ADR-0102` |
+
+⇒ ⭐ **1 of 11 lines is [AUTHORITATIVE]** (`NTF-CFG-002`), and it already was. **0 promotions.**
+
+---
+
+## 74. Stage 4 — re-verified, unchanged
+
+The governing measurement was **re-run** this pass: `grep -rl` across all **94** ADRs for
+`PRD-010` / `NTF-CFG-*` / `NTF-GAP-*` → ⛔⛔ **0 files**. **No authority act has arrived.**
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Testability | ⚠ **PARTIAL** |
+| 2 | Exclusions | ⚠ **PARTIAL** |
+| 3 | Configuration defaults/ranges | ⛔ **FAIL — 1 of 7 satisfied** |
+| 4 | AC → requirement mapping | ⚠ **PARTIAL** — 0 orphans, coverage 9/85 |
+| 5 | No cross-PRD restatement | ✅ **PASS** |
+| 6 | No Rank-1 contradiction | ✅ **PASS** |
+
+**Deferral gate:** ✅ **SATISFIED 27/27.**
+⛔⛔ **STAGE 4 REMAINS NOT READY / NOT CONFERRED.** ⛔ **Stages 5, 6, 7 NOT ENTERED** — and no
+traceability row, `IMPL-*` range or baseline entry was created, exactly as directed.
+
+---
+
+## 75. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v2.0** | 2026-09-05 | ⭐⭐ **Authority decision package prepared for all eleven owed lines; TWO items in the instruction's own proposal REJECTED on measured evidence, and the governing authority measurement re-run.** ⛔⛔ **`grep -rl` across all 94 ADRs for `PRD-010`/`NTF-CFG-*`/`NTF-GAP-*` returns 0 files** ⇒ **no authority act has arrived**, so every line remains **[RECOMMENDED]** or **[OWED]** and **0 promotions** were performed. ⭐ **Defect 1 — `NTF-CFG-006` mislabelled** in the instruction as *"configuration authority"*; measured at subject **L523** it is the **deduplication window**, while *"configuration authority"* was `NTF-FR-054`, reclassified **out** of the register at v0.3 under `FIL-XC-009` and `ADR-0017` §2.5 ⇒ evaluated as the dedup window, ⛔ **no new slot created**. ⭐⭐ **Defect 2 — `NTF-CFG-001 = 500, range 1–1000` REJECTED on both limbs.** Range: every comparable ceiling caps at **≤ 500** (`ICFG-5` 50/1–500 · `ICFG-6` 25/1–200 · `ICFG-7` 20/1–100 · `CFG-3` 100/50–500) and `CFG-3`'s own rationale reads *"**Above 500:** the control stops meaning anything."* ⭐⭐ **Default — the sharper objection:** `CONFIGURATION_GUIDE` **L131-132** records an authoritative tenant-sizing fact, *"a single NAT gateway with **sixty to two hundred students** behind it"*, and `NTF-FR-010` bounds a dispatch to one **tenant** ⇒ **500 already exceeds the largest realistic audience and 1000 is 5×** it, so **a ceiling that can never fire is a control in name only** — a stronger ground than "unprecedented". ⇒ **A1 = 200, range 1–500** recommended (default = documented tenant upper bound; ceiling matching both bulk precedents), **A2 = 250** offered and marked **weaker** because its headroom is unevidenced, **A3 = [OWED]**. ⚠ **The rate-limit limb separated and left [OWED]** — `ICFG-7` shows rate is modelled separately and **0** dispatch-rate evidence exists; a slot split is suggested. ⛔ **`NTF-CFG-003` classification NOT asserted** — `mandatory` **removes** opt-out under `NTF-FR-038`, a consent-adjacent Product judgement; the transactional/advisory division offered as **input only**. ✅ `NTF-CFG-004` unit+floor **[AUTHORITATIVE]** (rank-0 contract + executable guard), value **3**/**1–5** **[RECOMMENDED]**, `5` rejected as default (the only `5` is **adversarial**, `AUTH-3.9`, *"not configurable"*). ⚠ `NTF-CFG-005`: **B1 no-backoff-at-V1 + ADR** recommended since fixing behaviour **by omission** is still a decision; **B2 rejected**. ⛔ `NTF-CFG-006` **[OWED]**, bounded below by `NTF-INV-007`; `PRD-019`'s 30 days refused as inapplicable. ⛔⛔ `NTF-CFG-007` **[OWED], no number** — needs the provider timeout (`NTF-GAP-017`); `PRD-017` could derive `3` **only because** `ADR-0057` had fixed its 120 s companion. ⭐ Manifest: **one line**, `A-3` shape, **no `L2` waiver**, **ADR required first** (baseline §7, Rank 4). ⛔ `NTF-GAP-027` limb 3 **raised as an `MP-CON-08` defect**, not decided. ⛔⛔ `NTF-FR-065` **[OWED]** on two grounds — the repository has **never** ratified an SLO, and `ADR-0033` §7.1 bars reusing `ADR-0102`'s `PRD-015`-only office. **All five newly cited line numbers verified current by measurement.** New companion record: `PRD-010_AUTHORITY_DECISION_PACKAGE.md`. ⛔ **Stage 4 re-verified UNCHANGED: 2 PASS · 3 PARTIAL · 1 FAIL, deferral gate 27/27, NOT READY / NOT CONFERRED**; ⛔ **Stages 5/6/7 NOT ENTERED and no traceability row, `IMPL-*` range or baseline entry created**, exactly as directed. ⛔ **0 promotions · 0 authority acts · 0 values invented · 0 gaps closed (27 OPEN) · 0 identifiers minted · 0 ADRs (94) · 0 manifest · 0 frozen PRDs · 0 baseline · 0 registry · 0 matrix · 0 `IMPL-*` · 0 code · 0 tests.** Subject **v0.9 `DRAFT`** byte-unchanged. §1-70 preserved byte-identical (`cmp` PASS). |

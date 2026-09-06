@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `docs/30-product/notifications/PRD-010_NOTIFICATIONS_AND_COMMUNICATION.md` |
-| **Version** | **v0.12** |
+| **Version** | **v0.13** |
 | **Status** | ⛔ **`DRAFT`** — ⛔ **not reviewed, not conferred, not frozen, not baselined, not ranked** |
 | **Date** | 2026-09-05 |
 | **Bounded context** | **`BC-22` Notification Delivery** `[GENERIC]`, family *Communication*, **V1** — BC Map **L131** |
@@ -436,7 +436,7 @@ per-recipient state.
 |---|---|
 | **`NTF-FR-042`** | State transitions **MUST** be monotonic; a delivered record **MUST NOT** return to queued. |
 | **`NTF-FR-043`** | `delivered` **MUST** mean provider-acknowledged, **not** user-seen. `read` is In-App only. |
-| **`NTF-FR-044`** | **`[OPEN]`** ⚠ Push `delivered` semantics depend on FCM's acknowledgement model ⇒ **`NTF-GAP-017`**; ⛔ no guarantee asserted. |
+| ⭐⭐ **`NTF-FR-044`** | **`delivered` for Push means `BC-22` durably recorded a successful `BC-31` acknowledgement — and NOTHING MORE.** A Push delivery **MUST** be marked `delivered` **when, and only when**, `BC-22` has durably recorded a successful `BC-31` egress acknowledgement for that `DeliveryMessage`; a `BC-31` failure or absent acknowledgement **MUST NOT** be recorded as `delivered`. ⛔ **This state MUST NOT be presented, documented or relied upon as evidence that the notification reached a device, was displayed, or was seen by a person.** ⭐ **Testable without asserting any provider fact** — it asserts only **this system's own record**, the `ITG-FR-019` shape (*"**MUST** return `2xx` when, **and only when**, it has durably accepted the event"*). ⚠ Whether FCM's acknowledgement additionally implies device receipt is **`NTF-GAP-017`** **`[OWED — EXTERNAL EVIDENCE]`**, and ⛔ **no such implication is claimed here**. |
 
 ---
 
@@ -516,7 +516,7 @@ so this subsection follows `E-19` as `PRD-017` does — and records the disagree
 
 | ID | Configurable | Why it must be configurable | Value owner | Value status |
 |---|---|---|---|---|
-| **`NTF-CFG-001`** | **Bulk recipient-count ceiling** and **dispatch rate limit** (`NTF-FR-017`) | Abuse and cost control that is **not** an entitlement — the `FIL-CFG-009` shape | **Product Owner** | ⚠ **PARTIAL — ceiling RATIFIED, rate limb OWED.** ⭐ Ceiling **default 200, range 1–500 recipients** — **`[AUTHORITATIVE]`** by Product Owner act, [`ADR-0108`](../../00-governance/adr/ADR-0108-prd-010-configuration-classes-and-gap-011-exclusion.md) §7.1. ⛔ **Rate / interval remains `[OWED — Product Owner]`** (`NTF-GAP-007`) — no rate value exists at any rank |
+| **`NTF-CFG-001`** | **Bulk recipient-count ceiling** (`NTF-FR-017`) | Abuse and cost control that is **not** an entitlement — the `FIL-CFG-009` shape | **Product Owner** | ✅ **COMPLETE at v0.13 — ceiling default 200, range 1–500 recipients** **`[AUTHORITATIVE]`** (PO act, `ADR-0108` §7.1). ⭐⭐ **The dispatch RATE / INTERVAL limb is WITHDRAWN from this slot at v0.13** — it is **not** a `PRD-010` configurable; see **`NTF-XC-008`** and §20.7 (`ADR-0110` §2). ⛔ **No rate number invented** |
 | **`NTF-CFG-002`** | **Template language / locale** (`NTF-FR-037`) | Locale must change without a template redeploy | **Product** | ⭐ **CITED, NOT MINTED** — resolves to **`LCFG-2`** (`Library_PRD_v1.md` **L717**, FROZEN Rank 3; `CONFIGURATION_GUIDE.md` **L352**): default **`en`**, range *"Supported set"*, owner **Product**. See §20.2 |
 | **`NTF-CFG-003`** | **Category classification register** — each catalogue entry's **mandatory / optional** class (`NTF-FR-038`, `NTF-FR-040`) | Adding a catalogue entry must not change the contract | **Product Owner** | ✅ **COMPLETE at v0.12 — allowed set + all 13 per-entry defaults.** Allowed set **{`mandatory`, `optional`}** **`[AUTHORITATIVE]`** (PO act, `ADR-0108` §7.2). ⭐ **Per-entry matrix at §20.6**: 10 `mandatory`, 3 `optional`; **8 `[DERIVED]`** from entitlement/financial/account-lifecycle effect, **2 `[DERIVED]`** from the frozen `AUTH-8.52` security-significant category, **3 `[RECOMMENDED — SELF-SELECTED EXPERT DECISION]`** (`ADR-0109` §5). ⭐⭐ FROZEN `AUTH-8.52`/`-9.29`/`-9.43`/`-9.76` notices are `mandatory` and **MUST NOT** be opt-outable. ⚠ Reminder **timing** for `MembershipExpiringSoon`/`FeeDueRaised` stays `NTF-GAP-003` **`[OWED — PO]`** — a separate slot, ⛔ not this one |
 | **`NTF-CFG-004`** | **Retry attempt bound** (`NTF-FR-049`) | Bounds the retry loop so a permanently failing delivery reaches a terminal state rather than retrying forever | **Architecture Owner** | ✅ **RATIFIED — CONDITIONALLY.** ⭐ **Default 3 total attempts, range 1–5**, unit **total attempts including the first** — Architecture Owner act, `ADR-0108` §3. Unit **`[AUTHORITATIVE]`** from the rank-0 contract (`job_runtime.dart` **L103-104**); floor **≥ 1** enforced **executably** (`services.dart` **L152-159**, `INV-21`). ⚠ **Condition:** representation must match the `JobRuntime` contract — **verified satisfied** (`job_runtime.dart` **L113-114**). ⚠ If a later `NTF-CFG-007` value is shorter than 3 × per-attempt duration, attempts 2–3 become unreachable and this bound **MUST be re-ratified downward** (`ADR-0108` §3.1) |
@@ -968,6 +968,23 @@ repository**, asserting *more* authority than the one conferred act claimed. ⛔
 
 ⛔ **What this matrix does NOT decide:** reminder **timing** (`NTF-GAP-003`, **PO**) and moderator **recipient** identity (the emitter's, per BC Map **L432** and `BC-13`'s §8 row). ⚠ **Three entries are expert recommendations, not derivations**, and are labelled so a Product Owner can overturn any of them without touching the other ten.
 
+#### 20.7 ⭐ Why the dispatch rate limb is NOT a `PRD-010` configurable
+
+⭐⭐ **The audit asked the wrong question first.** *"Which rate number?"* has no answer in this repository; *"whose parameter is a rate?"* does.
+
+| Rate precedent | Subject it bounds | Transfers? |
+|---|---|---|
+| `CFG-1` (5/number/hour) · `CFG-3` (100/origin/hour) · `CFG-11` (5/24 h) | ⛔ **adversary** — OTP guessing, SMS cost, claim abuse | ⛔ No |
+| `ICFG-7` (20/library/hour) · `ICFG-8` (20/origin/hour) · `ICFG-9`/`ICFG-10` | ⛔ **adversary / enumeration**, then throttle | ⛔ No |
+| `LCFG-12` (page size 20) | ⛔ *"Bounds **enumeration** rate"* | ⛔ No |
+| `BC-11` `RateLimitCounter` | ⛔ friend-request abuse, **`BC-11`-owned** | ⛔ No |
+
+⇒ ⭐⭐ **Every rate value in the repository bounds an adversary or an enumeration. None bounds legitimate throughput of a system-initiated dispatch.** Borrowing one would import a security-throttle rationale into a capacity parameter — the same category error this document already refused when it declined `AUTH-3.9`'s `5`.
+
+⭐ **And Rank 4 already assigns the subject elsewhere:** `Quota` is a `Tenant` entity (**`BC-19`**, BC Map **L381**); `UsageCounter` and `Limit` are `EntitlementSet` entities (**`BC-21`**, **L383**); outbound pacing sits with **`BC-31`** (**L140** — *"retries, idempotent delivery"*). With FROZEN **`FIL-XC-009`** forbidding a module from defining another's configuration default or range, a rate published here would be `BC-22` setting another context's limit.
+
+⛔ **This is not a claim that no rate limit should exist** — only that **this PRD is not its home**. ⛔ **No number is proposed, here or to the owning contexts.**
+
 ## 21. Platform vs tenant boundary
 
 | ID | Requirement |
@@ -1042,6 +1059,7 @@ with a PRD, fix this register"* — ⛔ **which is a Governance Owner act and is
 | **`NTF-XC-005`** | `BC-22` **MUST NOT** call a domain context synchronously to enrich a notification. |
 | **`NTF-XC-006`** | Push egress **MUST** traverse `BC-31`; ⛔ no direct vendor call. |
 | ⭐ **`NTF-XC-007`** | `BC-22` **MUST NOT** emit an audit event, a `DeliveryMessage`, a `FeedItem` or any stored record for use of the external WhatsApp redirect. It is a **UI action over already-visible contact data** (`NTF-FR-023`) and is **not** a `BC-22` auditable action (`NTF-FR-028`). `[EVIDENCE]` FROZEN `AUD-FR-003` / `AUD-XC-011`; `ADR-0109` §2 |
+| ⭐ **`NTF-XC-008`** | `BC-22` **MUST NOT** define, default, range or publish a **dispatch rate limit, send-rate or throughput quota**. Tenant-scoped quota is **`BC-19`**'s (`Quota`; BC Map **L128**, **L381**), metered usage limits are **`BC-21`**'s (`UsageCounter`, `Limit`; **L383**), and outbound provider pacing is **`BC-31`**'s (**L140** — *"retries, idempotent delivery"*). ⛔ Publishing a rate here would be this module setting another context's limit — the `FIL-XC-009` prohibition. `[EVIDENCE]` `ADR-0110` §2 |
 
 ---
 
@@ -1082,7 +1100,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | `NTF-GAP-004` | Moderator audience definition for `AbuseReportFiled` | **Product Owner** + `BC-13` owner | That entry |
 | ⭐ `NTF-GAP-005` | 6 requested notifications have **no source event** (grace period, fee payment failed, outstanding balance, absence, staff lifecycle) | **Architecture + Product Owner** | Those entries |
 | ⭐ `NTF-GAP-006` | ⚠ BC Map **L437** routes `iam.*` to `BC-24`/`BC-26` only, but Auth §10 lists *"notification"* as a consumer — **contradiction** | **Architecture Owner** | Security notices |
-| `NTF-GAP-007` | Bulk recipient ceiling and rate limits | **Product Owner** | `NTF-FR-017` |
+| ~~`NTF-GAP-007`~~ | ✅ **CLOSED at v0.13** — the **ceiling** is ratified (200 / 1–500, `ADR-0108` §7.1) and the **rate limb is WITHDRAWN** as `NTF-XC-008`: Rank 4 assigns quota to `BC-19`, metered limits to `BC-21` and outbound pacing to `BC-31` (`ADR-0110` §2) | **Product Owner** (ceiling) | Bulk dispatch |
 | `NTF-GAP-008` | The permission matrix requires `BC-18` authority | **Authorization owner** | §11 |
 | `NTF-GAP-009` | Whether scheduling is V1 | **Product Owner** | Scheduling |
 | `NTF-GAP-010` | ⚠ **NARROWED at v0.12** — V1 placement is **settled** (§5 non-scope, derived from `NTF-FR-018`). ⛔ Only the **V2 scope question** remains | **Product Owner** | Two-way surface |
@@ -1092,7 +1110,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | `NTF-GAP-014` | Language/localization set | **Product Owner** | Templates |
 | `NTF-GAP-015` | Mandatory vs optional classification | **Product Owner** | Opt-out |
 | `NTF-GAP-016` | `BC-25` ownership is **contested** | **Architecture Owner** | `NTF-FR-041` |
-| `NTF-GAP-017` | Push `delivered` semantics | **Architecture Owner** | Lifecycle |
+| `NTF-GAP-017` | ⚠ **NARROWED at v0.13** — `NTF-FR-044` is now **testable** on `BC-22`'s own durable `BC-31` acknowledgement record (`NTF-AC-013`), so this no longer blocks Gate 1. ⛔ Only the question whether a provider acknowledgement **additionally implies device receipt** remains | **`[OWED — EXTERNAL EVIDENCE]`** | Push semantics |
 | `NTF-GAP-018` | Retry/backoff/dedup-window values | **Architecture Owner** | Retry |
 | `NTF-GAP-019` | Platform vs tenant configuration keys | **Architecture Owner** | §20 |
 | `NTF-GAP-020` | ⚠ **NARROWED at v0.12** — the **instrumentation** is now a testable obligation (`NTF-FR-065`, `NTF-AC-012`). ⛔ Only the numeric **SLO/SLI target** remains, needing a **fresh** SRE conferral | **SRE/Observability** | Observability |
@@ -1129,6 +1147,7 @@ requirement"*) is satisfiable by inspection rather than by inference.
 | ⭐⭐ `NTF-AC-010` | Given a `FeedItem` F and its deduplication record D for key `(eventId, recipientId, channel, templateId)`, when F exists, then D exists **and** a redelivery of the same `eventId` is suppressed; and when F ceases to exist, then D is absent **and** a subsequent delivery bearing the same key is processed as new. ⚠ **Both ends are asserted deliberately** — under a floor-only wording an implementation retaining D **forever** would pass, and *a criterion that cannot fail is not a test* (`ITG-AC-017`). | `NTF-FR-066`, `NTF-INV-007` |
 | ⭐⭐ `NTF-AC-011` | Given a delivery submitted to the `JobRuntime`, when the submission is inspected, then a `deadline` is present **and** `deadline > NTF-CFG-004 x (BC-31 per-attempt bound)`; and a submission carrying no deadline, or one failing that inequality, is **rejected**. ⚠ **Stated now; becomes executable when `NTF-GAP-017` supplies the per-attempt bound** — recorded as pending, not as passing. | `NTF-FR-067`, `NTF-CFG-004` |
 | ⭐⭐ `NTF-AC-012` | Given any completed delivery attempt, when telemetry is inspected for that tenant, then the **attempted**, **succeeded**, **failed-terminal** and **suppressed-duplicate** counters all exist and are non-null, **and** no emitted telemetry record contains a `StudentRecordId`, a mobile number or a template body. ⚠ **Falsifiable without any SLO** — a missing counter fails, and a leaked identifier fails. | `NTF-FR-065` |
+| ⭐⭐ `NTF-AC-013` | Given a Push `DeliveryMessage`, when `BC-22` has durably recorded a successful `BC-31` acknowledgement, then its state is `delivered`; and when the acknowledgement is absent or unsuccessful, then its state is **not** `delivered`. **And** no user-facing surface, API field name, label or document describes `delivered` as meaning the notification reached a device, was displayed or was seen. ⚠ **Both limbs are falsifiable today and neither asserts a provider fact.** | `NTF-FR-044`, `NTF-FR-043` |
 
 ---
 
@@ -1166,8 +1185,8 @@ list (2, 3), catalogue pruning (7), and the removal of Platform Admin (4).
 **must not be cited as authority**."* `NOTIF-` = **0**, `COM-` = **0**. ⚠ Registration remains a
 **Governance Owner** act — `NTF-GAP-001`.
 
-Registers, **re-measured at v0.12** (`grep -o | sort -u`, not asserted): `NTF-FR-*` (**67**) ·
-`NTF-BR-*` (**3**) · `NTF-INV-*` (**11**) · `NTF-XC-*` (**7**) · `NTF-AC-*` (**12**) ·
+Registers, **re-measured at v0.13** (`grep -o | sort -u`, not asserted): `NTF-FR-*` (**67**) ·
+`NTF-BR-*` (**3**) · `NTF-INV-*` (**11**) · `NTF-XC-*` (**8**) · `NTF-AC-*` (**13**) ·
 `NTF-GAP-*` (**29**) · `NTF-CFG-*` (**7 declared — 5 configurable, 2 withdrawn as NOT configurable**). ⚠ **Counts are provisional; the AC register is
 deliberately incomplete** and Stage 4 will require 1:1 obligation coverage.
 

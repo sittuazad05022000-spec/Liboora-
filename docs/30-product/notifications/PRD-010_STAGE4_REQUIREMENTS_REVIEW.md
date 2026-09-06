@@ -1090,3 +1090,90 @@ CONFERRED**.
 | Version | Date | Change |
 |---|---|---|
 | **v1.7** | 2026-09-05 | ⛔⛔ **MY OWN v1.6 STOP-CONDITION-B WAS PREMATURE, and both of its structural disproofs are now themselves DISPROVED — the resolution required NO new authority.** v1.6 assumed, **without testing**, that `DeliveryMessage`'s lifecycle and the `JobRuntime` job are the same object; ⭐⭐⭐ **the port contract states the opposite in a passage I was reasoning about without reading**: `JobState` is *"**deliberately not the same enum** as a File & Media object lifecycle … **a job is the mechanism; the object lifecycle is the domain fact**"* (`job_runtime.dart` **L45-51**). ⭐⭐⭐ **DISPROOF 2 DISSOLVED — no mapping is required:** `PRD-017` already runs a **five**-state lifecycle over the same two-state job **by design**, and `DeliveryMessage` is a **`BC-22`-owned aggregate** (BC Map **L205**), so §18's four terminals are `BC-22`'s **domain** state while `JobState` is one run's **mechanism** state, with `JobOutcome.reasonCode` as the **input** `BC-22` consumes. ⇒ ⭐ **`JobRuntime` needs no change** — the task's stated preference, and the architecturally correct answer. ⭐⭐⭐ **DISPROOF 1 DISSOLVED — deferral precedes submission:** §18 orders `created → **queued** → processing → sent`; **`NTF-FR-014`** makes a dispatch cancellable *"while any recipient remains in **`queued`**"*; **`NTF-FR-046`** claims idempotency *"**before dispatch**"*; **`NTF-FR-048`** protects work already `sent` ⇒ ⭐⭐ **`queued` is a PRE-SUBMISSION state**, so quiet-hours deferral and cancellation occur **before any job exists** and the deadline starts only when `BC-22` submits at the **end** of the quiet window ⇒ ⛔ **v1.6's "deferred overnight → deadline blown → failed" scenario CANNOT ARISE.** ⇒ ⭐⭐ **VERIFIED SOLUTION — ONE CLOCK:** `NTF-CFG-007` is a **transport/attempt-run deadline**; ⛔ **the v1.4 "split the slot" proposal is WITHDRAWN as unnecessary**, since it would have added a configurable to solve a problem created by conflating a pre-submission domain state with a running job — one clock is **the smallest architecture satisfying every requirement**. ⚠ **Two falsifiable consequences:** **`expired`** is a **`queued`-side domain concern** reachable with **no job running** (a **product** question about `NTF-FR-039`, ⛔ no horizon value proposed), and **`cancelled`** needs **no runtime representation** because `NTF-FR-014` bounds it to `queued` — once submitted, cancellation is **out of scope by construction**, a **stronger** guarantee than a mapping. ⭐ **`NTF-GAP-027` NARROWED, NOT CLOSED** — limbs 1 and 2 resolved by **existing** authority, ⛔ **limb 3 OPEN** (quiet hours: 0 slots, Rank-1 `MP-GBR-35` vs EA **L1447** V2, a `MP-CON-08` defect *to be raised*), original text **retained for audit**. ⭐⭐ **NET: STOP CONDITION A on the architecture** — the ceiling inequality is now **well-formed** and bounded by a **single** value; ⛔ two ordinary owed quantities remain (`NTF-CFG-007`; provider timeout `NTF-GAP-017`) ⇒ **`3` / range `1–5` stands `[RECOMMENDED]`**, to be ratified **jointly** with `NTF-CFG-007` on the `ADR-0057` precedent. ⛔⛔ **0 values invented, 0 slots minted (CFG stays 7), 0 gaps closed (27 OPEN), 0 identifiers minted or renumbered, 0 requirements reworded, 0 ACs changed, 0 lifecycle states altered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**. §1-52 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.8 — citation audit: eight stale line references in this record, disclosed not rewritten
+
+> ⛔ **Append-only.** §1-59 above are preserved byte-identical — **including their defective line
+> numbers**, which are corrected *here* rather than edited in place, because this record is append-only
+> and the parent doctrine is that *"the remedy is a new record or a supplement — never a silent
+> rewrite."*
+
+---
+
+## 60. ⚠⚠ The defect: two `JobRuntime` citations were wrong, and I repeated them eight times
+
+Supplements v1.3–v1.7 rested their central holdings on two sentences in the `JobRuntime` port and cited
+both **by line number**. Measured with `grep -n` rather than re-asserted, **both were wrong**:
+
+| Cited as | ⭐ Actual | Sentence |
+|---|---|---|
+| `L104-106` | ⭐ **L103-104** | *"`retryBudget` is the **total** attempts permitted, **including the first**"* |
+| `L107-110` | ⭐ **L105-107** | *"`deadline` bounds the whole job; on expiry the runtime moves it to `JobState.failed`"* |
+
+⛔ **Occurrences in this record: 3 + 5 = eight.** (Ten more were in the subject, and **are corrected
+there** — `PRD-010` **v0.9** — because that document is a live `DRAFT`, not an append-only record.)
+
+⭐ **Why this is worth a supplement rather than a silent `sed`.** Every load-bearing claim from v1.3
+onward — that the retry **unit** is *repository-authoritative* rather than borrowed from `FIL-CFG-014`,
+and that **one transport clock** suffices — depends on a reader **opening the file and seeing the
+sentence**. ⛔ **A citation that does not resolve is indistinguishable from an invented quotation**,
+which is the precise failure this engagement refuses everywhere else. The quotations were *right*; the
+pointers were *wrong*; and a reader checking them would have found nothing at the stated lines.
+
+✅ **The quoted TEXT was re-verified verbatim in every instance.** Only the line numbers moved ⇒
+**0 findings, 0 verdicts, 0 values, 0 gap statuses change.**
+
+---
+
+## 61. ⚠ A false alarm, cleared by re-measurement rather than acted on
+
+The first probe for the §54 citation (`job_runtime.dart` **L45-51**) reported **0 hits** and briefly
+looked like a *third* defective reference. ⭐ **It was a false alarm: the file reads `Deliberately`
+(capitalised) and the probe was case-sensitive.** Re-measured case-insensitively, the passage is
+present at **L47** within the cited **L45-51** block.
+
+⚠ **Recorded because acting on the first probe would have "corrected" a citation that was already
+right** — the same class of error as the defect above, in the opposite direction.
+
+---
+
+## 62. Citations re-verified and CONFIRMED correct
+
+| Citation | Verified content |
+|---|---|
+| `job_runtime.dart` **L45-51** | *"**Deliberately not** the same enum … a job is the **mechanism**; the object lifecycle is the **domain fact**"* |
+| `job_runtime.dart` **L62-63** | `failed` = *"Attempts exhausted, **or the deadline expired**"* |
+| `job_runtime.dart` **L82** | *"Attempts consumed, **including the first**"* |
+| BC Map **L205** | `DeliveryMessage` (`BC-22`) vs `FeedItem` |
+| `services.dart` **L152-159** | `ArgumentError` when `retryBudget < 1`, quoting `INV-21` |
+| `services.dart` **L163-165** | Duplicate `JobKey` short-circuits before any attempt |
+| `services.dart` **L196-221** | Retry loop with **no** delay primitive |
+| `NTF-FR-014` | Cancellable *"while any recipient remains in `queued`"* |
+
+---
+
+## 63. Verdict — unchanged in every respect
+
+| Item | Status |
+|---|---|
+| Clock model | ✅ **ONE transport / attempt-run clock** — unchanged |
+| Lifecycle mapping | ✅ **None required** — unchanged |
+| `NTF-CFG-004` | ⭐ **`[RECOMMENDED]` 3, range 1–5** · value **OWED** — unchanged |
+| `NTF-CFG-007` | ⛔ **OWED** — one number — unchanged |
+| Backoff · `NTF-GAP-025` · `NTF-GAP-027` limb 3 | ⛔ **OWED / OPEN / OPEN** — unchanged |
+| Stage 4 | ⛔ **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **27 gaps OPEN** |
+
+⛔ **0 values invented · 0 slots minted · 0 gaps closed · 0 identifiers renumbered · 0 ADRs (94) ·
+0 manifest · 0 BC Map · 0 `MASTER_PRD` · 0 EA · 0 frozen PRDs · 0 `CONFIGURATION_GUIDE` · 0 baseline ·
+0 registry · 0 application code · 0 test code.**
+
+---
+
+## 64. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.8** | 2026-09-05 | ⚠⚠ **CITATION AUDIT OF MY OWN SUPPLEMENTS v1.3–v1.7 — TWO `JobRuntime` LINE REFERENCES WERE WRONG AND I REPEATED THEM EIGHT TIMES IN THIS RECORD.** Measured with `grep -n` rather than re-asserted: the retry-unit sentence (*"`retryBudget` is the **total** attempts permitted, **including the first**"*) is at **L103-104**, cited as *L104-106*; the deadline sentence (*"`deadline` bounds the whole job; on expiry … `JobState.failed`"*) is at **L105-107**, cited as *L107-110*. ⛔ **Corrected HERE by supplement, NOT by editing §1-59**, whose defective numbers are deliberately preserved — this record is append-only and the parent doctrine is that *"the remedy is a new record or a supplement — never a silent rewrite."* ⭐ **Ten further occurrences in the subject ARE corrected in place** (`PRD-010` **v0.9**), because that document is a live `DRAFT` rather than an append-only record — and the asymmetry is stated so it does not look like inconsistency. ⭐ **Why this warranted a supplement rather than a silent fix:** every load-bearing claim from v1.3 onward — that the retry **unit** is *repository-authoritative* rather than borrowed from `FIL-CFG-014`, and that **one transport clock** suffices — depends on a reader **opening the file and seeing the sentence**; ⛔ **a citation that does not resolve is indistinguishable from an invented quotation**, the precise failure this engagement refuses everywhere else. ✅ **The QUOTED TEXT was re-verified verbatim in every instance** — only the pointers moved ⇒ **0 findings, 0 verdicts, 0 values, 0 gap statuses change**. ⚠ **A FALSE ALARM is also recorded rather than buried:** the first probe for the §54 citation (**L45-51**) returned **0 hits** and briefly looked like a third defect, but the file reads **`Deliberately`** (capitalised) and the probe was case-sensitive — re-measurement located the passage at **L47**, inside the cited block, so **acting on the first probe would have "corrected" a citation that was already right**, the same error class in the opposite direction. ✅ **Eight citations re-verified and CONFIRMED**: `job_runtime.dart` L45-51 / L62-63 / L82; BC Map L205; `services.dart` L152-159 / L163-165 / L196-221; `NTF-FR-014`. ⛔⛔ **VERDICT UNCHANGED IN EVERY RESPECT:** ONE transport clock; NO lifecycle mapping required; `NTF-CFG-004` **`[RECOMMENDED]` 3, range 1–5** with value **OWED**; `NTF-CFG-007` **OWED**; backoff **OWED**; `NTF-GAP-025` **OPEN, non-blocking**; `NTF-GAP-027` limb 3 **OPEN**; Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**; **27 gaps OPEN**. ⛔ **0 values invented, 0 slots minted, 0 gaps closed, 0 identifiers renumbered, 0 requirements reworded, 0 ACs changed, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 matrix, 0 CONFIGURATION_GUIDE, 0 frozen PRDs, 0 baseline, 0 registry, 0 application code, 0 test code.** §1-59 preserved byte-identical (`cmp` PASS). |

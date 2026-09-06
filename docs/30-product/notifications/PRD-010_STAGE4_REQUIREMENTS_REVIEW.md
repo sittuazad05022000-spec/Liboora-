@@ -481,3 +481,113 @@ assigns conferral to the **Requirements Reviewer**. Stage 3 remains **PASS 6/6**
 | Version | Date | Change |
 |---|---|---|
 | **v1.2** | 2026-09-05 | ⭐⭐⭐ **Reviewer self-audit falsifies TWO of this record's own Stage-4 findings, and performs the limb v1.1 identified as unblocked.** **Correction 1 — the check-3 target was MIS-SHAPED:** three of the seven *"Class-A configurables"* are **not configurables at all** — `NTF-FR-044` is a **provider-semantic definition** (Rank 1 `MASTER_PRD.md` **L229** already fixes FCM as the V1 provider; the acknowledgement model is that vendor's absent documentation — the `ADR-0045` condition), `NTF-FR-054` is a **`BC-25` resolution property** whose publication by this PRD `FIL-XC-009` **forbids** and `ADR-0017` §2.5 assigns to `PRD-023`, and `NTF-FR-065` is an **NFR locus** owned by SRE/Observability under Rank 1 `MP-NFR-01` — *an NFR target is ratified by an office, not tuned by an operator*. ⇒ **check 3's target is 6, not 7**, and the three reclassified obligations move to **check 1**. **Correction 2 — v1.0's claim that NO authority exists for any of the seven was true of six and FALSE of one:** `NTF-CFG-002` resolves to **`LCFG-2`** (`en`, *"Supported set"*, Product; `Library_PRD_v1.md` **L717** FROZEN Rank 3). ⚠ The miss is recorded as a **trap**: `PRD-015` was refused this citation **four times**, but every refusal rests on the single ground *"a **UI-string locale**, not a **script inventory**"* — and a notification template **is** a UI string, so **the refusals do not transfer**; inheriting them would have been a governance error dressed as caution. ⭐ **Limb (a) of `S4-B1` is DISCHARGED** — `PRD-010` **v0.3 §20.1** declares six `NTF-CFG-*` slots on the `FIL-CFG-006` precedent that a slot is published *"even when no authority yet supplies a number"*; limb **(b) remains OPEN on FIVE values**, reducing the requirement from **three offices over seven** to **two offices over five** plus one NFR act. ⭐ **Two units are fixed by precedent without inventing numbers**: a repository retry bound counts **total attempts** (`FIL-CFG-014` + `INV-21` ≥ 1, so a *retries, floor 0* formulation would contradict `INV-21`), and the dedup window is **bounded below by `NTF-INV-007`**, making the three retry slots **not independently choosable**. ⭐ **Availability measured, not proposed**: unit is **`% monthly`** (⛔ *"rolling 30 d"* = **0** occurrences repository-wide), the ceiling is **≤ 99.9%** by the dependent-below-dependency rule, and ⭐⭐ **`NTF-INV-011` makes notification the LEAST availability-critical plane** so it cannot carry a tighter outage bound than authentication; ⛔ **no SLO published — the repository has never ratified one**, and `ADR-0102` left `SRE-GAP-001` OPEN. ⚠⚠ **`NTF-AL-F3`** (no `platform/configuration:settings` port on `platform/communication`, so `E-19` and the manifest disagree — ⭐ `PRD-017` has the identical condition, having **no** `platform/media` block at all) and ⚠⚠ **`NTF-AL-F4`** (⭐⭐ `NTF-FR-049` presupposes a retry scheduler the manifest does not grant `BC-22`; `platform/workflow` is the **only** `job_runtime` consumer — mirroring `FIL-GAP-015`, which makes the value question **premature**, a stronger ground for withholding than authority alone) are **DISCLOSED, NOT CURED**. ⭐ **`NTF-GAP-024` minted** — cross-context `LCFG-*` consumption is unruled. ⛔⛔ **Verdict UNCHANGED: Stage 4 NOT READY, NOT CONFERRED; `S4-B1` limb (b) blocking; Stage 3 PASS 6/6 untouched; 24 gaps OPEN.** ⛔ **0 values invented, 0 authority manufactured, 0 gaps closed, 0 identifiers renumbered, 0 ADRs (94), 0 registry, 0 baseline, 0 frozen docs, 0 `CONFIGURATION_GUIDE.md` bytes, 0 manifest bytes, 0 code.** §1-13 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.3 — the retry audit: `NTF-AL-F4` withdrawn as overstated, and the unit upgraded to authoritative
+
+> ⛔ **Append-only.** §1-22 above are preserved byte-identical.
+
+---
+
+## 23. ⛔⛔ I published `NTF-AL-F4` without measuring an `Accepted` ADR that decides it
+
+An independent audit of the retry question was directed. It falsified **my own v1.2 finding** on two
+grounds. Both are recorded before anything favourable, because the favourable part is a consequence of
+the error rather than a discovery on its own merits.
+
+| # | What v1.2 published | ⛔ Why it was wrong |
+|---|---|---|
+| 1 | *"`FIL-XC-017` forbids a module scheduling its own retries"* — cited as if it bound `BC-22` | ⛔ **`FIL-XC-017` is a `PRD-017` exclusion binding `BC-29`.** `PRD-010`'s own register (`NTF-XC-001`…`-006`) contains **no** scheduling prohibition. Applying another PRD's **frozen exclusion** to this subject is the cross-PRD borrow this very record refuses elsewhere. ⇒ the condition is a **missing port**, not a violated prohibition |
+| 2 | *"mirroring `FIL-GAP-015`"* | ⛔⛔ **`FIL-GAP-015` is CLOSED.** ⭐ **`ADR-0058`** (`Accepted`, 2026-08-20) closes it, and I compared the `BC-22` condition to a gap that had already been resolved — without opening the ADR that resolved it |
+
+⭐ **`ADR-0058`'s holding is directly on point**, which is why missing it mattered: the gap was a
+**port-vs-runtime conflation**, because *"every child of EA 'Job Runtime (V2)' … is scaled
+**infrastructure**, and **none of them is the port**."*
+
+---
+
+## 24. ⭐⭐⭐ The mechanism `NTF-FR-049` needs already exists — measured, not assumed
+
+| Element | Status | Exact evidence |
+|---|---|---|
+| `JobRuntime` port interface | ✅ **EXISTS** | `packages/liboora_contracts/lib/src/ports/job_runtime.dart` **L100**; exported `liboora_contracts.dart` **L27** |
+| V1 adapter, registered | ✅ **EXISTS** | `InProcessJobRuntime` — `lib/platform/services/services.dart` **L100**; composition root `lib/bootstrap/di.dart` **L240-243** |
+| Rank lawfulness of `BC-22` → port | ✅ **STRICTLY DOWNWARD** | `platform/services` **rank 3** vs `platform/communication` **rank 5** — manifest **L26-49** ⇒ **`L2` satisfied**, no exception, no cluster, no `ADR-0012` debt |
+| Retry unit | ⭐⭐ **total attempts, including the first** | `job_runtime.dart` **L104-106**; `JobOutcome.attempts` **L82** |
+| `≥ 1` floor | ✅ **EXECUTABLE**, cites `INV-21` by name | `services.dart` **L152-159** — `ArgumentError` on `retryBudget < 1` |
+| Backoff in V1 adapter | ⛔ **NONE** | `services.dart` **L189-221** — deadline check, attempt, catch, loop; **no delay** |
+
+⇒ ⭐ **`NTF-AL-F4` reduces to ONE narrow act**: add `platform/services:job_runtime` to
+`platform/communication`'s `ports:` list — the **`A-3` shape** (`amendments_applied` **L715-721**), the
+same mechanism by which this module gained `platform/identity:notification_address`. ⛔ Not an
+exception, not a law waiver, not new infrastructure. **Architecture Owner.** ⛔ Manifest **not edited**.
+
+---
+
+## 25. ⭐ Check 3 movement — one unit becomes authoritative, one slot becomes premature
+
+| Slot | v1.2 class | ⭐ v1.3 class | Basis |
+|---|---|---|---|
+| **`NTF-CFG-004`** unit | Precedent-supported (`FIL-CFG-014`) | ⭐⭐ **REPOSITORY-AUTHORITATIVE** | The **rank-0 shared-kernel port contract**, not another PRD's value. `FIL-CFG-014` was **weak authority** for `PRD-010`; the port signature is **binding on every consumer** |
+| **`NTF-CFG-004`** value | OWED | ⛔ **OWED — unchanged** | See §26 |
+| **`NTF-CFG-005`** backoff | OWED | ⛔ **OWED + genuinely PREMATURE** | **0** schedules at Rank 1–5; adapter implements none; EA places *"Retry & Backoff"* at **V2** (**L1808**) |
+
+⚠ **v1.2's claim that the *attempt bound* was premature is WITHDRAWN.** The runtime exists, the unit is
+contract-fixed, and the edge is one lawful downward port. **Only backoff is premature.**
+
+---
+
+## 26. ⛔ Why "3 attempts, range 1–5" is REFUSED for PRD-010 — on the merits, not only on authority
+
+⭐⭐ **The decisive measurement is a domain inversion, and it is stronger than the authority objection.**
+
+| Property | `PRD-017` media processing | `PRD-010` notification delivery |
+|---|---|---|
+| Recovery model | ⭐ `FIL-FR-057` — a derivative is **never the sole copy**; `FIL-FR-083` — **regenerable** | ⛔ **Not regenerable; no second copy.** A lost expiry notice is simply **not sent** |
+| Failure domain | *"a worker eviction, a storage blip"* (`CONFIGURATION_GUIDE` **L617**) | External **push provider** rejection / FCM transport |
+| Consequence of exhaustion | Object reprocessable later | ⛔ **User never informed** |
+
+⇒ ⛔ **`3` is derived from an assumption that does not hold for `PRD-010`.** Importing it would be
+wrong **on the merits**, independently of `ADR-0033` §7.1's prohibition on cross-PRD borrowing.
+⚠ **Directionally, notification's non-regenerability argues for a bound at least as high as 3, not
+lower** — but *"at least as high"* is not a number, and **no number is proposed here**.
+
+---
+
+## 27. ⚠⚠ `NTF-GAP-025` minted — a Rank-4 obligation this record had not tested
+
+BC Map **L452** (Rank 4): *"Retry with backoff → **Dead Letter Queue**. DLQ depth is an SLO-monitored
+signal, not a silent bin."* ⛔ **`PRD-010` contains 0 occurrences of DLQ or dead-letter**, and `BC-28`
+— which **L137** says *"owns … DLQ"* — is **V2**.
+
+⭐ **Why this is not automatically a contradiction:** L452 sits under BC Map §9.1 *Event Delivery
+Contract*, *"owned by **EVENT PLATFORM**"*, governing **event consumption**. `BC-22`'s outbound
+**channel** delivery is a different plane, which is why `NTF-FR-047`'s terminal `failed` does not
+violate it. ⛔ **But whether the outbound plane needs a dead-letter path is UNRULED**, and it is **not
+resolved in this record's favour**. Owner: **Architecture Owner**.
+
+---
+
+## 28. Verdict
+
+⛔⛔ **STAGE 4 REMAINS NOT READY AND NOT CONFERRED.** Check 3: **1 of 6 satisfied** (`NTF-CFG-002`),
+**1 unit authoritative with value owed** (`NTF-CFG-004`), **4 owed**. Stage 3 **PASS 6/6** untouched.
+**25 gaps OPEN.**
+
+⭐ **Net movement:** `NTF-CFG-004`'s unit rose from *precedent* to *authoritative*; `NTF-AL-F4` fell
+from *blocking, premature* to *one narrow manifest amendment*; and the refusal of `3` is now supported
+by a **domain-inversion measurement** rather than authority alone.
+
+⛔ **0 values invented · 0 authority manufactured · 0 gaps closed · 0 identifiers renumbered · 0 ADRs
+(94, `ADR-0058` cited never amended) · 0 manifest bytes · 0 BC Map · 0 `MASTER_PRD` · 0 frozen PRDs ·
+0 `CONFIGURATION_GUIDE` · 0 baseline · 0 registry · 0 code (port and adapter read as evidence only).**
+
+---
+
+## 29. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.3** | 2026-09-05 | ⛔⛔ **`NTF-AL-F4` WITHDRAWN AS OVERSTATED on two independently sufficient grounds, both mine.** (1) v1.2 cited **`FIL-XC-017`** as though it bound `BC-22`; it is a **`PRD-017` exclusion binding `BC-29`**, and `PRD-010`'s register carries **no** scheduling prohibition — applying another PRD's frozen exclusion here is the cross-PRD borrow this record refuses elsewhere. (2) v1.2 called the condition *"mirroring `FIL-GAP-015`"* while **`FIL-GAP-015` is CLOSED by `ADR-0058`** (`Accepted`, 2026-08-20), an ADR I never opened before publishing the comparison. ⭐⭐⭐ **The mechanism `NTF-FR-049` needs ALREADY EXISTS:** `JobRuntime` port (`job_runtime.dart` **L100**), registered V1 adapter (`services.dart` **L100**, `di.dart` **L240-243**), and a **strictly downward** lawful edge (`platform/services` **rank 3** → `platform/communication` **rank 5** ⇒ **`L2` satisfied**, no exception needed). ⇒ **`NTF-AL-F4` reduces to ONE narrow manifest amendment** in the **`A-3` shape** (**L715-721**). ⭐⭐⭐ **`NTF-CFG-004`'s unit UPGRADED from precedent-supported to REPOSITORY-AUTHORITATIVE** — the authority is the **rank-0 shared-kernel port contract** (*"`retryBudget` is the **total** attempts permitted, **including the first**"*, **L104-106**), with the **≥ 1 floor enforced EXECUTABLY** (`services.dart` **L152-159**, quoting `INV-21`), not `FIL-CFG-014`, which was **weak authority** for this PRD. ⛔⛔ **The number `3` is REFUSED ON THE MERITS, not merely on authority:** `PRD-017`'s bound rests on `FIL-FR-057`/`FIL-FR-083` — a derivative is *"never the sole copy"* and is *"regenerable"* — whereas ⭐⭐ **a notification is NOT regenerable and has NO second copy**, so the domains have **inverted recovery models** and `3` is derived from an assumption that does not hold here. ⚠ Directionally this argues for a bound **at least as high as 3**, and ⛔ **no number is proposed**. ⭐ **`NTF-CFG-005` (backoff) isolated as the ONE genuinely premature slot** — **0** schedules at Rank 1–5 (all occurrences are refusals or a provider's own policy), the **V1 adapter implements none** (**L189-221** retries immediately), EA places *"Retry & Backoff"* at **V2** (**L1808**) ⇒ a value would have nothing to execute it; v1.2's claim that the **attempt bound** was premature is **withdrawn**. ⚠⚠ **`NTF-GAP-025` minted** — BC Map **L452** mandates *"Retry with backoff → **Dead Letter Queue**"*, `PRD-010` has **0** DLQ occurrences and `BC-28` is **V2**; ⭐ L452 governs the **event backbone** (EVENT PLATFORM, §9.1) not `BC-22`'s **outbound channel** plane, so `NTF-FR-047` does not contradict it — but the question is **unruled** and **not resolved in this record's favour**. ⛔⛔ **Verdict UNCHANGED: Stage 4 NOT READY, NOT CONFERRED; check 3 = 1 of 6 satisfied + 1 unit authoritative; Stage 3 PASS 6/6; 25 gaps OPEN.** ⛔ **0 values invented, 0 authority manufactured, 0 gaps closed, 0 renumbered, 0 ADRs (94), 0 manifest bytes, 0 BC Map, 0 MASTER_PRD, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 code.** §1-22 preserved byte-identical (`cmp` PASS). |

@@ -244,7 +244,7 @@ The §31 Linked Documents table carries this row verbatim:
 | `PRD-007` | Seat Management | **`BC-04` Seating** | `[CORE]` | V1 | **`FROZEN`** — [`seat-management/PRD-SEAT-MANAGEMENT.md`](../../30-product/seat-management/PRD-SEAT-MANAGEMENT.md) **v1.0**, admitted by `ADR-0020` (`BASELINE-2026-08-04-E`) | — |
 | `PRD-008` | Revenue & Finance | **`BC-05` Fee & Collection** | `[CORE]` | V1 | **`FROZEN`** — [`revenue-finance/PRD-008_REVENUE-AND-FINANCE.md`](../../30-product/revenue-finance/PRD-008_REVENUE-AND-FINANCE.md) **v1.7**, admitted by `ADR-0049` (`BASELINE-2026-08-17-A`), moved `DRAFT` → `FROZEN` by the **Governance Owner** on 2026-08-17. Stages 3 and 4 **CONFERRED**, Stage 5 gate exit 0, Stage 6 range `IMPL-700`…`IMPL-799` allocated with **83 / 83** tasks traced. ⚠ **`FROZEN` is not `VERIFIED`** — **17 `FEE-GAP-*` remain OPEN**, **20 of 83** tasks are **BLOCKED**, and nothing is implemented. *Superseded text retained verbatim:* **`DRAFT`** … *(was `PLANNED` — see `GCP-14` in §4.3, which remains **OPEN**)*. **`DRAFT` is not `FROZEN`**: no `DOCUMENTATION_BASELINE.md` §3 row exists, and Stages 5–6 are not performed — **both clauses are now false and are kept only as history** | — |
 | `PRD-009` | Analytics & Reports | **`BC-26` Analytics Read Model** | `[GENERIC]` | V1 | `PLANNED` | Dashboards (modules 10–12) |
-| `PRD-010` | Notifications & Communication | **`BC-22` Notification Delivery** | `[GENERIC]` | V1 | `PLANNED` | Every event-driven notice |
+| `PRD-010` | Notifications & Communication | **`BC-22` Notification Delivery** | `[GENERIC]` | V1 | ⭐ **`FROZEN`** | Every event-driven notice — admitted to the baseline §3.3 at **Rank 3** on 2026-09-05 by `Accepted` `ADR-0111`; see **§17** |
 | `PRD-011` | AI Super Assistant | **`BC-27` AI Assistance** | `[SUPPORTING]` | V1 | `PLANNED` | — |
 | `PRD-012` | Security & Automation | ⚠ **`SECURITY` platform + `BC-28` Workflow** | mixed | V1/V2 | ⛔ **`RETIRED` — 2026-08-21.** Retired **on the day `PRD-012a` was opened**, exactly as §8 rule 1 and the note below prescribe; **the number is NOT reused.** This placeholder was never authored and never will be. *Prior status retained verbatim:* `PLANNED` | Split executed — see `PRD-012a` below |
 | **`PRD-012a`** | **Security Automation** | **SECURITY platform (rank 2)** | `[GENERIC]` | V1 | **`FROZEN`** — [`security/PRD-012a_SECURITY_AUTOMATION.md`](../../30-product/security/PRD-012a_SECURITY_AUTOMATION.md) + `PRD-012a_PART2…PART8_*.md` at **v0.8**, admitted by `ACCEPTED` [`ADR-0064`](../adr/ADR-0064-prd-012a-security-automation-v0.8-baseline.md) under **`BASELINE-2026-08-21-A`**, moved `PLANNED` → **`FROZEN`** by the **Governance Owner** on 2026-08-21 — the third PRD to go from `PLANNED` **directly** to `FROZEN` without passing through `DRAFT`-then-freeze. **Stage 1 `NOT APPLICABLE`** (`ADR-0060` — the gate is context-scoped and does not reach a platform-scoped specification); Stages 3 and 4 **CONFERRED** (⚠ Stage 3 **ALIGNED WITH ONE STRUCTURAL FINDING**, admitted as such and **not rounded to a clean PASS**; the finding *was* the no-`BC-nn` question and was routed rather than settled by its finder); **Stage 5 gate MET** by matrix **v1.18 §2N** (**427** identifiers / **15** registers / all contiguous / **0** collisions in four directions); Stage 6 **verdict A — PASS**, range `IMPL-1300`…`1359` with reserve `1360`…`1399`. ⚠⚠ **The first `FROZEN` PRD that owns NO bounded context** — the SECURITY platform gets none (`ADR-0060`), **31** contexts before and after, and **no `BC-32` was created to make the row look like the others**. Its Rank 3 scope is expressed as a **platform**, lawful on the measured precedent of the Library PRD's *domain*-scoped row. ⛔ **`FROZEN` is not `VERIFIED`** — **0 of 128** acceptance criteria and **0 of 60** tasks proven, **all 47 `SECP-GAP-*` OPEN**, and **0 lines of code**: `lib/platform/security` does not exist | Owns the security **policy**; every mechanism it constrains stays with its existing owner |
@@ -1624,3 +1624,41 @@ enumerating §4's status column, not by decrementing.** *"Missing V1"* stays at
 **9**: a `DRAFT` PRD is still a missing V1 specification, so that figure is
 ⛔ **deliberately not moved**.
 
+---
+
+## 17. ⭐ `PRD-010` Notifications & Communication — `PLANNED` → **`FROZEN`** recorded by append
+
+**2026-09-05.** `PRD-010_NOTIFICATIONS_AND_COMMUNICATION.md` **v0.14** was admitted to
+`DOCUMENTATION_BASELINE.md` **§3.3 Product at Rank 3**, authoritative for **`BC-22` Notification
+Delivery**, by `Accepted` [`ADR-0111`](../adr/ADR-0111-governance-owner-conferred-for-prd-010-stage-7-admission-act-only.md)
+— the **admitting ADR**, recorded **before** the baseline row per baseline §7 rule 1, on the human
+principal's **first-person** Governance-Owner conferral scoped *"and nothing else"*.
+
+§4's `PRD-010` status cell at **L247** is moved `PLANNED` → **`FROZEN`** in the same commit
+(baseline §7 rule 3 — *"a baseline that does not match the repository is worse than no baseline"*).
+
+### 17.1 ⚠ Derived count cells — what this section does and does NOT move
+
+| Cell | Action |
+|---|---|
+| **L546** `PLANNED` count (**6** — `PRD-009`, `PRD-010`, `PRD-011`, `PRD-018`, `PRD-020`, `PRD-021`) | ⚠⚠ **NOT edited here, and the staleness is DISCLOSED rather than silently repaired.** ⭐ The cell is *already* independently wrong: it lists **`PRD-020`**, which `ADR-0086` admitted to the baseline at Rank 3 on 2026-09-01, so it was stale **before** this act. Re-deriving it correctly requires re-enumerating §4's whole status column and apportioning drift caused by **other** passes — a broader act than admitting one PRD. ⛔ Recorded as an OPEN defect, not fixed by convenience |
+| **L548** Missing V1 PRDs (**9**, includes `PRD-010`) | ⚠ **NOT edited.** `PRD-010` is now baselined, so the figure is affected — but the same apportionment problem applies, and the same disclosure is made |
+| §4 **L247** status | ✅ **Moved** — this is the cell whose truth **this act alone** changes |
+
+⭐⭐ **Why this asymmetry is deliberate.** Baseline §7 rule 3 obliges an act to repair *derived*
+statements **whose truth that act changes**. It changed L247's truth, so L247 moved. L546 and L548
+were **already** false for reasons this act did not cause, and “correcting” them here would silently
+absorb another pass's drift into this one — the exact practice `GCP-16`/`GCP-19` were opened to stop.
+
+### 17.2 ⚠ Why recorded HERE by append
+
+This follows **§16**'s own reasoning verbatim for `PRD-015`: a row inserted into §10's change-history
+table shifts live line citations below it, including citations inside **`Accepted`** ADRs. ⭐ Appending
+a new §17 invalidates **0** line citations.
+
+### 17.3 ⛔ What this section does NOT record
+
+⛔ No stage beyond 7 — **Stage 8 is not entered** and **0 of 13** acceptance criteria are proven ·
+⛔ no `READY`, `IMPLEMENTING` or `VERIFIED` status · ⛔ no gap closure — **7** `NTF-GAP-*` stay OPEN
+with named owners · ⛔ no ownership change · ⛔ no architecture decision · ⛔ **T-29** (the Rank 4
+`platform/communication` port grant) is **not** performed · ⛔ `GCP-20` is **not** closed.

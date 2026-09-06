@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `docs/30-product/notifications/PRD-010_NOTIFICATIONS_AND_COMMUNICATION.md` |
-| **Version** | **v0.2** |
+| **Version** | **v0.3** |
 | **Status** | ⛔ **`DRAFT`** — ⛔ **not reviewed, not conferred, not frozen, not baselined, not ranked** |
 | **Date** | 2026-09-05 |
 | **Bounded context** | **`BC-22` Notification Delivery** `[GENERIC]`, family *Communication*, **V1** — BC Map **L131** |
@@ -491,6 +491,135 @@ business facts"* — expressed against a mechanism that actually exists.
 
 ---
 
+### 20.1 Configurables this module publishes — slots declared, values **not** invented
+
+Declared on the **`PRD-017` §8.5 precedent** (**L1208-1240**), which is the repository's only published
+`*-CFG-*` slot register and which establishes three rules this subsection follows exactly:
+
+1. ⭐ **The PRD declares the slot; the PRD does not define the value.** `FIL-XC-009` (**L302**): *"The
+   module **MUST NOT** define a configuration value's default, range or resolution order."* Values are
+   *"owned as values by their **scope owner**, not by this module"* (**L1211**).
+2. ⭐⭐ **A slot may lawfully be published with NO value.** `FIL-CFG-006` carries a range and **no
+   default** because *"inventing one would be a determination made by a document with no standing to
+   make it"* (**L1236**). `PRD-017` states plainly that *"eight satisfy it and one does not"* rather than
+   claiming compliance it does not have.
+3. ⭐ **The exception is named in the text, not a footnote** — because *"a subsection that opens by
+   claiming all nine comply and then discloses an exception is internally contradictory"* (**L1210**).
+
+All slots resolve through `platform/configuration:settings` (**`E-19`**, BC Map **L328**).
+⚠ **`NTF-AL-F3` is disclosed below**: `platform/communication`'s manifest block (**L392-410**) declares
+**no** `platform/configuration:settings` port, so `E-19`'s *"all contexts"* grant and the module block
+disagree. `PRD-017` has the identical condition (there is **no** `platform/media` module block at all),
+so this subsection follows `E-19` as `PRD-017` does — and records the disagreement rather than curing it.
+
+| ID | Configurable | Why it must be configurable | Value owner | Value status |
+|---|---|---|---|---|
+| **`NTF-CFG-001`** | **Bulk recipient-count ceiling** and **dispatch rate limit** (`NTF-FR-017`) | Abuse and cost control that is **not** an entitlement — the `FIL-CFG-009` shape (*"maximum concurrent uploads per actor"*) | **Product Owner** | ⛔ **OWED** — `NTF-GAP-007`. **0** rate-limit or recipient-ceiling number exists at any rank |
+| **`NTF-CFG-002`** | **Template language / locale** (`NTF-FR-037`) | Locale must change without a template redeploy | **Product** | ⭐ **CITED, NOT MINTED** — resolves to **`LCFG-2`** (`Library_PRD_v1.md` **L717**, FROZEN Rank 3; `CONFIGURATION_GUIDE.md` **L352**): default **`en`**, range *"Supported set"*, owner **Product**. See §20.2 |
+| **`NTF-CFG-003`** | **Category classification register** — each catalogue entry's **mandatory / optional** class (`NTF-FR-038`, `NTF-FR-040`) | Adding a catalogue entry must not change the contract — the **`FIL-CFG-001`** shape (*"the closed set of upload purposes, **each with its isolation class**"*) | **Product Owner** | ⛔ **OWED** — `NTF-GAP-015`. ⚠ Range is enumerated **{mandatory, optional}**; the **per-entry default is the owed part**. ⛔ **`NTF-FR-038`'s no-opt-out guarantee for `mandatory` is NOT configurable** |
+| **`NTF-CFG-004`** | **Retry attempt bound** (`NTF-FR-049`) | Bounds the retry loop so a permanently failing delivery reaches a terminal state rather than retrying forever | **Architecture Owner** | ⛔ **OWED** — `NTF-GAP-018`. ⚠ Unit **MUST** be *attempts total (initial + retries)*, per §20.3 |
+| **`NTF-CFG-005`** | **Retry backoff schedule** (`NTF-FR-049`) | Provider-pressure tuning without redeploy | **Architecture Owner** | ⛔ **OWED** — `NTF-GAP-018`. **0** backoff schedule exists at any rank |
+| **`NTF-CFG-006`** | **Deduplication window** (`NTF-FR-045`, `NTF-FR-049`) | Operational bound on idempotency-record retention | **Architecture Owner** | ⛔ **OWED** — `NTF-GAP-018`. ⚠⚠ **Invariant-constrained, not free**: see §20.4 |
+
+⭐⭐⭐ **Six slots, not seven — and this is a correction to the author's own Stage-4 review, not a
+convenience.** [`PRD-010_STAGE4_REQUIREMENTS_REVIEW.md`](PRD-010_STAGE4_REQUIREMENTS_REVIEW.md) v1.0
+classified **seven** obligations as *"Class-A configurables"*. Three of those seven are **not
+configurables at all**, and calling them configurables was a category error:
+
+| Obligation | Prior class | ⭐ Corrected class | Why a default-and-range cannot apply |
+|---|---|---|---|
+| **`NTF-FR-044`** — Push `delivered` semantics | Class A configurable | ⛔ **Provider-semantic DEFINITION** | No configuration value changes what FCM acknowledges. Rank 1 `MASTER_PRD.md` **L229** already fixes the provider (*"**Firebase Cloud Messaging** — Yes — FCM (V1)"*), so the **provider** is settled; the **acknowledgement model** is that provider's published documentation, which this repository does not contain (the `ADR-0045` condition). ⇒ `NTF-GAP-017` is a **documentation-dependency** gap, not a value gap |
+| **`NTF-FR-054`** — platform-level vs tenant-level keys | Class A configurable | ⛔ **Configuration-platform RESOLUTION property** | `FIL-XC-009` forbids this module defining a *"resolution order"*. Which keys resolve at platform scope is `BC-25`'s own semantics — `ADR-0017` **§2.5** assigns *"hierarchy, precedence and override semantics"* to `PRD-023`. ⇒ `PRD-010` may **not** publish this as its own slot |
+| **`NTF-FR-065`** — SLO / SLI targets | Class A configurable | ⛔ **NFR locus, not a configurable** | Rank 1 `MP-NFR-01` (`MASTER_PRD.md` **L495**) assigns availability *"targets with SLOs, SLIs and error budgets"* to **SRE / OBSERVABILITY**. An NFR target is ratified by an office, not tuned by an operator. See §20.5 |
+
+⇒ ⭐ **Stage-4 check 3 therefore has a materially smaller and differently-shaped target than the review
+recorded**: **six** slots, of which **one is already satisfied by citation** (`NTF-CFG-002`) and **five
+are owed**, plus **three obligations that leave the check-3 register entirely** and fall to check 1
+(testability) instead.
+
+#### 20.2 `NTF-CFG-002` — why `LCFG-2` may be cited here although `PRD-015` was refused it
+
+⚠ **This looks like the borrowing `PRD-015` was four times refused, so the distinction is stated before
+the citation is relied upon.** `SRCHCL-X3`, `SRCHGR-X4`, `SRCHGB-X4` and `PRD-015_F5_OWNERSHIP_RULING.md`
+**§4.3** each **REJECTED** `LCFG-2`, the last calling it *"a **false friend**"*.
+
+⭐ **Every one of those rejections turns on the same measured reason, and that reason does not obtain
+here.** `PRD-015_P2_ARCHITECTURE_DECISION.md` **L222**: *"It is also a **UI-string locale**, not a
+**script inventory**."* `F5_OWNERSHIP_RULING` **§4.3**: *"a tenant set to `en` may hold a Devanagari
+name."* The refusals hold that a **UI-string locale cannot determine an indexed field's script**.
+
+⭐⭐ A notification **template is a UI string**. `LCFG-2`'s own published rationale is verbatim *"Only
+locale with complete strings at V1"*. `NTF-CFG-002` asks for exactly the property `LCFG-2` governs, so
+the *false-friend* objection is inapplicable — it was never an objection to `LCFG-2` as a **string
+locale**, only to `LCFG-2` as a **script inventory**.
+
+⛔ **Two things are still NOT claimed.** (1) ⛔ `ADR-0100` **§3.7**'s closed **English + Hindi** inventory
+is **search-scoped** and is **NOT** imported — `NTF-FR-037`'s existing prohibition on borrowing
+`SRCHPO-17` **stands unamended**. (2) ⛔ **No second source of truth is created**: `NTF-CFG-002` is
+recorded as a **consumption of `LCFG-2`**, not as an independent slot holding a copied value.
+⚠ Whether a `BC-22` template may consume a **Library-scoped** `LCFG-*` value is an **Architecture Owner**
+question, registered as **`NTF-GAP-024`** — the citation's *value* is authoritative, its *cross-context
+consumption* is not yet ruled.
+
+#### 20.3 `NTF-CFG-004` — the unit is fixed by precedent even though the value is not
+
+⭐ **`FIL-CFG-014`** (`CONFIGURATION_GUIDE.md` **§2C.6**, **L607-621**) is the repository's only retry
+bound. Its **Unit** is *"attempts"* and its **Default** is *"**3** attempts total (initial + 2
+retries)"*; **`INV-21`** (**L757**) requires *"retry bound **≥ 1**"* because *"zero attempts means
+nothing is ever processed."*
+
+⇒ ⭐ **A retry configurable in this repository counts TOTAL ATTEMPTS, not retries.** Any `NTF-CFG-004`
+value expressed as *retries* with a floor of `0` would contradict `INV-21`'s floor of `1` under the
+repository's established unit. **The unit is therefore declared here; the number is not.**
+
+⛔ **`FIL-CFG-014`'s value is NOT carried across.** Its rationale is a **storage** failure domain
+(*"a worker eviction, a storage blip"*); a push-provider `503` is a different domain, and its owner is
+the **file-media Configuration Owner**. Importing the number would be precisely the cross-PRD borrow
+`ADR-0033` **§7.1** forbids.
+
+⚠⚠ **`NTF-AL-F4` — a NEW blocking architecture finding, disclosed because it makes the value question
+premature.** `FIL-XC-017` forbids a module scheduling its own retries and requires
+**`platform/services:job_runtime`**. In `tool/module_dependencies.yaml`, **`platform/workflow` is the
+only module declaring that port** (**L338**); `platform/communication`'s block (**L392-410**) declares
+**no** job, scheduler or timer port at all. ⇒ ⭐ **`NTF-FR-049` presupposes a retry mechanism the
+manifest does not grant `BC-22`.** A retry *value* configured against an absent scheduler is not
+consumable — the same condition `FIL-GAP-015` records for `PRD-017`. Owner: **Architecture Owner**.
+
+#### 20.4 `NTF-CFG-006` — invariant-constrained, and therefore not a free tuning value
+
+⭐⭐ **`NTF-INV-007`** states that *"retry **MUST NOT** produce a second user-visible notification."*
+A deduplication **window** that expires while a retry is still in flight would produce exactly that.
+⇒ The dedup window is bounded **below** by an invariant, not merely by taste, and its lawful range
+must be derived jointly with `NTF-CFG-004` and `NTF-CFG-005`. ⛔ **The three are NOT independently
+choosable**, which is why `NTF-GAP-018` carries all three together.
+
+⛔ **`PRD-019`'s 30-day dedup retention is NOT applicable.** `ITG-FR-017` retains an opaque
+`(tenant, event-id)` **transport** key derived from a payment provider's 24-hour retry and 15-day
+replay windows (`ADR-0047` **L101**). `NTF-INV-007`'s key is
+`(eventId, recipientId, channel, templateId)` — a **user-visibility** key. Different key, different
+purpose, different owner.
+
+#### 20.5 `NTF-FR-065` — why no SLO is published here
+
+Rank 1 **`MP-NFR-01`** assigns availability *"targets with SLOs, SLIs and error budgets"* to
+**SRE / OBSERVABILITY**. ⭐⭐⭐ **The repository has never ratified an SLO for anything.** `ADR-0102`
+constituted that office **for `PRD-015` only**, ratified a **target** (`99.9% monthly`), and expressly
+recorded **`SRE-GAP-001` OPEN** because *"this act ratifies the **target** only; the **SLO**, **SLI**
+and **error budget** are **NOT**"* specified. ⇒ An SLO published here would be the **first in the
+repository**, asserting *more* authority than the one conferred act claimed. ⛔ Refused.
+
+⭐ **What the repository does fix, and what it does not:**
+
+| Element | Repository position |
+|---|---|
+| **Unit** | ⭐ **`% monthly`** — `authentication/prd-v2/11-NFR-Compliance-and-Final-Acceptance.md` **L67-69** (*"99.9% monthly"*, *"99.95% monthly"*). ⛔ *"rolling 30 d"* has **0** occurrences repository-wide |
+| **Coherence direction** | ⭐ A dependent service sits **below** its dependency (`ADR-0100` **§3.2**). `BC-22` depends on `BC-31` and `BC-18` ⇒ its target **MUST NOT exceed 99.9%** |
+| **Continuous-outage analogue** | *"Maximum tolerable continuous outage — **30 minutes**"* (**L70**) — for a service the same document calls *"availability-critical"* |
+| **Criticality ordering** | ⭐⭐ **`NTF-INV-011`** makes notification failure the one plane that **must never** fail a business operation ⇒ notification is the **least** availability-critical plane, so it **cannot** carry a **tighter** outage bound than authentication without inverting the ordering **L72-73** states expressly |
+| **Numeric value** | ⛔ **OWED** — `NTF-GAP-020`, owner **SRE / Observability**, requiring a **fresh** conferral for `PRD-010` (`ADR-0033` §7.1 bars reusing `ADR-0102`) |
+
+---
+
 ## 21. Platform vs tenant boundary
 
 | ID | Requirement |
@@ -621,6 +750,7 @@ different payload ⇒ ⚠ **`NTF-GAP-023`** · zero eligible recipients (operati
 | ⭐ `NTF-GAP-021` | Push depends on `PRD-019` — **v0.4 `DRAFT`, 111 `ITG-*` identifiers**, ⛔ not architecture-reviewed, not frozen | **Product + Architecture Owner** | V1 Push delivery guarantees |
 | `NTF-GAP-022` | Tenant suspended mid-dispatch | **Architecture Owner** | Edge case |
 | `NTF-GAP-023` | Same `eventId`, different payload | **Architecture Owner** | Dedup |
+| ⭐ `NTF-GAP-024` | ⚠ **May a `BC-22` template consume the Library-scoped `LCFG-2` value?** §20.2 cites `LCFG-2` as the authoritative **value** for `NTF-CFG-002`, but **cross-context consumption of an `LCFG-*` slot is unruled** — `ADR-0017` **§2.5** notes the `LCFG-*` set *"currently live in the **Library** PRD"* and assigns only their *resolution semantics* to `PRD-023` | **Architecture Owner** | `NTF-CFG-002` |
 
 ---
 
@@ -674,9 +804,21 @@ list (2, 3), catalogue pruning (7), and the removal of Platform Admin (4).
 **must not be cited as authority**."* `NOTIF-` = **0**, `COM-` = **0**. ⚠ Registration remains a
 **Governance Owner** act — `NTF-GAP-001`.
 
-Registers: `NTF-FR-*` (65 drafted) · `NTF-BR-*` (3) · `NTF-INV-*` (10) · `NTF-XC-*` (6) ·
-`NTF-AC-*` (8 sample) · `NTF-GAP-*` (23). ⚠ **Counts are provisional; the AC register is
-deliberately incomplete at v0.1** and Stage 4 will require 1:1 obligation coverage.
+Registers, **re-measured at v0.3** (`grep -o | sort -u`, not asserted): `NTF-FR-*` (**65**) ·
+`NTF-BR-*` (**3**) · `NTF-INV-*` (**11**) · `NTF-XC-*` (**6**) · `NTF-AC-*` (**9**) ·
+`NTF-GAP-*` (**24**) · `NTF-CFG-*` (**6**). ⚠ **Counts are provisional; the AC register is
+deliberately incomplete** and Stage 4 will require 1:1 obligation coverage.
+
+⚠⚠ **Two counts published at v0.1a were STALE and are corrected here.** This subsection read
+*"`NTF-INV-*` (10)"* and *"`NTF-AC-*` (8 sample)"*, but v0.2 added **`NTF-INV-011`** and
+**`NTF-AC-009`** and did **not** update §31. Measurement returns **11** and **9**. ⭐ The defect is
+disclosed rather than silently overwritten, because v0.1a's changelog entry expressly claimed *"all six
+registers verified CONTIGUOUS and complete **by measurement**"* — a claim that a later amendment
+falsified, and the honest remedy is to say so.
+
+⭐ **`NTF-CFG-*` is a NEW register opened at v0.3** (§20.1), previously **0** occurrences. It is
+**reserved, not closed** — the `ADR-0048` distinction that keeps `PRD_LIFECYCLE.md` §5 rule 6
+untriggered. Collision-checked: `NTF-CFG-` = **0** repository-wide before this version.
 
 ---
 
@@ -684,6 +826,7 @@ deliberately incomplete at v0.1** and Stage 4 will require 1:1 obligation covera
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.3** | 2026-09-05 | ⭐⭐⭐ **The `NTF-CFG-*` slot register is opened at new §20.1 — SIX slots declared, and NOT seven, because three of the seven the author's own Stage-4 review classified as configurables are NOT configurables.** Authored under the **`PRD-017` §8.5 / `FIL-CFG-006` precedent** (**L1208-1240**), whose governing sentence is that a slot is published with its range and owner *"even when no authority yet supplies a number, because inventing one **would be a determination made by a document with no standing to make it**"*, and under `FIL-XC-009` (**L302**), which forbids the module defining *"a configuration value's default, range or resolution order"*. ⭐⭐ **THREE OBLIGATIONS ARE RECLASSIFIED OUT of check 3, correcting `PRD-010_STAGE4_REQUIREMENTS_REVIEW.md` v1.0's own finding:** **`NTF-FR-044`** is a **provider-semantic definition** (Rank 1 `MASTER_PRD.md` **L229** already fixes the provider as *"**Firebase Cloud Messaging** — Yes — FCM (V1)"*; the acknowledgement model is that provider's documentation, absent from this repository — the `ADR-0045` condition), **`NTF-FR-054`** is a **`BC-25` resolution property** that `FIL-XC-009` forbids this PRD publishing and `ADR-0017` **§2.5** assigns to `PRD-023`, and **`NTF-FR-065`** is an **NFR locus** owned by SRE/Observability under Rank 1 `MP-NFR-01` — *an NFR target is ratified by an office, not tuned by an operator*. ⇒ ⭐ **Check 3's target is 6 slots, of which 1 is satisfied by citation and 5 are owed.** ⭐⭐⭐ **`NTF-CFG-002` is SATISFIED BY CITATION, not by invention** — it resolves to **`LCFG-2`** (default **`en`**, range *"Supported set"*, owner **Product**, rationale *"Only locale with complete strings at V1"*; `Library_PRD_v1.md` **L717** FROZEN Rank 3, `CONFIGURATION_GUIDE.md` **L352**). ⚠ **New §20.2 confronts the objection that `PRD-015` was refused this exact citation FOUR times** (`SRCHCL-X3`, `SRCHGR-X4`, `SRCHGB-X4`, `F5_OWNERSHIP_RULING` §4.3 — *"a **false friend**"*) and shows every refusal turns on one measured reason — *"a **UI-string locale**, not a **script inventory**"* — which **does not obtain** for a notification template, since a template **is** a UI string and `LCFG-2`'s own rationale is about *"complete **strings**"*. ⛔ `ADR-0100` §3.7's closed **English + Hindi** inventory is **search-scoped and NOT imported**; `NTF-FR-037`'s prohibition on borrowing `SRCHPO-17` **stands unamended**; ⛔ no second source of truth — the slot **consumes** `LCFG-2`, it does not copy it. ⭐ **`NTF-CFG-004`'s UNIT is fixed by precedent while its VALUE is refused** (new §20.3): `FIL-CFG-014` counts *"**3** attempts **total** (initial + 2 retries)"* with **`INV-21`** requiring *"retry bound **≥ 1**"* ⇒ a repository retry bound counts **total attempts**, so any value expressed as *retries with a floor of 0* would contradict `INV-21`; ⛔ `FIL-CFG-014`'s **number** is NOT carried across, its failure domain being storage rather than a push provider. ⭐ **`NTF-CFG-006` is shown to be invariant-constrained, not free** (new §20.4): a dedup window expiring mid-retry violates **`NTF-INV-007`**, so the three retry slots are **not independently choosable**; ⛔ `PRD-019`'s 30-day retention is **inapplicable** — a transport `(tenant, event-id)` key is not a `(eventId, recipientId, channel, templateId)` user-visibility key. ⭐ **New §20.5 records what the repository DOES fix about availability and what it does not**: the unit is **`% monthly`** (`authentication/prd-v2/11-…` **L67-69**) — ⛔ *"rolling 30 d"* has **0** occurrences repository-wide — the coherence direction puts a dependent **below** its dependency ⇒ `BC-22` **MUST NOT exceed 99.9%**, and ⭐⭐ **`NTF-INV-011` makes notification the LEAST availability-critical plane**, so it cannot carry a **tighter** outage bound than authentication; ⛔ **no numeric SLO is published**, because `ADR-0102` ratified a **target** and left **`SRE-GAP-001` OPEN** on the SLO/SLI/error-budget limbs — an SLO here would be the **first in the repository**. ⚠⚠ **TWO NEW ARCHITECTURE FINDINGS DISCLOSED, NEITHER CURED:** **`NTF-AL-F3`** — `platform/communication`'s manifest block (**L392-410**) declares **no** `platform/configuration:settings` port, so `E-19`'s *"all contexts"* grant and the module block disagree (⭐ `PRD-017` has the identical condition — there is **no** `platform/media` block at all — so this PRD follows `E-19` as `PRD-017` does, and records the disagreement); **`NTF-AL-F4`** — `NTF-FR-049` presupposes a retry scheduler the manifest does not grant `BC-22`: `platform/workflow` is the **only** module declaring `platform/services:job_runtime` (**L338**), mirroring `FIL-GAP-015`, so a retry value would be **configured but not consumable**. ⭐ **`NTF-GAP-024` minted** — cross-context consumption of a Library-scoped `LCFG-*` slot is unruled (Architecture Owner). ⚠ **Two STALE counts in §31 corrected by measurement and DISCLOSED** — it read `NTF-INV-*` (10) and `NTF-AC-*` (8) but v0.2 had added `NTF-INV-011` and `NTF-AC-009`; actual **11** and **9**, which falsifies v0.1a's claim that all six registers were *"verified CONTIGUOUS and complete by measurement"*. ⛔⛔ **ZERO VALUES INVENTED: 0 recipient ceilings, 0 rate limits, 0 retry counts, 0 backoff schedules, 0 dedup windows, 0 SLO/SLI/error budgets, 0 percentages, 0 mandatory/optional classifications.** ⛔ **0 gaps closed** (24 OPEN, one newly minted); ⛔ **0 requirements renumbered or reworded**; ⛔ **0 ACs changed**; ⛔ `ADR-0102` **NOT** reused; ⛔ `SRCHPO-17` / `ADR-0100` §3.7 **NOT** borrowed; ⛔ **0 ADRs** created or modified (94); ⛔ **0** `CONFIGURATION_GUIDE.md` bytes — filling the guide is step 3 and needs the values first; ⛔ **0** frozen PRDs, **0** baseline, **0** registry status (still `PLANNED`), **0** BC Map, **0** `MASTER_PRD`, **0** dependency matrix, **0** `module_dependencies.yaml`, **0** `IMPL-*`, **0** lines of application code. ⛔ **Stage 4 remains NOT CONFERRED** — conferral is the **Requirements Reviewer**'s (`PRD_LIFECYCLE.md` §6 **L278**); Stage 3 **PASS 6/6** untouched. Status remains **`DRAFT`**. |
 | **v0.2** | 2026-09-05 | ⭐⭐ **REQUIRED CORRECTION applied — the two additive amendments accepted at `NTF-AL-B2` in [`PRD-010_ARCHITECTURE_ALIGNMENT.md`](PRD-010_ARCHITECTURE_ALIGNMENT.md) §8.3, and nothing else.** ⭐⭐⭐ **`C-1` — the emitting-operation failure boundary is now stated: new invariant `NTF-INV-011`** requires that an unresolvable notification address fail **only that delivery** and ⛔ **never** fail, roll back, abort or retry the originating business operation, carrying `tool/module_dependencies.yaml` **`CM-3`** / **`EBR-1030`** verbatim; supported by new **§19.1**, which explains that the invariant **protects other bounded contexts, not `BC-22`** — without it a failed address lookup could roll back a paid membership renewal — and by new acceptance criterion **`NTF-AC-009`**, which asserts the emitting aggregate's post-state is unchanged. ⭐ **Verified NOT a duplicate before adding**: a repository-wide probe for an existing failure-boundary requirement (`fail the emitting`, `emitting operation`, `roll back`, `originating operation`, `never fail`) returned **0 hits**, and §19.1 records the distinction from `NTF-FR-003`, which governs **payload sufficiency** and states no emitter boundary. ⭐⭐ **`C-2` — the authoritative module contract is now cited in new §6.1**: `platform/communication`, **rank 5**, `imports: contracts` (rank 0), ports `platform/integration:connector` and **`platform/identity:notification_address`** under **AMENDMENT `A-3`** with its *"one address, one queued delivery… never retained by the caller"* constraint (**L462-464**), `consumes_events: ["*"]`, `banned_imports`, and a clause-by-clause table mapping **`CM-1`** → `NTF-INV-003`/`-FR-004`/`-FR-009`, **`CM-2`** → `NTF-FR-058`/`-FR-004`, **`CM-3`** → `NTF-INV-011`. ⭐ §6.1 also records that **`A-3` is the mechanism behind `MP-GBR-34`** — the address is resolved at delivery time, which is *why* no event need carry a number. ⚠ **`NTF-AL-F2` is DISCLOSED in §6.1 and expressly NOT relied upon or cured** — the pre-existing rank-5→rank-5 `platform/integration` port is an Architecture-Owner-owned manifest condition, and no requirement here depends on its lawfulness. ⚠ **The stale `PRD-019` fact is corrected in 4 places, re-measured from the document itself**: **v0.4 `DRAFT`** with **111 `ITG-*` identifiers** (54 obligation-bearing + 54 `ITG-AC-*` + 3 `ITG-GAP-*`), replacing v0.1's *"`DRAFT`, 0 identifiers"*; `NTF-GAP-021` is **refined, not closed** — Push egress is specifiable **in form** (declared `connector` port, `MASTER_PRD` **L229**) but ⛔ **its delivery guarantees are not, until `PRD-019` is conferred**. ⚠ **A pre-existing `PRD_REGISTRY.md` self-contradiction is disclosed, not repaired** (**L319** v0.1 vs **L545** v0.4) — resolving it is a **Governance Owner** act. ⛔ **NOTHING ELSE CHANGED: 0 requirements redesigned, 0 identifiers renumbered, 0 `NTF-GAP-*` closed (23 remain OPEN), Platform Admin authorization untouched, 0 business events invented, `messaging.MessageSent → BC-22` NOT invented, WhatsApp scope unchanged, `NTF-AL-F2` NOT fixed.** ⛔ **0 BC Map · 0 `MASTER_PRD` · 0 frozen PRDs · 0 baseline · 0 registry status · 0 dependency matrix · 0 `module_dependencies.yaml` · 0 ADRs created or modified · 0 `IMPL-*` · 0 lines of application code.** Status remains **`DRAFT`**; ⛔ no approval or freeze claimed; `PRD_REGISTRY.md` remains **`PLANNED`**. |
 | **v0.1a** | 2026-09-05 | ⚠ **Self-audit of the author's own published counts and cross-references — three defects found and repaired, two false alarms cleared.** ⭐ **All six registers verified CONTIGUOUS and complete by measurement**, not by assertion: `NTF-FR-001`…`065` (65) · `NTF-BR-001`…`003` (3) · `NTF-INV-001`…`010` (10) · `NTF-XC-001`…`006` (6) · `NTF-AC-001`…`008` (8) · `NTF-GAP-001`…`023` (23) — **0 missing, 0 out-of-range, 0 duplicate definitions**, and all **23** gaps confirmed present in the §28 table. ⚠⚠ **THREE BROKEN CROSS-REFERENCES REPAIRED** — they cited the *drafting brief's* 56-section outline rather than this document's actual 32 sections: *"see §29"* → **§13** (Student↔Student messaging; §29 is Acceptance Criteria), and two citations of a non-existent *"§35.3"* → **§5 N7** and an explicit `AUTH-10.3` / `MASTER_PRD` §22 citation respectively. ⭐ **Two apparent duplicates were investigated and CLEARED as legitimate**: `NTF-FR-009` appears twice as one definition plus one prose citation, and `NTF-GAP-003` is deliberately cited by **two** catalogue rows (`MembershipExpiringSoon` and `FeeDueRaised`) because one unresolved timing decision governs both. ⭐ **Every remaining `§` reference was verified to be either internal and ≤32, or externally qualified** (`MASTER_PRD` §22, BC Map §8, `DOCUMENTATION_BASELINE` §3.5). ⛔ **No requirement text, register membership, gap, verdict, ownership finding or evidence citation was changed** — this entry corrects pointers and publishes measured counts only. ⛔ Status remains **`DRAFT`**; ⛔ 0 approvals, 0 conferrals, 0 baseline rows, 0 ADRs, 0 frozen documents touched, 0 `IMPL-*`, 0 code. |
 | **v0.1** | 2026-09-05 | ⭐⭐ **Created at Stage 2 as a DRAFT.** Catalogue built **only** from BC Map §8 events already routed to `BC-22`. ⭐⭐⭐ **Three brief-contradicting findings recorded:** (1) Student↔Student messaging is owned by **`BC-12`** under **FROZEN** `PRD-021B` ⇒ integration-only, and `messaging.MessageSent` is **not routed to `BC-22`** (`NTF-GAP-011`); (2) **SMS/Email/WhatsApp are V2** by Rank-1 `MP-SCOPE-09`, WhatsApp Business **V3** by EA L1502/L1821 ⇒ V1 integrated channels are **exactly In-App + Push**; (3) ⭐ **"Platform Admin" has 0 occurrences** in the BC Map, ownership model and Auth PRD, and `MP-GBR-21` **closes** the scope register to `self`/`guardianOf`/`tenantWide` ⇒ ⛔ **no Platform Admin role created**, platform broadcast blocked at `NTF-GAP-002`, and platform-level *configuration* routed through the real `BC-25` instead. ⛔ **Six requested notifications have no source event** and are registered at `NTF-GAP-005` rather than invented. ⚠ **A contradiction between BC Map L437 and Auth PRD §10 is disclosed** (`NTF-GAP-006`) and ⛔ not resolved in the author's favour. ⛔ **0 timings, 0 bulk limits, 0 retry values, 0 SLOs invented.** ⛔ Authority **not borrowed** from `PRD-015`'s `SRCHPO-17` or `ADR-0102`. **23 gaps registered, each with a named owner.** ⛔ **No approval, no conferral, no freeze, no baseline row, no admitting ADR, no frozen document touched, no historical record modified, no `IMPL-*`, no application code.** Status **`DRAFT`**; `PRD_REGISTRY.md` still shows `PLANNED` and ⛔ **was not modified.** |

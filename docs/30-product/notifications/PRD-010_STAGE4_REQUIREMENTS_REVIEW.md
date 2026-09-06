@@ -970,3 +970,123 @@ Check 3: **1 of 7 satisfied** · **1 unit+floor authoritative with a surviving r
 | Version | Date | Change |
 |---|---|---|
 | **v1.6** | 2026-09-05 | ⛔⛔ **ADVERSARIAL LOOP RUN AGAINST MY OWN v1.5 POSITION — THE NUMBER SURVIVES, THE FRAMING IS DISPROVED, AND THE RESULT IS STOP CONDITION B.** Confirmed unchanged: unit (**total attempts incl. first**), floor (**`≥ 1`**, executable), the **`3` / range `1–5`** recommendation, and the retry-storm finding. ⛔ **Three coupled structural defects found that v1.5 never contemplated.** ⭐⭐⭐ **DISPROOF 1 — a single `JobRuntime` deadline CANNOT express a deferrable notification:** `NTF-FR-039` demands quiet hours *"**defer, never drop**"* and quiet hours are **hours**, while the runtime deadline *"bounds the **whole job**; on expiry … `JobState.failed`"* (`job_runtime.dart` **L107-110**, re-checked per attempt at `services.dart` **L190-201**) ⇒ a notification deferred overnight would terminate `failed`, **converting a defer obligation into a DROP** ⇒ ⛔ **the transport clock and the validity clock cannot be one value**, so **`NTF-CFG-007` was UNDER-SPECIFIED BY ITS OWN AUTHOR at v0.5** and must be split into an **attempt/transport budget** and a **notification validity horizon**; ⛔ neither invented. ⭐⭐ **DISPROOF 2 — four lifecycle terminals, two runtime terminals:** §18 declares `delivered`/`failed`/`expired`/`cancelled` but `JobState` has **two**, and `failed` **conflates** *"attempts exhausted, **or the deadline expired**"* (**L62-63**) ⇒ `expired` and `cancelled` have **no runtime representation** although `NTF-FR-042` and `NTF-FR-064` require the distinction — the same one `CONFIGURATION_GUIDE` **L892** insists on for `PRD-017` (*"by timeout, distinct from failure by error"*); ⭐ `JobOutcome.reasonCode` is the available carrier but **the 2→4 mapping is an unmade architecture decision**. ⚠ **DISPROOF 3 — quiet hours have ZERO slots** (measured 0 occurrences of *"quiet"* in §20.1) although **Rank-1 `MP-GBR-35`** and **BC Map L131** assign them to `BC-22`, while **EA L1447** places them at **V2**; **`MP-CON-08`** makes that *"a defect to be **raised**, not a choice to be made"* ⇒ **raised, not resolved**, ⛔ **no window invented, no slot minted** (minting would presuppose the V1/V2 answer). ⇒ ⭐⭐⭐ **STOP CONDITION B, and stronger than v1.5's result:** v1.5 blamed two **unknown quantities**; the loop shows the blocker is **CATEGORICAL** — *no arithmetic over any repository value can decide whether the clock is one bound or two, or how four terminals map onto two*. A number supplied now would attach to a parameter **whose meaning is not yet fixed**. ⭐ **`NTF-GAP-027` minted** carrying all three defects; **five minimum Architecture Owner decisions** published in dependency order, with **1 and 2 as prerequisites for 3**. ✅ Confirmed unchanged: `NTF-FR-047`, `NTF-INV-011`/`CM-3`/`EBR-1030` (isolation preserved), idempotent `JobKey` (`services.dart` **L163-165**, test-pinned); ⛔ **backoff stays OWED**; ⚠ **`NTF-GAP-025` NON-BLOCKING**; ⭐ manifest amendment is **one line, `A-3` shape, NO `L2` waiver** (rank 3 → rank 5 downward). ⛔⛔ **0 values invented, 0 slots minted (CFG stays 7), 0 gaps closed (27 OPEN), 0 identifiers renumbered, 0 requirements reworded, 0 ACs changed, 0 lifecycle states altered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**. §1-43 preserved byte-identical (`cmp` PASS). |
+
+---
+---
+
+# Supplement v1.7 — VERIFIED SOLUTION: my own Stop-Condition-B was premature
+
+> ⛔ **Append-only.** §1-52 above are preserved byte-identical.
+
+---
+
+## 53. ⛔⛔ v1.6 declared PROVEN INSUFFICIENCY on a hypothesis it never tested
+
+v1.6 concluded **STOP CONDITION B**, asserting the blocker was *"categorical"*. ⭐⭐⭐ **That conclusion
+was wrong, and it was wrong because it assumed — without testing — that `DeliveryMessage`'s lifecycle
+and the `JobRuntime` job are the same object.**
+
+⛔ **They are not, and the port contract states it explicitly** — in a passage I was reasoning *about*
+without having read:
+
+> *"`JobState` is **deliberately not the same enum** as a File & Media object lifecycle
+> (`RECEIVED → VALIDATING → PROCESSING → READY | FAILED`, `FIL-FR-092`). **A job is the mechanism; the
+> object lifecycle is the domain fact.** Fusing them would put media semantics into a platform port and
+> hand `BC-29` state it does not own."*
+> — `packages/liboora_contracts/lib/src/ports/job_runtime.dart` **L45-51**
+
+⇒ ⚠ **Both of v1.6's structural disproofs collapse, and the resolution required NO new authority.**
+
+---
+
+## 54. ⭐⭐⭐ Disproof 2 dissolved — no mapping is required
+
+`PRD-017` already runs a **five**-state lifecycle over the same **two**-state job, and the port says
+that is the **intended** design rather than a tension.
+
+⭐ **`DeliveryMessage` is a `BC-22`-owned aggregate** (BC Map **L205**). Therefore §18's
+`delivered | failed | expired | cancelled` is **`BC-22`'s own domain state**, persisted by `BC-22`;
+`JobState` is the **mechanism** state of one transport run. `JobOutcome.reasonCode`
+(`deadline_exceeded` vs `retries_exhausted`, `services.dart` **L197**/**L226**) is the **input**
+`BC-22` uses to set its own state — **not a competing lifecycle**.
+
+⇒ ⭐ **`JobRuntime` needs no change.** This is exactly the preference the task stated, and it is the
+architecturally correct answer, not a convenience.
+
+---
+
+## 55. ⭐⭐⭐ Disproof 1 dissolved — deferral happens before submission
+
+| Fact | Source |
+|---|---|
+| Lifecycle order: `created → **queued** → processing → sent → …` | §18 |
+| Cancellable **while any recipient remains in `queued`** | **`NTF-FR-014`** |
+| Idempotency record claimed **atomically before dispatch** | **`NTF-FR-046`** |
+| Restart must not re-deliver work already `sent` | **`NTF-FR-048`** |
+
+⇒ ⭐⭐⭐ **`queued` is a PRE-SUBMISSION `BC-22` state.** Quiet-hours deferral, cancellation and
+scheduling all occur **in `queued`, before any job exists**. The deadline begins only when `BC-22`
+submits — at the **end** of the quiet window.
+
+⇒ ⛔ **v1.6's "deferred overnight → deadline blown → `failed`" scenario CANNOT ARISE.** A deferred
+notification is not a running job with a ticking deadline; it is a `queued` `DeliveryMessage` that has
+not been submitted.
+
+---
+
+## 56. ⭐⭐ The verified solution — ONE clock
+
+**`NTF-CFG-007` is a transport / attempt-run deadline**, scoped to one submitted delivery run.
+⛔ **The v1.4 "split the slot" proposal is WITHDRAWN as unnecessary** — it would have added a second
+configurable to solve a problem created by conflating a pre-submission domain state with a running job.
+This is **the smallest architecture that satisfies every requirement**, which is what the task asked for.
+
+⚠ **Two falsifiable consequences, stated rather than left implicit:**
+
+1. ⭐ **`expired` is a `queued`-side domain concern** — a notification still `queued` when it ceases to
+   be worth sending expires **with no job ever running**. Whether such a horizon exists at V1 is a
+   **product** question about `NTF-FR-039`, ⛔ **not** a `JobRuntime` parameter; ⛔ **no horizon value
+   proposed**.
+2. ⭐ **`cancelled` never needs runtime representation** — `NTF-FR-014` bounds cancellation to `queued`.
+   Once submitted, cancellation is **out of scope by construction** — a **stronger** guarantee than any
+   mapping would have given.
+
+---
+
+## 57. ⭐ `NTF-GAP-027` narrowed — 2 of 3 limbs resolved by existing authority
+
+| Limb | Status |
+|---|---|
+| 1 — one clock or two | ✅ **RESOLVED** — one clock (§55) |
+| 2 — terminal mapping | ✅ **RESOLVED** — no mapping required (§54) |
+| 3 — quiet-hours slot / V1-vs-V2 | ⛔ **OPEN** — **0** slots; Rank-1 `MP-GBR-35` vs **EA L1447** (V2); a `MP-CON-08` *"defect to be **raised**, not a choice to be made"* |
+
+⛔ **The gap is NARROWED, not closed** — closing it is an Architecture Owner act, and its original text
+is **retained in the subject for audit**.
+
+---
+
+## 58. Verdict — STOP CONDITION A, with one number still owed
+
+⭐⭐ **The architecture question is SOLVED.** The ceiling inequality is now **well-formed**:
+*attempts × per-attempt duration ≤ **transport** deadline* — bounded by a **single** transport-scoped
+value instead of an undefined clock.
+
+⛔ **Two quantities remain missing**, and they are ordinary owed values rather than categorical
+blockers: `NTF-CFG-007` (**OWED** — one number) and the provider timeout (**`NTF-GAP-017`** — absent
+FCM documentation).
+
+⇒ ⭐ **`3` total attempts, range `1–5`, stands `[RECOMMENDED]`**, to be ratified **jointly** with
+`NTF-CFG-007` on the `ADR-0057` precedent.
+
+Check 3: **1 of 7 satisfied** · **1 unit+floor authoritative with a surviving recommendation** ·
+**5 owed**. Stage 3 **PASS 6/6**. **27 gaps OPEN** (one narrowed). Stage 4 **NOT READY, NOT
+CONFERRED**.
+
+---
+
+## 59. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.7** | 2026-09-05 | ⛔⛔ **MY OWN v1.6 STOP-CONDITION-B WAS PREMATURE, and both of its structural disproofs are now themselves DISPROVED — the resolution required NO new authority.** v1.6 assumed, **without testing**, that `DeliveryMessage`'s lifecycle and the `JobRuntime` job are the same object; ⭐⭐⭐ **the port contract states the opposite in a passage I was reasoning about without reading**: `JobState` is *"**deliberately not the same enum** as a File & Media object lifecycle … **a job is the mechanism; the object lifecycle is the domain fact**"* (`job_runtime.dart` **L45-51**). ⭐⭐⭐ **DISPROOF 2 DISSOLVED — no mapping is required:** `PRD-017` already runs a **five**-state lifecycle over the same two-state job **by design**, and `DeliveryMessage` is a **`BC-22`-owned aggregate** (BC Map **L205**), so §18's four terminals are `BC-22`'s **domain** state while `JobState` is one run's **mechanism** state, with `JobOutcome.reasonCode` as the **input** `BC-22` consumes. ⇒ ⭐ **`JobRuntime` needs no change** — the task's stated preference, and the architecturally correct answer. ⭐⭐⭐ **DISPROOF 1 DISSOLVED — deferral precedes submission:** §18 orders `created → **queued** → processing → sent`; **`NTF-FR-014`** makes a dispatch cancellable *"while any recipient remains in **`queued`**"*; **`NTF-FR-046`** claims idempotency *"**before dispatch**"*; **`NTF-FR-048`** protects work already `sent` ⇒ ⭐⭐ **`queued` is a PRE-SUBMISSION state**, so quiet-hours deferral and cancellation occur **before any job exists** and the deadline starts only when `BC-22` submits at the **end** of the quiet window ⇒ ⛔ **v1.6's "deferred overnight → deadline blown → failed" scenario CANNOT ARISE.** ⇒ ⭐⭐ **VERIFIED SOLUTION — ONE CLOCK:** `NTF-CFG-007` is a **transport/attempt-run deadline**; ⛔ **the v1.4 "split the slot" proposal is WITHDRAWN as unnecessary**, since it would have added a configurable to solve a problem created by conflating a pre-submission domain state with a running job — one clock is **the smallest architecture satisfying every requirement**. ⚠ **Two falsifiable consequences:** **`expired`** is a **`queued`-side domain concern** reachable with **no job running** (a **product** question about `NTF-FR-039`, ⛔ no horizon value proposed), and **`cancelled`** needs **no runtime representation** because `NTF-FR-014` bounds it to `queued` — once submitted, cancellation is **out of scope by construction**, a **stronger** guarantee than a mapping. ⭐ **`NTF-GAP-027` NARROWED, NOT CLOSED** — limbs 1 and 2 resolved by **existing** authority, ⛔ **limb 3 OPEN** (quiet hours: 0 slots, Rank-1 `MP-GBR-35` vs EA **L1447** V2, a `MP-CON-08` defect *to be raised*), original text **retained for audit**. ⭐⭐ **NET: STOP CONDITION A on the architecture** — the ceiling inequality is now **well-formed** and bounded by a **single** value; ⛔ two ordinary owed quantities remain (`NTF-CFG-007`; provider timeout `NTF-GAP-017`) ⇒ **`3` / range `1–5` stands `[RECOMMENDED]`**, to be ratified **jointly** with `NTF-CFG-007` on the `ADR-0057` precedent. ⛔⛔ **0 values invented, 0 slots minted (CFG stays 7), 0 gaps closed (27 OPEN), 0 identifiers minted or renumbered, 0 requirements reworded, 0 ACs changed, 0 lifecycle states altered, 0 ADRs (94), 0 manifest, 0 BC Map, 0 MASTER_PRD, 0 EA, 0 frozen PRDs, 0 CONFIGURATION_GUIDE, 0 baseline, 0 registry, 0 application code, 0 test code.** Stage 4 **NOT READY, NOT CONFERRED**; Stage 3 **PASS 6/6**. §1-52 preserved byte-identical (`cmp` PASS). |

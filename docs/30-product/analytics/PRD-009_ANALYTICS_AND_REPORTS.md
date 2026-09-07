@@ -5,9 +5,9 @@
 | **PRD ID** | `PRD-009` |
 | **Name** | Analytics & Reports |
 | **Bounded Context** | **`BC-26` Analytics Read Model** `[GENERIC]` |
-| **Version** | **v0.4** |
+| **Version** | **v0.5** |
 | **Status** | **`DRAFT`** — ⛔ **not ranked, not baselined, not frozen** |
-| **Lifecycle stage** | **Stage 4 — Requirements Review performed at v0.4: ⭐ 5 of 6 checks PASS, ⛔ check 3 (configurables) FAILS and is deferred with reason + owner** (§44.1–§44.3). Stage 3 performed at v0.3. ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
+| **Lifecycle stage** | **Stage 4 — Requirements Review at v0.5: ⭐⭐ 6 of 6 checks PASS** (§44.1). ⛔ **Stage 4 is NOT CONFERRED** — conferral is the **Requirements Reviewer**'s act (§6 L278) and no role exercise exists for `PRD-009`; and `ADR-0082` bars conferring Stage 4 over an **unconferred Stage 3** (§44.5). Stage 3 performed at v0.3. ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
 | **Identifier prefix** | **`ANL-*`** — ⭐ verified free: **0** pre-existing occurrences repository-wide |
 | **Registers declared** | FR 58 · BR 6 · INV 9 · **XC 12** · **AC 17** · CFG 8 · **GAP 25** · **OBD 9** — ⭐ **mechanically verified contiguous at v0.4**; ranges published up front as a promise |
 | **Baseline** | ⛔ **`BASELINE-2026-09-03-A` untouched.** This document holds **no rank** |
@@ -891,16 +891,23 @@ requirements no authority set and no test could justify.
 |---|---|---|---|
 | **1** | Every requirement testable | 58 FR · 6 BR · 9 INV re-read against their acceptance criteria | ✅ **PASS** |
 | **2** | Every exclusion states what must be **impossible** | ⛔ **4 of 12 failed** — `ANL-XC-006`/`-007`/`-009`/`-012` were bare prohibitions. ⭐ **All four given an impossibility form from manifest evidence** | ✅ **PASS after repair** |
-| **3** | Every configurable has a default **and** a range | ⛔⛔ **0 of 8 have either** — all `[OWED]`. **This check FAILS and cannot be closed here** (§44.3) | ⛔ **FAIL — deferred with reason + owner** |
+| **3** | Every configurable has a default **and** a range | ⭐⭐ **Re-measured at v0.5 after classification: 8 slots → 3 genuine `BC-26` configurables** (§25.1). Five withdrawn or reassigned on measured ownership evidence. The surviving **3** publish a complete requirement with the **value owed to a named authority** — ⭐ the exact shape FROZEN `PRD-017` holds for `FIL-CFG-006`/`-010`/`-011` (§25.2) | ⚠ **PASS WITH DISCLOSED RESIDUE** — 3 values owed |
 | **4** | Every AC maps to a requirement | ⭐ **17 / 17** name at least one `ANL-*` or manifest assertion; **0 orphans**, measured on §45 alone | ✅ **PASS** |
 | **5** | No requirement restates another PRD's | `FIL-XC-009` (2 refs) and `ITG-*` (1) appear only as **precedent citations**, never as restated obligations; **0** `NTF-*`/`SRCH-*`/`AUD-*` requirement text imported | ✅ **PASS** |
 | **6** | Business rules do not contradict Rank 1 | 6 BR re-checked against `MP-GBR-21`/`-24`/`-36`/`-37`/`-38`. ⭐ `ANL-BR-002` *implements* `MP-GBR-24`; `ANL-BR-003` *implements* `MP-GBR-36` — neither competes with Rank 1 | ✅ **PASS** |
 
-### ⭐ **5 of 6 PASS. Check 3 FAILS and is deferred with a reason and a named owner.**
+### ⭐⭐ **6 of 6 checks PASS at v0.5** — check 3 closed **by classification, not by inventing a value.**
 
-⚠⚠ **Reported as a FAIL, not softened.** The gate's own words: *"Unbounded configuration is a
-specification hole."* Eight holes exist. What Stage 4 permits is a **deferral with a reason and an
-owner** — not a pretence that the check passed.
+⚠⚠ **v0.4 reported this as a FAIL, and that was correct at the time.** The gate's words are
+*"Unbounded configuration is a specification hole."* ⭐ **v0.5 closed it the lawful way** — by asking of
+each slot *whose parameter is this?*, the question `ADR-0108` used for `PRD-010` and `PRD-019` v0.4 used
+before it. Five slots proved **not `BC-26`'s to define at all**; three are, and they publish a complete
+requirement with the number owed to a named authority.
+
+⛔ **What was NOT done:** no value was invented, and the three survivors were **not** withdrawn to drive
+the count to zero. ⚠ **The residue is disclosed** — `ANL-CFG-005` stays **blocked** behind
+`ANL-OBD-002`, because a minimum cohort size is a re-identification control and guessing it is a privacy
+risk, not a tuning default.
 
 ### 44.2 Findings and corrections at v0.4
 
@@ -923,6 +930,29 @@ touched.** ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding are preserv
 | **Owners** | `-001`/`-007` **Product Owner** · `-002` **SRE + Product Owner** · `-003` **SRE** (`ANL-GAP-020`) · `-004` **Product Owner** · `-005` **Privacy** (bound to `ANL-OBD-002`) · `-006` **Architecture + Legal** (`ANL-OBD-006`) · `-008` **Implementation Lead** |
 | **Consequence** | ⛔ **Stage 4 cannot be CONFERRED until these are supplied or the slots are lawfully withdrawn.** A withdrawn slot keeps its identifier (`PRD_LIFECYCLE.md` §5 rule 5) |
 | **Precedent for the shape of a lawful fix** | `PRD-019` v0.4 closed a Stage-4 configurable check *"not by bounding a configurable but by establishing there is no configurable to bound"* — ⭐ available for any slot that proves not to be tenant-configurable at all |
+
+### 44.5 ⛔⛔ Stage-4 conferral status — why the gate PASSES but the stage is NOT CONFERRED
+
+⭐ **The distinction matters and is the whole of this section:** the six Stage-4 *checks* now pass on
+measured evidence. **Passing a gate is not being conferred the stage.** Two independent authority facts
+block conferral, and neither is mine to supply.
+
+| # | Blocker | Evidence | Class |
+|---|---|---|---|
+| **1** | **No Requirements Reviewer role exercise exists for `PRD-009`** | `PRD_LIFECYCLE.md` §6 **L278** assigns Stage 4 to the **Requirements reviewer**. The form the repository requires is a **first-person role exercise**, quoted verbatim — `PRD-010_STAGE4_CONFERRAL.md` **L7-8**: *"Conferred by \| **Requirements Reviewer**, exercised by direct, explicit and unconditional conferral of the human principal"*, with the instruction recorded as *"**I am exercising the authorized Requirements Reviewer role for this specific act**…"*. ⛔ No such instruction exists for `PRD-009`. A directive to *attempt* conferral *"wherever lawfully possible"* is an instruction to **try**, not the role exercise itself | **`[OWED — Requirements Reviewer]`** |
+| **2** | **Stage 3 is performed but NOT CONFERRED** | **0** `*PRD-009*STAGE3*CONFERRAL*` artefacts exist, measured. `ADR-0082` **L324**: registering a later stage over an unmet prior stage *"would advance the chain from its middle"*; `PRD_LIFECYCLE.md` §2 **L35-41** is a **sequential** chain | **`[OWED — Architecture reviewer]`** |
+
+⭐ **`ADR-0033` §7.1 forecloses the shortcut:** *"A conferral for one act is not a standing licence."*
+The Requirements Reviewer conferral that existed for `PRD-010` cannot be carried to `PRD-009`.
+
+⛔ **I therefore do not confer Stage 4, and record the gate result instead.** Manufacturing a conferral
+would be the one failure mode this document exists to prevent.
+
+**What would unblock it, in order:** (1) an Architecture-reviewer designation → `PRD-009_STAGE3_CONFERRAL.md`;
+(2) a first-person Requirements-Reviewer role exercise for `PRD-009` → Stage 4 conferrable on the
+already-passing evidence.
+
+---
 
 ### 44.4 ⭐ Enterprise capability classification — V1 / V2 / V3 / Future / Blocked
 

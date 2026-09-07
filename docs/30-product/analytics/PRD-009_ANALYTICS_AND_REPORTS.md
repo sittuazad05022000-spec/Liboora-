@@ -5,11 +5,11 @@
 | **PRD ID** | `PRD-009` |
 | **Name** | Analytics & Reports |
 | **Bounded Context** | **`BC-26` Analytics Read Model** `[GENERIC]` |
-| **Version** | **v0.3** |
+| **Version** | **v0.4** |
 | **Status** | **`DRAFT`** — ⛔ **not ranked, not baselined, not frozen** |
-| **Lifecycle stage** | **Stage 3 — Architecture Review performed at v0.3.** ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
+| **Lifecycle stage** | **Stage 4 — Requirements Review performed at v0.4: ⭐ 5 of 6 checks PASS, ⛔ check 3 (configurables) FAILS and is deferred with reason + owner** (§44.1–§44.3). Stage 3 performed at v0.3. ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
 | **Identifier prefix** | **`ANL-*`** — ⭐ verified free: **0** pre-existing occurrences repository-wide |
-| **Registers declared** | FR 58 · BR 6 · INV 9 · **XC 12** · **AC 17** · CFG 8 · GAP 24 · **OBD 8** — ⭐ **mechanically verified contiguous at v0.3**; ranges published up front as a promise |
+| **Registers declared** | FR 58 · BR 6 · INV 9 · **XC 12** · **AC 17** · CFG 8 · **GAP 25** · **OBD 9** — ⭐ **mechanically verified contiguous at v0.4**; ranges published up front as a promise |
 | **Baseline** | ⛔ **`BASELINE-2026-09-03-A` untouched.** This document holds **no rank** |
 | **Authority claimed** | ⛔ **NONE.** Stage-2 draft. Every decision requiring an owner is marked `[OWED]` |
 
@@ -27,8 +27,8 @@ Stage-2 rule 3: *"Ranges are contiguous. A gap makes the published range false."
 | `ANL-XC-001` … `ANL-XC-012` | contiguous | **12** | Exclusions — each states what must be **impossible**. ⭐ `-012` added at v0.3 by the Stage-3 review (§8.3.1) |
 | `ANL-AC-001` … `ANL-AC-017` | contiguous | **17** | Acceptance criteria. ⭐ `-017` added at v0.3 (§8.3.1) |
 | `ANL-CFG-001` … `ANL-CFG-008` | contiguous | **8** | Configuration slots |
-| `ANL-GAP-001` … `ANL-GAP-024` | contiguous | **24** | Open gaps, each with a named owner |
-| `ANL-OBD-001` … `ANL-OBD-008` | contiguous | **8** | Open bounded decisions. ⭐ `-008` added at v0.3 — the Rank-4 `iam.*` conflict (§8.3.1) |
+| `ANL-GAP-001` … `ANL-GAP-025` | contiguous | **25** | Open gaps, each with a named owner. ⭐ `-025` added at v0.4 (§44.4) |
+| `ANL-OBD-001` … `ANL-OBD-009` | contiguous | **9** | Open bounded decisions. ⭐ `-009` added at v0.4 (enterprise customization boundary, §44.4). ⭐ `-008` added at v0.3 — the Rank-4 `iam.*` conflict (§8.3.1) |
 
 ⚠ **`ANL-EVT-*` is declared EMPTY, deliberately.** `BC-26` **emits no domain event** — BC Map §7's
 event table shows it exclusively as a *consumer*. The empty register is published rather than omitted
@@ -860,6 +860,85 @@ requirements no authority set and no test could justify.
 
 ---
 
+## 44.1 ⭐⭐ Stage-4 Requirements Review — the six checks, measured at v0.4
+
+`PRD_LIFECYCLE.md` Stage 4 fixes six checks and one gate: *"conflicts closed or explicitly deferred
+**with a reason and an owner**."*
+
+| # | Check | Measured result | Verdict |
+|---|---|---|---|
+| **1** | Every requirement testable | 58 FR · 6 BR · 9 INV re-read against their acceptance criteria | ✅ **PASS** |
+| **2** | Every exclusion states what must be **impossible** | ⛔ **4 of 12 failed** — `ANL-XC-006`/`-007`/`-009`/`-012` were bare prohibitions. ⭐ **All four given an impossibility form from manifest evidence** | ✅ **PASS after repair** |
+| **3** | Every configurable has a default **and** a range | ⛔⛔ **0 of 8 have either** — all `[OWED]`. **This check FAILS and cannot be closed here** (§44.3) | ⛔ **FAIL — deferred with reason + owner** |
+| **4** | Every AC maps to a requirement | ⭐ **17 / 17** name at least one `ANL-*` or manifest assertion; **0 orphans**, measured on §45 alone | ✅ **PASS** |
+| **5** | No requirement restates another PRD's | `FIL-XC-009` (2 refs) and `ITG-*` (1) appear only as **precedent citations**, never as restated obligations; **0** `NTF-*`/`SRCH-*`/`AUD-*` requirement text imported | ✅ **PASS** |
+| **6** | Business rules do not contradict Rank 1 | 6 BR re-checked against `MP-GBR-21`/`-24`/`-36`/`-37`/`-38`. ⭐ `ANL-BR-002` *implements* `MP-GBR-24`; `ANL-BR-003` *implements* `MP-GBR-36` — neither competes with Rank 1 | ✅ **PASS** |
+
+### ⭐ **5 of 6 PASS. Check 3 FAILS and is deferred with a reason and a named owner.**
+
+⚠⚠ **Reported as a FAIL, not softened.** The gate's own words: *"Unbounded configuration is a
+specification hole."* Eight holes exist. What Stage 4 permits is a **deferral with a reason and an
+owner** — not a pretence that the check passed.
+
+### 44.2 Findings and corrections at v0.4
+
+| ID | Finding | Evidence | Impact | Correction | Traces to |
+|---|---|---|---|---|---|
+| **D-1** | Four exclusions were bare `MUST NOT` prohibitions, not impossibility statements | Stage-4 check 2 — *"An exclusion is not a deferral"* | A prohibition naming no structural barrier is a policy, not an exclusion | ⭐ Each given an **impossibility form grounded in the manifest**: `platform/analytics` declares **no communication port** (`tool/module_dependencies.yaml` **L307-311**), so delivery/notification call sites are **unconstructable**; and `excluded_events: ["iam.*"]` (**L315-316**) means a compliant subscription list **cannot contain** an `iam.*` topic | `ANL-XC-006`, `-007`, `-009`, `-012` |
+| **D-2** | The Stage-3 finding was numbered **§8.5** yet sorted *before* §8.4 | Document structure | A reader following §8.1→8.2→8.3 met §8.5 next; five cross-references misdirected | Renumbered **§8.3.1** — it is a finding *about* §8.3's evidence — and all cross-references updated | §8.3.1 |
+| **D-3** | §45 heading said "16"; §48 said "7" | Registers measure **AC 17**, **OBD 8** since v0.3 | A stale count in a heading is a false published figure | Headings corrected to **17** and **8** | §0 register table |
+| **D-4** | Check 3 had never been *tested*, only noted in passing | 8 / 8 slots `[OWED]` | Stage 4 must not pass silently over a failing check | ⭐ Recorded as an explicit **FAIL** with reason + owner (§44.3) | `ANL-CFG-001`…`-008` |
+
+⛔ **No requirement was weakened, no gap closed, no NFR or CFG value invented, and no `.dart` file
+touched.** ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding are preserved unchanged.**
+
+### 44.3 ⛔ Check 3 — the deferral, with its reason and owner
+
+| Field | Value |
+|---|---|
+| **What fails** | All **8** `ANL-CFG-*` slots lack both a default and a range |
+| **Reason (not an excuse)** | ⭐ **No Rank 1–5 authority supplies any of the eight values.** Inventing them would create requirements no authority set and no test could justify — and **`ANL-CFG-005`** (minimum cohort size) is a **re-identification control**, where a guessed number is a privacy risk rather than a tuning default |
+| **Owners** | `-001`/`-007` **Product Owner** · `-002` **SRE + Product Owner** · `-003` **SRE** (`ANL-GAP-020`) · `-004` **Product Owner** · `-005` **Privacy** (bound to `ANL-OBD-002`) · `-006` **Architecture + Legal** (`ANL-OBD-006`) · `-008` **Implementation Lead** |
+| **Consequence** | ⛔ **Stage 4 cannot be CONFERRED until these are supplied or the slots are lawfully withdrawn.** A withdrawn slot keeps its identifier (`PRD_LIFECYCLE.md` §5 rule 5) |
+| **Precedent for the shape of a lawful fix** | `PRD-019` v0.4 closed a Stage-4 configurable check *"not by bounding a configurable but by establishing there is no configurable to bound"* — ⭐ available for any slot that proves not to be tenant-configurable at all |
+
+### 44.4 ⭐ Enterprise capability classification — V1 / V2 / V3 / Future / Blocked
+
+⚠ Added at v0.4 because the brief's enterprise list was not yet phased. ⛔ **Nothing is promoted into
+V1 that lacks a data source or a governance answer.**
+
+| Capability | Enterprise value | Phase | Basis |
+|---|---|---|---|
+| Certified-metric semantic layer | **Critical** — the trust foundation | **V1** | Mandated by `MP-GBR-36` + manifest `AN-2` |
+| Multi-tenancy · role- and permission-aware analytics | **Critical** | **V1** | `ANL-INV-006`/`-007`, `policy_decision` port exists |
+| Rebuildable projections · restatement | **Critical** | **V1** | `MP-GBR-37`, BC Map L453, test exists |
+| Reception / Manager / Owner decision surfaces | **High** | **V1** | Sourced from `attendance.*`, `seating.*`, `fee.*`, `membership.*` |
+| Student presence & consistency (`self`) | **High** | **V1** | `distinctAttendanceDays()` already exists (§8.3) |
+| Authorized export + audit fact | **High** | **V1** | `ANL-FR-032`/`-033`, `BC-24` via `E-20` discipline |
+| Freshness & partial-data disclosure | **High** | **V1** | `ANL-INV-008`/`-009` |
+| Filters · drill-down · saved views | Medium | **V2** | Presentation-layer; needs §19-style customization boundary → `ANL-OBD-009` |
+| Scheduled report subscriptions | Medium | **V2** | Requires the `BC-26`→`BC-22` edge — `ANL-OBD-005`, **BLOCKED** |
+| Cohort bands / benchmarking | Medium | **V2** | **BLOCKED** on `ANL-OBD-002` + `ANL-GAP-010` |
+| Guardian-facing analytics | Medium | **V2** | **BLOCKED** on `ANL-OBD-004` (`guardianOf` scope) |
+| Branch / campus hierarchy analytics | Medium | **V3** | ⛔ No branch concept measured in BC Map; would need Rank-4 work → `ANL-GAP-025` |
+| Anomaly detection · executive intelligence | Medium | **V3** | Depends on V1 metric history existing first |
+| AI narrative summaries / NL query | Medium | **V3** | `E-26` exists; bounded by `ANL-XC-010` |
+| BI / data-platform export, data portability | Medium | **Future** | No integration contract measured; `PRD-019` owns egress |
+| External learning-platform ingestion | Low (today) | **Future** | ⛔ No external API is claimed — `ANL-XC-011` |
+| Academic / mastery analytics | Would be high | ⛔ **BLOCKED** | **F-2** — no data source (`ANL-GAP-003`…`-006`) |
+| Peer leaderboards | Contested | ⛔ **BLOCKED** | **F-3** — `MP-GBR-21` closed scope register |
+
+⚠ **`ANL-OBD-009` (new)** — the **enterprise customization boundary**: which of dashboards, reports,
+filters, saved views, layouts and subscriptions may a tenant configure, given that customization
+**MUST NOT** redefine a Certified Metric (`ANL-BR-003`), bypass authorization or alter a privacy
+boundary? ⛔ Not answerable from repository evidence. `[OWED — Product Owner + Architecture Owner]`.
+**DECISION REQUIRED.**
+⚠ **`ANL-GAP-025` (new)** — no branch/campus/organizational-hierarchy concept is measurable in the BC
+Map; `BC-19` owns the `Tenant` aggregate and no sub-tenant unit was found. Branch-level analytics
+therefore cannot be specified. `[OWED — Architecture Owner + Product Owner]`.
+
+---
+
 ## 45. Acceptance Criteria — **17**, each testable
 
 | ID | Criterion | Verifies |
@@ -918,7 +997,7 @@ fail is not a test"* (`ITG-AC-017` precedent).
 
 ---
 
-## 48. Open Decisions — **8**
+## 48. Open Decisions — **9**
 
 | ID | Decision | Owner | Class |
 |---|---|---|---|
@@ -928,12 +1007,13 @@ fail is not a test"* (`ITG-AC-017` precedent).
 | `ANL-OBD-004` | Does `guardianOf` extend to derived analytics | Privacy + `BC-18` | **HIGH RISK** |
 | `ANL-OBD-005` | Does `BC-26` ever emit an event (needs edge + ADR) | Architecture Owner | **DECISION REQUIRED** |
 | `ANL-OBD-006` | Retention of projections vs source events | Architecture + Legal | **DECISION REQUIRED** |
+| `ANL-OBD-009` | ⭐ **Enterprise customization boundary (§44.4).** Which of dashboards, reports, filters, saved views, layouts and subscriptions may a tenant configure — given customization **MUST NOT** redefine a Certified Metric (`ANL-BR-003`), bypass authorization or alter a privacy boundary? | **Product Owner + Architecture Owner** | **DECISION REQUIRED** |
 | `ANL-OBD-008` | ⚠⚠ **The Rank-4 `iam.*` conflict (§8.3.1).** BC Map **L434** routes `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` to `BC-26`; `module_dependencies.yaml` **L315-316** excludes `iam.*` and assertion **`AN-3`** forbids deriving anything from it, closing `CFL-28` via amendment `A-6`. **Both are Rank 4, so precedence cannot break the tie.** Which governs? | **Architecture Owner** | ⛔ **BLOCKER for any `iam.*`-derived metric** · safe default set by `ANL-XC-012` |
 | `ANL-OBD-007` | Is `Projection` one aggregate or one per subject area — ⭐ **widened at v0.2**: and is a per-event activity feed (`feed()`, `ActivityItem`) a Certified Metric at all, or a separate read-model class with its own access rules? | Architecture Owner | **DECISION REQUIRED** |
 
 ---
 
-## 49. Gaps — 24, each with a named owner
+## 49. Gaps — **25**, each with a named owner
 
 `-001` no semantic layer — ⭐ **also breaches manifest assertion `AN-2`**, so it is mechanically testable (**HIGH**, Arch+Impl) · `-002` `AttendanceCorrected` unconsumed (Impl) ·
 `-003`…`-006` no learning / mastery / effort / academic source (**BLOCKER**, PO) · `-007` quarterly
@@ -944,7 +1024,7 @@ export formats (PO) · `-012` export retention (Privacy+`BC-29`) · `-013` local
 analytics (Legal) · `-017` accessibility targets (Design) · `-018` analytics→`BC-22` edge (Arch) ·
 `-019` multi-product compatibility (PO) · `-020` freshness targets (SRE) · `-021` performance targets
 (SRE) · `-022` DLQ thresholds (SRE) · `-023` tenant migration / transfer semantics (`BC-19`) ·
-`-024` which of the **16 unconsumed events** are V1 (Arch+PO).
+`ANL-GAP-024` which of the **16 unconsumed events** are V1 (Arch+PO) · ⭐ `ANL-GAP-025` **no branch/campus/organizational-hierarchy concept is measurable in the BC Map**, so branch-level analytics cannot be specified (Arch+PO).
 
 ---
 
@@ -1001,6 +1081,7 @@ source.
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.4** | 2026-09-05 | ⭐⭐⭐ **STAGE-4 REQUIREMENTS REVIEW performed — 5 of 6 checks PASS; ⛔ check 3 FAILS and is deferred with a reason and named owners.** New **§44.1** measures all six lifecycle checks; **§44.2** records four findings in Finding→Evidence→Impact→Correction→Traceability form; **§44.3** states the failing check honestly; **§44.4** adds the enterprise V1/V2/V3/Future/Blocked classification the brief required. **D-1 — four exclusions were not exclusions.** `ANL-XC-006`/`-007`/`-009`/`-012` were bare `MUST NOT` prohibitions, which Stage-4 check 2 rejects (*"An exclusion is not a deferral"*). ⭐ Each was given an **impossibility form grounded in measured manifest evidence**: `platform/analytics` declares **no communication port** (`tool/module_dependencies.yaml` **L307-311**), so delivery and notification call sites are **unconstructable**; and `excluded_events: ["iam.*"]` (**L315-316**) means a compliant subscription list **cannot contain** an `iam.*` topic. **D-2 — structural defect fixed:** the Stage-3 finding was numbered **§8.5** yet sorted *before* §8.4, misdirecting five cross-references; renumbered **§8.3.1** (it is a finding about §8.3's evidence). **D-3 — stale published counts fixed:** §45 said "16" and §48 said "7" while the registers had measured **AC 17** and **OBD 8** since v0.3. **D-4 — ⛔⛔ check 3 reported as a FAIL, not softened:** all **8** `ANL-CFG-*` slots lack both a default and a range, which the gate calls *"a specification hole"*. ⭐ **Deferred lawfully with a reason and seven named owners** (§44.3) rather than closed by inventing eight numbers — and **`ANL-CFG-005`** is singled out because a minimum cohort size is a **re-identification control**, where a guessed value is a privacy risk, not a tuning default. ⛔ **Stage 4 therefore CANNOT be conferred until these are supplied or lawfully withdrawn.** ⭐ **Checks 4, 5, 6 measured clean:** **17/17** acceptance criteria map to a requirement with **0 orphans** (measured on §45 alone, after an initial regex over-match was corrected); `FIL-XC-009` and `ITG-*` appear only as **precedent citations**, never as restated obligations; and `ANL-BR-002`/`ANL-BR-003` *implement* `MP-GBR-24`/`MP-GBR-36` rather than competing with Rank 1. ⭐ **Two new identifiers, both from measurement not invention:** **`ANL-OBD-009`** (the enterprise customization boundary — unanswerable from repository evidence) and **`ANL-GAP-025`** (⛔ **no branch/campus/organizational-hierarchy concept is measurable in the BC Map**, so branch-level analytics cannot be specified). Registers grew **GAP 24→25, OBD 8→9**; all eight re-measured contiguous. ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding preserved unchanged.** ⛔ No requirement weakened, no gap closed, no NFR/CFG value invented, no psychology research fabricated, no external API claimed, no telemetry invented, **0** `.dart` files touched, no Stage-2/Stage-3 decision reopened. ⛔ Stages 5–8 not entered; nothing ranked, baselined or frozen; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.3** | 2026-09-05 | ⭐⭐⭐ **STAGE-3 ARCHITECTURE ALIGNMENT performed — 6 / 6 checks PASS, with one Rank-4 conflict ACCEPTED and left OPEN.** New **§8.6** records all six lifecycle checks with measured evidence, and **§8.6.1** names every finding *and its disposition* including one **REJECTED**. ⛔⛔ **`ANL-AL-B1` — the review's central finding: a live Rank-4 vs Rank-4 conflict.** BC Map **L434** routes `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` to `BC-26`, while `tool/module_dependencies.yaml` **L315-316** sets `excluded_events: ["iam.*"]` and assertion **`AN-3`** forbids deriving any projection, metric or dimension from an `iam.*` fact — an exclusion described as *"explicit, not incidental"* that closes **`CFL-28`** via amendment **`A-6`**. **Both artefacts are Rank 4, so precedence cannot break the tie.** ⛔ **Not resolved here** — Stage 3 may name and disposition a conflict, not settle a Rank-4 disagreement. Routed as **`ANL-OBD-008`** to the Architecture Owner, with the **safe** side taken by new **`ANL-XC-012`** (no `iam.*` derivation) and made testable by new **`ANL-AC-017`**. ⭐ Disclosed consequence: the existing code subscribes to **no** `iam.*` event, so the implementation already complies and the conflict is documentary, not yet a code defect. ⚠ **`ANL-AL-A1` — my own v0.2 defect, fixed:** §8.1 had listed the three `iam.*` events as legitimate inputs **on BC Map L434 alone, without measuring the manifest**. The row is now marked **CONTESTED**. ⭐ **`ANL-AL-A2` — fixed:** new **§8.4.1** records the declared `platform/analytics` surface (`rank: 7`, `imports: contracts`, **5/5** downward ports, `banned_imports` incl. `platform/data:oltp_repository` as the mechanical form of `MP-GBR-37`) and its three assertions. ⭐⭐ **`AN-2` — *"no metric defined outside the semantic layer"* — is the most consequential discovery: F-1 is not merely a Rank-1 breach in prose but a breach of a declared, assertable manifest rule.** `ANL-AC-001` strengthened and `ANL-GAP-001` re-cited accordingly. ⛔ **`ANL-AL-R1` REJECTED with reason:** a manifest amendment was considered and refused — the declared ports already cover the certified chain, and requesting an unneeded Rank-4 change would widen this review's own authority (`ADR-0060` **L132**). ⭐ **Checks 1, 2, 4, 5, 6 re-measured:** `BC-26` is claimed by `PRD-009` **only** (one §8 row); **`E-30` verified lawful** — declared in BC Map **§17**, an express *"normative extension of §7"* admitted by `Accepted` **`ADR-0096`**, so L292 is satisfied and **0 edges are invented**; `policy_decision` is a **decision port**, so `BC-26` asks and never decides (`X-13`); `ID-1` is strengthened by `ANL-XC-012` because `iam.*` carries `SessionRevoked`. ⭐ Registers grew **XC 11→12, AC 16→17, OBD 7→8**, re-measured contiguous. ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding all re-verified and UPHELD unchanged.** ⛔ **Stage 3 is NOT CONFERRED** — that is the Architecture reviewer's act and no designation exists for `PRD-009`. ⛔ No Rank 1–5 artefact amended; no gap closed; no NFR or CFG value invented; **0** `.dart` files touched; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.2** | 2026-09-05 | ⭐⭐ **STAGE-2 SELF-REVIEW — two genuine defects found and fixed; every substantive finding re-verified and upheld.** **Defect 1 (gate-blocking): Stage-2 rule 4 was unmet.** `PRD_LIFECYCLE.md` Stage 2 requires *"Normative language (MUST/SHOULD/MAY) is defined in the document"*, and v0.1 used all three while defining none — measured at **0** occurrences of any definition. Fixed by adding **§0.1**, which also records the exclusion convention and resolves the rule-1 question about **MUST** appearing in prose that continues an identified requirement. **Defect 2 (evidence incompleteness): §8.3's inventory of the existing implementation was incomplete.** It listed only `DashboardMetrics`' twelve fields and missed **`feed()`** (returning `List<ActivityItem>`) and **`distinctAttendanceDays()`**. Both are now recorded, with two consequences drawn: a per-event activity feed may not be a Certified Metric at all (so **`ANL-OBD-007` is widened** to ask), and `distinctAttendanceDays()` is direct evidence that the presence/consistency framing of §12.2 is **buildable today** while mastery metrics are not. ⭐ **Re-verification of v0.1's claims, independently measured:** the **8-of-24** figure is **correct** (8 distinct event-type literals in `analytics.dart`; 24 BC Map rows routing to `BC-26`); **all 11 line citations resolve exactly** (BC Map L135/L206/L385/L416/L427/L899, `MASTER_PRD.md` L111/L166/L173/L477, `PRD_REGISTRY.md` L246); `MP-GBR-21`, `MP-GBR-36`, `MP-GBR-37`, `MP-GBR-38` and `MP-GBR-24` are all quoted verbatim; **F-1, F-2, F-3 and the `AttendanceCorrected` finding are UPHELD unchanged**. ⭐ All **8** registers re-measured contiguous (58/6/9/11/16/8/24/7) with `ANL-*` still absent from every other file. ⛔ **No requirement was weakened, no gap closed, no NFR or CFG value invented, and no `.dart` file touched** — the two code observations are flagged as **implementation issues for Stage 6/8**, not fixed here. ⛔ Stages 3–8 still not entered; nothing ranked, baselined or frozen; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.1** | 2026-09-05 | Created as the **Stage-2 draft** for `PRD-009` Analytics & Reports (`BC-26`). ⭐ Identity confirmed three ways (`PRD_REGISTRY.md` **L246**, BC Map **L135**, `MASTER_PRD.md` **L166**) — **no conflict**, so no stop-and-report was required. Registers declared up front: **FR 58 · BR 6 · INV 9 · XC 11 · AC 16 · CFG 8 · GAP 24 · OBD 7**, contiguous, on prefix **`ANL-*`** verified free (**0** prior occurrences). `ANL-EVT-*` declared **EMPTY** with a reason. ⭐⭐ Three findings lead the document: **F-1** the existing `lib/platform/analytics/analytics.dart` consumes **8 of 24** routed events and has **no semantic layer** — a live breach of Rank-1 `MP-GBR-36`; **F-2** ⛔ **no ingested event carries any learning-outcome fact**, so mastery / strengths / academic-progress analytics have **no legitimate source** and are made **impossible** by `ANL-XC-001` rather than invented; **F-3** a peer leaderboard is **barred by `MP-GBR-21`**'s closed scope register and would need an ADR. ⚠ Also disclosed: `attendance.AttendanceCorrected` is unconsumed although BC Map L416 assigns it *"restated metrics"*. ⛔ **4 NFR targets and all 8 `ANL-CFG-*` defaults left unasserted** rather than fabricated. ⛔ Stages 3–8 not entered; nothing ranked, baselined or frozen; **0** ADRs authored; **0** application code changed; `PRD-010` untouched and still **FROZEN** at Rank 3. |

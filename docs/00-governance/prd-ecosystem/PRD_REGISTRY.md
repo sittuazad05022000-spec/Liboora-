@@ -243,7 +243,7 @@ The §31 Linked Documents table carries this row verbatim:
 | `PRD-006` | Attendance Management | **`BC-03` Attendance** | `[CORE]` | V1 | **`FROZEN`** — [`attendance-management/PRD-006_ATTENDANCE-MANAGEMENT.md`](../../30-product/attendance-management/PRD-006_ATTENDANCE-MANAGEMENT.md) **v1.9**, admitted by `ADR-0034` (`BASELINE-2026-08-05-A`) | — |
 | `PRD-007` | Seat Management | **`BC-04` Seating** | `[CORE]` | V1 | **`FROZEN`** — [`seat-management/PRD-SEAT-MANAGEMENT.md`](../../30-product/seat-management/PRD-SEAT-MANAGEMENT.md) **v1.0**, admitted by `ADR-0020` (`BASELINE-2026-08-04-E`) | — |
 | `PRD-008` | Revenue & Finance | **`BC-05` Fee & Collection** | `[CORE]` | V1 | **`FROZEN`** — [`revenue-finance/PRD-008_REVENUE-AND-FINANCE.md`](../../30-product/revenue-finance/PRD-008_REVENUE-AND-FINANCE.md) **v1.7**, admitted by `ADR-0049` (`BASELINE-2026-08-17-A`), moved `DRAFT` → `FROZEN` by the **Governance Owner** on 2026-08-17. Stages 3 and 4 **CONFERRED**, Stage 5 gate exit 0, Stage 6 range `IMPL-700`…`IMPL-799` allocated with **83 / 83** tasks traced. ⚠ **`FROZEN` is not `VERIFIED`** — **17 `FEE-GAP-*` remain OPEN**, **20 of 83** tasks are **BLOCKED**, and nothing is implemented. *Superseded text retained verbatim:* **`DRAFT`** … *(was `PLANNED` — see `GCP-14` in §4.3, which remains **OPEN**)*. **`DRAFT` is not `FROZEN`**: no `DOCUMENTATION_BASELINE.md` §3 row exists, and Stages 5–6 are not performed — **both clauses are now false and are kept only as history** | — |
-| `PRD-009` | Analytics & Reports | **`BC-26` Analytics Read Model** | `[GENERIC]` | V1 | `PLANNED` | Dashboards (modules 10–12) |
+| `PRD-009` | Analytics & Reports | **`BC-26` Analytics Read Model** | `[GENERIC]` | V1 | ⭐ **`FROZEN`** | Dashboards (modules 10–12) — admitted to `DOCUMENTATION_BASELINE.md` §3.3 at **Rank 3** on 2026-09-05 by `Accepted` `ADR-0113`. ⚠ **Authority, not completeness:** **25/25** `ANL-GAP-*` OPEN, **F-1**/**F-2**/**F-3** and the Rank-4 `iam.*` conflict OPEN, **0/17** criteria proven |
 | `PRD-010` | Notifications & Communication | **`BC-22` Notification Delivery** | `[GENERIC]` | V1 | ⭐ **`FROZEN`** | Every event-driven notice — admitted to the baseline §3.3 at **Rank 3** on 2026-09-05 by `Accepted` `ADR-0111`; see **§17** |
 | `PRD-011` | AI Super Assistant | **`BC-27` AI Assistance** | `[SUPPORTING]` | V1 | `PLANNED` | — |
 | `PRD-012` | Security & Automation | ⚠ **`SECURITY` platform + `BC-28` Workflow** | mixed | V1/V2 | ⛔ **`RETIRED` — 2026-08-21.** Retired **on the day `PRD-012a` was opened**, exactly as §8 rule 1 and the note below prescribe; **the number is NOT reused.** This placeholder was never authored and never will be. *Prior status retained verbatim:* `PLANNED` | Split executed — see `PRD-012a` below |
@@ -1662,3 +1662,55 @@ a new §17 invalidates **0** line citations.
 ⛔ no `READY`, `IMPLEMENTING` or `VERIFIED` status · ⛔ no gap closure — **7** `NTF-GAP-*` stay OPEN
 with named owners · ⛔ no ownership change · ⛔ no architecture decision · ⛔ **T-29** (the Rank 4
 `platform/communication` port grant) is **not** performed · ⛔ `GCP-20` is **not** closed.
+
+---
+
+## 18. ⭐ `PRD-009` Analytics & Reports — `PLANNED` → **`FROZEN`** recorded by append
+
+**2026-09-05.** `PRD-009_ANALYTICS_AND_REPORTS.md` **v0.6** was admitted to
+[`DOCUMENTATION_BASELINE.md`](../DOCUMENTATION_BASELINE.md) **§3.3** at **Rank 3** for **`BC-26`
+Analytics Read Model** by `Accepted`
+[`ADR-0113`](../adr/ADR-0113-prd-009-analytics-and-reports-v0.6-admitted-to-the-baseline-at-rank-3.md).
+
+⭐ **§8 rule 2 entry evidence:** *"A status change requires the entry evidence in §2. 'It feels done' is
+not evidence."* The evidence is **11 / 11** Stage-7 entry conditions, measured in
+[`PRD-009_STAGE7_FREEZE_READINESS.md`](../../30-product/analytics/PRD-009_STAGE7_FREEZE_READINESS.md)
+(9/11 at authoring) plus conditions **10** and **11** closed by `ADR-0113` itself.
+
+| Element | Value |
+|---|---|
+| Authority | Human principal's **first-person** Governance-Owner conferral: *"I confer PRD-009 for admission to Stage 7 at Rank 3, and nothing else"* — `ADR-0113` §2.1 |
+| Rank | **3**, corroborated independently of the instruction (`ADR-0113` §4) |
+| Baseline identifier | ⛔ **`BASELINE-2026-09-03-A` unchanged** — §7 rule 4 limb unmet |
+| Stage 5 register | `TRACEABILITY_MATRIX.md` **§2U** (v1.26) — **144** identifiers |
+| Stage 6 range | `IMPL-2000`…`2031`, reserve `2032`…`2099` |
+
+### 18.1 ⛔⛔ What `FROZEN` does NOT mean here
+
+⚠ **`FROZEN` records what `BC-26` OWNS, not what is DECIDED**, and this row would misinform a reader if
+that were left implicit.
+
+| Open item | State | Owner |
+|---|---|---|
+| **F-1** — no semantic layer exists, though `MP-GBR-36` requires one and manifest `AN-2` makes it assertable | ⛔ **OPEN — BLOCKER** | Architecture + Implementation |
+| **F-2** — no learning-outcome data source exists | ⛔ **OPEN — BLOCKER** | Product Owner |
+| **F-3** — peer comparison barred by `MP-GBR-21`'s closed scope register | ⛔ **OPEN** | Product Owner + ADR |
+| `AttendanceCorrected` restatement semantics | ⛔ **OPEN** | Product Owner |
+| **`ANL-AL-B1`/`ANL-OBD-008`** — **Rank-4 vs Rank-4** `iam.*` conflict; `ANL-XC-012`'s conservative default governs, so **no `iam.*`-derived metric is authorised** | ⛔ **OPEN** | **Architecture Owner** |
+| `ANL-OBD-002` · `-004` · `-009` | ⛔ **OPEN** | Privacy+Arch · `BC-18` · Product |
+| `ANL-CFG-003` · `-005` · `-006` values | ⛔ **OWED** | SRE · Privacy · Arch+Legal |
+| **25** `ANL-GAP-*` | ⛔ **25 / 25 OPEN** | Named per gap |
+| Stage 8 | ⛔ **NOT entered — 0 of 17** acceptance criteria proven by a test | — |
+| Stage-6 tasks | ⚠ **8 of 32 BLOCKED** on the decisions above | — |
+
+⭐ **This is the `PRD-008` and `PRD-017` posture, not a new one:** `PRD-008` froze with **all 17** gaps
+open, and `PRD-017` froze with three configuration values owed. ⛔ **A frozen specification is not a
+production-ready implementation.**
+
+### 18.2 ⛔ Derived counts NOT edited — disclosed
+
+⚠ **§7's *Documents that exist* row and the `PLANNED`/`Missing V1` count rows are NOT advanced by this
+append**, on the same disclosure `PRD-010`'s §17 made: those rows are **derived** figures whose counting
+rule §7 itself records as undefined (`GCP-18`'s open residue). ⛔ Advancing them by increment would
+publish a figure on a rule that does not exist. ⭐ **Routed, not repaired** — the Governance Owner supplies
+the counting rule, and that is not this act.

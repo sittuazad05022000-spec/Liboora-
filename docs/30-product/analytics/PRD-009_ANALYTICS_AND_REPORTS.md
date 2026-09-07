@@ -661,16 +661,38 @@ adopted by default. `[OWED — Product Owner]`.
 no Rank 1–5 authority supplies one and inventing eight numbers would create untested requirements. The
 slots are **declared so the range is honest**; the values are owed.
 
-| ID | Slot | Default | Range | Owner |
-|---|---|---|---|---|
-| `ANL-CFG-001` | Report page size | `[OWED]` | `[OWED]` | Product Owner |
-| `ANL-CFG-002` | Export row cap | `[OWED]` | `[OWED]` | SRE + Product Owner |
-| `ANL-CFG-003` | Freshness-warning display threshold | `[OWED]` | `[OWED]` | SRE (`ANL-GAP-020`) |
-| `ANL-CFG-004` | Analytics-originated trigger rate limit | `[OWED]` | `[OWED]` | Product Owner (`ANL-FR-025`) |
-| `ANL-CFG-005` | Minimum cohort size for an aggregate band | `[OWED]` | `[OWED]` | Privacy (`ANL-GAP-010`) |
-| `ANL-CFG-006` | Projection retention window | `[OWED]` | `[OWED]` | Architecture + Legal (`ANL-OBD-006`) |
-| `ANL-CFG-007` | Default reporting period | `[OWED]` | `[OWED]` | Product Owner |
-| `ANL-CFG-008` | Rebuild batch size | `[OWED]` | `[OWED]` | Implementation Lead |
+| ID | Slot | Class | Default | Range | Authority |
+|---|---|---|---|---|---|
+| `ANL-CFG-001` | Report page size | ⭐ **NOT A CONFIGURABLE — WITHDRAWN as a `BC-26` slot** | — | — | ⭐ Presentation concern of the dashboard/report *composition* (modules 10–12), which BC Map §2 rules is **not a context**. `BC-26` publishes metrics, not page sizes |
+| `ANL-CFG-002` | Export row cap | ⭐ **NOT `BC-26`'s — REASSIGNED** | — | — | ⭐ **`BC-21` Entitlement** — *"Single source of truth for **limits** and gates"* (BC Map **L130**), value object `Limit` (**L383**) |
+| `ANL-CFG-003` | Freshness-warning display threshold | ⚠ **CONFIGURABLE · value OWED** | ⛔ **No Rank 1–5 authority supplies one** | ⛔ owed | **SRE** — bound to `ANL-GAP-020`. ⭐ The *requirement* (`ANL-FR-057`) is complete; the number is owed |
+| `ANL-CFG-004` | Analytics-originated trigger rate limit | ⭐ **NOT `BC-26`'s — REASSIGNED** | — | — | ⭐ **`BC-22`** owns delivery and its own rate rules (`PRD-010`, FROZEN). `ANL-XC-009` already makes a `BC-26` send **unconstructable**, so there is no `BC-26` rate to bound |
+| `ANL-CFG-005` | Minimum cohort size for an aggregate band | ⚠ **CONFIGURABLE · value OWED · ⛔ BLOCKED** | ⛔ owed | ⛔ owed | **Privacy** — ⛔ **blocked behind `ANL-OBD-002`**: until it is decided whether a cohort band is `self` or a fourth scope, the control it parameterises may not lawfully exist |
+| `ANL-CFG-006` | Projection retention window | ⚠ **CONFIGURABLE · value OWED** | ⛔ owed | ⛔ owed | **Architecture Owner + Legal** — `ANL-OBD-006`. ⭐ Same shape as FROZEN `FIL-CFG-006`, published with *"no authority supplies a value"* |
+| `ANL-CFG-007` | Default reporting period | ⭐ **NOT A CONFIGURABLE — WITHDRAWN as a `BC-26` slot** | — | — | ⭐ Each Certified Metric already **MUST** declare its own `timeSemantics` (`ANL-FR-008`). A second, global period setting would let a tenant contradict a certified definition — barred by `ANL-BR-003` |
+| `ANL-CFG-008` | Rebuild batch size | ⭐ **NOT A SPECIFICATION CONFIGURABLE — WITHDRAWN** | — | — | ⭐ An **implementation tuning parameter** with no specified behaviour: `ANL-FR-013` requires the rebuild to produce an identical snapshot **at any batch size**, so no value can change a conforming outcome |
+
+⭐⭐ **Result of the classification: 8 slots → 3 genuine `BC-26` configurables.** Five are withdrawn or
+reassigned **on measured ownership evidence, not for convenience**, and ⛔ **no identifier is reused** —
+each withdrawn slot keeps its number and its reason (`PRD_LIFECYCLE.md` §5 rule 5: *"Numbers are never
+reused, even after withdrawal. A withdrawn requirement is marked withdrawn."*).
+
+⭐ **This is the route `ADR-0108` ratified for `PRD-010`** — *"not by bounding a configurable but by
+establishing there is no configurable to bound"* — applied here to five slots, and ⛔ **not** used to
+make the remaining three disappear.
+
+### 25.2 ⚠ The three surviving configurables — requirement complete, value owed
+
+⭐ **This is the shape a FROZEN PRD already holds.** `PRD-017` (Rank 3, FROZEN) publishes
+**`FIL-CFG-006`, `-010`, `-011`** with ⛔ *"No Rank 1–4 authority supplying a value — the requirement is
+complete; the number is owed"*, and it **froze in that state**. `ANL-CFG-003`, `-005`, `-006` are the
+same class.
+
+| Slot | Requirement that is complete | What is owed | Authority |
+|---|---|---|---|
+| `ANL-CFG-003` | `ANL-FR-057` — every metric declares a freshness expectation and a breach is visible | the numeric threshold | **SRE** |
+| `ANL-CFG-005` | `ANL-FR-026` / §17 — a band may not re-identify | the minimum cohort size | **Privacy**, after `ANL-OBD-002` |
+| `ANL-CFG-006` | `ANL-INV-003` — projections are rebuildable, so retention is a policy choice not a correctness one | the window | **Architecture Owner + Legal** |
 
 ⚠⚠ **`ANL-CFG-005` is the one that must not be guessed.** A cohort minimum is a **re-identification
 control**, not a UI preference — too small a value silently turns an "anonymised" band into a peer

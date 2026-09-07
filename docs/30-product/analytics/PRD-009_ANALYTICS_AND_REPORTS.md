@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-26` Analytics Read Model** `[GENERIC]` |
 | **Version** | **v0.3** |
 | **Status** | **`DRAFT`** — ⛔ **not ranked, not baselined, not frozen** |
-| **Lifecycle stage** | **Stage 3 — Architecture Review performed at v0.3.** ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.5, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
+| **Lifecycle stage** | **Stage 3 — Architecture Review performed at v0.3.** ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
 | **Identifier prefix** | **`ANL-*`** — ⭐ verified free: **0** pre-existing occurrences repository-wide |
 | **Registers declared** | FR 58 · BR 6 · INV 9 · **XC 12** · **AC 17** · CFG 8 · GAP 24 · **OBD 8** — ⭐ **mechanically verified contiguous at v0.3**; ranges published up front as a promise |
 | **Baseline** | ⛔ **`BASELINE-2026-09-03-A` untouched.** This document holds **no rank** |
@@ -24,11 +24,11 @@ Stage-2 rule 3: *"Ranges are contiguous. A gap makes the published range false."
 | `ANL-FR-001` … `ANL-FR-058` | contiguous | **58** | Functional requirements |
 | `ANL-BR-001` … `ANL-BR-006` | contiguous | **6** | Business rules |
 | `ANL-INV-001` … `ANL-INV-009` | contiguous | **9** | Invariants |
-| `ANL-XC-001` … `ANL-XC-012` | contiguous | **12** | Exclusions — each states what must be **impossible**. ⭐ `-012` added at v0.3 by the Stage-3 review (§8.5) |
-| `ANL-AC-001` … `ANL-AC-017` | contiguous | **17** | Acceptance criteria. ⭐ `-017` added at v0.3 (§8.5) |
+| `ANL-XC-001` … `ANL-XC-012` | contiguous | **12** | Exclusions — each states what must be **impossible**. ⭐ `-012` added at v0.3 by the Stage-3 review (§8.3.1) |
+| `ANL-AC-001` … `ANL-AC-017` | contiguous | **17** | Acceptance criteria. ⭐ `-017` added at v0.3 (§8.3.1) |
 | `ANL-CFG-001` … `ANL-CFG-008` | contiguous | **8** | Configuration slots |
 | `ANL-GAP-001` … `ANL-GAP-024` | contiguous | **24** | Open gaps, each with a named owner |
-| `ANL-OBD-001` … `ANL-OBD-008` | contiguous | **8** | Open bounded decisions. ⭐ `-008` added at v0.3 — the Rank-4 `iam.*` conflict (§8.5) |
+| `ANL-OBD-001` … `ANL-OBD-008` | contiguous | **8** | Open bounded decisions. ⭐ `-008` added at v0.3 — the Rank-4 `iam.*` conflict (§8.3.1) |
 
 ⚠ **`ANL-EVT-*` is declared EMPTY, deliberately.** `BC-26` **emits no domain event** — BC Map §7's
 event table shows it exclusively as a *consumer*. The empty register is published rather than omitted
@@ -197,7 +197,7 @@ consumed by dashboards, AI (`E-26`) and future Liboora products.
 | `BC-10` Person Identity | `identity.PersonIdentityCreated`, `PersonProfileUpdated`, `PersonPrivacyModeChanged`, `PersonAnonymised` |
 | `BC-11` Social Graph | `social.FriendshipEstablished`/`UserBlocked` |
 | `BC-12` Messaging | `messaging.MessageSent` *(engagement metrics)* |
-| `BC-18` Identity & Access | ⚠⚠ `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` — **CONTESTED, see §8.5. `BC-26` MUST NOT consume these until `ANL-OBD-008` resolves** |
+| `BC-18` Identity & Access | ⚠⚠ `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` — **CONTESTED, see §8.3.1. `BC-26` MUST NOT consume these until `ANL-OBD-008` resolves** |
 | `BC-20` Billing | `billing.SubscriptionActivated`/`Cancelled`/`PaymentFailed` |
 | `BC-27` AI | `ai.AgentRunCompleted`/`AiActionApplied` *(cost attribution)* |
 | `BC-19` Tenancy | `tenancy.LibraryProfileViewed` — via **`E-30`** (BC Map L899) |
@@ -259,7 +259,7 @@ the existing surface was **incomplete**. This matters for two reasons:
 `lib/platform/analytics/analytics.dart` is an **implementation issue for Stage 6/8**, recorded as
 `ANL-GAP-001`/`-002` and **not** performed by this PRD.
 
-### 8.5 ⛔⛔ Stage-3 finding `ANL-AL-B1` — a live **Rank-4 vs Rank-4** conflict over `iam.*`
+### 8.3.1 ⛔⛔ Stage-3 finding `ANL-AL-B1` — a live **Rank-4 vs Rank-4** conflict over `iam.*`
 
 ⚠⚠ **Found by the Stage-3 architecture review. Recorded, NOT resolved** — `PRD_LIFECYCLE.md` Stage 3
 gives this review power to *name and disposition* conflicts, not to settle a Rank-4 disagreement.
@@ -289,8 +289,7 @@ Architecture Owner act, not this review's.**
 **Disposition — `ANL-AL-B1`:** **ACCEPTED as a conflict · OPEN · routed to the Architecture Owner** as
 **`ANL-OBD-008`**. Pending resolution:
 
-**`ANL-XC-012`** `BC-26` **MUST NOT** derive any projection, metric or dimension from an `iam.*` event.
-This makes the manifest's `AN-3` assertion true by specification and is the **safe** side of the
+**`ANL-XC-012`** `BC-26` **MUST NOT** derive any projection, metric or dimension from an `iam.*` event. ⭐ **Impossibility form (v0.4):** the manifest already declares `excluded_events: ["iam.*"]` (**L315-316**), so a compliant subscription list **cannot contain** an `iam.*` topic; assertion `AN-3` is the mechanical test. This makes the manifest's `AN-3` assertion true by specification and is the **safe** side of the
 conflict — if the Architecture Owner later rules that L434 governs, this exclusion is relaxed by ADR.
 ⛔ Adopting the opposite default would have made a **security-adjacent** consumption lawful on the
 strength of a purpose column that says *"audit"*.
@@ -318,7 +317,7 @@ defect — and the "24 events" figure is now correctly read as **24 routed, of w
 | `imports` | `contracts` only | rank 0 ⇒ ⭐ **downward** |
 | `ports` | `platform/data:analytics_store` · `platform/configuration:settings` · `platform/observability:telemetry` · `platform/tenancy:tenant_context` · `platform/identity:policy_decision` | all capability platforms **below R7** ⇒ ⭐ **downward, 5 / 5** |
 | `consumes_events` | `["*"]` | ⭐ **not** an `L2` breach — event consumption is not an import; the same reading `PRD-010`'s Stage-3 review applied to `platform/communication` |
-| `excluded_events` | `["iam.*"]` | ⚠ **the §8.5 conflict** |
+| `excluded_events` | `["iam.*"]` | ⚠ **the §8.3.1 conflict** |
 | `banned_imports` | `domain/**` (**`X-01`**) · `app/**` · **`platform/data:oltp_repository`** | ⭐ the third is the mechanical form of `MP-GBR-37` |
 | `assertions` | `AN-1` rebuild · **`AN-2` no metric defined outside the semantic layer** · `AN-3` no `iam.*` derivation | — |
 
@@ -650,9 +649,8 @@ permissions · privacy class · export rules · V1/V2/V3.
 **`ANL-FR-032`** Every export **MUST** be authorized per export and **MUST** record actor, tenant,
 scope, metric versions and freshness at generation time.
 **`ANL-FR-033`** Every export **MUST** emit an audit fact to `BC-24`.
-**`ANL-XC-006`** An export **MUST NOT** contain a field the requesting actor could not see in-app.
-**`ANL-XC-007`** Analytics **MUST NOT** deliver reports; scheduled delivery is `BC-22`'s (`PRD-010`,
-FROZEN).
+**`ANL-XC-006`** An export **MUST NOT** contain a field the requesting actor could not see in-app. ⭐ **Impossibility form (v0.4):** the export builder **MUST** be constructed so that it can only project fields already returned by the same permission-filtered query that serves the in-app view; there **MUST NOT** exist an export path that widens the field set. An export that could add a field is a **defect, not a setting**.
+**`ANL-XC-007`** Analytics **MUST NOT** deliver reports; scheduled delivery is `BC-22`'s (`PRD-010`, FROZEN). ⭐ **Impossibility form (v0.4):** `BC-26` holds **no** delivery port — `tool/module_dependencies.yaml` **L307-311** grants it `analytics_store`, `settings`, `telemetry`, `tenant_context` and `policy_decision` and **no communication port**, so a delivery call is **unconstructable** rather than merely forbidden.
 
 ⚠ **`ANL-GAP-011`** — export formats (PDF/CSV) unspecified; each must be justified per report, not
 adopted by default. `[OWED — Product Owner]`.
@@ -734,8 +732,7 @@ teen-specific protections cannot be specified on evidence. `[OWED — Product Ow
 
 ## 31. Notifications — a boundary, not a feature
 
-**`ANL-XC-009`** `BC-26` **MUST NOT** send any notification directly; it may only publish a fact for
-`BC-22`.
+**`ANL-XC-009`** `BC-26` **MUST NOT** send any notification directly; it may only publish a fact for `BC-22`. ⭐ **Impossibility form (v0.4):** same manifest evidence as `ANL-XC-006`/`-007` — **no** communication or messaging port is declared for `platform/analytics`, so no notification call site can exist. ⚠ And per `ANL-OBD-005`, `BC-26` has **no producer row in BC Map §7 either**, so today it can neither send *nor* publish — which is why this is an exclusion **and** an open decision.
 ⚠ **`ANL-GAP-018`** / **`ANL-OBD-005`** — `BC-26` currently emits **no** event and BC Map §7 gives it
 no producer row. An analytics→`BC-22` trigger needs a **new edge and an ADR** (*"if an edge is not in
 this table, it does not exist"*). `[OWED — Architecture Owner]`. **DECISION REQUIRED.**
@@ -863,7 +860,7 @@ requirements no authority set and no test could justify.
 
 ---
 
-## 45. Acceptance Criteria — 16, each testable
+## 45. Acceptance Criteria — **17**, each testable
 
 | ID | Criterion | Verifies |
 |---|---|---|
@@ -921,7 +918,7 @@ fail is not a test"* (`ITG-AC-017` precedent).
 
 ---
 
-## 48. Open Decisions — 7
+## 48. Open Decisions — **8**
 
 | ID | Decision | Owner | Class |
 |---|---|---|---|
@@ -931,7 +928,7 @@ fail is not a test"* (`ITG-AC-017` precedent).
 | `ANL-OBD-004` | Does `guardianOf` extend to derived analytics | Privacy + `BC-18` | **HIGH RISK** |
 | `ANL-OBD-005` | Does `BC-26` ever emit an event (needs edge + ADR) | Architecture Owner | **DECISION REQUIRED** |
 | `ANL-OBD-006` | Retention of projections vs source events | Architecture + Legal | **DECISION REQUIRED** |
-| `ANL-OBD-008` | ⚠⚠ **The Rank-4 `iam.*` conflict (§8.5).** BC Map **L434** routes `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` to `BC-26`; `module_dependencies.yaml` **L315-316** excludes `iam.*` and assertion **`AN-3`** forbids deriving anything from it, closing `CFL-28` via amendment `A-6`. **Both are Rank 4, so precedence cannot break the tie.** Which governs? | **Architecture Owner** | ⛔ **BLOCKER for any `iam.*`-derived metric** · safe default set by `ANL-XC-012` |
+| `ANL-OBD-008` | ⚠⚠ **The Rank-4 `iam.*` conflict (§8.3.1).** BC Map **L434** routes `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` to `BC-26`; `module_dependencies.yaml` **L315-316** excludes `iam.*` and assertion **`AN-3`** forbids deriving anything from it, closing `CFL-28` via amendment `A-6`. **Both are Rank 4, so precedence cannot break the tie.** Which governs? | **Architecture Owner** | ⛔ **BLOCKER for any `iam.*`-derived metric** · safe default set by `ANL-XC-012` |
 | `ANL-OBD-007` | Is `Projection` one aggregate or one per subject area — ⭐ **widened at v0.2**: and is a per-event activity feed (`feed()`, `ActivityItem`) a Certified Metric at all, or a separate read-model class with its own access rules? | Architecture Owner | **DECISION REQUIRED** |
 
 ---

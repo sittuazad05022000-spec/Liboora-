@@ -49,7 +49,7 @@ final class BoundedContextId {
   String toString() => value;
 }
 
-/// `E-22`'s consumer list, transcribed from **BC Map L331** (v1.8).
+/// `E-22`'s consumer list, transcribed from **BC Map L331** (v1.11).
 ///
 /// ⚠ **This is a COPY of a Rank 4 register, not an independent decision.** The
 /// authority is the map; if the two disagree, the map wins and this constant is
@@ -67,6 +67,21 @@ final class BoundedContextId {
 ///    student-to-student sharing. It owns the `Message` that carries the
 ///    `FileRef`.
 ///  * `BC-14` Content Sharing — original consumer (V2 context).
+///  * `BC-19` Tenancy — added by `Accepted` `ADR-0095` (BC Map v1.11) for
+///    **library gallery media**. It owns the library organisation record
+///    (BC Map **L128**), §14A.5 publishes Gallery, and `AR-1` **L23** routes
+///    *"Gallery → `BC-29`"*. Required by `PRD-021C` C3 `LPP-FR-011`.
+///  * `BC-25` Configuration — added by the same `ADR-0095` for **branding
+///    media**. BC Map **L134** already grants it *"branding values"* and
+///    *"secret references"*, the same reference shape. Required by
+///    `PRD-021C` C3 `LPP-FR-014`…`LPP-FR-017`.
+///
+/// ⚠ `ADR-0095` tested necessity **separately per context** — it is the first
+/// amendment to admit two, so option **C** is a measured answer rather than a
+/// convenience union. ⛔ `BC-25` gains **no** gallery media and `BC-19` gains
+/// **no** branding values: the **L128** vs **L134** split is unchanged, and
+/// `BC-29` remains the sole media infrastructure owner (**L138**) because a
+/// `FileRef` is a reference, never bytes and never a raw storage path.
 ///
 /// ⛔ **`BC-11` Social Graph and `BC-13` Trust & Safety are absent BY DECISION,
 /// not by omission.** `ADR-0055` §3 tested necessity per context: `BC-11`
@@ -76,7 +91,21 @@ final class BoundedContextId {
 /// the whole `domain/social` module the port — so the module-grained manifest
 /// would admit all three, and this context-grained list is what refuses two of
 /// them (`GCP-23`, disclosed and unrepaired).
-const Set<String> e22ConsumerContexts = {'BC-01', 'BC-10', 'BC-12', 'BC-14'};
+///
+/// ⛔ **`BC-23` Search Indexing and `BC-26` Analytics Read Model were tested
+/// and NOT admitted** (`ADR-0095` §3.4). `BC-23` may carry a `FileRef` *value*
+/// received over `E-21`, which is data flowing along a declared edge rather
+/// than a call to `BC-29`; nothing requires `BC-26` to hold media. `ADR-0095`
+/// §4 option **F** — widening the whole `BC-19`…`BC-31` capability tier — was
+/// **rejected** as the module-grained shortcut `ADR-0055` §3 already refused.
+const Set<String> e22ConsumerContexts = {
+  'BC-01',
+  'BC-10',
+  'BC-12',
+  'BC-14',
+  'BC-19',
+  'BC-25',
+};
 
 /// An eligibility decision made and recorded **elsewhere**.
 ///

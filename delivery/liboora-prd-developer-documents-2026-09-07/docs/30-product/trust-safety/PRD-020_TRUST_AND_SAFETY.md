@@ -1,0 +1,2734 @@
+# PRD-020 — Trust & Safety, Privacy, Abuse Prevention & Moderation
+
+| Field | Value |
+|---|---|
+| **PRD** | `PRD-020` |
+| **Name** | Trust & Safety |
+| **Version** | **v0.1** |
+| **Status** | **`DRAFT`** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 2**. ⚠ **This document confers no status on itself** |
+| **Owning bounded context** | **`BC-13` Trust & Safety** — `[CORE]` ⚠, `Global Student` platform, **V1**. Bounded Context Map **L117** |
+| **Owned aggregate** | **`ModerationCase`** — *already declared* by the Rank 4 BC Map **L379**. This PRD **adopts** it; it does not invent it |
+| **Module path** | `domain/social` → context `safety`, rank **8** — [`tool/module_dependencies.yaml`](../../../tool/module_dependencies.yaml) **L229**/**L233** |
+| **Requirement prefix** | **`TSF-`** — collision-tested against every existing register: **0 occurrences**. `SAF-`, `TS-`, `TAS-` also 0; `TSF-` chosen for legibility |
+| **⛔ Prefix explicitly NOT used** | **`SEV-`** — already held **twice**: `PRD-003`'s **closed** `SEV-1`…`16` domain-event register (`PRD_LIFECYCLE.md` §5 rule 6) and `PRD-012a`'s severity register. Per §5 rule 3, *"on collision, change the new prefix, never the existing one."* Also **not** `SEC-` (collides `INV-SEC-*`, per `PRD-012a` §0.4) |
+| **Implementation task range** | **`IMPL-1400`…`1449`**, with `1450`…`1499` reserved. Measured free: [`PRD-012a_IMPLEMENTATION_TASKS.md`](../../40-implementation/security/PRD-012a_IMPLEMENTATION_TASKS.md) **L140** records *"`IMPL-1400` + | Unallocated"* |
+| **Product version** | **V1** |
+| **Lifecycle stage** | **Stage 2 of 9 — Draft.** Stages 3–9 **not started** |
+| **Rank** | **Unranked.** No [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3 row exists for this document. It is **not** Rank 3 and **must not be cited as authority against any ranked document** |
+| **Registry status** | **`PLANNED`** in `PRD_REGISTRY.md` §4.2 at the time of writing. ⚠ Opening this document has a registry consequence **this document does not execute** — see §0.6 |
+| **Authorities applied** | `MASTER_PRD.md` (Rank 1) · `ADR-0011`, `ADR-0013`, `ADR-0014`, `ADR-0016`, `ADR-0055`, `ADR-0059` (Rank 2) · `PRD-001` v2.0, `PRD-002` v1.0, `PRD-003` v1.0, `PRD-013`, `PRD-016`, `PRD-017` v0.2 — all `FROZEN` (Rank 3) · Bounded Context Map **v1.8**, Module Dependency Matrix (Rank 4) · `ARCHITECTURE_RULINGS.md` (Rank 5) |
+| **Date** | 2026-08-22 |
+| **Written at** | `9226f86` |
+
+---
+
+## 0. How to read this document
+
+### 0.1 Normative language
+
+**MUST**, **MUST NOT**, **SHALL**, **SHALL NOT** are binding. **SHOULD** is a strong default requiring a recorded
+reason to depart from. **MAY** is genuinely optional. A **directional principle** is not normative and carries no
+V1 obligation; every instance is marked.
+
+### 0.2 Declared registers and ranges
+
+Published up front as a promise, per Stage 2's gate and the `Student_Identity_PRD_v1.md` §0 precedent.
+
+| Register | Meaning | Range | Count |
+|---|---|---|---|
+| `TSF-FR-nnn` | Functional requirement | `001`…`146` | 146 |
+| `TSF-BR-nnn` | Business rule | `001`…`041` | 41 |
+| `TSF-XC-nnn` | Exclusion / negative constraint | `001`…`070` | 70 |
+| `TSF-INV-nnn` | Invariant enforced inside the aggregate | `001`…`021` | 21 |
+| `TSF-EVT-nnn` | Published domain event | `001`…`002` | **2** |
+| `TSF-CFG-nnn` | Configurable | `001`…`030` | 30 |
+| `TSF-AC-nnn` | Acceptance criterion | `001`…`062` | 62 |
+| `TSF-GAP-nnn` | Open gap blocking implementation | `001`…`016` | 16 |
+| `TSF-RSK-nnn` | Risk | `001`…`012` | 12 |
+| | | **Total** | **400** |
+
+Every register above is **contiguous** — the count equals the highest allocated number, with no gaps and no
+reuse. `TSF-CFG-*` is defined in one place only, §20.4. The ranges in this table are **measured from the
+finished document**, not forecast, and they were re-measured after the v0.3 governance pass, again after v0.4,
+and again after v0.5 — each time **re-derived from the text rather than incremented**.
+
+⭐ **v0.5 re-measurement.** v0.4 declared **399**. v0.5 adds **exactly one** identifier — **`TSF-CFG-030`**, the
+enforcement read-model staleness budget required by `ADR-0065` v2.0 §3.6 condition 1 — giving **400**. ⚠ **One
+register grew by one; eight are unchanged**, and the total was re-derived by counting `TSF-*-nnn` occurrences in
+the finished text, **not** by adding one to 399. **No identifier was renumbered, reused or withdrawn**, and the
+three requirements v0.5 restated — `TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007` — **keep their numbers**, because
+`PRD_LIFECYCLE.md` §5 binds a number to a *slot*, and restating the requirement in that slot is not reallocation.
+
+⚠ **v0.3 re-measurement.** v0.2 declared **385** across these nine registers. The v0.3 governance pass
+added 14 identifiers — `TSF-FR-145`…`146`, `TSF-BR-037`…`041`, `TSF-XC-065`…`070`, `TSF-GAP-016` — giving
+**399**. Four registers grew; five are unchanged. The additions record scope reductions and the rules that
+protect them; **none adds a V1 capability, and none amends any external document.**
+
+⚠ **One collision was found and corrected during that re-measurement.** The v0.3 draft of §14.3.1
+allocated `TSF-FR-144`, which **v0.2 had already bound** to a different requirement in §30.6 (*"this
+document MUST NOT be treated as conferring `DRAFT` status on itself"*). Two unrelated requirements briefly
+shared one identifier. The §14.3.1 requirement was renumbered to `TSF-FR-145` and the §21.2 requirement to
+`TSF-FR-146`; `TSF-FR-144` retains its **original v0.2 meaning**, unmoved and uncited elsewhere. This is
+the same defect class as the eight `TSF-CFG-*` collisions corrected in v0.2, and it was caught the same
+way — by re-deriving every register from the finished text rather than trusting the previous count.
+
+⚠ **`TSF-EVT-*` is deliberately only TWO members, and that is a measurement, not an omission.**
+BC Map §9 (**L432**, **L433**) publishes exactly two `BC-13` events — `safety.AbuseReportFiled` and
+`safety.EnforcementActionTaken`. §7's rule is that an integration surface not in the register does not exist.
+A third event is a **Rank 4 amendment requiring an ADR**, so no third event was invented. See `TSF-GAP-004`.
+
+### 0.3 What this document is not
+
+It is **not** a specification of the social graph, of messaging, of community content, of authentication, of file
+storage, of audit or of security. Each has an owner, and §6 names them. Where a safety outcome requires behaviour
+inside another context, this PRD states the **obligation and the transport**, never the other context's internals.
+
+### 0.4 Six findings that constrain this document
+
+Established by measurement before drafting. Each is carried into §29 as an ADR requirement.
+
+| # | Finding | Consequence |
+|---|---|---|
+| **F-1** | **`BC-13` may not hold `tenantId`.** BC Map **L488**: `BC-11`→`17` are *"Global. No `tenantId`. Keyed on `PersonId`. Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"*. `module_dependencies.yaml` **L266–267** bans the **symbols** `StudentRecordId` and `TenantId` in `domain/social`, with `use_instead: "nothing — social data is not tenant-scoped"` | **Library-scoped moderation as requested cannot be built in `BC-13`.** §18 and `TSF-GAP-001` |
+| **F-2** | **`X-05` is Separate Ways.** Matrix **L354**: Library Management ⟷ `BC-11`…`BC-17` — *"Merges two tenancy models and two privacy regimes"*; the only bridge is `PersonId` via the `E-13` ACL | **A Library Owner console may not read `BC-13`.** §18, `TSF-GAP-002` |
+| **F-3** | **`BC-13` has exactly ONE edge, and it is outbound.** `E-14` (BC Map **L318**), event-only, to `BC-11`/`BC-12`/`BC-14`/`BC-15`. There is **no inbound edge and no port** | **T&S has no read path into reported content.** §12, `TSF-GAP-003`. ✅ **Re-verified at v0.5 and still exactly true** — `ADR-0065` resolved `TSF-GAP-003` **without** adding an edge, so this fact is *unchanged*, not superseded. It is also the reason Option B was preferred: `F-3` is what Option A would have had to break |
+| **F-4** | **`BC-13` is deliberately NOT an `E-22` consumer.** BC Map **L331**; refused per-context by `ADR-0055` §3 and made **executable** by `ADR-0059` — the `files` port refuses callers outside the four-context list | **T&S may not hold a `FileRef` or read bytes.** §13, `TSF-GAP-005` |
+| **F-5** | **`BC-14` and `BC-15` are V2.** BC Map **L118**, **L119**. Content Sharing and Community & Groups have no PRD and are `PLANNED` V2 (`PRD_REGISTRY.md` **L391**) | **Community-post moderation is not V1 work** — there are no V1 posts to moderate. §25, `TSF-GAP-006` |
+| **F-6** | **Block and rate limiting are already owned.** BC Map **L115**/**L377**: `BC-11` owns *"blocks, rate limits on graph mutation"*, aggregate `BlockList`, entity `RateLimitCounter`. `E-16` (**L320**): *"block enforcement lives in the graph"* | **T&S does not own Block, Mute or graph rate limits.** §6, `TSF-XC-004`…`006` |
+
+### 0.5 The one pre-ratified synchronous rule
+
+BC Map **L468** already decides the hardest consistency question in this domain, and this PRD adopts it verbatim
+rather than restating it as a new requirement:
+
+> *"Ban a user | `BC-13`, then `BC-10`/`11`/`12`/`14`/`15` | **Eventual** | `EnforcementActionTaken` fan-out.
+> **Messaging must additionally check enforcement state at send time** — eventual consistency is unacceptable for
+> abuse containment, so this path is belt-and-braces."*
+
+This is also one of the three mitigations `MP-RSK-02` names. §6 and §10 build on it; they do not reinterpret it.
+
+### 0.6 The registry consequence this document does not execute
+
+`PRD_REGISTRY.md` §4.2 records `PRD-020` as **`PLANNED`**. §2.1 of that register holds that status is *conferred by
+the baseline row, not read off the PRD*. Writing this file satisfies Stage 2's evidence test (*"a document on disk
+with a version header"*), which would move the row `PLANNED` → `DRAFT`.
+
+⛔ **This document does not make that edit.** Amending `PRD_REGISTRY.md` is a **Governance Owner** act. The
+consequence is recorded here and routed as `TSF-GAP-013`. The same applies to `PRD_OWNERSHIP_MODEL.md` **L202**,
+`PRODUCT_IMPLEMENTATION_ROADMAP.md` **L152** and `PRD_DEPENDENCY_GRAPH.md` **D-16**, all of which describe
+`PRD-020` as unwritten. **No existing repository file was modified to produce this PRD.**
+
+---
+
+## 1. Executive Summary
+
+`BC-13` Trust & Safety is the only bounded context in LIBOORA classified `[CORE]` while living in a Supporting
+platform. The BC Map states the reason at **L117**: *"on a minor-heavy product this is existential legal risk,
+not a commodity."* `MP-RSK-02` — *"Minor-safety incident on the social product"* — is rated **Critical**, and its
+stated mitigation is *"`BC-13` Trust & Safety at V1"*. Until this document exists, that mitigation is a bounded
+context with no specification, no tasks and no owner. `PRD_REGISTRY.md` **L323** calls it *"the highest unmitigated
+product risk in the register."*
+
+This PRD specifies the V1 system that closes it: a **report → case → decision → enforcement → appeal** pipeline
+with an append-only evidence chain, a transparent rule-based risk layer, and a deterministic strike ladder.
+
+**What makes this design different from the request that produced it** is that four requested capabilities were
+measured against the Rank 4 architecture and found to be **owned elsewhere or structurally prohibited**. They are
+not silently dropped and not silently taken: Block and Mute stay with `BC-11`; virus scanning stays with `BC-29`;
+the immutable audit record stays with `BC-24`; and **library-scoped moderation is named as the central unresolved
+architectural decision** (`TSF-GAP-001`/`002`), because building it inside `BC-13` would require that context to
+hold a `tenantId` the Rank 4 register and the machine-enforced manifest both forbid.
+
+**V1 delivers:** user reporting across five reportable subject types; a single-aggregate moderation case with a
+lifecycle of seven states; nine graduated enforcement actions; a deterministic strike ladder; appeals decided by a
+different actor than the enforcer; a rule-based risk layer that **advises and never auto-decides irreversibly**;
+minor-safety escalation; and the synchronous send-time enforcement check `MP-RSK-02` requires.
+
+**V1 explicitly does not deliver** ML/AI moderation, graph-based coordinated-abuse detection, community-post
+moderation (no V1 posts exist), or a library-administrator console (architecturally blocked).
+
+---
+
+## 2. Problem & Goals
+
+### 2.1 Problem
+
+LIBOORA is shipping a global student social surface — profiles (`BC-10`, `IMPLEMENTING`), a social graph and
+messaging (`BC-11`/`BC-12`, V1, unwritten) — to a population that is **substantially minors**. `MP-GBR-05` and
+`ID-6` both require a guardian consent record before any social context activates, which is an admission in the
+architecture's own language that the platform expects minor users.
+
+Three properties make this urgent rather than important:
+
+1. **The blast radius is legal, not commercial.** A minor-safety incident is not a churn event.
+2. **The mitigation is sequenced last.** `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L152** places `PRD-020` in Wave 4,
+   and **L155** concedes *"that is a decision with a cost."*
+3. **The dependent ships alongside it.** **L161**: *"`PRD-021` must not ship before `PRD-020`"*; **L164**: *"If
+   `PRD-021` slips ahead of `PRD-020`, that is a release-blocking defect, not a schedule change."*
+
+### 2.2 Goals
+
+| ID | Goal | Measured by |
+|---|---|---|
+| `G-1` | Every user can report abuse against a person, a message, a profile, a file reference or a community object, from the surface where they encountered it | `TSF-AC-001`…`008` |
+| `G-2` | Every enforcement action is traceable to a case, a named actor and a stated reason | `TSF-INV-001`, `TSF-AC-020` |
+| `G-3` | Strikes escalate deterministically — the same history yields the same next action | `TSF-INV-021`, `TSF-AC-030` |
+| `G-4` | An appeal is never decided by the actor who enforced | `TSF-INV-013`, `TSF-AC-041` |
+| `G-5` | *(restated v0.5)* A suspended person cannot send a message — **including during `E-14` propagation lag, within a bounded and monitored staleness budget (`TSF-CFG-030`), outside which the send is REFUSED rather than allowed** | `TSF-AC-025` **(a)+(b)**, BC Map **L468**, `ADR-0065` §3.6 |
+| `G-6` | A minor-safety report reaches a human within its SLA regardless of queue depth | `TSF-AC-014`, `TSF-CFG-005` |
+| `G-7` | No safety decision is made irreversibly by an automated score alone | `TSF-BR-021`, `TSF-XC-014` |
+| `G-8` | A false positive is recoverable, measurable and does not accumulate as a strike | `TSF-BR-026`, `TSF-AC-055` |
+
+### 2.3 Non-functional targets
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-001` | The send-time enforcement check (§10.1) **MUST** answer within **50 ms at p99** and **MUST fail closed** — an unavailable check denies the send |
+| `TSF-FR-002` | Report submission **MUST** be accepted and acknowledged within **1 s at p95**; triage is asynchronous |
+| `TSF-FR-003` | `safety.EnforcementActionTaken` **MUST** be published within **5 s at p95** of the decision committing |
+| `TSF-FR-004` | The moderation queue **MUST** remain answerable at **10,000 open cases** without degrading `TSF-FR-001` |
+
+---
+
+## 3. Non-Goals
+
+Stated as exclusions so that a later reader does not "fix" them.
+
+| ID | Non-goal | Why |
+|---|---|---|
+| `TSF-XC-001` | This PRD does **not** own identity, username, profile or profile privacy | `BC-10` / `PRD-003` `IMPLEMENTING`. `SID-*` governs |
+| `TSF-XC-002` | Does **not** own credentials, sessions, OTP, roles, permissions or consent | `BC-18` / `PRD-001` `FROZEN`. Rule `ID-1`: *"No context outside `BC-18` may store a password, OTP, session or credential"* |
+| `TSF-XC-003` | Does **not** own friendship, follow or the social graph | `BC-11` / `PRD-021` |
+| `TSF-XC-004` | Does **not** own **Block** | BC Map **L377** aggregate `BlockList` is `BC-11`'s; **L320** `E-16`: *"block enforcement lives in the graph"* |
+| `TSF-XC-005` | Does **not** own **Mute** | Same owner as Block — a unilateral graph-visibility preference, not a safety decision |
+| `TSF-XC-006` | Does **not** own graph or messaging **rate limits** | BC Map **L115**, **L377** `RateLimitCounter` — `BC-11` |
+| `TSF-XC-007` | Does **not** own conversations, messages, delivery or presence | `BC-12` |
+| `TSF-XC-008` | Does **not** own posts, comments or community membership | `BC-14`/`BC-15`, **both V2** (`F-5`) |
+| `TSF-XC-009` | Does **not** own file storage, upload, signed URLs or **virus scanning** | `BC-29` / `PRD-017` `FROZEN` — BC Map **L139** assigns *"upload, virus scan, thumbnailing, signed URLs"* |
+| `TSF-XC-010` | Does **not** own the immutable audit record | `BC-24` / `PRD-016` `FROZEN`, which owns exactly one aggregate `AuditEntry`. T&S **emits** via `E-20` |
+| `TSF-XC-011` | Does **not** own notification channel, template, quiet hours, dedup or unsubscribe | `BC-22`; `MP-GBR-35` |
+| `TSF-XC-012` | Does **not** own WAF, DDoS, TLS, secrets, PII redaction gateway or vulnerability management | `platform/security` rank 2 / `PRD-012a`; §22 draws the line |
+| `TSF-XC-013` | Does **not** own library membership status | `BC-02` / `PRD-005` |
+| `TSF-XC-014` | Does **not** permit an automated score to execute an irreversible enforcement action in V1 | §14.6; `G-7` |
+| `TSF-XC-015` | Does **not** implement ML/AI classification in V1 | §25 |
+| `TSF-XC-016` | Does **not** grant `BC-13` read access to message bodies at rest | §12.3; privacy posture |
+| `TSF-XC-017` | Does **not** introduce a fourth authorization scope | `MP-GBR-21`: the register `self`, `guardianOf`, `tenantWide` is **closed** without an ADR |
+| `TSF-XC-018` | Does **not** create a Library Administrator moderation console in V1 | Blocked by `F-1`/`F-2`; `TSF-GAP-001`/`002` |
+
+---
+
+## 4. Personas
+
+| Persona | Identity key | Reaches T&S how | May **not** |
+|---|---|---|---|
+| **Student (adult)** | `PersonId` | Files reports; receives notices; submits appeals | See another person's report, case or strike history |
+| **Student (minor)** | `PersonId` + guardian consent record in `BC-18` (`ID-6`) | Same, with escalated routing (§17.4) | — |
+| **Guardian** | `Account` with `guardianOf` scope (`MP-GBR-21`) | Receives notices about the minor's enforcement; may appeal on their behalf | Read the minor's message content through a safety surface (`TSF-XC-016`) |
+| **Platform Safety Moderator** | `Account` + platform role in `BC-18` | Full queue, case, evidence, enforcement, appeal | Decide an appeal on a case they enforced (`TSF-INV-013`) |
+| **Platform Safety Lead** | `Account` + platform role | Escalations, permanent termination, policy versions | Author and approve the same policy version (`TSF-INV-013`) |
+| **Library Owner / Manager / Staff** | `Account` + tenant role, `StudentRecordId` domain | ⛔ **No V1 path.** See §18.3 | Read any `BC-13` object — `X-05`, `F-2` |
+| **Automated risk evaluator** | System actor | Produces advisory signals and scores | Execute an irreversible action (`TSF-XC-014`) |
+
+⚠ **The Library Owner row is the honest answer, not a design omission.** The requested capability is real and
+wanted; §18.3 sets out three routes to it and names the authority that must choose.
+
+---
+
+## 5. Threat / Safety Model
+
+### 5.1 Actors and motivations
+
+| Threat actor | Objective | Primary surface |
+|---|---|---|
+| Peer harasser | Distress a specific known person | Messaging, comments |
+| Bulk spammer | Reach many people cheaply | Friend requests, message requests |
+| Scammer | Extract money or credentials | Messaging, links |
+| Impersonator | Borrow trust of a person or a library | Profile, username, official posts |
+| Predatory adult | Contact minors | Discovery → request → messaging |
+| Block evader | Re-reach a person who refused them | New account, secondary identity |
+| Coordinated group | Mass-report a target, or amplify content | Reporting system itself, graph |
+| Compromised account | Use a real identity's trust | Any authenticated surface |
+| **Malicious moderator** | Abuse privileged access | The console itself |
+
+⚠ The last row is a first-class threat. §19.4 treats moderator access as an audited action, not a trusted one.
+
+### 5.2 The reporting system as an attack surface
+
+`TSF-BR-010` A report is an **accusation, not a finding**. Mass-reporting a target **MUST NOT** by volume alone
+produce an enforcement action — see `TSF-BR-011` (deduplication) and `TSF-BR-024` (reporter-reputation weighting).
+This inverts the naive design in which report count drives action, which is precisely the coordinated-abuse
+primitive.
+
+### 5.3 Grooming-risk indicator posture
+
+`TSF-FR-005` The platform **MUST** evaluate *unsafe contact patterns* — an adult-classified account initiating
+contact with multiple minor-classified accounts who share no graph proximity — as a **risk signal routed to human
+review**, never as an automated determination.
+
+`TSF-XC-019` The platform **MUST NOT** infer, store or display any inference about a person's intent, sexuality or
+relationships. Age band and contact topology are the only inputs. This is a deliberate ceiling on how much this
+system is permitted to know.
+
+`TSF-GAP-014` **OPEN** — age band for a `PersonId` is derived from `BC-18`'s consent state (`ID-6`), and no
+authority specifies an accessor for it. Owner: `BC-18` owner with `BC-13` owner.
+
+### 5.4 Trust boundaries
+
+```
+Client ──┬─> BC-18 Authn/Authz ──> the actor is known
+         │
+         ├─> BC-11 graph          ── eligibility, block, rate limit  (owner: PRD-021)
+         │
+         ├─> BC-12 messaging      ── send path, MUST call §10.1      (owner: PRD-021)
+         │
+         └─> BC-13 safety         ── report intake, case, decision   (THIS PRD)
+                    │
+                    ├── E-14 event ──> BC-11, BC-12, BC-14, BC-15   self-restrict
+                    ├── E-20 event ──> BC-24 audit                  immutable record
+                    └── E-23 event ──> BC-22 notification           notices
+```
+
+`TSF-XC-020` `BC-13` **MUST NOT** appear upstream of authentication or authorization. A safety check is never a
+substitute for an access decision.
+
+---
+
+## 6. Architecture & Ownership
+
+### 6.1 The pipeline
+
+Requested in the task as *User Action → Auth → Safety → Allow/Restrict/Review/Block → Audit → Monitoring*. Rendered
+against the measured architecture:
+
+```
+  User action
+      │
+  [1] BC-18  Authentication            — is the actor who they claim?          (ID-1)
+      │
+  [2] BC-18  Authorization             — may this actor do this at all?        (MP-GBR-21/22)
+      │
+  [3] BC-11  Eligibility + block       — is the counterparty reachable?        (E-16)
+      │
+  [4] BC-13  Enforcement state check   — is the actor restricted right now?    (§10.1, SYNCHRONOUS)
+      │
+      ├── DENY ──────────────────────> indistinguishable-from-not-found where required (MP-GBR-22)
+      │
+  [5] execute in the owning context    — BC-12 sends, BC-15 posts, …
+      │
+  [6] E-20 ──> BC-24 audit             — append-only, fire-and-forget, outbox-backed
+      │
+  [7] async: risk signals ──> BC-13    — advisory only (§14)
+```
+
+`TSF-BR-001` Steps 1–4 are **strictly ordered** and step 4 **MUST NOT** precede step 2. A safety check that runs
+before authorization leaks the existence of objects to unauthorized callers.
+
+`TSF-BR-002` Step 4 is the **only** synchronous obligation `BC-13` places on another context. Everything else T&S
+does is asynchronous and event-driven, which is what keeps `E-14` acyclic — BC Map **L286**: *"T&S publishes
+`EnforcementActionTaken` events and other contexts subscribe and self-restrict. **T&S never reaches into their
+models.**"*
+
+### 6.2 Synchronous vs asynchronous — the decision table
+
+| Action | Check timing | Why | Authority |
+|---|---|---|---|
+| Send a message | **Synchronous** enforcement-state check | *"Eventual consistency is unacceptable for abuse containment"* | BC Map **L468** |
+| Send a message request to a non-friend | **Synchronous** eligibility + enforcement | Same, plus `E-16` `canMessage` | **L320**, **L468** |
+| Create a friend/follow request | **Synchronous** enforcement; rate limit in `BC-11` | Cheap check, high abuse value | `F-6` |
+| Change username or display name | **Synchronous** enforcement | Impersonation vector; §7.6 | This PRD |
+| Appear in discovery results | **Synchronous** filter at query time | A suspended person must not surface | §8.3 |
+| Publish a community post *(V2)* | **Synchronous** enforcement, **asynchronous** content review | Removal is reversible; blocking publication is not | §9 |
+| Upload a file reference | **Asynchronous** — `BC-29` scans (`TSF-XC-009`) | T&S has no byte access (`F-4`) | `ADR-0059` |
+| Score risk | **Asynchronous**, always | Advisory (`TSF-XC-014`) | §14 |
+| Enforce a decision | **Synchronous** commit, **asynchronous** fan-out | One transaction, then `E-14` | BC Map **L468** |
+
+`TSF-BR-003` **Reversibility decides the timing.** An action whose harm is undoable (removing a post) may be
+reviewed after the fact. An action whose harm is not undoable (delivering a threat to a minor, letting a suspended
+adult open a new conversation) **MUST** be checked before execution.
+
+### 6.3 Ownership map — what T&S owns, and what it must never own
+
+| Concern | Owner | `BC-13`'s relationship |
+|---|---|---|
+| Safety **policy** — the versioned rule text | **`BC-13`** | Owns |
+| Abuse **report** | **`BC-13`** | Owns |
+| Moderation **case** | **`BC-13`** | Owns — the aggregate |
+| **Evidence** snapshot | **`BC-13`** | Owns the *snapshot and its hash*, never the live object |
+| **Decision** and **enforcement action** | **`BC-13`** | Owns |
+| **Strike** ledger | **`BC-13`** | Owns |
+| **Appeal** | **`BC-13`** | Owns |
+| Risk **signal** / **assessment** | **`BC-13`** | Owns |
+| Person identity, username, profile privacy | `BC-10` | Consumes `identity.Person*` events |
+| Block, mute, graph rate limit, `canMessage` | `BC-11` | Publishes to it (`E-14`); **never writes it** |
+| Message store, delivery | `BC-12` | Publishes to it; consumes `messaging.MessageSent` **sampling only** (BC Map **L431**) |
+| Posts, comments, community roles | `BC-14`/`BC-15` (V2) | Publishes to it |
+| File bytes, virus scan, signed URL | `BC-29` | ⛔ **No edge** (`F-4`) |
+| Immutable audit record | `BC-24` | Emits via `E-20` |
+| Notification delivery | `BC-22` | Emits via `E-23` |
+| Credentials, session revocation, roles, consent | `BC-18` | Requests via §7.3 |
+| Tenant record, tenant context | `BC-19` | ⛔ **Must not carry `tenantId`** (`F-1`) |
+
+`TSF-XC-021` `BC-13` **MUST NOT** write into `BC-10`, `BC-11`, `BC-12`, `BC-14` or `BC-15`. Restriction is achieved
+by those contexts **self-restricting** on `E-14`. Any design in which T&S mutates a peer's model is a defect,
+regardless of how convenient it is.
+
+### 6.4 Aggregate boundary — one, not eleven
+
+BC Map §8 fixes the rule: *"The aggregate is the transaction boundary — one aggregate, one database transaction,
+no exceptions."* **L379** already declares `BC-13`'s:
+
+> `ModerationCase` — key entities `AbuseReport`, `EnforcementAction`, `StrikeRecord`, `Appeal`.
+
+The task requested eleven top-level entities. Modelling eleven aggregates would break the Rank 4 rule. §20 therefore
+places `AbuseReport`, `Evidence`, `EnforcementAction`, `Appeal` and `StrikeRecord` **inside** the `ModerationCase`
+boundary, and models `RiskSignal`, `RiskAssessment`, `SafetyPolicy` and `UserRestriction` as **separate stores
+outside it** — three read models and one policy register — with their transactional independence justified per row.
+
+`TSF-INV-001` Every `EnforcementAction` **MUST** belong to exactly one `ModerationCase`, carry an `actorId` and a
+non-empty `reasonCode`. *(BC Map **L379** invariant, adopted verbatim.)*
+
+### 6.5 Naming — the governed collisions
+
+BC Map §5 bans bare terms that mean different things in different contexts. Three apply here.
+
+| Term | Collision | Required name in `BC-13` |
+|---|---|---|
+| **Report** | `BC-26` analytical output vs `BC-13` abuse report (**L206**) | **`AbuseReport`** — never bare `Report` |
+| **Role** | `BC-18` permission bundle vs `BC-15` community role | `AccessRole` / `CommunityRole` |
+| **Profile** | `BC-01` staff-visible vs `BC-10` peer-visible | `PublicProfile` when referring to `BC-10` |
+
+`TSF-XC-022` The bare identifier `Report` **MUST NOT** appear in any cross-context contract file. The task brief
+used the name `SafetyReport`; this PRD uses **`AbuseReport`** because the Rank 4 register already fixed it, and
+inventing a synonym for a governed term is how a ubiquitous language decays.
+
+---
+
+## 7. Account & Identity Safety
+
+⚠ **Ownership guard.** `BC-18` owns credentials, sessions, OTP and consent (`ID-1`); `BC-10` owns username and
+profile. This section specifies **safety outcomes** and the **requests** T&S makes of those owners. It duplicates
+neither.
+
+### 7.1 Fake and bulk account creation
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-010` | T&S **MUST** consume account-creation signals and maintain a `RiskSignal` for creation velocity per correlator (device, network, verification channel) |
+| `TSF-FR-011` | On breach of `TSF-CFG-001`, T&S **MUST** open a `ModerationCase` of type `BULK_CREATION` and **MUST NOT** itself block creation |
+| `TSF-FR-012` | T&S **MAY** request `BC-18` apply step-up verification; the decision and mechanism remain `BC-18`'s |
+| `TSF-XC-023` | T&S **MUST NOT** store the device identifier, IP address or phone number itself. It stores a **salted correlator hash** with the retention of `TSF-CFG-014` |
+
+`TSF-BR-004` A creation-velocity signal alone **MUST NOT** terminate an account. It is `RESTRICT`-eligible at most,
+pending human review — a shared school or library Wi-Fi legitimately produces bursts, which is the exact
+false-positive this rule exists to prevent.
+
+### 7.2 Account takeover indicators
+
+`TSF-FR-013` T&S **MUST** treat *behavioural discontinuity* — a sudden mass-messaging or mass-request burst from an
+account with no such history — as a **high-confidence, low-severity** signal routed to review.
+
+`TSF-FR-014` On a takeover-suspected case, T&S **MUST** request session revocation from `BC-18`. ⚠ `BC-18`'s
+model already guarantees *"session revocation is immediate and global"* (BC Map **L380**), so T&S **requests** and
+does not implement it.
+
+`TSF-BR-005` A takeover-suspected restriction **MUST NOT** accrue a `StrikeRecord`. The account holder is the
+**victim**. Recording a strike against them is a defect (`TSF-AC-056`).
+
+### 7.3 OTP abuse
+
+`TSF-XC-024` OTP issuance, TTL, single-use semantics and throttling are **`BC-18`'s** (`ID-1`, BC Map **L380**).
+T&S **MUST NOT** implement an OTP counter.
+
+`TSF-FR-015` T&S **MAY** consume an aggregate OTP-failure signal from `BC-18` as a risk input. `TSF-GAP-007`
+**OPEN** — no such published signal exists. Owner: `BC-18` owner.
+
+### 7.4 Impersonation of a person
+
+`TSF-FR-016` T&S **MUST** accept an `IMPERSONATION` report against a `PersonId`, carrying the impersonated
+identity as a claim.
+
+`TSF-BR-006` An impersonation finding **MUST** be decided by a human. `TSF-XC-025` **MUST NOT** be auto-decided by
+name or photo similarity — the false-positive population is *people with common names*, and misfiring here removes
+a legitimate identity.
+
+### 7.5 Impersonation of a library, owner or staff member
+
+⚠ **This is the sharpest cross-boundary problem in the document, and it is not fully solvable in V1.**
+
+A person can claim in a **global** `BC-10` profile to be *"Owner, Central City Library"*. Verifying that requires
+reading tenant data, and `X-05` (`F-2`) forbids the social side from reaching Library Management.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-017` | T&S **MUST** accept a `LIBRARY_IMPERSONATION` report and open a case |
+| `TSF-FR-018` | The V1 disposition **MUST** be *unverifiable-claim removal*: the enforcement action removes the **claim text** from the global profile via `E-14`, and asserts nothing about the underlying truth |
+| `TSF-XC-026` | T&S **MUST NOT** resolve the claim by reading `BC-01`, `BC-02` or `BC-19`. That is the `X-05` prohibition and no exception is created here |
+| `TSF-GAP-008` | **OPEN** — verified library affiliation needs an `E-13`-mediated attestation that does not exist. Owner: Architecture Owner with `BC-10` and `BC-19` owners |
+
+`TSF-BR-007` Until `TSF-GAP-008` closes, LIBOORA **MUST NOT** display any affiliation claim as *verified*. An
+unverified claim rendered as verified is worse than no claim, because it lends the platform's credibility to an
+unchecked assertion.
+
+### 7.6 Username abuse
+
+`TSF-FR-019` T&S **MUST** accept reports against a username (slur, impersonating handle, targeted harassment
+handle) and **MUST** be able to enforce a forced-rename via `E-14`.
+
+`TSF-XC-027` The username uniqueness rule, format and the rename mechanism remain **`BC-10`'s** (`SID-*`, BC Map
+**L376**). T&S supplies the **decision**; `BC-10` performs the change.
+
+### 7.7 The enforcement ladder for accounts
+
+| Level | Action | Reversible | Who may apply | Strike |
+|---|---|---|---|---|
+| 0 | **Warning** — notice, no capability change | Yes | Moderator | 1 |
+| 1 | **Restriction** — one capability, time-boxed (§15) | Yes | Moderator | 1 |
+| 2 | **Temporary suspension** — all social capability, time-boxed | Yes | Moderator | 2 |
+| 3 | **Permanent termination** | ⛔ **No** | **Safety Lead only** | terminal |
+
+`TSF-INV-002` A **permanent termination MUST NOT** be applied by an automated actor under any risk score, in V1 or
+later without an ADR. *(`TSF-XC-014`, `G-7`.)*
+
+`TSF-INV-003` A permanent termination **MUST** carry a completed human review record naming the reviewing actor,
+and **MUST** be appealable at least once (§16).
+
+`TSF-INV-004` **Attributability.** Every `EnforcementAction` **MUST** be attributable, for the whole of its retained
+life, to (a) a named `actorId` — a moderator identity, or a rule identifier for an automated action, never the bare
+string `"system"`; (b) the `caseId` it belongs to (`TSF-INV-012`); (c) the `SafetyPolicy` id **and version** cited at
+decision time; and (d) a non-empty `reasonCode`. An action that loses any of the four **MUST** be treated as a defect,
+not as an unattributed action — because the record that justifies a restriction is the same record an appeal
+(§16) and an audit (`E-20` → `BC-24`) must later read. This is why §13.1 admits no "quick action" path and why
+§21.4 permits no deletion: attributability is made *structurally* true by the aggregate boundary rather than by
+convention. *(Strengthens `TSF-INV-001`, which fixes the fields; this fixes their permanence. Supports `G-2`.)*
+
+`TSF-FR-020` **Reinstatement** — on a successful appeal or moderator error, T&S **MUST** publish a
+`safety.EnforcementActionTaken` carrying `action = REINSTATE`, and the accrued `StrikeRecord` **MUST** be marked
+`VACATED` rather than deleted (`TSF-INV-004`, and §21.4 on why nothing is deleted).
+
+`TSF-XC-028` Termination **MUST NOT** delete the person's data as a side effect. Deletion is a **DSR** act governed
+by `MP-GBR-04`/`MP-GBR-14` and `ID-5`, and conflating punishment with erasure would destroy the evidence that
+justifies the punishment.
+
+---
+
+## 8. Social Graph & Discovery Safety
+
+⚠ **Ownership guard.** `BC-11` owns friendship, block and graph rate limits (`F-6`); Library Discovery is a
+**read composition, not a context** (ruling `AR-1`, BC Map **L86**). T&S contributes **eligibility inputs**.
+
+### 8.1 What T&S contributes, and what it does not
+
+| Concern | Owner |
+|---|---|
+| Friend-request rate limit counter and window | **`BC-11`** — `RateLimitCounter` (**L377**) |
+| Block list and block semantics | **`BC-11`** — `BlockList`, *"unilateral and overrides friendship"* |
+| `canMessage(a,b)` | **`BC-11`** — `E-16` (**L320**) |
+| Whether a person is under a **discovery restriction** | **`BC-13`** — this PRD |
+| Whether a person is **suspended or terminated** | **`BC-13`** — this PRD |
+| Block-**evasion** detection across identities | **`BC-13`** — this PRD, §8.4 |
+
+`TSF-FR-021` T&S **MUST** publish discovery-affecting state via `E-14` so `BC-11` can self-restrict.
+`TSF-XC-029` T&S **MUST NOT** filter a discovery result set itself — it has no query path into the graph (`F-3`).
+
+### 8.2 Spam and mass-connection abuse
+
+`TSF-FR-022` T&S **MUST** maintain request-velocity and **acceptance-ratio** signals per `PersonId`.
+
+`TSF-BR-008` **Acceptance ratio is the load-bearing signal, not volume.** A popular student sending many accepted
+requests is not abusive; an account sending many *ignored or declined* requests is. Rate alone punishes popularity.
+
+`TSF-BR-009` A **block-rate** signal — the proportion of counterparties who block after first contact — is the
+strongest available V1 indicator of harassment and **MUST** be weighted above report volume, because it is a
+behavioural fact rather than an accusation (§5.2).
+
+### 8.3 The discovery safety pipeline
+
+Requested as *Candidate → Eligibility → Privacy → Safety → Ranking → Result*. Rendered with owners:
+
+```
+  Candidate set                         BC-23 Search index (permission-aware)
+      │
+  [1] Eligibility     BC-11   — not blocked either direction; graph rules
+      │
+  [2] Privacy         BC-10   — PrivacySettings; "privacy default = most restrictive";
+      │                          "minors cannot set profile to public"     (BC Map L376)
+      │
+  [3] Safety          BC-13   — exclude suspended / terminated / discovery-restricted   ← THIS PRD
+      │
+  [4] Ranking         BC-23   — relevance
+      │
+  Result
+```
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-023` | A person under `SUSPENSION`, `TERMINATION` or `DISCOVERY_RESTRICTION` **MUST NOT** appear in any discovery result, recommendation or search suggestion |
+| `TSF-INV-005` | Step **[3] MUST run after [1] and [2] and MUST be non-bypassable.** A ranking or recommendation path that reaches the index without step 3 is a defect |
+| `TSF-FR-024` | Exclusion **MUST** be indistinguishable from non-existence — no *"this user is suspended"* tombstone. *(`MP-GBR-22`: a denial must not disclose existence.)* |
+| `TSF-XC-030` | T&S **MUST NOT** publish the *reason* for a discovery exclusion to any peer-facing surface |
+
+`TSF-FR-025` **Recommendation manipulation** — T&S **MUST** treat reciprocal-follow rings and mass-follow-then-
+unfollow as risk signals routed to review. ⚠ Graph-topology detection is **V2** (§25); V1 detects only the
+per-account velocity form.
+
+### 8.4 Block evasion
+
+`TSF-FR-026` When a person blocked by X is followed by a **new** account contacting X within
+`TSF-CFG-008`, sharing a creation correlator, T&S **MUST** raise a `BLOCK_EVASION` signal.
+
+`TSF-BR-010` A block-evasion signal **MUST** route to human review and **MUST NOT** auto-terminate. Sibling
+students on one device are a real population and a real false positive.
+
+---
+
+## 9. Library Community Safety
+
+⚠⚠ **This section is constrained by finding `F-5` and it is the section that most differs from the request.**
+
+### 9.1 The measurement
+
+`BC-14` Content Sharing and `BC-15` Community & Groups are **V2** — BC Map **L118**, **L119**;
+`PRD_REGISTRY.md` **L391** lists them *"`PLANNED` — correctly deferred."* A grep for `moderator` across
+`docs/30-product/` returns **0 files**. There is no V1 community, no V1 post, no V1 comment and no
+`CommunityRole` specification anywhere in the repository.
+
+`TSF-XC-008` therefore holds: **community-post moderation is not V1 scope**, because there is nothing to moderate.
+
+`TSF-GAP-006` **OPEN** — *"Library Community, Feed & Messaging"* was requested as an existing surface. Measured: the
+messaging third exists (`BC-12`, V1); the community and feed thirds are **V2 contexts with no PRD**. Owner: Product
+Owner, to decide whether `BC-15` is pulled into V1. **This PRD does not pull it in** — that is a Rank 1 scope act.
+
+### 9.2 What V1 *does* build for community safety
+
+Not nothing: the machinery is built now so that `BC-15` inherits it rather than reinventing it.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-027` | The `AbuseReport` subject type register **MUST** include `COMMUNITY_POST` and `COMMUNITY_COMMENT` from V1, unpopulated until `BC-15` ships |
+| `TSF-FR-028` | The enforcement action register **MUST** include `COMMUNITY_RESTRICTION` and `CONTENT_REMOVAL` from V1 |
+| `TSF-FR-029` | `E-14`'s consumer set **MUST** already include `BC-14` and `BC-15` — it does (BC Map **L318**), so no amendment is needed |
+| `TSF-XC-031` | This PRD **MUST NOT** specify community roles, membership or post lifecycle. `CommunityRole` is `BC-15`'s (BC Map **L214**) |
+
+### 9.3 Moderation permissions — specified, gated on §18
+
+Requested for five actor classes. Specifiable now, but **only the first is exercisable in V1** (§18.3).
+
+| Actor | Scope | May | May **NOT** |
+|---|---|---|---|
+| **Platform Safety Moderator** | Global | Triage, investigate, enforce, remove content, restrict | Decide own appeals; read message bodies (`TSF-XC-016`) |
+| **Platform Safety Lead** | Global | All the above + permanent termination + policy versions | Author *and* approve one policy version |
+| **Library Owner** | ⛔ blocked | — | Any `BC-13` read. `F-1`/`F-2` |
+| **Library Manager** | ⛔ blocked | — | Same |
+| **Authorized Community Moderator** | Deferred to `BC-15` (V2) | — | Same |
+| **Student** | `self` | Report; block/mute via `BC-11`; appeal own case | See any other person's case, report or strike |
+
+`TSF-INV-006` A library-scoped actor **MUST NOT** be able to read: another library's reports or cases; **any**
+private message; or **any** platform-global risk intelligence. This is invariant regardless of how §18.3 is
+resolved — it is the requirement the resolution must satisfy, not a consequence of it.
+
+---
+
+## 10. Messaging Safety
+
+⚠ **Ownership guard.** `BC-12` owns conversations, messages, delivery and retention. T&S owns the **restriction**
+and the **report**.
+
+### 10.1 The synchronous send-time check — the load-bearing requirement
+
+✅ **DECIDED — `ADR-0065` v2.0 is `Accepted` (2026-08-22), Option B.** The transport question that made this
+subsection the document's load-bearing gap is **resolved**: the check is a **local, synchronous read inside
+`BC-12`** against a read model fed by the **existing** `E-14` event. **No `BC-12` → `BC-13` edge exists or is
+created, and no Rank 4 document was amended** — BC Map, Dependency Matrix and `tool/module_dependencies.yaml` are
+**byte-unchanged**. The three requirements below are **restated to the decided architecture** under that ADR's
+`Amends` row, which names this PRD and only this PRD.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-030` | `BC-12` **MUST** maintain a **local enforcement-state read model**, keyed by `PersonId`, answering *"is this person restricted from messaging right now?"* **synchronously**. It **MUST** be fed **only** by the `E-14` `safety.EnforcementActionTaken` event that `BC-12` is **already** an entitled consumer of (BC Map **L433**, Matrix **L254**), and **MUST** be recomputable from that event stream alone — **never hand-edited** (the BC Map **L383** projection discipline). ⛔ `BC-13` **MUST NOT** expose, and `BC-12` **MUST NOT** call, any synchronous enforcement query across the context boundary |
+| `TSF-FR-031` | `BC-12` **MUST** consult that read model on **every** send, on the send path, **before** the message is accepted. ⭐ It **MUST** additionally apply a **fail-closed staleness gate**: if the read model's lag exceeds `TSF-CFG-030`, **or its freshness cannot be established**, the send **MUST** be **refused**. ⛔ The gate is **not optional** — it is the second of the two independent mechanisms BC Map **L468** requires when it calls this path *"belt-and-braces"*, and a projection read without it is one mechanism read twice (`ADR-0065` §3.6, §7.1 item 2) |
+| `TSF-FR-001` | p99 ≤ 50 ms, **fail closed** |
+| `TSF-INV-007` | A send by a messaging-restricted person **MUST** fail from the moment the restriction is in `BC-12`'s read model, and **MUST** fail **whenever that model cannot be shown to be fresher than `TSF-CFG-030`** — so the containment guarantee is **bounded and monitored, never open-ended**. ⛔ **The residual window is disclosed, not eliminated**: between `BC-13` deciding a restriction and `E-14` reaching `BC-12`'s model, a send by that person **can** succeed. That window is bounded by `TSF-CFG-030`, and exceeding it converts the window into a **refusal** rather than a silent success |
+
+⚠ **Authority.** BC Map **L468** already requires exactly this: *"Messaging must additionally check enforcement
+state at send time — eventual consistency is unacceptable for abuse containment, so this path is belt-and-braces."*
+This PRD adopts a ratified rule; it does not introduce one.
+
+⭐ **v0.4 discloses a SECOND Rank 4 line that v0.3 did not cite, and it cuts against `TSF-FR-031` as
+worded.** BC Map **L477** — §10.1, *"Where Eventual Consistency Is Not Acceptable"*, the same table **L468**
+introduces — states the mitigation **with a location**:
+
+> *"\| **Abuse containment** \| A banned user sending one more abusive message during propagation lag is a real
+> harm \| Synchronous enforcement check at send time **in BC-12**, in addition to event-driven
+> self-restriction \|"*
+
+| What **L477** supplies | Why it matters to §10.1 |
+|---|---|
+| The check is located **in `BC-12`** | Rank 4 does **not** say `BC-12` calls `BC-13`. `TSF-FR-030`/`TSF-FR-031` add that transport — and this PRD is **unranked `DRAFT`** |
+| *"in addition to event-driven self-restriction"* | Names the `E-14` mechanism as the **companion**, not the substitute |
+| BC Map **L286**: *"T&S publishes … other contexts **subscribe and self-restrict**. **T&S never reaches into their models.**"* | Rank 4 chose **against** inbound peer calls to `BC-13`, on cycle grounds |
+| BC Map **L433**, Matrix **L254**, manifest **L251**-**L253** | **`BC-12` is ALREADY an entitled `safety.EnforcementActionTaken` consumer.** A projection-based check needs **no new grant at any rank** |
+
+⭐ **v0.5 — the question v0.4 posed has been ANSWERED, and this PRD records the answer rather than the
+question.** v0.4 closed this subsection by stating that `TSF-FR-030`, `TSF-FR-031` and `TSF-INV-007` were *"left
+**exactly as written**"* because *"restating them to match either reading would be this PRD deciding the matter
+`TSF-XC-063` forbids it from deciding."* **That reasoning was correct and is why v0.4 stopped.** It has been
+overtaken lawfully: the **Architecture Owner has ruled** in `ADR-0065` v2.0, and this PRD is now **carrying out**
+a Rank-4 interpretation rather than **making** one — which is exactly what `TSF-XC-063` permits and requires.
+
+| The ruling (`ADR-0065` §3.5) | Consequence for §10.1 |
+|---|---|
+| **L477** and **L468** require the check to be *synchronous* and *in `BC-12`*, and **never name a transport** | The transport was never a Rank 4 requirement, so **nothing in Rank 4 needed changing** |
+| **L286** chose **against** inbound peer calls into `BC-13` | `TSF-FR-030` is restated to place the state **in `BC-12`**, not behind a `BC-13` query |
+| `TSF-FR-031`'s *"MUST NOT rely on its own `E-14` projection alone"* is an **over-specification by an unranked `DRAFT`** | **Restated.** The rank order permits correcting this PRD to Rank 4, never the reverse |
+| ⛔ `TSF-INV-007`'s absolute no-lag guarantee is **CONCEDED to be unachievable** by an `E-14`-fed projection | **Restated to the guarantee the architecture actually delivers** — bounded, monitored, fail-closed |
+
+⛔ **The concession is recorded plainly, because the alternative is worse.** `ADR-0065` §3.6 concedes in full
+that a projection fed solely by `E-14` **cannot** make a send fail *"even if the `E-14` event has not yet been
+consumed"*. An invariant that claims a guarantee the mechanism cannot deliver does not create the guarantee — it
+converts a **known, bounded, monitored** race into an **undisclosed** one. `TSF-INV-007` now states the real
+guarantee, names the residual window, and binds it to `TSF-CFG-030`. ⭐ **The fail-closed staleness gate of
+`TSF-FR-031` is what makes this safe and what makes the path genuinely *belt-and-braces*; it is constitutive of
+the approved architecture, not an optimisation of it.**
+
+`TSF-GAP-003` ✅ **ARCHITECTURE HALF CLOSED** — ⛔ **IMPLEMENTATION HALF OPEN.** The transport question is
+answered: **there is no missing edge.** `BC-13`'s only edge remains the **outbound, event-only** `E-14` (`F-3`,
+still true and unchanged), and the send-time check needs **no inbound edge at all** — so BC Map **L292** is never
+engaged and **no ADR-authorised amendment was required**. ⛔ **What remains open is code, not architecture:** the
+read model, the fail-closed staleness gate, the lag observability and the tests **do not exist**. Measured at
+2026-08-22: `lib/domain/social/social.dart` is a **67-line** self-described *"stub that exists to hold a boundary
+open"*, and `grep -rln 'EnforcementAction\|enforcementState\|messagingRestricted' lib/ test/ packages/` returns
+**empty**. Owner of the remaining half: the `BC-12` owner. **`IMPL-1410` is UNBLOCKED and NOT complete.**
+
+⚠ **This is the `ADR-0055` → `ADR-0059` two-half shape, not a partial close dressed up as a full one.**
+`ADR-0055` closed `FIL-GAP-012`'s *"architecture half only"*; `ADR-0059` later closed its *"implementation half"*.
+The same discipline is applied here deliberately, because **`DECIDED` is not `IMPLEMENTED`, and `IMPLEMENTED` is
+not `VERIFIED`** — and reporting this gap as closed in full would assert a verification nobody has performed.
+
+⚠ v0.4 described this as *"the same defect class as `ADR-0016` and `ADR-0055` — a requirement depending on an
+edge the Rank 4 register does not list"*, expecting resolution by *"a one-cell amendment after a per-context
+necessity test"*. ⭐ **Measurement returned a different and better answer: it was not that defect class at all.**
+The register was never deficient; **this PRD had over-specified a transport Rank 4 left open**. The nearer
+precedent is therefore `ADR-0033`, where *"no Rank 4 law needed changing"*, and the per-context necessity test of
+`ADR-0055` §3 is satisfied **vacuously** — `BC-12`'s `E-14` entitlement is **pre-existing** and **not widened**.
+
+### 10.2 Message requests and unwanted contact
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-032` | A first message to a non-friend **MUST** be a **message request** — not delivered to the inbox until accepted |
+| `TSF-FR-033` | A person **MUST** be able to decline without the sender learning it was declined |
+| `TSF-FR-034` | Outstanding-request limits **MUST** be enforced per `TSF-CFG-009` |
+| `TSF-FR-035` | An **adult-classified** sender's first contact with a **minor-classified** recipient who shares no graph proximity **MUST** be held as a request **and** raise the §5.3 signal |
+| `TSF-XC-016` | T&S **MUST NOT** read message bodies at rest |
+
+`TSF-BR-011` The request-limit counter is **`BC-11`'s** (`F-6`, `RateLimitCounter`); T&S consumes the breach as a
+signal. Two counters for one fact is how they drift apart.
+
+### 10.3 Reported message content — the narrow, consented exception
+
+`TSF-FR-036` When a person reports a message, the report **MUST** carry an **evidence snapshot** of that message,
+submitted **by the reporter**, of content **already lawfully visible to them**.
+
+`TSF-BR-012` This is the **only** path by which message content enters `BC-13`, and it is **reporter-supplied, not
+platform-harvested**. T&S never queries the message store.
+
+`TSF-FR-037` The snapshot **MUST** be limited to the reported message plus at most `TSF-CFG-010` messages of
+surrounding context, and **MUST** be visible only to a moderator on that case (§19.4).
+
+`TSF-BR-013` `messaging.MessageSent` is consumed **for sampling only** — BC Map **L431** says exactly that. The
+sample **MUST** feed volumetric counters only and **MUST NOT** persist bodies (`TSF-XC-016`).
+
+### 10.4 User-reported vs proactive detection — the required distinction
+
+| | **User-reported** | **Proactive automated** |
+|---|---|---|
+| Trigger | A person files an `AbuseReport` | A rule fires on a signal |
+| Content access | Reporter-supplied snapshot (§10.3) | ⛔ **No message content in V1** |
+| Evidentiary weight | An accusation (`TSF-BR-010`) | A statistical indication |
+| May cause enforcement | Yes, after human review | ⛔ **Advisory only** (`TSF-XC-014`) |
+| V1 scope | **Yes — the primary path** | Metadata/velocity only |
+
+`TSF-XC-032` V1 **MUST NOT** perform automated content classification of message bodies. This is a **privacy
+posture**, not a capability gap: the platform has no lawful V1 read path, and building one to enable scanning would
+be a far larger decision than a moderation feature (§25, `TSF-GAP-011`).
+
+### 10.5 Malicious links and files
+
+`TSF-FR-038` A reported link **MUST** be recorded as evidence by **normalised URL and hash**, never fetched by a
+moderator's browser session.
+
+`TSF-FR-039` File safety is **`BC-29`'s** — *"upload, virus scan"*, BC Map **L139**. T&S consumes the scan verdict
+and **MUST NOT** scan.
+
+`TSF-GAP-005` **OPEN** — T&S is deliberately **not** an `E-22` consumer (`F-4`, `ADR-0055` §3, enforced in code by
+`ADR-0059`). It therefore cannot read a `FileRef` to display reported media to a moderator. Owner: Architecture
+Owner. ⚠ `ADR-0055` §3 **already tested `BC-13` and refused it**, so this is not an oversight to be corrected but a
+**decision to be revisited on new evidence** — namely that moderation of a reported file requires the moderator to
+see it. §12.4 specifies the V1 workaround. **Blocks `IMPL-1418`.**
+
+---
+
+## 11. Content & File Safety
+
+### 11.1 Reportable content surfaces
+
+| Surface | Owner | V1? | Report subject type |
+|---|---|---|---|
+| Person / public profile | `BC-10` | ✅ | `PERSON` |
+| Username | `BC-10` | ✅ | `PERSON` |
+| Direct message | `BC-12` | ✅ | `MESSAGE` |
+| File / media reference | `BC-29` | ✅ | `FILE_REF` |
+| Link inside a message | `BC-12` | ✅ | `MESSAGE` |
+| Community post / comment | `BC-14`/`BC-15` | ⛔ V2 | `COMMUNITY_POST` / `_COMMENT` (declared, unpopulated) |
+| Library public profile | `BC-19` + `BC-02` §14B projection | ⚠ **see §11.3** | `LIBRARY_PROFILE` |
+| Library official post | — | ⛔ **does not exist** | — |
+
+### 11.2 Enforcement on content
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-040` | `CONTENT_REMOVAL` **MUST** be published via `E-14` with the content reference; the owning context performs removal |
+| `TSF-FR-041` | `VISIBILITY_RESTRICTION` **MUST** reduce audience without deleting — reversible on appeal |
+| `TSF-INV-008` | T&S **MUST NOT** delete content directly (`TSF-XC-021`) |
+| `TSF-FR-042` | A removal **MUST** retain its evidence snapshot for `TSF-CFG-012` even after the source is gone — otherwise a successful appeal has nothing to review |
+
+### 11.3 The library public profile — a cross-boundary report
+
+⚠ A **library public profile** is tenant data (`PRD-002` §14B, `LIB-14B-*`, served anonymously from a projection
+per `ADR-0010`). A **global** student reporting it crosses `X-05`.
+
+`TSF-FR-043` T&S **MUST** accept a `LIBRARY_PROFILE` report and open a case.
+
+`TSF-BR-014` The case **MUST** be resolvable **without** T&S reading tenant data: the evidence is the
+**reporter-supplied snapshot of the public projection**, which is by construction already public
+(`ADR-0010`: *"served anonymously"*). Reporting something already world-readable creates no new disclosure.
+
+`TSF-XC-033` The **enforcement** action on a library profile **MUST NOT** be executed by `BC-13` — there is no edge
+(`F-2`, `F-3`). The disposition is **referral to the platform operations role that owns tenant lifecycle**
+(`BC-19`).
+
+`TSF-GAP-009` **OPEN** — no referral transport exists between `BC-13` and `BC-19`, and `X-05` makes a direct edge
+the wrong shape. Owner: Architecture Owner with `BC-19` owner. **Blocks `IMPL-1424`.**
+
+### 11.4 "Library official post" — refused for want of a subject
+
+`TSF-XC-034` The request names *"Library official posts"* as a reportable type. **No such object exists in the
+repository** — measured: no `BC-nn` owns it, `BC-15` is V2, and no PRD defines it. **No requirement was written for
+it.** Inventing a reportable type for an object with no owner would create a register entry that can never be
+satisfied. Recorded as `TSF-GAP-010`, owner Product Owner.
+
+---
+
+## 12. Reporting
+
+### 12.1 Report intake
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-044` | A report **MUST** be fileable from the surface where the content was encountered, in ≤ 3 interactions |
+| `TSF-FR-045` | Every report **MUST** carry: reporter `PersonId`, subject type, subject reference, category, free text (bounded `TSF-CFG-011`), evidence snapshot, client timestamp, server receipt timestamp |
+| `TSF-FR-046` | The reporter **MUST** receive an acknowledgement with a case reference |
+| `TSF-FR-047` | A report **MUST** be acceptable **anonymously to the subject** — the subject **MUST NOT** learn who reported them |
+| `TSF-INV-009` | Reporter identity **MUST NOT** appear in any notice, appeal record or export visible to the subject |
+| `TSF-FR-048` | Report submission **MUST** be idempotent on `(reporterId, subjectRef, categoryCode, idempotencyKey)` |
+
+`TSF-BR-015` `TSF-INV-009` is **not a courtesy** — a reporting system that discloses the reporter to the reported
+person is a retaliation delivery mechanism, and on a minor-heavy product that is the dominant failure mode.
+
+### 12.2 Categories
+
+`SEVERITY` is intrinsic to the category and set by policy, not by the reporter.
+
+| Category | Severity | SLA |
+|---|---|---|
+| `THREAT` — threat of violence or self-harm | **`CRITICAL`** | `TSF-CFG-005` |
+| `MINOR_SAFETY` — exploitative or grooming-risk contact | **`CRITICAL`** | `TSF-CFG-005` |
+| `HARASSMENT` | `HIGH` | `TSF-CFG-006` |
+| `BULLYING` | `HIGH` | `TSF-CFG-006` |
+| `IMPERSONATION` | `HIGH` | `TSF-CFG-006` |
+| `PRIVACY_VIOLATION` | `HIGH` | `TSF-CFG-006` |
+| `MALICIOUS_FILE` | `HIGH` | `TSF-CFG-006` |
+| `SCAM` | `MEDIUM` | `TSF-CFG-007` |
+| `INAPPROPRIATE_CONTENT` | `MEDIUM` | `TSF-CFG-007` |
+| `SPAM` | `LOW` | `TSF-CFG-007` |
+| `OTHER` | `MEDIUM` on triage | `TSF-CFG-007` |
+
+`TSF-BR-016` A reporter **MUST NOT** be able to set severity. Self-declared severity is trivially gamed to jump
+the queue, which is a denial-of-service against genuine `CRITICAL` reports.
+
+`TSF-BR-017` `THREAT` and `MINOR_SAFETY` **MUST** bypass deduplication collapse and **MUST** each be individually
+human-reviewed, even at ten reports on one subject (§12.5).
+
+### 12.3 Evidence
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-049` | Evidence **MUST** be an immutable snapshot taken at report time, with a content hash |
+| `TSF-INV-010` | Evidence **MUST** be append-only. No update or delete path in code |
+| `TSF-FR-050` | Evidence **MUST** record its **provenance** — `REPORTER_SUPPLIED`, `SYSTEM_SIGNAL` or `MODERATOR_NOTE` — and provenance **MUST** be displayed wherever evidence is |
+| `TSF-XC-035` | Evidence **MUST NOT** include data the reporter could not lawfully see |
+| `TSF-FR-051` | Every moderator **view** of evidence **MUST** emit an access record (§19.4) |
+
+`TSF-BR-018` Provenance is displayed because a moderator weighing *"the reporter says this was said"* against
+*"the platform observed this"* is making a different judgement in each case, and a UI that renders them
+identically invites the wrong one.
+
+### 12.4 The reported-file workaround
+
+Given `TSF-GAP-005` (T&S cannot read a `FileRef`):
+
+`TSF-FR-052` For a `FILE_REF` report, V1 evidence **MUST** consist of: the opaque `FileRef` identifier, the
+`BC-29` scan verdict, the reporter's textual description, and the reporter-supplied snapshot **if** the client
+can produce one from what was already rendered to them.
+
+`TSF-BR-019` If a moderator cannot see the file, the case **MUST** be dispositioned on the surrounding conduct
+(the sending pattern, the relationship, the reporter's account) and **MUST NOT** be dispositioned by guessing at
+content. `TSF-XC-036` A case **MUST NOT** be closed as *"no violation"* solely because the evidence was
+unviewable — it **MUST** be closed as `UNRESOLVABLE_PENDING_ACCESS` and counted (`TSF-AC-060`), so the gap has a
+measurable cost instead of an invisible one.
+
+### 12.5 Triage, deduplication and routing
+
+```
+  Report received
+      │
+  [1] Validate + idempotency                          TSF-FR-048
+      │
+  [2] Deduplicate ── same subject + category + window ─> attach to open case   TSF-FR-053
+      │                                                  (CRITICAL exempt: TSF-BR-017)
+  [3] Severity from category                           §12.2
+      │
+  [4] Route ── CRITICAL ─> escalation queue, page a human   TSF-FR-054
+      │        HIGH/MED ─> standard queue by severity then age
+      │        LOW      ─> batch queue
+      │
+  [5] Open or attach ModerationCase, state = NEW
+```
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-053` | Reports on the same subject and category within `TSF-CFG-013` **MUST** attach to the open case rather than create duplicates |
+| `TSF-FR-054` | A `CRITICAL` report **MUST** page a human within `TSF-CFG-005` regardless of queue depth (`G-6`) |
+| `TSF-FR-055` | Queue order **MUST** be severity, then **age** — never report count (`TSF-BR-010`) |
+| `TSF-INV-011` | An `SLA` breach **MUST** be recorded on the case and **MUST NOT** be silently reset by reassignment |
+
+`TSF-BR-020` A **reporter-reputation** weight (`TSF-BR-024`) **MUST NOT** suppress a `CRITICAL` report. A
+low-reputation reporter is exactly who a predator would target.
+
+---
+
+## 13. Moderation
+
+### 13.1 The case is the aggregate, and that is the whole design
+
+Rank 4 BC Map **L379** fixes `BC-13`'s aggregate as **`ModerationCase`**. §6.4 adopted it rather than
+declaring a new one. The consequence for this section is concrete and non-negotiable: **every safety
+decision in Liboora is a state transition on exactly one `ModerationCase`, inside exactly one database
+transaction** (BC Map §8 — *"one aggregate, one database transaction, no exceptions"*).
+
+There is no "quick action" path, no "just hide it" button, no enforcement without a case. That is not
+bureaucracy — it is the only mechanism by which `TSF-INV-004` (every enforcement action is attributable)
+becomes *structurally* true rather than merely intended.
+
+| ID | Requirement |
+|---|---|
+| `TSF-INV-012` | An `EnforcementAction` **MUST NOT** exist without a parent `ModerationCase`. No code path creates one standalone — this is enforced by the aggregate boundary, not by code review |
+| `TSF-FR-006` | A case **MUST** be openable from exactly three origins: a user report (§12), a rule trip (§14), or a moderator-initiated review. All three produce the same aggregate in the same shape |
+| `TSF-FR-007` | A case **MUST** record `openedBy` as either a `PersonId`, a rule identifier, or a moderator identity — never null, and never `"system"` without a rule identifier |
+| `TSF-FR-008` | A case **MUST** carry exactly one **subject** (`PersonId`) and zero-or-more reported artefacts. A case about two people is two cases |
+
+`TSF-FR-008` is deliberate. Shared cases feel efficient and destroy attributability: the strike ladder
+(§15.3), the appeal right (§16) and the retention clock (§17) are all per-person, and a two-subject case
+makes each of them ambiguous.
+
+### 13.2 The seven-state lifecycle
+
+The brief specifies `NEW → TRIAGED → INVESTIGATING → ACTIONED → APPEAL → RESOLVED → CLOSED`. Adopted
+verbatim, and made a machine — with the *forbidden* transitions stated as loudly as the permitted ones,
+because in moderation the dangerous defect is a state you can reach, not one you cannot.
+
+```
+   [NEW] ──> [TRIAGED] ──> [INVESTIGATING] ──> [ACTIONED] ──> [RESOLVED] ──> [CLOSED]
+     │           │               │                  │              ▲            ▲
+     │           └── no action ──┴──────────────────┘              │            │
+     │                    (outcome = NO_VIOLATION) ────────────────┘            │
+     │                                                                         │
+     ├──> invalid / duplicate ─────────────────────────────────────────────> [CLOSED]
+     │
+     └── [ACTIONED] ──> [APPEAL] ──> [RESOLVED]      (upheld | overturned | modified)
+```
+
+| From | To | Who may | Precondition |
+|---|---|---|---|
+| `NEW` | `TRIAGED` | Moderator, or the triage rule set | Severity assigned, queue assigned |
+| `NEW` | `CLOSED` | Moderator | Outcome `DUPLICATE` or `INVALID`. **MUST** link the surviving case if duplicate |
+| `TRIAGED` | `INVESTIGATING` | Moderator | A **named** moderator has claimed it |
+| `TRIAGED` | `RESOLVED` | Moderator | Outcome `NO_VIOLATION`, severity ≤ `MEDIUM` |
+| `INVESTIGATING` | `ACTIONED` | Moderator | ≥ 1 `EnforcementAction` attached, **with a policy citation** |
+| `INVESTIGATING` | `RESOLVED` | Moderator | Outcome `NO_VIOLATION`, reason recorded |
+| `ACTIONED` | `APPEAL` | **The subject only** (§16) | Action appealable, inside the appeal window |
+| `ACTIONED` | `RESOLVED` | Time, or moderator | Appeal window elapsed, or subject waived |
+| `APPEAL` | `RESOLVED` | **A different moderator** (`TSF-INV-013`) | Appeal decided |
+| `RESOLVED` | `CLOSED` | Time | Retention / legal-hold clock, §17 |
+
+| ID | Requirement |
+|---|---|
+| `TSF-INV-013` | An appeal **MUST NOT** be decided by the actor who took the action, nor by anyone in that actor's approval chain. This mirrors Rank 4 BC Map **L379** — *"appeal cannot be decided by the enforcing actor"* — and is therefore not this PRD's invention but its **inheritance** |
+| `TSF-FR-009` | Every transition **MUST** append an immutable `CaseTransition`: from, to, actor, timestamp, reason. There is no update path on a transition |
+| `TSF-FR-056` | `CLOSED` is **terminal**. New evidence on a closed matter opens a **new** case linked to the old one; it **MUST NOT** reopen it |
+| `TSF-FR-057` | A case **MUST NOT** skip `INVESTIGATING` en route to `ACTIONED` at severity `HIGH` or `CRITICAL` — the record must show that a human looked |
+| `TSF-BR-021` | `RESOLVED` / `NO_VIOLATION` **MUST** be a first-class, blameless outcome, surfaced in moderator quality metrics as a **correct** result. A queue that rewards only enforcement manufactures enforcement |
+
+### 13.3 Why `TSF-FR-056` refuses to reopen
+
+Reopening is the most attractive shortcut in case management and the most corrosive. A reopened case
+carries two decisions under one identifier, after which the audit record can no longer answer *"what was
+decided about this person on that date"* without disambiguation logic. `MP-GBR-13` makes audit
+append-only precisely so that question stays answerable. A successor case costs one link field and
+preserves the property.
+
+### 13.4 Automation's ceiling inside the lifecycle
+
+| Transition | May a rule perform it in V1? | Why |
+|---|---|---|
+| `NEW → TRIAGED` | **Yes** | Reversible, no user-visible effect |
+| `NEW → CLOSED` (duplicate) | **Yes** | Deterministic key match; reversible by opening a new case |
+| `TRIAGED → INVESTIGATING` | No | Claiming is an accountability act; a rule cannot be accountable |
+| `→ ACTIONED` | **Only** the reversible actions of §15 rows 1–6, inside §14.4 caps | `TSF-INV-002` |
+| `→ APPEAL` | Never | Only the subject initiates |
+| `APPEAL → RESOLVED` | **Never** | An appeal exists *because* automation may have erred |
+
+`TSF-BR-022` If the rule set is disabled, degraded, or its configuration is unreachable, cases **MUST**
+remain openable and manually triageable. **Automation is an accelerator of the queue, never its gate.** A
+safety system that stops accepting reports when its classifier is down has inverted its own priorities.
+
+---
+
+## 14. Risk & Abuse Detection
+
+### 14.1 V1 is rule-based and transparent — a deliberate ceiling, not a staffing compromise
+
+The brief asks for a *"V1 transparent/rule-based risk framework"*. Adopted and sharpened: in V1 every
+risk output **MUST** be explainable as a sentence a moderator can read and a subject could be shown. No
+opaque score, no model, no embedding.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-058` | Every `RiskSignal` **MUST** carry the rule identifier, observation window, measured value, threshold crossed, and a human-readable statement |
+| `TSF-FR-059` | A `RiskAssessment` **MUST** be reproducible — replaying the same signals through the same rule version **MUST** yield the same output. The rule version **MUST** be recorded on the assessment |
+| `TSF-FR-060` | A risk output that cannot be explained **MUST NOT** be actionable. It may be logged for future analysis (§25) but **MUST NOT** appear as a basis on any case |
+| `TSF-BR-023` | **A risk score is a request for attention, never a finding of guilt.** No enforcement action may cite a score as its sole basis; it must cite a policy and evidence |
+
+### 14.2 The four quantities, kept separate
+
+The brief requires *risk, confidence, severity, thresholds* to be distinguished. Conflating them is the
+classic failure mode, so they are defined as different things with different owners:
+
+| Quantity | Measures | Range | Set by | May it alone decide? |
+|---|---|---|---|---|
+| **Severity** | How bad the *alleged* behaviour would be **if true** | `LOW`…`CRITICAL` | The **category** (§12.2), fixed | No — it sets urgency, not outcome |
+| **Risk** | How likely this *pattern* is abusive | 0–100 from rule contributions | Rule set, versioned | No (`TSF-BR-023`) |
+| **Confidence** | How reliable the *measurement* is | `LOW`/`MEDIUM`/`HIGH` | Rule, from sample size + window completeness | No |
+| **Threshold** | The line at which something happens | Config, `TSF-CFG-*` | `BC-25` Configuration via `E-19` | It gates; it does not decide |
+
+`TSF-INV-014` **Severity MUST NOT be raised by risk.** A spam-category report against a high-risk
+account is still a spam-category report. Letting risk escalate severity would allow volume of accusation
+to manufacture urgency — the exact failure `TSF-BR-010` exists to prevent.
+
+### 14.3 The V1 signal register
+
+⚠ **Corrected in v0.3.** The **v0.2** text of this section opened by asserting that all signals below are
+*"computable from events `BC-13` **already receives** per BC Map section 9"*, and that *"nothing here
+requires a new inbound edge."* **That assertion was false for three of the seven signals.** It was written
+from the event *publisher* rows of BC Map section 9 rather than from the *consumer* cells — and a
+published event that `BC-13` is not a listed consumer of is not an event `BC-13` receives. Each signal has
+now been measured against its own consumer cell. Three are deferred to **V2**; four survive V1 unchanged.
+
+**Method.** For each signal the source event was located in BC Map section 9 and its consumer list read
+verbatim. A signal is V1-eligible only if `BC-13` appears in that list, or if the signal is computed
+entirely from `BC-13`'s own aggregate.
+
+| # | Signal | Source event | BC Map consumer cell | `BC-13` a listed consumer? | Release |
+|---|---|---|---|---|---|
+| 1 | Request-acceptance ratio | `social.FriendshipEstablished` | **L430** → `BC-12`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 2 | Block rate | `social.UserBlocked` | **L430** → `BC-12`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 3 | Message-request rate | `messaging.MessageSent` | **L431** → **`BC-13` (sampling)**, `BC-26` | ✅ Yes, sampled | ✅ **V1** |
+| 4 | Report velocity | Own `ModerationCase` history | — | ✅ Own aggregate | ✅ **V1** |
+| 5 | Repeat enforcement | Own `StrikeRecord` | — | ✅ Own aggregate | ✅ **V1** |
+| 6 | Account age at first burst | `identity.PersonIdentityCreated` | **L424** → `BC-23`, `BC-24`, `BC-26` | ❌ **No** | 🔵 **V2** |
+| 7 | Coordination indicator | Own `ModerationCase` history | — | ✅ Own aggregate | ✅ **V1** |
+
+#### 14.3.1 V1 signals — buildable on the events `BC-13` actually receives
+
+| Signal | Rule shape | Confidence driver |
+|---|---|---|
+| Message-request rate | Requests to non-connections per window | ⚠ **Sampled — capped at `MEDIUM`** (`TSF-BR-027`) |
+| Report velocity | Distinct reporters × distinct categories, per window | Reporter independence (`TSF-BR-008` denominator discipline applies) |
+| Repeat enforcement | Count of **upheld** actions, decayed by `TSF-CFG-004` | Exact — `HIGH` |
+| Coordination indicator | ≥ N subjects, same target set, same window | Cohort size |
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-024` | A **reporter-reputation** weight (the forward reference from `TSF-BR-020`) **MAY** influence queue *position* within a severity band and **MUST NOT** influence severity, outcome, or whether a report is accepted. It **MUST NOT** apply at all to `CRITICAL` categories — a low-reputation reporter is exactly who a predator would target |
+| `TSF-BR-027` | The message-request signal derives from a **sampled** stream (BC Map **L431** publishes `messaging.MessageSent` to `BC-13` as *"(sampling)"*). Its confidence is therefore capped at `MEDIUM` and it **MUST NOT** be the sole basis of any irreversible action. Treating a sampled stream as a census is how a safety system acquires a systematic false-positive bias it cannot see |
+| `TSF-BR-038` | The V1 risk engine **MUST** compute only the four signals in section 14.3.1. It **MUST NOT** read, subscribe to, poll, infer or reconstruct any of the three deferred signals in section 14.3.2 by any route, **including a derived proxy computed from a permitted stream**. A deferred inbound dependency reintroduced as a proxy is the same boundary breach wearing a different name |
+| `TSF-FR-145` | The V1 engine **MUST** operate correctly on four signals, and **MUST NOT** treat the deferred three as absent-but-expected inputs. Confidence calibration, the threshold bands of section 14.4 and the false-positive budget of section 14.5 **MUST** be defined over the four-signal set that actually exists. A model tuned for seven inputs and fed four is miscalibrated in production, not merely incomplete |
+
+#### 14.3.2 🔵 Signals deferred to V2, and precisely why
+
+| Signal | Blocking fact, measured | What V2 would require |
+|---|---|---|
+| Request-acceptance ratio | `social.FriendshipEstablished` consumer cell at **L430** lists `BC-12` and `BC-26` only | An `Accepted` ADR admitting `BC-13` to that cell, applying the `ADR-0055` section 3 per-context necessity method |
+| Block rate | `social.UserBlocked` consumer cell at **L430** lists `BC-12` and `BC-26` only | As above. `BC-11`'s block state is authoritative in `BC-11`; BC Map **L286** — *"T&S never reaches into their models"* |
+| Account age at first burst | `identity.PersonIdentityCreated` consumer cell at **L424** lists `BC-23`, `BC-24`, `BC-26` only. ⚠ This dependency was **not disclosed** by `TSF-GAP-015` in v0.2 | An `Accepted` ADR, **plus** a privacy determination: account-creation timestamps are identity data, and `identity.PersonAnonymised` at **L428** likewise does **not** list `BC-13`, so `BC-13` would hold a derived identity fact it could not be told to forget |
+
+**These three are deferred, not blocked.** The distinction is load-bearing. A *blocked* item is inside V1
+scope and cannot be built, so it holds the release. A *deferred* item is outside V1 scope, so it holds
+nothing. Because the four surviving signals are sufficient for the V1 detection capability described in
+section 14.1 — report-driven detection with repeat-offender and coordination amplification — moving these
+three to V2 removes `ADR-0066` from the V1 critical path **entirely**, rather than merely postponing it.
+See section 29.2 row 2.
+
+The third row is worth stating plainly, because it is the strongest of the three. Signal 6 does not fail
+only on the edge register; it fails on erasure. `BC-13` cannot honour an anonymisation request for a fact
+it was never told it holds, and **L428** does not route that request to it. Deferring the signal is
+therefore not a scheduling convenience — it avoids building a privacy defect.
+
+| ID | Requirement |
+|---|---|
+| `TSF-XC-068` | Promoting any signal in section 14.3.2 into V1 **MUST** be preceded by an `Accepted` ADR admitting `BC-13` to the relevant consumer cell. Writing the detection rule first and the ADR afterwards inverts `ADR-INDEX` Process rule 1, and produces a rule that cannot lawfully receive its own input |
+
+### 14.4 Threshold bands, and the ceiling on each
+
+| Band | Risk | Confidence | Permitted automatic effect |
+|---|---|---|---|
+| **Observe** | < `TSF-CFG-015` | any | Log the signal. No case, no user-visible effect |
+| ~~**Friction**~~ | — | — | 🔵 **DEFERRED TO V2.** Would recommend tightening **existing** `BC-11` limits (section 14.6) — which needs a graduated semantic the closed **L318** contract does not carry. **Not in the V1 band set** |
+| **Review** | ≥ `TSF-CFG-016` | ≥ `MEDIUM` | **Open a case at `TRIAGED`.** No enforcement |
+| **Restrain** | ≥ `TSF-CFG-017` | **`HIGH` only** | Case + **one** reversible action from §15 rows 1–6, time-boxed to `TSF-CFG-018`, human review mandatory before expiry |
+| — | any | any | ⛔ Suspension (row 8) and termination (row 9) are **never** automatic (`TSF-INV-002`) |
+
+⚠ **Corrected in v0.3.** The V1 band set is **`Observe`, `Review`, `Restrain`**, plus the standing
+prohibition on automatic suspension and termination. `Friction` is deferred to V2 for the reason recorded
+in section 14.6: every other band is expressible either as an outcome held wholly inside `BC-13`, or as a
+value the already-published **L318** contract accepts. `Friction` alone is not. Removing it removes
+`ADR-0067` from the V1 critical path — see section 29.2 row 3.
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-039` | The V1 risk engine **MUST** implement exactly the bands `Observe`, `Review` and `Restrain`. It **MUST NOT** emit a `Friction` outcome, and **MUST NOT** approximate one by issuing a `Restrain` action with a deliberately short `until` value, nor by publishing an advisory `EnforcementActionTaken` that `BC-11` is expected to interpret as a hint. A band whose absence is worked around by misusing an adjacent band has not been deferred; it has been smuggled — and it arrives without the ADR that would have governed it |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-061` | An automatic `Restrain` action **MUST** expire at `TSF-CFG-018` unless a human has affirmed it. **Silence expires the restriction; it does not extend it** |
+| `TSF-FR-062` | Automatic actions **MUST** be globally rate-capped at `TSF-CFG-019` per hour. On breach the system **MUST** stop acting and page a human — never act faster |
+| `TSF-FR-063` | Every rule **MUST** be individually disableable at runtime through configuration, without deployment (`E-19`) |
+| `TSF-CFG-002` | Rule-set version pin |
+| `TSF-CFG-003` | Signal observation window (default 24 h) |
+| `TSF-CFG-004` | Decay half-life for historical enforcement in risk contribution |
+
+`TSF-FR-062` is the circuit breaker, and it is the single most important requirement in this section.
+A mature platform's worst safety incident is rarely a missed abuser; it is a rule that mass-actioned
+thousands of innocent accounts at machine speed. A global hourly cap converts that from a catastrophe
+into an alert.
+
+### 14.5 False positives are a measured, budgeted quantity
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-064` | Every rule **MUST** publish an observed false-positive rate, computed from `NO_VIOLATION` outcomes and **overturned** appeals on cases it opened |
+| `TSF-FR-065` | A rule whose FP rate exceeds `TSF-CFG-020` over `TSF-CFG-021` **MUST** be automatically demoted to `Observe` and reported. **Demotion is automatic; promotion back is a human act** |
+| `TSF-FR-066` | Overturned appeals **MUST** feed back to the originating rule as labelled outcomes (§16). An appeals system that does not inform detection is a complaints desk |
+| `TSF-BR-025` | A false positive **MUST** be treated as a safety failure of the same class as a false negative, not as an acceptable cost of doing business. Wrongly restricting a student **is** a harm to a student |
+
+### 14.6 Where risk may act, and where `BC-11` keeps the authority
+
+§3 excluded rate limiting as `TSF-XC-006`: `BC-11` owns `RateLimitCounter`, and `E-16` states *"block
+enforcement lives in the graph"*. Risk detection therefore **computes** and **publishes**; the graph
+**decides** and **enforces**.
+
+`TSF-XC-037` `BC-13` **MUST NOT** hold a rate-limit counter, evaluate a rate-limit decision, or store
+per-actor quotas. It publishes a fact by `E-14` and the graph self-restricts — exactly as BC Map **L286**
+requires: *"T&S never reaches into their models."*
+
+⚠ **`TSF-GAP-012` — RESOLVED IN v0.3 BY V1 SCOPE REDUCTION, NOT BY AN ADR.**
+
+The gap was real. The `Friction` band required `BC-11` to interpret an `EnforcementActionTaken` carrying a
+**graduated tightening** semantic, and the published contract at BC Map **L318** is
+`EnforcementActionTaken{personId, action, scope, until}` — a **closed four-field shape**. Whether `action`
+admits a `TIGHTEN_RATE_LIMITS` value is a Rank 4 contract question, and **not this document's decision to
+make**.
+
+v0.2 routed that question to the Architecture Owner as `ADR-0067` and marked `IMPL-1412` **blocked**. v0.3
+does not route it, because the question only had to be asked if the `Friction` band was in V1 — and on
+review it need not be. The V1 enforcement capability that `MP-RSK-02` demands is *detection, case
+creation, and reversible restriction under human control*. A silent, invisible tightening of rate limits
+is a refinement of that capability, not a constituent of it.
+
+| Decision | Value |
+|---|---|
+| `Friction` band | 🔵 **Deferred to V2** (section 14.4, `TSF-BR-039`) |
+| `ADR-0067` | 🟡 **Not opened.** No Rank 4 contract amendment is requested by V1 |
+| `IMPL-1412` | **Withdrawn from V1 scope** — *not* blocked. It holds no release date |
+| `TSF-GAP-012` | **Resolved by scope reduction.** Recorded, not deleted, so that V2 inherits the analysis rather than rediscovering it |
+| **L318** contract | **Untouched.** No field added, no enum value invented, no amendment requested |
+
+This is the outcome `TSF-BR-037` exists to produce. The v0.2 instinct — find a gap, open an ADR — was
+directionally right and produced a register in which the one genuinely release-blocking decision
+(`ADR-0065`) sat as one row among nine. Asking instead *"does V1 actually need this?"* dissolved the gap
+without spending any of the Architecture Owner's authority. **The cheapest way to resolve a contract
+question is to stop needing the answer.**
+
+`TSF-XC-037` continues to bind unchanged: `BC-13` **MUST NOT** hold a rate-limit counter, evaluate a
+rate-limit decision, or store per-actor quotas — in V1 or in V2, whichever route V2 eventually takes.
+
+---
+
+## 15. Enforcement
+
+### 15.1 The nine actions, ordered by reversibility
+
+The brief lists nine graduated actions. Adopted verbatim, ordered by reversibility — because §6.2's
+`TSF-BR-003` established that **reversibility decides the timing**, and it decides the *authority* too.
+
+| # | Action | Reversible? | Executed by | Automatable? | Appealable? |
+|---|---|---|---|---|---|
+| 1 | **Warning** | Fully — it is a message | `BC-13` + `BC-22` (`E-23`) | Yes | No — nothing is restricted |
+| 2 | **Content removal** | Yes — soft delete (`MP-GBR-14`) | Owning context, via `E-14` | Yes | **Yes** |
+| 3 | **Visibility restriction** | Yes | `BC-11` / `BC-14` self-restrict | Yes | Yes |
+| 4 | **Comment restriction** | Yes | `BC-15` — ⚠ **V2**, §9.1 | Yes | Yes |
+| 5 | **Messaging restriction** | Yes | `BC-12`, **+ send-time check §10.1** | Yes | Yes |
+| 6 | **Discovery restriction** | Yes | `BC-11` pipeline stage 4 (§8.3) | Yes | Yes |
+| 7 | **Community restriction** | Yes | `BC-14` / `BC-15` — ⚠ **V2** | Yes | Yes |
+| 8 | **Temporary suspension** | Yes, but total | `BC-18` session revoke + `E-14` | ⛔ **No** | Yes |
+| 9 | **Permanent termination** | **No** | `BC-18` + `BC-13`, **two actors** | ⛔ **No** | Yes — and **must** be |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-067` | Every action **MUST** carry: case reference, policy citation, actor, scope, and either an expiry or an explicit `permanent` flag. An action with neither is invalid and **MUST** be rejected at write time |
+| `TSF-FR-068` | Actions 2–7 **MUST** be expressed as `EnforcementActionTaken{personId, action, scope, until}` (`E-14`) and executed by the **owning** context. `BC-13` **MUST NOT** write into another context's store |
+| `TSF-FR-069` | Action 9 **MUST** require two distinct human actors, recorded separately. **One human cannot end an account** |
+| `TSF-FR-070` | Action 8 **MUST** carry an expiry at creation. There is no open-ended suspension — that is action 9 wearing a disguise, and it evades action 9's two-actor rule |
+| `TSF-INV-015` | An action's scope **MUST** be drawn from the closed register of `MP-GBR-21` (`self`, `guardianOf`, `tenantWide`) **or** be a `BC-13`-local **global** scope. It **MUST NOT** invent a tenant-shaped scope — see §18.2 |
+
+### 15.2 Proportionality is computed, then a human signs it
+
+| Input | Weight | Source |
+|---|---|---|
+| Category severity | Primary | §12.2, fixed by category |
+| Evidence strength | Primary | Corroboration count + provenance (§12.3) |
+| Upheld prior actions | Secondary, decayed by `TSF-CFG-004` | Own `StrikeRecord` |
+| Risk assessment | **Advisory only** | §14, `TSF-BR-023` |
+| Subject age band | Escalates **protection**, mitigates **punishment** | ⚠ `TSF-GAP-014` — no accessor exists |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-071` | The console **MUST** display a *recommended* action, and the moderator **MUST** be able to depart from it with a recorded reason. A recommendation the moderator cannot refuse is an automatic decision with a human alibi |
+| `TSF-FR-072` | Departing **downward** (more lenient) **MUST** require only a reason. Departing **upward** at severity `HIGH`/`CRITICAL` **MUST** require a second moderator |
+| `TSF-BR-026` | **Overlapping actions MUST NOT stack silently.** A new restriction on an already-restricted subject **MUST** explicitly replace or extend the existing one, and the resulting effective state **MUST** be a single computable answer to *"what may this person do right now?"* |
+
+`TSF-BR-026` is load-bearing for §10.1. If effective state required reducing a history of overlapping
+actions at read time, the ≤ 50 ms p99 budget would be spent on arithmetic. One current
+effective-restriction row makes the send-time check a **point read**.
+
+### 15.3 The strike ladder
+
+| Strikes (decayed) | Default posture | Note |
+|---|---|---|
+| 0 | Warning, or removal | First contact is educational unless severity is `HIGH`+ |
+| 1 | Removal + **targeted** restriction | Scoped to the abused surface only |
+| 2 | Broader restriction, time-boxed | Multiple surfaces |
+| 3 | Temporary suspension (action 8) | Human |
+| 4+ | Termination **review** (action 9) | Two humans. Never automatic |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-073` | A strike **MUST** be recorded only on an **upheld** action. An overturned appeal **MUST** remove the strike and **MUST NOT** leave a residual "was accused" mark anywhere on the ladder |
+| `TSF-FR-074` | Strikes **MUST** decay per `TSF-CFG-004`. A student's conduct at 14 must not sentence them at 19 |
+| `TSF-FR-075` | `CRITICAL` categories **MUST** be able to bypass the ladder to actions 8–9 at first instance, with two humans. A credible threat to a child is not a first offence to be coached |
+| `TSF-INV-021` | **Strike determinism.** The ladder **MUST** be a pure function of (decayed strike count, category severity, `TSF-CFG-004`, rule-set version `TSF-CFG-002`). The same history **MUST** yield the same *recommended* posture on every evaluation, and that recommendation **MUST** be recomputable from the retained `StrikeRecord` rows alone. It **MUST NOT** vary with moderator identity, queue depth, wall-clock time of evaluation, or any `RiskSignal` — risk may order the queue, never move the ladder (`TSF-INV-014`). Because the posture is only a *recommendation*, `TSF-BR-026` and the human signature of §15.2 still apply: determinism constrains the input to the human decision, it does not remove the human. *(Satisfies `G-3`; measured by `TSF-AC-030`.)* |
+
+### 15.4 What enforcement never does
+
+| ID | Prohibition | Authority |
+|---|---|---|
+| `TSF-XC-038` | **MUST NOT** hard-delete user content | `MP-GBR-14` soft delete; evidence integrity (§12.3) |
+| `TSF-XC-039` | **MUST NOT** delete or mutate an identity record | `ID-1`; `BC-18` / `BC-10` own it |
+| `TSF-XC-040` | **MUST NOT** revoke a **library membership** | `BC-02` owns membership. A platform safety action is not a refund event |
+| `TSF-XC-041` | **MUST NOT** alter attendance, fees, seating, or any tenant operational record | `X-05`; a global safety decision holds no authority over tenant business state |
+| `TSF-XC-042` | **MUST NOT** notify a subject's library that a global social enforcement action occurred | §18.4; the library is not a party to it |
+
+`TSF-XC-040` and `TSF-XC-042` are the sharpest lines in this document. A student suspended from the
+global social network **remains a paying member of their library, keeps their seat, their fee record and
+their attendance history**. Liboora is two products under one roof; a safety decision on one must never
+silently become a commercial or academic penalty on the other.
+
+---
+
+## 16. Appeals
+
+### 16.1 Why appeals are a design requirement, not a courtesy
+
+§14 admits automation. §12 admits that a report is an accusation. §5.1 admits a malicious-moderator
+threat actor. Each of those admissions is only defensible if a wrong outcome has a route back. The
+appeal is that route, and it is the mechanism that makes `TSF-BR-025` (false positives are safety
+failures) measurable rather than rhetorical.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-076` | Every action in §15 rows 2–9 **MUST** be appealable exactly once by its subject. Row 1 (warning) is not appealable because nothing is restricted |
+| `TSF-FR-077` | The subject **MUST** be told, at the moment of enforcement: what was decided, which policy, the scope, the expiry, and **how to appeal**. An unexplained restriction is indistinguishable from a bug and generates support load instead of correction |
+| `TSF-FR-078` | An appeal **MUST** be fileable while the restriction is in force, including during a suspension (action 8) — the appeal channel **MUST NOT** be gated behind the capability that was suspended |
+| `TSF-FR-079` | Filing an appeal **MUST NOT** extend, escalate or otherwise worsen the existing action. Appeal **MUST NOT** be a risk |
+| `TSF-FR-080` | Appeal window: `TSF-CFG-022`. Decision SLA: `TSF-CFG-023`. Both **MUST** be stated to the subject up front |
+
+`TSF-FR-078` is the one most often broken in practice: the account is suspended, and the appeal form
+lives behind a login the suspension blocks. `BC-18` owns sessions (`ID-1`), so the appeal intake **MUST**
+be reachable on a path that does not require an active social session.
+
+### 16.2 The three outcomes, and what each does
+
+| Outcome | Effect on action | Effect on strike | Effect on rule (§14.5) |
+|---|---|---|---|
+| **Upheld** | Stands unchanged | Strike retained | Counts as a true positive |
+| **Modified** | Replaced by a lesser action (§15 order) | Strike **downgraded** to the new action's level | Counts as a **partial** false positive |
+| **Overturned** | Reversed; effective state restored | Strike **removed** entirely (`TSF-FR-073`) | Counts as a **false positive** |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-081` | An appeal **MUST NOT** result in a *harsher* action than the one appealed. Discovery of worse conduct **MUST** open a **new** case (`TSF-FR-056`), not amplify the appeal |
+| `TSF-FR-082` | On `Overturned`, the reversal **MUST** propagate by the same `E-14` fan-out that imposed it, and the send-time check (§10.1) **MUST** reflect it within `TSF-CFG-024` |
+| `TSF-FR-083` | On `Overturned` for a content removal, the content **MUST** be restored, not merely marked restorable — soft delete (`MP-GBR-14`) exists so that this is possible |
+| `TSF-INV-016` | An appeal decision **MUST** record the deciding actor, and that actor **MUST** satisfy `TSF-INV-013`. A system that cannot find a second moderator **MUST** queue the appeal, **never** auto-uphold it |
+
+`TSF-INV-016`'s last clause is deliberate. Auto-upholding on timeout is the default behaviour of every
+under-resourced appeals queue, and it converts a review right into a waiting room. A breached appeal SLA
+**MUST** surface as an operational alert (§23), not as a silent affirmation of the original decision.
+
+### 16.3 What an appeal is not
+
+| ID | Exclusion | Reason |
+|---|---|---|
+| `TSF-XC-043` | An appeal is **not** a data-subject request. Erasure, export and correction are `BC-10` / `BC-18` under `MP-GBR-04` | `ID-1`, `ID-5` |
+| `TSF-XC-044` | An appeal is **not** a channel to learn the reporter's identity. `TSF-INV-009` (reporter anonymity) survives the appeal intact | Anti-retaliation, §12.1 |
+| `TSF-XC-045` | An appeal is **not** available to a **reporter** dissatisfied that no action was taken. That is a re-report, which §12.5 deduplication will attach to the existing case | A reporter has no adjudicated interest to appeal; the subject does |
+
+`TSF-XC-044` is the hardest tension in this section and it is resolved in favour of the reporter. A
+subject appealing in good faith would benefit from knowing who accused them; a subject appealing in bad
+faith would use it to retaliate. Because the platform cannot distinguish the two at appeal time, and
+because the population includes minors, the anonymity holds. The subject receives the **substance** of
+the allegation and the evidence relied upon — never the reporter's identity.
+
+---
+
+## 17. Privacy & Student Safety
+
+### 17.1 The tension stated honestly
+
+A safety system is a surveillance system pointed at a good cause. Every capability in §12–§15 is also a
+privacy risk: evidence stores contain private messages, risk signals profile behaviour, and the moderator
+console is a window into student lives. This section constrains `BC-13` **against itself**.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-084` | `BC-13` **MUST** hold the **minimum** data required to decide the case in front of it. It **MUST NOT** build a general behavioural profile of any person as a standing asset |
+| `TSF-FR-085` | `BC-13` **MUST NOT** store message content except as reporter-submitted evidence attached to an open case (`TSF-BR-012`, §10.3). The sampled `messaging.MessageSent` stream (**L431**) **MUST** be consumed as **counters only**, never retained as content |
+| `TSF-FR-086` | A `RiskSignal` **MUST** store the **derived measure** and not the underlying observations. "17 requests, 2 accepted, 24 h" is retained; the 17 identities are not |
+| `TSF-INV-017` | `BC-13` **MUST NOT** store any `StudentRecordId` or `tenantId` — `ID-2`, `ID-3`, and the `banned_symbols` list at `tool/module_dependencies.yaml` **L265–267**. This is enforced by the module manifest, not by policy |
+
+`TSF-FR-086` is the requirement that keeps this system from becoming the thing it protects against. A
+risk engine that retains every observation it counted has quietly built the behavioural dossier that
+`TSF-FR-084` forbids.
+
+### 17.2 Retention, and why nothing here is kept forever by default
+
+| Data | Retention | Authority |
+|---|---|---|
+| Case + transitions + decisions | `TSF-CFG-025` after `CLOSED` | Accountability; audit is separate and append-only (`MP-GBR-13`) |
+| Reporter-submitted evidence | `TSF-CFG-026` after `CLOSED`, then purged | Minimisation; it is private content |
+| `RiskSignal` (derived measures) | `TSF-CFG-027`, rolling | Short window suffices for pattern detection |
+| `StrikeRecord` | Decayed per `TSF-CFG-004`; row retained | Ladder needs history; weight must not |
+| `AuditEntry` for safety actions | Owned by **`BC-24`**, append-only | `E-20`, `MP-GBR-13`; **not** `BC-13`'s to expire |
+| Legal-hold cases | ⛔ Purge **blocked** | `MP-GBR-13` — legal hold blocks purge |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-087` | Purge **MUST** be automatic on the clock, not dependent on a human remembering. A retention policy nobody executes is a data-hoarding policy |
+| `TSF-FR-088` | A legal hold **MUST** suspend purge for the held case only, **MUST** name the authority, and **MUST** be visible in the console as a reason the data still exists |
+| `TSF-XC-046` | `BC-13` **MUST NOT** expire, edit, redact or delete an `AuditEntry`. `BC-24` owns the audit record and it is append-only with no delete path in code (BC Map **L384**) |
+
+### 17.3 Deletion, anonymisation, and the one thing that survives
+
+`ID-5` fixes the semantics: a DSR **deletes** the Account, **anonymises** the Person, and **retains**
+`StudentRecord` history. `BC-13` must be consistent with all three at once.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-089` | On `identity.PersonAnonymised` (BC Map **L428**), `BC-13` **MUST** sever the case from the `PersonId` and **MUST** retain the case in an anonymised form. Accountability for a decision does not evaporate because the subject left |
+| `TSF-FR-090` | Anonymised cases **MUST NOT** be re-identifiable by `BC-13`. Reversal, if legally compelled, is a `BC-10`/`BC-18` act under `MP-GBR-04`, not a `BC-13` capability |
+| `TSF-FR-091` | A pending **termination review** or an active legal hold **MUST** block silent anonymisation completion and **MUST** raise an operational alert. Deletion **MUST NOT** be usable as an escape from an open `CRITICAL` case |
+| `TSF-BR-028` | An **overturned** action's record **MUST** be purged on the shortest applicable clock and **MUST NOT** contribute to any future assessment. If we were wrong, we do not get to keep the file |
+
+`TSF-FR-091` closes an abuse path that is easy to miss: without it, the fastest way to escape a
+child-safety investigation is to file a deletion request. The account may still be deleted — that right is
+real — but the case survives, anonymised, and the review completes.
+
+### 17.4 Minor safety, and the escalation route
+
+*(This subsection satisfies the forward reference from §4 and §5.3.)*
+
+`MP-GBR-05` requires guardian consent; `ID-6` requires it before social activation; `MP-RSK-02` is rated
+**Critical** on exactly this population. Liboora is a minor-heavy product, and that fact changes the
+default in three specific ways.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-092` | Where the subject **or** the reporting party is a minor, the applicable category **MUST** be treated as **not less than** `HIGH`, and grooming/sexualisation categories **MUST** be `CRITICAL` |
+| `TSF-FR-093` | A `CRITICAL` minor-safety case **MUST** route to the escalation queue (§12.5 step 4), page a human within `TSF-CFG-005`, and **MUST NOT** be auto-closed as duplicate (`TSF-BR-017`) |
+| `TSF-FR-094` | Minor-safety cases **MUST** be visible to a restricted moderator role only, and every open **MUST** be an audited access (§19.4) |
+| `TSF-FR-095` | Guardian-facing disclosure **MUST** be limited to the enforcement outcome affecting their own child under scope `guardianOf` (`MP-GBR-21`). It **MUST NOT** disclose the reporter, other students' identities, or evidence naming third parties |
+| `TSF-BR-029` | Protective urgency **MUST** rise with youth; **punitive** severity **MUST NOT**. A 13-year-old who harasses is a safeguarding subject, not a harder target |
+
+⚠ **`TSF-GAP-014`** *(carried from §5.3 and §15.2)*. All five requirements above need an **age band** for
+a `PersonId`. `BC-18` owns consent and `BC-10` owns the person, but **no published event or port exposes a
+minor/adult band to `BC-13`**. `BC-13` has one outbound event-only edge (`E-14`, `F-3`), so it cannot
+query. Until an accessor exists, `TSF-FR-092` is satisfiable only when the **reporter volunteers** the
+category, which is a materially weaker control. Routed to the **Architecture Owner and `BC-18` owner**.
+
+`TSF-XC-047` `BC-13` **MUST NOT** infer age from behaviour, language, or profile text as a substitute for
+`TSF-GAP-014`. An inferred age band would be an unexplainable input (`TSF-FR-060`) driving the most
+consequential category in the system.
+
+### 17.5 Escalation beyond the platform
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-096` | The system **MUST** support recording that an out-of-platform escalation occurred: authority, date, reference, and the deciding actor. Recording is in scope; **transmitting** is not (§25) |
+| `TSF-FR-097` | An escalated case **MUST** automatically acquire a legal hold (`TSF-FR-088`) so that evidence is not purged while an external process runs |
+| `TSF-XC-048` | Automated reporting to any external authority is **out of V1 scope**. It is a legal and jurisdictional decision, not an engineering default, and it varies by residency (`BC-19`) |
+
+### 17.6 Privacy of the safety system itself
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-098` | Enforcement state **MUST NOT** be publicly observable. A restricted profile **MUST** be indistinguishable from a non-existent or private one — `MP-GBR-22`, denial ≡ not-found |
+| `TSF-FR-099` | A user **MUST NOT** be able to determine whether they were reported, by whom, or how many times, other than through an enforcement notice served on them (`TSF-FR-077`) |
+| `TSF-FR-100` | Error messages, latency and response shapes on the send-time check (§10.1) **MUST** be uniform whether the block is enforcement, a `BC-11` block, or absence of a connection. Three distinguishable failures are three information leaks |
+
+`TSF-FR-100` is subtle and matters: a blocked sender who can tell *"platform-suspended"* from *"this
+person blocked me"* has learned something the blocker did not choose to disclose — and §8.4 shows that
+block evasion begins with exactly that inference.
+
+---
+
+## 18. Multi-Tenant Isolation
+
+### 18.1 The measured position: `BC-13` is not multi-tenant, and that is upstream of this PRD
+
+This is the section where the brief's request and the repository's architecture diverge most sharply, so
+it states the measurement before the design.
+
+| Evidence | Finding |
+|---|---|
+| BC Map **L488** | `BC-11`→`BC-17`: *"Global. No `tenantId`. Keyed on `PersonId`. Must never receive a `StudentRecordId` or `tenantId` (rule `ID-2`)"* |
+| yaml **L265–267** | `domain/social` `banned_symbols`: `StudentRecordId`, `TenantId` — `use_instead: "nothing — social data is not tenant-scoped"` |
+| Matrix **L354** (`X-05`) | Library Management ⟷ `BC-11`…`BC-17` = **Separate Ways** — *"Merges two tenancy models and two privacy regimes"* |
+| BC Map **L117** | `BC-13` tenancy model = **Global Student** |
+
+**`BC-13` therefore has no tenant dimension at all.** It is not that library-scoped moderation is
+unbuilt; it is that the context which would host it is *forbidden by a machine-checked manifest* from
+holding the identifier that scoping requires (`F-1`, `TSF-INV-017`).
+
+### 18.2 What isolation means for a global context
+
+Isolation here does not mean "each tenant sees only its rows". It means the opposite: **the global safety
+context must not leak into, or be reachable from, any tenant.**
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-101` | Every `BC-13` record **MUST** be keyed on `PersonId` only (`ID-3`). No tenant column exists to filter on |
+| `TSF-FR-102` | Enforcement scope **MUST** be **global** for social capabilities and **MUST NOT** be expressed as `tenantWide`. `MP-GBR-21`'s `tenantWide` scope belongs to tenant-side authorisation and carries a meaning `BC-13` cannot honour (`TSF-INV-015`) |
+| `TSF-FR-103` | `BC-13` **MUST NOT** consume, join to, or derive from any tenant-scoped store: enrollment, membership, attendance, fees, seating |
+| `TSF-XC-049` | `BC-13` **MUST NOT** expose any endpoint, report, export or console view reachable through a tenant-scoped session. Global safety intelligence is not a tenant resource |
+| `TSF-XC-050` | A library administrator **MUST NOT** be able to determine whether a given student holds any global safety history — not through a UI, an export, an error code, a latency difference, or an absence |
+
+`TSF-XC-049` and `TSF-XC-050` are the direct implementation of the brief's own final rule — *"Do not
+allow library admins to access global safety intelligence"* — and they are the reason §4's Library Owner
+persona has ⛔ **no V1 path**. That is not an omission in the persona table; it is this constraint,
+honestly propagated.
+
+### 18.3 The three routes to library-scoped moderation — and which one this PRD may not take
+
+*(This subsection satisfies the forward reference from §9.3, and answers the brief's request that
+*"library administrators must only moderate their authorized library"*.)*
+
+The request is legitimate and, on its own terms, correct. It is also, as measured, **not implementable
+inside `BC-13`**. There are exactly three architectural routes. Each is named, costed, and **left
+undecided**, because choosing among them is a Rank 4 act.
+
+| Route | Mechanism | Cost | Verdict |
+|---|---|---|---|
+| **R-1** | Admit `tenantId` into `BC-13` | Amend BC Map **L488**, amend yaml `banned_symbols`, breach `ID-2`, merge two privacy regimes (`X-05`) | ⛔ **Rejected on evidence.** It would dismantle a Rank 4 tenancy boundary to add a feature. `ID-2` exists to prevent exactly this |
+| **R-2** | A **separate** library-community moderation capability inside the **tenant** side (`BC-14`/`BC-15`, V2), moderating only tenant-scoped community content, with **no read path** to `BC-13` | New V2 scope; two moderation systems with distinct vocabularies; needs a PRD | ✅ **Architecturally sound, correctly V2.** This is the route the existing architecture already implies (§9.1) |
+| **R-3** | Community moderation as an **application-layer read composition** over tenant data, owning no aggregate — the `AR-1` pattern used for Library Discovery (BC Map **L86**) | No new context; limited to what tenant contexts already own; cannot hold a case | ⚠ **Possible for lightweight hide/pin only.** Cannot support cases, strikes or appeals |
+
+| ID | Requirement |
+|---|---|
+| `TSF-INV-018` | Whichever route is chosen, the invariant is fixed: **a library actor's moderation authority MUST terminate at that library's own content, and MUST NOT extend to any global social artefact, case, strike, risk signal or safety history.** This invariant binds `R-2` and `R-3` in advance |
+| `TSF-XC-051` | This PRD **MUST NOT** be read as selecting a route. `TSF-GAP-001` and `TSF-GAP-002` remain open and are routed to the **Architecture Owner** and **Product Owner** |
+
+Recording `TSF-INV-018` now is the useful act available at this rank: whenever the route is chosen, the
+safety boundary it must respect is already written down and cannot be quietly negotiated away during
+implementation.
+
+### 18.4 Cross-boundary communication that is permitted
+
+| Direction | Permitted? | Mechanism |
+|---|---|---|
+| `BC-13` → global social contexts | ✅ Yes | `E-14`, event, `EnforcementActionTaken` |
+| `BC-13` → `BC-24` Audit | ✅ Yes | `E-20`, fire-and-forget, outbox-backed |
+| `BC-13` → `BC-22` Notification | ✅ Yes | `E-23`, emits a **fact**, never "send an SMS" |
+| `BC-13` → tenant contexts | ⛔ **No** | `X-05` Separate Ways; `TSF-XC-041` |
+| Tenant contexts → `BC-13` | ⛔ **No** | No inbound edge exists (`F-3`) |
+| `BC-13` → `BC-19` Tenancy | ⛔ **No** | ⚠ `TSF-GAP-009` — no transport exists |
+| `BC-13` → `BC-29` Files | ⛔ **No** | `E-22` deliberately excludes `BC-13` (`F-4`, `TSF-GAP-005`) |
+
+`TSF-FR-104` A `BC-13` notification **MUST** address the **subject** or their guardian under scope
+`guardianOf` only. It **MUST NOT** address a library, a library owner, or library staff (`TSF-XC-042`).
+Quiet hours, deduplication and unsubscribe remain `BC-22`'s under `MP-GBR-35` — but `TSF-BR-030` an
+enforcement notice **MUST NOT** be suppressible by an unsubscribe preference. A person must be told what
+was decided about them.
+
+---
+
+## 19. Admin & Moderator Console UX
+
+### 19.1 Three consoles, not one
+
+The brief asks for an admin/moderator console. Measurement forces a split, because the three plausible
+audiences sit on opposite sides of `X-05`.
+
+| Console | Audience | Scope | V1? |
+|---|---|---|---|
+| **Global safety console** | Platform moderator / safety lead | `BC-13`, all `PersonId`s, no tenant dimension | ✅ **V1** |
+| **Library community console** | Library owner / staff | Tenant community content only | ⛔ **Not V1** — §18.3, `TSF-GAP-002` |
+| **Tenant admin console** | Library owner | Existing library operations | Out of scope — `BC-01`…`BC-05` |
+
+`TSF-XC-052` The global safety console **MUST** be a separate application surface with its own
+authorisation, reachable only by platform safety roles issued by `BC-18`. It **MUST NOT** be a privileged
+mode of the library admin app — a shared shell is how a tenant session eventually reaches a global view
+(`TSF-XC-049`).
+
+### 19.2 The queue is the product
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-105` | The queue **MUST** default to severity, then age (`TSF-FR-055`), and **MUST NOT** offer a sort by report count (`TSF-BR-010`) |
+| `TSF-FR-106` | The queue **MUST** remain answerable at 10,000 open cases (`TSF-FR-004`) — pagination and filters **MUST NOT** degrade into a full scan |
+| `TSF-FR-107` | A case **MUST** be claimable, and a claimed case **MUST NOT** be actionable by another moderator without an explicit, recorded reassignment (`TSF-INV-011`) |
+| `TSF-FR-108` | The console **MUST** show SLA state — met, at-risk, breached — and **MUST NOT** allow a breach to be cleared by reassignment |
+| `TSF-FR-109` | The escalation queue (`CRITICAL`) **MUST** be visually and operationally separate, and **MUST NOT** be mixed into the standard queue |
+
+### 19.3 The decision surface
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-110` | The case view **MUST** present: subject, category, severity, evidence with provenance (§12.3), risk assessment **labelled advisory** (`TSF-BR-023`), strike history, and the recommended action |
+| `TSF-FR-111` | Taking an action **MUST** require a **policy citation** and **MUST NOT** be completable without one (`TSF-FR-067`) |
+| `TSF-FR-112` | Where the moderator lacks a read path — a reported file (`TSF-GAP-005`) or off-platform content — the console **MUST** say so explicitly and offer `UNRESOLVABLE_PENDING_ACCESS` (`TSF-XC-036`). It **MUST NOT** present an empty pane that invites a guess |
+| `TSF-FR-113` | Bulk action **MUST** be limited to `NO_VIOLATION` and `DUPLICATE` closure. **Bulk enforcement MUST NOT exist** in V1 |
+
+`TSF-FR-113` follows from `TSF-FR-062`. Having built a circuit breaker on automated enforcement, it would
+be incoherent to hand the same unbounded capability to a tired human with a checkbox column.
+
+### 19.4 Moderator access is itself an audited action
+
+*(This subsection satisfies the forward references from §10.3, §12.3, §12.5 and §17.4.)*
+
+§5.1 lists the **malicious moderator** as a threat actor. That listing is only meaningful if the console
+treats its own operators as a monitored population.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-114` | Every **read** of reporter-submitted private evidence **MUST** emit an audit event by `E-20` recording moderator, case, artefact and timestamp. Reading private content is an action, not navigation |
+| `TSF-FR-115` | Access **MUST** be case-bound. A moderator **MUST NOT** be able to browse persons, messages or evidence outside a case assigned to or claimed by them |
+| `TSF-FR-116` | There **MUST NOT** be a free-text search over evidence content, message bodies, or persons by attribute. Search **MUST** be by case identifier, `PersonId`, or queue filter |
+| `TSF-FR-117` | Minor-safety cases (§17.4) **MUST** require a restricted role, and access **MUST** be reported in a review that a human reads on `TSF-CFG-028` |
+| `TSF-FR-118` | Moderator access volume **MUST** be a monitored metric (§23) with an alert on anomalous per-moderator read volume |
+| `TSF-INV-019` | A moderator **MUST NOT** act on a case where they are the reporter, the subject, or a named party in the evidence. Self-recusal **MUST** be enforced by the system, not left to conscience |
+| `TSF-XC-053` | The console **MUST NOT** expose reporter identity to any role below safety lead, and **MUST NOT** expose it in any export, log line, or notification (`TSF-INV-009`, `TSF-XC-044`) |
+
+`TSF-FR-116` will be unpopular with operators, and it is the correct trade. A free-text search across
+student message evidence is the single highest-value target in this entire system: it converts a
+case-bound console into a general surveillance tool, and it is the capability a malicious insider would
+most want. Case-bound access makes abuse expensive and, through `TSF-FR-114`, visible.
+
+`TSF-FR-119` The console **MUST** display, on every case, why the subject is *reachable* — that a case
+exists — and **MUST NOT** display anything about the subject's library, membership, fees, attendance or
+seat. Those fields are not merely hidden by permission; **they are not present in `BC-13` at all**
+(`TSF-INV-017`), and the console must not create the impression that they could be requested.
+
+---
+
+## 20. Data Model & Contracts
+
+### 20.1 One aggregate, eleven entities — the mapping the brief needs
+
+The brief names eleven entities. BC Map §8 permits `BC-13` **one aggregate** (`ModerationCase`, **L379**)
+and states *"one aggregate, one database transaction, no exceptions."* §6.4 established the split; this
+section makes it a table.
+
+| # | Entity | Inside `ModerationCase`? | Owner | Justification |
+|---|---|---|---|---|
+| 1 | **`ModerationCase`** | **Aggregate root** | `BC-13` | Rank 4 **L379** |
+| 2 | **`AbuseReport`** | ✅ Inside | `BC-13` | Rank 4 **L379** lists it as an entity; a report's validity is decided with the case |
+| 3 | **`Evidence`** | ✅ Inside | `BC-13` | Append-only child; integrity is transactional with the case |
+| 4 | **`EnforcementAction`** | ✅ Inside | `BC-13` | **L379**; `TSF-INV-012` forbids it standing alone |
+| 5 | **`StrikeRecord`** | ✅ Inside | `BC-13` | **L379**; written in the same transaction as the upheld action |
+| 6 | **`Appeal`** | ✅ Inside | `BC-13` | **L379**; the appeal decides *this* case |
+| 7 | **`CaseTransition`** | ✅ Inside | `BC-13` | `TSF-FR-009`; immutable child |
+| 8 | **`RiskSignal`** | ⛔ **Outside** | `BC-13` | Per-person, not per-case; one signal informs many cases. Separate lifecycle and retention (`TSF-CFG-027`) |
+| 9 | **`RiskAssessment`** | ⛔ **Outside** | `BC-13` | Computed, reproducible (`TSF-FR-059`), not a system of record |
+| 10 | **`SafetyPolicy`** | ⛔ **Outside** | `BC-13` | Versioned reference data cited by actions; changing policy must not rewrite decided cases |
+| 11 | **`EffectiveRestriction`** | ⛔ **Outside** | `BC-13` | The read-optimised answer to *"what may this person do now?"* — `TSF-BR-026`, required by §10.1's ≤ 50 ms budget |
+
+**Two brief-named entities are deliberately absent.** `UserRestriction` is renamed
+**`EffectiveRestriction`** to make clear it is derived state, not an authority (`TSF-XC-054`). And
+`SafetyEvent`/`SafetyAuditEvent` are **not modelled here at all** — the audit record is `BC-24`'s
+`AuditEntry` reached by `E-20` (`TSF-XC-046`); modelling a parallel safety audit log would duplicate a
+Rank 4 aggregate and create two answers to *"who did what"*.
+
+### 20.2 Entity detail
+
+| Entity | Scope key | Lifecycle | States | Authorisation | Retention | Audited | Index |
+|---|---|---|---|---|---|---|---|
+| `ModerationCase` | `PersonId` (subject) | Report / rule / moderator → `CLOSED` | The 7 of §13.2 | Safety roles; case-bound (`TSF-FR-115`) | `TSF-CFG-025` | Every transition | `(state, severity, openedAt)`; `(subjectPersonId)` |
+| `AbuseReport` | `caseId` | Filed → attached | `ACCEPTED`/`DUPLICATE`/`INVALID` | Reporter identity ≥ safety lead only | With case | On file, on read | `(caseId)`; `(reporterPersonId, filedAt)` for `TSF-BR-013` |
+| `Evidence` | `caseId` | Attached, **never mutated** | — | Read = audited action (`TSF-FR-114`) | `TSF-CFG-026`, shortest clock | **Every read** | `(caseId)` |
+| `EnforcementAction` | `caseId` + `PersonId` | Created → active → expired/reversed | `ACTIVE`/`EXPIRED`/`REVERSED` | Two actors for row 9 (`TSF-FR-069`) | With case | Create + reverse | `(personId, state, until)` |
+| `StrikeRecord` | `PersonId` | On **upheld** action only | Active, decaying | Safety roles | Row retained; weight decays | On write + removal | `(personId, occurredAt)` |
+| `Appeal` | `caseId` | Filed → decided | `FILED`/`UPHELD`/`MODIFIED`/`OVERTURNED` | Subject files; **different** moderator decides (`TSF-INV-013`) | With case | File + decide | `(caseId)`; `(state, filedAt)` for SLA |
+| `CaseTransition` | `caseId` | Append-only | — | Read-only always | With case | Is itself the record | `(caseId, at)` |
+| `RiskSignal` | `PersonId` | Computed, rolling | — | Safety roles; **advisory label** | `TSF-CFG-027` | On use in a case | `(personId, ruleId, window)` |
+| `RiskAssessment` | `PersonId` | Computed on demand | — | Safety roles | Not retained beyond citing case | On use | `(personId, at)` |
+| `SafetyPolicy` | Policy id + version | Versioned, immutable per version | `DRAFT`/`ACTIVE`/`RETIRED` | Safety lead publishes | Permanent | On publish | `(policyId, version)` |
+| `EffectiveRestriction` | **`PersonId` (PK)** | Derived from active actions | — | Read by `BC-12` send-time check | Rebuildable | Rebuild logged | **`(personId)` point read** |
+
+`TSF-FR-120` `EffectiveRestriction` **MUST** be a **single row per `PersonId`** and **MUST** be
+rebuildable from `EnforcementAction` history, yielding identical output. It is a projection, never a
+system of record — the same discipline BC Map **L383** imposes on `BC-21`'s `EntitlementSet`
+(*"never hand-edited; recomputable"*).
+
+`TSF-INV-020` No entity above **MUST** contain a `tenantId`, `StudentRecordId`, membership reference, fee
+reference, seat reference or attendance reference (`TSF-INV-017`, `F-1`).
+
+### 20.3 Vocabulary conformance
+
+BC Map **L199–213** governs shared terms, and enforcement is real: *"a CI lint rule fails the build if a
+banned bare term appears in a cross-context contract file."*
+
+| Bare term | ⛔ Never | ✅ This PRD uses | Authority |
+|---|---|---|---|
+| `Report` | `Report` | **`AbuseReport`** | **L206** — `AnalyticalReport` is `BC-26`'s |
+| `Role` | `Role` | `SafetyRole` (own), `AccessRole` (`BC-18`) | **L207**-class collision |
+| `Profile` | `Profile` | `PublicProfile` (`BC-10`) | Language table |
+| `Session` | `Session` | `BC-18`'s only; not modelled here | `ID-1` |
+| `Member` | `Member` | Not used — `BC-13` has no members | `BC-02` owns it |
+
+`TSF-XC-055` This PRD **MUST NOT** introduce the bare term `Report` into any contract, event, table or
+API identifier. The brief's `SafetyReport` was already refused for the same reason as `TSF-XC-022`.
+
+### 20.4 Configurable register — `TSF-CFG-001`…`030`
+
+§0.2 promised this register; §14.4 defined three of its members inline. This subsection is the **single
+normative home** for all of them, so that no configurable is cited without a definition.
+
+Three rules govern the table. **(1)** A configurable is a value the platform may tune *without an ADR*; anything
+that changes a boundary, an owner or a contract is **not** a configurable and does not belong here. **(2)** Every
+row states an **initial value**, because "configurable" is not a licence to ship undefined behaviour — the initial
+value is the V1 default and is testable. **(3)** Every row states who may change it, and a change to any row marked
+**Safety Lead** is an audited act (`E-20` → `BC-24`).
+
+| ID | Configurable | Initial value (V1) | Bound / guard | Changeable by | Cited at |
+|---|---|---|---|---|---|
+| `TSF-CFG-001` | Account-creation velocity threshold per shared correlator | 5 accounts / 24 h | Opens a case; **never** blocks creation (`TSF-FR-011`) | Safety Lead | §7 |
+| `TSF-CFG-002` | Rule-set version pin | `v1` | Immutable per decided case; cited on every action (`TSF-INV-004`) | Safety Lead | §14.2, §15.3 |
+| `TSF-CFG-003` | Signal observation window | 24 h | ≤ 7 d — longer windows turn detection into profiling (§17.1) | Safety Lead | §14.2 |
+| `TSF-CFG-004` | Strike decay half-life | 180 d | ≥ 90 d. Decays weight, never deletes the row (`TSF-FR-074`) | Safety Lead | §14.2, §15.3, §17.2 |
+| `TSF-CFG-005` | `CRITICAL` time-to-human (page) SLA | 15 min | Hard ceiling 60 min; queue depth is not an excuse (`G-6`, `TSF-FR-054`) | Safety Lead | §12.4, §12.5, §17.4, §23.1 |
+| `TSF-CFG-006` | `HIGH` triage SLA | 4 h | ≤ 24 h | Safety Lead | §12.4 |
+| `TSF-CFG-007` | `MEDIUM` / `LOW` triage SLA | 72 h | ≤ 7 d | Safety Lead | §12.4 |
+| `TSF-CFG-008` | Block-evasion correlation window | 30 d | Signal only; **MUST NOT** auto-terminate (`TSF-BR-010`) | Safety Lead | §8.4 |
+| `TSF-CFG-009` | Outstanding message-request cap | 20 per sender | Enforced by `BC-11` limits, not by `BC-13` (§14.6) | Safety Lead | §10.2 |
+| `TSF-CFG-010` | Reported-message context window | 5 messages either side | Hard ceiling 10. Reporter-supplied only (`TSF-BR-012`) | **ADR required** to raise | §10.3 |
+| `TSF-CFG-011` | Report free-text length bound | 2,000 chars | Bounded input is a security control, not a UX choice | Product | §12.2 |
+| `TSF-CFG-012` | Evidence retention after content removal | 90 d | ≥ appeal window (`TSF-CFG-022`), else appeals have nothing to review | Safety Lead | §11.2 |
+| `TSF-CFG-013` | Duplicate-report coalescing window | 24 h | **MUST NOT** apply to `CRITICAL` (`TSF-BR-017`) | Safety Lead | §12.5 |
+| `TSF-CFG-014` | Correlator-hash retention | 30 d | Salted hash only; never the raw identifier (`TSF-XC-023`) | **ADR required** to raise | §7 |
+| `TSF-CFG-015` | `Friction` band threshold | 0.4 | Reversible, invisible band only ⚠ `TSF-GAP-012` | Safety Lead | §14.4 |
+| `TSF-CFG-016` | `Review` band threshold | 0.6 | Opens a case; no enforcement | Safety Lead | §14.4 |
+| `TSF-CFG-017` | `Restrain` band threshold | 0.85 | `HIGH` severity only; §15 rows 1–6 only | Safety Lead | §14.4 |
+| `TSF-CFG-018` | Automatic-action expiry without human affirmation | 24 h | **Silence expires it; silence never extends it** (`TSF-FR-061`) | **ADR required** to raise | §14.4 |
+| `TSF-CFG-019` | Global automatic-action rate cap | 50 / h | On breach: **stop and page**, never act faster (`TSF-FR-062`) | Safety Lead | §14.4 |
+| `TSF-CFG-020` | Per-rule false-positive budget | 10% overturn rate | Breach ⇒ **automatic** demotion to `Observe` (`TSF-FR-065`) | Safety Lead | §14.5, §23.1 |
+| `TSF-CFG-021` | FP-budget evaluation period | 30 d rolling | ≥ 14 d, so the sample is meaningful | Safety Lead | §14.5 |
+| `TSF-CFG-022` | **Appeal window** | 30 d from notice | ≥ 14 d. Runs from *notice*, not from decision (`TSF-FR-077`) | **ADR required** to lower | §16.1 |
+| `TSF-CFG-023` | **Appeal decision SLA** | 14 d | Stated to the subject up front (`TSF-FR-080`) | Safety Lead | §16.1 |
+| `TSF-CFG-024` | **Reversal propagation budget** | 60 s at p95 | Reversal uses the same `E-14` fan-out that imposed the action | Safety Lead | §16.2, §27 |
+| `TSF-CFG-025` | **Case retention after `CLOSED`** | 2 y | Audit is separate and append-only (`MP-GBR-13`, `BC-24`) | **ADR required** — `MP-GBR-04`/`14` | §17.2, §20.2 |
+| `TSF-CFG-026` | **Reporter-submitted evidence retention after `CLOSED`** | 90 d, then purged | Shortest clock in the document; it is private content | **ADR required** to raise | §17.2, §20.2 |
+| `TSF-CFG-027` | **`RiskSignal` rolling retention** | 30 d | Derived measures only, never the observations (`TSF-FR-086`) | **ADR required** to raise | §17.2, §20.1, §20.2 |
+| `TSF-CFG-028` | **Minor-safety access review cadence** | Weekly | A human must *read* it, not merely receive it (`TSF-FR-117`) | Safety Lead | §19.4 |
+| `TSF-CFG-029` | **Analytics minimum cell size** | 5 | Below this, aggregates **MUST** be suppressed (`TSF-XC-059`) | **ADR required** to lower | §23.3 |
+| ⭐ `TSF-CFG-030` | **Enforcement read-model staleness budget** — the maximum tolerated lag of `BC-12`'s local enforcement projection before the send-path gate **fails closed** | **5 s at p99** | ⛔ **Hard ceiling 30 s.** Beyond the budget, or when freshness cannot be established, the send is **REFUSED** — never allowed through (`TSF-FR-031`, `TSF-INV-007`). ⚠ **Not** the same quantity as `TSF-CFG-024`: that bounds how fast a **reversal** reaches the send path (a convenience failure), this bounds how stale a **restriction** may be (a **safety** failure). They point in opposite directions and **MUST NOT** be tuned together | ⛔ **ADR required** — raising it silently relaxes a **Critical** Rank 1 mitigation (`MP-RSK-02`) | §10.1, §16.2 |
+
+`TSF-BR-036` A configurable marked **ADR required** in the table above **MUST NOT** be changed by operational
+configuration alone. These **nine** rows are the ones where a tuning knob would silently relax a privacy,
+due-process or **safety** guarantee — lengthening evidence retention, shortening the appeal window, widening the
+message context window, lowering the analytics cell size, or ⭐ **raising the enforcement staleness budget** are
+all **boundary changes wearing a configurable's clothes**. Their presence in this register records their *initial
+value*, not permission to move them freely. ⚠ **v0.5 re-derived this count rather than incrementing the word *"eight"*.** Measured: `grep -c 'ADR required'`
+over §20.4 returns **10**, of which **one is this paragraph itself** — so the table carries **9** such rows
+(`TSF-CFG-010`, `014`, `018`, `022`, `025`, `026`, `027`, `029`, `030`). `TSF-CFG-030` is the ninth, and it is the
+first whose misuse would degrade **abuse containment** rather than privacy or due process.
+
+⚠ **Why `TSF-CFG-030` is a lawful register entry and not a deferral in disguise.** `TSF-XC-064` forbids
+*"inventing a configurable to defer a decision the document should have made"*. This row **records a decided
+bound** — `ADR-0065` §3.7 fixed its existence, semantics, home and change-control, and §20.4 rule 2 supplies the
+testable V1 default above. The decision it implements is `ADR-0065` v2.0 §3.6 condition 1; without a stated bound
+the fail-closed gate of `TSF-FR-031` would be unimplementable, which is the opposite of a deferral.
+
+`TSF-XC-064` This register **MUST NOT** be extended by inventing a configurable to defer a decision the document
+should have made. A number that nobody can supply a default for is an open gap and belongs in `TSF-GAP-*`, not here.
+
+---
+
+
+---
+
+## 21. APIs & Events
+
+### 21.1 The integration surface is two events, and that is the whole of it
+
+BC Map §9 publishes exactly **two** `BC-13` events (**L432**, **L433**). §7's rule is absolute: *"If an
+edge is not in this table, it does not exist and adding it requires an ADR."*
+
+| ID | Event | Consumers | Payload | Authority |
+|---|---|---|---|---|
+| `TSF-EVT-001` | **`safety.AbuseReportFiled`** | `BC-24`, `BC-22` | `{caseId, category, severity, filedAt}` — ⛔ **no reporter identity**, ⛔ no content | **L432** |
+| `TSF-EVT-002` | **`safety.EnforcementActionTaken`** | `BC-10`, `BC-11`, `BC-12`, `BC-14`, `BC-15`, `BC-24` | `{personId, action, scope, until}` — the **closed four-field shape** of **L318** | **L433**, `E-14` |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-121` | `BC-13` **MUST NOT** publish a third event in V1. `TSF-EVT-*` is a **two-entry closed register** for exactly this reason |
+| `TSF-FR-122` | `TSF-EVT-001` **MUST NOT** carry the reporter's `PersonId` (`TSF-INV-009`), nor any evidence content |
+| `TSF-FR-123` | `TSF-EVT-002` **MUST** be emitted through the transactional outbox and **MUST** be idempotent on `(caseId, actionId)`. A duplicate delivery **MUST NOT** produce a second restriction |
+| `TSF-FR-124` | Reversal (§16.2) **MUST** be expressed as `TSF-EVT-002` with a past-dated or nulled `until`, **not** as a new event type — `TSF-FR-121` |
+
+⚠ **`TSF-GAP-004`** *(carried forward)*. Appeal outcomes, case closure and risk-band changes have no
+published event. Any consumer needing them requires a **Rank 4 amendment** to BC Map §9. Routed to the
+**Architecture Owner**. `TSF-FR-124` is the workaround that keeps V1 inside the published surface.
+
+### 21.2 Inbound: what `BC-13` consumes
+
+⚠ **Corrected in v0.3.** The v0.2 table below carried three ⚠-marked rows whose consumer cells do not
+list `BC-13`, and its preamble nevertheless read *"no new edge is claimed."* Both have been corrected. The
+table now separates what `BC-13` **actually consumes in V1** from what v0.2 assumed it could consume, and
+a **fourth** unlisted dependency — missed entirely by v0.2 — has been added.
+
+#### 21.2.1 V1 inbound — consumer cells that list `BC-13`
+
+| Consumed | From | Use | Consumer cell |
+|---|---|---|---|
+| `messaging.MessageSent` | `BC-12` | Risk counters (message-request rate) | ⚠ **Sampled — L431 lists `BC-13` (sampling)**; `TSF-BR-027` caps confidence at `MEDIUM` |
+| `attendance.FraudSignalDetected` | `BC-03` | ⛔ **Listed but deliberately NOT consumed** — see `TSF-XC-056` | **L417** *does* list `BC-13` |
+
+`TSF-XC-056` `attendance.FraudSignalDetected` is published to `BC-13` by **L417**, and this PRD
+**deliberately does not consume it in V1**. It is tenant-side attendance fraud — a `BC-03` operational
+matter under `X-05` — and consuming it would import a tenant signal into a global context, inviting the
+`tenantId` that `TSF-INV-020` forbids. Recorded as a **conscious non-consumption**, not an oversight.
+
+Everything else the V1 risk engine uses comes from `BC-13`'s **own aggregates** — `ModerationCase` and
+`StrikeRecord` — which need no edge at all. That is why section 14.3.1's four surviving signals are
+buildable today.
+
+#### 21.2.2 🔵 Unlisted consumer cells — four dependencies, all deferred to V2
+
+| # | Event | Publisher | Consumer cell, verbatim | `BC-13`? | v0.2 status | v0.3 status |
+|---|---|---|---|---|---|---|
+| 1 | `social.FriendshipEstablished` | `BC-11` | **L430** → `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | 🔵 Signal deferred (section 14.3.2) |
+| 2 | `social.UserBlocked` | `BC-11` | **L430** → `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | 🔵 Signal deferred (section 14.3.2) |
+| 3 | `identity.PersonAnonymised` | `BC-10` | **L428** → `BC-23`, `BC-24`, `BC-11`, `BC-12`, `BC-26` | ❌ No | Disclosed by `TSF-GAP-015` | ⚠ **Still open — see `TSF-GAP-016`** |
+| 4 | `identity.PersonIdentityCreated` | `BC-10` | **L424** → `BC-23`, `BC-24`, `BC-26` | ❌ No | ⛔ **NOT DISCLOSED** | 🔵 Signal deferred (section 14.3.2) |
+
+Row 4 is the finding of this pass. `TSF-GAP-015` disclosed rows 1–3 and stopped there, but section 14.3's
+*"account age at first burst"* signal rests on `identity.PersonIdentityCreated`, whose consumer cell at
+**L424** lists `BC-23`, `BC-24` and `BC-26` and **not** `BC-13`. That made **four** unlisted dependencies
+in one document, not three — a fourth instance of the same defect class inside the very section that
+disclosed the first three.
+
+⚠ **`TSF-GAP-015` — RECLASSIFIED IN v0.3: resolved by V1 scope reduction for rows 1, 2 and 4.**
+Section 14.3.2 defers the three signals that depended on those cells. No consumer cell is amended, no ADR
+is opened, and `ADR-0066` leaves the V1 critical path (section 29.2 row 2). `IMPL-1411` is **withdrawn
+from V1 scope**, not blocked. The gap is recorded rather than deleted so that V2 inherits the measurement
+instead of rediscovering it.
+
+⚠ **`TSF-GAP-016`** *(new — row 3, and it does not dissolve)*. Rows 1, 2 and 4 disappear because the
+*signals* that needed them are deferred. Row 3 does not, because `identity.PersonAnonymised` is not a
+detection signal — it is an **erasure instruction**, and `TSF-FR-089` commits `BC-13` to honouring it.
+`BC-13` holds `personId` on every `ModerationCase`, in V1, in the four surviving signals, unavoidably. So
+V1 asserts a privacy obligation it has **no published route to be told about**. Two honest resolutions
+exist: admit `BC-13` to the **L428** consumer cell (Architecture Owner, per-context necessity test in the
+manner of `ADR-0055` section 3), **or** specify a retention rule under which safety records age out
+without an erasure signal. **This PRD does not choose —** `TSF-XC-063`. Routed to the **Architecture
+Owner** and the privacy owner jointly.
+
+`TSF-GAP-016` is disclosed rather than folded into `TSF-GAP-015` because the two are no longer the same
+kind of problem. Three of the four were *"we wanted an input we are not entitled to"* — answered by
+wanting less. This one is *"we owe a duty we cannot be notified of"* — and scope reduction cannot answer
+it, because the only way to stop needing the erasure signal is to stop holding `personId`, which is to
+stop being a moderation context. **A gap that dissolves under scope reduction and a gap that does not must
+not share a row.**
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-146` | This section's inbound table **MUST** be re-derived from BC Map section 9's **consumer cells**, not from its publisher rows, whenever the BC Map version pinned in section 0.2 changes. Reading a publisher row as though it granted consumption is the specific error that produced four unlisted dependencies in v0.2 |
+| `TSF-XC-069` | `BC-13` **MUST NOT** subscribe to any event whose consumer cell omits it, and **MUST NOT** obtain the same data by querying the publisher, by reading a shared store, or by inferring it from a permitted stream. `TSF-BR-038` states the same prohibition for the risk engine; this states it for the context as a whole |
+
+### 21.3 Command surface
+
+`BC-13` has **no published inbound edge** (`F-3`), so every command below is internal to the safety
+application, not a cross-context API.
+
+| Command | Actor | Idempotency | Authorisation | Errors |
+|---|---|---|---|---|
+| `FileAbuseReport` | Any authenticated person | Client key + `(reporter, subject, category, window)` | Rate-limited by `BC-18`/edge | Uniform; never reveals whether a prior report exists |
+| `TriageCase` | Moderator or rule | `(caseId, targetState)` | Safety role | — |
+| `ClaimCase` | Moderator | `(caseId, moderator)` | Safety role | Conflict if claimed |
+| `AttachEvidence` | Reporter (at filing) | Content hash | Reporter, own report | Append-only |
+| `TakeEnforcementAction` | Moderator (×2 for row 9) | `(caseId, actionType, actor)` | Safety role + `TSF-INV-019` recusal | Rejected without policy citation |
+| `FileAppeal` | **Subject only** | `(caseId, subject)` | Subject, once (`TSF-FR-076`) | Uniform outside window |
+| `DecideAppeal` | Different moderator | `(appealId, decider)` | `TSF-INV-013` | Rejected if same actor or chain |
+
+`TSF-FR-125` Every command **MUST** be idempotent on the key shown. Safety operations are retried by
+clients under stress; a duplicate report **MUST NOT** become two accusations, and a duplicate action
+**MUST NOT** become two strikes.
+
+`TSF-FR-126` Authorisation failures on **all** safety endpoints **MUST** be indistinguishable from
+not-found (`MP-GBR-22`). A distinguishable `403` on a case endpoint confirms a case exists.
+
+✅ **`TSF-GAP-003`** *(architecture half **CLOSED** at v0.5 — implementation half **OPEN**)*.
+
+**What v0.4 recorded, preserved so the change is auditable.** §10.1's synchronous send-time check needs
+`BC-12` to establish `BC-13`'s `EffectiveRestriction` inside a request. `BC-13` has **one edge, outbound,
+event-only**. v0.4 concluded **there is no published sync transport**, that BC Map **L468** *mandates* the
+check while the edge table does not carry it, and routed the question to the **Architecture Owner** with
+`IMPL-1410` blocked. Two candidate resolutions — a new sync port `BC-12 → BC-13`, or `BC-12` maintaining a
+locally projected restriction state fed by `TSF-EVT-002` — were **named, not chosen**. v0.4 ended with the
+warning that the second *"adds no edge, and \[is\] dangerous because a stale cache defeats the entire point
+of `L468`."*
+
+⭐ **How that warning was answered, rather than waved away.** `ADR-0065` v2.0 (`Accepted`) chose the second
+option — a **projected enforcement state inside `BC-12`, fed by the existing `E-14`, with no new edge**. It
+did **not** dismiss the staleness objection; it made the answer to it a **condition of the approval**. Two
+mechanisms are mandatory, and Option B **without both of them is not what was approved**:
+
+1. **A staleness budget with a number** — `TSF-CFG-030`, p99 projection lag ≤ **5 s**, hard ceiling **30 s**,
+   ⛔ ADR-required to change. A "stale cache" is only undefined while nobody has bounded it.
+2. **A fail-closed staleness gate on the send path** — if measured lag exceeds `TSF-CFG-030`, **or** if
+   freshness cannot be established at all, the send is **REFUSED**. This is what preserves `L468`'s
+   *"belt-and-braces"* reading: brace one is `E-14`-driven self-restriction, brace two is this gate.
+
+**What is now settled, and what is not.** The **transport question is settled** — there is a published,
+entitled read path (`BC-12` was already an `E-14` consumer: BC Map **L433**, Matrix **L254**,
+`tool/module_dependencies.yaml` **L251-253**), so **no new edge and no new grant** was needed and none was
+created. **`IMPL-1410` is therefore UNBLOCKED.** What remains open is the **implementation half**: measurement
+of `lib/` confirms `lib/domain/social/social.dart` is a **67-line boundary stub** with **zero** enforcement
+code, and a repository-wide search for `EnforcementAction`, `enforcementState` and `messagingRestricted`
+returns **empty**. Per `SID-4.56` — *"a rule that cannot be checked SHALL be treated as unmet"* — the
+implementation half stays **OPEN** until the five mandatory items in `ADR-0065` **§7.1** exist and are tested.
+This two-half disposition follows the `ADR-0055` → `ADR-0059` precedent, where an architecture half was closed
+first and the implementation half closed later by a separate ADR.
+
+⚠ **The honest residual.** Option B delivers a **bounded, monitored, fail-closed** guarantee, not the
+**absolute** one `TSF-INV-007` asserted in v0.4. That invariant has been **restated** in §10.1 to say what is
+actually delivered. `ADR-0065` **§3.6** concedes the point in full rather than rewording it out of sight.
+
+### 21.4 Why nothing here is ever deleted
+
+*(This subsection satisfies the forward reference from §7.7.)*
+
+Every API above adds, transitions or reverses. **None deletes.** Four measured authorities converge:
+
+| Authority | Consequence |
+|---|---|
+| `MP-GBR-14` | Soft delete except legally compelled erasure |
+| `MP-GBR-13` | Audit append-only; legal hold blocks purge |
+| BC Map **L384** | `BC-24` — *"no update or delete path exists in code"* |
+| `TSF-FR-083` | Overturned removals must be **restorable** — impossible after a hard delete |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-127` | There **MUST NOT** be a delete endpoint on any entity in §20. Removal of expired data happens through **retention purge** (§17.2), which is a scheduled system act with a policy behind it, not an operator action |
+| `TSF-FR-128` | Reversal **MUST** be modelled as a new state plus a new transition, **never** as the erasure of the original. The record must show that we acted and then that we were wrong |
+| `TSF-BR-031` | "Undo" **MUST NOT** exist as a concept in this system. Everything is either a forward transition or a reversal, and both are visible |
+
+`TSF-BR-031` is the design's spine. In a system where a wrongly-restricted student's record can be
+silently erased, `TSF-FR-064`'s false-positive rate becomes unmeasurable and `TSF-BR-025` becomes a
+slogan. Keeping our mistakes on the record is what makes the accuracy commitments enforceable.
+
+---
+
+## 22. Security Integration
+
+### 22.1 The `PRD-012a` ÷ `PRD-020` line
+
+`PRD-012a` Security & Automation is **FROZEN**, owns `platform/security` at **rank 2**, uses prefix
+`SECP-`, and holds **no `BC-nn`** (per `ADR-0060`). `PRD-020` owns `BC-13` at **rank 8**. The two are not
+layered accidentally — rank 2 is infrastructure, rank 8 is domain — and the division follows.
+
+| Concern | Owner | Why |
+|---|---|---|
+| Credentials, sessions, OTP, MFA | **`BC-18`** | `ID-1`; `TSF-XC-013` |
+| Session revocation on suspension | **`BC-18`**, on `TSF-EVT-002` | `BC-13` publishes; `BC-18` self-restricts |
+| Edge rate limiting, WAF, bot defence | **`PRD-012a`** | Infrastructure, rank 2 |
+| Secret management, key rotation | **`PRD-012a`** | Infrastructure |
+| Dependency & vulnerability scanning | **`PRD-012a`** | Infrastructure |
+| Malware scanning of uploads | **`BC-29`** (`PRD-017`) | BC Map **L138** — *"upload, virus scan, thumbnailing"* |
+| Security incident response | **`PRD-012a`** | Operational security |
+| **Abuse by authenticated users** | **`PRD-020`** | This document |
+| **Enforcement decisions on persons** | **`PRD-020`** | `BC-13` |
+
+`TSF-XC-057` `PRD-020` **MUST NOT** define, duplicate or override any `SECP-*` requirement.
+`PRD-012a` is **FROZEN**; a frozen document is not amended by a draft one.
+
+`TSF-BR-032` **Security asks "is this request legitimate?"; safety asks "is this person harming
+someone?"** A verified, authenticated, MFA-protected, rate-limit-compliant request from a real student
+can still be abuse. That is why `BC-13` exists as a `[CORE]` context and not as a security feature.
+
+### 22.2 What `BC-13` relies on and must not reimplement
+
+| Reliance | Provider | `BC-13` obligation |
+|---|---|---|
+| Authenticated principal | `BC-18` | Trust it; never store credentials |
+| Authorisation decision | `BC-18` | Request it; never cache a policy decision |
+| Audit persistence | `BC-24`, `E-20` | Emit; never store its own audit log (`TSF-XC-046`) |
+| Configuration | `BC-25`, `E-19` | Typed accessors; no raw string lookups |
+| Notification delivery | `BC-22`, `E-23` | Emit facts; never send channels |
+| File scanning | `BC-29` | ⛔ **Unreachable** — `F-4`, `TSF-GAP-005` |
+
+### 22.3 File safety, restated as a security boundary
+
+§11 and §12.4 established that `BC-13` cannot read a reported file. From a security standpoint this is
+**a feature with a cost**, and both halves must be said:
+
+- **The feature:** the safety context holds no `FileRef`, no bytes, and no storage path. A compromise of
+  the moderation console yields **no file access whatsoever**. Given that the console is operated by
+  humans with elevated privilege over minors' data, that is a materially strong containment property.
+- **The cost:** a genuinely harmful uploaded file cannot be reviewed in V1, and §12.4 requires such cases
+  to close as `UNRESOLVABLE_PENDING_ACCESS` so the cost is **counted** (`TSF-XC-036`).
+
+`TSF-FR-129` The count of `UNRESOLVABLE_PENDING_ACCESS` closures **MUST** be a reported metric (§23). It
+is the evidence base on which `ADR-0055` §3's per-context necessity test would be revisited — if the
+number is small, the exclusion was right; if it is large, there is a measured case for an ADR. Either way
+the decision becomes empirical rather than rhetorical.
+
+---
+
+## 23. Analytics & Observability
+
+### 23.1 What must be measurable for this system to be trustworthy
+
+A safety system that cannot report on itself cannot be held to `G-1`…`G-8`. But metrics are also an
+exfiltration path, so §23.3 constrains them.
+
+| Metric | Why | Alert |
+|---|---|---|
+| Open cases by severity and age | `TSF-FR-004` capacity | Backlog growth, oldest-`CRITICAL` age |
+| Time to first human touch, `CRITICAL` | `G-6` | Breach of `TSF-CFG-005` — **pages** |
+| Report intake p95 | `TSF-FR-002` | > 1 s |
+| Send-time check p99 | `TSF-FR-001` — the `MP-RSK-02` mitigation | **> 50 ms, or any fail-open** |
+| `TSF-EVT-002` publish→apply lag | `TSF-FR-003` | > 5 s p95 |
+| Appeal SLA state | `TSF-FR-080`, `TSF-INV-016` | Any breach — **never** auto-uphold |
+| Overturn rate, overall and per rule | `TSF-FR-064` | Above `TSF-CFG-020` → auto-demote |
+| Automatic actions per hour | `TSF-FR-062` circuit breaker | Cap breach — **stop and page** |
+| `UNRESOLVABLE_PENDING_ACCESS` count | `TSF-FR-129` | Trend review |
+| Moderator evidence reads per moderator | `TSF-FR-118` | Anomalous volume |
+| `NO_VIOLATION` rate per moderator | `TSF-BR-021` — both extremes are signals | Outlier either way |
+
+`TSF-FR-130` A **fail-open** on the send-time check **MUST** be treated as a `SEV`-class operational
+incident and alerted immediately. `TSF-FR-001` requires **fail closed**; an observed fail-open means the
+`MP-RSK-02` mitigation is not in force.
+
+`TSF-FR-131` The `NO_VIOLATION` rate **MUST** be monitored for outliers in **both** directions. A
+moderator who never finds a violation may be inattentive; a moderator who always finds one is a
+`TSF-BR-021` failure and a `TSF-BR-025` risk.
+
+### 23.2 Where analytics live
+
+`TSF-XC-058` `BC-26` Analytics Read Model owns the metric/semantic layer and projections (BC Map **L135**,
+**L385**). `BC-13` **MUST NOT** build its own reporting store, and **MUST NOT** use the bare term `Report`
+for a metric (`TSF-XC-055`; `AnalyticalReport` is `BC-26`'s, **L206**).
+
+`TSF-FR-132` Safety metrics **MUST** be derived from the event stream and case store, and **MUST** be
+rebuildable — BC Map **L385**: *"Fully rebuildable from the event log; no projection is a system of
+record."*
+
+### 23.3 Analytics as a privacy boundary
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-133` | Safety metrics **MUST** be aggregate. No metric, dimension, drill-down or export **MUST** expose a `PersonId`, evidence content, or reporter identity |
+| `TSF-FR-134` | Aggregates **MUST** be suppressed below `TSF-CFG-029` cell size. A count of 1 in a rare category is an identification |
+| `TSF-XC-059` | Safety metrics **MUST NOT** be exposed in any tenant-facing dashboard, export or API — `TSF-XC-049`, `TSF-XC-050`. There **MUST NOT** be a per-library safety statistic, because a per-library figure over a small membership re-identifies students |
+| `TSF-XC-060` | Safety metrics **MUST NOT** be dimensioned by tenant at all. `BC-13` holds no `tenantId` (`TSF-INV-020`), so such a dimension could only be created by joining across `X-05` |
+
+`TSF-XC-059` deserves its bluntness. *"Safety incidents at your library: 3"* sounds like a reasonable
+owner-facing feature and is, on a 40-student library, a near-identification of three named minors —
+delivered to a party who is not a party to any of the three cases (`TSF-XC-042`).
+
+### 23.4 Traceability of the risk engine
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-135` | Every case opened by a rule **MUST** record the rule identifier and version, so that `TSF-FR-064`'s FP rate is attributable and `TSF-FR-065`'s demotion is possible |
+| `TSF-FR-136` | Rule configuration changes **MUST** be audited by `E-20` with actor and before/after. A threshold change is a policy change |
+| `TSF-FR-137` | The system **MUST** be able to answer, for any decided case: which rule version, which policy version, which moderator, which evidence, and which appeal outcome — from stored data, without reconstruction |
+
+---
+
+## 24. V1 Scope
+
+### 24.1 In scope — and buildable today
+
+| Capability | Sections | Depends on nothing unresolved |
+|---|---|---|
+| Report intake on person, message, profile | §12.1–12.3 | ✅ |
+| `ModerationCase` aggregate + 7-state lifecycle | §13 | ✅ |
+| Evidence attach, append-only, audited reads | §12.3, §19.4 | ✅ |
+| Triage, dedup, severity routing, escalation queue | §12.5 | ✅ |
+| The 9 enforcement actions for surfaces that exist in V1 (rows 1, 2, 3, 5, 6, 8, 9) | §15 | ✅ |
+| Strike ladder with decay | §15.3 | ✅ |
+| Appeals, one per action, different decider | §16 | ✅ |
+| Rule-based risk on **own-case** signals (report velocity, repeat enforcement, coordination) | §14.3 | ✅ |
+| `EffectiveRestriction` projection | §20.2 | ✅ |
+| The two published events | §21.1 | ✅ |
+| Global safety console, case-bound access, audited reads | §19 | ✅ |
+| Retention, purge, legal hold, anonymisation handling | §17.2–17.3 | ✅ |
+| Observability and the circuit breaker | §14.4, §23 | ✅ |
+
+### 24.2 In scope — and ✅ **no longer blocked** on a decision this PRD may not make
+
+⚠ **Corrected in v0.3. This table had seven rows. It then had one.**
+✅ **Corrected again in v0.5. That one row is now UNBLOCKED.**
+
+v0.2 called this *"the most important table in the document"* and it was right about that — but six of its
+seven rows were not actually blocked. They were **out of V1 scope**, which is a different fact with a
+different consequence. A blocked row holds the release; an out-of-scope row holds nothing. Seven rows
+reading *"cannot be built until someone with the authority decides"* invited exactly the wrong response:
+convene six decisions, or ship without six capabilities. The correct response was to notice that V1 needs
+one of them.
+
+| # | Capability | Was blocked by | Task | Decision owner | ✅ Disposition at v0.5 |
+|---|---|---|---|---|---|
+| 1 | **Synchronous send-time enforcement check** | `TSF-GAP-003` — v0.4 held that no sync transport existed, `BC-13`'s only edge being outbound and event-only | `IMPL-1410` | **Architecture Owner** — `ADR-0065` | ✅ **UNBLOCKED.** `ADR-0065` v2.0 is **`Accepted`**: the check reads an **`E-14`-fed projection local to `BC-12`**, with **no new edge**. `IMPL-1410` may start, scoped by `ADR-0065` **§7.1** |
+
+**This table is now empty of blockers.** It is kept, not deleted, because the row records a resolved
+dependency and the reasoning that resolved it — and because `TSF-BR-033` below still binds.
+
+`TSF-BR-033` *(restated at v0.5 — the release-criticality survives, the blockage does not.)* Row 1 is
+**release-critical.** `MP-RSK-02` is rated **Critical** and BC Map **L468** names the send-time check as one of
+its three mitigations. The **architectural** obstacle is removed, so the correct release gate is no longer
+*"is `ADR-0065` decided?"* but ⛔ *"is the check **built** to `ADR-0065` §7.1, including the fail-closed
+staleness gate?"* Accordingly:
+
+- ✅ `PRD-020` is **no longer held in `DRAFT` by an undecided ADR.**
+- ⛔ `PRD-020` **MUST NOT** be marked `READY` while the **implementation half** of `TSF-GAP-003` is open —
+  that is, while `IMPL-1410` is incomplete or while any of the five `ADR-0065` §7.1 items is missing.
+- ⛔ Shipping the `E-14` projection **without** the fail-closed staleness gate would ship a mitigation the
+  Rank 4 architecture requires in name only. `ADR-0065` **§3.6** states this directly: *"Option B without the
+  gate is NOT what was approved."* Such a build **MUST** be treated as row 1 still open.
+- The roadmap's `PRD-021` gate (Roadmap **L161**, **L164** — *"a release-blocking defect, not a schedule
+  change"*) is unchanged and still binds.
+
+**Row 1 is now the whole table, and that is the point.** One `Proposed` ADR, one Architecture Owner
+decision, one blocked implementation task. It is no longer competing for attention with six questions that
+V1 does not need answered.
+
+#### 24.2.1 🔵 The six rows that left this table, and where they went
+
+Each row below was **withdrawn from V1 scope** rather than resolved. Nothing was decided, no boundary
+moved, no contract amended — the V1 capability set was reduced to what the published architecture already
+permits, and these six fell outside it.
+
+| v0.2 row | Capability | Was "blocked by" | Why it is not a V1 blocker | Task | Recorded at |
+|---|---|---|---|---|---|
+| 2 | Graph/messaging risk signals (acceptance ratio, block rate) | `TSF-GAP-015` | The **signals** are deferred to V2. Four signals remain and are sufficient for V1 detection | `IMPL-1411` withdrawn | section 14.3.2, section 21.2.2 |
+| 3 | `Friction` band (graduated rate-limit tightening) | `TSF-GAP-012` | The **band** is deferred to V2. The V1 band set fits the closed **L318** shape unchanged | `IMPL-1412` withdrawn | section 14.4, section 14.6 |
+| 4 | Minor-safety severity floor | `TSF-GAP-014` | section 24.3 already places age-differentiated enforcement outside V1. No V1 requirement reads an age band | `IMPL-1417` withdrawn | section 24.3 |
+| 5 | Review of a reported **file** | `TSF-GAP-005` | ⚪ **Already decided, against.** `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169** refuse this admission. Reported files reach `BC-11`/`BC-15` by the outbound `E-14` that already exists | `IMPL-1418` withdrawn | section 29.1, `TSF-XC-065` |
+| 6 | Verified library-affiliation checks | `TSF-GAP-008` | V1 handles impersonation by removing the unverifiable claim, which needs no attestation | `IMPL-1421` withdrawn | section 29.2 row 9 |
+| 7 | Tenancy-level referral | `TSF-GAP-009` | V1 moderates Global Student surfaces only; there is no V1 route that terminates at `BC-19` | `IMPL-1424` withdrawn | section 24.3 |
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-040` | A capability **MUST NOT** appear in this table unless a **V1 requirement** in this document depends on it. A capability that is merely desirable, or that belongs to a later release, **MUST** be recorded in section 24.3 or section 25 instead. A blocked-work table that also carries out-of-scope work misreports the release's true critical path, and the misreport is always in the direction of appearing more blocked than it is |
+| `TSF-XC-070` | The six rows in section 24.2.1 **MUST NOT** be reinstated here without an authorised scope decision restoring the corresponding V1 capability. Reinstating the row and reinstating the capability are one act, not two — `TSF-XC-067` states the same rule for their ADRs |
+
+### 24.3 Explicitly not in V1 — and why that is correct rather than convenient
+
+| Deferred | Reason | Authority |
+|---|---|---|
+| Community & feed moderation (`BC-14`/`BC-15`) | Those contexts are **V2**; `grep moderator docs/30-product/` = **0 files**. There is nothing to moderate | BC Map **L118**/**L119**; registry **L391** |
+| Library-scoped moderation console | `F-1` + `X-05`; route undecided (§18.3) | `TSF-GAP-001`/`002` |
+| Enforcement rows 4 and 7 | Their executing contexts are V2 | §15.1 |
+| Proactive content classification | §10.4; no read path, no classifier | `TSF-GAP-011` |
+| Automated external-authority reporting | Jurisdictional/legal, not engineering | `TSF-XC-048` |
+| ML/heuristic risk scoring | V1 is transparent by design | `TSF-FR-060` |
+| Bulk enforcement | Deliberately absent | `TSF-FR-113` |
+| Reporter reputation as a suppression mechanism | Allowed only for queue position | `TSF-BR-024` |
+
+`TSF-XC-061` This PRD **MUST NOT** be read as pulling `BC-14` or `BC-15` into V1. Their V1/V2 placement is
+a Rank 1/Rank 4 scope decision recorded at BC Map **L118**/**L119** and registry **L391**. An unranked
+document does not move a context between releases.
+
+---
+
+## 25. Future Scope (V2+)
+
+| Capability | Prerequisite | Note |
+|---|---|---|
+| Community & feed moderation | `BC-14`/`BC-15` exist | Inherits §13's lifecycle and §15's action set unchanged; `TSF-INV-018` binds it in advance |
+| Library community console (route `R-2`) | §18.3 decision | **MUST** satisfy `TSF-INV-018` — authority ends at the library's own content |
+| Proactive content classification | A read path + a classifier | `TSF-FR-060` still applies: unexplainable output stays non-actionable |
+| ML-assisted risk | Labelled data from §14.5 + §16 | Must remain **advisory** (`TSF-BR-023`); explanation requirement does not lapse |
+| Cross-platform signal sharing | Legal basis, residency (`BC-19`) | High privacy cost; not assumed |
+| Automated authority reporting | `TSF-XC-048` resolved | Jurisdiction-specific |
+| Trusted-flagger programme | Reputation model matured | `TSF-BR-024`'s `CRITICAL` exemption survives |
+| Transparency reporting | `TSF-FR-133`/`134` aggregation | Suppression thresholds are mandatory, not optional |
+| Saga-based multi-context enforcement | `BC-28` (V2) | Would replace §15's fan-out; `TSF-BR-026` still governs effective state |
+
+`TSF-BR-034` No V2 capability **MUST** weaken a V1 invariant. Specifically: `TSF-INV-012` (no orphan
+action), `TSF-INV-013` (independent appeal), `TSF-INV-017`/`020` (no tenant identifiers),
+`TSF-INV-018` (library authority ceiling) and `TSF-INV-019` (recusal) are **permanent**. A V2 that needs
+one of them relaxed needs an ADR, not a sprint.
+
+---
+
+## 26. Testing Strategy
+
+Fourteen test classes. Each maps to an acceptance criterion in §27 and each is written so that a
+**failing** test names a specific harm, not a specific implementation.
+
+| # | Class | What it proves | Method |
+|---|---|---|---|
+| **T-1** | **Reporting** | Every surface can be reported; intake is idempotent; a duplicate is not a second accusation | Integration, per surface |
+| **T-2** | **Lifecycle** | Only §13.2's transitions are reachable; `CLOSED` is terminal; no reopen | **State-machine exhaustive** — assert every *illegal* pair is rejected |
+| **T-3** | **Attribution** | No `EnforcementAction` exists without a case, actor and policy citation | Property-based; attempt orphan creation and assert failure |
+| **T-4** | **Enforcement propagation** | `TSF-EVT-002` reaches each consumer; idempotent on redelivery; no double restriction | Contract + duplicate-delivery |
+| **T-5** | **Synchronous containment** *(restated v0.5)* | A suspended person cannot send once the `E-14` projection is current; p99 ≤ 50 ms; **fails closed** on unreachability **and on staleness beyond `TSF-CFG-030`** | Integration + fault injection ✅ **UNBLOCKED** — `ADR-0065` `Accepted`. **MUST** include a *staleness-gate* case: hold `E-14` delivery past `TSF-CFG-030` and assert the send is **REFUSED** |
+| **T-6** | **Strike determinism** | Same history ⇒ same next action; decay applied; overturn removes the strike | Golden-case table |
+| **T-7** | **Appeal independence** | Enforcer cannot decide own appeal; approval chain excluded; timeout **queues**, never auto-upholds | Negative-path |
+| **T-8** | **Risk transparency** | Every signal is explainable and reproducible at a pinned rule version | Replay |
+| **T-9** | **Circuit breaker** | Automatic actions stop at the hourly cap and page; auto actions expire on silence | Load + clock |
+| **T-10** | **Tenant isolation** | No `tenantId`/`StudentRecordId` in any `BC-13` schema, payload, log or export | **Static + schema assertion**, plus `dart run tool/check_module_boundaries.dart` on `banned_symbols` |
+| **T-11** | **Admin containment** | No tenant-session path reaches any `BC-13` surface; no per-library safety statistic exists | Authorisation matrix, negative |
+| **T-12** | **Privacy & minimisation** | No message content retained outside case evidence; risk stores measures not observations; purge runs on the clock | Data-inspection + time-travel |
+| **T-13** | **Indistinguishability** | Denial ≡ not-found across every safety endpoint; uniform latency and shape on the send-time check | **Timing + response-shape differential** |
+| **T-14** | **Moderator accountability** | Evidence reads are audited; access is case-bound; no free-text search exists; recusal enforced | Integration + **negative capability** |
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-138` | **T-2** **MUST** be exhaustive over the transition matrix, asserting rejection of every pair not in §13.2. Testing only the happy path in a state machine that governs suspensions is not testing |
+| `TSF-FR-139` | **T-13** **MUST** assert timing indistinguishability, not merely equal status codes. `MP-GBR-22` is defeated by a measurable latency difference |
+| `TSF-FR-140` | **T-10** **MUST** run in CI as a build-failing check, aligned with the existing `banned_symbols` enforcement at yaml **L265–267** |
+| `TSF-FR-141` | *(restated v0.5.)* **T-5 MUST NOT** be marked skipped-and-forgotten while the **implementation half** of `TSF-GAP-003` is open. It **MUST** fail loudly as *blocked* until `IMPL-1410` lands, so the missing `MP-RSK-02` mitigation stays visible in every CI run. Once it lands, T-5 **MUST** become a normally-failing test, and **MUST NOT** be recorded as passing unless its staleness-gate case (`TSF-AC-025` clause **(b)**) passes — a projection-only build that allows the send during lag **MUST** fail T-5 |
+
+`TSF-FR-141` matters more than it looks. A skipped test is invisible; a failing blocked test is a standing
+reminder that the `MP-RSK-02` mitigation is not yet in place.
+
+⭐ **Why v0.5 tightened this rather than relaxing it.** Deciding `ADR-0065` removed an *architectural* excuse
+for T-5 being red; it did not make T-5 green. The risk the rule guards against has in fact **changed shape**:
+before v0.5 the danger was *"a blocked capability ships silently as done"*; after v0.5 it is *"a **partial**
+capability ships as done"* — an `E-14` projection built **without** the fail-closed staleness gate would make
+the obvious T-5 assertions pass while leaving the propagation window wide open. That is precisely why
+`TSF-AC-025` clause **(b)** is named in the rule: it is the one assertion a gate-less build cannot satisfy.
+
+⚠ **A register note, so the shortcut that was avoided is on the record.** The staleness gate deserved its own
+acceptance criterion, and the first draft of this edit allocated one as `TSF-AC-025a`. That was **withdrawn**:
+this PRD's `TSF-AC-*` register is strictly numeric and contiguous (`001`…`062`, no letter suffixes anywhere),
+§27.3's declared band `025`…`040` is **full**, and a suffixed ID would have been invisible to the mechanical
+contiguity check in §0.2 — a criterion no checker can see is `SID-4.56`'s *"rule that cannot be checked"*. The
+assertion was therefore folded into `TSF-AC-025` as an explicitly-labelled second clause, which changes no
+identifier count and leaves the band intact.
+
+`TSF-XC-062` Testing **MUST NOT** use real student data, real reports, or production evidence. A test
+fixture that contains a real minor's message is a privacy incident in a repository.
+
+---
+
+## 27. Acceptance Criteria
+
+62 criteria in Given/When/Then. Every criterion forward-referenced by §2's goals is defined here.
+
+### 27.1 Reporting (`TSF-AC-001`…`010`)
+
+| ID | Given / When / Then |
+|---|---|
+| `TSF-AC-001` | **Given** a signed-in student viewing a person's profile, **when** they report it, **then** a case is created and an acknowledgement is shown (`TSF-FR-044`, `TSF-FR-045`, `TSF-FR-046`) |
+| `TSF-AC-002` | **Given** a received message, **when** reported, **then** the case is created and the message is attached as evidence with provenance `reporter-submitted` (`TSF-FR-049`, `TSF-FR-050`) |
+| `TSF-AC-003` | **Given** a profile field, **when** reported, **then** a case is created citing the field, not the whole person (`TSF-FR-045`, `TSF-FR-008`) |
+| `TSF-AC-004` | **Given** a reported **file**, **when** the case is opened, **then** the console shows *no read path* and offers `UNRESOLVABLE_PENDING_ACCESS` (`TSF-FR-112`) |
+| `TSF-AC-005` | **Given** a community object in V1, **when** a report is attempted, **then** the surface is absent — not an error page (`TSF-FR-027`) |
+| `TSF-AC-006` | **Given** the same report submitted twice with one client key, **when** both arrive, **then** exactly one `AbuseReport` exists (`TSF-FR-048`) |
+| `TSF-AC-007` | **Given** two different reporters on the same subject and category inside the window, **when** both file, **then** both attach to **one** case and both are recorded (`TSF-FR-053`, `TSF-CFG-013`) |
+| `TSF-AC-008` | **Given** a `CRITICAL` category, **when** a duplicate arrives, **then** it is **not** auto-closed (`TSF-BR-017`) |
+| `TSF-AC-009` | **Given** any report, **when** it is stored, **then** the reporter's identity is absent from `TSF-EVT-001` (`TSF-EVT-001`, `TSF-INV-009`) |
+| `TSF-AC-010` | **Given** a subject who was reported, **when** they use the product, **then** nothing in any response reveals that a report exists (`TSF-FR-099`, `TSF-FR-126`, `TSF-FR-139`) |
+
+### 27.2 Lifecycle & attribution (`TSF-AC-011`…`024`)
+
+| ID | Given / When / Then |
+|---|---|
+| `TSF-AC-011` | **Given** a case at `NEW`, **when** any transition not in §13.2 is attempted, **then** it is rejected and the state is unchanged (`TSF-FR-138`) |
+| `TSF-AC-012` | **Given** a `CLOSED` case, **when** reopening is attempted, **then** it is rejected and a **new linked** case is offered (`TSF-FR-056`) |
+| `TSF-AC-013` | **Given** a severity-`HIGH` case, **when** `TRIAGED → ACTIONED` is attempted directly, **then** it is rejected (`TSF-FR-057`) |
+| `TSF-AC-014` | **Given** a `CRITICAL` minor-safety report and a queue of 10,000, **when** it arrives, **then** a human is paged within `TSF-CFG-005` — satisfies `G-6` |
+| `TSF-AC-015` | **Given** any transition, **when** it completes, **then** an immutable `CaseTransition` exists with actor and reason (`TSF-FR-009`) |
+| `TSF-AC-016` | **Given** a claimed case, **when** another moderator acts, **then** it is rejected absent recorded reassignment (`TSF-FR-107`) |
+| `TSF-AC-017` | **Given** a breached SLA, **when** the case is reassigned, **then** the breach remains recorded (`TSF-INV-011`) |
+| `TSF-AC-018` | **Given** a rule set that is disabled, **when** a report arrives, **then** it is still accepted and triageable (`TSF-BR-022`) |
+| `TSF-AC-019` | **Given** a `NO_VIOLATION` resolution, **when** metrics are computed, **then** it counts as a **correct** outcome (`TSF-BR-021`) |
+| `TSF-AC-020` | **Given** any `EnforcementAction`, **when** inspected, **then** it has a case, a named actor, a policy citation, and a scope — satisfies `G-2` (`TSF-FR-067`, `TSF-INV-001`) |
+| `TSF-AC-021` | **Given** an attempt to create an `EnforcementAction` without a case, **when** submitted, **then** it fails at the aggregate boundary (`TSF-INV-012`) |
+| `TSF-AC-022` | **Given** a permanent termination by one actor, **when** submitted, **then** it is rejected pending a second actor (`TSF-FR-069`, `TSF-INV-003`) |
+| `TSF-AC-023` | **Given** a suspension without an expiry, **when** submitted, **then** it is rejected (`TSF-FR-070`) |
+| `TSF-AC-024` | **Given** a case, **when** a moderator who is a named party attempts to act, **then** recusal is enforced (`TSF-INV-019`) |
+
+### 27.3 Enforcement & containment (`TSF-AC-025`…`040`)
+
+| ID | Given / When / Then |
+|---|---|
+| `TSF-AC-025` | *(restated v0.5 — now **two** clauses, both required.)* **(a) Fresh-projection clause. Given** a person suspended and `TSF-EVT-002` consumed within `TSF-CFG-030`, **when** they send a message, **then** the send **fails**. **(b) ⛔ Staleness-gate clause. Given** `TSF-EVT-002` delivery is withheld so that measured projection lag **exceeds** `TSF-CFG-030` — or freshness cannot be established at all — **when** any send is attempted, **then** the send is **REFUSED** (fail-closed), **not** allowed. Together these satisfy `G-5` as restated and BC Map **L468**'s *"belt-and-braces"*. ✅ **UNBLOCKED** — `ADR-0065` `Accepted`. ⚠ Clause (b) is the assertion a projection-only build **cannot** pass; see `ADR-0065` §3.6 and §7.1 item 2 |
+| `TSF-AC-026` | **Given** the enforcement store is unreachable, **when** a send is attempted, **then** it **fails closed** and an incident is raised (`TSF-FR-130`) |
+| `TSF-AC-027` | **Given** the send-time check under load, **when** measured, **then** p99 ≤ 50 ms (`TSF-FR-001`) |
+| `TSF-AC-028` | **Given** `TSF-EVT-002` delivered twice, **when** consumed, **then** exactly one restriction exists (`TSF-FR-123`) |
+| `TSF-AC-029` | **Given** overlapping restrictions, **when** effective state is read, **then** exactly one row answers *"what may this person do now?"* (`TSF-BR-026`) |
+| `TSF-AC-030` | **Given** two persons with identical strike histories, **when** the next action is computed, **then** the recommendation is identical — satisfies `G-3` (`TSF-INV-021`) |
+| `TSF-AC-031` | **Given** a strike past its decay half-life, **when** the ladder is computed, **then** its weight is reduced (`TSF-FR-074`, `TSF-CFG-004`) |
+| `TSF-AC-032` | **Given** a non-upheld action, **when** the ladder is computed, **then** no strike is counted (`TSF-FR-073`) |
+| `TSF-AC-033` | **Given** an account-takeover victim, **when** the case resolves, **then** **no strike** is recorded against the victim (`TSF-BR-005`) |
+| `TSF-AC-034` | **Given** a `CRITICAL` first offence, **when** actioned, **then** rows 8–9 are reachable with two humans (`TSF-FR-075`) |
+| `TSF-AC-035` | **Given** a global suspension, **when** the subject's library record is inspected, **then** membership, fees, seat and attendance are **unchanged** (`TSF-XC-040`/`041`) |
+| `TSF-AC-036` | **Given** a global enforcement action, **when** notifications are inspected, **then** **no** library, owner or staff was notified (`TSF-XC-042`) |
+| `TSF-AC-037` | **Given** an enforcement notice, **when** the subject has unsubscribed from notifications, **then** the notice is still delivered (`TSF-BR-030`) |
+| `TSF-AC-038` | **Given** a content removal, **when** storage is inspected, **then** the content is soft-deleted, not erased (`TSF-XC-038`) |
+| `TSF-AC-039` | **Given** any safety API, **when** a delete is attempted, **then** no such endpoint exists (`TSF-FR-127`) |
+| `TSF-AC-040` | **Given** the hourly automatic-action cap is reached, **when** another rule trips, **then** the system **stops** and pages (`TSF-FR-062`) |
+
+### 27.4 Appeals & correction (`TSF-AC-041`…`050`)
+
+| ID | Given / When / Then |
+|---|---|
+| `TSF-AC-041` | **Given** an action taken by moderator M, **when** M attempts to decide its appeal, **then** it is rejected — satisfies `G-4` (`TSF-INV-013`) |
+| `TSF-AC-042` | **Given** M's manager, **when** they attempt to decide M's appeal, **then** it is rejected (approval chain, `TSF-INV-013`) |
+| `TSF-AC-043` | **Given** a suspended account, **when** the subject files an appeal, **then** the appeal channel is reachable (`TSF-FR-078`) |
+| `TSF-AC-044` | **Given** an appeal SLA breach and no second moderator, **when** the clock expires, **then** the appeal is **queued**, never auto-upheld (`TSF-INV-016`) |
+| `TSF-AC-045` | **Given** an appeal, **when** decided, **then** the outcome cannot be harsher than the original (`TSF-FR-081`) |
+| `TSF-AC-046` | **Given** an overturned removal, **when** the appeal completes, **then** the content is **restored** (`TSF-FR-083`) |
+| `TSF-AC-047` | **Given** an overturned action, **when** the ladder is computed, **then** no residual mark remains (`TSF-FR-073`) |
+| `TSF-AC-048` | **Given** an appeal, **when** the subject reads it, **then** the reporter's identity is absent (`TSF-XC-044`) |
+| `TSF-AC-049` | **Given** a reporter dissatisfied with `NO_VIOLATION`, **when** they attempt to appeal, **then** no appeal path exists for them (`TSF-XC-045`) |
+| `TSF-AC-050` | **Given** an overturned action, **when** propagation completes, **then** the send-time check reflects it within `TSF-CFG-024` |
+
+### 27.5 Risk, privacy, isolation (`TSF-AC-051`…`062`)
+
+| ID | Given / When / Then |
+|---|---|
+| `TSF-AC-051` | **Given** any `RiskSignal`, **when** displayed, **then** it states rule, window, value, threshold and a human-readable sentence (`TSF-FR-058`) |
+| `TSF-AC-052` | **Given** a pinned rule version and stored signals, **when** replayed, **then** the assessment is identical (`TSF-FR-059`, `TSF-CFG-002`) |
+| `TSF-AC-053` | **Given** a risk score alone, **when** an action is attempted citing only it, **then** it is rejected (`TSF-BR-023`) |
+| `TSF-AC-054` | **Given** a high-risk subject and a `LOW` category, **when** severity is computed, **then** severity is unchanged (`TSF-INV-014`) |
+| `TSF-AC-055` | **Given** a rule whose FP rate exceeds its budget, **when** evaluated, **then** it is auto-demoted to `Observe` — satisfies `G-8` (`TSF-FR-065`, `TSF-CFG-020`, `TSF-CFG-021`) |
+| `TSF-AC-056` | **Given** an overturned automatic action, **when** the rule's FP rate is computed, **then** the overturn is counted; and **no strike** persists against the subject (`TSF-FR-064`, `TSF-FR-073`) |
+| `TSF-AC-057` | **Given** any `BC-13` table, payload, log line or export, **when** inspected, **then** it contains **no** `tenantId` and **no** `StudentRecordId` (`TSF-INV-020`) |
+| `TSF-AC-058` | **Given** a library-admin session, **when** any `BC-13` surface is requested, **then** the response is indistinguishable from not-found (`TSF-XC-049`/`050`) |
+| `TSF-AC-059` | **Given** safety metrics, **when** dimensions are enumerated, **then** no per-library or per-tenant dimension exists (`TSF-XC-059`/`060`) |
+| `TSF-AC-060` | **Given** a reported file with no read path, **when** the case closes, **then** it closes as `UNRESOLVABLE_PENDING_ACCESS` and is **counted** (`TSF-FR-129`) |
+| `TSF-AC-061` | **Given** a moderator reading evidence, **when** the read completes, **then** an audit event exists naming moderator, case and artefact; and no free-text evidence search exists (`TSF-FR-114`, `TSF-FR-116`) |
+| `TSF-AC-062` | **Given** a subject who requests deletion during an open `CRITICAL` case, **when** anonymisation runs, **then** the case survives anonymised and the review completes (`TSF-FR-091`) |
+
+---
+
+## 28. Risks & Mitigations
+
+Twelve risks. Rated on the Master PRD's scale. `TSF-RSK-001` is not a new risk — it **is** `MP-RSK-02`,
+restated at this document's level of detail, because the registry already names `PRD-020` as *"the highest
+unmitigated product risk in the register"* (**L323**).
+
+| ID | Risk | Sev | Mitigation | Residual |
+|---|---|---|---|---|
+| `TSF-RSK-001` | **Minor-safety incident on the social product** (= `MP-RSK-02`) | **Critical** | §17.4 severity floor; `CRITICAL` escalation with a paged SLA; guardian consent gate (`ID-6`); **synchronous send-time check** (BC Map **L468**) | ⚠ **High, on narrower grounds after v0.5.** `TSF-GAP-003`'s **architecture** half is closed, so the send-time check is now **implementable** — but it is not yet **implemented** (`IMPL-1410` open), and `TSF-GAP-014` remains open. Residual stays **High** until the check is built and tested per `ADR-0065` §7.1 |
+| `TSF-RSK-002` | **Enforcement does not contain in time** — eventual consistency lets a suspended abuser keep messaging | **Critical** | *(restated v0.5)* `TSF-FR-030`/`031` and `TSF-INV-007` as restated; an `E-14`-fed projection local to `BC-12`; **plus the fail-closed staleness gate** bounded by `TSF-CFG-030`; p99 ≤ 50 ms | ⚠ **High** — no longer because *"the transport does not exist"* (it does: `ADR-0065` `Accepted`, no new edge) but because **nothing is built yet**. ⛔ Note the residual can never reach zero: Option B delivers a **bounded** guarantee, so a sub-`TSF-CFG-030` window survives by design (`ADR-0065` §3.6) |
+| `TSF-RSK-003` | **Automated mass false enforcement** — a rule restricts thousands at machine speed | **High** | `TSF-FR-062` hourly cap → stop and page; `TSF-INV-002` no automatic suspension; `TSF-FR-061` silence expires; `TSF-FR-065` auto-demotion | **Low** — the circuit breaker is buildable today |
+| `TSF-RSK-004` | **Moderator insider abuse** — elevated access to minors' private messages | **High** | `TSF-FR-114` audited reads; `TSF-FR-115` case-bound; `TSF-FR-116` **no free-text search**; `TSF-INV-019` recusal; `TSF-FR-118` volume alerting | **Medium** — detection, not prevention; the role is necessarily privileged |
+| `TSF-RSK-005` | **Cross-tenant leak of global safety intelligence** to a library admin | **High** | `TSF-XC-049`/`050`; `TSF-XC-059`/`060`; `TSF-INV-017`/`020`; **`X-05` Separate Ways is structural, not procedural** | **Low** — the identifier is banned by a machine-checked manifest |
+| `TSF-RSK-006` | **Report system weaponised** — coordinated mass-reporting silences a target | **High** | `TSF-BR-010` accusation ≠ finding; `TSF-FR-055` never sort by count; `TSF-BR-013` reporter-abuse detection; `TSF-INV-014` risk cannot raise severity | **Medium** — cheap to attempt, so it must be measured continuously |
+| `TSF-RSK-007` | **Grooming undetected** — the highest-consequence false negative | **Critical** | User reporting on every surface; `CRITICAL` routing; `TSF-XC-019` acknowledges the knowledge ceiling honestly | ⚠ **High** — V1 is reactive by design (§10.4); this is a scope decision, not a defect |
+| `TSF-RSK-008` | **Safety system becomes a surveillance asset** | **High** | `TSF-FR-084` minimisation; `TSF-FR-086` measures not observations; `TSF-FR-085` no content retention; §17.2 purge on the clock | **Low–Medium** — depends on purge actually running (`TSF-FR-087`) |
+| `TSF-RSK-009` | **Deletion used to escape investigation** | **High** | `TSF-FR-091` blocks silent anonymisation during an open `CRITICAL` case or legal hold; `TSF-FR-089` case survives anonymised | **Low** |
+| `TSF-RSK-010` | **Moderation capacity exceeded** — queue grows faster than humans | **High** | `TSF-FR-004` 10,000-case design point; severity-then-age ordering; `TSF-BR-022` automation degrades gracefully; §23 backlog alerts | **Medium** — an operational and hiring risk, not solvable in code |
+| `TSF-RSK-011` | **A blocked capability ships silently as "done"** | **High** | `TSF-FR-141` blocked tests fail loudly in CI; §24.2's table; `TSF-BR-033` forbids `READY` while row 1's **implementation** half is open | **Low–Medium** — ⚠ **raised at v0.5.** §24.2 row 1 now reads *"UNBLOCKED"*, which is easier to mistake for *"done"* than *"blocked"* ever was. The controlling assertion is `TSF-AC-025` clause **(b)** |
+| `TSF-RSK-012` | **Two moderation systems diverge** — a future `R-2` library console develops its own vocabulary and ladder | **Medium** | `TSF-INV-018` recorded **in advance**; `TSF-BR-034` V1 invariants are permanent; §25 requires inheritance of §13/§15 | **Medium** — mitigation is documentary until `R-2` exists |
+
+`TSF-BR-035` *(restated v0.5 — the v0.4 wording has been falsified by events and is corrected here.)*
+`TSF-RSK-001` and `TSF-RSK-002` **MUST** be re-rated at implementation gate. v0.4 asserted their residuals were
+**High** *"solely because `TSF-GAP-003` is open"* and that resolving *"that one architectural question moves
+both to **Low**."* ⛔ **That was wrong, and v0.5 proves it wrong rather than quietly deleting it.** The
+architectural question **has** been resolved (`ADR-0065` `Accepted`) and **neither residual moved**, because a
+decision is not a mitigation. The corrected rule:
+
+- Both residuals stay **High** while `IMPL-1410` is open. Re-rating is earned by **working, tested code**, not
+  by an `Accepted` ADR — `SID-4.56`: *"a rule that cannot be checked SHALL be treated as unmet."*
+- Both may move to **Low** only when T-5 passes **including `TSF-AC-025` clause (b)**, the staleness gate.
+- ⛔ `TSF-RSK-002` **MUST NOT** be re-rated below **Low** at any point. Option B's guarantee is *bounded*, so a
+  residual propagation window under `TSF-CFG-030` persists permanently by design.
+
+§24.2 row 1 is still listed first, but as the highest-leverage **build**, no longer the highest-leverage
+decision.
+
+`TSF-RSK-007`'s residual is stated as **High** rather than mitigated, because the honest position is that
+a reactive-only system on a minor-heavy platform carries real risk. §10.4 and `TSF-XC-019` record that as
+a deliberate V1 choice with a named cost, not as a claim of coverage.
+
+---
+
+## 29. ADR Requirements
+
+⚠ **Rewritten in v0.3.** The **v0.2** text of this section opened with the words *"Nine ADRs."* That
+count was produced by asking *"what has this document left open?"* -- a question that mints one candidate
+ADR per open question, and therefore always mints too many. Re-derived against the **accepted** ADR set,
+and against V1 scope as it actually stands, this section **shrank**: from nine candidate ADRs to **one
+genuine V1 blocker**. One candidate was withdrawn because the decision already exists and is `Accepted`;
+two dissolved when V1 scope was reduced to what the architecture already permits; five were always V2
+questions wearing V1 clothing.
+
+**This PRD does not author ADRs** -- an unranked document cannot amend Rank 4. It specifies what an ADR
+must decide, and it is now equally explicit about which ADRs must **not** be opened.
+
+### 29.0 Classification -- what is actually blocking V1
+
+✅ **Updated at v0.5. The blocker count is now ZERO.** `ADR-0065` was the sole entry in the ⛔ class; it is
+now `Accepted`, so the class is empty. What replaces it is **not** another decision but a **build**
+(`IMPL-1410`), which is tracked in §30.2 and gated by `TSF-BR-033`, not here.
+
+| Class | ADRs | V1 consequence |
+|---|---|---|
+| ⛔ **Genuine V1 blocker** | *(none)* | **0.** ✅ The class is empty as of v0.5 |
+| ✅ **Decided at v0.5 — was the sole V1 blocker** | **`ADR-0065`** | **0.** `Accepted`: an `E-14`-fed projection local to `BC-12`, **no new edge**. `IMPL-1410` is **UNBLOCKED**; `PRD-020` is no longer held in `DRAFT` by an undecided ADR. ⚠ It is still held from `READY` by the **unbuilt** check |
+| ⚪ **Already decided** | ~~`ADR-0069`~~ | **0.** `ADR-0055` and `ADR-0059` already answered it, and answered it *against* |
+| 🟡 **Resolvable by V1 scope reduction, no ADR needed** | `ADR-0066`, `ADR-0067` | **0.** The V1 capability is deliverable without the decision |
+| 🔵 **Correctly deferred** | `ADR-0068`, `ADR-0070`, `ADR-0071`, `ADR-0072`, `ADR-0073` | **0.** Each governs scope V1 does not contain |
+
+| ID | Requirement |
+|---|---|
+| `TSF-BR-037` | An ADR **MUST NOT** be opened from this section while a **V1 answer already exists** -- whether that answer is an `Accepted` ADR, a published contract that already carries the needed shape, or a V1 scope boundary that removes the question. An ADR register padded with questions nobody must answer in order to ship V1 hides the one question that must be answered. Register inflation is not diligence; it is the loss of the signal that diligence exists to produce |
+
+### 29.1 ⚪ `ADR-0069` — WITHDRAWN. The decision already exists and is `Accepted`
+
+**v0.2** listed `ADR-0069` as *"whether `BC-13` is admitted to `E-22` for reported-file review only,
+revisiting `ADR-0055` section 3."* It has been measured against the accepted ADR set and **withdrawn**.
+Two `Accepted` ADRs have already run exactly that test on exactly that context and refused it -- one in
+prose, one in code.
+
+| Authority | Status | Verbatim finding |
+|---|---|---|
+| `ADR-0055` **L114** | **Accepted** | On `BC-13`: *"**NO.** Moderation reaches File & Media by **`E-14`**, which is **outbound from `BC-13`** ... `BC-13` instructs deletion; it does not consume the file capability inbound"* -- **DO NOT ADMIT** |
+| `ADR-0055` **L139** | **Accepted** | *"**`BC-11` and `BC-13` are NOT admitted.** They fail the section 3 necessity test. **A future need must be its own ADR**"* |
+| `ADR-0059` **L162** | **Accepted** | Adding `BC-13`: *"**Rejected** -- reverses `ADR-0055` section 4.3 without an ADR"* |
+| `ADR-0059` **L169** | **Accepted** | *"A `BC-11` or `BC-13` caller is refused **by code**"* |
+
+`ADR-0055` did not overlook `BC-13`. It tested `BC-11` and `BC-13` **separately**, named `BC-13`
+explicitly, and admitted neither. `ADR-0059` then made that refusal executable. Opening `ADR-0069` would
+therefore not be asking an open question; it would be a request to **supersede two `Accepted` ADRs** --
+and the evidence v0.2 offered for doing so was `TSF-FR-129`'s false-negative metric, a measurement that
+**cannot exist until a system runs**. An ADR cannot be justified by evidence its own subject must first be
+built in order to produce.
+
+`ADR-0055` **L139** already states the correct route for a future need: *its own ADR*. That route stays
+open. What is withdrawn is the claim that V1 needs it.
+
+| ID | Requirement |
+|---|---|
+| `TSF-XC-065` | `BC-13` **MUST NOT** be admitted to `E-22` in V1. `TSF-GAP-005` is reclassified from *"open gap"* to **"closed by existing ruling -- `ADR-0055` section 4.3, enforced by `ADR-0059`"**. `IMPL-1418` is **withdrawn from V1 scope**, not blocked: a blocked item holds the release, and this one does not, because reported-file review reaches `BC-11` / `BC-15` by the outbound `E-14` that already exists |
+| `TSF-XC-066` | Any future admission of `BC-13` to `E-22` **MUST** be a new ADR that explicitly **supersedes** `ADR-0055` section 4.3 and amends `ADR-0059`'s enforced consumer list. It **MUST NOT** be effected by editing either ADR's decision text -- `ADR-INDEX` Process rule 2 forbids that -- and **MUST NOT** be effected by citing this PRD as authority (`TSF-XC-063`) |
+
+### 29.2 The remaining register, classified against the evidence
+
+Applying `TSF-BR-037` to all nine v0.2 rows removes one and defers seven.
+
+| # | ADR | Decides | Rank touched | Owner | Class | V1 status |
+|---|---|---|---|---|---|---|
+| 1 | **`ADR-0065`** | **The synchronous enforcement-check transport.** Option A -- a new `C/S` sync port `BC-12 -> BC-13`. Option B -- an event-fed projected enforcement state inside `BC-12`, fed by the **existing** `E-14`. Must satisfy BC Map **L468** | Rank 4 -- BC Map section 7 edge register; Matrix **L90** + **L254**; `tool/module_dependencies.yaml` **L255-L259** | Architecture Owner (ARB) | ✅ **Decided — no longer a blocker** | ✅ **`Accepted` at v2.0 (v0.5 of this PRD), under authority expressly conferred for this one decision.** **Option B chosen** — an `E-14`-fed projection local to `BC-12`, **with no new `BC-12` → `BC-13` edge** — because `BC-12` was **already** an entitled `E-14` consumer (BC Map **L433**, Matrix **L254**, yaml **L251-253**), so nothing in Rank 4 needed amending and **nothing was amended**. ⛔ Approved **only** as a two-part mechanism: the projection **plus** a fail-closed staleness gate bounded by `TSF-CFG-030`. `IMPL-1410` **UNBLOCKED**, scoped by `ADR-0065` §7.1 |
+| 2 | ~~`ADR-0066`~~ | Whether `BC-13` is admitted to the consumer cells at BC Map **L430** / **L428** / **L424** | Rank 4 -- BC Map section 9 | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.3 defers the three signals needing those cells -- *request-acceptance ratio*, *block rate*, *account age at first burst* -- to **V2**. The four surviving signals run on events `BC-13` is **already** a listed consumer of. `IMPL-1411` withdrawn from V1 |
+| 3 | ~~`ADR-0067`~~ | Whether `EnforcementActionTaken.action` admits a graduated `TIGHTEN_RATE_LIMITS` value | Rank 4 -- **L318** contract | Architecture Owner | 🟡 **Not opened** | **NOT REQUIRED FOR V1.** Section 14.6 defers the `Friction` band to **V2**. The V1 band set is expressible in the closed four-field shape already published at **L318**. `IMPL-1412` withdrawn from V1 |
+| 4 | ~~`ADR-0068`~~ | How an **age band** reaches `BC-13` without leaking a birth date | Rank 4 + `BC-18` | Architecture Owner + `BC-18` owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** Section 24.3 already places age-differentiated enforcement outside V1, and no V1 requirement reads an age band. `IMPL-1417` withdrawn from V1 |
+| 5 | ~~`ADR-0069`~~ | Whether `BC-13` is admitted to `E-22` for reported-file review | Rank 4 -- `E-22` **L331** | -- | ⚪ **Already decided, against** | **DO NOT OPEN.** See section 29.1. `IMPL-1418` withdrawn from V1 |
+| 6 | ~~`ADR-0070`~~ | **The library-scoped moderation route** -- `R-1`, `R-2` or `R-3` (section 18.3) | Rank 4 + Rank 1 scope | Architecture Owner + Product Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** V1 moderates Global Student surfaces only. `TSF-GAP-001` / `TSF-GAP-002` remain **disclosed gaps**, not blockers |
+| 7 | ~~`ADR-0071`~~ | Whether a **third** `BC-13` event is published (appeal outcome / case closure) | Rank 4 -- BC Map section 9 | Architecture Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** `TSF-FR-124`'s workaround is expressible in the existing **L318** shape and ships in V1 |
+| 8 | ~~`ADR-0072`~~ | Whether "Library official post" becomes an owned, reportable object | Rank 4 + Rank 1 | Product Owner + Architecture Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** The object does not exist in V1, so there is nothing to moderate. `TSF-GAP-010` is a forward-looking disclosure |
+| 9 | ~~`ADR-0073`~~ | Whether verified **library affiliation** exists as an attestation | Rank 1 product scope | Product Owner | 🔵 **Not opened** | **NOT REQUIRED FOR V1.** V1 handles impersonation by removing the unverifiable claim, which needs no attestation. `IMPL-1421` withdrawn from V1 |
+
+**Count:** one genuine V1 blocker, one withdrawn, two dissolved by scope reduction, five deferred to V2.
+**One ADR was created by this pass. Eight were deliberately not created.**
+
+#### 29.2.1 `ADR-0065`'s blast radius -- three artefacts, four line-sites
+
+`ADR-0065` section 4 records the amendment sites in full. They are reproduced here because **v0.2** of
+this section named only **one** of them (the BC Map edge table). A decision amended at one site while two
+others still forbid it leaves the repository self-contradictory rather than corrected.
+
+⛔⛔ **CORRECTED IN v0.4. v0.3 of this subsection stated that "one of the three is machine-enforced, so a
+prose-only amendment would fail the build." That claim is FALSE and is retracted.** It was measured, not
+inherited: `grep -n '_clusterContexts' tool/check_module_boundaries.dart` returns **exactly two lines** --
+**L241** (declaration) and **L435** (write). The set is **populated and never read**, so **no violation can
+be raised from it**, and the parser at **L420**-**L435** reads only each edge's `from`/`to` **context names**,
+never its **`id`**. **No checker compares an edge identifier against the allow-list.** `Accepted` `ADR-0033`
+section 6 had **already recorded this verbatim** -- *"the allow-list is enforced per edge ID: NO"* -- so v0.3
+contradicted an Accepted ADR's measured finding. **Why the error mattered:** it made Option A look more
+expensive than it is (a build failure attributed to it that cannot occur) and it offered false comfort that a
+partial amendment would be caught mechanically. **It would not be.** All three sites are enforced by
+**review**; an unlisted edge enters the manifest **silently**. `ADR-0065` v1.1 section 4.3 carries the same
+correction.
+
+| Site | Artefact | Line(s) | Nature of the amendment | Enforced by |
+|---|---|---|---|---|
+| 1 | `docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md` | section 7 edge register; governing rule at **L292** | A new edge row -- **or**, under Option B, an explicit finding that no new edge is needed | Review. **L292**: *"If an edge is not in this table, it does not exist"* |
+| 2 | `docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md` | **L90** *"Only edges `E-14`...`E-16`"* **and L254** `internal_edges_allowed: [ E-14, E-15, E-16 ]` | The same closed allow-list appears **twice in one file**. Both occurrences must move together, or the file contradicts itself | Review. **L86**: the list must be *"an explicit allow-list, not 'anything within the cluster'"* |
+| 3 | `tool/module_dependencies.yaml` | **L255-L259** -- `internal_edges:` `E-14` (event), `E-15` (import), `E-16` (port) | The **declared** machine-readable form of site 2 | ⛔ **REVIEW, not build.** See the correction note below |
+
+⛔ **`docs/40-implementation/TRACEABILITY_MATRIX.md` is NOT an amendment site for `ADR-0065`.** It was
+measured, not assumed: the file holds **no edge register**, and its count of `TSF-` identifiers is
+**zero**. What it *does* owe is a `TSF-*` coverage inventory -- a **Traceability Owner** duty at Stage 5
+of `PRD_LIFECYCLE.md` section 6, owed whenever `PRD-020` advances, following the section 2M / v1.17
+`FIL-*` precedent. Recording it as an *architecture* amendment site would misattribute one owner's duty to
+another. `ADR-0065` section 4.4 records the same finding for the same reason.
+
+| ID | Requirement |
+|---|---|
+| `TSF-FR-142` | `ADR-0065` **MUST** be `Accepted` before `PRD-020` leaves `DRAFT`. It is now **open and registered as `Proposed`** in `ADR-INDEX.md` -- a necessary but not sufficient state, because `Proposed` records the question without answering it. The eight rows classified ⚪, 🟡 or 🔵 above **MUST NOT** be opened for V1: each either has a standing answer or governs scope V1 does not contain |
+| `TSF-FR-143` | Each ADR above **MUST** apply a **per-context necessity test** in the manner of `ADR-0055` section 3, rather than admitting `domain/social` wholesale. The map is context-grained where the manifest is module-grained (`GCP-23`), and that asymmetry must be preserved |
+| `TSF-XC-063` | This PRD **MUST NOT** be cited as the authority for any decision above. It supplies the requirement and the evidence; the ADR supplies the decision |
+| `TSF-XC-067` | An ADR classified 🟡 or 🔵 above **MUST NOT** be reopened as a V1 blocker without first showing that the V1 scope reduction recorded in section 14.3, 14.6 or 24.3 has been **reversed by an authorised scope decision**. Reinstating a deferred capability and reinstating its ADR are one act, not two |
+
+`TSF-FR-143` is the lesson the repository has already learned twice. `ADR-0016` and `ADR-0055` both
+resolved this same defect class, and `ADR-0055` §3 established the better method by testing `BC-11` and
+`BC-13` **separately** and admitting neither. Repeating that discipline here is what keeps `BC-13` from
+acquiring capabilities it does not need simply because a sibling context needed one.
+
+---
+
+## 30. Implementation Checklist
+
+`IMPL-1400`…`1449`. Range measured free at `PRD-012a_IMPLEMENTATION_TASKS.md` **L140** — *"`IMPL-1400` + |
+Unallocated"*. `IMPL-1450`…`1499` reserved for the V2 community work of §25.
+
+### 30.1 Foundation — buildable today
+
+| Task | Work | Verifies |
+|---|---|---|
+| `IMPL-1400` | `ModerationCase` aggregate + `CaseTransition`, one transaction | `TSF-INV-012`, `TSF-AC-021` |
+| `IMPL-1401` | The 7-state machine with **rejection of every illegal pair** | `TSF-FR-138`, `TSF-AC-011`/`012`/`013` |
+| `IMPL-1402` | `AbuseReport` intake, idempotent, uniform responses | `TSF-AC-006`, `TSF-FR-126` |
+| `IMPL-1403` | `Evidence` append-only + provenance | `TSF-INV-010`, `TSF-AC-002` |
+| `IMPL-1404` | Severity table + dedup + routing + escalation queue | `TSF-AC-007`/`008`/`014` |
+| `IMPL-1405` | `SafetyPolicy` versioning; citation required on action | `TSF-FR-111`, `TSF-AC-020` |
+| `IMPL-1406` | `EnforcementAction` with scope/expiry validation; two-actor gate on row 9 | `TSF-FR-069`/`070`, `TSF-AC-022`/`023` |
+| `IMPL-1407` | `StrikeRecord` + decay + upheld-only rule | `TSF-AC-030`/`031`/`032` |
+| `IMPL-1408` | `EffectiveRestriction` single-row projection, rebuildable | `TSF-FR-120`, `TSF-AC-029` |
+| `IMPL-1409` | The two events through the transactional outbox, idempotent | `TSF-EVT-001`/`002`, `TSF-AC-028` |
+
+### 30.2 Blocked — do not start before the ADR — ✅ **NOW EMPTY**
+
+⚠ **Corrected in v0.3. Seven tasks were listed here. One remained.**
+✅ **Corrected again in v0.5: that last task is UNBLOCKED, and this table is now empty.**
+
+| Task | Work | Blocked by | ADR |
+|---|---|---|---|
+| *(none)* | — | — | — |
+
+✅ **Released from this table at v0.5:**
+
+| Task | Work | Was blocked by | ✅ Released because | ⛔ Scope the implementer is bound to |
+|---|---|---|---|---|
+| `IMPL-1410` | **Synchronous send-time check**, fail-closed, p99 ≤ 50 ms | `TSF-GAP-003` — believed to need a transport that did not exist | **`ADR-0065` is `Accepted`.** The check reads an **`E-14`-fed projection local to `BC-12`**. `BC-12` was **already** an entitled `E-14` consumer, so **no new edge, no new grant, and no Rank 4 amendment** were required — and none were made | All **five** items in `ADR-0065` **§7.1**, of which item 2 is not optional: a **fail-closed staleness gate** bounded by `TSF-CFG-030`. Verified by **T-5** including `TSF-AC-025` clause **(b)** |
+
+⛔ **`IMPL-1410` is UNBLOCKED, which is not the same as complete.** Measurement of the repository at v0.5
+found **no implementation to unblock into**: `lib/domain/social/social.dart` is a **67-line stub** that
+describes itself as *"a stub that exists to hold a boundary open, not a half-built feature"*, and a
+repository-wide search for `EnforcementAction`, `enforcementState` and `messagingRestricted` returns
+**empty**. The task may now **start**; it has not **finished**, and `TSF-BR-033` still forbids `READY`
+until it does.
+
+🔵 **Withdrawn from V1 scope** — not blocked, not scheduled, not awaiting a decision. Full reasoning
+in section 24.2.1; the ADR classification is in section 29.2.
+
+| Task | Work | Was blocked by | Withdrawn because |
+|---|---|---|---|
+| `IMPL-1411` | Graph/messaging risk signals | `TSF-GAP-015` | Signals deferred to V2 — section 14.3.2. `ADR-0066` not opened |
+| `IMPL-1412` | `Friction` band rate-limit recommendation | `TSF-GAP-012` | Band deferred to V2 — section 14.4. `ADR-0067` not opened |
+| `IMPL-1417` | Minor-safety severity floor from an age band | `TSF-GAP-014` | Age-differentiated enforcement is already out of V1 — section 24.3. `ADR-0068` not opened |
+| `IMPL-1418` | Reported-file review path | `TSF-GAP-005` | ⚪ **Already decided against** by `ADR-0055` / `ADR-0059` — section 29.1. `ADR-0069` **withdrawn** |
+| `IMPL-1421` | Verified library-affiliation enforcement | `TSF-GAP-008` | No attestation needed for V1's unverifiable-claim removal. `ADR-0073` not opened |
+| `IMPL-1424` | `BC-13` → `BC-19` referral transport | `TSF-GAP-009` | V1 moderates Global Student surfaces only |
+
+`TSF-BR-041` A task **MUST NOT** carry the ⛔ blocked marker unless a **V1** capability depends on it and
+the decision that unblocks it is genuinely open. A task withdrawn from scope **MUST** be recorded as
+withdrawn, with the section that withdrew it, so that the count of blocked tasks equals the number of
+decisions the release is actually waiting on. In v0.2 that count read seven and was one.
+
+### 30.3 Risk engine, appeals, privacy
+
+| Task | Work | Verifies |
+|---|---|---|
+| `IMPL-1413` | Own-case signals (velocity, repeat enforcement, coordination) | `TSF-AC-051` |
+| `IMPL-1414` | `RiskAssessment` with pinned rule version, replayable | `TSF-FR-059`, `TSF-AC-052` |
+| `IMPL-1415` | **Circuit breaker** — hourly cap, stop and page; auto-expiry on silence | `TSF-FR-061`/`062`, `TSF-AC-040` |
+| `IMPL-1416` | FP-rate computation + auto-demotion | `TSF-FR-064`/`065`, `TSF-AC-055` |
+| `IMPL-1419` | Appeal intake **reachable while suspended** | `TSF-FR-078`, `TSF-AC-043` |
+| `IMPL-1420` | Independent-decider enforcement incl. approval chain; queue-on-timeout | `TSF-INV-013`/`016`, `TSF-AC-041`/`042`/`044` |
+| `IMPL-1422` | Reversal propagation + content restore | `TSF-FR-082`/`083`, `TSF-AC-046`/`050` |
+| `IMPL-1423` | Strike removal on overturn, no residual mark | `TSF-FR-073`, `TSF-AC-047` |
+| `IMPL-1425` | Retention clocks + automatic purge + legal hold | `TSF-FR-087`/`088` |
+| `IMPL-1426` | `PersonAnonymised` handling; block escape-by-deletion | `TSF-FR-089`/`091`, `TSF-AC-062` |
+| `IMPL-1427` | Guardian disclosure limited to `guardianOf` scope | `TSF-FR-095` |
+
+### 30.4 Console, isolation, observability
+
+| Task | Work | Verifies |
+|---|---|---|
+| `IMPL-1428` | Queue: severity-then-age, no count sort, 10,000-case performance | `TSF-FR-105`/`106`, `TSF-AC-019` |
+| `IMPL-1429` | Claim / reassign / SLA display, breach not clearable | `TSF-FR-107`/`108`, `TSF-AC-016`/`017` |
+| `IMPL-1430` | Case view with **advisory-labelled** risk + recommendation | `TSF-FR-110`, `TSF-AC-053` |
+| `IMPL-1431` | Audited evidence reads; **case-bound access; no free-text search** | `TSF-FR-114`/`115`/`116`, `TSF-AC-061` |
+| `IMPL-1432` | Recusal enforcement | `TSF-INV-019`, `TSF-AC-024` |
+| `IMPL-1433` | Separate console surface, platform-role auth only | `TSF-XC-052`, `TSF-AC-058` |
+| `IMPL-1434` | `UNRESOLVABLE_PENDING_ACCESS` closure + counter | `TSF-FR-129`, `TSF-AC-060` |
+| `IMPL-1435` | **CI check: no `tenantId` / `StudentRecordId` anywhere in `BC-13`** | `TSF-INV-017`/`020`, `TSF-FR-140`, `TSF-AC-057` |
+| `IMPL-1436` | Denial ≡ not-found across all endpoints, **incl. timing** | `TSF-FR-126`/`139`, `TSF-AC-010`/`058` |
+| `IMPL-1437` | Aggregate-only metrics with cell suppression; **no tenant dimension** | `TSF-FR-133`/`134`, `TSF-AC-059` |
+| `IMPL-1438` | Alerting: fail-open, SLA breach, cap breach, moderator read volume | `TSF-FR-130`, `TSF-FR-118` |
+| `IMPL-1439` | Config accessors via `E-19` for all 21 `TSF-CFG-*` | `TSF-FR-063` |
+| `IMPL-1440` | Audit emission via `E-20` on every decision and config change | `TSF-FR-136`/`137` |
+| `IMPL-1441` | Notification facts via `E-23`; unsubscribe cannot suppress a notice | `TSF-BR-030`, `TSF-AC-037` |
+
+### 30.5 Test build-out
+
+| Task | Work |
+|---|---|
+| `IMPL-1442` | T-1, T-2 (exhaustive), T-3 |
+| `IMPL-1443` | T-4, **T-5 as a loud blocked failure** (`TSF-FR-141`) |
+| `IMPL-1444` | T-6, T-7 |
+| `IMPL-1445` | T-8, T-9 |
+| `IMPL-1446` | T-10, T-11 |
+| `IMPL-1447` | T-12, T-13 |
+| `IMPL-1448` | T-14 |
+| `IMPL-1449` | Full `TSF-AC-001`…`062` traceability sweep |
+
+### 30.6 Governance actions this document does **not** perform
+
+⛔ **No repository file was modified to produce this PRD.** The following are required and are **not
+mine to execute** (§0.6):
+
+| # | Action | Owner | Gap |
+|---|---|---|---|
+| 1 | `PRD_REGISTRY.md` **L320** `PLANNED` → `DRAFT` | Governance Owner | `TSF-GAP-013` |
+| 2 | `PRD_OWNERSHIP_MODEL.md` **L202** register the `TSF-` prefix and `IMPL-1400`…`1449` | Governance Owner | `TSF-GAP-013` |
+| 3 | `PRD_DEPENDENCY_GRAPH.md` **L118** re-state `D-16` now that `PRD-020` has a specification | Governance Owner | `TSF-GAP-013` |
+| 4 | `PRODUCT_IMPLEMENTATION_ROADMAP.md` **L152** Wave 4.1 status | Governance Owner | `TSF-GAP-013` |
+| 5 | ✅ **DONE (v0.3)** — `ADR-0065` created as **`Proposed`** and registered in `ADR-INDEX.md`. `ADR-0066`…`ADR-0073` **deliberately NOT opened**: one is already decided (section 29.1) and seven are outside V1 scope (section 29.2) | Architecture Owner | section 29 |
+| 6 | ✅ **DONE (v0.5)** — `ADR-0065` **DECIDED and `Accepted`** under expressly conferred authority: **Option B**, an `E-14`-fed projection local to `BC-12`, **no new edge**. ⛔ Still **no Rank 4 document amended** — none needed amending, which is precisely why Option B was available | Architecture Owner | `TSF-FR-142` |
+| 7 | ⛔ **Build `IMPL-1410`** to `ADR-0065` §7.1, incl. the fail-closed staleness gate. This is what now holds `READY` — not a decision | `BC-12` owner | `TSF-GAP-003` *(implementation half)* |
+
+`TSF-FR-144` This document **MUST NOT** be treated as conferring `DRAFT` status on itself, and **MUST
+NOT** be cited as authority against any ranked document. It is **Unranked** (header), and its value is the
+measurement it carries, not the standing it claims.
+
+---
+
+## Document control
+
+| | |
+|---|---|
+| **Written at** | `9226f86`, 2026-08-22 |
+| **Status** | `DRAFT` v0.5 — Stage 2 |
+| **Rank** | **Unranked** |
+| **Repository changes made by this document** | **None to any pre-existing architecture, ownership, boundary or code file.** v0.3 created `ADR-0065` as **`Proposed`** and registered one row in `ADR-INDEX.md`. v0.4 changed this file and `ADR-0065` only — corrections plus disclosed evidence, no decision. **v0.5 changed exactly three files: this one, `ADR-0065` (→ v2.0 `Accepted`) and the `ADR-0065` row plus count cell in `ADR-INDEX.md`.** ⛔ **No Rank 4 document was amended**: `LIBOORA_BOUNDED_CONTEXT_MAP.md`, `LIBOORA_MODULE_DEPENDENCY_MATRIX.md`, `tool/module_dependencies.yaml` and `tool/check_module_boundaries.dart` are **byte-unchanged** — verified by empty `git diff`. **No `Accepted` ADR's decision text was edited, and no ADR was superseded or deprecated.** ⛔ **No code file was written**: `git status --porcelain -- lib test packages web pubspec.yaml android` returns **empty** |
+| **Registers** | **400** identifiers across 9 registers, all contiguous, no reuse (§0.2, mechanically re-derived at v0.5). **v0.5 adds exactly one identifier** — `TSF-CFG-030`, the projection-staleness budget. Three requirements (`TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007`) were **restated in place, keeping their numbers**, which `PRD_LIFECYCLE.md` §5 permits: a number is bound to a slot, and restating the requirement occupying a slot is not reallocation |
+| **Blocking decision** | ✅ **NONE. `ADR-0065` is `Accepted` as of v0.5** — the finding v0.4 identified but could not make has now been made under **expressly conferred Architecture Owner authority**, and it went **in favour of the existing `E-14` projected enforcement state, with no new `BC-12` → `BC-13` edge**. `TSF-FR-031`'s *"MUST NOT rely on its own `E-14` projection alone"* was held to be **over-specification by an unranked `DRAFT`** and has been restated. ⚠ **The conferral was for this one decision only** (`ADR-0033` **L169**: *"a conferral for one act is not a standing licence"*); this document remains **Unranked** and `TSF-XC-063` still binds it. ⛔ **What now blocks `READY` is a build, not a decision**: the implementation half of `TSF-GAP-003` (`IMPL-1410`) per `ADR-0065` §7.1 |
+
+### v0.2 correction record
+
+v0.1 was written section-by-section and its front matter forecast register sizes that the finished text
+overran. v0.2 changes **no requirement, no boundary and no decision** — it reconciles the document to itself.
+
+| # | Corrected | Was | Now |
+|---|---|---|---|
+| 1 | §0.2 register table | Forecast 314 identifiers | **Measured 385**, all contiguous |
+| 2 | `TSF-CFG-*` | **8 IDs bound to two different meanings** (`006`–`012`, `014` reused in §16/§17/§19/§20/§23) | Second uses renumbered `TSF-CFG-022`…`029`; all 29 defined once, in §20.4 |
+| 3 | `TSF-INV-004` | Cited in §15.1 and §13.1, never defined | Defined in §15.1 — **attributability**, four required fields for the life of the action |
+| 4 | `G-3` (strike determinism) | Cited `TSF-INV-005`, which is the *discovery-pipeline* invariant | Cites new **`TSF-INV-021`**, defined in §15.3 |
+| 5 | `G-4` + §4 personas (appeal independence) | Cited `TSF-INV-006`, which is the *library-scoped actor* invariant | Cites **`TSF-INV-013`** |
+| 6 | Send-time check cross-references (§2.3, §5.4, §6.1) | Cited `§11.4` — which is *"library official post — refused"* | Cites **§10.1**, the synchronous check |
+| 7 | §0.5 closing line | *"§5 and §11 build on it"* | *"§6 and §10 build on it"* |
+
+Item 2 was the material one: a configurable cited as an appeal window in §16 and as a harassment triage SLA in
+§12 is a **specification defect that would have shipped as a behaviour defect**. It is recorded here rather than
+silently repaired, because §0.2 publishes its registers as a promise and a reader who quoted v0.1 deserves to
+see what moved. `TSF-BR-036` and `TSF-XC-064` were added with §20.4 to prevent the class from recurring.
+
+---
+
+### v0.5 correction record — the pass that decided the blocker, and closed exactly half of it
+
+✅ **v0.5 was given what v0.4 lacked: express Architecture Owner authority for one decision.** It exercised
+that authority, chose **Option B**, and then found that the instruction's own condition prevented it from
+closing `TSF-GAP-003` in full. Both halves of that outcome are recorded here.
+
+| # | Changed | Was (v0.4) | Now (v0.5) |
+|---|---|---|---|
+| 1 | `ADR-0065` status | `Proposed`, v1.1, no option chosen | **`Accepted`, v2.0.** **Option B** — an `E-14`-fed projection **local to `BC-12`**, **no new edge** |
+| 2 | `ADR-0065` reasoning | Options priced, not chosen | **§3.5** the ruling on **7 grounds**; **§3.6** the counter-evidence *answered*, not dropped; **§3.7** the staleness budget; **§5.1** all 8 constraints discharged; **§6.0–§6.3** authority, limits and verbatim preservation; **§7.1** five mandatory implementation items |
+| 3 | §10.1 `TSF-FR-030`, `TSF-FR-031`, `TSF-INV-007` | Stood *"exactly as written"* | **Restated in place, keeping their numbers.** `TSF-FR-001`'s *"p99 ≤ 50 ms, fail closed"* is **preserved verbatim** — the ruling changes the mechanism, not the budget |
+| 4 | §20.4 | 29 `TSF-CFG-*` | **`TSF-CFG-030`** added — projection-staleness budget, p99 ≤ **5 s**, ceiling **30 s**, ⛔ ADR-required |
+| 5 | §0.2 register table | 399 | **400**, mechanically re-derived from the finished text |
+| 6 | `TSF-GAP-003` (§21.3, §24.2, §29) | ⚠ open, blocking | ✅ **architecture half CLOSED**; ⛔ **implementation half OPEN** |
+| 7 | `IMPL-1410` (§30.2) | ⛔ blocked | ✅ **UNBLOCKED**, scoped by `ADR-0065` §7.1. §30.2's blocked table is now **empty** |
+| 8 | `G-5`, `T-5`, `TSF-AC-025`, `TSF-FR-141` | Asserted an **absolute** pre-propagation guarantee | **Reconciled to the bounded guarantee**, each now requiring the **staleness-gate** case. `TSF-AC-025` gained an explicit clause **(b)** |
+| 9 | `TSF-BR-033`, `TSF-BR-035` | Gated on *"is the ADR decided?"* | **Restated** to gate on *"is the check **built**?"*. `TSF-BR-035`'s claim that resolving the ADR moves both residuals to **Low** is ⛔ **recorded as falsified** |
+| 10 | `TSF-RSK-001`, `TSF-RSK-002`, `TSF-RSK-011` | High *"because the transport does not exist"* | Still **High**, on the corrected ground that **nothing is built**. `TSF-RSK-011` **raised** to Low–Medium — *"UNBLOCKED"* is easier to misread as *"done"* than *"blocked"* was |
+| 11 | `TSF-AC-025a` | — | ⛔ **Allocated, then withdrawn.** The `TSF-AC-*` register is strictly numeric and §27.3's band `025`…`040` is full; a suffixed ID would have been invisible to the §0.2 contiguity check. Folded into `TSF-AC-025` as clause **(b)** instead |
+
+⭐ **The one thing v0.5 conceded rather than finessed.** `TSF-INV-007` required the send to fail *"even if
+the `E-14` event has not yet been consumed."* **A projection fed solely by `E-14` cannot satisfy that, and
+the ruling says so in `ADR-0065` §3.6 rather than quietly rewording it.** Option B delivers a **bounded,
+monitored, fail-closed** guarantee, not an absolute one. That concession is what generated `TSF-CFG-030` and
+the mandatory **fail-closed staleness gate**: *"Option B without the gate is NOT what was approved."* An
+invariant that overstates the delivered guarantee is worse than one that states it exactly, because it
+converts a known, bounded, monitored race into an undisclosed one.
+
+⭐ **Why `TSF-GAP-003` closed only halfway.** The instruction authorising this pass made closure
+**conditional** on *"the measured implementation"* satisfying `TSF-FR-030`/`031`/`INV-007`. Measurement found
+**no implementation to assess**: `lib/domain/social/social.dart` is a **67-line stub** self-described as *"a
+stub that exists to hold a boundary open, not a half-built feature"*, and a repository-wide search for
+`EnforcementAction`, `enforcementState` and `messagingRestricted` returns **empty**. Under `SID-4.56` — *"a
+rule that cannot be checked SHALL be treated as unmet"* — the condition **cannot** return *satisfied*.
+Rather than close the gap in defiance of the condition or refuse the instruction altogether, v0.5 applied the
+**`ADR-0055` → `ADR-0059` two-half precedent**: the architecture half closes now, the implementation half
+closes when the code exists. This is the disposition the instruction actually licenses.
+
+**What v0.5 did NOT do**, each item available and each declined:
+
+| ⛔ Not done | Why |
+|---|---|
+| **Did not amend the BC Map, the Dependency Matrix, `tool/module_dependencies.yaml` or `tool/check_module_boundaries.dart`** | All **Rank 4** or Rank-4-enforcing; all **byte-unchanged** (empty `git diff`). ⭐ **Nothing needed amending — that is *why* Option B was available.** `BC-12` was **already** an entitled `E-14` consumer: BC Map **L433**, Matrix **L254**, yaml **L251-253** |
+| **Did not create a `BC-12` → `BC-13` edge** | The instruction forbade it, and Option B does not need it. The Matrix's 3-edge allow-list (**L86**/**L90**/**L254**) is untouched, so §5's `F-3` — *"`BC-13` has exactly ONE edge, and it is outbound"* — **remains true** |
+| **Did not allocate `E-28` or any edge identifier** | No new edge exists to name. `E-27` stays **withdrawn** by `Accepted` `ADR-0033`, and `PRD_LIFECYCLE.md` §5 rule 5 keeps its number retired |
+| **Did not edit, promote, demote or supersede any `Accepted` ADR's decision text** | `ADR-INDEX` process rule 2. `ADR-0016`, `ADR-0032`, `ADR-0033`, `ADR-0055` and `ADR-0059` were **read as authority and left intact** — including `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169**, whose refusals Option B does not disturb |
+| **Did not close the implementation half of `TSF-GAP-003`, or mark `IMPL-1410` complete** | Nothing is built. ✅ *Unblocked* ≠ *done* |
+| **Did not mark this PRD `READY`, or move it out of `DRAFT`** | `TSF-BR-033` as restated forbids `READY` until the check is built. Registry status is the **Governance Owner's** to change, not this document's |
+| **Did not re-issue the documentation baseline** | Every amendment site is **Rank 4**; `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline only for Rank 1–3 |
+| **Did not treat the conferral as standing authority** | `ADR-0033` **L169**: *"a conferral for one act is not a standing licence."* It covered **this one decision**; `TSF-XC-063` still binds this document, which remains **Unranked** |
+| **Did not touch application code** | ⛔ No file under `lib/`, `test/`, `packages/`, `web/`, `android/` or `pubspec.yaml` was written. `lib/domain/social/social.dart` was **read only**, as evidence |
+
+---
+
+### v0.4 correction record — the pass that measured the blocker and did not decide it
+
+**v0.4 was asked to solve the remaining V1 blocker. It did not, and that is the finding rather than a
+shortfall.** Measurement narrowed the question, priced both options, corrected two false statements this
+document made about the repository, and then **stopped at the authority boundary**. What follows is what
+changed and what deliberately did not.
+
+| # | Corrected / added | Was (v0.3) | Now (v0.4) |
+|---|---|---|---|
+| 1 | §29.2.1 lead-in and site-3 row | *"One of the three is **machine-enforced**, so a prose-only amendment would **fail the build**"* | ⛔ **RETRACTED as FALSE.** `grep -n '_clusterContexts' tool/check_module_boundaries.dart` returns **two lines** — **L241** declaration, **L435** write. The set is **written and never read**; the parser at **L420**-**L435** reads only `from`/`to` **context names**, never an edge **`id`**. **No checker compares an edge identifier against the allow-list.** All three sites are **review**-enforced |
+| 2 | Authority for that retraction | — | **`Accepted` `ADR-0033` §6 had already measured and recorded it**: *"the allow-list is enforced per edge ID: **NO**"*. v0.3 asserted the **opposite of an Accepted ADR's measured finding**, which is the defect this record exists to surface |
+| 3 | Why the error was not harmless | — | It **inflated Option A's cost** (attributing to it a build failure that cannot occur) and gave **false assurance** that a partial amendment would be caught mechanically. **It would not be** — an unlisted edge enters the manifest **silently**. A decision taken on v0.3's figures would have been taken on wrong figures |
+| 4 | §10.1 — second Rank 4 line disclosed | Cited **L468** only | ⭐ Adds **BC Map L477**, in the same §10.1 table, stating the mitigation **with a location**: *"Synchronous enforcement check at send time **in BC-12**, in addition to event-driven self-restriction."* v0.3 did not cite it, and it **cuts against `TSF-FR-031` as worded** |
+| 5 | §10.1 — existing entitlement disclosed | — | **`BC-12` is ALREADY an entitled `safety.EnforcementActionTaken` consumer** at every level: BC Map **L433**, Matrix **L254**, manifest **L251**-**L253**. A projection-based check needs **no new grant at any rank** |
+| 6 | §10.1 — counter-evidence recorded with equal weight | — | ⛔ `TSF-INV-007` requires the send to fail *"even if the `E-14` event has not yet been consumed"* — which a projection fed **solely** by `E-14` **cannot** satisfy — and `TSF-FR-031` **forbids** that design in terms, while **L468**'s *"belt-and-braces"* implies **two** independent mechanisms. **The evidence does not point one way** |
+| 7 | The question, re-framed | *"Which transport?"* | **"Does `TSF-FR-031` correctly render Rank 4, or does an unranked `DRAFT` over-specify it?"** This is an act of **interpreting Rank 4** — `PRD_OWNERSHIP_MODEL.md` **L69** reserves it to the **Architecture Owner**, and **`TSF-XC-063` expressly denies it to this document** |
+| 8 | Duplicated line at §29.2.1 | The sentence beginning *"`TSF-FR-143` is the lesson the repository has already learned twice"* appeared **twice consecutively** — a v0.3 splice artefact | Reduced to **one** occurrence. No wording changed |
+| 9 | `ADR-0065` | v1.0 | **v1.1** — same corrections, plus new **§3.4** recording the two-sided evidence, and **§6 item 3** recording that **`E-27` MUST NOT be revived** (`PRD_LIFECYCLE.md` §5 rule 5, *"Numbers are never reused, even after withdrawal"*; withdrawn by `ADR-0033`). Next free identifier is **`E-28`**. **Still `Proposed`** |
+
+**What v0.4 deliberately did NOT do — and why each refusal was required:**
+
+| Not done | Governing rule |
+|---|---|
+| ⛔ **Did not choose Option A or Option B** | The choice turns on interpreting Rank 4. `PRD_OWNERSHIP_MODEL.md` **L69**; `TSF-XC-063` |
+| ⛔ **Did not restate `TSF-FR-030`, `TSF-FR-031` or `TSF-INV-007`** | Rewording them to fit Option B **is** choosing Option B, wearing the costume of an editorial fix. They stand **exactly as written** |
+| ⛔ **Did not amend the BC Map, the Dependency Matrix or `tool/module_dependencies.yaml`** | All three are **Rank 4**; all three are **byte-unchanged**. `ADR-0033` §4.2's rule holds: an ADR that does not name a document cannot authorise changing it |
+| ⛔ **Did not promote `ADR-0065` to `Accepted`** | `ADR-INDEX.md` status vocabulary; the Architecture Owner has not ruled. `ADR-0033` **L169**: *"a conferral for one act is not a standing licence"* |
+| ⛔ **Did not allocate an edge identifier** | Allocating `E-28` would presuppose Option A |
+| ⛔ **Did not close `TSF-GAP-003` or unblock `IMPL-1410`** | Neither is closable without the decision |
+| ⛔ **Did not add an identifier to any register** | Re-verified at **399**. A correction is not a requirement |
+| ⛔ **Did not touch application code** | No file under `lib/`, `test/`, `packages/`, `web/`, `android/` or `pubspec.yaml` was read or written |
+
+✅ **Superseded by v0.5 — this table is preserved, not corrected.** Five of its nine refusals were correct
+**for v0.4** and have since been **lawfully discharged** by v0.5 under expressly conferred authority: the
+choice between Option A and B, the restatement of `TSF-FR-030`/`031`/`INV-007`, the promotion of `ADR-0065`
+to `Accepted`, the closure of `TSF-GAP-003` (**architecture half only**) and the unblocking of `IMPL-1410`.
+⛔ **Four refusals still stand and were NOT discharged**: no Rank 4 document was amended, no edge identifier
+was allocated, no `Accepted` ADR's decision text was edited, and no application code was touched. The table
+stays as written because the reasons it gives were **sound at the time** — v0.4 lacked the authority v0.5 was
+given, and a record that erases its own earlier caution cannot be audited (`ADR-0032`/`ADR-0033` §7
+precedent: rewrite the reasoning, never delete it).
+
+---
+
+### v0.3 correction record — the governance cleanup pass
+
+v0.2 reconciled the document to itself. **v0.3 reconciles it to the repository.** Every open question was
+re-derived against the **accepted** ADR set and against V1 scope as it actually stands, and the result was
+a document that claims **less**: one blocking decision instead of nine, one blocked task instead of seven,
+four risk signals instead of seven, three enforcement bands instead of four.
+
+Nothing here is a new capability. **v0.3 adds no requirement that expands V1**, amends no external
+document, and decides nothing that belongs to another owner.
+
+| # | Corrected | Was (v0.2) | Now (v0.3) |
+|---|---|---|---|
+| 1 | §29 ADR register | *"Nine ADRs"* — nine candidate ADRs, all presented as open | **One** genuine V1 blocker (`ADR-0065`), one **withdrawn**, two dissolved by scope reduction, five deferred to V2. Classified in §29.0 |
+| 2 | `ADR-0069` | Listed as an open question — *"revisiting `ADR-0055` §3"* | ⚪ **WITHDRAWN.** `ADR-0055` **L114**/**L139** and `ADR-0059` **L162**/**L169** are `Accepted` and already refuse it. Recorded with all four verbatim authorities in §29.1. **The ADR was not written** |
+| 3 | `ADR-0065` | Specified but not opened | **Created as `Proposed`** and registered in `ADR-INDEX.md`. Two options framed (sync port / event-fed projection); **no transport chosen**; final decision left with the Architecture Owner |
+| 4 | `ADR-0065` blast radius | One site named (BC Map edge table) | **Three artefacts, four line-sites** — BC Map §7; Matrix **L90** *and* **L254**; `tool/module_dependencies.yaml` **L255–L259** (machine-enforced). §29.2.1 |
+| 5 | `TRACEABILITY_MATRIX.md` | Named as `ADR-0065`'s third amendment site | ⛔ **Rejected on measurement** — it holds no edge register and its `TSF-` count is **zero**. Its owed act is a Traceability Owner coverage inventory, not an architecture amendment. §29.2.1, `ADR-0065` §4.4 |
+| 6 | §14.3 opening claim | *"computable from events `BC-13` **already receives** … nothing here requires a new inbound edge"* | **False for 3 of 7 signals.** Written from publisher rows, not consumer cells. Each signal now measured against its own cell |
+| 7 | §14.3 signal set | 7 signals, all V1 | **4 in V1**, 3 deferred to V2 (`L430`×2, `L424`). `ADR-0066` leaves the V1 critical path |
+| 8 | §21.2 unlisted dependencies | 3 disclosed by `TSF-GAP-015` | **4.** `identity.PersonIdentityCreated` — consumer cell **L424** omits `BC-13` — was **never disclosed**. A fourth instance of the defect class, inside the section that disclosed the first three |
+| 9 | `TSF-GAP-015` | One gap covering all unlisted cells | **Split.** Rows 1, 2, 4 resolved by scope reduction. Row 3 (`PersonAnonymised`) is **not** a signal but an **erasure duty** — raised as new **`TSF-GAP-016`**, because scope reduction cannot dissolve it |
+| 10 | §14.4 / §14.6 `Friction` band | In V1; `IMPL-1412` blocked; `ADR-0067` routed | 🔵 **Deferred to V2.** V1 band set fits the closed **L318** shape unchanged. `ADR-0067` **not opened**; **L318** untouched |
+| 11 | §24.2 blocked table | **7 rows** — *"the most important table in the document"* | **1 row.** Six were out of V1 scope, not blocked. Withdrawn rows recorded in §24.2.1 with their destinations |
+| 12 | §30.2 blocked tasks | 7 ⛔ tasks (`1410`, `1411`, `1412`, `1417`, `1418`, `1421`, `1424`) | **1** ⛔ task (`IMPL-1410`). Six recorded as withdrawn from V1 scope |
+| 13 | §30.6 row 5 | *"Open `ADR-0065`…`ADR-0073` as `Proposed`"* | ✅ `ADR-0065` opened `Proposed`; `0066`…`0073` **deliberately not opened** |
+| 14 | §0.2 register table | 385 identifiers | **Re-measured: 399.** All nine registers contiguous, no reuse |
+| 15 | `TSF-FR-144` collision | — | The v0.3 draft of §14.3.1 allocated `TSF-FR-144`, **already bound** by v0.2 in §30.6. Renumbered to `145`; §21.2's to `146`. `TSF-FR-144` keeps its original meaning |
+
+**Items 2 and 5 are the two that mattered most, and both are refusals.** Item 2 declined to write an ADR
+the brief asked for, because two `Accepted` ADRs had already answered it — and the evidence offered for
+reopening it (`TSF-FR-129`'s false-negative metric) **cannot exist until a system runs**. Item 5 declined
+to record an amendment site the brief named, because measurement showed the file holds no edge register,
+and recording it would have **misattributed one owner's duty to another**. In both cases the instruction
+was followed by measuring it rather than by executing it.
+
+**Item 15 is the reason §0.2 is re-derived rather than incremented.** It is the same collision class as
+v0.2's eight `TSF-CFG-*` defects, and it was caught the same way. A register that is counted forward from
+its last value cannot detect a collision; only re-deriving every identifier from the finished text can.
+
+**What v0.3 did NOT do**, stated explicitly because each was available and each was declined: it did not
+amend the BC Map, the Module Dependency Matrix, or `tool/module_dependencies.yaml`; did not choose between
+`ADR-0065`'s Option A and Option B; did not set `ADR-0065` to `Accepted`; did not edit, promote or
+supersede any `Accepted` ADR; did not create `ADR-0066`…`ADR-0073`; did not promote any V2 or V3 capability
+into V1; did not renumber, reuse or retire any pre-existing identifier; and did not read or write a single
+code file.

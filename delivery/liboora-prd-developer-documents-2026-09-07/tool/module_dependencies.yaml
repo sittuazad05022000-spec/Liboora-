@@ -1,0 +1,724 @@
+# LIBOORA — Machine-readable module boundary rules
+#
+# Normative source for tool/check_module_boundaries.dart
+# Human-readable rationale: docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md
+# ADR-0011: BC-10 Global Person Identity is a rank-7.5 platform identity, not a social
+#           profile. domain/library may depend on it downward; L2 gains no exception.
+#
+# LAWS
+#   L1 acyclic (no exceptions)     L2 downward only       L3 domain -> ports only
+#   L4 capability never -> domain  L5 contracts import nothing
+#
+# MODES
+#   import  = compile-time import of the module barrel
+#   port    = interface declared by consumer, implemented elsewhere, DI-wired (NO import)
+#   event   = async only, via event platform, payload from contracts (NO import)
+#   command = published command handler via port, receiver re-validates (NO import)
+#   test    = permitted in test sources only
+
+version: 1
+default_mode: port
+default_decision: deny        # anything not listed is forbidden
+
+# ─────────────────────────────────────────────────────────────
+# RANKS — a module may only depend on strictly lower ranks
+# ─────────────────────────────────────────────────────────────
+ranks:
+  contracts: 0
+  platform/infrastructure: 1
+  platform/data: 2
+  platform/security: 2
+  platform/configuration: 3
+  platform/observability: 3
+  platform/services: 3
+  platform/event: 3
+  platform/tenancy: 4
+  platform/identity: 4
+  platform/audit: 5
+  platform/search: 5
+  platform/communication: 5
+  platform/integration: 5
+  platform/business: 6
+  platform/workflow: 6
+  platform/ai: 6
+  platform/analytics: 7
+  domain/person: 7.5            # ADR-0011 — below every domain, above every capability
+  domain/library: 8
+  domain/social: 8
+  app: 9
+
+# Not in the runtime graph
+non_runtime:
+  - docs
+  - tool
+  - test
+
+# ─────────────────────────────────────────────────────────────
+# SHARED KERNEL (L5)
+# ─────────────────────────────────────────────────────────────
+contracts:
+  # Defect R-5 closed: the shared kernel is a separate pure-Dart package, not a
+  # directory under lib/. `lib/contracts` never existed; law L5 is enforced by
+  # the package having an empty `dependencies:` rather than by a lint.
+  path: packages/liboora_contracts/lib
+  rank: 0
+  allowed_imports:
+    - "dart:core"
+    - "dart:async"
+    - "dart:convert"
+    - "dart:typed_data"
+  banned_imports:
+    - "package:flutter/**"
+    - "package:**"
+    - "dart:io"
+    - "dart:ui"
+  banned_symbols:
+    # Ubiquitous-language collisions — see BOUNDED_CONTEXT_MAP.md section 5
+    - symbol: "class Student "
+      use_instead: "StudentRecord (BC-01) or GlobalStudentProfile (BC-10)"
+    - symbol: "class Member "
+      use_instead: "MembershipHolder (BC-02) or CommunityMember (BC-15)"
+    - symbol: "class Payment "
+      use_instead: "FeePayment (BC-05) or SubscriptionCharge (BC-20)"
+    - symbol: "class Plan "
+      use_instead: "MembershipPlan (BC-02) or SubscriptionPlan (BC-20)"
+    - symbol: "class Invoice "
+      use_instead: "FeeDue (BC-05) or SubscriptionInvoice (BC-20)"
+    - symbol: "class Attendance "
+      use_instead: "StudentAttendance (BC-03) or StaffAttendance (BC-07)"
+    - symbol: "class Session "
+      use_instead: "AuthSession (BC-18) or StudySession (BC-15)"
+    - symbol: "class Role "
+      use_instead: "AccessRole (BC-18) or CommunityRole (BC-15)"
+    - symbol: "class Library "
+      use_instead: "TenantOrganisation (BC-19) or Branch (BC-06)"
+
+# ─────────────────────────────────────────────────────────────
+# DOMAIN — rank 8
+# ─────────────────────────────────────────────────────────────
+domain/library:
+  rank: 8
+  classification: core
+  contexts: [enrollment, membership, attendance, seating, fee, policy]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files
+    - platform/services:qr
+    - platform/services:idempotency
+    - platform/services:offline_sync
+    - platform/services:clock
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:indexer
+    - platform/business:entitlement
+    - platform/business:payment_intent
+    - platform/workflow:process_trigger
+    - platform/ai:assist
+    - platform/analytics:read_model
+    # AMENDMENT A-2 — AccountId resolution for the account-claim flow (edge E-11).
+    # Read-only, single-subject, no listing, no lookup by number.
+    - platform/identity:account_directory
+    # ADR-0011 — edge E-13, through an ACL. Resolve identity core fields for the
+    # non-nullable PersonId a StudentRecord holds. Rank 8 -> 7.5 is downward, so L2
+    # is satisfied literally and no cluster exception is needed.
+    - domain/person:identity_directory
+  emits_events: ["enrollment.*", "membership.*", "attendance.*", "seating.*", "fee.*", "policy.*"]
+  consumes_events:
+    - billing.EntitlementChanged
+    - tenancy.TenantSuspended
+    - safety.EnforcementActionTaken
+    # AMENDMENT A-2 — claim-flow facts. Class D only.
+    - iam.AccountVerified
+    - iam.AccountStatusChanged
+  internal_edges:                 # only these intra-cluster edges exist
+    - { id: E-01, from: enrollment,  to: membership,  mode: event }
+    - { id: E-02, from: membership,  to: seating,     mode: port  }
+    - { id: E-03, from: membership,  to: attendance,  mode: port  }
+    - { id: E-04, from: policy,      to: attendance,  mode: port  }
+    - { id: E-05, from: policy,      to: seating,     mode: port  }
+    - { id: E-06, from: policy,      to: fee,         mode: port  }
+    - { id: E-07, from: membership,  to: fee,         mode: event }
+    - { id: E-08, from: attendance,  to: seating,     mode: event }
+    - { id: E-09, from: enrollment,  to: fee,         mode: event }
+    - { id: E-10, from: fee,         to: membership,  mode: event }
+  banned_imports:
+    - "domain/social/**"          # X-05 Separate Ways
+    - "domain/person/**"          # ADR-0011: reach it by PORT (E-13 ACL), never by import
+    - "platform/integration/**"   # X-03 no vendor knowledge
+    - "platform/communication/**" # X-04 emit facts instead
+    - "app/**"
+    - "package:http"
+    - "package:dio"
+    - "package:firebase_**"
+    - "package:hive**"
+    - "package:shared_preferences"
+    - "package:cloud_firestore"
+    - "dart:io"
+  banned_symbols_in_domain_layer:
+    - { symbol: "DateTime.now()", use_instead: "Clock port (X-09)" }
+    - { symbol: "Uuid()",         use_instead: "IdGenerator port (X-09)" }
+    - { symbol: "Random()",       use_instead: "RandomSource port (X-09)" }
+
+# ─────────────────────────────────────────────────────────────
+# PLATFORM IDENTITY — rank 7.5 (ADR-0011)
+# BC-10 Global Person Identity. Mandatory 1:1 with the authentication account.
+# Organisation-neutral: no tenantId, no StudentRecordId, no operational data.
+# ─────────────────────────────────────────────────────────────
+domain/person:
+  path: lib/domain/person
+  rank: 7.5
+  classification: core
+  contexts: [identity]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files          # FileRef only (E-22) — never bytes or raw paths
+    - platform/services:clock          # X-09
+    - platform/identity:policy_decision  # ask BC-18 per request; never cache (MP-GBR-26)
+    - platform/search:indexer          # allow-list fields only
+  provides_ports:
+    - identity_directory               # E-13, consumed by domain/library through an ACL
+    # SPO-1 / SID-4.11 — implements the rank-0 PersonIdentityFactory port so
+    # BC-18 (rank 4) can create an identity in the same unit of work as the
+    # account WITHOUT depending upward on rank 7.5. The interface lives in
+    # contracts; only the composition root binds the two. This is why neither
+    # L2 nor L4 needed an exception.
+    - person_identity_factory
+  emits_events: ["identity.Person*"]   # SEV-1..SEV-16 — closed set
+  consumes_events:
+    - iam.AccountErased                # ID-5: anonymise here, BC-01 retains history
+    - iam.MobileNumberChanged
+    - iam.AccountSuspended
+    - safety.EnforcementActionTaken    # restricts the PUBLIC PROJECTION only, never lifecycle
+  banned_imports:
+    - "domain/library/**"         # X-05; also rank 7.5 may not import rank 8
+    - "domain/social/**"          # rank 7.5 may not import rank 8
+    - "platform/tenancy/**"       # not tenant-scoped by construction
+    - "platform/communication/**" # X-04 emit facts instead
+    - "platform/integration/**"   # X-03
+    - "app/**"
+    - "package:http"
+    - "package:dio"
+    - "package:firebase_**"
+    - "package:hive**"
+    - "package:shared_preferences"
+    - "package:cloud_firestore"
+    - "dart:io"
+  banned_symbols:
+    # Rule ID-2 — a tenant identifier must never enter a global context
+    - { symbol: "StudentRecordId", use_instead: "PersonId (BOUNDED_CONTEXT_MAP section 4.1 rule ID-2)" }
+    - { symbol: "TenantId",        use_instead: "nothing — this module is not tenant-scoped (SID-4.49)" }
+    - { symbol: "TenantContext",   use_instead: "nothing — see SID-4.49" }
+    # Rule ID-1 — in a system whose sole factor is a mobile number, that field is a credential
+    - { symbol: "mobileNumber",    use_instead: "read-through port to BC-18 (SXC-1, SID-4.13)" }
+    - { symbol: "otp",             use_instead: "nothing — credentials live in BC-18 only (ID-1)" }
+  banned_symbols_in_domain_layer:
+    - { symbol: "DateTime.now()", use_instead: "Clock port (X-09)" }
+    - { symbol: "Uuid()",         use_instead: "IdGenerator port (X-09)" }
+    - { symbol: "Random()",       use_instead: "RandomSource port (X-09)" }
+
+domain/social:
+  rank: 8
+  classification: supporting
+  # ADR-0011 — `identity` removed: BC-10 is now domain/person at rank 7.5.
+  # BC-11 graph, BC-12 messaging, BC-13 safety. Consumers of the identity, not owners. ADR-0083 (AO-7, 2026-08-31) adds BC-15 community, resolving open item D-2: before it BC-15 belonged to no declared module, so the L2 rank comparison had nothing to compare and Stage-3 check 3 was vacuous for every PRD-021A part. BC-14 is deliberately NOT added — AO-7 enumerates only BC-11/12/13/15 — which leaves edge E-29 (BC-14 -> BC-15) with an UNDETERMINED L2 status, recorded as GAP-BC14-RANK rather than assumed either way.
+  contexts: [graph, messaging, safety, community]
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/security:crypto
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:files
+    - platform/services:realtime
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:indexer
+    - platform/ai:assist
+    - platform/analytics:read_model
+  # ADR-0011 — identity.Person* moved to domain/person; social consumes it now.
+  emits_events: ["social.*", "messaging.*", "safety.*"]
+  consumes_events:
+    - "identity.Person*"
+    - safety.EnforcementActionTaken
+  internal_edges:
+    - { id: E-14, from: safety,   to: [graph, messaging], mode: event }
+    # ADR-0011 — E-15 is no longer an intra-cluster import: PersonId and the privacy value objects live in contracts (L5), because rank 8 may not import rank 7.5's internals. (Two comment lines were merged into this one to make room for E-28 without inserting a line: 222 line-citations point into this file and ~100 sit below this block, several inside FROZEN PRD-017 and PRD-020, so E-14 stays at L255 and E-16 stays at L259 exactly as cited.)
+    - { id: E-15, from: contracts, to: graph,             mode: import, note: "shared kernel VOs in contracts" }
+    - { id: E-28, from: graph,     to: community,          mode: port,   note: "ADR-0083 AO-1; BC Map §15.1; C/S sync port, V2; carries RateLimitCounter + BlockList reads; BC-11 remains the owner" }
+    - { id: E-16, from: graph,    to: messaging,          mode: port  }
+  banned_imports:
+    - "domain/library/**"         # X-05 Separate Ways
+    - "domain/person/**"          # ADR-0011: consume identity.Person* events; never import
+    - "app/**"
+  banned_symbols:
+    # Rule ID-2: tenant-scoped ids must never enter the social world
+    - { symbol: "StudentRecordId", use_instead: "PersonId (BOUNDED_CONTEXT_MAP section 4.1 rule ID-2)" }
+    - { symbol: "TenantId",        use_instead: "nothing — social data is not tenant-scoped" }
+
+# ─────────────────────────────────────────────────────────────
+# CAPABILITY PLATFORMS — L4: none may import domain
+# ─────────────────────────────────────────────────────────────
+platform/ai:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:vector_store
+    - platform/security:secrets
+    - platform/security:pii_redaction
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:cache
+    - platform/services:rate_limiter
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/search:retrieval
+    - platform/analytics:read_model
+    - platform/integration:model_provider
+  commands:
+    - { target: domain/library, requires: ApprovalRecord }
+    - { target: domain/social,  requires: ApprovalRecord }
+  consumes_events: ["*"]
+  emits_events: [ai.AgentRunCompleted, ai.AiActionApplied]
+  banned_imports: ["domain/**", "app/**"]   # X-02
+  assertions:
+    - id: AI-1
+      rule: "every retrieval call passes tenantId and actor permissions"
+    - id: AI-2
+      rule: "no model provider call without passing through security:pii_redaction"
+    - id: AI-3
+      rule: "no domain command invocation without an ApprovalRecord argument"   # F-4
+
+platform/analytics:
+  rank: 7
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:analytics_store
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+  consumes_events: ["*"]
+  # AMENDMENT A-6 — explicit, not incidental. Analytics consumes NO
+  # authentication fact. Recorded as an exclusion because "*" would otherwise
+  # silently subscribe this platform to identity behaviour.
+  excluded_events: ["iam.*"]
+  banned_imports:
+    - "domain/**"                       # X-01
+    - "app/**"
+    - "platform/data:oltp_repository"   # must not read the transactional store
+  assertions:
+    - id: AN-1
+      rule: "every projection implements rebuild()"
+    - id: AN-2
+      rule: "no metric defined outside the semantic layer"
+    - id: AN-3
+      rule: "no projection, metric or dimension is derived from any iam.* fact"   # A-6
+
+platform/workflow:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/data:repository
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:job_runtime
+    - platform/services:idempotency
+    - platform/tenancy:tenant_context
+    - platform/identity:policy_decision
+    - platform/business:entitlement
+    - platform/integration:connector
+    - platform/ai:assist
+  commands:
+    - { target: domain/library }
+    - { target: domain/social }
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: WF-1
+      rule: "every saga step declares a compensating action"
+    - id: WF-2
+      rule: "every process definition declares an idempotency key strategy"
+
+platform/audit:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  banned_method_names: ["update*", "delete*", "purge*", "modify*"]   # X-10 append-only
+  assertions:
+    - id: AU-1
+      rule: "no public mutation method exists on the audit store"
+    - id: AU-2
+      rule: "this platform is the sole consumer of every Class A authentication fact"       # A-5
+    - id: AU-3
+      rule: "unavailability of this platform delays audit visibility only; recording occurs in the emitter's transaction"
+    - id: AU-4
+      rule: "erasure makes a record non-identifying by key destruction; no record is ever removed"
+
+platform/search:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    # SRCH-GAP-003 — query-time entitlement. BC-23 is NOT entitlement truth:
+    # it asks BC-18 per request and never evaluates or caches the answer.
+    # Declared as a PORT, not an edge: rank 5 -> rank 4 is downward (L2), and
+    # the Matrix already permits SEARCH x IAM as port use, so no BC Map §7
+    # edge is created or required.
+    - platform/identity:policy_decision  # ask BC-18 per request; never evaluate locally; never cache (MP-GBR-26)
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]     # X-08
+  assertions:
+    - id: SE-1
+      rule: "every index name is tenant-prefixed"                     # X-13
+    - id: SE-2
+      rule: "every index write carries a permission scope"
+
+platform/communication:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/integration:connector
+    # AMENDMENT A-3 — the narrow, purpose-limited delivery-address port.
+    # Resolves ONE address for ONE queued delivery, at delivery time.
+    # Closes QA-24. This port is the reason no event ever carries a number.
+    - platform/identity:notification_address
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: CM-1
+      rule: "notification_address is called with an AccountId and a delivery purpose; never with a number, never in bulk, never to test existence"   # A-3
+    - id: CM-2
+      rule: "no resolved address is persisted, cached, indexed or logged by this platform"   # A-3
+    - id: CM-3
+      rule: "an unresolvable address fails the delivery only; it never fails the emitting operation"   # EBR-1030
+
+platform/business:
+  rank: 6
+  imports:
+    - { target: contracts, mode: import }
+  ports: [platform/integration:payment_gateway]
+  consumes_events: ["*"]
+  banned_imports: ["domain/**", "app/**"]
+  assertions:
+    - id: BZ-1
+      rule: "entitlement state is written only by billing.EntitlementChanged handlers"   # X-11
+    - id: BZ-2
+      rule: "every gateway call carries an idempotency key"
+
+platform/tenancy:
+  rank: 4
+  imports:
+    - { target: contracts, mode: import }
+  banned_imports: ["domain/**", "app/**", "platform/identity/**"]
+
+platform/identity:
+  rank: 4
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - platform/tenancy:tenant_context
+    # The single sanctioned bypass of platform/communication, for possession
+    # challenge delivery only. Matrix cell IAM -> INT.
+    - platform/integration:sso_provider
+    # ADR-0011 — identity creation, atomic with account creation (SID-4.11).
+    # Declared as a PORT, never an import: the interface is rank 0 and the
+    # implementation is rank 7.5, so this platform never points upward.
+    # `banned_imports: ["domain/**"]` below still holds literally.
+    - contracts:person_identity_factory
+  banned_imports: ["domain/**", "app/**"]
+
+  # Ports this platform PROVIDES to others. Both are deliberately narrower
+  # than a general identity API.
+  provides_ports:
+    - name: policy_decision
+      # SRCH-GAP-003 — platform/search added. BC-23 asks BC-18 for a query-time
+      # authorization decision per request; it never evaluates entitlement
+      # locally and never caches the result. Existing tenant scoping (SE-1) and
+      # write-side permission scope (SE-2) are unchanged by this declaration.
+      consumers: [domain/library, domain/social, platform/ai, platform/analytics, platform/workflow, platform/search]
+      constraint: "ask BC-18 per request; never evaluate locally; never cache entitlement truth"
+    - name: auth
+      consumers: [app]
+    - name: account_directory            # A-2
+      consumers: [domain/library]
+      constraint: "single AccountId in, single resolution out; no listing, no lookup by number, no existence test"
+    - name: notification_address         # A-3
+      consumers: [platform/communication]
+      constraint: "one address, one queued delivery, resolved at delivery time, never retained by the caller"
+
+  # ═══════════════════════════════════════════════════════════════════
+  # AMENDMENT A-4 / A-5 / A-9 — emission classes and their consumers.
+  #
+  # The authoritative register is the closed 36-fact Authentication event
+  # register (EVT-1001..EVT-1036). It is NOT duplicated here: duplication is
+  # how two registers drift apart. What is declared here is the part a boundary
+  # check can enforce — the class of each emission and who may consume it.
+  # ═══════════════════════════════════════════════════════════════════
+  emission_classes:
+    - class: D                            # domain fact, Outbox, named consumers
+      transport: event
+      consumers_declared_per_event: true
+      named_consumers: [domain/library, platform/audit, platform/communication]
+    - class: A                            # audit-only fact
+      transport: event
+      consumers: [platform/audit]         # A-5 — sole consumer, no exceptions
+      constraint: "any consumer other than platform/audit is a boundary violation, not a subscription"
+    - class: T                            # telemetry
+      transport: none
+      consumers: []                       # A-9 — never leaves this platform
+      constraint: "no transport, no subscriber, no export; egress attempt is a blocker"
+
+  emits_events: ["iam.*"]
+  event_register_source: docs/prd/authentication   # EVT-1001..EVT-1036
+
+  assertions:
+    - id: ID-1
+      rule: "every emitted iam.* fact appears in the closed register EVT-1001..EVT-1036"   # A-4
+    - id: ID-2
+      rule: "every Class D fact declares its named consumers; a fact with no declared consumer is Class A or Class T"   # A-4
+    - id: ID-3
+      rule: "no Class A fact has a consumer other than platform/audit"                     # A-5
+    - id: ID-4
+      rule: "no Class T value is published, exported or subscribed to"                     # A-9
+    - id: ID-5
+      rule: "no event payload contains a mobile number, challenge value, session token or key material"   # A-3
+    - id: ID-6
+      rule: "the audit fact commits in the same transaction as the state change it describes"
+    - id: ID-7
+      rule: "every grant is tenant-scoped; no grant event is emitted without a TenantId"
+    - id: ID-8
+      rule: "no permission is granted without a scope from the closed register {self, guardianOf, tenantWide}"   # F-01
+    - id: ID-9
+      rule: "no challenge value is a function of its subject; RandomSource only"           # F-02
+
+# ─────────────────────────────────────────────────────────────
+# EDGE — rank 9
+# ─────────────────────────────────────────────────────────────
+app:
+  rank: 9
+  imports:
+    - { target: contracts, mode: import }
+  ports:
+    - domain/library
+    - domain/person
+    - domain/social
+    - platform/identity:auth
+    - platform/tenancy:tenant_context
+    - platform/analytics:read_model
+    - platform/configuration:settings
+    - platform/observability:telemetry
+    - platform/services:offline_sync
+    - platform/business:entitlement
+    - platform/ai:assist
+  banned_imports:
+    - "platform/data/**"        # UI must never touch persistence directly
+    - "platform/event/**"
+    - "platform/integration/**"
+  assertions:
+    - id: AP-1
+      rule: "no business invariant is enforced in a widget"
+    - id: AP-2
+      rule: "TenantContext is written exactly once per request/route, at the shell"
+
+# ─────────────────────────────────────────────────────────────
+# GLOBAL RULES
+# ─────────────────────────────────────────────────────────────
+global:
+  barrel_only_cross_module: true      # imports must target <module>.dart, not internals
+  cycles_allowed: false               # L1 — never overridable
+  tenant_key_required_in:
+    - cache keys
+    - search index names
+    - vector namespaces
+    - storage prefixes
+    - projection table names
+  # X-13: the highest-severity failure class in the system
+  tenant_key_violation_severity: blocker
+
+  # ═══════════════════════════════════════════════════════════════════
+  # AMENDMENT A-9 — the observability plane.
+  #
+  # Observability is a third data plane, subordinate to the data
+  # classification, never an exception to it. It may always be deleted;
+  # therefore nothing may live only there.
+  # ═══════════════════════════════════════════════════════════════════
+  observability_plane:
+    classification_ceiling: DC-2          # DC-3 only as an opaque reference
+    banned_content:                       # at every level, in every environment
+      - mobile number, in any form or transform
+      - challenge value, current, expired or hashed
+      - session token or any revalidating material
+      - device secret
+      - key material
+      - consent document content
+      - guardian relationship detail
+      - subject free text
+      - remaining attempt budget, lockout remainder or grace remainder
+    banned_metric_dimensions:
+      - AccountId
+      - PersonId
+      - StudentRecordId
+      - SessionId
+      - DeviceId
+      - mobile number
+      - any subject-derived value
+    allowed_metric_dimensions:
+      - function
+      - external outcome            # ERR-1130 projection only, never internal class
+      - TenantId
+      - plane                       # tenant | platform
+      - deployment locus
+    forbidden_inferences:
+      - whether a given number corresponds to an account
+      - whether a denial was a denial or a not-found
+      - which control is currently degraded
+    is_authoritative_for: []        # nothing. No rule may depend on this plane.
+    retention_days: 30
+    severity_on_violation: blocker
+
+# ─────────────────────────────────────────────────────────────
+# TIME-BOXED EXCEPTIONS — every entry MUST have an ADR and an expiry
+# ─────────────────────────────────────────────────────────────
+# ADR-0012 — V1 scaffold port-inversion debt, time-boxed under §11.
+#
+# These are NOT law exceptions. Every edge below is strictly downward in rank, so
+# L2 holds; none is a capability importing a domain, so L4 holds; none is banned.
+# What each one violates is the *mode*: §4 says a port must not be imported at
+# compile time, and §6/§12 permit exactly one direct import (liboora_contracts).
+# The scaffold injects concrete platform classes instead of declared interfaces.
+#
+# Nine of these edges are ALREADY declared as ports above — the manifest and the
+# documentation agree, and only the code is wrong. Recorded here with dates
+# rather than silenced, because §11 step 5 makes the tooling, not intent, the
+# thing that enforces removal. A waived finding is still printed by IMPL-014
+# under "ACKNOWLEDGED DEBT" on every run.
+#
+# Deliberately ABSENT: app -> domain/library. Those nine sites are scheduled for
+# deletion by TASK-D10 (P0), so waiving them would convert a tracked release
+# blocker into untracked debt. The checker stays red until TASK-D10 lands.
+#
+# L1 (acyclic) can never appear here: DependencyException.appliesTo refuses to
+# match a cycle regardless of what this list says (§11 step 3).
+exceptions:
+  # ── Wave 1 — smallest surface, establishes the pattern ────────────
+  - from: platform/business
+    to: platform/tenancy
+    mode: port
+    reason: "EntitlementService imports the tenancy barrel for the TenantTier enum. The TenantContext it also uses is already correctly taken from R0 contracts (§8.3). Fix: promote TenantTier to shared vocabulary, or declare a one-method TenantTierSource port."
+    adr: ADR-0012
+    expires: 2026-10-31
+
+  - from: platform/analytics
+    to: platform/event
+    mode: port
+    reason: "AnalyticsProjections needs subscribe-and-replay only. Fix: declare EventStream in liboora_contracts and have EventBus implement it. §6 grants no capability platform a direct import either."
+    adr: ADR-0012
+    expires: 2026-10-31
+
+  # ── Wave 2 — append-only interfaces, no read surface ──────────────
+  - from: domain/library
+    to: platform/event
+    mode: port
+    reason: "Five use cases take EventBus as a constructor type to enqueue and drain. Fix: declare EventPublisher in liboora_contracts. Not currently declared as a port at all, so this wave adds the declaration as well as the extraction."
+    adr: ADR-0012
+    expires: 2026-12-31
+
+  - from: domain/library
+    to: platform/audit
+    mode: port
+    reason: "CollectFee takes AuditTrail to append one entry. Fix: declare AuditSink in liboora_contracts. Append-only, so the port has no read surface to leak (X-10 keeps audit immutable)."
+    adr: ADR-0012
+    expires: 2026-12-31
+
+  # ── Wave 3 — largest surface: adapters move out of the domain ─────
+  - from: domain/library
+    to: platform/data
+    mode: port
+    reason: "Repository interfaces already exist per context; what leaks is TenantPartitionedStore appearing as a constructor type on the InMemory* implementations that sit inside the domain barrel. Fix: move each adapter outside the barrel. Declared port platform/data:repository is already correct."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/services
+    mode: port
+    reason: "IdempotencyService and OfflineSyncEngine injected as concrete classes. Five service ports are already declared (files, qr, idempotency, offline_sync, clock); only the interfaces are missing."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/identity
+    mode: port
+    reason: "PolicyDecisionPoint injected as a concrete class across five contexts. Declared ports platform/identity:policy_decision and :account_directory are already correct; extract the interfaces."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: domain/library
+    to: platform/business
+    mode: port
+    reason: "EntitlementService injected as a concrete class for pre-write limit checks. Declared ports platform/business:entitlement and :payment_intent are already correct."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  # ── Wave 4 — UI reads through the ports it already declares ───────
+  - from: app
+    to: platform/identity
+    mode: port
+    reason: "Shell and session import the identity barrel for AuthService and AuthSession. Declared port platform/identity:auth already exists."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/tenancy
+    mode: port
+    reason: "Shell and session import the tenancy barrel for Tenant/Branch display data. Declared port platform/tenancy:tenant_context already exists; a read model is needed for the display fields."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/analytics
+    mode: port
+    reason: "overview_page imports the analytics barrel directly. Declared port platform/analytics:read_model already exists and is the intended path."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+  - from: app
+    to: platform/business
+    mode: port
+    reason: "ops_page imports the business barrel for entitlement display. Declared port platform/business:entitlement already exists."
+    adr: ADR-0012
+    expires: 2027-03-31
+
+# Note on the amendments below: none of them is an exception to a law. Each
+# widens a declared allow-list or adds an assertion, which is why none carries
+# an ADR or an expiry.
+
+# ─────────────────────────────────────────────────────────────
+# AMENDMENTS APPLIED — Authentication Specification v1.0 lock
+# ─────────────────────────────────────────────────────────────
+amendments_applied:
+  - { id: A-2, closes: CFL-22, change: "domain/library may consume iam.AccountVerified + iam.AccountStatusChanged; gains platform/identity:account_directory port" }
+  - { id: A-3, closes: CFL-26, change: "platform/communication gains platform/identity:notification_address port; assertions CM-1..CM-3" }
+  - { id: A-4, closes: CFL-24, change: "platform/identity declares emission classes and per-class consumers; assertions ID-1, ID-2" }
+  - { id: A-5, closes: CFL-21, change: "Class A confined to platform/audit; assertions ID-3, AU-2" }
+  - { id: A-6, closes: CFL-28, change: "platform/analytics excluded_events iam.*; assertion AN-3" }
+  - { id: A-9, closes: CFL-31, change: "global.observability_plane declared; assertion ID-4" }
+defects_closed:
+  - { id: F-01, change: "closed scope register enforced in PolicyDecisionPoint; assertion ID-8" }
+  - { id: F-02, change: "challenge from RandomSource, TTL, attempt budget, uniform request outcome; assertion ID-9" }

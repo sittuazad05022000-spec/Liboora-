@@ -5,11 +5,11 @@
 | **PRD ID** | `PRD-009` |
 | **Name** | Analytics & Reports |
 | **Bounded Context** | **`BC-26` Analytics Read Model** `[GENERIC]` |
-| **Version** | **v0.1** |
+| **Version** | **v0.2** |
 | **Status** | **`DRAFT`** — ⛔ **not ranked, not baselined, not frozen** |
-| **Lifecycle stage** | **Stage 2 — Draft.** ⛔ Stages 3–8 **NOT** entered |
+| **Lifecycle stage** | **Stage 2 — Draft.** ⭐ **Stage-2 gate SATISFIED at v0.2 — all four rules met** (§0.1). ⛔ Stages 3–8 **NOT** entered |
 | **Identifier prefix** | **`ANL-*`** — ⭐ verified free: **0** pre-existing occurrences repository-wide |
-| **Registers declared** | FR 58 · BR 6 · INV 9 · XC 11 · AC 16 · CFG 8 · GAP 24 · OBD 7 — ⭐ ranges published up front as a promise (Stage-2 rule) |
+| **Registers declared** | FR 58 · BR 6 · INV 9 · XC 11 · AC 16 · CFG 8 · GAP 24 · OBD 7 — ⭐ **mechanically verified contiguous at v0.2**; ranges published up front as a promise |
 | **Baseline** | ⛔ **`BASELINE-2026-09-03-A` untouched.** This document holds **no rank** |
 | **Authority claimed** | ⛔ **NONE.** Stage-2 draft. Every decision requiring an owner is marked `[OWED]` |
 
@@ -33,6 +33,26 @@ Stage-2 rule 3: *"Ranges are contiguous. A gap makes the published range false."
 ⚠ **`ANL-EVT-*` is declared EMPTY, deliberately.** `BC-26` **emits no domain event** — BC Map §7's
 event table shows it exclusively as a *consumer*. The empty register is published rather than omitted
 so a future reader knows the question was asked and answered.
+
+### 0.1 ⭐ Normative language — Stage-2 rule 4
+
+⚠⚠ **Added at v0.2. Its absence was a Stage-2 gate defect in v0.1**, found by reviewing this document
+against `PRD_LIFECYCLE.md` Stage 2 rule 4: *"Normative language (**MUST**/**SHOULD**/**MAY**) is
+defined in the document."* v0.1 used all three without defining any.
+
+| Term | Meaning in this document |
+|---|---|
+| **MUST** / **MUST NOT** | An absolute requirement. A conforming implementation that violates it is non-conforming. Every **MUST** here is intended to be testable, and each is traceable to an `ANL-AC-*` criterion or explicitly marked as awaiting one |
+| **SHOULD** / **SHOULD NOT** | A strong recommendation. Deviation is permitted only with a recorded reason; it does not make an implementation non-conforming |
+| **MAY** | Genuinely optional. Neither choice is a defect |
+
+⭐ **Convention applied throughout:** an **exclusion** (`ANL-XC-*`) is written as what must be
+**impossible**, never as a deferral — *"an exclusion is not a deferral"*. A requirement that merely
+postpones work is recorded as a `GAP` or an `OBD`, not as an exclusion.
+
+⚠ Where a **MUST** appears in prose continuing an identified requirement (for example inside the
+`ANL-XC-001` block quote), it belongs to that identifier and does not create a new unnumbered
+requirement — Stage-2 rule 1 is satisfied by the owning identifier.
 
 ---
 
@@ -206,7 +226,8 @@ obligation here, not something this PRD must argue for.
 |---|---|
 | Events subscribed | **8** — `StudentEnrolled`, `MembershipCreated`, `StudentCheckedIn`, `StudentCheckedOut`, `SeatAssigned`, `SeatReleased`, `FeePaymentReceived`, `FeeDueRaised` |
 | Events available | **24** ⇒ ⭐ **16 unconsumed** |
-| Metric fields | 10 counters + 2 derived (`seatsOccupied`, `insideNow`) |
+| Metric fields (`DashboardMetrics`) | 10 counters + 2 derived (`seatsOccupied`, `insideNow`) |
+| ⭐ Other exposed outputs (**added v0.2**) | **2** — `feed({int limit = 20})` returning `List<ActivityItem>`, and `distinctAttendanceDays()` over an internal `_attendanceDays` set |
 | Semantic layer | ⛔ **NONE** |
 | `CertifiedMetric` type | ⛔ **Absent from code**, though a Rank-4 value object |
 | Rebuild | ✅ `rebuildFrom(EventBus bus)` — behaviourally tested |
@@ -219,6 +240,24 @@ obligation here, not something this PRD must argue for.
 ⚠ Also disclosed: `attendance.AttendanceCorrected` is **not** consumed, yet BC Map L416 states its
 purpose is *"Audit + **restated metrics**"*. Attendance figures today **cannot restate**. →
 **`ANL-GAP-002`**.
+
+⚠⚠ **Added at v0.2 — two outputs v0.1 failed to inventory.** The Stage-2 review found that the
+projection store exposes **`feed()`** (an activity list) and **`distinctAttendanceDays()`** in addition
+to `DashboardMetrics`. v0.1's evidence table listed only the twelve metric fields, so its picture of
+the existing surface was **incomplete**. This matters for two reasons:
+
+1. ⭐ **`feed()` returns `ActivityItem` records, not an aggregate count.** An activity feed is a
+   *per-event* output, which raises a question v0.1 never asked: is a raw activity list a
+   **Certified Metric** at all, or a different class of read model needing its own access rules? It is
+   nearer to an operational log than to an aggregate — and `ANL-XC-008` forbids analytics being a
+   route to data the actor could not see operationally. → **`ANL-OBD-007`** is widened accordingly.
+2. ⭐ **`distinctAttendanceDays()` is exactly the honest consistency signal** §12.2 argues for, and it
+   already exists. It is the strongest evidence that the presence/consistency framing is buildable
+   today, while mastery metrics are not.
+
+⛔ **No code change is proposed here.** Both observations are specification findings; any change to
+`lib/platform/analytics/analytics.dart` is an **implementation issue for Stage 6/8**, recorded as
+`ANL-GAP-001`/`-002` and **not** performed by this PRD.
 
 ### 8.4 Module rank and permitted reach
 
@@ -789,7 +828,7 @@ fail is not a test"* (`ITG-AC-017` precedent).
 | `ANL-OBD-004` | Does `guardianOf` extend to derived analytics | Privacy + `BC-18` | **HIGH RISK** |
 | `ANL-OBD-005` | Does `BC-26` ever emit an event (needs edge + ADR) | Architecture Owner | **DECISION REQUIRED** |
 | `ANL-OBD-006` | Retention of projections vs source events | Architecture + Legal | **DECISION REQUIRED** |
-| `ANL-OBD-007` | Is `Projection` one aggregate or one per subject area | Architecture Owner | **DECISION REQUIRED** |
+| `ANL-OBD-007` | Is `Projection` one aggregate or one per subject area — ⭐ **widened at v0.2**: and is a per-event activity feed (`feed()`, `ActivityItem`) a Certified Metric at all, or a separate read-model class with its own access rules? | Architecture Owner | **DECISION REQUIRED** |
 
 ---
 
@@ -861,4 +900,5 @@ source.
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.2** | 2026-09-05 | ⭐⭐ **STAGE-2 SELF-REVIEW — two genuine defects found and fixed; every substantive finding re-verified and upheld.** **Defect 1 (gate-blocking): Stage-2 rule 4 was unmet.** `PRD_LIFECYCLE.md` Stage 2 requires *"Normative language (MUST/SHOULD/MAY) is defined in the document"*, and v0.1 used all three while defining none — measured at **0** occurrences of any definition. Fixed by adding **§0.1**, which also records the exclusion convention and resolves the rule-1 question about **MUST** appearing in prose that continues an identified requirement. **Defect 2 (evidence incompleteness): §8.3's inventory of the existing implementation was incomplete.** It listed only `DashboardMetrics`' twelve fields and missed **`feed()`** (returning `List<ActivityItem>`) and **`distinctAttendanceDays()`**. Both are now recorded, with two consequences drawn: a per-event activity feed may not be a Certified Metric at all (so **`ANL-OBD-007` is widened** to ask), and `distinctAttendanceDays()` is direct evidence that the presence/consistency framing of §12.2 is **buildable today** while mastery metrics are not. ⭐ **Re-verification of v0.1's claims, independently measured:** the **8-of-24** figure is **correct** (8 distinct event-type literals in `analytics.dart`; 24 BC Map rows routing to `BC-26`); **all 11 line citations resolve exactly** (BC Map L135/L206/L385/L416/L427/L899, `MASTER_PRD.md` L111/L166/L173/L477, `PRD_REGISTRY.md` L246); `MP-GBR-21`, `MP-GBR-36`, `MP-GBR-37`, `MP-GBR-38` and `MP-GBR-24` are all quoted verbatim; **F-1, F-2, F-3 and the `AttendanceCorrected` finding are UPHELD unchanged**. ⭐ All **8** registers re-measured contiguous (58/6/9/11/16/8/24/7) with `ANL-*` still absent from every other file. ⛔ **No requirement was weakened, no gap closed, no NFR or CFG value invented, and no `.dart` file touched** — the two code observations are flagged as **implementation issues for Stage 6/8**, not fixed here. ⛔ Stages 3–8 still not entered; nothing ranked, baselined or frozen; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.1** | 2026-09-05 | Created as the **Stage-2 draft** for `PRD-009` Analytics & Reports (`BC-26`). ⭐ Identity confirmed three ways (`PRD_REGISTRY.md` **L246**, BC Map **L135**, `MASTER_PRD.md` **L166**) — **no conflict**, so no stop-and-report was required. Registers declared up front: **FR 58 · BR 6 · INV 9 · XC 11 · AC 16 · CFG 8 · GAP 24 · OBD 7**, contiguous, on prefix **`ANL-*`** verified free (**0** prior occurrences). `ANL-EVT-*` declared **EMPTY** with a reason. ⭐⭐ Three findings lead the document: **F-1** the existing `lib/platform/analytics/analytics.dart` consumes **8 of 24** routed events and has **no semantic layer** — a live breach of Rank-1 `MP-GBR-36`; **F-2** ⛔ **no ingested event carries any learning-outcome fact**, so mastery / strengths / academic-progress analytics have **no legitimate source** and are made **impossible** by `ANL-XC-001` rather than invented; **F-3** a peer leaderboard is **barred by `MP-GBR-21`**'s closed scope register and would need an ADR. ⚠ Also disclosed: `attendance.AttendanceCorrected` is unconsumed although BC Map L416 assigns it *"restated metrics"*. ⛔ **4 NFR targets and all 8 `ANL-CFG-*` defaults left unasserted** rather than fabricated. ⛔ Stages 3–8 not entered; nothing ranked, baselined or frozen; **0** ADRs authored; **0** application code changed; `PRD-010` untouched and still **FROZEN** at Rank 3. |

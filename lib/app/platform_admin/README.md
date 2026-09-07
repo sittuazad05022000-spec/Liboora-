@@ -46,48 +46,81 @@ by this file** — enough for a future extraction to have an obvious home, and n
 
 ---
 
-## 3. ⛔ THE GOVERNANCE DECISION REQUIRED — NOT TAKEN HERE
+## 3. ⭐ THE NAMING DECISION — **OPTION A, SELECTED BY THE PRODUCT OWNER**
 
 The request named **"Platform Owner"** and **"Platform Admin"** as the two roles of this app.
 Measured against the repository:
 
 | Requested role | Status |
 |---|---|
-| **Platform Admin** | ⭐ **Already established** as `PR-1` Platform Administrator (`PRD-001` §2.3). **No new decision needed to name it** |
-| **Platform Owner** | ⛔ **NOT established anywhere.** It is **not** a synonym for `PR-2` Platform Support, whose purpose is *"Resolve user- and library-reported problems"* with **read-only** metadata scope |
+| **Platform Admin** | ⭐ **Already established** as `PR-1` Platform Administrator (`PRD-001` §2.3) |
+| **Platform Owner** | ⭐ **A business/product-facing NAME for that same `PR-1`** — not a role of its own. It is **not** `PR-2` Platform Support, whose purpose is *"Resolve user- and library-reported problems"* with **read-only** metadata scope |
 
-### 3.1 What is therefore required
+⭐⭐ **DECISION RECORDED — the Product Owner selected OPTION A.**
 
-Establishing **Platform Owner** as a *third* platform role would breach three requirements in
-**FROZEN, Rank-3** documents:
+> **"Platform Owner" is the business/product-facing name for the EXISTING `PR-1` Platform
+> Administrator.** `PR-1` remains the authoritative platform-admin identity. `PR-2` Platform
+> Support remains a **separate** role and is **not** Platform Owner. Platform Owner is **not** a
+> third platform role.
+
+⛔ **This is a naming clarification and nothing else.** It creates no third platform role, no
+permission set, no authority, no security scope, no bounded context, no ADR, no frozen-PRD
+amendment, no registry or rank change, no implementation change and no UI change.
+
+### 3.1 Why Option A is lawful — and why the alternatives were not taken
+
+The platform-role set is **closed at two**, in three separate places:
 
 1. `PRD-001` §2.3 — *"Two exist. The set is closed."*
 2. `PRD-012a` `SECP-FR-003` — the set **MUST** be closed at `PR-1` and `PR-2`
 3. `PRD-012a` `SECP-XC-012` — no role *"under another name"* may carry platform authority
 
-⭐ **`DOCUMENTATION_BASELINE.md` §7 rule 1**: *"A change to any Rank 1–5 document requires an ADR
-**before** the change."* `PRD-001` is Rank 3 and `FROZEN`.
+⭐ Option A **satisfies all three** precisely because it adds nothing: the authority still resolves
+to `PR-1`, so `SECP-AC-017`'s requirement that *"every platform-authority path … resolves to `PR-1`
+or `PR-2`; no third platform role name exists anywhere"* continues to hold. A business synonym is
+not a role; `SECP-XC-012` forbids a **role, capability or account class** carrying platform
+authority under another name, and a naming clarification confers no authority to carry.
 
-**So the decision required is one of these three — and it is a PRODUCT DECISION, not an
-implementation detail:**
+⭐⭐ **This is an EXISTING repository pattern, not a new one.** `Library_PRD_v1.md` §4 already maps
+the same two words to the same authoritative role:
 
-| Option | What it means | What it costs |
+> | Platform Owner | **Platform Administrator** | Platform-wide, platform objects only | `AUTH-7.12`, `AUTH-7.13` |
+
+and records the reasoning this decision follows: *"Naming was corrected, not changed … Two
+vocabularies for one role is how permission bugs are written, so this document adopts the
+authoritative names. **No actor was added or removed.**"* `LIB-4.1` binds that module to the
+authoritative names, which is exactly what Option A does here.
+
+⭐ **`PRD-008` independently recommends the same answer.** Its `FEE-GAP-015` asks whether
+*"`Platform Owner / Super Admin`"* is a third platform role, and its recommendation reads: *"**Do
+NOT create a third platform role.** ‘Two, closed’ stands; `PR-1`'s own Purpose and Scope already
+cover platform configuration."*
+
+⛔ The alternatives, recorded so the decision is traceable:
+
+| Option | What it meant | Outcome |
 |---|---|---|
-| **A — Map, don't create** *(no new role)* | Treat "Platform Owner" as the business name for the already-established **`PR-1` Platform Administrator**, and "Platform Admin" as `PR-2` or as `PR-1` too | ⭐ **No ADR needed for the role set.** Cheapest and fully lawful. Requires only a naming confirmation from the product owner |
-| **B — Extend the set to three** | Add a genuine third platform role above `PR-1` | ⛔ Requires an **`Accepted` ADR** amending `PRD-001` §2.3 **and** `PRD-012a` `SECP-FR-003`/`SECP-XC-012`, plus a `MASTER_PRD.md` §6 amendment (Rank 1). Both PRDs are **FROZEN** — needs Governance Owner conferral |
-| **C — Defer** | Build the boundary for `PR-1`/`PR-2` only; leave "Platform Owner" unresolved | Lawful today. Costs nothing now |
+| **A — Map, don't create** | "Platform Owner" is the business name for the existing `PR-1` | ⭐ **SELECTED.** No ADR needed for the role set; nothing amended |
+| **B — Extend the set to three** | Add a genuine third platform role above `PR-1` | ⛔ **NOT TAKEN.** Would require an `Accepted` ADR amending `PRD-001` §2.3 **and** `PRD-012a` `SECP-FR-003`/`SECP-XC-012`, plus a Rank-1 `MASTER_PRD.md` §6 amendment. Both PRDs are **FROZEN** |
+| **C — Defer** | Leave "Platform Owner" unresolved | ⛔ **NOT TAKEN.** Superseded by this decision |
 
-⛔ **I have taken none of these.** Choosing between them is a product decision reserved to the
-**Product Owner**, and amending a frozen Rank-3 PRD is reserved to the **Governance Owner** under
-direct conferral. Recording a choice here would be fabricating authority.
+⚠ **`FEE-GAP-015` is NOT closed by this record.** That gap's open parts (b) and (c) are about an
+**enumerated permission** and a **configuration parameter** — *"Naming who may act does not
+enumerate the grant that lets them"* — and neither is a naming question. This decision answers the
+naming limb only and leaves the permission and parameter limbs exactly as they stand, for their own
+owners.
 
-### 3.2 What was deliberately NOT done
+### 3.2 What this record does NOT do
 
-- ⛔ No role added to `AccessRole` — it still holds exactly its five tenant values
-- ⛔ No permission, capability or navigation invented for any platform role
-- ⛔ No frozen PRD modified; `PRD-001` and `PRD-012a` are **byte-unchanged**
+- ⛔ No third platform role — the set stays **closed at `PR-1` and `PR-2`**
+- ⛔ No role added to `AccessRole` — it still holds exactly its five **tenant** values
+- ⛔ No permission, capability, authority boundary, scope, role count or security rule changed
+- ⛔ No frozen PRD amended; `PRD-001`, `PRD-012a` and `MASTER_PRD.md` are **byte-unchanged**
+- ⛔ **No ADR created** — and none is required, because no Rank 1–5 document is changed
 - ⛔ No requirement identifier created, reused or renumbered
-- ⛔ No `platform_admin` shell written
+- ⛔ No registry, rank, baseline or bounded-context change
+- ⛔ No `platform_admin` shell written, and **no implementation authorised** — §2's `SECP-FR-007`
+  reasoning still governs, and §4 below still describes work that is **not** authorised by this file
 
 ---
 

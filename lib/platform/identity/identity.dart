@@ -11,6 +11,16 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 /// Access roles. Distinct from `CommunityRole` (BC-15) — see the ubiquitous
 /// language collision table.
+///
+/// ⚠ These are the **tenant** roles `TR-1`…`TR-5` (`PRD-001` Authentication
+/// v2.0 §2.4). The **platform** roles `PR-1` Platform Administrator and `PR-2`
+/// Platform Support are a **separate closed set** (§2.3: *"Two exist. The set
+/// is closed."*) and are deliberately **absent** from this enum: `SECP-FR-002`
+/// forbids a platform-role identity from holding a tenant role, and
+/// `SECP-FR-014` forbids either namespace converting into the other, so
+/// modelling a platform role as an `AccessRole` value would breach both.
+/// Adding a value here therefore requires an ADR first — see
+/// `lib/app/platform_admin/README.md` §3.
 enum AccessRole {
   owner('Owner'),
   manager('Manager'),
@@ -21,6 +31,19 @@ enum AccessRole {
   const AccessRole(this.label);
   final String label;
 }
+
+/// The least-privileged access role.
+///
+/// Used where a role must be assumed before one is known — a signed-out
+/// session, for instance. Naming it here rather than at each use site keeps
+/// "which role is safest to assume" an **identity** decision (`BC-18` owns the
+/// role set) instead of a presentation one, and lets role-neutral presentation
+/// code express the default without naming a concrete role.
+///
+/// ⭐ It is `student` because that role holds the narrowest grant: the Policy
+/// Decision Point gives it `viewStudent` and nothing else. If the role set ever
+/// changes, the least-privileged member must be re-derived here, in one place.
+const AccessRole kLeastPrivilegedRole = AccessRole.student;
 
 /// Credentials only. No profile data, no student data.
 final class Account {

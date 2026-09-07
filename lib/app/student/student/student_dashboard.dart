@@ -9,10 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/library/membership/membership.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../../domain/library/membership/membership.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
+import '../student_subject.dart';
 
 /// Shown when a role has no student record attached — a real state, not an error.
 class _NoSubject extends StatelessWidget {

@@ -10,9 +10,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
+import '../student_subject.dart';
 
 class ParentOverviewPage extends StatelessWidget {
   const ParentOverviewPage({super.key});

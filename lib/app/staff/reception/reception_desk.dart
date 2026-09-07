@@ -10,11 +10,11 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/library/enrollment/enrollment.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
-import 'students_page.dart' show showStudentSheet;
+import '../../../domain/library/enrollment/enrollment.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
+import '../shared/students_page.dart' show showStudentSheet;
 
 class ReceptionDesk extends StatefulWidget {
   const ReceptionDesk({super.key});

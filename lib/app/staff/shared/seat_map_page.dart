@@ -9,10 +9,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/library/seating/seating.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../../domain/library/seating/seating.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
 
 class SeatMapPage extends StatelessWidget {
   const SeatMapPage({super.key});

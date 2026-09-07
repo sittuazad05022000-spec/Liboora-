@@ -26,3 +26,16 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+# The `delivery/` tree holds SNAPSHOT COPIES of documentation packages shipped
+# to external developers. It contains a copy of the root `pubspec.yaml`, whose
+# `path: packages/liboora_contracts` dependency is correct at the repository
+# root but does not resolve inside the snapshot directory. Analysing a snapshot
+# therefore reports a warning about a path that is not supposed to exist there.
+#
+# Excluded rather than "fixed": editing the snapshot would falsify the delivered
+# artefact, whose whole value is being a byte-faithful copy. The snapshot is a
+# build output in documentation form, and build outputs are not analysed.
+analyzer:
+  exclude:
+    - "delivery/**"

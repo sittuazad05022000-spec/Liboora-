@@ -9,10 +9,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../platform/business/business.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../../platform/business/business.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
 
 class OpsPage extends StatelessWidget {
   const OpsPage({super.key});

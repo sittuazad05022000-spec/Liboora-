@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../platform/analytics/analytics.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../../platform/analytics/analytics.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
 
 class OverviewPage extends StatelessWidget {
   const OverviewPage({super.key});

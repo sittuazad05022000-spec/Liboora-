@@ -10,20 +10,13 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import '../bootstrap/di.dart';
-import '../bootstrap/seed.dart';
-import '../domain/library/enrollment/enrollment.dart';
-import '../domain/library/fee/fee.dart';
-import '../domain/library/membership/membership.dart';
-import '../platform/identity/identity.dart';
-import '../platform/tenancy/tenancy.dart';
-
-/// Phone of the student this demo parent account is guardian to.
-///
-/// V1 has no Family Access context — the parent↔student link is a genuine gap
-/// (it belongs in a future BC, not in Identity and not in Enrollment). Hard-
-/// coding it here keeps the gap visible instead of inventing a wrong model.
-const String kDemoChildPhone = '9810000004';
+import '../../bootstrap/di.dart';
+import '../../bootstrap/seed.dart';
+import '../../domain/library/enrollment/enrollment.dart';
+import '../../domain/library/fee/fee.dart';
+import '../../domain/library/membership/membership.dart';
+import '../../platform/identity/identity.dart';
+import '../../platform/tenancy/tenancy.dart';
 
 final class SessionController extends ChangeNotifier {
   SessionController(this.container);
@@ -53,7 +46,14 @@ final class SessionController extends ChangeNotifier {
       _session == null && _verifiedAccount != null;
 
   Account? get account => _session?.account;
-  AccessRole get role => _session?.activeRole ?? AccessRole.student;
+
+  /// The active role, or the least-privileged role when signed out.
+  ///
+  /// The default is taken from `kLeastPrivilegedRole` rather than named
+  /// here, so this role-neutral shared class does not need to know which
+  /// concrete roles exist. Behaviour is unchanged: that constant is
+  /// `AccessRole.student`, exactly the previous default.
+  AccessRole get role => _session?.activeRole ?? kLeastPrivilegedRole;
   BranchId get branch => _branch;
 
   Tenant get tenant => container.tenantById(_session?.tenantId ?? kDemoTenant);
@@ -62,17 +62,11 @@ final class SessionController extends ChangeNotifier {
     orElse: () => tenant.branches.first,
   );
 
-  /// The student record this session is *about* — for a student, themselves;
-  /// for a parent, their child. Null for staff roles.
-  StudentRecordId? get subjectStudentId {
-    final acc = _session?.account;
-    if (acc == null) return null;
-    return switch (role) {
-      AccessRole.student => container.studentAccountLinks[acc.phone],
-      AccessRole.parent => container.studentAccountLinks[kDemoChildPhone],
-      _ => null,
-    };
-  }
+  /// The signed-in account's own phone, or null when signed out.
+  ///
+  /// Exposed so a boundary can resolve its own subject without this class
+  /// needing to know what "subject" means for that boundary's roles.
+  String? get accountPhone => _session?.account.phone;
 
   // ── Auth ────────────────────────────────────────────────────────
 

@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/library/enrollment/enrollment.dart';
-import '../../domain/library/fee/fee.dart';
-import '../session.dart';
-import '../theme.dart';
-import '../widgets/common.dart';
+import '../../../domain/library/enrollment/enrollment.dart';
+import '../../../domain/library/fee/fee.dart';
+import '../../shared/session.dart';
+import '../../shared/theme.dart';
+import '../../shared/widgets/common.dart';
 
 class StudentsPage extends StatefulWidget {
   const StudentsPage({super.key});

@@ -7,7 +7,7 @@
 | **Bounded Context** | **`BC-26` Analytics Read Model** `[GENERIC]` |
 | **Version** | **v0.5** |
 | **Status** | **`DRAFT`** — ⛔ **not ranked, not baselined, not frozen** |
-| **Lifecycle stage** | **Stage 4 — Requirements Review at v0.5: ⭐⭐ 6 of 6 checks PASS** (§44.1). ⛔ **Stage 4 is NOT CONFERRED** — conferral is the **Requirements Reviewer**'s act (§6 L278) and no role exercise exists for `PRD-009`; and `ADR-0082` bars conferring Stage 4 over an **unconferred Stage 3** (§44.5). Stage 3 performed at v0.3. ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
+| **Lifecycle stage** | **Stage 4 — Requirements Review at v0.5: ⭐⭐ 6 of 6 checks PASS** (§44.1). ⛔ **Stage 4 is NOT CONFERRED** — conferral is the **Requirements Reviewer**'s act (§6 L278) and no role exercise exists for `PRD-009`; and `ADR-0082` bars conferring Stage 4 over an **unconferred Stage 3** (§44.6). Stage 3 performed at v0.3. ⭐ Stage-2 gate satisfied (§0.1); ⭐ **Stage-3 checks 6 / 6 PASS with one conflict ACCEPTED and OPEN** (§8.3.1, `ANL-AL-B1`). ⛔ **Stage 3 is NOT CONFERRED** — conferral is the Architecture reviewer's act. ⛔ Stages 4–8 not entered |
 | **Identifier prefix** | **`ANL-*`** — ⭐ verified free: **0** pre-existing occurrences repository-wide |
 | **Registers declared** | FR 58 · BR 6 · INV 9 · **XC 12** · **AC 17** · CFG 8 · **GAP 25** · **OBD 9** — ⭐ **mechanically verified contiguous at v0.4**; ranges published up front as a promise |
 | **Baseline** | ⛔ **`BASELINE-2026-09-03-A` untouched.** This document holds **no rank** |
@@ -351,7 +351,7 @@ indistinguishable from a review that found nothing** — so the rejected finding
 | **5** | No credential, OTP or session outside `BC-18` | `ID-1` | `PRD-009` declares **no** credential, OTP or session concept. ⭐ Strengthened by `ANL-XC-012`: the `iam.*` family — which carries `SessionRevoked` — is now expressly excluded | ✅ **PASS · NON-CONFLICT** |
 | **6** | Tenant scoping correct | `MP-GBR-08`, `X-13` | `ANL-INV-006` (cross-tenant read impossible), `ANL-FR-004` (fail loudly, never default), `ANL-FR-038` (`tenantId` on every query), `ANL-FR-014` (per-tenant rebuild isolation); manifest holds `platform/tenancy:tenant_context`; `tenant_isolation_test.dart` exists | ✅ **PASS · NON-CONFLICT** |
 
-### ⭐ **6 of 6 checks PASS.** One conflict **ACCEPTED and OPEN**: `ANL-AL-B1` (§8.5).
+### ⭐ **6 of 6 checks PASS.** One conflict **ACCEPTED and OPEN**: `ANL-AL-B1` (§8.3.1).
 
 ### 8.6.1 Findings and dispositions — including one **REJECTED**
 
@@ -655,11 +655,20 @@ scope, metric versions and freshness at generation time.
 ⚠ **`ANL-GAP-011`** — export formats (PDF/CSV) unspecified; each must be justified per report, not
 adopted by default. `[OWED — Product Owner]`.
 ⚠ **`ANL-GAP-012`** — export retention. `[OWED — Privacy + BC-29]`.
-### 25.1 Configuration slots — declared, with every value `[OWED]`
+### 25.1 Configuration slots — classified at v0.5: **8 declared → 3 genuine, 5 withdrawn or reassigned**
 
-⚠ **Stage-4 check 3 will require a default and a range for each.** ⛔ **None is asserted here**, because
-no Rank 1–5 authority supplies one and inventing eight numbers would create untested requirements. The
-slots are **declared so the range is honest**; the values are owed.
+⚠ **Stage-4 check 3 requires a default and a range for every configurable.** ⭐ At v0.5 the eight slots
+were **classified by ownership before being valued** — the question asked was *whose parameter is this?*,
+not *what number looks reasonable?*. Five proved **not to be `BC-26` configurables at all** and are
+withdrawn or reassigned on measured evidence; ⛔ **the remaining three publish a complete requirement
+with the value owed to a named authority** — no number is asserted here, because no Rank 1–5 authority
+supplies one (§25.2).
+
+⚠ **The register still reads `CFG 8`, and that is deliberate.** `PRD_LIFECYCLE.md` §5 rule 5 — *"Numbers
+are never reused, even after withdrawal"* — means the declared range stays **`ANL-CFG-001`…`-008`** and
+each retired slot keeps its identifier and its reason. ⚠ Any future slot therefore takes the **next
+unused number after `-008`**, which is deliberately **not written as a literal here** — a bare identifier
+in prose is counted by the register checker and would falsify the published `CFG 8` range.
 
 | ID | Slot | Class | Default | Range | Authority |
 |---|---|---|---|---|---|
@@ -921,38 +930,40 @@ risk, not a tuning default.
 ⛔ **No requirement was weakened, no gap closed, no NFR or CFG value invented, and no `.dart` file
 touched.** ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding are preserved unchanged.**
 
-### 44.3 ⛔ Check 3 — the deferral, with its reason and owner
+### 44.2.1 ⚠⚠ Findings at v0.5 — **four self-inflicted defects, two of them repeats of my own earlier work**
 
-| Field | Value |
+⛔ **These were found by re-inspecting the v0.5 edits rather than by trusting them.** Three are stale text
+left behind by the v0.5 rewrite; ⛔ **one is the exact defect D-2 recorded above, committed a second time.**
+
+| ID | Finding | Evidence | Impact | Correction | Traces to |
+|---|---|---|---|---|---|
+| **D-5** | ⚠ A cross-reference to the **retired §8.5** survived at the Stage-3 verdict line | Measured: `grep "§8\.5"` returned a live citation outside the D-2 history row | ⛔ **D-2 above claims *"all cross-references updated"* — that claim was overstated.** A reader was sent to a heading that does not exist | Citation corrected to **§8.3.1**; ⭐ the D-2 row is **left unaltered** so the overstatement stays visible rather than being quietly tidied away | §8.3.1, D-2 |
+| **D-6** | §25.1's heading and preamble were **stale v0.1 text** | Heading read *"with every value `[OWED]`"* and the preamble said *"inventing eight numbers"*, directly above a v0.5 table in which **five slots are withdrawn or reassigned and only three are owed** | ⛔ A section that contradicts its own table is worse than an unwritten one — it publishes a false count of open configurables | Heading and preamble rewritten to state the classification result; ⭐ and to explain **why the register still reads `CFG 8`** (§5 rule 5 bars reuse) | §25.1 |
+| **D-7** | §44.3 still asserted *"All **8** `ANL-CFG-*` slots lack both a default and a range"* | §44.1 had already been re-measured to **PASS WITH DISCLOSED RESIDUE** | ⛔ Two sections of one document giving contradictory verdicts on the same check | ⭐ Marked **SUPERSEDED and retained verbatim** — *not* rewritten, per the append-only doctrine (*"the remedy is a new record or a supplement — never a silent rewrite"*) | §44.3, §25.1 |
+| **D-8** | ⛔⛔ The new conferral-status section was numbered **§44.5** and sorted *before* the pre-existing §44.4 | Measured heading order was `44.1 → 44.2 → 44.3 → 44.5 → 44.4` | ⛔⛔ **This is D-2 repeated.** Having recorded that exact defect at v0.4 and claimed it fixed, I reproduced it in the same document one version later | Block **physically relocated** after §44.4 and renumbered **§44.6**. ⭐ Verified a **pure reorder**: line count unchanged (1159) and sorted content byte-identical before/after, so no text was lost or edited in the move. ⛔ **§44.5 is left permanently unused** — §5 rule 5 bars reuse of a retired number | §44.6 |
+
+⚠ **Why D-8 is recorded this prominently.** A numbering slip is trivial; **repeating a defect I had already
+diagnosed and declared closed is not.** It shows the v0.4 correction was applied to the one instance found
+rather than adopted as a habit, and that my *"all cross-references updated"* claim (D-2) was not verified
+when made — which D-5 then independently confirmed. ⛔ Both are recorded as **my errors**, not as drafting
+noise, and neither is amended away.
+
+### 44.3 ⛔ Check 3 — the v0.4 deferral record ⚠ **SUPERSEDED at v0.5, retained verbatim**
+
+⚠⚠ **This section is NO LONGER OPERATIVE.** It records the position as measured at **v0.4**, when check 3
+was a **FAIL** deferred to seven owners. At **v0.5** the check was closed by classification (§25.1) and
+now reads **PASS WITH DISCLOSED RESIDUE** (§44.1), with **three** values owed rather than eight.
+
+⭐ It is **retained unaltered** rather than rewritten: the append-only doctrine holds that *"the remedy is
+a new record or a supplement — never a silent rewrite"*. Read §25.1 and §25.2 for the operative position.
+
+| Field | Value **(as measured at v0.4 — superseded)** |
 |---|---|
-| **What fails** | All **8** `ANL-CFG-*` slots lack both a default and a range |
+| **What fails** | All **8** `ANL-CFG-*` slots lack both a default and a range ⚠ **superseded: 5 were not `BC-26` configurables; 3 remain, values owed** |
 | **Reason (not an excuse)** | ⭐ **No Rank 1–5 authority supplies any of the eight values.** Inventing them would create requirements no authority set and no test could justify — and **`ANL-CFG-005`** (minimum cohort size) is a **re-identification control**, where a guessed number is a privacy risk rather than a tuning default |
 | **Owners** | `-001`/`-007` **Product Owner** · `-002` **SRE + Product Owner** · `-003` **SRE** (`ANL-GAP-020`) · `-004` **Product Owner** · `-005` **Privacy** (bound to `ANL-OBD-002`) · `-006` **Architecture + Legal** (`ANL-OBD-006`) · `-008` **Implementation Lead** |
 | **Consequence** | ⛔ **Stage 4 cannot be CONFERRED until these are supplied or the slots are lawfully withdrawn.** A withdrawn slot keeps its identifier (`PRD_LIFECYCLE.md` §5 rule 5) |
 | **Precedent for the shape of a lawful fix** | `PRD-019` v0.4 closed a Stage-4 configurable check *"not by bounding a configurable but by establishing there is no configurable to bound"* — ⭐ available for any slot that proves not to be tenant-configurable at all |
-
-### 44.5 ⛔⛔ Stage-4 conferral status — why the gate PASSES but the stage is NOT CONFERRED
-
-⭐ **The distinction matters and is the whole of this section:** the six Stage-4 *checks* now pass on
-measured evidence. **Passing a gate is not being conferred the stage.** Two independent authority facts
-block conferral, and neither is mine to supply.
-
-| # | Blocker | Evidence | Class |
-|---|---|---|---|
-| **1** | **No Requirements Reviewer role exercise exists for `PRD-009`** | `PRD_LIFECYCLE.md` §6 **L278** assigns Stage 4 to the **Requirements reviewer**. The form the repository requires is a **first-person role exercise**, quoted verbatim — `PRD-010_STAGE4_CONFERRAL.md` **L7-8**: *"Conferred by \| **Requirements Reviewer**, exercised by direct, explicit and unconditional conferral of the human principal"*, with the instruction recorded as *"**I am exercising the authorized Requirements Reviewer role for this specific act**…"*. ⛔ No such instruction exists for `PRD-009`. A directive to *attempt* conferral *"wherever lawfully possible"* is an instruction to **try**, not the role exercise itself | **`[OWED — Requirements Reviewer]`** |
-| **2** | **Stage 3 is performed but NOT CONFERRED** | **0** `*PRD-009*STAGE3*CONFERRAL*` artefacts exist, measured. `ADR-0082` **L324**: registering a later stage over an unmet prior stage *"would advance the chain from its middle"*; `PRD_LIFECYCLE.md` §2 **L35-41** is a **sequential** chain | **`[OWED — Architecture reviewer]`** |
-
-⭐ **`ADR-0033` §7.1 forecloses the shortcut:** *"A conferral for one act is not a standing licence."*
-The Requirements Reviewer conferral that existed for `PRD-010` cannot be carried to `PRD-009`.
-
-⛔ **I therefore do not confer Stage 4, and record the gate result instead.** Manufacturing a conferral
-would be the one failure mode this document exists to prevent.
-
-**What would unblock it, in order:** (1) an Architecture-reviewer designation → `PRD-009_STAGE3_CONFERRAL.md`;
-(2) a first-person Requirements-Reviewer role exercise for `PRD-009` → Stage 4 conferrable on the
-already-passing evidence.
-
----
 
 ### 44.4 ⭐ Enterprise capability classification — V1 / V2 / V3 / Future / Blocked
 
@@ -988,6 +999,34 @@ boundary? ⛔ Not answerable from repository evidence. `[OWED — Product Owner 
 ⚠ **`ANL-GAP-025` (new)** — no branch/campus/organizational-hierarchy concept is measurable in the BC
 Map; `BC-19` owns the `Tenant` aggregate and no sub-tenant unit was found. Branch-level analytics
 therefore cannot be specified. `[OWED — Architecture Owner + Product Owner]`.
+
+---
+
+### 44.6 ⛔⛔ Stage-4 conferral status — why the gate PASSES but the stage is NOT CONFERRED
+
+> ⚠ **Numbered 44.6, not 44.5.** Drafted as §44.5 it sorted *before* the pre-existing §44.4 — ⛔ **the
+> identical structural defect recorded as D-2 at v0.4**, which I had claimed was fixed. Renumbered to
+> restore reading order; **§44.5 is left permanently unused** rather than reassigned, since
+> `PRD_LIFECYCLE.md` §5 rule 5 bars reuse of a retired number. Recorded as **D-8** below.
+
+⭐ **The distinction matters and is the whole of this section:** the six Stage-4 *checks* now pass on
+measured evidence. **Passing a gate is not being conferred the stage.** Two independent authority facts
+block conferral, and neither is mine to supply.
+
+| # | Blocker | Evidence | Class |
+|---|---|---|---|
+| **1** | **No Requirements Reviewer role exercise exists for `PRD-009`** | `PRD_LIFECYCLE.md` §6 **L278** assigns Stage 4 to the **Requirements reviewer**. The form the repository requires is a **first-person role exercise**, quoted verbatim — `PRD-010_STAGE4_CONFERRAL.md` **L7-8**: *"Conferred by \| **Requirements Reviewer**, exercised by direct, explicit and unconditional conferral of the human principal"*, with the instruction recorded as *"**I am exercising the authorized Requirements Reviewer role for this specific act**…"*. ⛔ No such instruction exists for `PRD-009`. A directive to *attempt* conferral *"wherever lawfully possible"* is an instruction to **try**, not the role exercise itself | **`[OWED — Requirements Reviewer]`** |
+| **2** | **Stage 3 is performed but NOT CONFERRED** | **0** `*PRD-009*STAGE3*CONFERRAL*` artefacts exist, measured. `ADR-0082` **L324**: registering a later stage over an unmet prior stage *"would advance the chain from its middle"*; `PRD_LIFECYCLE.md` §2 **L35-41** is a **sequential** chain | **`[OWED — Architecture reviewer]`** |
+
+⭐ **`ADR-0033` §7.1 forecloses the shortcut:** *"A conferral for one act is not a standing licence."*
+The Requirements Reviewer conferral that existed for `PRD-010` cannot be carried to `PRD-009`.
+
+⛔ **I therefore do not confer Stage 4, and record the gate result instead.** Manufacturing a conferral
+would be the one failure mode this document exists to prevent.
+
+**What would unblock it, in order:** (1) an Architecture-reviewer designation → `PRD-009_STAGE3_CONFERRAL.md`;
+(2) a first-person Requirements-Reviewer role exercise for `PRD-009` → Stage 4 conferrable on the
+already-passing evidence.
 
 ---
 
@@ -1133,7 +1172,7 @@ source.
 
 | Version | Date | Change |
 |---|---|---|
-| **v0.5** | 2026-09-05 | ⭐⭐⭐ **STAGE-4 CONFERRAL LOOP — check 3 CLOSED lawfully, all six checks now PASS; ⛔ the STAGE itself remains NOT CONFERRED for authority reasons.** ⭐⭐ **Check 3 was closed by asking *whose parameter is this?* instead of inventing eight numbers** — the route `ADR-0108` ratified for `PRD-010`, which `PRD-019` v0.4 used before it. **8 slots → 3 genuine `BC-26` configurables** (§25.1): `ANL-CFG-001` (report page size) and `-007` (default reporting period) **WITHDRAWN** — the first is a presentation concern of a composition BC Map §2 rules is *not a context*; the second would let a tenant contradict a certified `timeSemantics`, barred by `ANL-BR-003`. `ANL-CFG-002` (export row cap) and `-004` (analytics trigger rate) **REASSIGNED on measured ownership** — `BC-21` is *"Single source of truth for **limits** and gates"* (BC Map **L130**, value object `Limit` **L383**), and `BC-22` owns delivery rate (`PRD-010`, FROZEN) where `ANL-XC-009` already makes a `BC-26` send unconstructable. `ANL-CFG-008` (rebuild batch size) **WITHDRAWN** because `ANL-FR-013` demands an identical snapshot **at any batch size**, so no value can change a conforming outcome. ⭐ The surviving **three** — `ANL-CFG-003`, `-005`, `-006` — publish a **complete requirement with the value owed to a named authority**: precisely the shape **FROZEN `PRD-017`** holds for `FIL-CFG-006`/`-010`/`-011` (*"the requirement is complete; the number is owed"*), and it **froze at Rank 3 in that state** (§25.2). ⛔ **No value invented, no identifier reused** — each withdrawn slot keeps its number and reason (`PRD_LIFECYCLE.md` §5 rule 5). ⚠ `ANL-CFG-005` stays **BLOCKED** behind `ANL-OBD-002`: a minimum cohort size is a **re-identification control**, not a tuning default. ⛔⛔ **New §44.5 is the honest core of v0.5 — why the gate PASSES but the stage is NOT CONFERRED:** (1) Stage 4 belongs to the **Requirements reviewer** (§6 **L278**) and the repository's required form is a **first-person role exercise** (`PRD-010_STAGE4_CONFERRAL.md` **L7-8**) — **none exists for `PRD-009`**; a directive to confer *"wherever lawfully possible"* is an instruction to **try**, not the act itself. (2) **Stage 3 is performed but unconferred** (**0** artefacts, measured), and `ADR-0082` **L324** bars advancing *"the chain from its middle"*. `ADR-0033` §7.1 forecloses borrowing `PRD-010`'s conferral. ⛔ `ANL-OBD-002`/`-004`/`-008`/`-009`, **F-1**, **F-2**, **F-3** and the `AttendanceCorrected` finding all remain **OPEN and unchanged**; no gap closed; no research, API, telemetry or permission invented; **0** `.dart` files; Stages 5–8 not entered; `PRD-010` untouched and still **FROZEN** at Rank 3. |
+| **v0.5** | 2026-09-05 | ⭐⭐⭐ **STAGE-4 CONFERRAL LOOP — check 3 CLOSED lawfully, all six checks now PASS; ⛔ the STAGE itself remains NOT CONFERRED for authority reasons.** ⭐⭐ **Check 3 was closed by asking *whose parameter is this?* instead of inventing eight numbers** — the route `ADR-0108` ratified for `PRD-010`, which `PRD-019` v0.4 used before it. **8 slots → 3 genuine `BC-26` configurables** (§25.1): `ANL-CFG-001` (report page size) and `-007` (default reporting period) **WITHDRAWN** — the first is a presentation concern of a composition BC Map §2 rules is *not a context*; the second would let a tenant contradict a certified `timeSemantics`, barred by `ANL-BR-003`. `ANL-CFG-002` (export row cap) and `-004` (analytics trigger rate) **REASSIGNED on measured ownership** — `BC-21` is *"Single source of truth for **limits** and gates"* (BC Map **L130**, value object `Limit` **L383**), and `BC-22` owns delivery rate (`PRD-010`, FROZEN) where `ANL-XC-009` already makes a `BC-26` send unconstructable. `ANL-CFG-008` (rebuild batch size) **WITHDRAWN** because `ANL-FR-013` demands an identical snapshot **at any batch size**, so no value can change a conforming outcome. ⭐ The surviving **three** — `ANL-CFG-003`, `-005`, `-006` — publish a **complete requirement with the value owed to a named authority**: precisely the shape **FROZEN `PRD-017`** holds for `FIL-CFG-006`/`-010`/`-011` (*"the requirement is complete; the number is owed"*), and it **froze at Rank 3 in that state** (§25.2). ⛔ **No value invented, no identifier reused** — each withdrawn slot keeps its number and reason (`PRD_LIFECYCLE.md` §5 rule 5). ⚠ `ANL-CFG-005` stays **BLOCKED** behind `ANL-OBD-002`: a minimum cohort size is a **re-identification control**, not a tuning default. ⛔⛔ **New §44.6 is the honest core of v0.5 — why the gate PASSES but the stage is NOT CONFERRED:** (1) Stage 4 belongs to the **Requirements reviewer** (§6 **L278**) and the repository's required form is a **first-person role exercise** (`PRD-010_STAGE4_CONFERRAL.md` **L7-8**) — **none exists for `PRD-009`**; a directive to confer *"wherever lawfully possible"* is an instruction to **try**, not the act itself. (2) **Stage 3 is performed but unconferred** (**0** artefacts, measured), and `ADR-0082` **L324** bars advancing *"the chain from its middle"*. `ADR-0033` §7.1 forecloses borrowing `PRD-010`'s conferral. ⛔ `ANL-OBD-002`/`-004`/`-008`/`-009`, **F-1**, **F-2**, **F-3** and the `AttendanceCorrected` finding all remain **OPEN and unchanged**; no gap closed; no research, API, telemetry or permission invented; **0** `.dart` files; Stages 5–8 not entered; `PRD-010` untouched and still **FROZEN** at Rank 3. ⚠⚠ **Four self-inflicted defects found by re-inspecting these very edits and recorded in new §44.2.1 — `D-5`…`D-8`.** `D-6`/`D-7` were **stale text left by the v0.5 rewrite** (§25.1's heading still said *"every value `[OWED]`"*; §44.3 still asserted all **8** slots failed) — §44.3 is now marked **SUPERSEDED and retained verbatim** rather than rewritten. ⛔⛔ **`D-8` and `D-5` are repeats of my own `D-2`:** the conferral section was numbered §44.5 and sorted *before* §44.4 — the identical ordering defect I recorded at v0.4 **and claimed fixed** — while a live `§8.5` citation proved that same *"all cross-references updated"* claim was overstated. Block **relocated and renumbered §44.6**, verified a **pure reorder** (line count 1159 unchanged, sorted content byte-identical); **§44.5 left permanently unused** per §5 rule 5. ⭐ Registers unchanged and re-verified contiguous: FR 58 · BR 6 · INV 9 · XC 12 · AC 17 · CFG 8 · GAP 25 · OBD 9. |
 | **v0.4** | 2026-09-05 | ⭐⭐⭐ **STAGE-4 REQUIREMENTS REVIEW performed — 5 of 6 checks PASS; ⛔ check 3 FAILS and is deferred with a reason and named owners.** New **§44.1** measures all six lifecycle checks; **§44.2** records four findings in Finding→Evidence→Impact→Correction→Traceability form; **§44.3** states the failing check honestly; **§44.4** adds the enterprise V1/V2/V3/Future/Blocked classification the brief required. **D-1 — four exclusions were not exclusions.** `ANL-XC-006`/`-007`/`-009`/`-012` were bare `MUST NOT` prohibitions, which Stage-4 check 2 rejects (*"An exclusion is not a deferral"*). ⭐ Each was given an **impossibility form grounded in measured manifest evidence**: `platform/analytics` declares **no communication port** (`tool/module_dependencies.yaml` **L307-311**), so delivery and notification call sites are **unconstructable**; and `excluded_events: ["iam.*"]` (**L315-316**) means a compliant subscription list **cannot contain** an `iam.*` topic. **D-2 — structural defect fixed:** the Stage-3 finding was numbered **§8.5** yet sorted *before* §8.4, misdirecting five cross-references; renumbered **§8.3.1** (it is a finding about §8.3's evidence). **D-3 — stale published counts fixed:** §45 said "16" and §48 said "7" while the registers had measured **AC 17** and **OBD 8** since v0.3. **D-4 — ⛔⛔ check 3 reported as a FAIL, not softened:** all **8** `ANL-CFG-*` slots lack both a default and a range, which the gate calls *"a specification hole"*. ⭐ **Deferred lawfully with a reason and seven named owners** (§44.3) rather than closed by inventing eight numbers — and **`ANL-CFG-005`** is singled out because a minimum cohort size is a **re-identification control**, where a guessed value is a privacy risk, not a tuning default. ⛔ **Stage 4 therefore CANNOT be conferred until these are supplied or lawfully withdrawn.** ⭐ **Checks 4, 5, 6 measured clean:** **17/17** acceptance criteria map to a requirement with **0 orphans** (measured on §45 alone, after an initial regex over-match was corrected); `FIL-XC-009` and `ITG-*` appear only as **precedent citations**, never as restated obligations; and `ANL-BR-002`/`ANL-BR-003` *implement* `MP-GBR-24`/`MP-GBR-36` rather than competing with Rank 1. ⭐ **Two new identifiers, both from measurement not invention:** **`ANL-OBD-009`** (the enterprise customization boundary — unanswerable from repository evidence) and **`ANL-GAP-025`** (⛔ **no branch/campus/organizational-hierarchy concept is measurable in the BC Map**, so branch-level analytics cannot be specified). Registers grew **GAP 24→25, OBD 8→9**; all eight re-measured contiguous. ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding preserved unchanged.** ⛔ No requirement weakened, no gap closed, no NFR/CFG value invented, no psychology research fabricated, no external API claimed, no telemetry invented, **0** `.dart` files touched, no Stage-2/Stage-3 decision reopened. ⛔ Stages 5–8 not entered; nothing ranked, baselined or frozen; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.3** | 2026-09-05 | ⭐⭐⭐ **STAGE-3 ARCHITECTURE ALIGNMENT performed — 6 / 6 checks PASS, with one Rank-4 conflict ACCEPTED and left OPEN.** New **§8.6** records all six lifecycle checks with measured evidence, and **§8.6.1** names every finding *and its disposition* including one **REJECTED**. ⛔⛔ **`ANL-AL-B1` — the review's central finding: a live Rank-4 vs Rank-4 conflict.** BC Map **L434** routes `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` to `BC-26`, while `tool/module_dependencies.yaml` **L315-316** sets `excluded_events: ["iam.*"]` and assertion **`AN-3`** forbids deriving any projection, metric or dimension from an `iam.*` fact — an exclusion described as *"explicit, not incidental"* that closes **`CFL-28`** via amendment **`A-6`**. **Both artefacts are Rank 4, so precedence cannot break the tie.** ⛔ **Not resolved here** — Stage 3 may name and disposition a conflict, not settle a Rank-4 disagreement. Routed as **`ANL-OBD-008`** to the Architecture Owner, with the **safe** side taken by new **`ANL-XC-012`** (no `iam.*` derivation) and made testable by new **`ANL-AC-017`**. ⭐ Disclosed consequence: the existing code subscribes to **no** `iam.*` event, so the implementation already complies and the conflict is documentary, not yet a code defect. ⚠ **`ANL-AL-A1` — my own v0.2 defect, fixed:** §8.1 had listed the three `iam.*` events as legitimate inputs **on BC Map L434 alone, without measuring the manifest**. The row is now marked **CONTESTED**. ⭐ **`ANL-AL-A2` — fixed:** new **§8.4.1** records the declared `platform/analytics` surface (`rank: 7`, `imports: contracts`, **5/5** downward ports, `banned_imports` incl. `platform/data:oltp_repository` as the mechanical form of `MP-GBR-37`) and its three assertions. ⭐⭐ **`AN-2` — *"no metric defined outside the semantic layer"* — is the most consequential discovery: F-1 is not merely a Rank-1 breach in prose but a breach of a declared, assertable manifest rule.** `ANL-AC-001` strengthened and `ANL-GAP-001` re-cited accordingly. ⛔ **`ANL-AL-R1` REJECTED with reason:** a manifest amendment was considered and refused — the declared ports already cover the certified chain, and requesting an unneeded Rank-4 change would widen this review's own authority (`ADR-0060` **L132**). ⭐ **Checks 1, 2, 4, 5, 6 re-measured:** `BC-26` is claimed by `PRD-009` **only** (one §8 row); **`E-30` verified lawful** — declared in BC Map **§17**, an express *"normative extension of §7"* admitted by `Accepted` **`ADR-0096`**, so L292 is satisfied and **0 edges are invented**; `policy_decision` is a **decision port**, so `BC-26` asks and never decides (`X-13`); `ID-1` is strengthened by `ANL-XC-012` because `iam.*` carries `SessionRevoked`. ⭐ Registers grew **XC 11→12, AC 16→17, OBD 7→8**, re-measured contiguous. ⛔ **F-1, F-2, F-3 and the `AttendanceCorrected` finding all re-verified and UPHELD unchanged.** ⛔ **Stage 3 is NOT CONFERRED** — that is the Architecture reviewer's act and no designation exists for `PRD-009`. ⛔ No Rank 1–5 artefact amended; no gap closed; no NFR or CFG value invented; **0** `.dart` files touched; `PRD-010` untouched and still FROZEN at Rank 3. |
 | **v0.2** | 2026-09-05 | ⭐⭐ **STAGE-2 SELF-REVIEW — two genuine defects found and fixed; every substantive finding re-verified and upheld.** **Defect 1 (gate-blocking): Stage-2 rule 4 was unmet.** `PRD_LIFECYCLE.md` Stage 2 requires *"Normative language (MUST/SHOULD/MAY) is defined in the document"*, and v0.1 used all three while defining none — measured at **0** occurrences of any definition. Fixed by adding **§0.1**, which also records the exclusion convention and resolves the rule-1 question about **MUST** appearing in prose that continues an identified requirement. **Defect 2 (evidence incompleteness): §8.3's inventory of the existing implementation was incomplete.** It listed only `DashboardMetrics`' twelve fields and missed **`feed()`** (returning `List<ActivityItem>`) and **`distinctAttendanceDays()`**. Both are now recorded, with two consequences drawn: a per-event activity feed may not be a Certified Metric at all (so **`ANL-OBD-007` is widened** to ask), and `distinctAttendanceDays()` is direct evidence that the presence/consistency framing of §12.2 is **buildable today** while mastery metrics are not. ⭐ **Re-verification of v0.1's claims, independently measured:** the **8-of-24** figure is **correct** (8 distinct event-type literals in `analytics.dart`; 24 BC Map rows routing to `BC-26`); **all 11 line citations resolve exactly** (BC Map L135/L206/L385/L416/L427/L899, `MASTER_PRD.md` L111/L166/L173/L477, `PRD_REGISTRY.md` L246); `MP-GBR-21`, `MP-GBR-36`, `MP-GBR-37`, `MP-GBR-38` and `MP-GBR-24` are all quoted verbatim; **F-1, F-2, F-3 and the `AttendanceCorrected` finding are UPHELD unchanged**. ⭐ All **8** registers re-measured contiguous (58/6/9/11/16/8/24/7) with `ANL-*` still absent from every other file. ⛔ **No requirement was weakened, no gap closed, no NFR or CFG value invented, and no `.dart` file touched** — the two code observations are flagged as **implementation issues for Stage 6/8**, not fixed here. ⛔ Stages 3–8 still not entered; nothing ranked, baselined or frozen; `PRD-010` untouched and still FROZEN at Rank 3. |

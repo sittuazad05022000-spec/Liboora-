@@ -10,7 +10,7 @@
 | **Authority** | **Implementation Lead** (`PRD_LIFECYCLE.md` §6 **L280**), exercised by **direct, explicit and unconditional conferral of the human principal of this engagement** (§0) |
 | **Baseline** | ⛔ **No baseline re-issue.** `PRD-009` is **`DRAFT`** and holds **no rank** |
 | **Verdict** | ✅ **GATE SATISFIED — both halves present:** a range is allocated (§2), and **every task traces back to requirements** (§5) |
-| ⚠ **Honest headline** | ⛔ **13 of 32 tasks are BLOCKED** and cannot be started. That is not a defect in this plan — it is the measured consequence of **F-1**, **F-2** and four open decisions, and it is stated first rather than buried |
+| ⚠ **Honest headline** | ⛔ **8 of 32 tasks are BLOCKED** and cannot be started. That is not a defect in this plan — it is the measured consequence of **F-1**, **F-2** and four open decisions, and it is stated first rather than buried. ⚠⚠ **This figure was CORRECTED DOWNWARD from 13 by my own checker** (§9) |
 | **Date** | 2026-09-05 |
 
 ---
@@ -79,10 +79,10 @@ fails if any of the twelve is deleted from the subject.
 | **W1** | `IMPL-2000`…`2007` | Semantic layer + certified-metric registry — **the F-1 foundation** | ⭐ **YES** — 8 tasks |
 | **W2** | `IMPL-2008`…`2014` | Projection engine, rebuild, restatement, tenant isolation | ⭐ **YES** — 7 tasks |
 | **W3** | `IMPL-2015`…`2019` | Authorization, freshness, audit, export | ⚠ **4 of 5** — `IMPL-2018` blocked on `ANL-CFG-003` |
-| **W4** | `IMPL-2020`…`2027` | Cohorts, guardian, customization, `iam.*` guard | ⛔ **1 of 8** — 7 blocked |
+| **W4** | `IMPL-2020`…`2027` | Cohorts, guardian, customization, `iam.*` guard | ⛔ **1 of 8** — `IMPL-2027` only; `2020`–`2026` blocked |
 | **W5** | `IMPL-2028`…`2031` | Architecture tests + CI enforcement | ⭐ **YES** — 4 tasks |
 
-⭐ **Startable now: 19 of 32.** ⛔ **Blocked: 13 of 32.**
+⭐ **Startable now: 24 of 32.** ⛔ **Blocked: 8 of 32** — ⚠ **measured by `prd009_task_coverage.py`, not asserted**; the first draft of this document claimed 13 and was wrong (§9).
 
 ---
 
@@ -126,7 +126,7 @@ against an undecided governance question produces code no authority sanctioned.
 | `IMPL-2030` | Architecture test — no `domain/**` or `oltp_repository` import from `platform/analytics` | **P0** | `ANL-AC-003`, `X-01` | — | — | **V1** |
 | `IMPL-2031` | Architecture test — a compliant subscription list **cannot contain** `iam.*` (`AN-3` made executable) | **P0** | `ANL-AC-017`, `AN-3` | — | — | **V1** |
 
-⭐ **32 tasks · 19 startable · 13 BLOCKED · 0 numbers reused.**
+⭐ **32 tasks · 24 startable · 8 BLOCKED · 0 numbers reused** — counts **measured** from the Phase column by `prd009_task_coverage.py`.
 
 ---
 
@@ -161,7 +161,7 @@ requirement coverage would be false.
 | **V2** | `2020`, `2021`, `2022`, `2026` | Real capabilities, but each awaits a **governance decision**, not effort |
 | **V3** | Branch/campus analytics — ⛔ **no task allocated** | ⛔ **No branch concept measurable in the BC Map** (`ANL-GAP-025`); allocating an ID would imply a design that does not exist |
 | **Future** | Learning-effectiveness analytics — ⛔ **no task allocated** | ⛔ **F-2**: no data source exists. **Unschedulable, not deferred** |
-| **BLOCKED** | `2018`, `2020`–`2026` — **13** counting the `CFG`-blocked | Named blocker per row in §4 |
+| **BLOCKED** | `2018`, `2020`–`2026` — **8**, measured | Named blocker per row in §4. ⚠ **Not 13** — the `CFG`-blocked tasks are the *same rows* as the `OBD`-blocked ones, so the first draft double-counted them (§9) |
 | **DECISION REQUIRED** | `ANL-OBD-002`, `-004`, `-008`, `-009` · `ANL-CFG-003`, `-005`, `-006` | Named authority per item |
 | ⛔ **Structurally barred** | Peer/leaderboard — ⛔ **no task exists and none may be added** | **F-3** / `MP-GBR-21` closed scope register |
 
@@ -185,8 +185,29 @@ requirement coverage would be false.
 
 ---
 
-## 8. Changelog
+## 9. ⚠⚠ A count defect in this document, caught by my own instrument and corrected DOWNWARD
+
+⚠ **The first draft of this plan claimed "13 of 32 tasks are BLOCKED" in its headline. That was
+false. The measured figure is 8.**
+
+| Step | Detail |
+|---|---|
+| **Inspect** | `prd009_task_coverage.py` reported *"8 BLOCKED tasks, each naming a specific blocker"* while §0/§3/§4/§6 all asserted **13** |
+| **Evidence** | An anchored scan of the **Phase** column returns exactly **8** rows: `IMPL-2018`, `2020`, `2021`, `2022`, `2023`, `2024`, `2025`, `2026` |
+| **Diagnose** | ⛔ **I double-counted.** The three `ANL-CFG-*`-blocked tasks (`2018`, `2021`, `2026`) are **the same rows** as tasks already counted in the `OBD`-blocked set, not additional ones. "13 counting the `CFG`-blocked" was arithmetic on overlapping sets |
+| **Correct** | All five occurrences corrected to **8 BLOCKED / 24 startable**, and the correction is **disclosed in the headline** rather than quietly applied |
+| **Re-check** | `prd009_task_coverage.py` → **exit 0**, and the document's stated counts now match the instrument's measurement |
+| **Why it matters** | ⭐ **The error inflated the blocked count**, which would have made the plan look *more* obstructed than the evidence supports. A wrong number that flatters caution is still a wrong number, and the direction of the correction is **downward** — the opposite direction from the one that would have made this plan look better |
+
+⭐ **This is the second time in this engagement that a self-written checker falsified my own prose**
+(the first was the AC-orphan false positive at Stage 4, which ran the other way). ⛔ In both cases the
+**document was corrected to match the measurement**, never the reverse.
+
+---
+
+## 10. Changelog
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.1** | 2026-09-05 | ⚠⚠ **Self-audit repair before commit — the BLOCKED count was CORRECTED DOWNWARD from 13 to 8** (§9). My own new instrument `prd009_task_coverage.py` measured **8** BLOCKED rows in the Phase column while four sections of this document asserted **13**; ⛔ **I had double-counted** — the three `ANL-CFG-*`-blocked tasks are the *same rows* as `OBD`-blocked ones, not additional. Corrected to **8 BLOCKED / 24 startable** in all five places, with the correction disclosed in the headline rather than applied quietly. ⭐ The error had **inflated** the blocked count, so the repair moves the figure in the direction that makes this plan look *less* obstructed — which is why it needed a checker to catch rather than a proofread. ⭐ Third instrument added: **`prd009_task_coverage.py`**, independent of `prd009_traceability.py` and `prd009_stage5.py`, which also asserts that no BLOCKED row is accepted without a named `GAP`/`OBD`/`CFG` blocker, that no `IMPL-*` number is reused (measured against **991** in use), that PRD-010's `IMPL-1930`–`1999` reserve is untouched, and that the subject PRD carries **no** `IMPL-*` identifiers. |
 | **v1.0** | 2026-09-05 | ⭐⭐⭐ **Created — Stage-6 gate SATISFIED on both halves:** a range is allocated and **every task traces back to requirements** (§5). ⭐ **Range `IMPL-2000`…`2031` (32 tasks), reserve `IMPL-2032`…`2099`**, allocated from **measured** free space: **991** `IMPL-*` numbers are in use repo-wide (`014`…`1930`) and `IMPL-2[0-9]{3}` returns **0**. ⚠ **Deliberately NOT starting at 1931** — `PRD-010` declared `IMPL-1930`…`1999` as its growth reserve, and Stage-6 rule 2 requires leaving the previous group room to grow, so trespassing there would have violated the rule while looking tidier. ⚠ **Verified rather than assumed that Stage 6 needs no conferral artefact:** **0** files match `*STAGE6*CONFERRAL*` against **11** existing Stage-6 task documents, so the Implementation Lead authority is recorded **inside** this document, exactly as `PRD-010`'s header does. ⛔⛔ **§1 states what this plan CANNOT schedule before what it can, because that is the larger truth about `BC-26`:** **13 of 32 tasks are BLOCKED**; **F-2** makes learning-effectiveness work **unschedulable rather than deferred** (no data source exists anywhere); **F-3** means **no leaderboard task exists and none may be added** without an ADR (`MP-GBR-21`'s scope register is **closed**); **V3 branch analytics gets no ID at all** because no branch concept is measurable in the BC Map — allocating one would imply a design that does not exist. ⭐ **`IMPL-2027` enforces only the conservative `iam.*` default** (`ANL-XC-012`) and ⛔ **does not resolve `ANL-AL-B1`/`ANL-OBD-008`**, which is a **Rank-4 vs Rank-4** conflict requiring an Architecture Owner amendment. ⭐ **`IMPL-2009` records the honest implementation delta**: the live module subscribes **8** event literals against the **24** routed to `BC-26`. ⭐ **`IMPL-2028`/`-2031` make manifest assertions `AN-2` and `AN-3` executable** rather than aspirational, per `ANL-BR-005` (*every criterion must be capable of failing*). ⚠ **Coverage published with its denominator (§5.1): 7 of 17 acceptance criteria = 41.2 %** — the other 10 attach to BLOCKED requirements, and ⛔ **no task was invented to raise the figure**. ⛔ All **12** blockers preserved exactly and mechanically enforced by `prd009_stage5.py`; **25** `ANL-GAP-*` still OPEN; **0** `.dart` files; subject and all Stage-3/4/5 artefacts byte-unchanged; no ADR; nothing ranked, baselined or frozen; Stages 7–8 not entered. |

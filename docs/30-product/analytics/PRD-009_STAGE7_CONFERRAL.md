@@ -85,13 +85,29 @@ downgraded or reinterpreted to obtain this conferral.**
 | **F-3** — peer comparison barred (`MP-GBR-21` closed scope register) | ⛔ **OPEN** | Product Owner + ADR |
 | `AttendanceCorrected` restatement semantics | ⛔ **OPEN** | Product Owner |
 | **`ANL-AL-B1` / `ANL-OBD-008`** — Rank-4 vs Rank-4 `iam.*` conflict; `ANL-XC-012` conservative default governs ⇒ **no `iam.*`-derived metric authorised** | ⛔ **OPEN** | **Architecture Owner** |
-| `ANL-OBD-002` · `-004` · `-009` | ⛔ **OPEN** | Privacy+Arch · `BC-18` · Product |
-| `ANL-CFG-003` · `-005` · `-006` | ⛔ **OWED** | SRE · Privacy · Arch+Legal |
+| `ANL-OBD-002` | ⛔ **OPEN** | Privacy + Architecture |
+| `ANL-OBD-004` | ⛔ **OPEN** | `BC-18` |
+| `ANL-OBD-009` | ⛔ **OPEN** | Product Owner |
+| `ANL-CFG-003` | ⛔ **OWED** | SRE |
+| `ANL-CFG-005` | ⛔ **OWED** (after `ANL-OBD-002`) | Privacy |
+| `ANL-CFG-006` | ⛔ **OWED** | Architecture + Legal |
 | **25** `ANL-GAP-*` | ⛔ **25 / 25 OPEN** | Named per gap |
 | Stage 8 | ⛔ **NOT entered — 0 / 17** criteria proven | — |
 | Stage-6 tasks | ⚠ **8 / 32 BLOCKED** | — |
 
-⭐ Mechanically enforced: `prd009_stage5.py` **fails** if any of the twelve is deleted.
+⭐ Mechanically enforced: `prd009_stage5.py` **fails** if any of the twelve is deleted — and now
+**also fails if this record omits one**, a guard added after the fact and disclosed at §7.1 below.
+
+⚠ **§7.1 — a defect in this record, found by my own instrument and corrected in notation only.**
+As first written, four rows above used shorthand (`` `ANL-OBD-002` · `-004` · `-009` ``), so
+`ANL-OBD-004`, `ANL-OBD-009`, `ANL-CFG-005` and `ANL-CFG-006` were **not individually searchable**
+in this file. The strengthened checker reported exactly that. ⛔ **No blocker had been closed,
+downgraded or dropped** — all twelve were present in substance, with their owners, and the state
+column already read OPEN/OWED. But the sentence immediately above claimed **mechanical**
+enforcement, and a claim of mechanical enforcement that a machine cannot verify is a false claim
+however true its substance. The six shorthand entries are therefore expanded to one row per
+identifier. ⭐ **What changed: notation and searchability. What did not change: any state, any
+owner, any count** — still **12** blockers, still **0** closed, still **25 / 25** gaps OPEN.
 
 ⚠⚠ **Stated plainly: `PRD-009` is now a FROZEN specification, not a shippable capability.** Its
 foundation — the semantic layer `MP-GBR-36` requires — **does not exist**. This is the `PRD-008`

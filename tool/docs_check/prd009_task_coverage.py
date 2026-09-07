@@ -94,10 +94,28 @@ def go():
     else:
         facts.append(f"{len(nums)} task rows, IMPL-{LO}-{HI}, contiguous")
 
-    # allocation rule 1 — never reuse a number used elsewhere
+    # allocation rule 1 — never reuse a number ALLOCATED elsewhere.
+    #
+    # "Allocated" is not the same as "mentioned". PRD-009's own lifecycle
+    # records legitimately CITE this range as evidence — the Stage-7 readiness
+    # record's condition-5 row reads "IMPL-2000...2031, 32 contiguous", and
+    # PRD-010's readiness record cites its own IMPL-1900...1929 identically.
+    # Citation is the established precedent, not a collision.
+    #
+    # Measured case: an earlier build of this checker FAILED with
+    # "REUSED identifiers: ['IMPL-2000']" the moment the readiness record was
+    # written. That was MY instrument being too crude, not a real reuse. So
+    # PRD-009's own artefacts are excluded here, while every OTHER document in
+    # the repository is still checked for a genuine clash.
+    OWN_ARTEFACTS = {
+        "PRD-009_STAGE7_FREEZE_READINESS.md",
+        "PRD-009_STAGE7_CONFERRAL.md",
+        "PRD-009_STAGE5_CONFERRAL.md",
+        "PRD-009_ANALYTICS_AND_REPORTS.md",
+    }
     used_elsewhere = set()
     for p in list((REPO / "docs").rglob("*.md")) + list((REPO / "tool").rglob("*.py")):
-        if p == TASKS or p == HERE:
+        if p == TASKS or p == HERE or p.name in OWN_ARTEFACTS:
             continue
         try:
             t = p.read_text(encoding="utf-8", errors="replace")
@@ -206,8 +224,8 @@ def done():
         return 1
     print("\nStage-6 gate SATISFIED: a range is allocated and every task traces")
     print("back to requirements. This instrument does NOT assert the tasks are")
-    print("implemented, nor that requirement coverage is total — 13 tasks are")
-    print("blocked on named governance decisions.")
+    print("implemented, nor that requirement coverage is total — several tasks")
+    print("are blocked on named governance decisions (count reported above).")
     return 0
 
 

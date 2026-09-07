@@ -197,7 +197,7 @@ consumed by dashboards, AI (`E-26`) and future Liboora products.
 | `BC-10` Person Identity | `identity.PersonIdentityCreated`, `PersonProfileUpdated`, `PersonPrivacyModeChanged`, `PersonAnonymised` |
 | `BC-11` Social Graph | `social.FriendshipEstablished`/`UserBlocked` |
 | `BC-12` Messaging | `messaging.MessageSent` *(engagement metrics)* |
-| `BC-18` Identity & Access | `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` |
+| `BC-18` Identity & Access | ⚠⚠ `iam.AccountCreated`/`SessionRevoked`/`ConsentGranted` — **CONTESTED, see §8.5. `BC-26` MUST NOT consume these until `ANL-OBD-008` resolves** |
 | `BC-20` Billing | `billing.SubscriptionActivated`/`Cancelled`/`PaymentFailed` |
 | `BC-27` AI | `ai.AgentRunCompleted`/`AiActionApplied` *(cost attribution)* |
 | `BC-19` Tenancy | `tenancy.LibraryProfileViewed` — via **`E-30`** (BC Map L899) |
@@ -258,6 +258,48 @@ the existing surface was **incomplete**. This matters for two reasons:
 ⛔ **No code change is proposed here.** Both observations are specification findings; any change to
 `lib/platform/analytics/analytics.dart` is an **implementation issue for Stage 6/8**, recorded as
 `ANL-GAP-001`/`-002` and **not** performed by this PRD.
+
+### 8.5 ⛔⛔ Stage-3 finding `ANL-AL-B1` — a live **Rank-4 vs Rank-4** conflict over `iam.*`
+
+⚠⚠ **Found by the Stage-3 architecture review. Recorded, NOT resolved** — `PRD_LIFECYCLE.md` Stage 3
+gives this review power to *name and disposition* conflicts, not to settle a Rank-4 disagreement.
+
+**Two Rank-4 artefacts contradict each other, and v0.2 silently followed one of them:**
+
+| Rank-4 source | Statement | Effect |
+|---|---|---|
+| **BC Map L434** | *"BC-18 \| `iam.AccountCreated` / `SessionRevoked` / `ConsentGranted` \| **BC-24, BC-26** \| Security audit"* | ⇒ `iam.*` **is routed to** `BC-26` |
+| **`tool/module_dependencies.yaml` L315-316** | `excluded_events: ["iam.*"]`, with the comment *"Analytics consumes **NO** authentication fact. Recorded as an exclusion because `\"*\"` would otherwise silently subscribe this platform to identity behaviour."* | ⇒ `iam.*` **is forbidden to** `platform/analytics` |
+| **Assertion `AN-3`** (same file, L328) | *"no projection, metric or dimension is derived from any `iam.*` fact"* — closing **`CFL-28`** via **amendment `A-6`** | ⇒ a **mechanically assertable** prohibition |
+
+⭐ **Both are Rank 4, so precedence does not break the tie** — this is not a case where a higher rank
+silently wins. It is a genuine internal inconsistency in the architecture layer.
+
+⚠ **v0.2's defect:** §8.1 listed the three `iam.*` events as legitimate `BC-26` inputs on the strength
+of BC Map L434 alone, **without measuring the manifest**. That was a real Stage-3 omission on my part,
+and the row is now marked **CONTESTED**.
+
+⭐ **The manifest's position is the safer one on the evidence**, and this review says so without
+adopting it as settled: `AN-3` is stated as an *assertion* (i.e. intended to be enforced by tooling),
+its exclusion is deliberate rather than incidental (*"explicit, not incidental"*), and it closes a
+numbered conflict (`CFL-28`). BC Map L434's purpose column reads *"Security **audit**"* — which is
+`BC-24`'s function, and the row may simply be listing `BC-26` in error. ⛔ **But determining that is an
+Architecture Owner act, not this review's.**
+
+**Disposition — `ANL-AL-B1`:** **ACCEPTED as a conflict · OPEN · routed to the Architecture Owner** as
+**`ANL-OBD-008`**. Pending resolution:
+
+**`ANL-XC-012`** `BC-26` **MUST NOT** derive any projection, metric or dimension from an `iam.*` event.
+This makes the manifest's `AN-3` assertion true by specification and is the **safe** side of the
+conflict — if the Architecture Owner later rules that L434 governs, this exclusion is relaxed by ADR.
+⛔ Adopting the opposite default would have made a **security-adjacent** consumption lawful on the
+strength of a purpose column that says *"audit"*.
+
+⭐ **Consequence for §8.3's F-1 measurement:** the existing code subscribes to **no** `iam.*` event, so
+the implementation **already complies** with `AN-3`. The conflict is documentary, not yet a live code
+defect — and the "24 events" figure is now correctly read as **24 routed, of which 3 are contested**.
+
+---
 
 ### 8.4 Module rank and permitted reach
 

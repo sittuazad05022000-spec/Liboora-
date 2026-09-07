@@ -116,6 +116,15 @@ def main():
                 continue
             if re.match(r"^\| `ANL-%s-[0-9]{3}` \| `ANL-" % reg, l):
                 continue                           # §25.2 cross-reference row
+            # A DEFINITION states an obligation or a description. A sentence
+            # that merely ROUTES to an id — e.g. "routed to the Architecture
+            # Owner as **`ANL-OBD-008`**. Pending resolution:" — continues a
+            # prior sentence and is a CITATION, not a second definition.
+            # Measured case: ANL-OBD-008 at L290 (citation, sentence-final)
+            # vs L1116 (the §48 authoritative definition row).
+            tail = l[m.end():].lstrip("*` ")
+            if tail[:1] in (".", ",", ";", ")"):
+                continue
             defs.setdefault(m.group(1), []).append(i)
         dups = {k: v for k, v in defs.items() if len(v) > 1}
         if dups:

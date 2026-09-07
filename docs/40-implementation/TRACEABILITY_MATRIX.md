@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.25** |
+| **Version** | **v1.26** |
 | **Status** | Active — updated with every requirement implemented |
 | **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** |
 | **Baseline** | **BASELINE-2026-08-04-D** — ⚠ **not re-issued by §2G.** `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier only *"when a Rank 1–3 document changes version"*. `PRD-008` is **byte-unchanged** by this pass, so no baseline change is due, and this matrix is **unranked** — it confers nothing |
@@ -3631,3 +3631,125 @@ forbids reusing `005`, `006` or `007`; check 3's target is **4**.
 ⭐ **Two instruments, mutually non-importing**, per `ADR-0082`'s requirement that the mechanical gate be
 backed by independent checkers: one measures the registers, the other measures Stage-5 *entry
 conditions* — and the second is designed to **fail** while Stage 4 is unconferred.
+
+---
+
+## 2U. Identifier inventory — Analytics & Reports (`PRD-009`, the `BC-26` analytics read model)
+
+**Stage 5 — CLAIMS registration.** Registered 2026-09-05, matrix **v1.25 → v1.26**, under the
+Stage-5 conferral at `docs/30-product/analytics/PRD-009_STAGE5_CONFERRAL.md`, which in turn stands on
+the **Stage-4 conferral** at `PRD-009_STAGE4_CONFERRAL.md` and the **Stage-3 conferral** at
+`PRD-009_STAGE3_CONFERRAL.md` (itself under `Accepted` `ADR-0112`). ⛔ Registration before those
+conferrals would have advanced the chain from its middle (`ADR-0082` **L324**).
+
+⚠⚠ **The pre-commit measurement is published WITH ITS REGEX**, per the §2K/§2L/§2S/§2T lesson.
+A bare `grep -c 'ANL-'` is **unsafe** here: the token also occurs in **`ANL-AL-A1`**, **`ANL-AL-A2`**,
+**`ANL-AL-B1`** and **`ANL-AL-R1`** — the Stage-3 **alignment-finding** register, **none of which is a
+PRD identifier**. Anchored to the eight published registers:
+`grep -coE 'ANL-(FR|BR|INV|XC|AC|CFG|GAP|OBD)-[0-9]{3}'` → **0** in this matrix before this edit, so
+**144 identifiers in a document whose Stage 3 and Stage 4 are CONFERRED were registered nowhere**.
+
+### 2U.0 The registers
+
+| Register | Members | Range | Contiguous from 001 | Duplicate definitions | Notes |
+|---|---|---|---|---|---|
+| `ANL-FR-*` | **58** | `001`–`058` | ✅ | **0** | functional requirements |
+| `ANL-BR-*` | **6** | `001`–`006` | ✅ | **0** | business rules — all 6 *implement* Rank 1, none competes with it |
+| `ANL-INV-*` | **9** | `001`–`009` | ✅ | **0** | invariants |
+| `ANL-XC-*` | **12** | `001`–`012` | ✅ | **0** | exclusions — **12 of 12** state an impossibility, **0** bare prohibitions |
+| `ANL-AC-*` | **17** | `001`–`017` | ✅ | **0** | acceptance criteria, all Given/When/Then, **17 / 17 mapped, 0 orphans** |
+| `ANL-CFG-*` | **8** | `001`–`008` | ✅ | **0** | ⭐ **8 declared, 3 configurable** — 5 withdrawn or reassigned (§2U.2) |
+| `ANL-GAP-*` | **25** | `001`–`025` | ✅ | **0** | ⚠ **all 25 remain OPEN** — registration is not resolution (§2U.3) |
+| `ANL-OBD-*` | **9** | `001`–`009` | ✅ | **0** | open decisions — ⚠ **4 remain OPEN** (§2U.3) |
+
+⭐ **Obligation-bearing: 58 + 6 + 9 + 12 = 85.** ⭐ **Total identifiers: 144.** ⛔ **0 retired.**
+⛔ **Zero collisions in three directions** (§2U.4).
+
+⚠ **`ANL-EVT-*` is registered as EMPTY with a reason**, on the §2S.3 precedent that a register declared
+empty is published rather than omitted: `BC-26` **publishes no events** — it is a read model that
+consumes them. Omitting the row would leave a reader unable to tell an empty register from a forgotten one.
+
+### 2U.1 Coverage — published with its denominator, in the same sentence
+
+**17 acceptance criteria against 85 obligation-bearing identifiers = 20.0 %.**
+
+⚠ **This is stated, not hidden.** `PRD-009` is a Stage-4-conferred **`DRAFT`**, not a frozen PRD, and
+`PRD_LIFECYCLE.md`'s Stage-4 check 4 requires that **every criterion map to a requirement** — which holds
+at **17 / 17, zero orphans** — **not** that every requirement carry a criterion. ⭐ The inverse direction
+is **incomplete by design at this stage**, and is recorded so no later reader mistakes 20.0 % for a defect
+in the registration.
+
+### 2U.2 ⭐⭐ Eight `ANL-CFG-*` declared, three configurable — the difference is deliberate
+
+| Slot | Class | Basis |
+|---|---|---|
+| `ANL-CFG-001` | ⛔ **NOT configurable — WITHDRAWN** | Report page size is a presentation concern of a composition BC Map §2 rules **not a context** |
+| `ANL-CFG-002` | ⛔ **NOT `BC-26`'s — REASSIGNED** | **`BC-21` Entitlement** is *"single source of truth for **limits** and gates"* (BC Map **L130**), value object `Limit` (**L383**) |
+| `ANL-CFG-003` | ⚠ **configurable — value OWED** | Freshness threshold. Requirement `ANL-FR-057` **complete**; the number is owed to **SRE** |
+| `ANL-CFG-004` | ⛔ **NOT `BC-26`'s — REASSIGNED** | **`BC-22`** owns delivery rate (`PRD-010`, FROZEN); `ANL-XC-009` already makes a `BC-26` send **unconstructable** |
+| `ANL-CFG-005` | ⚠ **configurable — OWED · ⛔ BLOCKED** | Minimum cohort size is a **re-identification control**, not a tuning default; blocked behind `ANL-OBD-002`, owed to **Privacy** |
+| `ANL-CFG-006` | ⚠ **configurable — value OWED** | Projection retention window; owed to **Architecture Owner + Legal** (`ANL-OBD-006`) |
+| `ANL-CFG-007` | ⛔ **NOT configurable — WITHDRAWN** | A global reporting period would let a tenant contradict a certified `timeSemantics` — barred by `ANL-BR-003` |
+| `ANL-CFG-008` | ⛔ **NOT a specification configurable — WITHDRAWN** | `ANL-FR-013` demands an identical snapshot **at any batch size**, so no value changes a conforming outcome |
+
+⭐ **A withdrawn slot keeps its identifier.** The register is **8** because the append-only doctrine
+forbids reusing `001`, `002`, `004`, `007` or `008` (`PRD_LIFECYCLE.md` §5 rule 5); check 3's target is **3**.
+⭐ The three survivors publish **a complete requirement with the value owed to a named authority** — the
+exact shape FROZEN `PRD-017` holds for `FIL-CFG-006`/`-010`/`-011`, which **froze at Rank 3 in that state**.
+
+### 2U.3 ⛔ What this registration does NOT confer
+
+- ⛔ It does **not** close any gap. **All 25** `ANL-GAP-*` remain **OPEN**.
+- ⛔ It does **not** resolve the four open decisions still live: **`ANL-OBD-002`** (cohort-band scope — Privacy + Architecture Owner), **`ANL-OBD-004`** (`guardianOf` analytical reach — `BC-18` owner), **`ANL-OBD-008`** (the Rank-4 `iam.*` conflict — Architecture Owner), **`ANL-OBD-009`** (customization boundary — Product Owner).
+- ⛔ It does **not** close the three data-truth blockers. **F-1** — no semantic layer exists, though `MP-GBR-36` requires one and manifest assertion `AN-2` makes it assertable. **F-2** — no learning-outcome data source exists (**BLOCKER**, Product Owner). **F-3** — peer/leaderboard comparison is structurally barred by **`MP-GBR-21`**, whose scope register is **closed** at `self`, `guardianOf`, `tenantWide`.
+- ⛔ It does **not** resolve **`ANL-AL-B1`**, a live **Rank-4 vs Rank-4** contradiction: BC Map **L434** routes `iam.*` to `BC-26`, while `tool/module_dependencies.yaml` **L317** declares `excluded_events: ["iam.*"]` with assertion **`AN-3`**. ⭐ Precedence **cannot** break the tie; the safe default `ANL-XC-012` (exclude) governs, so ⛔ **no `iam.*`-derived metric is authorised**.
+- ⛔ It does **not** supply the three owed `ANL-CFG-*` values.
+- ⛔ It does **not** rank, baseline or freeze `PRD-009`. Status **`DRAFT`**; `PRD_REGISTRY.md` **`PLANNED`**; `DOCUMENTATION_BASELINE.md` holds **0** `PRD-009` rows.
+- ⛔ It does **not** confer Stage 6 or Stage 7, and allocates **no** `IMPL-*` range.
+- ⚠ It does **not** assert any runtime satisfies the specification. Measured: `lib/platform/analytics/analytics.dart` subscribes **8** event literals against the **24** routed to `BC-26`, and contains **no semantic layer** — implementation traceability is therefore honestly a **GAP**, not a link.
+
+### 2U.4 Collision safety — three directions, measured
+
+| Direction | Probe | Result |
+|---|---|---|
+| 1 — Is `ANL-` declared by any other PRD? | anchored *Identifier prefix* declaration-row scan across `docs/30-product/**` | ⭐ **0** — the only non-`PRD-009` hits are **citations** inside `ADR-0112` and `ADR-INDEX.md`, not declarations |
+| 2 — Was `ANL-` already in this matrix? | `grep -coE 'ANL-(FR\|BR\|INV\|XC\|AC\|CFG\|GAP\|OBD)-[0-9]{3}'` | ⭐ **0** before this edit |
+| 3 — Do the eight registers collide with each other, or with a near-neighbour prefix? | per-register set comparison; **`ANL-AL-*` excluded by anchoring** | ⭐ **0** — and that exclusion is precisely why the regex is published |
+
+### 2U.5 ⚠⚠ A false positive in the instrument's own first run, disclosed rather than smoothed over
+
+⚠ The duplicate-definition probe **initially reported 4 duplicate `ANL-FR-*` definitions, 1 `ANL-BR-*`,
+3 `ANL-CFG-*` and 1 `ANL-OBD-*`** — which would have failed this registration. ⛔ **Every one was
+FALSE**, and the cause was the instrument, not the PRD: `PRD-009` mentions each identifier in up to
+**three** legitimate roles — the §0 register-**declaration** row, the authoritative **definition**, and
+the §46 traceability **specimen** row — plus a §25.2 cross-reference table.
+
+⭐ The last surviving candidate, **`ANL-OBD-008` at L290 vs L1116**, was resolved by reading both: L290 is
+a **sentence-final citation** (*"routed to the Architecture Owner as **`ANL-OBD-008`**. Pending
+resolution:"*), while **L1116 in §48 is the single authoritative definition**. ⛔ **The PRD was not edited
+to make the check pass; the classifier was corrected** to exclude declaration rows, specimen rows,
+cross-reference rows and sentence-final citations. ⭐ **True duplicate definitions across all eight
+registers: 0.**
+
+### 2U.6 The two gate instruments, and why there are two
+
+| Instrument | Measures | Result |
+|---|---|---|
+| `tool/docs_check/prd009_traceability.py` | The eight registers — counts, ranges, contiguity from 001, duplicate **definitions**, malformed ids, and whether **this matrix's published counts AGREE with the PRD's bytes** | **exit 0** (after this registration) |
+| `tool/docs_check/prd009_stage5.py` | Stage-5 **entry conditions** — Stage-3 and Stage-4 conferrals exist and record PASS, `ADR-0112` is Accepted, **all 12 required blockers still represented**, and **no forbidden Stage-6/7 work** performed (no `IMPL-*`, no baseline row, no advanced registry status) | **exit 0** |
+
+⭐ **Two instruments, mutually non-importing**, per `ADR-0082`'s requirement that the mechanical gate be
+backed by *independent* checkers — two files sharing a helper would be one instrument with two names.
+⭐ **The second is designed to FAIL if a blocker is deleted**, so a Stage-5 pass is not obtainable by
+quietly removing `F-1`, `F-2`, `F-3` or an open decision. ⚠ Verified honestly: the traceability
+instrument **failed on its pre-registration run** with *"no §2x section registering PRD-009"* — that
+failure is what demonstrates it measures this matrix rather than echoing the PRD.
+
+### 2U.7 Subject hashes at registration
+
+| Artefact | sha256 (leading 16) |
+|---|---|
+| `PRD-009_ANALYTICS_AND_REPORTS.md` v0.6 | `53df11c4fcee6930` |
+| `PRD-009_STAGE3_ARCHITECTURE_ALIGNMENT.md` v1.0 | Stage-3 gate artefact |
+| `PRD-009_STAGE3_CONFERRAL.md` v1.0 | Stage 3 **CONFERRED**, 6/6 |
+| `PRD-009_STAGE4_CONFERRAL.md` v1.0 | Stage 4 **CONFERRED**, 6/6 |

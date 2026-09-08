@@ -251,15 +251,13 @@ records, and each names the exact lines it changed.
 
 ## Current registration addendum — 2026-09-08
 
-`ADR-0115` is the next unused identifier: an exact filename and repository-text scan
-found no `ADR-0115` collision. It is registered here in the same change as the draft,
-with status **Proposed**. The draft is not binding and is not counted as Accepted.
+`ADR-0115` is registered with **Accepted-in-principle/Execution-blocked** status. The Architecture Owner / ARB accepted the repository-backed governance boundary on 2026-09-08; the act does not select a runtime/vendor, name a deployment operator, assign server-side secret custody, or authorise implementation.
 
 | ADR | Status | Subject | Required acceptance authority |
 |---|---|---|---|
-| [`ADR-0115`](./ADR-0115-bc-30-v1-backend-runtime-deployment-authority.md) | **Proposed** | V1 `BC-30` Offline Sync backend/runtime and deployment locus | Architecture Owner / ARB |
+| [`ADR-0115`](./ADR-0115-bc-30-v1-backend-runtime-deployment-authority.md) | **Accepted-in-principle/Execution-blocked** | V1 `BC-30` Offline Sync backend/runtime and deployment locus | Architecture Owner / ARB |
 
-**Measured current register after this addendum:** 103 ADR files; 88 Accepted, 14
-Proposed, 1 Accepted-in-principle/Execution-blocked (`ADR-0075`), 0 superseded and
+**Measured current register after this addendum:** 103 ADR files; 88 Accepted, 13
+Proposed, 2 Accepted-in-principle/Execution-blocked (`ADR-0075`, `ADR-0115`), 0 superseded and
 0 deprecated. The historical Count text above is retained; this addendum is the
-current registration correction for the newly added draft.
+current registration correction for ADR-0115's accepted-in-principle status.

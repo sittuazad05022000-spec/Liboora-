@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Implementation Blocker Register — items that block release or block a gate, recorded but deliberately **not** implemented |
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Active |
 | **Date** | 2026-09-08 |
 | **Created by** | Governance Closure Phase, item 7 |
@@ -254,7 +254,7 @@ The controlled source is the repository at `main`, re-verified against the curre
 |---|---|---|---|
 | **7a — Retention** | **OPEN** — no authoritative retention number. Do not adopt “7 years financial / 2 years attendance”. | BC Map `Q-04` remains open; `ATT-GAP-005` rejects the unratified note; `MASTER_PRD MP-NFR-10` assigns retention enforcement to Security + Data Governance; `ADR-0051` records the retention gap as open. | Legal Counsel + Security/Data Governance decision; Architecture Owner to formalise through ADR. |
 | **8b-residual — revoked/expired actor before replay** | **REQUIRES OWNER DECISION** — no authoritative queued-item disposition or audit-bearing treatment found. | `PRD-001` requires current-state authorisation and refusal when access is not allowed. Frozen `PRD-006` defines idempotency/correction preservation, but does not decide discard/reject versus an audit-bearing treatment for this residual. | Product Owner + BC-03 Domain Owner decision; ADR-first if frozen authority must change. |
-| **Item 4 — Backend Runtime** | **BLOCKED** — no approved runtime/vendor authority. | `MASTER_PRD.md` L227 names BaaS only as a candidate and says it is not named in the EA. | Architecture Owner decision is the primary next authorised action; do not select a vendor in this register. |
+| **Item 4 — Backend Runtime** | **BLOCKED** — `ADR-0115` is accepted in principle, but the deployment operator and server-side secret-custody owner remain unassigned follow-up gaps; no implementation is authorised. | `MASTER_PRD.md` L227 names BaaS only as a candidate and says it is not named in the EA; the accepted-in-principle ADR preserves that boundary. | Name the deployment operator and secret-custody/control owner through a follow-up governed act; do not select a vendor or implement from this register. |
 | **Item 3 — Durable Queue** | **BLOCKED BY ITEM 4**. | No approved backend/runtime authority and no authorised durability model. | Wait for Item 4; no queue implementation or durability value. |
 | **Item 9b — At-rest** | **BLOCKED BY ITEM 3**. | Storage and at-rest treatment depend on the durable-queue placement and authority; no security mechanism is invented. | Re-check after Item 3; no encryption/storage policy is selected here. |
 | **Item 5 — Retry/Backoff** | **BLOCKED/OPEN**. | No authorised retry/backoff policy or numeric values. | Re-check after Item 4; no retry count, interval or backoff value is set. |
@@ -273,10 +273,7 @@ Item 4 Backend Runtime ──► Item 3 Durable Queue ──► Item 9b At-rest 
 8b-residual                 (independent; REQUIRES OWNER DECISION)
 ```
 
-**Primary next authorised action:** obtain the Architecture Owner decision/ADR for **Item 4
-Backend Runtime**, without selecting a vendor in advance. Until that authority exists, Items
-3, 9b, 7b and 5 remain blocked/open and no implementation action is authorised. The
-independent 7a and 8b-residual owner decisions remain separately routed.
+**Primary next authorised action:** complete the follow-up governed act for **Item 4 Backend Runtime** by naming the deployment operator and server-side secret-custody/control owner; do not infer either assignment from the Architecture Owner / ARB acceptance in principle. Until those assignments and any final runtime authority are recorded, Items 3, 9b, 7b and 5 remain blocked/open and no implementation action is authorised. The independent 7a and 8b-residual owner decisions remain separately routed.
 
 | Version | Date | Change |
 |---|---|---|
@@ -297,12 +294,11 @@ vendor, and does not change the Item 4 status: **BLOCKED**.
 | **Decision Owner** | **Architecture Owner** for D1, as already routed by the read-only `IMPL-020` preparation record. The repository does not identify a separate standing deployment selector/operator; the accepted decision must name that deployment authority and distinguish it from Architecture Owner approval. |
 | **Required ADR Contents** | Accepted ADR with: (1) one-act decision authority and scope; (2) the selected runtime/deployment locus, without pre-approval in this brief; (3) Architecture Owner versus deployment-authority boundary; (4) `BC-30` execution impact and `BC-03` ownership preservation; (5) Item 3/5/9b/7b dependency consequences; (6) security/secrets and operational accountability at the authority level, without inventing mechanisms; (7) required Rank-1 record update to `MASTER_PRD` only after ADR acceptance; and (8) explicit non-effects: no `PRD-018`, frozen PRD/ADR, `TASK-D10`, `IMPL-020` or implementation change. |
 | **Downstream Impact** | Acceptance removes Item 3's and Item 5's direct dependency on the unresolved runtime decision, making both eligible for their own authority/design work; it does **not** resolve either automatically. Item 9b and Item 7b remain blocked behind Item 3. `BC-30` can then be aligned to the approved execution locus without changing `ADR-0114`'s capability ownership. |
-| **What Remains Blocked** | Until the accepted ADR exists: **Item 4 remains BLOCKED**; Item 3 remains blocked by Item 4; Item 5 remains blocked/open with no retry values; Item 9b and Item 7b remain blocked through Item 3. 7a retention and 8b-residual remain independent owner decisions. |
+| **What Remains Blocked** | Until the follow-up runtime/deployment assignments are recorded: **Item 4 remains BLOCKED**; Item 3 remains blocked by Item 4; Item 5 remains blocked/open with no retry values; Item 9b and Item 7b remain blocked through Item 3. 7a retention and 8b-residual remain independent owner decisions. |
 
-**Required governance path:** Architecture Owner decision → new accepted ADR → any
-necessary Rank-1 `MASTER_PRD` correction → dependency re-check. This brief itself is
-not an approval and must not be used to start implementation.
+**Required governance path:** Architecture Owner / ARB acceptance in principle → named deployment operator and secret-custody/control owner → final runtime/deployment authority record → any necessary Rank-1 `MASTER_PRD` correction → dependency re-check. This brief itself is not an implementation approval and must not be used to start implementation.
 
 | Version | Date | Change |
 |---|---|---|
 | v1.2 | 2026-09-08 | Added the Item 4 formal decision brief. Records the exact decision scope, authority gap, owner, ADR contents and dependency consequences without selecting a runtime or changing any frozen/prohibited artifact. |
+| v1.3 | 2026-09-08 | Recorded `ADR-0115` as **Accepted-in-principle/Execution-blocked** based on repository evidence. Preserved the Item 4 block and explicitly recorded the deployment operator and server-side secret-custody/control owner as unassigned follow-up gaps; no runtime/vendor or implementation change was made. |

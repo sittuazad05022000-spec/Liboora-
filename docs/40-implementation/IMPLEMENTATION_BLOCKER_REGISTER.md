@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Implementation Blocker Register — items that block release or block a gate, recorded but deliberately **not** implemented |
-| **Version** | v1.1 |
+| **Version** | v1.2 |
 | **Status** | Active |
 | **Date** | 2026-09-08 |
 | **Created by** | Governance Closure Phase, item 7 |
@@ -281,3 +281,28 @@ independent 7a and 8b-residual owner decisions remain separately routed.
 | Version | Date | Change |
 |---|---|---|
 | v1.1 | 2026-09-08 | Added this repository-backed Offline Attendance Sync authority audit to the existing blocker register. Verified `ADR-0114` as **Accepted** from current file state and commit history; recorded the dependency statuses and owner routes without changing frozen PRDs, `PRD-018`, `TASK-D10` or `IMPL-020`. |
+
+---
+
+## 12. Item 4 — formal governance decision brief — 2026-09-08
+
+This brief is **decision preparation only**. It confers no runtime authority, selects no
+vendor, and does not change the Item 4 status: **BLOCKED**.
+
+| Field | Decision-ready brief |
+|---|---|
+| **Decision Required** | Decide and record the authoritative V1 backend/sync runtime and its deployment locus for `BC-30` Offline Sync. The decision must state whether and where queue capture, durable storage, replay and server-side credentials execute; it must not treat a candidate as approved. |
+| **Scope** | Runtime/deployment authority for the V1 Offline Sync execution mechanism only. `BC-03` retains Attendance capability requirements, conflict policy, acceptance criteria and scope under `ADR-0114`; product scope, retention, retry values, at-rest mechanism and queue-depth value are not decided by this brief. |
+| **Current Authority Gap** | `MASTER_PRD.md` L227 says BaaS is **not named in the EA — candidate only**. `MP-CON-02` classifies the BaaS choice as a deployment decision, not an architecture decision. The EA is descriptive; `ADR-0100` confirms engine/runtime selection remains deployment-scoped; `ADR-0045` establishes that descriptive candidates do not ratify a provider. `ADR-0114` decides capability ownership/execution context, not runtime deployment. |
+| **Decision Owner** | **Architecture Owner** for D1, as already routed by the read-only `IMPL-020` preparation record. The repository does not identify a separate standing deployment selector/operator; the accepted decision must name that deployment authority and distinguish it from Architecture Owner approval. |
+| **Required ADR Contents** | Accepted ADR with: (1) one-act decision authority and scope; (2) the selected runtime/deployment locus, without pre-approval in this brief; (3) Architecture Owner versus deployment-authority boundary; (4) `BC-30` execution impact and `BC-03` ownership preservation; (5) Item 3/5/9b/7b dependency consequences; (6) security/secrets and operational accountability at the authority level, without inventing mechanisms; (7) required Rank-1 record update to `MASTER_PRD` only after ADR acceptance; and (8) explicit non-effects: no `PRD-018`, frozen PRD/ADR, `TASK-D10`, `IMPL-020` or implementation change. |
+| **Downstream Impact** | Acceptance removes Item 3's and Item 5's direct dependency on the unresolved runtime decision, making both eligible for their own authority/design work; it does **not** resolve either automatically. Item 9b and Item 7b remain blocked behind Item 3. `BC-30` can then be aligned to the approved execution locus without changing `ADR-0114`'s capability ownership. |
+| **What Remains Blocked** | Until the accepted ADR exists: **Item 4 remains BLOCKED**; Item 3 remains blocked by Item 4; Item 5 remains blocked/open with no retry values; Item 9b and Item 7b remain blocked through Item 3. 7a retention and 8b-residual remain independent owner decisions. |
+
+**Required governance path:** Architecture Owner decision → new accepted ADR → any
+necessary Rank-1 `MASTER_PRD` correction → dependency re-check. This brief itself is
+not an approval and must not be used to start implementation.
+
+| Version | Date | Change |
+|---|---|---|
+| v1.2 | 2026-09-08 | Added the Item 4 formal decision brief. Records the exact decision scope, authority gap, owner, ADR contents and dependency consequences without selecting a runtime or changing any frozen/prohibited artifact. |

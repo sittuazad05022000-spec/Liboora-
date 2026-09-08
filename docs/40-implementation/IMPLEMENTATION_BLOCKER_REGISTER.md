@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | **Document** | Implementation Blocker Register — items that block release or block a gate, recorded but deliberately **not** implemented |
-| **Version** | v1.0 |
+| **Version** | v1.1 |
 | **Status** | Active |
-| **Date** | 2026-08-04 |
+| **Date** | 2026-09-08 |
 | **Created by** | Governance Closure Phase, item 7 |
 | **Rank** | **Unranked** — not listed in `DOCUMENTATION_BASELINE.md` §4. Editable without an ADR |
 | **Governing principle** | `SID-4.56` — *"A rule that cannot be checked SHALL be treated as unmet, not as satisfied by intent"* |
@@ -227,3 +227,57 @@ started.
 | Version | Date | Change |
 |---|---|---|
 | v1.0 | 2026-08-04 | Created by the Governance Closure Phase, item 7. Records `TASK-D10` and `IMPL-020` as required, plus `IMPL-220`, `GCP-02` and the unopened `PRD-012a` found during the same phase. **Records only — no implementation, no change under `lib/`.** Consolidates blockers that were previously discoverable only across nine separate documents. |
+
+---
+
+## 11. Offline Attendance Sync authority audit — 2026-09-08
+
+This is an **audit/register addendum only**. It does not create a PRD, amend a frozen PRD,
+accept or modify an ADR, select a vendor, define a numeric policy, or authorise implementation.
+The controlled source is the repository at `main`, re-verified against the current Git history.
+
+### 11.1 `ADR-0114` verification
+
+| Check | Repository evidence | Determination |
+|---|---|---|
+| Status and ratification | `docs/00-governance/adr/ADR-0114-offline-sync-is-a-capability-of-bc-03-attendance.md` header says **`Accepted`**. Commit `2040077` (`docs(adr-0114): Offline Sync is a BUSINESS capability of BC-03, EXECUTED by BC-30 — Q-1b`) records direct conferral of Architecture Owner authority. `ADR-INDEX.md` registers the ADR in the accepted count. | **ACCEPTED**; the earlier `PROPOSED` reading is superseded by current repository evidence. |
+| Product decision | `PRD-018_STAGE1_DISCOVERY_PREPARATION.md` §8.1 records Product Owner **Option B**: Offline Sync is a capability of `BC-03` Attendance, Attendance-only, and `PRD-018` is not to be written. | **Option B recorded and executed through the accepted ADR.** |
+| BC-30 disposition | `ADR-0114` D-1 and the accepted commit preserve `BC-30` as a bounded context and the execution mechanism; `BC-03` owns requirement, policy, acceptance criteria and scope. | **BC-30 remains; capability ownership and execution ownership are separate.** |
+| `E-24` fate | `ADR-0114` records `Q-2`: `E-24` retained unchanged. | **Unchanged.** |
+| Registry and index | `ADR-INDEX.md` has the `ADR-0114` row and mechanically re-derived counts. `PRD_REGISTRY.md` remains unchanged; `PRD-018` remains `PLANNED` because the registry vocabulary has no terminal value for this disposition. | **ADR index registered; PRD registry not changed.** |
+| Attendance-only requirements | Frozen `PRD-006` already carries `ATT-PO-006`, `ATT-PO-011`…`014`, `ATT-NFR-012` and §27.1: Attendance defines the replay conflict policy; `BC-30` executes queue/replay. | **Existing Attendance-side requirements remain the placement; no PRD-006 edit is authorised.** |
+| Git history | `2040077` is an ancestor of current `main` (`2970993`) and changed the ADR, ADR index, BC Map, baseline and Stage-1 preparation record in one governance commit. | **Acceptance and consequences are already persisted; no ADR correction is required here.** |
+
+### 11.2 Offline Attendance Sync authority and dependency register
+
+| Item | Status | Authority / evidence | Owner / next action |
+|---|---|---|---|
+| **7a — Retention** | **OPEN** — no authoritative retention number. Do not adopt “7 years financial / 2 years attendance”. | BC Map `Q-04` remains open; `ATT-GAP-005` rejects the unratified note; `MASTER_PRD MP-NFR-10` assigns retention enforcement to Security + Data Governance; `ADR-0051` records the retention gap as open. | Legal Counsel + Security/Data Governance decision; Architecture Owner to formalise through ADR. |
+| **8b-residual — revoked/expired actor before replay** | **REQUIRES OWNER DECISION** — no authoritative queued-item disposition or audit-bearing treatment found. | `PRD-001` requires current-state authorisation and refusal when access is not allowed. Frozen `PRD-006` defines idempotency/correction preservation, but does not decide discard/reject versus an audit-bearing treatment for this residual. | Product Owner + BC-03 Domain Owner decision; ADR-first if frozen authority must change. |
+| **Item 4 — Backend Runtime** | **BLOCKED** — no approved runtime/vendor authority. | `MASTER_PRD.md` L227 names BaaS only as a candidate and says it is not named in the EA. | Architecture Owner decision is the primary next authorised action; do not select a vendor in this register. |
+| **Item 3 — Durable Queue** | **BLOCKED BY ITEM 4**. | No approved backend/runtime authority and no authorised durability model. | Wait for Item 4; no queue implementation or durability value. |
+| **Item 9b — At-rest** | **BLOCKED BY ITEM 3**. | Storage and at-rest treatment depend on the durable-queue placement and authority; no security mechanism is invented. | Re-check after Item 3; no encryption/storage policy is selected here. |
+| **Item 5 — Retry/Backoff** | **BLOCKED/OPEN**. | No authorised retry/backoff policy or numeric values. | Re-check after Item 4; no retry count, interval or backoff value is set. |
+| **Item 7b — Queue Depth** | **BLOCKED BY ITEM 3**. | No queue durability/placement authority and no queue-depth NFR authority. | Re-check after Item 3; no queue limit is set. |
+| **PRD-018** | **NO-PRD decision unchanged**. | Accepted `ADR-0114` records Attendance-only capability scope; `PRD-018` is not to be written and remains `PLANNED` in the registry. | Do not create or revive `PRD-018`. |
+| **TASK-D10 / IMPL-020** | **UNTOUCHED**. | This audit does not modify either artifact or perform either implementation. | Keep untouched. |
+
+The dependency graph is therefore:
+
+```text
+Item 4 Backend Runtime ──► Item 3 Durable Queue ──► Item 9b At-rest ──► Item 7b Queue Depth
+          │
+          └──────────────► Item 5 Retry/Backoff
+
+7a Retention                 (independent; OPEN)
+8b-residual                 (independent; REQUIRES OWNER DECISION)
+```
+
+**Primary next authorised action:** obtain the Architecture Owner decision/ADR for **Item 4
+Backend Runtime**, without selecting a vendor in advance. Until that authority exists, Items
+3, 9b, 7b and 5 remain blocked/open and no implementation action is authorised. The
+independent 7a and 8b-residual owner decisions remain separately routed.
+
+| Version | Date | Change |
+|---|---|---|
+| v1.1 | 2026-09-08 | Added this repository-backed Offline Attendance Sync authority audit to the existing blocker register. Verified `ADR-0114` as **Accepted** from current file state and commit history; recorded the dependency statuses and owner routes without changing frozen PRDs, `PRD-018`, `TASK-D10` or `IMPL-020`. |

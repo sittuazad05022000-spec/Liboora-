@@ -246,3 +246,20 @@ records, and each names the exact lines it changed.
 | 2026-08-04 | Added `ADR-0011` (Global Person Identity is a platform identity). **This is the first ADR to amend the Bounded Context Map's Identity Triad (§4)** — `BC-10` is renamed, reclassified `[SUPPORTING]` → `[CORE]`, moved from the Social cluster to **rank 7.5**, and its cardinality changed from `0..1` opt-in to **`1:1` mandatory**. Linkage rules `ID-1`…`ID-6` and prohibition `X-05` are **preserved unamended**; only placement, name, classification and cardinality change. Consequentially amends global business rule `MP-GBR-02` (Master PRD v1.7) and makes `ID-4`'s `PersonId` non-nullable. Closes `Q-05`. No existing ADR was edited or superseded. |
 | 2026-08-03 | Added `ADR-0009` (invitation security model) and `ADR-0010` (public preview anonymous access), both **Accepted**. Updated the two "preserved but not promoted" entries: `AR-3` and `AR-4` are unchanged as rulings, but the *gaps* they carried are closed. No existing ADR was edited, reinterpreted or superseded. |
 | 2026-08-02 | Register created. `ADR-0001`…`ADR-0008` accepted; rulings `AR-1`…`AR-7` preserved. Closes `R-3`. |
+
+---
+
+## Current registration addendum — 2026-09-08
+
+`ADR-0115` is the next unused identifier: an exact filename and repository-text scan
+found no `ADR-0115` collision. It is registered here in the same change as the draft,
+with status **Proposed**. The draft is not binding and is not counted as Accepted.
+
+| ADR | Status | Subject | Required acceptance authority |
+|---|---|---|---|
+| [`ADR-0115`](./ADR-0115-bc-30-v1-backend-runtime-deployment-authority.md) | **Proposed** | V1 `BC-30` Offline Sync backend/runtime and deployment locus | Architecture Owner / ARB |
+
+**Measured current register after this addendum:** 103 ADR files; 88 Accepted, 14
+Proposed, 1 Accepted-in-principle/Execution-blocked (`ADR-0075`), 0 superseded and
+0 deprecated. The historical Count text above is retained; this addendum is the
+current registration correction for the newly added draft.

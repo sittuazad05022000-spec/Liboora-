@@ -1,9 +1,16 @@
 /// OTP sign-in.
 ///
-/// Two steps, one screen. The OTP is displayed on screen because no SMS
-/// gateway is wired into the scaffold — the *port* is real, the adapter is a
-/// stub. When the Integration Platform lands, this hint disappears and nothing
-/// else changes.
+/// Two steps, one screen.
+///
+/// ⛔ `TASK-D10`: this screen NEVER displays, pre-fills or otherwise reveals the
+/// OTP, and it offers no seeded, demo or guest account. `MP-CON-11` — *"no demo
+/// or guest accounts in any release build"* — and `AUTH-11.73`. The user must
+/// supply a code they actually received; possession of the number is the sole
+/// V1 authentication factor (`MP-GBR-25`).
+///
+/// ⚠ No SMS gateway is wired yet (`IMPL-020`, blocked on `MP-DEP-03`), so there
+/// is currently NO interactive sign-in path. That is the intended, disclosed
+/// consequence — see `TASK-D10` §7. Do not reinstate a bypass to restore it.
 library;
 
 import 'package:flutter/material.dart';
@@ -39,7 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
     s.requestOtp(_phone.text);
     // Always advances. Branching here would re-create the oracle (F-02).
     setState(() => _otpSent = true);
-    _code.text = s.otpHint ?? '';
+    // TASK-D10 / D10-4: the OTP field is NEVER pre-filled. Auto-filling the
+    // code the service just issued meant possession of the number — the sole
+    // V1 authentication factor (MP-GBR-25) — was never proven. MP-CON-11 and
+    // AUTH-11.73. Do not reinstate: a code the user did not receive is not a
+    // factor.
   }
 
   void _verify() {
@@ -47,11 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     // The name was collected before OTP verification (AR-5) and is consumed
     // only if this number has no account yet.
     s.verifyOtp(phone: _phone.text, code: _code.text, displayName: _name.text);
-  }
-
-  void _useAccount(String phone) {
-    _phone.text = phone;
-    _send();
   }
 
   @override
@@ -82,8 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const _Brand(),
                     const SizedBox(height: LiblSpace.xxl),
                     _card(s),
-                    const SizedBox(height: LiblSpace.lg),
-                    _seededAccounts(),
                     const SizedBox(height: LiblSpace.lg),
                     const Text(
                       'Liboora · multi-tenant library platform',
@@ -206,82 +210,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ],
         ),
-      ),
-    );
-  }
-
-  /// Seeded accounts, exposed because the scaffold has no sign-up backend.
-  /// This block is the first thing to delete when a real gateway is wired.
-  Widget _seededAccounts() {
-    const accounts = <(String, String, String)>[
-      ('9810000001', 'Rajesh Sharma', 'Owner'),
-      ('9810000002', 'Priya Nair', 'Manager'),
-      ('9810000003', 'Amit Kumar', 'Reception'),
-      ('9810000004', 'Sneha Verma', 'Student'),
-      ('9810000005', 'Suresh Verma', 'Parent'),
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(LiblSpace.md),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: LiblSpace.sm),
-            child: Text(
-              'SEEDED ACCOUNTS · TAP TO SIGN IN',
-              style: TextStyle(
-                fontSize: 9.5,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.8,
-                color: Colors.white70,
-              ),
-            ),
-          ),
-          for (final (phone, name, role) in accounts)
-            InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: () => _useAccount(phone),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: LiblSpace.sm,
-                  horizontal: LiblSpace.sm,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      role,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 11.5,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    const Icon(
-                      Icons.chevron_right,
-                      size: 16,
-                      color: Colors.white54,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }

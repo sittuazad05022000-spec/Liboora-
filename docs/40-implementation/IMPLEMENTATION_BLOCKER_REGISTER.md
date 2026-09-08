@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Implementation Blocker Register — items that block release or block a gate, recorded but deliberately **not** implemented |
-| **Version** | v1.4 |
+| **Version** | v1.5 |
 | **Status** | Active |
 | **Date** | 2026-09-08 |
 | **Created by** | Governance Closure Phase, item 7 |
@@ -255,10 +255,10 @@ The controlled source is the repository at `main`, re-verified against the curre
 | **7a — Retention** | **OPEN** — no authoritative retention number. Do not adopt “7 years financial / 2 years attendance”. | BC Map `Q-04` remains open; `ATT-GAP-005` rejects the unratified note; `MASTER_PRD MP-NFR-10` assigns retention enforcement to Security + Data Governance; `ADR-0051` records the retention gap as open. | Legal Counsel + Security/Data Governance decision; Architecture Owner to formalise through ADR. |
 | **8b-residual — revoked/expired actor before replay** | **REQUIRES OWNER DECISION** — no authoritative queued-item disposition or audit-bearing treatment found. | `PRD-001` requires current-state authorisation and refusal when access is not allowed. Frozen `PRD-006` defines idempotency/correction preservation, but does not decide discard/reject versus an audit-bearing treatment for this residual. | Product Owner + BC-03 Domain Owner decision; ADR-first if frozen authority must change. |
 | **Item 4 — Backend Runtime** | ⭐ **RESOLVED (authority + runtime)** — ⛔ **but NOT implementable.** `ADR-0115` is **Accepted** and its §8 **assigned both authority boundaries**: deployment locus → **INFRASTRUCTURE**, delivery onto it → **DEVOPS PLATFORM** (§8.2), server-side secret custody → **SECURITY PLATFORM** (§8.1). `ADR-0116` then selected the runtime: **V1 backend runtime = `Supabase`**. ⛔ **No implementation is authorised.** *(Prior text, correct until `ADR-0115` §8 and `ADR-0116`: "**BLOCKED** — `ADR-0115` is accepted in principle, but the deployment operator and server-side secret-custody owner remain unassigned follow-up gaps; no implementation is authorised.")* | `ADR-0115` §8.1/§8.2 (both owners named, under one-act conferrals); `ADR-0116` §1 (runtime selected by direct conferral of Architecture Owner authority from the human principal, the act `ADR-0115` §7 item 1 reported as missing). ⚠ `MASTER_PRD.md` **L227** still reads *"candidate only"* and is **byte-unchanged** — `ADR-0116` §6 routes any Rank-1 amendment to a **separate act requiring its own ADR**. | ⛔ **Do not implement, configure or add a dependency.** Implementation requires separately authorised work and must reach the runtime **only** through the abstract Data Layer (`MP-CON-03`), with no vendor name in domain code (`MP-CON-01`). Items 3 and 5 are now **eligible**, not resolved. |
-| **Item 3 — Durable Queue** | **BLOCKED BY ITEM 4**. | No approved backend/runtime authority and no authorised durability model. | Wait for Item 4; no queue implementation or durability value. |
-| **Item 9b — At-rest** | **BLOCKED BY ITEM 3**. | Storage and at-rest treatment depend on the durable-queue placement and authority; no security mechanism is invented. | Re-check after Item 3; no encryption/storage policy is selected here. |
-| **Item 5 — Retry/Backoff** | **BLOCKED/OPEN**. | No authorised retry/backoff policy or numeric values. | Re-check after Item 4; no retry count, interval or backoff value is set. |
-| **Item 7b — Queue Depth** | **BLOCKED BY ITEM 3**. | No queue durability/placement authority and no queue-depth NFR authority. | Re-check after Item 3; no queue limit is set. |
+| **Item 3 — Durable Queue** | ⛔ **OPEN — ELIGIBLE, NOT RESOLVED.** *(Prior text, correct until `ADR-0116`: "**BLOCKED BY ITEM 4**" / "No approved backend/runtime authority and no authorised durability model" / "Wait for Item 4".)* | ✅ The runtime limb is no longer missing: `ADR-0116` selected **`Supabase`** and `ADR-0115` §8.2 names **INFRASTRUCTURE** as locus owner. ⛔ **But no durability model is authorised.** The *obligation* exists at Rank 1 — `MP-NFR-02` (*"at-least-once event delivery with idempotent consumers; DLQ depth is an SLO-monitored signal, not a silent bin"*) and `MP-ASM-03` — and idempotency is already specified by `ATT-INV-003` (`(studentRecordId, date, idempotencyKey)`). What is absent is a **decision**, and its Rank-1 accountable office is **`EVENT platform`** (`MP-NFR-02`). ⚠⚠ **That office is named at Rank 1 but constituted NOWHERE in `PRD_OWNERSHIP_MODEL.md`** — measured: 0 role-table row, 0 §13-style constitution. | ⛔ **Requires a one-act human-principal conferral constituting the `EVENT platform` office** (the `ADR-0102` / §13 route), then its own ADR. ⛔ No queue implementation, durability mechanism, guarantee, technology or value. `ATT-PO-011`: `BC-03` **MUST NOT** implement the queue. |
+| **Item 9b — At-rest** | 🔒 **BLOCKED BEHIND ITEM 3 — unchanged by `ADR-0116`.** | Owner is **SECURITY PLATFORM** (`MP-NFR-05` *"secrets management, encryption"*; `ADR-0115` §8.1). ⚠ **A second, independent bar also stands:** `ATT-GAP-006` is **OPEN** — *"No Rank 1–5 source defines a cryptographic construction … the construction is Security Platform's. Inventing one here would be a security design, which §0.4 forbids."* So even if Item 3 landed, no at-rest mechanism could be written without that owner's act. | Re-check after Item 3; no encryption/storage policy is selected here. |
+| **Item 5 — Retry/Backoff** | ⛔ **OPEN — ELIGIBLE, NOT RESOLVED.** Independent of Item 3. *(Prior text, correct until `ADR-0116`: "**BLOCKED/OPEN**" / "Re-check after Item 4".)* | ⛔ No authorised retry/backoff policy or numeric value exists. `PRD-006` **L2332** governs verbatim: *"No cooldown, frequency, quiet-hour rule, **retry count** or escalation ladder is stated for any row above, and **none may be invented**."* ⭐ **Precedent for the lawful route:** `ATT-GAP-017`'s seven valueless `ATT-CFG-*` settings were closed by **owner-supplied values** (`ADR-0021` framed them and expressly declined to decide), never by derivation. | ⛔ **Requires an owner decision supplying the values** (Architecture Owner + Product Owner), then its own ADR. ⛔ No retry count, interval, backoff, cooldown or jitter is set, derived or defaulted. |
+| **Item 7b — Queue Depth** | 🔒 **BLOCKED BEHIND ITEM 3 — unchanged by `ADR-0116`.** | Rank-1 backpressure obligation is `MP-NFR-04` (*"queues, partitioning, **backpressure**"*), whose accountable office is **`DATA / EVENT`**. ⚠⚠ **Like `EVENT platform`, `DATA` is named at Rank 1 but constituted NOWHERE in `PRD_OWNERSHIP_MODEL.md`** — measured. A depth limit is also meaningless before the queue it bounds exists (Item 3). | Re-check after Item 3; ⛔ no queue limit, high-water mark, shed policy or eviction rule is set. Requires the same office-constituting conferral as Item 3. |
 | **PRD-018** | **NO-PRD decision unchanged**. | Accepted `ADR-0114` records Attendance-only capability scope; `PRD-018` is not to be written and remains `PLANNED` in the registry. | Do not create or revive `PRD-018`. |
 | **TASK-D10 / IMPL-020** | **UNTOUCHED**. | This audit does not modify either artifact or perform either implementation. | Keep untouched. |
 
@@ -301,5 +301,104 @@ vendor, and does not change the Item 4 status: **BLOCKED**.
 | Version | Date | Change |
 |---|---|---|
 | v1.2 | 2026-09-08 | Added the Item 4 formal decision brief. Records the exact decision scope, authority gap, owner, ADR contents and dependency consequences without selecting a runtime or changing any frozen/prohibited artifact. |
-| **v1.4** | 2026-09-08 | ⭐ **Corrected the two STALE Item-4 statements only** — the §11.2 `Item 4` row and the *Primary next authorised action* paragraph, both of which still said the deployment operator and server-side secret-custody owner *"remain unassigned follow-up gaps"*. `ADR-0115` §8 had already resolved both (locus → **INFRASTRUCTURE**, delivery → **DEVOPS PLATFORM**, secret custody → **SECURITY PLATFORM**), and `ADR-0116` then selected the runtime: **V1 backend runtime = `Supabase`**. Item 4 is therefore recorded **RESOLVED on both limbs**. ⭐ **Prior text of both statements is retained verbatim in parentheses**, not deleted. ⛔ **No implementation authority is recorded and none exists** — no Supabase implementation or configuration, no cloud resource, no schema, no dependency, no durable queue, queue depth, retry count, backoff, retention, encryption algorithm or secret format; `PRD-006` byte-unchanged; `PRD-018` still unwritten; **0** new `IMPL-*`/`SYNC-*` identifiers. ⚠⚠ **A RESIDUAL STALENESS IS DISCLOSED RATHER THAN SILENTLY FIXED:** the §11.2 **`Item 3`** row still reads *"**BLOCKED BY ITEM 4**"* / *"No approved backend/runtime authority"*, and the **`Item 5`** row still says *"Re-check after Item 4"* — both now inaccurate, since Items 3 and 5 are **eligible, not blocked** (`ADR-0115` §9, `ADR-0116` §7). ⛔ **They were deliberately NOT edited**, because the authorising instruction was expressly limited to *"only the stale Item-4 statements saying deployment operator and secret-custody owner are unassigned"* and adding *"do not invent any further authority"*; re-statusing Items 3 and 5 in this register would assert a dependency ruling outside the conferred act. **Routed as a separate act.** ⚠ The §12 decision brief is likewise left verbatim as a historical record of the pre-decision state. ⚠ `MASTER_PRD` **L227** is **byte-unchanged** and its Rank-1 amendment is **not** performed (`ADR-0116` §6). |
+| **v1.5** | 2026-09-08 | ⭐ **Post-`ADR-0116` complete blockers audit. Corrected ONLY the statements `ADR-0116` made stale; every prior text is retained verbatim in parentheses.** ⭐ **Items 3 and 5 re-stated from "BLOCKED" to ⛔ `OPEN — ELIGIBLE, NOT RESOLVED`** — the v1.4 changelog had disclosed this residual staleness and routed it to a separate act; **this is that act.** Item 3's row no longer claims *"No approved backend/runtime authority"* (false since `ADR-0116`) and Item 5's no longer says *"Re-check after Item 4"*. ⚠⚠ **THE AUDIT'S PRINCIPAL FINDING, AND IT IS A STOP:** Items 3 and 7b are accountable to the Rank-1 offices **`EVENT platform`** (`MP-NFR-02`) and **`DATA / EVENT`** (`MP-NFR-04`) — and **both are named at Rank 1 but constituted NOWHERE in `PRD_OWNERSHIP_MODEL.md`** (measured: 0 role-table rows, 0 §13-style constitutions). This is exactly the condition `ADR-0102` / §13 addressed for `SRE / Observability`, which was *"defined nowhere"* until constituted by explicit human-principal words. ⛔ **Those conferrals are therefore ABSENT and are NOT fabricated here.** ⭐ **Item 9b gains a SECOND independent bar, newly surfaced:** beyond its Item-3 dependency, `ATT-GAP-006` is **OPEN** — *"the construction is Security Platform's. Inventing one here would be a security design, which §0.4 forbids"* — so at-rest could not be written even if Item 3 landed. ⛔ **7a retention and 8b-residual are UNCHANGED and remain independent owner decisions** (see §13). ⭐ **`MASTER_PRD` L227 determined to need NO amendment (§13.3), on measured precedent rather than preference:** L232's Payments row has read *"candidate only"* since 2026-08-02 and `ADR-0046` (2026-08-16) selected Razorpay **without ever amending it**, so an unamended Rank-1 candidate cell beside an accepted vendor selection is an **already-ratified state**. ⛔ **NOTHING INVENTED:** no retry count, delay, backoff, queue limit, depth, retention period, encryption algorithm, storage format, schema or credential. ⛔ **NO IMPLEMENTATION AUTHORITY EXISTS OR IS RECORDED** — 0 code/config/dependency files touched; `PRD-006`, `MASTER_PRD`, `ADR-0114`/`0115`/`0116` and all frozen PRDs byte-unchanged; `PRD-018` still unwritten; 0 `SYNC-*`; 0 new `IMPL-*`. |
+| v1.4 | 2026-09-08 | ⭐ **Corrected the two STALE Item-4 statements only** — the §11.2 `Item 4` row and the *Primary next authorised action* paragraph, both of which still said the deployment operator and server-side secret-custody owner *"remain unassigned follow-up gaps"*. `ADR-0115` §8 had already resolved both (locus → **INFRASTRUCTURE**, delivery → **DEVOPS PLATFORM**, secret custody → **SECURITY PLATFORM**), and `ADR-0116` then selected the runtime: **V1 backend runtime = `Supabase`**. Item 4 is therefore recorded **RESOLVED on both limbs**. ⭐ **Prior text of both statements is retained verbatim in parentheses**, not deleted. ⛔ **No implementation authority is recorded and none exists** — no Supabase implementation or configuration, no cloud resource, no schema, no dependency, no durable queue, queue depth, retry count, backoff, retention, encryption algorithm or secret format; `PRD-006` byte-unchanged; `PRD-018` still unwritten; **0** new `IMPL-*`/`SYNC-*` identifiers. ⚠⚠ **A RESIDUAL STALENESS IS DISCLOSED RATHER THAN SILENTLY FIXED:** the §11.2 **`Item 3`** row still reads *"**BLOCKED BY ITEM 4**"* / *"No approved backend/runtime authority"*, and the **`Item 5`** row still says *"Re-check after Item 4"* — both now inaccurate, since Items 3 and 5 are **eligible, not blocked** (`ADR-0115` §9, `ADR-0116` §7). ⛔ **They were deliberately NOT edited**, because the authorising instruction was expressly limited to *"only the stale Item-4 statements saying deployment operator and secret-custody owner are unassigned"* and adding *"do not invent any further authority"*; re-statusing Items 3 and 5 in this register would assert a dependency ruling outside the conferred act. **Routed as a separate act.** ⚠ The §12 decision brief is likewise left verbatim as a historical record of the pre-decision state. ⚠ `MASTER_PRD` **L227** is **byte-unchanged** and its Rank-1 amendment is **not** performed (`ADR-0116` §6). |
 | v1.3 | 2026-09-08 | Recorded `ADR-0115` as **Accepted-in-principle/Execution-blocked** based on repository evidence. Preserved the Item 4 block and explicitly recorded the deployment operator and server-side secret-custody/control owner as unassigned follow-up gaps; no runtime/vendor or implementation change was made. |
+
+---
+
+## 13. Complete remaining-blockers audit — post-`ADR-0116` — 2026-09-08
+
+**This section is an AUDIT RECORD. It confers no authority, selects no value and authorises no
+implementation.** Recorded by APPEND so that no existing line of this register moves.
+
+⛔ **Item 4 being RESOLVED does NOT resolve anything downstream.** Each item below was tested on its
+own evidence, and most remain OPEN or BLOCKED. **Six of eight are not closable from existing authority.**
+
+### 13.1 Per-item determination
+
+| Item | Status | Existing authoritative requirement | Accountable office | Decision exists? | Extra one-act conferral required? | Implementation authorised? |
+|---|---|---|---|---|---|---|
+| **3 — Durable Queue** | ⛔ OPEN — eligible | `MP-NFR-02` at-least-once + idempotent consumers + DLQ; `MP-ASM-03`; `ATT-INV-003` idempotency key | **`EVENT platform`** (`MP-NFR-02`) | ❌ No | ⚠ **YES — the office is not constituted** | ⛔ No |
+| **5 — Retry/Backoff** | ⛔ OPEN — eligible | `PRD-006` **L2332** — *"none may be invented"* | Architecture Owner + Product Owner | ❌ No | ⚠ **YES — values must be owner-supplied** | ⛔ No |
+| **9b — Device at-rest** | 🔒 BLOCKED behind Item 3 | `MP-NFR-05` encryption; **`ATT-GAP-006` OPEN** | **SECURITY PLATFORM** | ❌ No | ⚠ YES, and Item 3 first | ⛔ No |
+| **7b — Queue depth** | 🔒 BLOCKED behind Item 3 | `MP-NFR-04` backpressure | **`DATA / EVENT`** | ❌ No | ⚠ **YES — the office is not constituted** | ⛔ No |
+| **7a — Retention** | ⛔ OPEN — independent | BC Map **`Q-04`** open; `ATT-GAP-005`; `MP-NFR-10` | **Legal counsel + Architecture Owner** (`MP-NFR-10`: SECURITY + DATA Governance) | ❌ No | ⚠ YES | ⛔ No |
+| **8b-residual** | ⚠ REQUIRES OWNER DECISION — independent | `AUTH-8.38`, `BR-7.1`, `ATT-INV-008`, `ATT-FR-015` | **Product Owner + `BC-03` Domain Owner** | ⚠ **Partly — see §13.2** | ⚠ YES for the residue | ⛔ No |
+| **7 — `MASTER_PRD` L227** | ✅ **NO AMENDMENT REQUIRED** | §13.3 | — | ✅ Yes, by precedent | ❌ **No** | n/a |
+| **8 — Stale register text** | ✅ **CORRECTED in v1.5** | v1.4 changelog routing | Technical Owner | ✅ Yes | ❌ No | n/a |
+
+### 13.2 ⚠ Items 3 and 7b — the audit's principal STOP
+
+`MP-NFR-02` assigns reliability to **`EVENT platform`** and `MP-NFR-04` assigns backpressure to
+**`DATA / EVENT`**. Both are **Rank 1** assignments. Measured against `PRD_OWNERSHIP_MODEL.md`:
+**neither office has a role-table row, and neither has a §13-style constitution.**
+
+⭐ This is precisely the condition `ADR-0102` and §13 met for `SRE / Observability`, which §13.1 records
+was **"defined nowhere"** despite three Rank-1 obligations naming it, and which required *"direct
+conferral from the human principal"* to act even once. ⛔ **The same is therefore true here, and the
+conferrals are ABSENT.** They are **not fabricated**, and Items 3 and 7b are **not** marked resolved.
+
+⚠ **The distinction that matters:** Item 3's *obligation* is already Rank-1 law and its *idempotency*
+half is already specified (`ATT-INV-003`). What is missing is a **durability decision** and an **office
+constituted to make it**. Recording the obligation as though it were the decision would be the exact
+error `ADR-0045` §2 refused.
+
+### 13.3 ⭐ Item 7 — `MASTER_PRD` L227 needs no amendment, on measured precedent
+
+`MASTER_PRD.md` **L227** still reads *"**Not named in EA** — candidate only"* after `ADR-0116` selected
+`Supabase`. Tested against the nearest precedent rather than assumed:
+
+| Measurement | Result |
+|---|---|
+| `MASTER_PRD` **L232** (Payments row) | Reads *"**Not named in EA** — candidate only"* — **today, at HEAD** |
+| `ADR-0046` — *"The V1 payment gateway provider is **Razorpay**"* | **`ACCEPTED`**, committed `4006f0f`, 2026-08-16 |
+| Has L232 been amended since? | ❌ **No.** `git log -L232,232` shows its only commit is `218142a`, **2026-08-02** — *before* `ADR-0046` |
+| `ADR-0046` `Does NOT amend` row | Lists **`MASTER_PRD.md` (Rank 1)** explicitly |
+
+⭐ **So an unamended Rank-1 *"candidate only"* cell sitting beside an `Accepted` vendor selection is an
+ALREADY-RATIFIED STATE in this repository** — sustained for over three weeks across many governance
+passes — **not a defect `ADR-0116` created.** `MASTER_PRD` §10's preamble supplies the reason: vendors
+are *"recorded as candidate implementations behind ports"*, so the cell describes the **abstraction
+contract**, and the ADR records the **selection**. They are not in conflict.
+
+⛔ **No Rank-1 amendment is performed and none is asserted to be required.** Should a future authority
+decide otherwise, `DOCUMENTATION_BASELINE.md` §7 rule 1 requires **an ADR before the change**, plus
+rule 2 (version + changelog in the same commit) and rule 4 (a new baseline identifier, L227 being
+Rank 1). **Owner: Architecture Owner + Governance Owner. Requires its own conferral.**
+
+### 13.4 Item 8b-residual — what is settled and what is not
+
+✅ **SETTLED, and preserved unchanged:** replay is a **fresh authorization decision**; revoked or
+expired access **cannot be silently carried forward**. `AUTH-8.38` — *"A session MUST NOT carry
+authorization; authorization MUST be evaluated at the moment of each decision"* — with `BR-7.1`,
+`AC-7.1`, `AUTH-6.57`, `AUTH-5.23` (all FROZEN `PRD-001`).
+
+✅ **ALSO SETTLED:** already-**stored** facts are safe. `ATT-INV-008` — *"No stored attendance fact
+**SHALL** be destructively updated or deleted"* (`ATT-AC-149`), and `ATT-FR-015` makes revocation
+**forward-acting**. ⚠ `ATT-FR-016` is **QR-scoped, not actor-scoped**, and is **not** stretched here.
+
+⛔ **THE RESIDUE IS UNRESOLVED AND IS NOT INVENTED:** what becomes of a **legitimately captured**
+offline mutation whose actor's access is revoked or expired **before** replay. Measured: a repository
+sweep for a queued-item disposition on revoked access returns **ZERO** authority. The three candidate
+dispositions — admit as a historical fact, refuse and discard, or refuse-and-retain-as-an-audit-bearing
+rejection — are **materially different product decisions**, and choosing among them here would invent
+policy. **Owner: Product Owner + `BC-03` Domain Owner. Requires their decision, then its own ADR.**
+
+### 13.5 Required acts, stated exactly — ⛔ NONE has occurred
+
+⛔ **The following are the REQUIRED acts. No claim is made that any took place.** Next free ADR
+identifier, derived mechanically: **`ADR-0117`** (104 files, highest identifier `ADR-0115`→`ADR-0116`;
+`ADR-0117` has 0 files and 0 references). ⛔ **No ADR is created until the authority exists.**
+
+| # | Act required | From whom |
+|---|---|---|
+| 1 | **Constitute the `EVENT platform` office for one act** — to decide the `BC-30` queue durability model (Item 3) | Human principal |
+| 2 | **Constitute the `DATA / EVENT` office for one act** — to decide the queue-depth/backpressure bound (Item 7b). Item 3 first | Human principal |
+| 3 | **Supply the retry/backoff values** (Item 5) — `PRD-006` L2332 forbids invention; the `ATT-GAP-017` precedent is owner-supplied values | Architecture Owner + Product Owner |
+| 4 | **Decide the at-rest construction** (Item 9b) — `ATT-GAP-006`. Item 3 first | SECURITY PLATFORM |
+| 5 | **Ratify a retention period** (7a) — `Q-04` is open in the authoritative document; `ATT-GAP-005` bars promoting its unratified note | Legal counsel + Architecture Owner |
+| 6 | **Decide the queued-mutation disposition on revoked/expired access** (8b-residual) | Product Owner + `BC-03` Domain Owner |
+
+⛔ **Every act above is ONE ACT ONLY and NONE is a standing licence** (`ADR-0033` §7.1). ⛔ No holder is
+appointed and no personal name is recorded (`PRD_OWNERSHIP_MODEL.md` §7 rule 4).

@@ -718,3 +718,137 @@ wholesale** (routed to `ADR-0075` §8.5 Option B):
 ⚠ **This document's `Version` field (L6) still reads `v1.1` and is NOT edited** — it has been stale
 since v1.2 for the same citation reason, a pre-existing condition disclosed by `ADR-0077` §8 and
 carried forward unrepaired here. ⛔ **Not introduced by this pass.**
+
+---
+
+## 14. ⭐ An eighth role — `EVENT platform` — constituted and conferred for one act (2026-09-08)
+
+> **Recorded by APPEND, for the reason §9, §10, §11, §11.5, §12 and §13 all give.** Re-measured this
+> pass: citations point into this document at **L68, L69, L85 (×35), L102, L107, L139, L144, L159,
+> L197, L284** and **L331**. Appending below §13's last line invalidates **0**; inserting a row into
+> §2.2's role table would silently misdirect every citation beneath it, in **Accepted** ADRs and in
+> `DOCUMENTATION_BASELINE.md`. **No existing line of this document is modified by this section.**
+
+### 14.1 Authority and scope
+
+**`EVENT platform`**, the office **Rank 1** already names. Executed by
+[`ADR-0117`](../adr/ADR-0117-event-platform-office-conferred-for-bc-30-durability-model-act-only.md).
+
+⭐ **The role vocabulary is reused, not invented** — §2.3's rule is satisfied at **Rank 1**:
+`MASTER_PRD.md` **L496** assigns `MP-NFR-02` *Reliability* to **`EVENT platform`** verbatim
+(*"At-least-once event delivery with idempotent consumers; DLQ depth is an SLO-monitored signal, not a
+silent bin"*). Measured before this section existed: `grep -cE '^\| \*\*(EVENT|DATA)'` over this
+document returned **0**, so the office named by that Rank 1 obligation was **defined nowhere** — the
+same condition §13.1 recorded for `SRE / Observability`.
+
+The office is filled **for this act only** by direct conferral from the human principal, on the
+`ADR-0032` §5.2 / `ADR-0033` §7.2 / `ADR-0036` §8.2 / §12.1 / §13.1 precedent. The conferral directed,
+in these words:
+
+> *"I explicitly constitute and confer the office 'EVENT platform' for ONE ACT ONLY: To decide and
+> record the BC-30 Offline Sync durable-queue durability model required for Item 3. This is ONE ACT
+> ONLY and NOT a standing licence. The act authorizes only the durability-model decision."*
+
+⛔ **No ARB quorum, attendee list, sign-off date or Security review is asserted. No holder is
+appointed and no personal name is recorded** (§7 rule 4). ⭐ **One holder**, per §3 rule 1. ⛔ Outside
+this act the office is **VACANT** — `ADR-0033` §7.1: *"a conferral for one act is not a standing
+licence."*
+
+| Role | Decides | Confirms | ⛔ Does NOT decide |
+|---|---|---|---|
+| **`EVENT platform`** | For this act only: the `BC-30` Offline Sync **durable-queue durability model** required for Item 3, against `MP-NFR-02`'s at-least-once + idempotent-consumer obligation | — | ⛔ Application or queue **implementation** · ⛔ database/schema creation · ⛔ provider configuration · ⛔ retry count · ⛔ retry/backoff (Item 5) · ⛔ queue-depth limit (Item 7b — §15) · ⛔ retention (7a) · ⛔ encryption algorithm (9b) · ⛔ secret format · ⛔ cloud resources · ⛔ changes to `PRD-006` · ⛔ creation of `PRD-018` · ⛔ boundaries, ranks or permitted edges (**Architecture Owner**) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ document status or freeze (**Governance Owner**) · ⛔ personal-data permissibility (**Privacy Owner**) · ⛔ its own conferral |
+
+### 14.2 What was decided, and what was deliberately not
+
+⛔⛔ **NOTHING SUBSTANTIVE WAS DECIDED. The durability model is NOT stated, hinted at or implied.**
+
+⚠ **This differs from §13, and the difference is deliberate.** §13's conferral directed the office to
+*"ratify the already pre-approved target of 99.9% monthly availability"* — a value `ADR-0100` §3.2 had
+already fixed — so `ADR-0102` both constituted the office **and** exercised it. **This conferral
+authorises the office *"To decide and record"* the model, and the same instruction closes with
+*"DO NOT decide: Item 3 durability model … Those are the subsequent acts of the newly constituted
+offices."*** ⭐ So the act **creates the capacity and withholds the exercise**, and there is no
+pre-approved durability value anywhere in the repository to carry across.
+
+⚠⚠ **`ITEM-3` REMAINS OPEN.** The office now exists; the decision does not. **A separate exercise of
+this same one-act authority is required**, and it must produce its own governance record.
+
+⛔ **Constituting an office is not exercising it.** No durability guarantee, mechanism, technology,
+storage medium, journal format, flush policy, acknowledgement scheme or ordering guarantee is set,
+changed, confirmed or pre-judged — for `BC-30` or for any other context.
+
+### 14.3 ⚠ Change-history row — recorded HERE, not inserted into §8
+
+⚠⚠ **The row belongs in §8's changelog table, and it is deliberately NOT written there** — for the
+reason §13.3 records: five citations sit **BELOW** §8's table (**L353**, **L356**, **L418**, **L419**,
+**L509**), and inserting a row after **L334** shifts every one of them.
+
+⭐ **The row, in §8's format, to be merged by any later pass that repairs the citation families
+wholesale** (routed to `ADR-0075` §8.5 Option B):
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.5** | 2026-09-08 | ⭐⭐ **An eighth role — `EVENT platform` — is constituted and conferred FOR ONE ACT ONLY, under `Accepted` [`ADR-0117`](../adr/ADR-0117-event-platform-office-conferred-for-bc-30-durability-model-act-only.md)** — to decide the `BC-30` Offline Sync durable-queue durability model (Item 3). Derived from **Rank 1** `MP-NFR-02` (`MASTER_PRD.md` **L496**), which names the office verbatim while this document defined it **nowhere** (measured **0**). ⛔ **Not a standing licence** (`ADR-0033` §7.1); the office is **VACANT** outside the act; no holder appointed and no personal name recorded (§7 rule 4). ⛔⛔ **The durability model itself is NOT decided** — the conferral creates the capacity and withholds the exercise, so **Item 3 remains OPEN**. Recorded by **APPEND**; every pre-existing line byte-identical; **0** citations shifted. |
+
+⚠ **This document's `Version` field (L6) still reads `v1.1` and is NOT edited** — stale since v1.2 for
+the same citation reason, a pre-existing condition disclosed by `ADR-0077` §8 and carried forward by
+`ADR-0080`, `ADR-0102` and here. ⛔ **Not introduced by this pass.**
+
+---
+
+## 15. ⭐ A ninth role — `DATA / EVENT` — constituted and conferred for one act (2026-09-08)
+
+> **Recorded by APPEND**, on the same measurement §13 and §14 record. Appending below §14's last line
+> invalidates **0** citations. **No existing line of this document is modified by this section.**
+
+### 15.1 Authority and scope
+
+**`DATA / EVENT`**, the office **Rank 1** already names. Executed by
+[`ADR-0118`](../adr/ADR-0118-data-event-office-conferred-for-bc-30-queue-depth-act-only.md).
+
+⭐ **The role vocabulary is reused, not invented** — §2.3 is satisfied at **Rank 1**: `MASTER_PRD.md`
+**L498** assigns `MP-NFR-04` *Scalability* — *"CQRS read models, cache tier, queues, partitioning,
+**backpressure**"* — to **`DATA / EVENT`** verbatim. ⚠ **The compound name is preserved exactly as
+Rank 1 writes it and is deliberately NOT split** into separate `DATA` and `EVENT` offices, because
+splitting it would coin a role Rank 1 does not name.
+
+The office is filled **for this act only** by direct conferral from the human principal. The conferral
+directed, in these words:
+
+> *"I explicitly constitute and confer the office 'DATA / EVENT' for ONE ACT ONLY: To decide and record
+> the BC-30 Offline Sync queue-depth/backpressure bound required for Item 7b, after the Item-3
+> durability model is authoritative. This is ONE ACT ONLY and NOT a standing licence. It authorizes
+> only the queue-depth/backpressure decision."*
+
+⛔ **No ARB quorum, attendee list, sign-off date or Security review is asserted. No holder is appointed
+and no personal name is recorded** (§7 rule 4). ⭐ **One holder** (§3 rule 1). ⛔ Outside this act the
+office is **VACANT**.
+
+| Role | Decides | Confirms | ⛔ Does NOT decide |
+|---|---|---|---|
+| **`DATA / EVENT`** | For this act only: the `BC-30` Offline Sync **queue-depth / backpressure bound** required for Item 7b, against `MP-NFR-04` — ⚠ **exercisable only after the Item-3 durability model is authoritative** | — | ⛔ Queue **implementation** · ⛔ storage implementation · ⛔ retry/backoff (Item 5) · ⛔ retention (7a) · ⛔ encryption (9b) · ⛔ credentials · ⛔ cloud resources · ⛔ unrelated architecture changes · ⛔ the **durability model** (§14's office) · ⛔ boundaries, ranks or permitted edges (**Architecture Owner**) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ document status or freeze (**Governance Owner**) · ⛔ its own conferral |
+
+### 15.2 What was decided, and what was deliberately not
+
+⛔⛔ **NOTHING SUBSTANTIVE WAS DECIDED. No queue-depth value or backpressure policy is stated, hinted at
+or implied** — no limit, high-water or low-water mark, shed policy, eviction rule, drop policy or
+block-versus-reject choice. No pre-approved figure exists anywhere in the repository to ratify.
+
+⚠⚠ **THE ACT IS CONFERRED BUT NOT YET EXERCISABLE, AND THAT IS RECORDED RATHER THAN QUIETLY DROPPED.**
+The conferral carries its own precondition — *"after the Item-3 durability model is authoritative"* —
+and measured at acceptance **that model does not exist**, because §14 withheld its exercise. ⛔ **So this
+office, though constituted, cannot lawfully act yet, and `ITEM-7b` REMAINS BLOCKED BEHIND ITEM 3.**
+
+⭐ There is a substantive reason the sequencing is right, not merely formal: a depth bound is a statement
+about a queue whose durability properties determine what a bound means. **Bounding a queue with no agreed
+durability model would produce a number with no referent.**
+
+### 15.3 ⚠ Change-history row — recorded HERE, not inserted into §8
+
+⚠ Same constraint as §13.3 and §14.3. **The row, in §8's format:**
+
+| Version | Date | Change |
+|---|---|---|
+| **v1.6** | 2026-09-08 | ⭐⭐ **A ninth role — `DATA / EVENT` — is constituted and conferred FOR ONE ACT ONLY, under `Accepted` [`ADR-0118`](../adr/ADR-0118-data-event-office-conferred-for-bc-30-queue-depth-act-only.md)** — to decide the `BC-30` Offline Sync queue-depth / backpressure bound (Item 7b). Derived from **Rank 1** `MP-NFR-04` (`MASTER_PRD.md` **L498**), which names the office verbatim while this document defined it **nowhere** (measured **0**); ⚠ the **compound name is preserved and not split**. ⭐ Written as a **separate** ADR from `ADR-0117` on the `ADR-0103`/`ADR-0104` reasoning — two offices, two conferrals, two subjects; an omnibus would claim one standing grant where two per-act conferrals were made. ⛔ **Not a standing licence** (`ADR-0033` §7.1); **VACANT** outside the act; no holder or personal name (§7 rule 4). ⛔⛔ **No queue-depth value or backpressure policy is decided**, and ⚠ **the act is not yet exercisable** — it is sequenced behind Item 3, whose durability model does not exist, so **Item 7b remains BLOCKED behind Item 3**. Recorded by **APPEND** beneath §14 in the same commit; both pure appends; every pre-existing line byte-identical; **0** citations shifted. |
+
+⚠ The L6 `Version` field is again **NOT edited** — pre-existing staleness, disclosed and not repaired.

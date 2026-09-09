@@ -722,3 +722,38 @@ amendments_applied:
 defects_closed:
   - { id: F-01, change: "closed scope register enforced in PolicyDecisionPoint; assertion ID-8" }
   - { id: F-02, change: "challenge from RandomSource, TTL, attempt budget, uniform request outcome; assertion ID-9" }
+
+# ─────────────────────────────────────────────────────────────
+# ADR-0126 D2-A — platform/integration module declaration (Gap A)
+#
+# Placed at END OF FILE, deliberately. The highest live line-citation into
+# this file is L631 (PRD-016_ARCHITECTURE_ALIGNMENT.md L263, verified live),
+# so appending here shifts 0 of the 49 cited lines. A block inserted beside
+# the other platform/* blocks would have shifted L534, L535, L548 and L631.
+#
+# This module was RANKED at L40 but never DECLARED. The checker builds a
+# Module for every ranks: key from a null block (check_module_boundaries.dart
+# L399-L417), so platform/integration resolved at rank 5 with EVERY constraint
+# list EMPTY. That was latent, not firing, only because lib/platform/integration/
+# does not exist. The first adapter written there would have been the only
+# capability module in the repository free to import domain/**.
+#
+# Nothing here is invented. The four ports are the four ALREADY CONSUMED
+# elsewhere in this same file: connector (L343 platform/workflow, L397
+# platform/communication), payment_gateway (L416 platform/business),
+# model_provider (L288 platform/ai), sso_provider (L439 platform/identity).
+# banned_imports is copied verbatim from every other capability module.
+#
+# ADR-0126 D2-B (edge E-31/E-32 BC-22 -> BC-31) is NOT executed. No edge is
+# declared, implied or reserved by this block. BC Map is byte-unchanged.
+# ─────────────────────────────────────────────────────────────
+platform/integration:
+  rank: 5
+  imports:
+    - { target: contracts, mode: import }
+  provides_ports:
+    - connector           # consumed at L343 (platform/workflow), L397 (platform/communication)
+    - payment_gateway     # consumed at L416 (platform/business); ADR-0035
+    - model_provider      # consumed at L288 (platform/ai)
+    - sso_provider        # consumed at L439 (platform/identity)
+  banned_imports: ["domain/**", "app/**"]

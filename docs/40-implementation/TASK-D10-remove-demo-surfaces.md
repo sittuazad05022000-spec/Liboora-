@@ -141,7 +141,7 @@ mechanism and require the test work below.
 | Step | Action |
 |---|---|
 | D10-9 | Delete `kDemoChildPhone` from `session.dart:26` |
-| D10-10 | Resolve `subjectStudentId` for `AccessRole.parent` — **requires a product decision** |
+| D10-10 | Resolve `subjectStudentId` for `AccessRole.parent` — ⭐ **the product decision is CLOSED: `ADR-0085` §5 selects Option B (explicit parent→student link model)**; ⛔ **execution remains OPEN** behind the `MP-DEP-03` delivery path (§7). *(Prior text, correct until `ADR-0085`: "**requires a product decision**".)* |
 
 `subjectStudentId` must return something for a parent. Three options, in order of preference:
 
@@ -151,7 +151,7 @@ mechanism and require the test work below.
 | **B** | Look up a real link via `studentAccountLinks` keyed on the parent's own phone | Correct if the mapping is genuinely populated. Verify before choosing |
 | **C** | Defer the parent role from V1 entirely | Cleanest, but a scope change requiring product sign-off |
 
-**Do not** substitute another constant. Option A is the default if no decision is made.
+**Do not** substitute another constant. ⚠⚠ **THE DECISION HAS BEEN MADE, AND IT IS OPTION B — NOT OPTION A.** `Accepted` **`ADR-0085` §5** (2026-09-01, **Product Owner**, authority conferred directly by the human principal) rules: *"use an explicit parent→student relationship/link model; **do not infer the relationship from unrelated data**."* Its own §5 records that this *"selects **Option B**… an **explicit link model** — and **excludes** the inference route."* ⭐ **So the "Option A is the default" fallback below no longer applies**, and the table's *"Recommended"* marker on Option A is a **superseded recommendation**, not the decision. *(Prior text, correct until 2026-09-01: "Option A is the default if no decision is made.")*
 
 ---
 
@@ -257,5 +257,5 @@ debug log and type it. Do that one now.
 
 `MASTER_PRD.md` `MP-CON-11` (line 521), `MP-GBR-25` (line 378), `MP-DEP-03` (line 569) ·
 Authentication PRD v2.0 `AUTH-11.73`, Chapter 8 §8.3 ·
-`ADR-0002` (OTP as sole factor) · `ADR-0007` (behavioural conformance) ·
+`ADR-0002` (OTP as sole factor) · `ADR-0007` (behavioural conformance) · ⭐ **`ADR-0085` §5** (`Accepted` 2026-09-01, **Product Owner** — *the closed `D10-10` decision: Option B, an explicit parent→student link model; it also records that this ADR does **NOT** execute `TASK-D10`, because §7's `MP-DEP-03` delivery-path prerequisite is unmet*) ·
 `DOCUMENTATION_AUDIT-001.md` finding `G-6` · `DEFINITION_OF_DONE.md`

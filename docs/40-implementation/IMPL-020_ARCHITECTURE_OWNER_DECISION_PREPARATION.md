@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | `IMPL-020_ARCHITECTURE_OWNER_DECISION_PREPARATION.md` |
-| **Version** | **v1.1** |
+| **Version** | **v1.2** |
 | **Date** | 2026-09-07 |
 | **Subject** | `IMPL-020` — SMS provider + DLT template registration (`MP-DEP-03`) |
 | **Written at** | `fc91ebbff36ad5750175fb6af3969ec54b73fdf3` (`github/main`) |
@@ -60,7 +60,7 @@ SDK.** There is no Supabase project in this repository to build a hook against.
 | # | Constraint | Source | Effect |
 |---|---|---|---|
 | 1 | *"The platform MUST be able to switch delivery providers **without any change to this specification**"* | **`AUTH-11.51`**, `Authentication_PRD_v2.md` **L4427** (FROZEN, Rank 3) | The provider **must** sit behind a port |
-| 2 | *"Authentication **MUST NOT** implement message transport. It **MUST** request delivery from Notification"* | **`AUTH-3.5`**, **L910** (FROZEN, Rank 3) | ⭐ **`BC-18` may not call an SMS provider at all** |
+| 2 | *"Authentication **MUST NOT** implement message transport. It **MUST** request delivery from Notification"* | **`AUTH-3.5`**, **L910** (FROZEN, Rank 3) | ⚠⚠ **CORRECTED 2026-09-09 by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) — the prior conclusion was an INFERENCE, and it was FALSE.** ⭐ `AUTH-3.5` forbids *implementing transport*; it does **not** forbid **calling a port**. `BC-18` requests delivery over the port `tool/module_dependencies.yaml` **L437–439** has declared since **`a2caa22`** — *"the single sanctioned bypass of `platform/communication`, **for possession challenge delivery only**"* — and **`BC-31` performs the transport** (BC Map **L140**). ⭐ The route is **`BC-18` → `BC-31`**, ratified as **`E-33`** (BC Map **§19.1**). ⛔ `AUTH-3.5` is **preserved unweakened**. *(Prior text, an inference that was FALSE from the outset: "⭐ **`BC-18` may not call an SMS provider at all**".)* |
 | 3 | *"The code **MUST NOT** appear in any response, event, log, metric, error or analytics record"* | **`AUTH-3.12`**, **L923** | Constrains every adapter and every log line |
 | 4 | *"The Data Layer must remain abstract so a dedicated backend can replace direct BaaS access later"* | **`MP-CON-03`**, `MASTER_PRD.md` **L239** (Rank 1) | No direct BaaS calls above the adapter |
 | 5 | SMS provider + **DLT template registration** — **External**, *"V1 launch — authentication cannot function without it"* | **`MP-DEP-03`**, **L570** (Rank 1) | Classified **External**: outside engineering control |
@@ -83,12 +83,29 @@ SDK.** There is no Supabase project in this repository to build a hook against.
 | `BC-31` module / rank | `platform/integration`, **rank 5** | **L40** |
 | Does `platform/communication` already hold the connector port? | ✅ **Yes** — `platform/integration:connector` | **L397** |
 
-⭐ **The lawful route is therefore already three-quarters built and needs no invention:**
+⚠⚠ **THE ROUTE BELOW IS SUPERSEDED. CORRECTED 2026-09-09 by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md).**
+⭐ **The ratified V1 OTP route does NOT pass through `BC-22`:**
 
 ```
-BC-18 Identity  ──requests delivery──▶  BC-22 Notification  ──connector port──▶  BC-31 Integration  ──▶  SMS vendor
-   (owns OTP)        AUTH-3.5              (owns channel)        L397 (exists)        (owns contract)
+BC-18 Identity  ──sso_provider port (yaml L437-439)──▶  BC-31 Integration  ──▶  SMS vendor
+   (owns OTP)        E-33 · CF · Sync port                 (owns contract)
 ```
+
+⛔ **Why the superseded route was unlawful**, on four authorities that outrank this document:
+**FROZEN `AUTH-10.37`** (*"the OTP … **MUST NOT** pass through any general notification path"*) ·
+**`PRD-010` §5 N7** (OTP SMS **excluded** from `BC-22`) · **`NTF-FR-030`** (*"V1 integrated channels
+are **exactly** In-App and Push"*) · and ⭐ the **functional** reason — `MP-GBR-35` + `NTF-FR-039`
+make quiet hours *"defer, never drop"*, while `AUTH-3.8` expires the challenge in **5 minutes**, so
+the general path would **break the authentication factor**.
+
+*(Prior text, retained verbatim for audit — correct until `ADR-0128`:)*
+
+> ⭐ **The lawful route is therefore already three-quarters built and needs no invention:**
+>
+> ```
+> BC-18 Identity  ──requests delivery──▶  BC-22 Notification  ──connector port──▶  BC-31 Integration  ──▶  SMS vendor
+>    (owns OTP)        AUTH-3.5              (owns channel)        L397 (exists)        (owns contract)
+> ```
 
 ### 1.4 ⚠ THREE STRUCTURAL GAPS, measured — the real blockers
 
@@ -294,5 +311,6 @@ them first would prejudge D2.
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.2** | 2026-09-09 | ⭐⭐ **TWO SUBSTANTIVE CORRECTIONS — THIS DOCUMENT'S OTP ROUTE WAS WRONG, AND `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) SUPERSEDES IT.** ⛔ **This is the first change to this document's SUBSTANCE**, not merely its header. **(1) L63** asserted *"⭐ **`BC-18` may not call an SMS provider at all**"* — an **inference** from `AUTH-3.5`, and **FALSE from the outset**: `AUTH-3.5` forbids *implementing transport*, not *calling a port*. **(2) §1.3's route diagram** showed `BC-18 → BC-22 → BC-31`, which is unlawful on four authorities that outrank this document — **FROZEN `AUTH-10.37`**, **`PRD-010` §5 N7**, **`NTF-FR-030`**, and ⭐ the **functional** bar (`MP-GBR-35` + `NTF-FR-039` defer, `AUTH-3.8` expires in 5 minutes, so the general path would **break the authentication factor**). ⭐⭐ **THE RATIFIED ROUTE IS `BC-18` → `BC-31`**, minted as **`E-33`** in BC Map **§19.1**, over the port `tool/module_dependencies.yaml` **L437–439** has declared since **`a2caa22`** — *"the single sanctioned bypass of `platform/communication`, **for possession challenge delivery only**"*. ⭐ **The answer was in the manifest all along; §1.3 never read it** — the `ADR-0014` method. ⚠ **BOTH PRIOR TEXTS ARE RETAINED VERBATIM** (L63 parenthetically, §1.3 as a block quote), so the audit trail is intact. ⚠⚠ **CITATION COST: NOT ZERO, AND THE FIRST DRAFT OF THIS ROW CLAIMED OTHERWISE — THE ERROR IS CORRECTED HERE RATHER THAN LEFT STANDING.** A draft of this changelog asserted *"CITATION COST: ZERO SHIFTED … L159 and L185 are re-verified unmoved"*. ⛔ **That was FALSE, and post-write verification caught it.** **L63 is edited strictly in place (0 shift)**, but the §1.3 correction **adds 17 lines**, so every citation below it moved by **+17**: **L159 → L176** (`IMPL-020` §1.3's *"MSG91 unblocks nothing"*, cited in the blocker register), **L185 → L202** and **L280 → L297** (both cited by **`ADR-0116` §2.2** and **`ADR-0124` §1.2** as the measured evidence that this document *"does **not** select Supabase"*). ⭐ **The cited SENTENCES are byte-unchanged and still true of this document** — only their line numbers moved — so the three citing ADRs remain substantively correct and are ⛔ **NOT edited here**: `ADR-0116` and `ADR-0124` are `Accepted` and outside this conferral. ⚠ **The stale line numbers are RECORDED as a follow-up for the Architecture Owner**, in the same shape as the R2 repair, and ⛔ **not silently patched**. ⭐ An in-place-only correction was not available: superseding a six-line code block while retaining it verbatim necessarily adds lines. ⛔ **`sso_provider` is NOT renamed** (AO-2 accepted it as-is) and the manifest is **byte-unchanged**. ⛔ **NOTHING ELSE CHANGES:** §2 recommendations, §3 decisions, §4 external actions, §5 next step and §6 boundaries are **byte-unchanged**; **Gap A** stays closed by `ADR-0126` D2-A and **Gap B** stays open for `E-32`/M2. ⛔ **NO delivery path is created** — no SMS provider (**D3**), no DLT registration (**H1–H3**); **`IMPL-020`, `BLK-01`, `BLK-02`, `TASK-D10`, `MP-DEP-03` and Gate 3 all remain OPEN/red**, because ⭐ **a route is not a delivery path**. |
 | **v1.1** | 2026-09-08 | ⭐⭐ **RECORDS THAT THE DECISION THIS DOCUMENT PREPARED HAS BEEN TAKEN.** `Accepted` **`ADR-0124`** (Architecture Owner, one-act conferral from the human principal) selects **§2.1 Option A — a managed BaaS, `Supabase`** as the **V1 authentication backend runtime**, hosting the OTP delivery adapter as an **adapter behind a port, never as a layer**. ⭐ This is exactly the act §2.1 routed upward (*"it is the **Architecture Owner's** to take"*). ⛔⛔ **NOTHING IN THIS DOCUMENT'S SUBSTANCE CHANGES — §1, §2, §3, §4, §5, §6 are BYTE-UNCHANGED**, and **only TWO header lines were edited, strictly in place**: **L6** `Version` v1.0 → v1.1 and **L15** `Provider selected`. ⭐⭐ **L15's original text was retained verbatim in parentheses**, because it was **true when written** and remains true *of this document*; what changed is the **repository state** it described. ⚠⚠ **L185 and L280 were deliberately NOT edited** — `ADR-0116` §2.2 and `ADR-0124` §1.2 both cite them **by line number** as the measured evidence that this preparation *"does not select Supabase"*, and that statement about the document is **still accurate**; editing them would have destroyed two live citations and falsified nothing. ⚠ **CITATION COST: ZERO** — the file is 298 lines and both edits are in-place substitutions above every cited line, so **0** citations shifted. ⛔ **NO SMS PROVIDER IS SELECTED** — MSG91 remains a **candidate only** (§2.2 unchanged), and `IMPL-020` §1.3's measurement stands: **PROVIDER DECISION 0** of 11 obligations depend on the provider's identity. ⛔ **NO DLT REGISTRATION IS PERFORMED** — Rank 1 `MP-DEP-03` classifies it **External**, *"outside engineering control"*. ⛔ **`IMPL-020` AND `BLK-02` REMAIN P0 AND OPEN** on their two remaining limbs; ⚠ **`TASK-D10` is NOT unblocked**, because the debug peek *"cannot be removed until a real delivery path exists"* and ⭐ **a runtime is not a delivery path**. ⛔ **Gap A** (no manifest block) and **Gap B** (no edge) remain **OPEN**. ⛔ **No implementation, configuration, cloud resource, dependency, SDK, schema, credential or code** is authorised or performed — **0** files besides this one and the two registers; `MASTER_PRD` **L227** untouched; all frozen PRDs byte-unchanged. |
 | **v1.0** | 2026-09-07 | **Created as decision preparation for `IMPL-020`.** Follows the `PRD-015_FINAL_ARCHITECTURE_DECISION_PREPARATION.md` convention and the `ADR-0045` STOP method. ⭐ **Central finding: the provider is NOT the blocker.** All **11** Block-1 obligations were classified and **0** depend on the provider's identity — **6** are codeable now, **4** await the backend decision, **1** is external DLT. ⭐ **The lawful route was determined, not assumed:** `AUTH-3.5` (**L910**) forbids `BC-18` from implementing transport, so OTP delivery is `BC-18` → `BC-22` → `BC-31`, and `platform/communication` **already declares** the `platform/integration:connector` port (**L397**). ⚠ **Three structural gaps measured, two of them previously unrecorded in this context:** (A) **7 of 22** ranked modules have no manifest block — wider than `FIL-GAP-010` states — and the missing set **includes `platform/integration`**, the module that would hold the SMS adapter; (B) **no `BC-22 → BC-31` edge exists** in BC Map §7 (measured **0** rows; the only edge into `BC-31` is `E-25` from `BC-20`), which **L292** rules *"does not exist"*; (C) no backend runtime is approved. ⛔ **Nothing decided:** 0 ADRs, 0 providers, **Supabase NOT selected**, MSG91 recorded as candidate only, and **no pricing, endpoint, credential, sender ID or DLT identifier invented** — the `ADR-0045` §3 rule that *"a named hole is honest; an invented contract is not"*. |

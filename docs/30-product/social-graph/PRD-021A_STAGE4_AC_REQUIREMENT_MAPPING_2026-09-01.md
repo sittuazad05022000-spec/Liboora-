@@ -521,7 +521,7 @@ Additional integrity measures:
 | `ADR-0083` / `ADR-0084` | unchanged | `7fbbbcb0564589da` (356 L) · `e759172f732354cc` (348 L) | ✅ |
 | ADR count | 75 | 75 files; `ADR-INDEX` L9 *"75 ADR files exist and all 75 are registered"* | ✅ |
 | **Bounded-context count** | 31 | **31** | ✅ unchanged |
-| **Edge count** | **28** | **28** — `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L652**: *"`E-01`…`E-26`, `E-28`, `E-29` — 28 edges, with `E-27` a deliberate gap"*; 28 defined rows | ✅ **28** |
+| **Edge count** | **28** | **28** — `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L653**: *"`E-01`…`E-26`, `E-28`, `E-29` — 28 edges, with `E-27` a deliberate gap"*; 28 defined rows | ✅ **28** |
 | New `PERM-*` | 0 | 0 | ✅ |
 | New bounded context / new event | 0 | 0 | ✅ |
 | Stage-5 registration for `PRD-021A` | 0 | 0 | ✅ |
@@ -532,7 +532,7 @@ Additional integrity measures:
 | Push | none | none | ✅ |
 
 ⚠ **Edge-count note:** a naïve `E-\d+` scan returns **29** distinct tokens. The map itself
-resolves this at **L652** — `E-27` is a **deliberate gap**, and the defined-row count is 28. The
+resolves this at **L653** — `E-27` is a **deliberate gap**, and the defined-row count is 28. The
 invariant holds; the raw token count is not the edge count.
 
 ⚠ **Two further counting traps were hit and adjudicated, not reported as breaches.**

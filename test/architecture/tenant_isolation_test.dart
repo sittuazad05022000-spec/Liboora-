@@ -63,8 +63,7 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 const String _matrixPath =
     'docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md';
-const String _bcMapPath =
-    'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
+const String _bcMapPath = 'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
 const String _manifestPath = 'tool/module_dependencies.yaml';
 
 const TenantId _tenantA = TenantId('T-ALPHA');
@@ -215,14 +214,16 @@ void main() {
       expect(
         matrix,
         contains('tenant_isolation_test.dart'),
-        reason: 'Matrix §10.3 no longer names this file. If the requirement '
+        reason:
+            'Matrix §10.3 no longer names this file. If the requirement '
             'was withdrawn, that is an authority amendment (ADR), not a '
             'silent test deletion.',
       );
       expect(
         matrix,
         contains('for every repository'),
-        reason: 'The §10.3 requirement cell has been narrowed from "for every '
+        reason:
+            'The §10.3 requirement cell has been narrowed from "for every '
             'repository". Verify against the current wording before '
             'reducing this suite.',
       );
@@ -237,7 +238,8 @@ void main() {
       expect(
         declared,
         isNotEmpty,
-        reason: 'Parsed zero repository implementations from lib/. The scan '
+        reason:
+            'Parsed zero repository implementations from lib/. The scan '
             'is broken; coverage below is not evidence of anything.',
       );
 
@@ -251,11 +253,12 @@ void main() {
         'FeeLedgerRepository',
       };
 
-      final uncovered = declared
-          .difference(leakTested)
-          .difference(_globalByDesign.keys.toSet())
-          .toList()
-        ..sort();
+      final uncovered =
+          declared
+              .difference(leakTested)
+              .difference(_globalByDesign.keys.toSet())
+              .toList()
+            ..sort();
 
       expect(
         uncovered,
@@ -276,7 +279,8 @@ void main() {
       expect(
         stale,
         isEmpty,
-        reason: 'This file claims to leak-test $stale, but no such repository '
+        reason:
+            'This file claims to leak-test $stale, but no such repository '
             'is implemented in lib/ any more. Remove the stale entry and its '
             'test, or restore the repository.',
       );
@@ -312,7 +316,8 @@ void main() {
       expect(
         manifest,
         contains('this module is not tenant-scoped'),
-        reason: 'tool/module_dependencies.yaml no longer bans TenantId / '
+        reason:
+            'tool/module_dependencies.yaml no longer bans TenantId / '
             'TenantContext from domain/person. Rule ID-2 may have changed; '
             're-derive the BC-10 exemption before trusting it.',
       );
@@ -342,9 +347,13 @@ void main() {
 
       // Read back as A.
       expect(repo.all().map((s) => s.id.value), ['SR-1']);
-      expect(repo.byId(StudentRecordId('SR-2')), isNull,
-          reason: 'Tenant A resolved tenant B\'s student by id. This is a '
-              'cross-tenant read of personal data.');
+      expect(
+        repo.byId(StudentRecordId('SR-2')),
+        isNull,
+        reason:
+            'Tenant A resolved tenant B\'s student by id. This is a '
+            'cross-tenant read of personal data.',
+      );
       expect(repo.byId(StudentRecordId('SR-1')), isNotNull);
 
       // And as B.
@@ -374,11 +383,20 @@ void main() {
       // lookup would fuse two different people.
       final shared = StudentRecordId('SR-SHARED');
       repo.save(_membership('A', shared));
-      _asTenant(ctx, _tenantB, _branchB, () => repo.save(_membership('B', shared)));
+      _asTenant(
+        ctx,
+        _tenantB,
+        _branchB,
+        () => repo.save(_membership('B', shared)),
+      );
 
-      expect(repo.forStudent(shared).map((m) => m.id), ['M-A'],
-          reason: 'Tenant A saw tenant B\'s membership because both tenants '
-              'use the same student id value.');
+      expect(
+        repo.forStudent(shared).map((m) => m.id),
+        ['M-A'],
+        reason:
+            'Tenant A saw tenant B\'s membership because both tenants '
+            'use the same student id value.',
+      );
       expect(repo.byId('M-B'), isNull);
       expect(repo.all().length, 1);
 
@@ -417,15 +435,23 @@ void main() {
 
       // The composite key is student#date and is identical in both tenants —
       // the store's partitioning is the ONLY thing keeping these apart.
-      expect(repo.onDate(_day).length, 1,
-          reason: 'A daily attendance report for tenant A included tenant B '
-              'rows. This leaks who was physically present in another '
-              'library.');
+      expect(
+        repo.onDate(_day).length,
+        1,
+        reason:
+            'A daily attendance report for tenant A included tenant B '
+            'rows. This leaks who was physically present in another '
+            'library.',
+      );
       expect(repo.forStudent(shared).length, 1);
       expect(repo.find(shared, _day), isNotNull);
-      expect(repo.find(StudentRecordId('SR-OTHER'), _day), isNull,
-          reason: 'Tenant A resolved an attendance row belonging only to '
-              'tenant B.');
+      expect(
+        repo.find(StudentRecordId('SR-OTHER'), _day),
+        isNull,
+        reason:
+            'Tenant A resolved an attendance row belonging only to '
+            'tenant B.',
+      );
 
       _asTenant(ctx, _tenantB, _branchB, () {
         expect(repo.onDate(_day).length, 2);
@@ -465,9 +491,13 @@ void main() {
       );
 
       expect(layouts.forBranch(branch)!.byId('S-1'), isNotNull);
-      expect(layouts.forBranch(branch)!.byId('S-9'), isNull,
-          reason: 'Tenant A read tenant B\'s seat layout for the same branch '
-              'id value.');
+      expect(
+        layouts.forBranch(branch)!.byId('S-9'),
+        isNull,
+        reason:
+            'Tenant A read tenant B\'s seat layout for the same branch '
+            'id value.',
+      );
 
       allocations.save(
         SeatAllocation(
@@ -499,9 +529,13 @@ void main() {
       // allocations, tenant A would be *blocked* from assigning its own seat
       // by an invisible booking in another library — a leak that manifests as
       // a false conflict rather than as visible data.
-      expect(allocations.forSeat('S-1').map((a) => a.id), ['AL-A'],
-          reason: 'forSeat crossed the tenant boundary. The seat-overlap '
-              'invariant would then be evaluated against foreign rows.');
+      expect(
+        allocations.forSeat('S-1').map((a) => a.id),
+        ['AL-A'],
+        reason:
+            'forSeat crossed the tenant boundary. The seat-overlap '
+            'invariant would then be evaluated against foreign rows.',
+      );
       expect(allocations.activeOn(_day).length, 1);
       expect(allocations.byId('AL-B'), isNull);
       expect(allocations.all().length, 1);
@@ -532,7 +566,8 @@ void main() {
         expect(
           ledgerB.totalDue.isZero,
           isTrue,
-          reason: 'openFor in tenant B returned a ledger already carrying '
+          reason:
+              'openFor in tenant B returned a ledger already carrying '
               'tenant A\'s dues. Financial records crossed the boundary.',
         );
         expect(repo.forStudent(shared)!.totalDue.isZero, isTrue);
@@ -567,7 +602,8 @@ void main() {
       expect(
         store.count,
         lessThan(store.countAcrossAllTenants),
-        reason: 'A tenant-scoped count returned the platform-wide total. '
+        reason:
+            'A tenant-scoped count returned the platform-wide total. '
             'Tenant A can now infer the size of other libraries.',
       );
       expect(repo.all().length, 2);
@@ -586,14 +622,16 @@ void main() {
       expect(
         () => repo.all(),
         throwsA(isA<TenantContextMissing>()),
-        reason: 'A tenant-less read did not throw. Whether it returned [] or '
+        reason:
+            'A tenant-less read did not throw. Whether it returned [] or '
             'everything, the caller cannot tell that the tenant boundary '
             'was never established.',
       );
       expect(
         () => repo.save(_student('1', enrollmentNumber: 'EN-1')),
         throwsA(isA<TenantContextMissing>()),
-        reason: 'A tenant-less WRITE did not throw. This is how an '
+        reason:
+            'A tenant-less WRITE did not throw. This is how an '
             'unattributable row is created.',
       );
     });
@@ -615,7 +653,8 @@ void main() {
       expect(
         () => repo.all(),
         throwsA(isA<TenantContextMissing>()),
-        reason: 'After exit(), the repository still resolved a tenant. A '
+        reason:
+            'After exit(), the repository still resolved a tenant. A '
             'recycled request would inherit the previous tenant\'s data.',
       );
     });
@@ -647,18 +686,26 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       expect(repo.byPersonId(personId), isNotNull);
       _asTenant(ctx, _tenantB, _branchB, () {
-        expect(repo.byPersonId(personId), isNotNull,
-            reason: 'The Global Person Identity became invisible under a '
-                'different tenant. Partitioning BC-10 violates rule ID-2 and '
-                'would fork one human into many.');
+        expect(
+          repo.byPersonId(personId),
+          isNotNull,
+          reason:
+              'The Global Person Identity became invisible under a '
+              'different tenant. Partitioning BC-10 violates rule ID-2 and '
+              'would fork one human into many.',
+        );
         expect(repo.resolve(personId)!.displayName, 'Aarav');
         return null;
       });
       ctx.exit();
-      expect(repo.byPersonId(personId), isNotNull,
-          reason: 'The identity became unreadable with no tenant in scope. '
-              'BC-10 is pre-authentication-capable and must not require a '
-              'tenant.');
+      expect(
+        repo.byPersonId(personId),
+        isNotNull,
+        reason:
+            'The identity became unreadable with no tenant in scope. '
+            'BC-10 is pre-authentication-capable and must not require a '
+            'tenant.',
+      );
       expect(repo.count, 1);
     });
 
@@ -695,7 +742,8 @@ void main() {
       expect(
         code,
         contains('class PersonIdentity'),
-        reason: 'The comment-stripping scan removed the actual source. The '
+        reason:
+            'The comment-stripping scan removed the actual source. The '
             'banned-symbol assertions below would pass vacuously.',
       );
 

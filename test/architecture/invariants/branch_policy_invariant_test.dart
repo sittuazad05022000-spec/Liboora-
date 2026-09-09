@@ -312,8 +312,7 @@ void main() {
   // ════════════════════════════════════════════════════════════════════
   // INVARIANT 5 — consumer-facing caps are carried, not invented downstream.
   // ════════════════════════════════════════════════════════════════════
-  group('BC-06 invariant: caps consumed by other contexts are sourced here',
-      () {
+  group('BC-06 invariant: caps consumed by other contexts are sourced here', () {
     test('the seat transfer cap is a policy value with a sane default', () {
       // BC-04 enforces the cap (SeatAllocation.transfersToday) but must not
       // OWN the number. Conformist: the consumer accepts this model as-is.
@@ -328,18 +327,20 @@ void main() {
       );
     });
 
-    test('the seat release grace is a policy value and defaults to 24 hours',
-        () {
-      expect(
-        _policy().seatReleaseGraceHours,
-        24,
-        reason:
-            'L54 ties this to open question Q-01 and calls it configurable '
-            'with a 24h default. That default is asserted so a silent change '
-            'is visible; Q-01 itself remains open and is not decided here.',
-      );
-      expect(_policy(seatReleaseGraceHours: 48).seatReleaseGraceHours, 48);
-    });
+    test(
+      'the seat release grace is a policy value and defaults to 24 hours',
+      () {
+        expect(
+          _policy().seatReleaseGraceHours,
+          24,
+          reason:
+              'L54 ties this to open question Q-01 and calls it configurable '
+              'with a 24h default. That default is asserted so a silent change '
+              'is visible; Q-01 itself remains open and is not decided here.',
+        );
+        expect(_policy(seatReleaseGraceHours: 48).seatReleaseGraceHours, 48);
+      },
+    );
 
     test('OBSERVED GAP — WorkingHours has no ordering guard', () {
       // A closing minute before the opening minute is currently constructible.

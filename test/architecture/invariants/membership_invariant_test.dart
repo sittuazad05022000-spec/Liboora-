@@ -72,10 +72,9 @@ void main() {
       DomainError? caught;
       try {
         // Starts 10 days in — inside the existing 30-day term.
-        Membership.assertNoOverlap(
-          [existing],
-          DateRange.days(_day1.add(const Duration(days: 10)), 30),
-        );
+        Membership.assertNoOverlap([
+          existing,
+        ], DateRange.days(_day1.add(const Duration(days: 10)), 30));
       } on DomainError catch (e) {
         caught = e;
       }
@@ -123,10 +122,9 @@ void main() {
       ]) {
         final existing = _membership(status: status);
         expect(
-          () => Membership.assertNoOverlap(
-            [existing],
-            DateRange.days(_day1.add(const Duration(days: 10)), 30),
-          ),
+          () => Membership.assertNoOverlap([
+            existing,
+          ], DateRange.days(_day1.add(const Duration(days: 10)), 30)),
           returnsNormally,
           reason:
               'The invariant is scoped to ACTIVE terms. A cancelled or expired '
@@ -238,20 +236,23 @@ void main() {
       );
     });
 
-    test('renewing an expired membership is permitted — observed behaviour', () {
-      final m = _membership(status: MembershipStatus.expired);
-      final endBefore = m.term.end;
+    test(
+      'renewing an expired membership is permitted — observed behaviour',
+      () {
+        final m = _membership(status: MembershipStatus.expired);
+        final endBefore = m.term.end;
 
-      m.renew(days: 30);
+        m.renew(days: 30);
 
-      expect(m.status, MembershipStatus.active);
-      expect(m.term.end, endBefore.add(const Duration(days: 30)));
-      // NOTE — the error code is named `membershipNotActive` but the guard
-      // (membership.dart L76) fires only on `cancelled`. Expired and frozen
-      // memberships are renewable. This is asserted so that narrowing the
-      // guard later becomes a visible test change rather than a silent
-      // product change.
-    });
+        expect(m.status, MembershipStatus.active);
+        expect(m.term.end, endBefore.add(const Duration(days: 30)));
+        // NOTE — the error code is named `membershipNotActive` but the guard
+        // (membership.dart L76) fires only on `cancelled`. Expired and frozen
+        // memberships are renewable. This is asserted so that narrowing the
+        // guard later becomes a visible test change rather than a silent
+        // product change.
+      },
+    );
   });
 
   // ════════════════════════════════════════════════════════════════════
@@ -303,7 +304,10 @@ void main() {
       final mid = _day1.add(const Duration(days: 15));
       final credit = _membership(days: 30).prorationCreditFor(mid);
       expect(credit.isNegative, isFalse);
-      expect(credit.minorUnits, lessThanOrEqualTo(Money.rupees(1200).minorUnits));
+      expect(
+        credit.minorUnits,
+        lessThanOrEqualTo(Money.rupees(1200).minorUnits),
+      );
 
       final afterEnd = _day1.add(const Duration(days: 90));
       expect(

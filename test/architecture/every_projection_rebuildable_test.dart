@@ -47,8 +47,7 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 const String _matrixPath =
     'docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md';
-const String _bcMapPath =
-    'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
+const String _bcMapPath = 'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
 const String _analyticsPath = 'lib/platform/analytics/analytics.dart';
 
 /// A fixed "today" so `_isToday()` gating inside the projection is
@@ -90,7 +89,10 @@ Map<String, Object?> _snapshot(AnalyticsProjections p) {
     // The feed is ordered and capped; compare content AND order.
     'feed': p
         .feed(limit: 1000)
-        .map((i) => '${i.at.toIso8601String()}|${i.kind}|${i.headline}|${i.detail}')
+        .map(
+          (i) =>
+              '${i.at.toIso8601String()}|${i.kind}|${i.headline}|${i.detail}',
+        )
         .toList(growable: false),
   };
 }
@@ -275,8 +277,7 @@ void main() {
       );
     });
 
-    test('DISCLOSED DIVERGENCE — the method is rebuildFrom(), not rebuild()',
-        () {
+    test('DISCLOSED DIVERGENCE — the method is rebuildFrom(), not rebuild()', () {
       final src = File(_analyticsPath).readAsStringSync();
 
       expect(
@@ -316,10 +317,9 @@ void main() {
       // event types and payload keys, nothing else. A domain import here would
       // mean rebuild had to reconstruct domain objects too.
       final src = File(_analyticsPath).readAsStringSync();
-      final domainImports = RegExp(r'''import\s+['"]([^'"]*domain[^'"]*)['"]''')
-          .allMatches(src)
-          .map((m) => m.group(1)!)
-          .toList();
+      final domainImports = RegExp(
+        r'''import\s+['"]([^'"]*domain[^'"]*)['"]''',
+      ).allMatches(src).map((m) => m.group(1)!).toList();
       expect(
         domainImports,
         isEmpty,
@@ -369,66 +369,73 @@ void main() {
       );
     });
 
-    test('live-fed state is non-empty before the rebuild is attempted', () async {
-      // Second vacuity guard: if live feeding produced nothing, "before ==
-      // after" would hold for the wrong reason.
-      final fed = await _liveFed();
-      final before = _snapshot(fed.projections);
+    test(
+      'live-fed state is non-empty before the rebuild is attempted',
+      () async {
+        // Second vacuity guard: if live feeding produced nothing, "before ==
+        // after" would hold for the wrong reason.
+        final fed = await _liveFed();
+        final before = _snapshot(fed.projections);
 
-      expect(
-        (before['tenantA']! as Map)['studentsEnrolled'],
-        1,
-        reason: 'Live subscription did not accumulate. The comparison below '
-            'would then be empty-vs-empty.',
-      );
-      expect((before['feed']! as List), isNotEmpty);
-      expect(before['distinctAttendanceDays'], greaterThan(0));
-    });
+        expect(
+          (before['tenantA']! as Map)['studentsEnrolled'],
+          1,
+          reason:
+              'Live subscription did not accumulate. The comparison below '
+              'would then be empty-vs-empty.',
+        );
+        expect((before['feed']! as List), isNotEmpty);
+        expect(before['distinctAttendanceDays'], greaterThan(0));
+      },
+    );
 
-    test('rebuildFrom() reproduces EVERY exposed field, byte for byte',
-        () async {
-      final fed = await _liveFed();
-      final before = _snapshot(fed.projections);
+    test(
+      'rebuildFrom() reproduces EVERY exposed field, byte for byte',
+      () async {
+        final fed = await _liveFed();
+        final before = _snapshot(fed.projections);
 
-      await fed.projections.rebuildFrom(fed.bus);
-      final after = _snapshot(fed.projections);
+        await fed.projections.rebuildFrom(fed.bus);
+        final after = _snapshot(fed.projections);
 
-      expect(
-        after,
-        equals(before),
-        reason:
-            'Replaying EventBus.log from zero did not reproduce the live-fed '
-            'projection. Per $_analyticsPath: "if a projection ever holds '
-            'state that cannot be reconstructed that way, it has become a '
-            'second source of truth and must be deleted."\n'
-            'BEFORE: $before\nAFTER:  $after',
-      );
-    });
+        expect(
+          after,
+          equals(before),
+          reason:
+              'Replaying EventBus.log from zero did not reproduce the live-fed '
+              'projection. Per $_analyticsPath: "if a projection ever holds '
+              'state that cannot be reconstructed that way, it has become a '
+              'second source of truth and must be deleted."\n'
+              'BEFORE: $before\nAFTER:  $after',
+        );
+      },
+    );
 
-    test('rebuild is idempotent — replaying twice does not double-count',
-        () async {
-      // The failure mode a clear-then-replay implementation is prone to: if
-      // rebuildFrom() forgot to clear one collection, the first rebuild would
-      // still match (append to empty) and only the second would drift.
-      final fed = await _liveFed();
+    test(
+      'rebuild is idempotent — replaying twice does not double-count',
+      () async {
+        // The failure mode a clear-then-replay implementation is prone to: if
+        // rebuildFrom() forgot to clear one collection, the first rebuild would
+        // still match (append to empty) and only the second would drift.
+        final fed = await _liveFed();
 
-      await fed.projections.rebuildFrom(fed.bus);
-      final once = _snapshot(fed.projections);
-      await fed.projections.rebuildFrom(fed.bus);
-      final twice = _snapshot(fed.projections);
+        await fed.projections.rebuildFrom(fed.bus);
+        final once = _snapshot(fed.projections);
+        await fed.projections.rebuildFrom(fed.bus);
+        final twice = _snapshot(fed.projections);
 
-      expect(
-        twice,
-        equals(once),
-        reason:
-            'A second rebuild changed the projection, which means rebuildFrom() '
-            'does not fully reset state before replaying. Recovery would then '
-            'depend on how many times it had been run.',
-      );
-    });
+        expect(
+          twice,
+          equals(once),
+          reason:
+              'A second rebuild changed the projection, which means rebuildFrom() '
+              'does not fully reset state before replaying. Recovery would then '
+              'depend on how many times it had been run.',
+        );
+      },
+    );
 
-    test('rebuild from a fresh instance matches the live-fed instance',
-        () async {
+    test('rebuild from a fresh instance matches the live-fed instance', () async {
       // The real disaster-recovery shape: the process died, the projection is
       // gone, and only the log survives. This is stricter than the in-place
       // rebuild above, because nothing at all is inherited from live delivery.
@@ -448,45 +455,47 @@ void main() {
       );
     });
 
-    test('tenant partitioning survives rebuild — no cross-tenant bleed',
-        () async {
-      // A rebuild that dropped the tenant dimension would still match on
-      // totals if the test only checked one tenant. Both are asserted, and
-      // their independence is asserted too.
-      final fed = await _liveFed();
-      await fed.projections.rebuildFrom(fed.bus);
+    test(
+      'tenant partitioning survives rebuild — no cross-tenant bleed',
+      () async {
+        // A rebuild that dropped the tenant dimension would still match on
+        // totals if the test only checked one tenant. Both are asserted, and
+        // their independence is asserted too.
+        final fed = await _liveFed();
+        await fed.projections.rebuildFrom(fed.bus);
 
-      final a = fed.projections.metricsFor(_tenantA);
-      final b = fed.projections.metricsFor(_tenantB);
+        final a = fed.projections.metricsFor(_tenantA);
+        final b = fed.projections.metricsFor(_tenantB);
 
-      expect(a.studentsEnrolled, 1);
-      expect(b.studentsEnrolled, 1);
-      expect(
-        a.seatsAssigned,
-        1,
-        reason: 'Tenant A had one assignment and one release.',
-      );
-      expect(
-        b.seatsAssigned,
-        1,
-        reason: 'Tenant B had one assignment and no release.',
-      );
-      expect(
-        a.seatsReleased,
-        1,
-        reason:
-            'If rebuild merged tenants, B\'s release count would pick up A\'s.',
-      );
-      expect(b.seatsReleased, 0);
-      expect(
-        b.collectedTodayMinor,
-        50000,
-        reason:
-            'Tenant B collected 50000 minor units; A collected 100000. Equal '
-            'values here would mean the tenant key was lost on replay.',
-      );
-      expect(a.collectedTodayMinor, 100000);
-    });
+        expect(a.studentsEnrolled, 1);
+        expect(b.studentsEnrolled, 1);
+        expect(
+          a.seatsAssigned,
+          1,
+          reason: 'Tenant A had one assignment and one release.',
+        );
+        expect(
+          b.seatsAssigned,
+          1,
+          reason: 'Tenant B had one assignment and no release.',
+        );
+        expect(
+          a.seatsReleased,
+          1,
+          reason:
+              'If rebuild merged tenants, B\'s release count would pick up A\'s.',
+        );
+        expect(b.seatsReleased, 0);
+        expect(
+          b.collectedTodayMinor,
+          50000,
+          reason:
+              'Tenant B collected 50000 minor units; A collected 100000. Equal '
+              'values here would mean the tenant key was lost on replay.',
+        );
+        expect(a.collectedTodayMinor, 100000);
+      },
+    );
 
     test('an unknown tenant reads as zero rather than leaking another '
         'tenant\'s numbers', () async {
@@ -512,7 +521,9 @@ void main() {
       final liveCheckIns = fed.projections.metricsFor(_tenantA).checkInsToday;
 
       await fed.projections.rebuildFrom(fed.bus);
-      final rebuiltCheckIns = fed.projections.metricsFor(_tenantA).checkInsToday;
+      final rebuiltCheckIns = fed.projections
+          .metricsFor(_tenantA)
+          .checkInsToday;
 
       expect(
         liveCheckIns,
@@ -568,10 +579,10 @@ void main() {
     test('AnalyticsProjections is the only Analytics projection class, and '
         'the count is pinned', () {
       final src = File(_analyticsPath).readAsStringSync();
-      final classes = RegExp(r'^final class (\w+)', multiLine: true)
-          .allMatches(src)
-          .map((m) => m.group(1)!)
-          .toSet();
+      final classes = RegExp(
+        r'^final class (\w+)',
+        multiLine: true,
+      ).allMatches(src).map((m) => m.group(1)!).toSet();
 
       expect(
         classes,
@@ -581,10 +592,8 @@ void main() {
 
       // `ActivityItem` and `DashboardMetrics` are value/row types, not
       // projections — they hold no subscription and have nothing to rebuild.
-      final projectionLike = classes
-          .where((c) => c.contains('Projection'))
-          .toList()
-        ..sort();
+      final projectionLike =
+          classes.where((c) => c.contains('Projection')).toList()..sort();
       expect(
         projectionLike,
         ['AnalyticsProjections'],

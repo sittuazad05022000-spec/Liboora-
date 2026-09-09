@@ -42,8 +42,7 @@ Punch _punch(
   capturedOffline: capturedOffline,
 );
 
-AttendanceDay _day() =>
-    AttendanceDay(studentRecordId: _student, date: _date);
+AttendanceDay _day() => AttendanceDay(studentRecordId: _student, date: _date);
 
 void main() {
   // ════════════════════════════════════════════════════════════════════
@@ -153,35 +152,39 @@ void main() {
       );
     });
 
-    test('a distinct key is accepted — idempotency is not a blanket refusal',
-        () {
-      // Vacuity guard: without this, an implementation that refused every
-      // second punch would pass all three tests above.
-      final day = _day();
-      expect(day.checkIn(_punch(_at(9), key: 'IK-1')), isTrue);
-      expect(day.checkOut(_punch(_at(13), key: 'IK-2')), isTrue);
-      expect(day.checkIn(_punch(_at(14), key: 'IK-3')), isTrue);
-      expect(day.entries.length, 2);
-      expect(day.exits.length, 1);
-    });
+    test(
+      'a distinct key is accepted — idempotency is not a blanket refusal',
+      () {
+        // Vacuity guard: without this, an implementation that refused every
+        // second punch would pass all three tests above.
+        final day = _day();
+        expect(day.checkIn(_punch(_at(9), key: 'IK-1')), isTrue);
+        expect(day.checkOut(_punch(_at(13), key: 'IK-2')), isTrue);
+        expect(day.checkIn(_punch(_at(14), key: 'IK-3')), isTrue);
+        expect(day.entries.length, 2);
+        expect(day.exits.length, 1);
+      },
+    );
 
-    test('an offline-captured punch is idempotent on exactly the same terms',
-        () {
-      // The reconnect path is the one that actually replays in production.
-      final day = _day();
-      expect(
-        day.checkIn(_punch(_at(9), key: 'IK-OFF', capturedOffline: true)),
-        isTrue,
-      );
-      expect(
-        day.checkIn(_punch(_at(9), key: 'IK-OFF', capturedOffline: true)),
-        isFalse,
-        reason:
-            'Offline capture must not get a weaker guarantee than online '
-            'capture; it is the replay source the guarantee exists for.',
-      );
-      expect(day.entries.single.capturedOffline, isTrue);
-    });
+    test(
+      'an offline-captured punch is idempotent on exactly the same terms',
+      () {
+        // The reconnect path is the one that actually replays in production.
+        final day = _day();
+        expect(
+          day.checkIn(_punch(_at(9), key: 'IK-OFF', capturedOffline: true)),
+          isTrue,
+        );
+        expect(
+          day.checkIn(_punch(_at(9), key: 'IK-OFF', capturedOffline: true)),
+          isFalse,
+          reason:
+              'Offline capture must not get a weaker guarantee than online '
+              'capture; it is the replay source the guarantee exists for.',
+        );
+        expect(day.entries.single.capturedOffline, isTrue);
+      },
+    );
   });
 
   // ════════════════════════════════════════════════════════════════════

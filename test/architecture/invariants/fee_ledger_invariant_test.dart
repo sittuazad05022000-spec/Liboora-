@@ -455,28 +455,30 @@ void main() {
       );
     });
 
-    test('a discount preserves the original ask and only changes netAmount',
-        () {
-      final l = _ledger();
-      l.raiseDue(_due(id: 'DUE-1', rupees: 1000));
+    test(
+      'a discount preserves the original ask and only changes netAmount',
+      () {
+        final l = _ledger();
+        l.raiseDue(_due(id: 'DUE-1', rupees: 1000));
 
-      l.applyDiscount(
-        dueId: 'DUE-1',
-        discount: Money.rupees(150),
-        approvedByOwner: false,
-      );
+        l.applyDiscount(
+          dueId: 'DUE-1',
+          discount: Money.rupees(150),
+          approvedByOwner: false,
+        );
 
-      final due = l.dues.single;
-      expect(
-        due.amount,
-        Money.rupees(1000),
-        reason:
-            'L50-51: discounts are recorded as adjustments, never by editing '
-            'amount — the original ask must remain auditable.',
-      );
-      expect(due.discount, Money.rupees(150));
-      expect(due.netAmount, Money.rupees(850));
-    });
+        final due = l.dues.single;
+        expect(
+          due.amount,
+          Money.rupees(1000),
+          reason:
+              'L50-51: discounts are recorded as adjustments, never by editing '
+              'amount — the original ask must remain auditable.',
+        );
+        expect(due.discount, Money.rupees(150));
+        expect(due.netAmount, Money.rupees(850));
+      },
+    );
 
     test('discounting a due that is not on this ledger is refused', () {
       final l = _ledger();
@@ -510,7 +512,11 @@ void main() {
       final l = _ledger();
       l.raiseDue(_due(id: 'DUE-1', rupees: 1000));
 
-      expect(l.overdueOn(_dueOn), isEmpty, reason: 'Due date itself is not late.');
+      expect(
+        l.overdueOn(_dueOn),
+        isEmpty,
+        reason: 'Due date itself is not late.',
+      );
       expect(
         l.overdueOn(_dueOn.add(const Duration(days: 1))).length,
         1,
@@ -527,7 +533,14 @@ void main() {
       // this layer is that no category names a subscription concern.
       expect(
         FeeCategory.values.map((c) => c.name),
-        <String>['membership', 'seat', 'locker', 'lateFee', 'security', 'other'],
+        <String>[
+          'membership',
+          'seat',
+          'locker',
+          'lateFee',
+          'security',
+          'other',
+        ],
         reason:
             'If a subscription/platform-billing category ever appears here, '
             'the two money domains have been merged and BC-20 has leaked into '

@@ -45,8 +45,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The authority. Read, never written.
-const String _bcMapPath =
-    'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
+const String _bcMapPath = 'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
 
 const String _matrixPath =
     'docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md';
@@ -158,10 +157,9 @@ List<_AggregateRow> _parseSection8() {
     // Root names are backticked. Italic asides such as *(per student)* and
     // *(aggregate = one student-day, not one punch)* are not backticked and are
     // therefore excluded by construction.
-    final roots = RegExp(r'`([A-Z][A-Za-z0-9]*)`')
-        .allMatches(rootCell)
-        .map((x) => x.group(1)!)
-        .toList(growable: false);
+    final roots = RegExp(
+      r'`([A-Z][A-Za-z0-9]*)`',
+    ).allMatches(rootCell).map((x) => x.group(1)!).toList(growable: false);
 
     if (roots.isEmpty) continue;
     rows.add(_AggregateRow(context, roots));
@@ -192,10 +190,7 @@ Set<String> _domainClassNames() {
 
 /// `StudentRecord` -> `student_record`.
 String _snake(String pascal) => pascal
-    .replaceAllMapped(
-      RegExp(r'(?<=[a-z0-9])([A-Z])'),
-      (m) => '_${m.group(1)}',
-    )
+    .replaceAllMapped(RegExp(r'(?<=[a-z0-9])([A-Z])'), (m) => '_${m.group(1)}')
     .toLowerCase();
 
 /// Invariant test files present on disk, by basename.
@@ -344,10 +339,9 @@ void main() {
             'either way this test must not pass silently.',
       );
 
-      final missing = implemented
-          .where((a) => !_hasInvariantFile(a, files, rows))
-          .toList()
-        ..sort();
+      final missing =
+          implemented.where((a) => !_hasInvariantFile(a, files, rows)).toList()
+            ..sort();
 
       expect(
         missing,
@@ -456,7 +450,8 @@ void main() {
       expect(
         implemented.length + unimplemented.length,
         declared.length,
-        reason: 'Partition failure: every declared aggregate must be in '
+        reason:
+            'Partition failure: every declared aggregate must be in '
             'exactly one of the two sets.',
       );
 

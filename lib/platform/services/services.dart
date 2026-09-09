@@ -164,12 +164,13 @@ final class InProcessJobRuntime implements JobRuntime {
     // submission cannot produce a second derivative or a second audit fact.
     if (_outcomes.containsKey(key.value)) return Future<void>.value();
 
-    _outcomes[key.value] =
-        JobOutcome(key: key, state: JobState.pending, attempts: 0);
-
-    _inFlight.add(
-      Future<void>(() => _run(key, work, retryBudget, deadline)),
+    _outcomes[key.value] = JobOutcome(
+      key: key,
+      state: JobState.pending,
+      attempts: 0,
     );
+
+    _inFlight.add(Future<void>(() => _run(key, work, retryBudget, deadline)));
     return Future<void>.value();
   }
 
@@ -201,8 +202,11 @@ final class InProcessJobRuntime implements JobRuntime {
       }
 
       attempts++;
-      _outcomes[key.value] =
-          JobOutcome(key: key, state: JobState.running, attempts: attempts);
+      _outcomes[key.value] = JobOutcome(
+        key: key,
+        state: JobState.running,
+        attempts: attempts,
+      );
 
       try {
         await work();

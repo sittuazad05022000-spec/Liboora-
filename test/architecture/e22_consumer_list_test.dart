@@ -41,8 +41,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/platform/services/services.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-const String _bcMapPath =
-    'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
+const String _bcMapPath = 'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
 const String _portPath =
     'packages/liboora_contracts/lib/src/ports/file_access.dart';
 
@@ -112,7 +111,8 @@ void main() {
       expect(
         fromMap,
         isNotEmpty,
-        reason: 'Parsed no consumers from $_bcMapPath. Either the E-22 row '
+        reason:
+            'Parsed no consumers from $_bcMapPath. Either the E-22 row '
             'moved or §7\'s table shape changed. Until this is fixed every '
             'assertion below is vacuous — "the map lists nothing, therefore '
             'the code matches it" is a green test that checks nothing.',
@@ -135,7 +135,8 @@ void main() {
       expect(
         missingFromCode,
         isEmpty,
-        reason: 'DRIFT — the BC Map lists $missingFromCode as an E-22 consumer '
+        reason:
+            'DRIFT — the BC Map lists $missingFromCode as an E-22 consumer '
             'and the code does not admit it.\n'
             'If an ADR amended E-22, this is the code that must follow. '
             'FIL-FR-006 was written to READ the register, so leaving the '
@@ -145,7 +146,8 @@ void main() {
       expect(
         extraInCode,
         isEmpty,
-        reason: 'UNAUTHORISED WIDENING — the code admits $extraInCode, which '
+        reason:
+            'UNAUTHORISED WIDENING — the code admits $extraInCode, which '
             'the BC Map does not list as an E-22 consumer.\n'
             'BC Map L292: "If an edge is not in this table, it does not '
             'exist." FIL-FR-007 forbids widening the list, and a consumer '
@@ -162,14 +164,16 @@ void main() {
       expect(
         fromMap,
         contains('BC-12'),
-        reason: 'BC-12 has left E-22\'s consumer list. ADR-0055 admitted it so '
+        reason:
+            'BC-12 has left E-22\'s consumer list. ADR-0055 admitted it so '
             'V1 student-to-student sharing would be servable; removing it '
             'un-resolves FIL-GAP-012 and B-11.',
       );
       expect(
         fromMap,
         isNot(contains('BC-11')),
-        reason: 'BC-11 has been added to E-22. ADR-0055 §3 tested it and '
+        reason:
+            'BC-11 has been added to E-22. ADR-0055 §3 tested it and '
             'REFUSED it — Social Graph answers eligibility as a boolean and '
             'never holds a FileRef. If that changed, it needs its own ADR, and '
             'this pin is where the decision must be argued.',
@@ -177,7 +181,8 @@ void main() {
       expect(
         fromMap,
         isNot(contains('BC-13')),
-        reason: 'BC-13 has been added to E-22. ADR-0055 §3 REFUSED it — Trust '
+        reason:
+            'BC-13 has been added to E-22. ADR-0055 §3 REFUSED it — Trust '
             '& Safety reaches File & Media OUTBOUND over E-14.',
       );
     });
@@ -193,7 +198,8 @@ void main() {
         expect(
           port.isPermittedConsumer(_ctx(id)),
           isTrue,
-          reason: '$id is on E-22\'s consumer list and the port refuses it. '
+          reason:
+              '$id is on E-22\'s consumer list and the port refuses it. '
               'That is a refusal the architecture does not authorise.',
         );
       }
@@ -212,7 +218,8 @@ void main() {
         expect(
           port.isPermittedConsumer(_ctx(id)),
           isFalse,
-          reason: '$id is permitted. ADR-0055 §4.3 refused it, and the '
+          reason:
+              '$id is permitted. ADR-0055 §4.3 refused it, and the '
               'manifest L242 grant (module-grained, GCP-23) would let it link '
               'this port — so this check is the only thing standing between a '
               'domain/social caller and an edge the map says does not exist.',
@@ -242,7 +249,8 @@ void main() {
               DomainErrorCode.forbidden,
             ),
           ),
-          reason: '$id was not refused on the grant path WITH forbidden. A '
+          reason:
+              '$id was not refused on the grant path WITH forbidden. A '
               'guard on read but not on write is not a boundary — and an '
               'error of some other kind (notFound, say) is not a refusal, it '
               'is an unauthorised caller reaching business logic.',
@@ -257,7 +265,8 @@ void main() {
         expect(
           port.isPermittedConsumer(_ctx(id)),
           isFalse,
-          reason: 'Unlisted context "$id" was permitted. FIL-FR-006 is an '
+          reason:
+              'Unlisted context "$id" was permitted. FIL-FR-006 is an '
               'allow-list; anything not on it is refused, including '
               'near-misses in case and whitespace.',
         );
@@ -271,7 +280,8 @@ void main() {
       expect(
         port.resolve(_ctx('BC-12'), const FileRef('FILE-NOPE')),
         isNull,
-        reason: 'An unknown object must be null, not an error — FIL-FR-094 '
+        reason:
+            'An unknown object must be null, not an error — FIL-FR-094 '
             'requires that absence and denial be indistinguishable, and an '
             'error here would confirm the storage layout to a caller.',
       );
@@ -282,37 +292,40 @@ void main() {
   // FIL-FR-094 — the refusal leaks nothing.
   // ════════════════════════════════════════════════════════════════════
   group('the refusal discloses nothing (FIL-FR-094)', () {
-    test('the error names no edge, no consumer list, no object and no context',
-        () {
-      final port = _fixture()..seed(_object);
-      DomainError? caught;
-      try {
-        port.resolve(_ctx('BC-11'), _object);
-      } on DomainError catch (e) {
-        caught = e;
-      }
-      expect(caught, isNotNull, reason: 'BC-11 was not refused at all.');
+    test(
+      'the error names no edge, no consumer list, no object and no context',
+      () {
+        final port = _fixture()..seed(_object);
+        DomainError? caught;
+        try {
+          port.resolve(_ctx('BC-11'), _object);
+        } on DomainError catch (e) {
+          caught = e;
+        }
+        expect(caught, isNotNull, reason: 'BC-11 was not refused at all.');
 
-      final text = caught.toString();
-      for (final forbidden in [
-        'E-22',
-        'BC-11',
-        'BC-01',
-        'BC-12',
-        'consumer',
-        'FILE-0001',
-        _bcMapPath,
-      ]) {
-        expect(
-          text,
-          isNot(contains(forbidden)),
-          reason: 'The refusal "$text" leaks "$forbidden". FIL-FR-094 forbids '
-              'a progress or access surface from confirming existence or '
-              'revealing internals — naming the edge hands an unauthorised '
-              'caller the topology, and naming the object confirms it exists.',
-        );
-      }
-    });
+        final text = caught.toString();
+        for (final forbidden in [
+          'E-22',
+          'BC-11',
+          'BC-01',
+          'BC-12',
+          'consumer',
+          'FILE-0001',
+          _bcMapPath,
+        ]) {
+          expect(
+            text,
+            isNot(contains(forbidden)),
+            reason:
+                'The refusal "$text" leaks "$forbidden". FIL-FR-094 forbids '
+                'a progress or access surface from confirming existence or '
+                'revealing internals — naming the edge hands an unauthorised '
+                'caller the topology, and naming the object confirms it exists.',
+          );
+        }
+      },
+    );
 
     test('an unauthorised caller cannot tell a known object from an unknown '
         'one', () {
@@ -329,7 +342,8 @@ void main() {
       expect(
         refusalFor(_object),
         refusalFor(const FileRef('FILE-DOES-NOT-EXIST')),
-        reason: 'The refusal differs between a known and an unknown object, so '
+        reason:
+            'The refusal differs between a known and an unknown object, so '
             'an unauthorised caller can enumerate storage by comparing errors. '
             'This is the enumeration oracle FIL-FR-094 names explicitly.',
       );
@@ -340,45 +354,52 @@ void main() {
   // FIL-FR-007 — there is no way to widen the list.
   // ════════════════════════════════════════════════════════════════════
   group('the consumer list cannot be widened (FIL-FR-007)', () {
-    test('the declared set is a compile-time constant with no mutation surface',
-        () {
-      // Structural, not behavioural: the guarantee is that no API exists to
-      // widen the list, so it is asserted against the port's source.
-      final source = File(_portPath).readAsStringSync();
-      expect(
-        source,
-        contains('const Set<String> e22ConsumerContexts'),
-        reason: 'The consumer list is no longer a compile-time constant. A '
-            'mutable list can be widened at runtime, which FIL-FR-007 forbids.',
-      );
-      for (final widener in [
-        'void allow(',
-        'void register(',
-        'set consumers',
-        'addConsumer',
-      ]) {
+    test(
+      'the declared set is a compile-time constant with no mutation surface',
+      () {
+        // Structural, not behavioural: the guarantee is that no API exists to
+        // widen the list, so it is asserted against the port's source.
+        final source = File(_portPath).readAsStringSync();
         expect(
           source,
-          isNot(contains(widener)),
-          reason: 'The port has acquired "$widener". FIL-FR-007 is enforced by '
-              'the SHAPE of this API — a caller cannot widen what it cannot '
-              'address — and adding a widening surface repeals that by '
-              'construction, whatever the comments say.',
+          contains('const Set<String> e22ConsumerContexts'),
+          reason:
+              'The consumer list is no longer a compile-time constant. A '
+              'mutable list can be widened at runtime, which FIL-FR-007 forbids.',
         );
-      }
-    });
+        for (final widener in [
+          'void allow(',
+          'void register(',
+          'set consumers',
+          'addConsumer',
+        ]) {
+          expect(
+            source,
+            isNot(contains(widener)),
+            reason:
+                'The port has acquired "$widener". FIL-FR-007 is enforced by '
+                'the SHAPE of this API — a caller cannot widen what it cannot '
+                'address — and adding a widening surface repeals that by '
+                'construction, whatever the comments say.',
+          );
+        }
+      },
+    );
 
-    test('the port cites the map as its authority, so the copy is traceable',
-        () {
-      final source = File(_portPath).readAsStringSync();
-      expect(
-        source,
-        contains('L331'),
-        reason: 'The transcription no longer names the BC Map line it copies. '
-            'An untraceable copy of a Rank 4 register is indistinguishable '
-            'from an invented one.',
-      );
-    });
+    test(
+      'the port cites the map as its authority, so the copy is traceable',
+      () {
+        final source = File(_portPath).readAsStringSync();
+        expect(
+          source,
+          contains('L331'),
+          reason:
+              'The transcription no longer names the BC Map line it copies. '
+              'An untraceable copy of a Rank 4 register is indistinguishable '
+              'from an invented one.',
+        );
+      },
+    );
   });
 
   // ════════════════════════════════════════════════════════════════════
@@ -403,7 +424,8 @@ void main() {
         expect(
           source,
           isNot(contains(derived)),
-          reason: 'The port has acquired "$derived". FIL-XC-019 forbids this '
+          reason:
+              'The port has acquired "$derived". FIL-XC-019 forbids this '
               'module from evaluating or storing eligibility, and FIL-FR-076 '
               'requires the decision RECORDED, not re-derived — a second '
               'canMessage evaluation could disagree with BC-11\'s (X-13).',
@@ -411,23 +433,26 @@ void main() {
       }
     });
 
-    test('the port stores the decision reference and does not interpret it',
-        () {
-      final port = _fixture()..seed(_object);
-      port.grantRead(
-        _ctx('BC-12'),
-        _object,
-        recipient: _recipient,
-        decision: _decision,
-      );
-      expect(
-        port.grantFor(_object, _recipient),
-        _decision,
-        reason: 'The recorded decision must be returned as the reference it '
-            'is, so BC-29 cannot substitute a judgement of its own.',
-      );
-      expect(port.grantCount, 1);
-    });
+    test(
+      'the port stores the decision reference and does not interpret it',
+      () {
+        final port = _fixture()..seed(_object);
+        port.grantRead(
+          _ctx('BC-12'),
+          _object,
+          recipient: _recipient,
+          decision: _decision,
+        );
+        expect(
+          port.grantFor(_object, _recipient),
+          _decision,
+          reason:
+              'The recorded decision must be returned as the reference it '
+              'is, so BC-29 cannot substitute a judgement of its own.',
+        );
+        expect(port.grantCount, 1);
+      },
+    );
 
     test('a replayed grant is idempotent, so a resent share does not '
         'accumulate access facts', () {
@@ -443,7 +468,8 @@ void main() {
       expect(
         port.grantCount,
         1,
-        reason: 'Four identical grants produced ${port.grantCount} access '
+        reason:
+            'Four identical grants produced ${port.grantCount} access '
             'facts. The FIL-FR-093 reasoning — no second audit fact for a '
             'repeated operation — applies to access as well as to bytes.',
       );
@@ -465,7 +491,8 @@ void main() {
             DomainErrorCode.notFound,
           ),
         ),
-        reason: 'A grant against a nonexistent object would create access to '
+        reason:
+            'A grant against a nonexistent object would create access to '
             'something that does not exist, and FIL-FR-057/083 assume a '
             'derivative is never the sole copy of anything.',
       );
@@ -489,7 +516,8 @@ void main() {
         expect(
           declarations.toLowerCase(),
           isNot(contains(foreign.toLowerCase())),
-          reason: 'The port DECLARES "$foreign". FIL-XC-020 keeps message '
+          reason:
+              'The port DECLARES "$foreign". FIL-XC-020 keeps message '
               'text, ordering, receipts and conversation membership with '
               'BC-12; FIL-XC-022 keeps moderation with BC-13. A file port that '
               'knows any of it has absorbed ownership ADR-0055 §4.4 '
@@ -516,7 +544,8 @@ void main() {
         expect(
           source,
           contains(citation),
-          reason: 'The port no longer cites $citation. The exclusion is still '
+          reason:
+              'The port no longer cites $citation. The exclusion is still '
               'in force (ADR-0055 §4.4 relies on it); an undocumented '
               'exclusion is one an author will re-add in good faith.',
         );
@@ -543,7 +572,8 @@ void main() {
         expect(
           declarations,
           isNot(contains(tenancy)),
-          reason: 'The port DECLARES "$tenancy". E-22 serves the GLOBAL-class '
+          reason:
+              'The port DECLARES "$tenancy". E-22 serves the GLOBAL-class '
               'consumer BC-10, so a tenant parameter is unsatisfiable for it '
               'and TEN-FR-018 forbids tenant_id in global contexts. Tenancy '
               'belongs to the ambient TenantContext, not to this boundary.',
@@ -552,45 +582,52 @@ void main() {
       expect(_consumersFromBcMap(), contains('BC-10'));
     });
 
-    test('the port documents why it takes no tenant, citing the tenancy class',
-        () {
-      // Without this, a future author sees a port with no tenantId, assumes an
-      // omission, and "fixes" it — breaking BC-10 and TEN-FR-018 at once.
-      final source = File(_portPath).readAsStringSync();
-      for (final citation in ['TEN-FR-018', 'BC-10', 'ID-2']) {
+    test(
+      'the port documents why it takes no tenant, citing the tenancy class',
+      () {
+        // Without this, a future author sees a port with no tenantId, assumes an
+        // omission, and "fixes" it — breaking BC-10 and TEN-FR-018 at once.
+        final source = File(_portPath).readAsStringSync();
+        for (final citation in ['TEN-FR-018', 'BC-10', 'ID-2']) {
+          expect(
+            source,
+            contains(citation),
+            reason:
+                'The port no longer cites $citation. The absence of a tenant '
+                'parameter is a DECISION about the two-class tenancy model, and '
+                'an undocumented decision reads as an oversight.',
+          );
+        }
+      },
+    );
+
+    test(
+      'the declaration stripper is sound for this file — no block comments',
+      () {
+        // The stripper is line-based. A `/* ... */` block containing foreign
+        // tokens would survive it and, worse, a block comment could hide a real
+        // declaration from the scans above. Assert the precondition rather than
+        // assume it, so the day it stops holding is the day this fails.
+        final source = File(_portPath).readAsStringSync();
         expect(
           source,
-          contains(citation),
-          reason: 'The port no longer cites $citation. The absence of a tenant '
-              'parameter is a DECISION about the two-class tenancy model, and '
-              'an undocumented decision reads as an oversight.',
+          isNot(contains('/*')),
+          reason:
+              'The port now uses block comments. _portDeclarations() strips '
+              'only line comments, so the foreign-concept scans in this file are '
+              'no longer sound. Teach the stripper about block comments before '
+              'relying on those assertions again.',
         );
-      }
-    });
-
-    test('the declaration stripper is sound for this file — no block comments',
-        () {
-      // The stripper is line-based. A `/* ... */` block containing foreign
-      // tokens would survive it and, worse, a block comment could hide a real
-      // declaration from the scans above. Assert the precondition rather than
-      // assume it, so the day it stops holding is the day this fails.
-      final source = File(_portPath).readAsStringSync();
-      expect(
-        source,
-        isNot(contains('/*')),
-        reason: 'The port now uses block comments. _portDeclarations() strips '
-            'only line comments, so the foreign-concept scans in this file are '
-            'no longer sound. Teach the stripper about block comments before '
-            'relying on those assertions again.',
-      );
-      // Non-vacuity: the stripper must retain the actual API.
-      expect(
-        _portDeclarations(),
-        contains('abstract interface class FileAccess'),
-        reason: 'The stripper removed the declarations it exists to isolate. '
-            'Every isNot(contains(...)) assertion built on it would then pass '
-            'against anything at all.',
-      );
-    });
+        // Non-vacuity: the stripper must retain the actual API.
+        expect(
+          _portDeclarations(),
+          contains('abstract interface class FileAccess'),
+          reason:
+              'The stripper removed the declarations it exists to isolate. '
+              'Every isNot(contains(...)) assertion built on it would then pass '
+              'against anything at all.',
+        );
+      },
+    );
   });
 }

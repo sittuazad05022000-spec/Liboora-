@@ -125,8 +125,9 @@ void main() {
           .map((p) => p.split('/').first)
           .toSet();
 
-      final manifest = File('$_repoRoot/tool/module_dependencies.yaml')
-          .readAsStringSync();
+      final manifest = File(
+        '$_repoRoot/tool/module_dependencies.yaml',
+      ).readAsStringSync();
 
       // `platform/services` is the known-blockless module (FIL-GAP-010). If it
       // exists on disk it MUST still be scanned even though the manifest has

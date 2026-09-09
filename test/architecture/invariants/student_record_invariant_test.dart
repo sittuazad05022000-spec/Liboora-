@@ -107,9 +107,7 @@ void main() {
 
     test('minority is evaluated as of the enrolment date, not "now"', () {
       // Born exactly 18 years before enrolment => NOT a minor on that date.
-      final adultOnTheDay = _build(
-        dateOfBirth: DateTime.utc(2008, 1, 15),
-      );
+      final adultOnTheDay = _build(dateOfBirth: DateTime.utc(2008, 1, 15));
       expect(adultOnTheDay.isMinorOn(_enrolledOn), isFalse);
 
       // One day short of 18 on the enrolment date => minor, guardian required.

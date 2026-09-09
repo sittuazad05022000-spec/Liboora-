@@ -39,7 +39,9 @@ import 'package:yaml/yaml.dart';
 final String _repoRoot = Directory.current.path;
 
 YamlMap _manifest() =>
-    loadYaml(File('$_repoRoot/tool/module_dependencies.yaml').readAsStringSync())
+    loadYaml(
+          File('$_repoRoot/tool/module_dependencies.yaml').readAsStringSync(),
+        )
         as YamlMap;
 
 /// Maps a source path under `lib/` to its manifest module name, or `null` when

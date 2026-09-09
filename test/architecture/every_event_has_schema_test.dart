@@ -46,8 +46,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-const String _bcMapPath =
-    'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
+const String _bcMapPath = 'docs/10-architecture/LIBOORA_BOUNDED_CONTEXT_MAP.md';
 const String _matrixPath =
     'docs/10-architecture/LIBOORA_MODULE_DEPENDENCY_MATRIX.md';
 const String _archReadmePath = 'docs/10-architecture/README.md';
@@ -141,10 +140,11 @@ List<String> _pascalTokens(String s) =>
 /// implementation that only inspected the PREFIX would misread as the
 /// imperative "Refund".
 bool _hasPastTenseToken(String localName) => _pascalTokens(localName).any(
-      (t) =>
-          t.endsWith('ed') || t.endsWith('en') ||
-          _irregularPastParticiples.contains(t),
-    );
+  (t) =>
+      t.endsWith('ed') ||
+      t.endsWith('en') ||
+      _irregularPastParticiples.contains(t),
+);
 
 /// A §9 event name that is **shorthand** in the table and whose full name
 /// differs from the literal backticked token.
@@ -203,9 +203,7 @@ Map<String, String> _parseSection9() {
 
     String? prefix;
     for (final t in tokens) {
-      final full = t.contains('.')
-          ? t
-          : (prefix == null ? null : '$prefix.$t');
+      final full = t.contains('.') ? t : (prefix == null ? null : '$prefix.$t');
       if (t.contains('.')) prefix = t.split('.').first;
       if (full == null) continue;
       events[full] = ctx;
@@ -268,8 +266,7 @@ void main() {
       }
     });
 
-    test('every declared event name is past-tense-shaped — events are facts',
-        () {
+    test('every declared event name is past-tense-shaped — events are facts', () {
       // The rule is enforced on SHAPE across the whole local name, not on its
       // first token. An earlier draft of this test checked whether the name
       // STARTED with an imperative stem and produced a false positive on
@@ -470,10 +467,11 @@ void main() {
       expect(src.existsSync(), isTrue);
       final text = src.readAsStringSync();
 
-      final missing = _requiredEnvelopeFields
-          .where((f) => !RegExp('\\b$f\\b').hasMatch(text))
-          .toList()
-        ..sort();
+      final missing =
+          _requiredEnvelopeFields
+              .where((f) => !RegExp('\\b$f\\b').hasMatch(text))
+              .toList()
+            ..sort();
 
       expect(
         missing,
@@ -546,7 +544,8 @@ void main() {
       final undeclared = <String>[];
       for (final entry in raised.entries) {
         final name = entry.key;
-        final isDeclared = declared.containsKey(name) ||
+        final isDeclared =
+            declared.containsKey(name) ||
             _shorthandExpansions.values.contains(name);
         if (!isDeclared) undeclared.add('${entry.key}  (${entry.value})');
       }
@@ -591,7 +590,9 @@ void main() {
             'declares the event, which is an architecture regression.',
       );
 
-      final unraised = declared.keys.where((e) => !raised.containsKey(e)).length;
+      final unraised = declared.keys
+          .where((e) => !raised.containsKey(e))
+          .length;
       expect(
         unraised,
         declared.length - raised.length,
@@ -604,24 +605,26 @@ void main() {
   // ⛔ THE BLOCKED HALF — pinned so it cannot be forgotten or faked.
   // ════════════════════════════════════════════════════════════════════
   group('⛔ BLOCKER — the schemaVersion registry does not exist', () {
-    test('Matrix §10.3 still requires a registry, so the obligation stands',
-        () {
-      final matrix = File(_matrixPath);
-      expect(matrix.existsSync(), isTrue);
-      final text = matrix.readAsStringSync();
-      expect(
-        text,
-        contains('every_event_has_schema_test.dart'),
-        reason: 'Matrix §10.3 no longer names this test.',
-      );
-      expect(
-        text,
-        contains('exists in the registry with a `schemaVersion`'),
-        reason:
-            'The §10.3 requirement wording changed. Re-read it before '
-            'trusting this file\'s split of enforceable vs blocked.',
-      );
-    });
+    test(
+      'Matrix §10.3 still requires a registry, so the obligation stands',
+      () {
+        final matrix = File(_matrixPath);
+        expect(matrix.existsSync(), isTrue);
+        final text = matrix.readAsStringSync();
+        expect(
+          text,
+          contains('every_event_has_schema_test.dart'),
+          reason: 'Matrix §10.3 no longer names this test.',
+        );
+        expect(
+          text,
+          contains('exists in the registry with a `schemaVersion`'),
+          reason:
+              'The §10.3 requirement wording changed. Re-read it before '
+              'trusting this file\'s split of enforceable vs blocked.',
+        );
+      },
+    );
 
     test('the architecture README still records the registry as an OPEN '
         'action item', () {

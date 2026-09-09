@@ -62,10 +62,9 @@ void main() {
 
       DomainError? caught;
       try {
-        SeatAllocation.assertSeatFree(
-          [existing],
-          DateRange.days(_day1.add(const Duration(days: 10)), 30),
-        );
+        SeatAllocation.assertSeatFree([
+          existing,
+        ], DateRange.days(_day1.add(const Duration(days: 10)), 30));
       } on DomainError catch (e) {
         caught = e;
       }
@@ -132,10 +131,9 @@ void main() {
         AllocationStatus.expired,
       ]) {
         expect(
-          () => SeatAllocation.assertSeatFree(
-            [_alloc(status: status)],
-            DateRange.days(_day1.add(const Duration(days: 10)), 30),
-          ),
+          () => SeatAllocation.assertSeatFree([
+            _alloc(status: status),
+          ], DateRange.days(_day1.add(const Duration(days: 10)), 30)),
           returnsNormally,
           reason:
               'A released seat that stays blocked is lost revenue and a seat '
@@ -179,7 +177,8 @@ void main() {
       // Vacuity guard: an implementation that threw unconditionally would
       // pass the refusal tests above. This fixes the negative baseline.
       expect(
-        () => SeatAllocation.assertSeatFree(const [], DateRange.days(_day1, 30)),
+        () =>
+            SeatAllocation.assertSeatFree(const [], DateRange.days(_day1, 30)),
         returnsNormally,
       );
     });
@@ -191,10 +190,9 @@ void main() {
       // allocations would produce false conflicts across different seats.
       final otherSeat = _alloc(id: 'ALLOC-9', seatId: 'S-B02');
       expect(
-        () => SeatAllocation.assertSeatFree(
-          [otherSeat],
-          DateRange.days(_day1.add(const Duration(days: 5)), 10),
-        ),
+        () => SeatAllocation.assertSeatFree([
+          otherSeat,
+        ], DateRange.days(_day1.add(const Duration(days: 5)), 10)),
         throwsA(isA<DomainError>()),
         reason:
             'This asserts the CURRENT contract: filtering is the caller\'s '

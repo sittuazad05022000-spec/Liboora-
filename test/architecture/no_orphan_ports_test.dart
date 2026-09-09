@@ -115,9 +115,9 @@ Map<String, Set<String>> _implementationsByPort() {
 Set<String> _constructedInCompositionRoot() {
   final code = _codeOnly(File(_diPath).readAsStringSync());
   final constructed = <String>{};
-  for (final m in RegExp(r'(?<![\w.])([A-Z][A-Za-z0-9_]*)\s*\(').allMatches(
-    code,
-  )) {
+  for (final m in RegExp(
+    r'(?<![\w.])([A-Z][A-Za-z0-9_]*)\s*\(',
+  ).allMatches(code)) {
     constructed.add(m.group(1)!);
   }
   // `TenantPartitionedStore<StudentRecord>(...)` — generic construction.
@@ -141,7 +141,8 @@ void main() {
       expect(
         matrix,
         contains('exactly one registered implementation'),
-        reason: 'The §10.3 requirement has been reworded away from "exactly '
+        reason:
+            'The §10.3 requirement has been reworded away from "exactly '
             'one registered implementation". Re-derive this test against the '
             'current wording rather than leaving it asserting a rule that no '
             'longer exists.',
@@ -149,7 +150,8 @@ void main() {
       expect(
         matrix,
         contains('composition root'),
-        reason: 'The "at the composition root" qualifier is gone from §10.3. '
+        reason:
+            'The "at the composition root" qualifier is gone from §10.3. '
             'That qualifier is what makes the count correct — without it the '
             'rule would forbid test doubles.',
       );
@@ -161,20 +163,23 @@ void main() {
       expect(
         di.existsSync(),
         isTrue,
-        reason: 'The composition root $_diPath does not exist. Everything '
+        reason:
+            'The composition root $_diPath does not exist. Everything '
             'below is scanning nothing.',
       );
       final source = di.readAsStringSync();
       expect(
         source,
         contains('Composition Root'),
-        reason: '$_diPath no longer identifies itself as the composition '
+        reason:
+            '$_diPath no longer identifies itself as the composition '
             'root. If wiring moved, this test must follow it.',
       );
       expect(
         source,
         contains('Every `new` of an infrastructure type happens here'),
-        reason: 'The composition root has withdrawn its claim to be the only '
+        reason:
+            'The composition root has withdrawn its claim to be the only '
             'place adapters are constructed. That claim is the premise of '
             'this entire file; if it is false, counting registrations here '
             'proves nothing.',
@@ -216,15 +221,15 @@ void main() {
       final ports = _declaredPorts();
       final impls = _implementationsByPort();
 
-      final unimplemented = ports.keys
-          .where((p) => !(impls[p]?.isNotEmpty ?? false))
-          .toList()
-        ..sort();
+      final unimplemented =
+          ports.keys.where((p) => !(impls[p]?.isNotEmpty ?? false)).toList()
+            ..sort();
 
       expect(
         unimplemented,
         isEmpty,
-        reason: 'These ports are declared but nothing implements them: '
+        reason:
+            'These ports are declared but nothing implements them: '
             '$unimplemented.\n'
             'A port with no adapter is a promise the system cannot keep. '
             'Either write the adapter or delete the port — a declared '
@@ -243,11 +248,14 @@ void main() {
       final many = <String>[];
 
       for (final port in ports.keys) {
-        final registered =
-            (impls[port] ?? const <String>{}).intersection(constructed);
+        final registered = (impls[port] ?? const <String>{}).intersection(
+          constructed,
+        );
         if (registered.isEmpty) {
-          zero.add('$port (implementations exist but none is wired: '
-              '${(impls[port] ?? const <String>{}).toList()..sort()})');
+          zero.add(
+            '$port (implementations exist but none is wired: '
+            '${(impls[port] ?? const <String>{}).toList()..sort()})',
+          );
         } else if (registered.length > 1) {
           many.add('$port -> ${registered.toList()..sort()}');
         }
@@ -256,7 +264,8 @@ void main() {
       expect(
         zero,
         isEmpty,
-        reason: 'ORPHAN PORT — these ports have adapters that are never wired '
+        reason:
+            'ORPHAN PORT — these ports have adapters that are never wired '
             'at the composition root:\n  ${zero.join('\n  ')}\n'
             'Nothing can consume them, so the capability they describe does '
             'not exist at runtime however complete the code looks.',
@@ -265,7 +274,8 @@ void main() {
       expect(
         many,
         isEmpty,
-        reason: 'AMBIGUOUS REGISTRATION — more than one adapter for the same '
+        reason:
+            'AMBIGUOUS REGISTRATION — more than one adapter for the same '
             'port is constructed at the composition root:\n'
             '  ${many.join('\n  ')}\n'
             'Which one a consumer receives now depends on wiring order, and '
@@ -301,7 +311,8 @@ void main() {
       expect(
         adapters,
         isNotEmpty,
-        reason: 'No adapters resolved for any declared port. The scan is '
+        reason:
+            'No adapters resolved for any declared port. The scan is '
             'broken and the assertion below is vacuous.',
       );
       expect(adapters, contains('MutableTenantContext'));
@@ -327,7 +338,8 @@ void main() {
       expect(
         offenders,
         isEmpty,
-        reason: 'Adapters are being constructed outside the composition '
+        reason:
+            'Adapters are being constructed outside the composition '
             'root:\n  ${offenders.join('\n  ')}\n'
             'This is how a second, unregistered instance of a port enters the '
             'system. Inject the dependency instead of constructing it.',
@@ -350,7 +362,8 @@ void main() {
       expect(
         impls.length,
         greaterThan(1),
-        reason: 'Clock no longer has multiple implementations, so this file no '
+        reason:
+            'Clock no longer has multiple implementations, so this file no '
             'longer demonstrates why "registered" differs from "declared". '
             'Pick another multi-adapter port or remove this test — do not '
             'leave it asserting a coincidence.',
@@ -360,13 +373,15 @@ void main() {
       expect(
         wired.length,
         1,
-        reason: 'Clock has ${impls.length} implementations ($impls) and '
+        reason:
+            'Clock has ${impls.length} implementations ($impls) and '
             '${wired.length} of them are wired ($wired). Exactly one must be.',
       );
       expect(
         wired.single,
         'MutableClock',
-        reason: 'The registered Clock changed to ${wired.single}. That is a '
+        reason:
+            'The registered Clock changed to ${wired.single}. That is a '
             'legitimate decision, but it changes time behaviour '
             'system-wide — update this pin deliberately.',
       );
@@ -394,20 +409,22 @@ void main() {
       expect(
         consumers,
         isEmpty,
-        reason: 'PROGRESS DETECTED — IdentityDirectory now has a consumer '
+        reason:
+            'PROGRESS DETECTED — IdentityDirectory now has a consumer '
             '($consumers). Remove this disclosure and, if the port is now '
             'wired by type, assert that instead.',
       );
 
       // And it must still be registered, so this observation cannot be
       // confused with an orphan.
-      final impls = _implementationsByPort()['IdentityDirectory'] ??
-          const <String>{};
+      final impls =
+          _implementationsByPort()['IdentityDirectory'] ?? const <String>{};
       expect(impls, contains('InMemoryPersonIdentityRepository'));
       expect(
         _constructedInCompositionRoot(),
         contains('InMemoryPersonIdentityRepository'),
-        reason: 'IdentityDirectory has become a true orphan port — its only '
+        reason:
+            'IdentityDirectory has become a true orphan port — its only '
             'implementation is no longer wired at the composition root.',
       );
     });
@@ -425,17 +442,19 @@ void main() {
       // advertised as "a change to di.dart and nothing else", and every
       // concretely-typed field is a place where that claim weakens.
       final code = _codeOnly(File(_diPath).readAsStringSync());
-      final concreteFields = RegExp(
-        r'^\s*final\s+(In[A-Z][A-Za-z0-9_]*|Console[A-Z][A-Za-z0-9_]*)\s+'
-        r'([a-z][A-Za-z0-9_]*)\s*;',
-        multiLine: true,
-      ).allMatches(code).map((m) => '${m.group(2)}: ${m.group(1)}').toList()
-        ..sort();
+      final concreteFields =
+          RegExp(
+              r'^\s*final\s+(In[A-Z][A-Za-z0-9_]*|Console[A-Z][A-Za-z0-9_]*)\s+'
+              r'([a-z][A-Za-z0-9_]*)\s*;',
+              multiLine: true,
+            ).allMatches(code).map((m) => '${m.group(2)}: ${m.group(1)}').toList()
+            ..sort();
 
       expect(
         concreteFields.length,
         3,
-        reason: 'The number of container fields typed to a concrete adapter '
+        reason:
+            'The number of container fields typed to a concrete adapter '
             'changed to ${concreteFields.length} ($concreteFields).\n'
             'If it GREW, a new field bypasses its port — prefer the port '
             'type. If it SHRANK, that is an improvement: update this pin.',

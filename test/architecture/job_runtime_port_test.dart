@@ -86,7 +86,8 @@ void main() {
       expect(
         started,
         isFalse,
-        reason: 'REGRESSION — the work began before submit() returned, so it '
+        reason:
+            'REGRESSION — the work began before submit() returned, so it '
             'is executing on the caller stack.\n'
             'This is the exact defect a probe caught in the first draft of '
             'InProcessJobRuntime: an `async` body runs synchronously up to its '
@@ -98,7 +99,8 @@ void main() {
       expect(
         f.runtime.outcome(const JobKey('deferred'))!.state,
         JobState.pending,
-        reason: 'Work was accepted but has not started, so the only truthful '
+        reason:
+            'Work was accepted but has not started, so the only truthful '
             'state is pending.',
       );
 
@@ -126,7 +128,8 @@ void main() {
       expect(
         f.runtime.knownJobs,
         1,
-        reason: 'A job that is accepted but unobservable would force the '
+        reason:
+            'A job that is accepted but unobservable would force the '
             'caller to invent a state FIL-FR-092 does not define.',
       );
       await f.runtime.drain();
@@ -154,7 +157,8 @@ void main() {
       expect(
         runs,
         1,
-        reason: 'Five submissions of one key produced $runs executions. '
+        reason:
+            'Five submissions of one key produced $runs executions. '
             'FIL-FR-093 requires that a repeated attempt produce no second '
             'stored derivative and no second audit fact — with duplicate '
             'execution, both follow directly.',
@@ -162,38 +166,42 @@ void main() {
       expect(f.runtime.knownJobs, 1);
     });
 
-    test('a duplicate submission does not overwrite the first outcome', () async {
-      final f = _fixture();
+    test(
+      'a duplicate submission does not overwrite the first outcome',
+      () async {
+        final f = _fixture();
 
-      await f.runtime.submit(
-        const JobKey('k'),
-        () async {},
-        retryBudget: 1,
-        deadline: _processingTimeout,
-      );
-      await f.runtime.drain();
-      final first = f.runtime.outcome(const JobKey('k'))!;
-      expect(first.state, JobState.succeeded);
+        await f.runtime.submit(
+          const JobKey('k'),
+          () async {},
+          retryBudget: 1,
+          deadline: _processingTimeout,
+        );
+        await f.runtime.drain();
+        final first = f.runtime.outcome(const JobKey('k'))!;
+        expect(first.state, JobState.succeeded);
 
-      // Resubmit the same key with work that would fail if it ran.
-      await f.runtime.submit(
-        const JobKey('k'),
-        () async => throw StateError('must not run'),
-        retryBudget: 1,
-        deadline: _processingTimeout,
-      );
-      await f.runtime.drain();
+        // Resubmit the same key with work that would fail if it ran.
+        await f.runtime.submit(
+          const JobKey('k'),
+          () async => throw StateError('must not run'),
+          retryBudget: 1,
+          deadline: _processingTimeout,
+        );
+        await f.runtime.drain();
 
-      final second = f.runtime.outcome(const JobKey('k'))!;
-      expect(
-        second.state,
-        JobState.succeeded,
-        reason: 'A resubmitted key changed a settled outcome. FIL-FR-093 '
-            'requires "no different result" — a completed success that can be '
-            'turned into a failure by a replayed request is exactly that.',
-      );
-      expect(second.attempts, first.attempts);
-    });
+        final second = f.runtime.outcome(const JobKey('k'))!;
+        expect(
+          second.state,
+          JobState.succeeded,
+          reason:
+              'A resubmitted key changed a settled outcome. FIL-FR-093 '
+              'requires "no different result" — a completed success that can be '
+              'turned into a failure by a replayed request is exactly that.',
+        );
+        expect(second.attempts, first.attempts);
+      },
+    );
 
     test('distinct keys are independent', () async {
       final f = _fixture();
@@ -213,8 +221,11 @@ void main() {
       );
       await f.runtime.drain();
 
-      expect([a, b], [1, 1],
-          reason: 'Over-eager deduplication would silently drop a real job.');
+      expect(
+        [a, b],
+        [1, 1],
+        reason: 'Over-eager deduplication would silently drop a real job.',
+      );
       expect(f.runtime.knownJobs, 2);
     });
   });
@@ -223,40 +234,46 @@ void main() {
   // FIL-FR-093 — the retry bound, owned by the runtime.
   // ════════════════════════════════════════════════════════════════════
   group('retry is bounded and owned by the runtime (FIL-FR-093)', () {
-    test('failing work is retried up to the budget and then RESTS failed',
-        () async {
-      final f = _fixture();
-      var attempts = 0;
+    test(
+      'failing work is retried up to the budget and then RESTS failed',
+      () async {
+        final f = _fixture();
+        var attempts = 0;
 
-      await f.runtime.submit(
-        const JobKey('always-fails'),
-        () async {
-          attempts++;
-          throw StateError('storage unavailable at /bucket/tenant-7/orig.bin');
-        },
-        retryBudget: _retryBound,
-        deadline: _processingTimeout,
-      );
-      await f.runtime.drain();
+        await f.runtime.submit(
+          const JobKey('always-fails'),
+          () async {
+            attempts++;
+            throw StateError(
+              'storage unavailable at /bucket/tenant-7/orig.bin',
+            );
+          },
+          retryBudget: _retryBound,
+          deadline: _processingTimeout,
+        );
+        await f.runtime.drain();
 
-      expect(
-        attempts,
-        _retryBound,
-        reason: 'Expected exactly the FIL-CFG-014 budget ($_retryBound) '
-            'attempts, got $attempts. Fewer wastes a permitted retry; more '
-            'means the bound is not enforced and a poison job retries forever.',
-      );
+        expect(
+          attempts,
+          _retryBound,
+          reason:
+              'Expected exactly the FIL-CFG-014 budget ($_retryBound) '
+              'attempts, got $attempts. Fewer wastes a permitted retry; more '
+              'means the bound is not enforced and a poison job retries forever.',
+        );
 
-      final outcome = f.runtime.outcome(const JobKey('always-fails'))!;
-      expect(outcome.state, JobState.failed);
-      expect(
-        outcome.isTerminal,
-        isTrue,
-        reason: 'FIL-FR-093 requires the job to REST in a terminal state once '
-            'the budget is exhausted.',
-      );
-      expect(outcome.attempts, _retryBound);
-    });
+        final outcome = f.runtime.outcome(const JobKey('always-fails'))!;
+        expect(outcome.state, JobState.failed);
+        expect(
+          outcome.isTerminal,
+          isTrue,
+          reason:
+              'FIL-FR-093 requires the job to REST in a terminal state once '
+              'the budget is exhausted.',
+        );
+        expect(outcome.attempts, _retryBound);
+      },
+    );
 
     test('work that fails then succeeds within budget ends succeeded, using '
         'only the attempts it needed', () async {
@@ -279,7 +296,8 @@ void main() {
       expect(
         outcome.attempts,
         2,
-        reason: 'A retry loop that keeps going after success would reprocess '
+        reason:
+            'A retry loop that keeps going after success would reprocess '
             'an object that is already READY.',
       );
       expect(attempts, 2);
@@ -313,7 +331,8 @@ void main() {
           deadline: _processingTimeout,
         ),
         throwsA(isA<ArgumentError>()),
-        reason: 'A zero budget means the work never runs, so every object '
+        reason:
+            'A zero budget means the work never runs, so every object '
             'stalls to its deadline and fails for a reason unrelated to its '
             'content. CONFIGURATION_GUIDE INV-21 forbids it; the adapter must '
             'not accept what configuration forbids.',
@@ -321,7 +340,8 @@ void main() {
       expect(
         f.runtime.knownJobs,
         0,
-        reason: 'A rejected submission must leave no trace, or the key becomes '
+        reason:
+            'A rejected submission must leave no trace, or the key becomes '
             'permanently unusable through the idempotency check.',
       );
     });
@@ -353,7 +373,8 @@ void main() {
       expect(
         outcome.state,
         JobState.failed,
-        reason: 'The job outlived its deadline without becoming terminal. '
+        reason:
+            'The job outlived its deadline without becoming terminal. '
             'FIL-FR-095 forbids an indefinite PROCESSING state, and '
             'FIL-INV-013 makes such an object permanently unservable — a '
             'silent black hole rather than a reported failure.',
@@ -361,39 +382,44 @@ void main() {
       expect(
         outcome.reasonCode,
         'deadline_exceeded',
-        reason: 'The deadline failure must be distinguishable from exhausted '
+        reason:
+            'The deadline failure must be distinguishable from exhausted '
             'retries: one is a capacity problem, the other is a bad object.',
       );
       expect(
         attempts,
         lessThan(5),
-        reason: 'The deadline did not curtail the retry budget ($attempts of 5 '
+        reason:
+            'The deadline did not curtail the retry budget ($attempts of 5 '
             'attempts ran), so a slow job can still run past its window.',
       );
     });
 
-    test('the deadline is measured on the injected clock, not the wall clock',
-        () async {
-      final f = _fixture();
+    test(
+      'the deadline is measured on the injected clock, not the wall clock',
+      () async {
+        final f = _fixture();
 
-      await f.runtime.submit(
-        const JobKey('pinned'),
-        () async {},
-        retryBudget: 1,
-        deadline: const Duration(milliseconds: 1),
-      );
-      await f.runtime.drain();
+        await f.runtime.submit(
+          const JobKey('pinned'),
+          () async {},
+          retryBudget: 1,
+          deadline: const Duration(milliseconds: 1),
+        );
+        await f.runtime.drain();
 
-      // Wall-clock milliseconds certainly elapsed between submit and drain. If
-      // the adapter sampled DateTime.now() this would have failed the deadline.
-      expect(
-        f.runtime.outcome(const JobKey('pinned'))!.state,
-        JobState.succeeded,
-        reason: 'A job with a 1 ms deadline failed while the injected clock '
-            'never advanced, so the adapter is reading the wall clock. That '
-            'breaks X-09 and makes every deadline test a race.',
-      );
-    });
+        // Wall-clock milliseconds certainly elapsed between submit and drain. If
+        // the adapter sampled DateTime.now() this would have failed the deadline.
+        expect(
+          f.runtime.outcome(const JobKey('pinned'))!.state,
+          JobState.succeeded,
+          reason:
+              'A job with a 1 ms deadline failed while the injected clock '
+              'never advanced, so the adapter is reading the wall clock. That '
+              'breaks X-09 and makes every deadline test a race.',
+        );
+      },
+    );
   });
 
   // ════════════════════════════════════════════════════════════════════
@@ -428,7 +454,8 @@ void main() {
         expect(
           reason,
           isNot(contains(forbidden)),
-          reason: 'The reason code "$reason" leaks "$forbidden". FIL-FR-094 '
+          reason:
+              'The reason code "$reason" leaks "$forbidden". FIL-FR-094 '
               'forbids exposing the storage path, the worker identity and the '
               'internal error text through a progress surface — and a tenant '
               'identifier in an error string is a cross-tenant disclosure.',
@@ -452,7 +479,8 @@ void main() {
       expect(
         f.runtime.outcome(const JobKey('throws'))!.state,
         JobState.failed,
-        reason: 'The failure must be reported as a typed outcome. If it '
+        reason:
+            'The failure must be reported as a typed outcome. If it '
             'propagated instead, the submitter would have to interpret a raw '
             'exception — reintroducing the leak FIL-FR-094 closes.',
       );
@@ -465,7 +493,8 @@ void main() {
       expect(
         () => f.runtime.outcome(const JobKey('never-seen')),
         returnsNormally,
-        reason: 'Throwing for an unknown key turns the progress surface into '
+        reason:
+            'Throwing for an unknown key turns the progress surface into '
             'an enumeration oracle: a caller could distinguish "exists but '
             'forbidden" from "does not exist", which FIL-FR-094 forbids '
             'explicitly.',
@@ -513,7 +542,8 @@ void main() {
         expect(
           JobState.values.map((s) => s.name),
           isNot(contains(leaked)),
-          reason: 'JobState has acquired "$leaked" from the FIL-FR-092 object '
+          reason:
+              'JobState has acquired "$leaked" from the FIL-FR-092 object '
               'lifecycle. The job is the mechanism; the lifecycle is the '
               'domain fact owned by BC-29.',
         );
@@ -540,7 +570,8 @@ void main() {
       expect(
         keys.length,
         2,
-        reason: 'Without value equality, deduplication by key silently stops '
+        reason:
+            'Without value equality, deduplication by key silently stops '
             'working the moment a caller constructs a new instance — and the '
             'idempotency guard in InProcessJobRuntime is keyed on this.',
       );

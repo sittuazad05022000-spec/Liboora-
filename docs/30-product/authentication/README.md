@@ -9,14 +9,46 @@ engineering record supporting it.
 
 | Field | Value |
 | --- | --- |
-| Specification version | **v2.0** |
-| Authoritative file | `Authentication_PRD_v2.md` (single file) |
-| Per-chapter source | `prd-v2/` (cover + eleven chapters) |
+| Specification version | ⭐ **v3.0** |
+| Authoritative file | ⭐ **`Authentication_PRD_v3.md`** |
+| Normative control chapter | ⭐ `prd-v3/00-Cover-and-Control.md` |
+| Previous version | **v2.0** — `Authentication_PRD_v2.md` + `prd-v2/`. ⛔ **BYTE-FROZEN, superseded, retained** |
 | Repository | `liboora` / `docs/30-product/authentication/` |
 
 ## Status
 
-**STATUS = v2.0 AUTHORED — AUTHORITATIVE.**
+⭐ **STATUS = v3.0 AUTHORITATIVE.** `Authentication_PRD_v3.md` is the source of truth for Authentication,
+authorised by `Accepted` [`ADR-0129`](../../00-governance/adr/ADR-0129-google-sign-in-v1-primary-authentication-mobile-otp-v2.md)
+and aligned to `MASTER_PRD.md` **v1.8**.
+
+**Google Sign-In (Google OIDC) is the sole required Version 1 authentication method. Mobile OTP is
+re-scoped to Version 2 and is not removed from the product.**
+
+v3.0 is a **delta successor**: v2.0's 588 requirements are carried forward by reference except those it
+enumerates as amended, removed or added. A requirement's v3.0 text is its amended text if v3.0 amends it,
+its tombstone entry if v3.0 retires it, and otherwise **its v2.0 text**, which remains valid and citable.
+
+⛔ **v2.0 is byte-frozen and MUST NOT be edited.** Fifteen line-number citations across nine documents —
+including `Accepted` `ADR-0061` and `Accepted` `ADR-0063` — point into `Authentication_PRD_v2.md`. Freezing
+it keeps every one of them resolving.
+
+⚠ **Inherited condition, deliberately unrepaired.** v2.0's assembled file is **4638 lines** while its
+`prd-v2/` chapter sources total **4594 lines** — a **44-line drift**. The two v2.0 representations are
+**not byte-derivable** from each other and no assembly tool exists in the repository. v3.0 makes **no
+claim** that they are identical and does **not** repair the drift, because repairing it would edit a frozen
+artifact and move cited lines. The v2.0 table below is retained as the **historical** record.
+
+⛔ **Not executed by v3.0** — each is a separate governed act: no Bounded Context Map edge, **`E-34` not
+allocated**, no `platform/integration:identity_provider` port, `tool/module_dependencies.yaml` untouched,
+`DOCUMENTATION_BASELINE.md` not updated (it still declares v2.0 and is therefore **knowingly stale** for
+this module), **`ADR-0002` and `ADR-0005` not superseded**, no blocker closed, `A-9` not executed, and no
+code, schema, API, UI or test changed.
+
+---
+
+## Historical status of v2.0
+
+**STATUS = v2.0 AUTHORED — superseded by v3.0, retained frozen.**
 
 The specification is complete. All eleven chapters contain their full text.
 `Authentication_PRD_v2.md` is the source of truth for Authentication.
@@ -57,19 +89,21 @@ which is the operational source of truth for their values.
 
 | File | Contains | State |
 | --- | --- | --- |
-| `Authentication_PRD_v2.md` | **The complete specification, single file** | **Authoritative** |
-| `prd-v2/00-Cover-and-Control.md` | Identifier scheme, normative language, `CFG-1`–`CFG-12`, structural facts | Authoritative |
-| `prd-v2/01-Purpose-and-Goals.md` | Chapter 1 | Authoritative |
-| `prd-v2/02-User-Types-and-Roles.md` | Chapter 2 | Authoritative |
-| `prd-v2/03-Authentication-Methods.md` | Chapter 3 | Authoritative |
-| `prd-v2/04-Registration-and-Account-Claim.md` | Chapter 4 | Authoritative |
-| `prd-v2/05-Login-and-Library-Selection.md` | Chapter 5 | Authoritative |
-| `prd-v2/06-Session-and-Device-Management.md` | Chapter 6 | Authoritative |
-| `prd-v2/07-Roles-Permissions-and-Access-Policies.md` | Chapter 7 | Authoritative |
-| `prd-v2/08-Security-and-Privacy.md` | Chapter 8 | Authoritative |
-| `prd-v2/09-Account-Lifecycle.md` | Chapter 9 | Authoritative |
-| `prd-v2/10-Events-Audit-and-Notifications.md` | Chapter 10 | Authoritative |
-| `prd-v2/11-NFR-Compliance-and-Final-Acceptance.md` | Chapter 11 | Authoritative |
+| ⭐ `Authentication_PRD_v3.md` | ⭐ **The authoritative specification — v3.0 delta successor** | ⭐ **Authoritative** |
+| ⭐ `prd-v3/00-Cover-and-Control.md` | Authority, representation rule, tombstone convention, canonical vocabulary | **Normative** |
+| `Authentication_PRD_v2.md` | The complete v2.0 specification, single file | ⛔ **Superseded by v3.0 — byte-frozen, citation anchor** |
+| `prd-v2/00-Cover-and-Control.md` | Identifier scheme, normative language, `CFG-1`–`CFG-12`, structural facts | ⛔ Superseded by v3.0 — frozen |
+| `prd-v2/01-Purpose-and-Goals.md` | Chapter 1 | ⛔ Superseded — frozen |
+| `prd-v2/02-User-Types-and-Roles.md` | Chapter 2 | ⛔ Superseded — frozen |
+| `prd-v2/03-Authentication-Methods.md` | Chapter 3 | ⛔ Superseded — frozen |
+| `prd-v2/04-Registration-and-Account-Claim.md` | Chapter 4 | ⛔ Superseded — frozen |
+| `prd-v2/05-Login-and-Library-Selection.md` | Chapter 5 | ⛔ Superseded — frozen |
+| `prd-v2/06-Session-and-Device-Management.md` | Chapter 6 | ⛔ Superseded — frozen |
+| `prd-v2/07-Roles-Permissions-and-Access-Policies.md` | Chapter 7 | ⛔ Superseded — frozen |
+| `prd-v2/08-Security-and-Privacy.md` | Chapter 8 | ⛔ Superseded — frozen |
+| `prd-v2/09-Account-Lifecycle.md` | Chapter 9 | ⛔ Superseded — frozen |
+| `prd-v2/10-Events-Audit-and-Notifications.md` | Chapter 10 | ⛔ Superseded — frozen |
+| `prd-v2/11-NFR-Compliance-and-Final-Acceptance.md` | Chapter 11 | ⛔ Superseded — frozen |
 
 ### Engineering record — not part of the specification
 
@@ -111,6 +145,7 @@ which is the operational source of truth for their values.
 
 | Date | Change | Commit |
 | --- | --- | --- |
+| ⭐ 2026-09-10 | ⭐ **Authentication PRD v3.0 authored as a delta successor.** Google Sign-In (Google OIDC) becomes the sole required V1 authentication method; Mobile OTP re-scoped to V2 and **not removed**. `AUTH-3.22` retired as a **tombstone**; active range corrected to `AUTH-3.20`–`AUTH-3.21`; **`Unlinked`** state introduced (*"Orphaned"* rejected per `ADR-0011` L63); privacy `C-1`/`C-2`/`C-3` implemented; V1 recovery gap accepted with no recovery path. ⛔ **v2.0 and `prd-v2/` byte-frozen and unedited.** Authorised by `Accepted` `ADR-0129` | *this change* |
 | Earlier | GATE-1 blocker closure record added; 14 blockers closed; 12 source files changed | `816f9b7` |
 | Earlier | D-7 custody shell created: `README.md`, eleven chapter transfer slots, `FINAL_VALIDATION_REPORT.md`. **No specification content transferred.** | `cbd59b3` |
 | Earlier | Module completion package: architecture, implementation and verification records | `9b9e1d5` |

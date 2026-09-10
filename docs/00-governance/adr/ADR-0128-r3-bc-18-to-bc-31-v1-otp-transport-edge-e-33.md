@@ -266,7 +266,7 @@ change; no test change; no manifest change.
 |---|---|
 | `DOCUMENTATION_BASELINE.md` §7 **rule 1** — ADR **before** a Rank 1–5 change | ✅ This ADR was written and accepted **before** M1–M3 were applied |
 | §7 **rule 2** — version + changelog in the same commit | ✅ **v1.13** and its changelog row are in this commit |
-| §7 **rule 3** — declaration updated in the same commit | ✅ `Context Count` cell updated with the edge |
+| §7 **rule 3** — declaration updated in the same commit | ⚠⚠ **CORRECTED 2026-09-09 — THIS ROW WAS FALSE AS WRITTEN.** The BC Map's own `Context Count` cell **was** updated with the edge, but rule 3 also requires the **declaration in `DOCUMENTATION_BASELINE.md` §3.2** to move, and **L136 was left at v1.12 while this ADR advanced the file to v1.13** — so rule 3 was **BREACHED, not satisfied**. ⭐ **The omission was found by the M2 pre-flight, reported before any modification, and discharged under an explicit Architecture Owner ruling**: baseline **L136** now reads **v1.14**, clearing **both** the v1.13 omission and v1.14. ⛔ **This is a factual execution-state correction only** — `ADR-0128`'s architecture decision (**AO-1**…**AO-4**, **PO-1**, `E-33`, §19) is **NOT reopened, amended or re-decided**, and its `Accepted` status is unchanged. *(Prior text, FALSE as written: "✅ `Context Count` cell updated with the edge".)* |
 | §7 **rule 4** — baseline moves only for Rank 1–3 | ✅ **Unmet limb** — BC Map is Rank 4. **`BASELINE-2026-09-03-A` STANDS** |
 | BC Map **L292** — an unlisted edge requires an ADR | ✅ This is that ADR |
 | `ADR-0033` §7.1 — one act is not a standing licence | ✅ Scope is AO-1…AO-4 + PO-1 **only**; `E-32` mint, `sso_provider` rename, D3, DLT and `TASK-D10` all refused |

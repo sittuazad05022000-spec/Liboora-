@@ -20,8 +20,8 @@ Two facts shape almost every technical decision:
 
 1. **Tenant isolation is absolute.** Data belonging to one library must never be reachable from another. A
    tenant-less query on tenant data is a **blocker-severity** defect, not a bug to schedule.
-2. **Authentication is a mobile number and a one-time code. There are no passwords anywhere.** Not hashed, not
-   optional, not "for admins." None.
+2. ⭐ **Authentication in V1 is Google Sign-In (Google OIDC), and it is the sole required method. There are no passwords anywhere.** Not hashed, not
+   optional, not "for admins." None. ⛔ **Mobile OTP is NOT a V1 method** — it is re-scoped to **V2** (`AUTH-3.42`, `AUTH-3.46`). ⛔ No demo, guest or seeded sign-in in a release build (`AUTH-3.44`). ⭐ Authoritative source: **Authentication PRD v3.0**.
 
 ---
 
@@ -62,9 +62,9 @@ cannot implement the boundary correctly without knowing what is on the other sid
 permissions, policy decisions, consent."* Nothing else may create an account, issue a session, or decide a
 permission.
 
-**Hybrid tenancy.** `Account` is **global** — one person, one mobile number, one account across the whole
+**Hybrid tenancy.** `Account` is **global** — one person, one account across the whole
 platform. Role assignments are **tenant-scoped** — the same person can be a manager in one library and a student
-in another, and those facts are unrelated. `AccessPolicy` is always evaluated with a tenant in scope.
+in another, and those facts are unrelated. `AccessPolicy` is always evaluated with a tenant in scope. ⭐ **The account key is the immutable Google `sub`**, which is the `provider identity` key and resolves to at most one canonical, immutable **`AccountId`** (`AUTH-3.49`, `AUTH-3.50`, `AUTH-3.51`). ⛔ A mobile number is **not** the account key in V1. ⛔ The Google **email, recovery Gmail, display name and profile picture MUST NOT** be the `AccountId`, the `PersonId`, a uniqueness key, a matching key, a payment identity or a recovery identity (`AUTH-3.52`). ⭐ **`PersonId` stays `BC-10`-owned** and is created atomically with the Account (`AUTH-3.54`, `ADR-0011`) — it is a **distinct** identifier from `AccountId`. ⚠ **V1 provides no Liboora recovery path for permanent loss of the Google account**; the applicable successor state is **`Unlinked`**.
 
 **Two-stage authentication.** Verification proves *who* and yields an `Account`. Session issuance grants *what,
 where* and yields a `Session` bound to exactly one library. These are separate operations with separate outputs.
@@ -160,8 +160,8 @@ it, because the tests will use a caller who happens to be a member.
 ### 3. Publishing a field that is really a credential ⚠ severity: discloses the sole auth factor
 
 The library's business contact number and the owner's authentication credential are **different fields**
-(`LIB-6.4`), and the former must never be read from or inferred from the latter. Under `MP-GBR-25` a mobile number
-*is* the authentication factor; a public profile that surfaces one has published half a credential.
+(`LIB-6.4`), and the former must never be read from or inferred from the latter. ⭐ In V1 the authentication credential is the **Google OIDC assertion / provider identity**, never a mobile number
+(`AUTH-3.40`, `AUTH-3.49`); ⚠ `MP-GBR-25`'s *"mobile number is the sole authentication factor"* wording is **superseded in effect** by Auth v3.0 and is listed for re-scope by `ADR-0129` §6.1. ⭐ **The boundary lesson is unchanged and still binding:** a public profile that surfaces a credential-bearing field has published half a credential.
 
 The public field list is an **allow-list**, defined once in §14A.5. Never add to it in code.
 
@@ -258,7 +258,7 @@ critical path too — an `IT-1` staff invitation is delivered by SMS, so it inhe
 |---|---|
 | 1 | `MASTER_PRD.md` global rules — `MP-GBR-*`, `MP-CON-*`, `MP-DEP-*` |
 | 2 | Accepted ADRs |
-| 3 | Authentication PRD v2.0 (`BC-18`) · **Library PRD v1.0 + §14A + §14B + Invitation Security Specification** (Library Management) |
+| 3 | ⭐ **Authentication PRD v3.0** (`BC-18`) — authoritative per `Accepted` `ADR-0129` and `DOCUMENTATION_BASELINE.md` **L258**; ⚠ *v2.0 is superseded, historical and frozen, and is retained for traceability only* · **Library PRD v1.0 + §14A + §14B + Invitation Security Specification** (Library Management) |
 | 4 | Bounded Context Map · Module Dependency Matrix |
 | 5 | Architecture Rulings `AR-1`, `AR-3`, `AR-4` |
 | 6 | Enterprise Architecture v2.1 — **descriptive only** |

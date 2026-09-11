@@ -256,6 +256,6 @@ debug log and type it. Do that one now.
 ## 9. References
 
 `MASTER_PRD.md` `MP-CON-11` (line 521), `MP-GBR-25` (line 378), `MP-DEP-03` (line 569) ·
-Authentication PRD v2.0 `AUTH-11.73`, Chapter 8 §8.3 ·
+Authentication PRD v2.0 `AUTH-11.73`, Chapter 8 §8.3 · ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**.
 `ADR-0002` (OTP as sole factor) · `ADR-0007` (behavioural conformance) · ⭐ **`ADR-0085` §5** (`Accepted` 2026-09-01, **Product Owner** — *the closed `D10-10` decision: Option B, an explicit parent→student link model; it also records that this ADR does **NOT** execute `TASK-D10`, because §7's `MP-DEP-03` delivery-path prerequisite is unmet*) ·
 `DOCUMENTATION_AUDIT-001.md` finding `G-6` · `DEFINITION_OF_DONE.md`

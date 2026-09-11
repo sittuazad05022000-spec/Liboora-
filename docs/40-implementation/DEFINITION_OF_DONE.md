@@ -201,7 +201,7 @@ distinguish from a decision.
 ## 7. References
 
 `DOCUMENTATION_BASELINE.md` (BASELINE-2026-08-04) · `MASTER_PRD.md` **v1.7** ·
-Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Library-Preview.md` ·
+Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Library-Preview.md` · ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**.
 `INVITATION_SECURITY_SPECIFICATION.md` · **`ADR-0001`…`ADR-0011`** · `CONFIGURATION_GUIDE.md` v1.1 ·
 `TASK-D10-remove-demo-surfaces.md` · `IMPLEMENTATION_ROADMAP.md` v1.1 ·
 `LIBRARY_IMPLEMENTATION_TASKS.md` ·

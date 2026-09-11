@@ -13,7 +13,7 @@
 
 ## 1. What this roadmap is
 
-An ordered list of implementation tasks with **explicit dependencies**, derived from Authentication PRD v2.0, the
+An ordered list of implementation tasks with **explicit dependencies**, derived from Authentication PRD v2.0, the ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**.
 accepted ADRs, and the enterprise documentation audit.
 
 It is ordered by **dependency, not by preference.** Where the order looks inconvenient, the dependency is stated so

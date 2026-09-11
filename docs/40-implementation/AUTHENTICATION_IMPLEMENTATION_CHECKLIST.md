@@ -6,7 +6,7 @@
 | **Status** | Active |
 | **Date** | 2026-08-02 |
 | **Scope** | `BC-18` Identity & Access |
-| **Source** | Authentication PRD v2.0 — 588 requirements across 11 chapters |
+| **Source** | Authentication PRD v2.0 — 588 requirements across 11 chapters ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**. |
 
 ---
 

@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | v1.14 |
+| **Version** | ⭐ **v1.15** |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 ⭐ **v1.13 appends §19**, declaring **`E-33`** `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 OTP / possession-challenge transport**, admitted by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) under a **joint Architecture Owner + Product Owner** one-act conferral — again **appended, not inserted**. ⭐ It **ratifies a route the module manifest has declared since `a2caa22`** (`tool/module_dependencies.yaml` **L437–439**, *"the single sanctioned bypass of `platform/communication`, for possession challenge delivery only"*), rather than creating one. **Edges: 30** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-33`** (**§19.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` reserved** for `PRD-021C`/`TSF-GAP-009` and **`E-32`** allocated to `BC-22 → BC-31` by `ADR-0127` but **NOT yet minted here** — neither appears in this file. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed ⭐ **v1.14 appends §20**, registering **`E-32`** `BC-22 Notification Delivery` → `BC-31 Integration` (`CF`, Sync port, **V1**, **Push/FCM egress only**) — the **M2 execution** of the allocation `Accepted` [`ADR-0127`](../00-governance/adr/ADR-0127-r1-e-32-bc-22-to-bc-31-push-fcm.md) approved and expressly **deferred to M2**; again **appended, not inserted**. ⭐ It **registers an identifier for an already-authoritative contract** — Rank-1 `MASTER_PRD` **L229** (*"Push notifications | `BC-22` **via `BC-31`** … FCM (V1)"*) and `PRD-010` **`NTF-FR-031`** — and creates no capability. **Edges: 31** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-32`** (**§20.1**) + `E-33` (§19.1); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and **absent from this file**. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed |
@@ -537,12 +537,12 @@ Items requiring a decision before V1 implementation freeze. Each should become a
 
 | # | Question | Impact if undecided | Recommendation |
 |---|---|---|---|
-| Q-01 | Does an expired membership release the seat immediately, at end-of-day, or after a grace period? | BC-02→BC-04 event handler semantics | Configurable per tenant (BC-25), default 24h grace |
+| Q-01 | Does an expired membership release the seat immediately, at end-of-day, or after a grace period? | BC-02→BC-04 event handler semantics | ⭐⭐ **RESOLVED 2026-09-10 — see [`ADR-0133`](../00-governance/adr/ADR-0133-mp-dep-07-schema-freeze-questions-q01-q03-q06-resolved-q04-remains-open-counsel.md) §2.** ⚠ **Resolved by RECOGNITION, not by a new decision:** `Accepted` [`ADR-0036`](../00-governance/adr/ADR-0036-three-day-renewal-protection-q01.md) §§7–8 answered this on **2026-08-31** — a **3-calendar-day protection window**, window opening **`W₀ = D+1`**, scope **FIXED and mandatory in V1**. ⛔ The **"default 24h grace"** recommendation to the right is **NOT adopted and never was a decision** (`PRD-005` **L816**: *"a recommendation inside an open question is **not a decision**"*), and ⛔ the window is **NOT tenant-configurable** — `BC-25` does **not** own it. ⚠ **ONE residual remains OPEN and is NOT closed here:** **which actor releases the seat** at window expiry (`ADR-0036` §7). ⭐ *Prior recommendation retained for the record:* *"Configurable per tenant (BC-25), default 24h grace"* |
 | Q-02 | Is `Branch` (BC-06) a first-class V1 entity or introduced at V3 Multi-Branch? | Schema shape of every tenant-scoped table | **Model `branchId` in V1 schema, default single branch.** Retrofitting it later is a migration across every core table |
-| Q-03 | Entitlement fail-open or fail-closed on timeout? | Revenue leakage vs availability | Per-gate policy; hard paid features fail-closed, soft limits fail-open |
-| Q-04 | Retention period for `StudentAttendance` after enrollment archival? | Legal + storage cost | Define with counsel; default 7 years financial, 2 years attendance |
+| Q-03 | Entitlement fail-open or fail-closed on timeout? | Revenue leakage vs availability | ⭐⭐ **RESOLVED 2026-09-10 — see [`ADR-0133`](../00-governance/adr/ADR-0133-mp-dep-07-schema-freeze-questions-q01-q03-q06-resolved-q04-remains-open-counsel.md) §3.** The disposition is resolved **per feature**, from an **externally configured value owned by `BC-25` Configuration**, and ⛔ **the Entitlement module MUST NOT define a platform default disposition**. ⚠ **Resolved by RECOGNITION:** FROZEN Rank-3 **`ENT-FR-018`** already states exactly this, and **`E-17`** (**L326**) already reads *"decided per feature, recorded in Config"* — ⛔ **L326 is therefore UNCHANGED; it was already correct.** ⚠⚠ **WHAT IS RESOLVED IS THE SHAPE, NOT THE VALUES: `ENT-GAP-002` REMAINS OPEN** — *"no entitlement configurable exists at any rank"*, `ENT-CFG-*` is empty, so `ENT-FR-018` stays **unsatisfiable until a configurable is defined**. ⛔ `ENT-XC-007` stands: `BC-04`'s fail-closed rule is **never** generalised. ⭐ *Prior recommendation retained for the record:* *"Per-gate policy; hard paid features fail-closed, soft limits fail-open"* |
+| Q-04 | Retention period for `StudentAttendance` after enrollment archival? | Legal + storage cost | ⚠⚠ **STILL OPEN — REQUIRES LEGAL COUNSEL. Examined under [`ADR-0133`](../00-governance/adr/ADR-0133-mp-dep-07-schema-freeze-questions-q01-q03-q06-resolved-q04-remains-open-counsel.md) §5 on 2026-09-10 and DELIBERATELY LEFT OPEN; it was considered, not overlooked.** ⛔ **NOT resolvable by Product or Architecture.** **Six** governed sources plus `Accepted` `ADR-0051` all name **Legal counsel**: this line, `MASTER_PRD` **L676**, **`MP-NFR-10`** (SECURITY + DATA Governance), blocker **7a**, `ATT-GAP-005` and `AUD-GAP-001`. ⚠⚠ **The "default 7 years financial, 2 years attendance" recommendation to the left is EXPRESSLY NOT ADOPTED** — blocker **7a** reads *"**Do not adopt** '7 years financial / 2 years attendance'"* and `ATT-GAP-005` rejects it as unratified. ⭐ A retention **disposition** is not a retention **period** (`ADR-0123`). ⛔ **`MP-DEP-07` and the V1 schema freeze REMAIN BLOCKED on this question alone.** ⭐ *Prior recommendation retained for the record:* *"Define with counsel; default 7 years financial, 2 years attendance"* |
 | ~~Q-05~~ | ~~Is Global Student available to a person with **no** library enrollment?~~ | — | **CLOSED 2026-08-04 by `ADR-0011`: yes, necessarily.** Every account has an identity from creation, so the question can no longer arise. The "reduced trust tier" recommendation is **not** adopted — a trust tier is an authorisation concern owned by BC-18, and implementing it in BC-10 would mean a global context evaluating authorisation (`X-13`) |
-| Q-06 | Who owns proration arithmetic — BC-02 (rules) or BC-20/Business (execution)? | Currently split by design; needs explicit contract | BC-02 computes the *entitlement delta*, Business Platform executes the *money*. Contract in `liboora_contracts` |
+| Q-06 | Who owns proration arithmetic — BC-02 (rules) or BC-20/Business (execution)? | Currently split by design; needs explicit contract | ⭐⭐ **RESOLVED 2026-09-10 — see [`ADR-0133`](../00-governance/adr/ADR-0133-mp-dep-07-schema-freeze-questions-q01-q03-q06-resolved-q04-remains-open-counsel.md) §4.** **`BC-02` owns the entitlement delta; the Business Platform owns the money, at V2.** ⚠ **Resolved by RECOGNITION:** FROZEN Rank-3 **`MM-FR-099`** already publishes the price difference on `MM-EVT-004` with remaining days, and **`MM-FR-100`** already states `BC-02` *"**MUST NOT** compute a prorated monetary credit … **MUST NOT** compute a refund"*. ⛔ **No money arithmetic is authorised in V1** — `MM-XC-012` dates it **V2** and `PRD-008` **`NG-6`** places the proration engine at **V2**. ⭐ *Prior recommendation retained for the record:* *"BC-02 computes the *entitlement delta*, Business Platform executes the *money*. Contract in `liboora_contracts`"* |
 | Q-07 | Does Parent get an `Account` (BC-18) or a scoped view token? | Auth complexity, consent model | Full account with guardian role — required for consent audit trail |
 
 ---
@@ -1217,3 +1217,83 @@ challenge in **5 minutes**.
 - ⛔ **Amends no frozen PRD and no Rank 1–3 requirement**
 - ⛔ **Changes no code, test, checker or module manifest** — **0** files
 - ⛔ **Confers no lifecycle stage** and authorises no implementation
+
+---
+
+## 21. ⭐ `ADR-0133` Changelog entry — v1.15: three `MP-DEP-07` open questions RESOLVED, `Q-04` deliberately left OPEN
+
+> ⚠⚠ **THIS SECTION IS THIS FILE'S v1.15 CHANGELOG ENTRY.** It is recorded here, **at end of file**, and ⛔ **NOT as a
+> row in the `## Changelog` table above** — so a reader consulting only that table will see **v1.14** as its newest
+> row. ⭐ **The header `Version` cell reads `v1.15`**, so the current version is unambiguous.
+>
+> ⭐⭐ **Why the row is NOT in the table, stated as measurement.** The `## Changelog` table occupies **L611–L627**, and
+> ⚠ **§15 … §20 all sit BELOW it** (L633–L1219) — the changelog is **not** this file's last section. A row inserted
+> **newest-first**, this file's established ordering, would land at **L613** and shift **ten live citations** by `+1`:
+> **L613**, **L614**, **L654**, **L655**, **L712**, **L753**, **L844**, **L874**, **L936** and ⭐⭐ **L1108**.
+>
+> ⛔⛔ **L1108 is cited by `Accepted` [`ADR-0129`](../00-governance/adr/ADR-0129-google-sign-in-v1-primary-authentication-mobile-otp-v2.md) L79**, and `ADR-INDEX` **L206** rules
+> *"Never edit an Accepted ADR's decision text."* ⭐ So inserting the row would either **break** that citation or force
+> an edit this act is **forbidden** to make. **Appending here shifts ZERO citations** —
+> [`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 **Option A**, and the
+> `ADR-INDEX` end-of-file addendum precedent (`ADR-0125`…`ADR-0128`, `ADR-0131`, `ADR-0132`).
+>
+> ⚠ **An earlier draft of `ADR-0133` §8.3 asserted this file's highest citation was L654. That was FALSE** — it
+> re-used a **v1.13/v1.14** measurement taken before §19/§20 existed. The error is recorded in `ADR-0133` **§8.4**
+> rather than quietly dropped.
+
+### 21.1 v1.15 — 2026-09-10
+
+**FOUR §13 cells and the header `Version` cell amended STRICTLY IN PLACE. No context, edge, aggregate, member,
+invariant or event added, removed or altered — count remains 31 (23 in V1); edges remain 31 (`E-01`…`E-26`, `E-28`,
+`E-29`, `E-30`, `E-32`, `E-33`) with `E-27` permanently vacant and `E-31` still reserved and absent.**
+
+Applies `Accepted` [`ADR-0133`](../00-governance/adr/ADR-0133-mp-dep-07-schema-freeze-questions-q01-q03-q06-resolved-q04-remains-open-counsel.md),
+a **joint Product + Architecture** one-act conferral resolving three of the four `MP-DEP-07` schema-freeze questions
+routed to this section.
+
+⭐⭐ **ALL THREE RESOLUTIONS ARE RECOGNITIONS OF EXISTING GOVERNED AUTHORITY — NOTHING WAS INVENTED:**
+
+| Cell | Question | Disposition | Authority that already existed |
+|---|---|---|---|
+| **L540** | `Q-01` seat release on expiry | ⭐ **RESOLVED** — 3 calendar days, `W₀ = D+1`, **FIXED**, mandatory V1 | `Accepted` **`ADR-0036`** §§7–8, *"ANSWERED at v2.0"*, in force since **2026-08-31** |
+| **L542** | `Q-03` Entitlement fail-open/closed | ⭐ **RESOLVED** — per feature, from a **`BC-25`**-owned configured value; ⛔ **no platform default** | FROZEN Rank-3 **`ENT-FR-018`** + **`E-17`** (**L326**) |
+| **L543** | `Q-04` attendance retention period | ⚠⚠ **STILL OPEN — requires LEGAL COUNSEL**; examined and **deliberately** left open | Six governed sources + `ADR-0051` all name counsel |
+| **L545** | `Q-06` proration ownership | ⭐ **RESOLVED** — `BC-02` entitlement **delta**; Business Platform the **money**, at **V2** | FROZEN Rank-3 **`MM-FR-099`** + **`MM-FR-100`** |
+
+⭐⭐⭐ **`Q-01` WAS ALREADY ANSWERED AND THIS REGISTER HAD CONTRADICTED AN ACCEPTED ADR FOR NINE DAYS.** **L540** still
+read *"default 24h grace"* while `ADR-0036` had ruled **3 calendar days, FIXED** since 2026-08-31. ⭐ The contradiction
+is resolved the way `PRD-005` **L816** requires — *"a recommendation inside an open question is **not a decision**"* —
+so the **24h** text was never authority and is ⛔ **not adopted**; it is **retained verbatim** in each amended cell, per
+`ADR-INDEX` **L207** (*"An ADR supersedes; it does not delete"*).
+
+⛔⛔ **`E-17` AT L326 IS BYTE-UNCHANGED, AND THAT IS THE POINT.** It already reads *"Fail-closed on timeout for paid
+gates, fail-open for soft limits — **decided per feature, recorded in Config**"*. ⭐ `Q-03`'s resolution **matches the
+edge as already declared**, so amending L326 would have been a change with no decision behind it.
+
+⚠⚠ **WHAT IS *NOT* RESOLVED, STATED PLAINLY:**
+
+- ⛔⛔ **`MP-DEP-07` and the V1 SCHEMA FREEZE REMAIN BLOCKED** — on **`Q-04` alone**. Three of four is not four.
+- ⚠ **`Q-03` resolves the SHAPE, not the VALUES:** **`ENT-GAP-002`** stays **OPEN** — *"no entitlement configurable
+  exists at any rank"*, `ENT-CFG-*` is empty, so **`ENT-FR-018` is still unsatisfiable**.
+- ⚠ **`Q-01` leaves ONE residual OPEN:** **which actor releases the seat** at window expiry (`ADR-0036` §7).
+- ⚠ **`Q-06` authorises NO money arithmetic in V1** — `MM-XC-012` and `PRD-008` **`NG-6`** both date it **V2**.
+- ⚠ **`Q-02` and `Q-07` are untouched** — outside this act's scope; **`Q-05`** stays closed (`ADR-0011`), its
+  struck-through cell at **L544** ⛔ **byte-unchanged**.
+- ⛔ **The "7 years financial / 2 years attendance" retention recommendation is EXPRESSLY NOT ADOPTED** — blocker **7a**
+  reads *"**Do not adopt**"* it, and `ATT-GAP-005` rejects it as unratified.
+
+### 21.2 ⛔ What this version does NOT do
+
+- ⛔ **No Technical Specification, no `TS-*`, no API or OpenAPI contract, no database schema, no migration, no SQL**
+- ⛔ **No permission identifier** — `AUTH-7.22`'s catalogue stays closed with **0** enumerated permissions (`ADR-0132`)
+- ⛔ **Amends no frozen PRD and no Rank 1–3 requirement.** `PRD-006`, `PRD-008`, `PRD-014`, `PRD-019`, `PRD-022`,
+  `PRD-MEMBERSHIP-MANAGEMENT` and all Authentication v2/v3 documents are **byte-unchanged**
+- ⛔ **Closes no implementation blocker** — item **7a** stays **OPEN**; no `IMPL-*` minted or closed
+- ⛔ **Changes no code, test, checker or module manifest** — **0** files under `lib/`, `test/`, `tool/`, `packages/`
+- ⛔ **Adds, removes or alters no edge, context, aggregate or event**; ⛔ **`E-31` is not minted** and `E-27` stays vacant
+- ⛔ **Confers no lifecycle stage** and authorises no implementation
+
+⚠ **Baseline:** this file is **Rank 4**, so its version change does ⛔ **not** trigger `DOCUMENTATION_BASELINE.md` §7
+rule 4. ⭐ But **`MASTER_PRD` v1.9 → v1.10 is a Rank 1 version change in this same commit**, which **does** trigger it —
+so the baseline identifier advances **`BASELINE-2026-09-10-B` → `BASELINE-2026-09-10-C`**, and §7 rule 3's *same
+commit* limb is satisfied: **every amendment and `ADR-0133` move in ONE governed commit**.

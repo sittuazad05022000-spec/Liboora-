@@ -1775,3 +1775,100 @@ omission. ⛔ **Routed, not repaired.**
 `Q-01`/`Q-03`/`Q-04`/`Q-06` with `MP-DEP-07` still blocking **schema freeze** · **B-4** `PRD-008` §6.1 payment
 divergence (**recorded, NOT repaired**) · **B-5** no API style, error taxonomy, versioning or idempotency
 transport · **B-6** `DEVELOPER_HANDOFF.md` + 6 implementation documents **stale on authentication**.
+
+---
+
+## 20. ⚠⚠ `PRD-008` Revenue & Finance — the **V1 payment-method divergence**, and the determined successor path
+
+⭐ Recorded by `Accepted` [`ADR-0134`](../adr/ADR-0134-prd-008-payment-divergence-successor-path-determined-frozen-text-preserved.md),
+under a one-act joint conferral of **Product Owner**, **Architecture Owner** and **Governance Owner** authority;
+⛔ all offices **revert on completion** (`ADR-0033` §7.1). ⭐ This section is **appended, not inserted** — the
+`ADR-0079` §8.5 doctrine — because **the highest live citation into this file is L1718** and an append below the
+former last line shifts **0** of them.
+
+> ⚠⚠ **WHY THIS SECTION EXISTS.** Before it, this registry contained **ZERO** references to `ADR-0130` across
+> **1,777** lines, and the `PRD-008` row at **L245** recorded `FROZEN` while saying **nothing** about payment scope.
+> ⭐ **The registry is the index of record for PRD status, and it is one of the two documents a Technical
+> Specification author is directed to consult.** A reader who trusted **L245** was led straight into five superseded
+> requirement rows with no warning. ⛔ **Precedence resolved the conflict; nothing made it discoverable here.**
+
+### 20.1 The divergence, stated exactly
+
+**FROZEN `PRD-008_REVENUE-AND-FINANCE.md` v1.7 §6.1** lists the following as **V1 in scope**:
+
+| Line | Row | Status |
+|---|---|---|
+| **L208** | `Cash payment` | ✅ **CORRECT — remains V1.** ⛔ Must **not** be changed by any successor |
+| **L209** | `UPI payment` | ⛔ **SUPERSEDED IN EFFECT — is V2** |
+| **L210** | `Card payment` | ⛔ **SUPERSEDED IN EFFECT — is V2** |
+| **L211** | `Online payment` | ⛔ **SUPERSEDED IN EFFECT — is V2** |
+| **L213** | `Payment verification` | ⛔ **SUPERSEDED IN EFFECT as to digital methods — is V2** |
+| **L214** | `Webhook reconciliation` | ⛔ **SUPERSEDED IN EFFECT — is V2** |
+
+⭐⭐ **The governing authority is `Accepted`**
+[`ADR-0130`](../adr/ADR-0130-student-payment-v1-cash-only-liboora-platform-charge-and-settlement-v2.md):
+**V1 student payment is CASH ONLY**; ⛔ **UPI, card, online payment, payment gateway, the LIBOORA platform charge and
+library → LIBOORA settlement are all V2**; ⛔ **no V1 settlement mechanism is required and its absence is NOT a
+blocker**; ⛔⛔ **no V2 mechanism may be invented.**
+
+⭐ **Precedence, not repair, resolves it:** `DOCUMENTATION_BASELINE.md` §4 ranks **Rank 2** Accepted ADRs above
+**Rank 3** module PRDs. ⛔ **`ADR-0130` is not re-decided, reopened or weakened by this section.**
+
+### 20.2 ⛔ `PRD-008` is BYTE-UNCHANGED, and its status is unaffected
+
+⛔ **`PRD-008` remains `FROZEN` at v1.7**, exactly as **L245** records — this section changes **no status, no
+version and no count**, and the §7 status tallies are untouched. ⭐ Every other part of that PRD — its **134
+obligations**, **98 acceptance criteria** and **10 invariants** — remains **FROZEN, authoritative and fully valid**.
+
+⛔ **The frozen text was deliberately NOT edited**, on `PRD_LIFECYCLE.md` **L177**: *"**A frozen PRD is never
+silently modified.** Not for an obvious correction, and not for one that is certainly right."*
+
+⚠ Its stale self-description (*"v1.7 — DRAFT … still NOT frozen"*) is ⛔ **again not repaired**, per its own **L11**
+rule that status is *"**conferred** by admission to the baseline, **never claimed by a document about itself**."*
+
+### 20.3 ⭐⭐ The determined successor path — `PRD_LIFECYCLE` §4 step 7's registry obligation
+
+⭐ **DETERMINED: the lawful instrument is a `PRD-008` v1.8 successor amendment** through
+`PRD_LIFECYCLE.md` **§4**'s seven-step frozen-PRD route (ADR **before** the change → accept → version → PRD
+changelog → baseline → traceability if identifiers changed → **this registry**).
+
+⛔⛔ **Three alternatives were tested and rejected on measured grounds:** editing the five rows directly
+(⛔ barred by **L177**); a **v2 full re-baseline** (⛔ disproportionate — **5 of 249** catalogued items against
+re-opening 134 obligations, 98 acceptance criteria, 10 invariants, **17 open `FEE-GAP-*`** and 83 `IMPL-700`…`IMPL-799`
+traces); and a **new PRD identity** (⛔ barred by **L67** — *"It is an amendment to that PRD, not a new one"* — since
+`PRD-008` already owns `BC-05` and the `FeeLedger` aggregate).
+
+⚠⚠ **THE SUCCESSOR HAS NOT BEEN EXECUTED, AND `ADR-0134` IS NOT §4 STEP 1's ADR.** Deciding **what the amended text
+says** requires the **`BC-05` Domain Owner** (`PRD_OWNERSHIP_MODEL` **L84**), an office ⛔ **not conferred**.
+⭐ **The absence of a `PRD-008` v1.8 is therefore the correct outcome, not incomplete work.**
+
+**When authorised, the successor is bound by `ADR-0134` §3.4 `S-1`…`S-8`** — in summary: re-scope **only** L209,
+L210, L211, L213 and L214; ⛔ **never touch L208**; carry prior text **verbatim** as superseded history; cite
+`ADR-0130`; close **no** `FEE-GAP-*`; preserve **`MP-GBR-24`**; ⛔ **invent no V1 digital verification mechanism**;
+⛔ **delete no obligation to resolve a scope conflict**; and move version, changelog, baseline and registry in **one**
+commit.
+
+### 20.4 ⚠ Propagation residues — DISCLOSED and ROUTED, ⛔ NOT repaired here
+
+| Artifact | Measured state | Owner | Registered as |
+|---|---|---|---|
+| `PRD-019_INTEGRATION.md` | **39** `Razorpay` occurrences, ⛔ **0** `ADR-0130` references; §4's webhook contract predicated on a **V1** gateway | Product + Architecture + `BC-31` Owner | `ADR-0130` §10 item **8** |
+| `LIBOORA_ENTERPRISE_ARCHITECTURE.md` **L1395**/**L1397**/**L1398** | still read *Online / UPI / Card Payments (**V1**)* | Architecture Owner | `ADR-0130` §10 item **9** — ⭐ lowest risk: **Rank 6, descriptive only**, losing to `ADR-0130` by rank automatically |
+| `LIBOORA_BOUNDED_CONTEXT_MAP.md` **L202** | *"cash/UPI collected from a student at reception"* | Architecture Owner | `ADR-0130` §10 item **10** — ⭐ the **boundary is correct and unaffected**; only the UPI **example** is now V2 |
+
+⛔ **All three remain OPEN.** ⭐ Naming them is this section's value; repairing them would exceed a conferral scoped
+to the `PRD-008` conflict.
+
+### 20.5 ⛔ What this section does NOT do
+
+- ⛔ **Changes no PRD status, version, count or tally** — `PRD-008` stays `FROZEN` v1.7; §7's figures are untouched
+- ⛔ **Edits no frozen requirement** — **0 bytes** of `PRD-008`; **0** obligations, acceptance criteria, invariants
+  or `FEE-GAP-*` altered
+- ⛔ **Introduces no V1 digital payment mechanism** and ⛔⛔ **invents no V2 platform-charge, settlement,
+  reconciliation or provider** (`Q-B31` stays **OPEN**)
+- ⛔ **Reopens, amends or weakens no ADR** — `ADR-0130`, `ADR-0131`, `ADR-0132`, `ADR-0133` byte-unchanged
+- ⛔ **Creates no Technical Specification**, ⛔ **allocates no `TS-001`** — **§19**'s reservation is unchanged
+- ⛔ **Closes no blocker.** ⛔ **`Q-04` stays OPEN pending Legal counsel and the V1 schema freeze REMAINS BLOCKED**;
+  ⛔ **`B-5` and `B-6` are untouched**
+- ⛔ **No baseline re-issue** — §7 rule 4's limb is **unmet** (no Rank 1–3 version change), so
+  **`BASELINE-2026-09-10-C` stands**

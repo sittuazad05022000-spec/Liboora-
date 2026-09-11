@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | PRD Lifecycle — the stages every PRD passes through, and the gate between each |
-| **Version** | v1.0 |
+| **Version** | ⭐ **v1.1** |
 | **Status** | Active — binding process for new and amended PRDs |
 | **Date** | 2026-08-04 |
 | **Baseline** | `BASELINE-2026-08-04` |
@@ -293,6 +293,127 @@ Roles, not people — the repository names no individuals, and this document doe
 | Emergency security correction | Stages 3 and 7 still apply. **`X-13` and `ID-1` are never waived under time pressure** |
 | Urgent business need | **No fast path.** Stage 7 is not skippable |
 
+## 7A. ⭐ Stage `6A` — Technical Specification *(added v1.1)*
+
+⭐ **Established by `Accepted` [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md).** This section is the lifecycle's statement of the stage; the ADR is its
+authority. ⛔ The ADR authorises the **document class**, ⛔ **not the drafting of any specification.**
+
+### 7A.1 ⚠ Why `6A` and not a renumber
+
+⛔ **§2's nine-stage table is BYTE-UNCHANGED and the nine registry statuses are unaltered.** A renumber was measured
+before it was rejected: **7,411 `Stage N` references across 241 files** would have become ambiguous or wrong
+(`Stage 3` alone = 1,817 hits / 241 files). Stage `6A` is therefore an **inserted stage**, following this
+repository's own letter-suffix convention — `§6A`, `§7A`, `§14A` in product documents, and `PRD-012a`, `PRD-021A`,
+`PRD-021B`, `PRD-021C` in PRD identities. ⭐ **Zero existing references are invalidated.**
+
+### 7A.2 Position and purpose
+
+| Field | Value |
+|---|---|
+| **Stage** | **`6A` — Technical Specification** |
+| **Position** | **after** Stage 6 (Implementation Tasks), **before** Stage 7 (Freeze) |
+| **Registry status** | ⛔ **No new status.** A PRD at `6A` remains `APPROVED`, as at Stage 6 |
+| **Purpose** | Translate frozen requirements, Rank 4 boundaries and Accepted ADRs into implementation-level technical detail, recording every unanswerable question as a **gap with a named owner** rather than deciding it |
+| **Identifier namespace** | ⭐ **`TS-*`** — reserved by [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) §C; measured **0** occurrences before reservation. ⛔ `LTS-*`, `LCTS-*`, `TPA-*`, `LMT-*`, `IMPL-*` and `PERM-*` **MUST NOT** be reused |
+| **Directory** | ⭐ **`docs/50-technical/<subject>/`**. ⛔ **Not created until the first specification is lawfully authored** |
+| **Exit gate artefact** | A `TS-*` document satisfying **X-1**…**X-6** below |
+
+### 7A.3 ⭐⭐ Stage `6A` is OPTIONAL and NON-BLOCKING
+
+⛔⛔ **Stage `6A` does NOT retroactively invalidate, reopen, downgrade or re-gate any PRD already frozen.**
+**Sixteen PRD identities are `FROZEN` and admitted to `DOCUMENTATION_BASELINE.md` §3.3 without passing `6A`,
+because it did not exist.** Every one remains **FROZEN, authoritative and fully valid** — a stage inserted today
+cannot be a gate a document failed yesterday.
+
+1. For an **already-frozen** PRD, `6A` is **available but not required**; its absence is ⛔ **NOT a defect, NOT a
+   blocker and NOT a regression**.
+2. For a PRD **not yet frozen**, `6A` is **available and recommended**, and ⛔ **still not a precondition of
+   Stage 7** — making it one would retroactively alter the Stage 7 gate at **L159** that every existing freeze
+   was conferred against.
+3. Whether `6A` should ever become **mandatory** is ⛔ **NOT decided** — `TSG-GAP-001` in [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) §11.
+
+### 7A.4 Entry criteria — all four required
+
+| # | Criterion |
+|---|---|
+| **E-1** | The subject's requirements are **frozen or baseline-authoritative** — a `DOCUMENTATION_BASELINE.md` §3 row, or an Accepted ADR admitting it |
+| **E-2** | **Stage 3** (Architecture Review) has **passed** for the subject |
+| **E-3** | Every Accepted ADR governing the subject is **identified and cited** |
+| **E-4** | ⭐ Every governed decision the specification depends upon **exists** — or the dependency is **recorded as a gap with a named owning office**. ⛔ This is the criterion that prevents inventing an answer no office has decided |
+
+### 7A.5 Exit gate — all six required
+
+⛔ *"A gate is not an opinion — if the artefact does not exist, the stage has not been passed, however complete the
+work feels"* (**L41**).
+
+| # | Criterion |
+|---|---|
+| **X-1** | A `TS-*` document exists in `docs/50-technical/`, with a versioned control header and its identifier declared |
+| **X-2** | Its identifier stem is **collision-checked and measured 0** repository-wide before use (§5 rule 2) |
+| **X-3** | **Every** technical assertion cites its governing authority — PRD requirement, ADR, BC Map line, or Rank 4/5 register entry |
+| **X-4** | The prohibitions in [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) §3.3 and §8.2 are **individually affirmed**, including that no permission, boundary, edge, port, aggregate or product requirement was invented |
+| **X-5** | A **gap register** exists naming an owning office for every unanswerable question — ⛔ and none is closed to make the document look complete |
+| **X-6** | The traceability chain is stated per section: **PRD requirement → Architecture/BC → ADR → this section** |
+
+### 7A.6 Ownership and attestation
+
+| Role | Stage `6A` act |
+|---|---|
+| **Technical Owner** | **Authors and attests** — §2.2 already scopes this role to implementation and traceability; ⛔ no new office is constituted |
+| **Architecture Owner** | ⭐ **Approves** — boundaries, edges and Rank 4 conformance. ⛔ *"Only the Architecture Owner approves"* |
+| **Product Owner** | **Attests** that no product requirement was invented or altered |
+| **Domain Owner** | **Reviews** ubiquitous language and invariants |
+
+⛔⛔ **All offices are VACANT as constituted, and [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) fills none of them.** Every `6A` act proceeds under the
+**one-act-conferral** model, and the offices ⛔ **revert on completion** (`ADR-0033` §7.1). ⛔ A Technical
+Specification **MUST NOT record an office as occupied** — it records which office is **required** and by which
+**conferral** it was exercised.
+
+### 7A.7 Authority, precedence and rank
+
+A Technical Specification is **subordinate** to, and must conform to, in order: **(1)** Rank 1 `MASTER_PRD.md`
+global rules · **(2)** applicable frozen/baseline-authoritative PRDs · **(3)** Accepted ADRs · **(4)** Rank 4
+architecture (BC Map, Dependency Matrix) and Rank 5 rulings.
+
+⛔ It **MUST NOT** supersede an ADR or a frozen PRD · ⛔ **MUST NOT** invent a permission · ⛔ **MUST NOT** create a
+bounded context, edge, port or aggregate · ⛔ **MUST NOT** silently resolve a conflict · ⛔ **MUST NOT** cite the
+Rank 6 Enterprise Architecture as overriding technical authority · ⛔ **MUST NOT** claim its own status.
+
+⚠ **RANK IS EXPLICITLY DEFERRED** (`TSG-GAP-004`). An admitted Technical Specification is **governed but
+UNRANKED**: it ⛔ **carries no precedence authority over any ranked document**, and in any disagreement **the
+ranked document wins by default**.
+
+### 7A.8 Freeze and amendment
+
+| State | Rule |
+|---|---|
+| **`DRAFT`** | The default on creation. ⛔ **NOT approved, NOT frozen, NOT authoritative** |
+| **Admitted** | Becomes a **governed document** only when an **Accepted ADR** admits it. ⛔ **Status is never self-claimed** |
+| **Amendment** | Requires an **ADR before the change**; version + changelog + declaration all move **in the same commit** (`DOCUMENTATION_BASELINE.md` §7 rules 1–3) |
+| **Supersession** | The superseded record is **retained, not deleted** (`ADR-INDEX` **L207**) |
+| ⛔ **Silent post-freeze edit** | ⛔⛔ **PROHIBITED** |
+| **Citations** | `ADR-0079` §8.5 **append-not-insert**; citation cost **measured before and verified after** every write |
+
+### 7A.9 ⛔⛔ Mandatory boundary clauses
+
+Every Technical Specification is bound by [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) §9, summarised here and **authoritative there**:
+
+| Domain | Binding constraint |
+|---|---|
+| **PAYMENT** | `ADR-0130` — V1 student payment is ⭐ **CASH ONLY**; ⛔ UPI, card, online, gateway, LIBOORA platform charge and library→LIBOORA settlement are **V2**; ⛔ **no V1 settlement mechanism is required and its absence is NOT a blocker**; ⛔ **no V2 mechanism may be invented**. ⚠ **Named trap:** `PRD-008` **FROZEN v1.7 §6.1 L209/L210/L211/L213/L214 still say V1** and are **superseded IN EFFECT by rank** — authors apply `ADR-0130`, ⛔ **not** `PRD-008` §6.1 |
+| **AUTHORIZATION** | `AUTH-7.22` catalogue is **CLOSED**; ⛔ **enumerated permissions measured ZERO**, `PERM-*` repo-wide **2, both withdrawals** — ⛔ **no convention exists to extend**. `ADR-0043` §5.1 (*"Do not invent a new permission ID"*) and `AP-9` **fail-closed** remain binding |
+| **AUTHENTICATION** | Auth **v3.0** / `ADR-0129` authoritative. ⛔ No V1 mobile OTP, ⛔ no password, ⛔ no email-as-identity, ⛔ no email recovery, ⛔ **no Auth v4.0**. ⚠ `DEVELOPER_HANDOFF.md` and 6 implementation documents are **stale** — prefer Auth v3.0 |
+| **ARCHITECTURE** | ⛔ `MP-GBR-24` — `BC-05` and `BC-20` share **no model, table or metric** · ⛔ `MP-CON-01`/`02` + `MP-RSK-05` — **no direct BaaS/Supabase call from domain code** · ⛔ `ADR-0012` boundary checker **remains a merge gate** · ⛔ **modular monolith** in V1 · ⛔ EA is **Rank 6 descriptive only** |
+
+### 7A.10 Relationship to downstream stages
+
+⭐ A Technical Specification is the declared upstream input to **database + Supabase → API specification → UX
+research + user flow → design → prototype → implementation → QA / security / release**. ⛔ It is **not a substitute
+for any of them**, and ⛔ **passing `6A` authorises no downstream act** — each remains its own governed act with its
+own conferral. ⚠ That ordering is an **expectation, not an enforced gate** (`TSG-GAP-002`).
+
+---
+
 ---
 
 ## 8. How this maps to `PRD-000`…`PRD-003`
@@ -328,5 +449,6 @@ of them would be reproducible from memory.
 ## 10. Change history
 
 | Version | Date | Change |
+| ⭐ **v1.1** | 2026-09-10 | ⭐⭐ **Stage `6A` — Technical Specification — INSERTED**, by `Accepted` [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md), under a one-act joint conferral of **Governance Owner** and **Architecture Owner** authority; ⛔ both offices **revert on completion** (`ADR-0033` §7.1). ⭐ **New §7A** defines the stage's position (after Stage 6, before Stage 7), purpose, **4 entry criteria** (`E-1`…`E-4`), **6-condition exit gate** (`X-1`…`X-6`), ownership/attestation, precedence, freeze/amendment rules, mandatory boundary clauses and downstream relationship. ⚠⚠ **THIS IS AN INSERTION, NOT A RENUMBER.** §2's *"nine stages"* table is ⛔ **BYTE-UNCHANGED** and the nine registry statuses are unaltered. A renumber was **measured before rejection**: **7,411 `Stage N` references across 241 files** would have become ambiguous or wrong (`Stage 3` alone **1,817** hits / 241 files; `Stage 7` **1,129** / 203). The letter-suffix convention already used by this repository (`§6A`, `§7A`, `§14A`; `PRD-012a`, `PRD-021A`/`B`/`C`) was followed instead — ⭐ **0 existing references invalidated**. ⚠⚠ **CITATION COST: ZERO SHIFTED — measured before the write and verified after.** **682 line-number citations across 184 documents** point into this file, the highest at **L294**; ⭐ **§7A is inserted at L296 and the changelog row at the foot, both BELOW every cited line**, per the `ADR-0079` §8.5 append-not-insert doctrine. The only in-place edit is the header `Version` cell (**L6**, measured **uncited**), so ⛔ **no cited line is displaced**. ⭐⭐ **Stage `6A` is OPTIONAL and NON-BLOCKING**: ⛔ it does **NOT** retroactively invalidate, reopen, downgrade or re-gate the **16 frozen PRD identities** admitted before it existed, and its absence is ⛔ **NOT a defect, NOT a blocker and NOT a regression** — mandating it would retroactively alter the **L159** Stage 7 gate that every existing freeze was conferred against. Whether it becomes mandatory is ⛔ **NOT decided** (`TSG-GAP-001`). ⭐ **Identifier namespace `TS-*` reserved** — measured **0** occurrences repository-wide before reservation; ⛔ **`LTS-*` (260 occurrences, `PRD-021C` Marketplace), `LCTS-*`, `TPA-*` (B9), `LMT-*` (C8), `IMPL-*` and `PERM-*` MUST NOT be reused**. ⭐ **Directory `docs/50-technical/` declared** — ⛔ **NOT created**, and ⛔ **no placeholder, stub, README or template exists**. ⛔ **`TS-001` is NOT allocated.** ⭐ **Ownership uses the EXISTING Technical Owner role** (§2.2 **L86**) — ⛔ **no new office constituted**; ⛔⛔ **all offices remain VACANT and this act fills none**; ⛔ *"Only the Architecture Owner approves."* ⚠ **RANK IS EXPLICITLY DEFERRED** (`TSG-GAP-004`): an admitted Technical Specification is **governed but UNRANKED** and ⛔ **loses any disagreement with a ranked document by default** — the framing `PRD-021B` B9 already adopted as `XPB-CONF-012`. ⛔⛔ **BOUNDARY CLAUSES BIND EVERY FUTURE SPECIFICATION** (§7A.9): **`ADR-0130`** cash-only V1 with UPI/card/online/gateway/platform-charge/settlement **all V2** and ⛔ **no V2 mechanism invented** — ⚠ with the trap **named**, that `PRD-008` **FROZEN v1.7 §6.1 L209/L210/L211/L213/L214 still say V1** and are **superseded IN EFFECT by rank**; **`AUTH-7.22`** closed catalogue with ⛔ **ZERO enumerated permissions** and `ADR-0043` §5.1 binding; **Auth v3.0/`ADR-0129`** with ⛔ no V1 OTP, no password, no email identity or recovery, **no v4.0**; **architecture** — `MP-GBR-24`, `MP-CON-01`/`02`, `ADR-0012` merge gate, modular monolith, EA descriptive-only. ⛔⛔ **NOTHING ELSE CHANGED IN THIS FILE:** ⛔ §1, §2, §3 (Stages 1–9), §4, §5, §6, §7, §8 and §9 are **byte-unchanged**; ⛔ **no stage renamed, renumbered or re-gated**; ⛔ **no registry status created** (`APPROVED` carries `6A`); ⛔ the **stale `IMPL-*` allocation table is NOT repaired** — it remains the `OPEN` baseline gap disclosed at `DOCUMENTATION_BASELINE.md` **L326** for the fourth consecutive backlog, and repairing it is unrelated drift outside this act. ⛔ **No Technical Specification was drafted.** ⛔ **NOT pushed.** |
 |---|---|---|
 | **v1.0** | 2026-08-04 | Created. Nine stages, each with a named exit-gate artefact, mapped to the nine registry statuses. Derived from the **three different routes** `PRD-001`, `PRD-002` and `PRD-003` actually took (§8) — authored, received verbatim, and reconciled — rather than from a generic template. Records that freeze is **conferred by the baseline, not self-declared**, and that no existing PRD declares its own freeze state. No frozen document is re-run through the lifecycle. No requirement created or modified; no PRD edited. |

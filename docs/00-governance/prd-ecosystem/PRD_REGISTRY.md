@@ -1714,3 +1714,64 @@ append**, on the same disclosure `PRD-010`'s §17 made: those rows are **derived
 rule §7 itself records as undefined (`GCP-18`'s open residue). ⛔ Advancing them by increment would
 publish a figure on a rule that does not exist. ⭐ **Routed, not repaired** — the Governance Owner supplies
 the counting rule, and that is not this act.
+
+
+---
+
+## 19. ⭐⭐ `TS-*` — the **Technical Specification** identifier namespace, reserved by append
+
+⭐ Registered by `Accepted` [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md), under a one-act joint conferral of **Governance Owner** and **Architecture
+Owner** authority; ⛔ both offices **revert on completion** (`ADR-0033` §7.1). ⭐ This section follows the
+**register-by-append** convention already used by §11 through §18 — ⛔ nothing above is edited.
+
+### 19.1 Why this section exists
+
+`PRD_LIFECYCLE.md` §5 rule 2 requires a prefix to be **collision-checked before use**, and Stage 2's gate requires
+*"identifier registers declared **up front**"* (**L79**). ⭐ A reservation is therefore only useful if the **next**
+author's collision check finds it. This section is where it will be found.
+
+### 19.2 The reservation
+
+| Field | Value |
+|---|---|
+| **Namespace** | ⭐ **`TS-*`** — reserved **exclusively** for the Technical Specification document class |
+| **Document identifier form** | `TS-NNN` — three digits, zero-padded, allocated **sequentially from `TS-001`** |
+| **Requirement identifier form** | `TS-NNN-<STEM>-<nnn>`, where `<STEM>` is a short uppercase category token declared in that specification's own control section |
+| **Measured free before reservation** | ⭐ `grep -rhoE '\bTS-[0-9]{3}\b' docs/` → **0 occurrences** · `grep -ric 'TSPEC' docs/` → **0 occurrences** |
+| **Allocation rule** | ⛔ **Never reuse and never reassign a number** (`PRD_LIFECYCLE.md` §5 rule 1; `ADR-INDEX` **L206**) |
+| **First free identifier** | ⭐ **`TS-001`** — ⛔ **NOT allocated by this act** |
+| **Canonical directory** | ⭐ **`docs/50-technical/<subject>/`** — ⛔ **NOT created by this act**, and ⛔ **no placeholder, stub, `README` or template exists** |
+| **Lifecycle stage** | **`6A`**, defined at `PRD_LIFECYCLE.md` **§7A** — ⭐ inserted between Stage 6 and Stage 7, and ⛔ **OPTIONAL / NON-BLOCKING** |
+| **Registry status** | ⛔ **No new status created.** A PRD at stage `6A` remains `APPROVED` |
+
+### 19.3 ⛔⛔ Namespaces that MUST NOT be reused as `TS-*`
+
+⚠ Each was measured, and each belongs to something else:
+
+| Namespace | Measured | Owner | Rule |
+|---|---|---|---|
+| **`LTS-*`** | **260 occurrences** (`LTS-FR` 76, `LTS-XC` 76, `LTS-BR` 55, `LTS-AC` 53) | `PRD-021C` Library Marketplace | ⛔⛔ **MUST NOT be reused, extended or reinterpreted.** ⚠ Its resemblance to *"Technical Specification"* is coincidental — it is **L**ibrary marke**T**place **S**omething, not a technical-spec stem |
+| **`LCTS-*`** | 2 occurrences | `PRD-021C` | ⛔ **MUST NOT be reused** |
+| **`TPA-*`** | `PRD-021B` Part **B9** | `PRD-021B` | ⛔ **MUST NOT be reused.** B9's identifiers stay B9's |
+| **`LMT-*`** | `PRD-021C` Part **C8** | `PRD-021C` | ⛔ **MUST NOT be reused** |
+| **`IMPL-*`** | Stage 6 task documents | Technical Owner | ⛔ **A `TS-*` document MUST NOT allocate `IMPL-*` identifiers** |
+| **`PERM-*`** | **2 occurrences repository-wide — ⭐ BOTH are *withdrawal* records** | ⛔ withdrawn | ⛔⛔ **MUST NOT be minted.** `AUTH-7.22`'s catalogue is **CLOSED** and enumerates **ZERO** permission identifiers, so ⛔ **no convention exists to extend**; `ADR-0043` §5.1 — *"Do not invent a new permission ID"* |
+
+### 19.4 ⛔ What this section does NOT do
+
+⛔ **No `TS-*` identifier is allocated, reserved in particular, or drafted.** ⛔ **`docs/50-technical/` is NOT
+created.** ⛔ **No Technical Specification exists after this act**, and ⛔ **none may be drafted without its own
+governed conferral** — [`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) authorises the **class**, ⛔ **not the content**.
+
+⛔ **§4, §7 and every count row above are NOT edited by this append.** ⚠ Same disclosure as §17.2 and §18.2: those
+figures are **derived**, their counting rule is the open residue of `GCP-18`, and ⭐ **a Technical Specification is
+not a PRD** — so ⛔ **no PRD count, status count or *"Missing V1"* figure changes**, by correctness rather than by
+omission. ⛔ **Routed, not repaired.**
+
+### 19.5 ⛔ Blockers that remain OPEN
+
+⚠ Reserving a namespace does not make specification lawful yet. ⛔ **All five remain OPEN**, each recorded in
+[`ADR-0131`](../adr/ADR-0131-constitute-technical-specification-governance.md) §12 with its required authority: **B-2** `AUTH-7.22` permission catalogue (**ZERO** enumerated) · **B-3**
+`Q-01`/`Q-03`/`Q-04`/`Q-06` with `MP-DEP-07` still blocking **schema freeze** · **B-4** `PRD-008` §6.1 payment
+divergence (**recorded, NOT repaired**) · **B-5** no API style, error taxonomy, versioning or idempotency
+transport · **B-6** `DEVELOPER_HANDOFF.md` + 6 implementation documents **stale on authentication**.

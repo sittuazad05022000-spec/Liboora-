@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.26** |
+| **Version** | **v1.27** ⭐ *(advanced 2026-09-11 by the Technical Owner one-act act that adds **§2V**, the central `TS-*` inventory, and repairs the stale `ADRs applied` cell — `TSG-GAP-005`. ⚠ **Prior: v1.26.** ⚠⚠ **A VERSION DRIFT IS DISCLOSED AND DELIBERATELY NOT REPAIRED HERE:** `DOCUMENTATION_BASELINE.md` §3.4 records this document at **`v1.1`** — **26 versions stale** — the `GCP-21` derived-statement class. ⛔ **That declaration is NOT edited by this act:** it is a **Governance Owner** artefact and this conferral is **Technical Owner** only — *"Those are different roles"* (`ADR-0054` **L148**). ⭐ Repair is routed, not performed. ⛔ This matrix is **unranked**, so no baseline identifier moves and no ADR was required — the **L173** precedent in this very file: *"This document is unranked, so no ADR was required to correct it."*)* |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** · ⚠⚠ **THIS CELL WAS ITSELF STALE AND IS CORRECTED HERE, NOT REWRITTEN:** it stopped at **§2Q** while the document already carried **§2R**, **§2S**, **§2T** and **§2U** — ⭐ **§2R** (`PRD-021C` C0–C8, L2721) · **§2S** (`PRD-015` Search Indexing, L2972) · **§2T** (`PRD-010` Notifications, L3552) · **§2U** (`PRD-009` Analytics, L3637) — each added without extending this Date field. ⭐ The four omissions are now named; ⛔ **no section is renamed, renumbered, moved or altered**, and ⛔ **no historical date is changed**. · ⭐⭐ **§2V added 2026-09-11** — the **central `TS-*` inventory**, the first entry of the Technical Specification class in this matrix, under the Technical Owner one-act conferral discharging `TSG-GAP-005` |
 | **Baseline** | **BASELINE-2026-08-04-D** — ⚠ **not re-issued by §2G.** `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier only *"when a Rank 1–3 document changes version"*. `PRD-008` is **byte-unchanged** by this pass, so no baseline change is due, and this matrix is **unranked** — it confers nothing |
 | **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** · **Attendance Management PRD v1.3 (`PRD-006`, `DRAFT`)** · **Revenue & Finance PRD v1.7 (`PRD-008`, `DRAFT`)** · **Integration PRD v0.2 (`PRD-019`, `DRAFT`)** · **Tenancy PRD v0.1 (`PRD-013`, `FROZEN`)** · **Audit Trail PRD v0.1 (`PRD-016`, `DRAFT`)** · **Entitlement PRD v0.1 (`PRD-014`, `DRAFT`)** · **Settings & Configuration PRD v0.1 (`PRD-023`, `DRAFT`)** · **File & Media PRD v0.1 (`PRD-017`, `DRAFT`)** ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**. |
-| **ADRs applied** | `ADR-0001` … **`ADR-0018`**, **`ADR-0020`**, **`ADR-0032`** |
+| **ADRs applied** | ⭐⭐ **RE-MEASURED 2026-09-11 under the Technical Owner one-act conferral that discharges `TSG-GAP-005` (see §2V).** ⭐ **The governed ADR inventory is `ADR-0001` … `ADR-0141` — 129 files on disk, lowest `ADR-0001`, highest `ADR-0141`, counted mechanically (`ls docs/00-governance/adr/ADR-0*.md`).** ⚠⚠ **THE PRIOR TEXT OF THIS CELL WAS STALE AND IS DISCLOSED, NOT REWRITTEN AWAY:** it read *"`ADR-0001` … **`ADR-0018`**, **`ADR-0020`**, **`ADR-0032`**"* — an enumeration of **20** identifiers, correct when written and stale since. ⚠ `ADR-0131` **L467** recorded the shortfall as *"leaving **98 ADRs unlisted**"*; ⭐ **re-measured today the figure is 109 unlisted** (129 − 20), because **11 further ADRs were accepted after that measurement** (`ADR-0131` … `ADR-0141`). ⛔ **The historical figure `98` is NOT corrected in `ADR-0131`** — that is an `Accepted` ADR and `ADR-INDEX` **L206** forbids editing its text; ⭐ the drift is recorded **here**, in the unranked document that can carry it. ⛔⛔ **THIS CELL ASSERTS COVERAGE OF THE INVENTORY, NOT APPLICATION OF EVERY ADR:** ⛔ it does **not** claim all 129 ADRs were applied to this matrix's requirement mappings, ⛔ does **not** re-open or re-apply any ADR, and ⛔ does **not** confer or alter any ADR's status. ⭐ The **20** identifiers named above remain the set historically *applied* to §2A–§2C's mappings; ⛔ **that historical statement is preserved in meaning and is not withdrawn.** |
 
 ---
 
@@ -3753,3 +3753,148 @@ failure is what demonstrates it measures this matrix rather than echoing the PRD
 | `PRD-009_STAGE3_ARCHITECTURE_ALIGNMENT.md` v1.0 | Stage-3 gate artefact |
 | `PRD-009_STAGE3_CONFERRAL.md` v1.0 | Stage 3 **CONFERRED**, 6/6 |
 | `PRD-009_STAGE4_CONFERRAL.md` v1.0 | Stage 4 **CONFERRED**, 6/6 |
+
+---
+
+---
+
+## 2V. `TS-001` Technical Specification — the central `TS-*` inventory
+
+⭐⭐ **This section is the central `TS-*` inventory that `TSG-GAP-005` limb (a) requires.** It is the **first** entry
+of the Technical Specification document class in this matrix.
+
+⛔⛔ **It registers an inventory. It confers nothing.** ⛔ No status, rank, freeze, approval or correctness is
+conferred, implied or claimed here — status was conferred by `Accepted`
+[`ADR-0141`](../00-governance/adr/ADR-0141-ts-001-admitted-as-governed-technical-specification-unranked-tsg-gap-005-partially-discharged.md),
+and this matrix is **unranked**.
+
+### 2V.1 Authority for this section
+
+| Field | Value |
+|---|---|
+| **Act** | ⭐ Repair `TRACEABILITY_MATRIX.md` to address **`TSG-GAP-005`**. ⛔ **NOTHING ELSE** |
+| **Office required** | ⭐ **Technical Owner** — `ADR-0131` **L468**: *"Repairing it … **belongs to the Technical Owner**, and is ⛔ **a separate act**"*; `PRD_OWNERSHIP_MODEL` **L86** scopes the office to *"traceability from requirement to test"* |
+| **Conferral** | ⭐ **One-act conferral** by the human principal of this engagement, **specifically for repairing this file to address `TSG-GAP-005`**. ⛔⛔ **IT EXPIRES ON COMPLETION OF THIS SINGLE ACT** — *"A conferral for one act is not a standing licence"* (`ADR-0033` **§7.1**, **L169**). ⛔ **Not standing authority; not usable for any other file or subject** |
+| **Why no ADR was required** | ⭐ This document is **unranked** — recorded in `DOCUMENTATION_BASELINE.md` **§3.4** (*Configuration and implementation*), with **0** mentions in §4's precedence table — so `DOCUMENTATION_BASELINE.md` **§7 rule 1** (*"A change to any **Rank 1–5** document requires an ADR before the change"*) **does not reach it**. ⭐ This file's own **L173** precedent states it: *"**This document is unranked, so no ADR was required to correct it.**"* ⛔ **No ADR was created for this act, and `ADR-0142` was NOT allocated** |
+| **Office recorded as occupied?** | ⛔⛔ **NO.** This section records which office is **required** and by which **conferral** it was exercised. ⛔ No name, no holder, no standing appointment |
+
+### 2V.2 Inventory entry
+
+| Field | Value — all measured, none invented |
+|---|---|
+| **Document identifier** | ⭐ **`TS-001`** |
+| **Path** | `docs/50-technical/social-graph/TS-001-SGT-social-graph-messaging-integration-technical-specification.md` |
+| **Class** | Technical Specification — constituted by `Accepted` `ADR-0131` |
+| **Lifecycle stage** | **`6A`** (`PRD_LIFECYCLE.md` §7A) |
+| **Status** | ⭐ **ADMITTED / governed**, by `Accepted` **`ADR-0141`** `D-1`, satisfying §7A.8 (*"Becomes a **governed document** only when an **Accepted ADR** admits it"*). ⚠ The document's own header reads **`DRAFT`** — ⛔ **deliberately NOT edited by this act**; ⭐ status lives in the admitting ADR, never in the subject (`ADR-0131` §8.2 **`P-7`**) |
+| **⛔⛔ Rank** | ⛔⛔ **UNRANKED.** `PRD_LIFECYCLE.md` §7A.7 — *"governed but **UNRANKED** … **the ranked document wins by default**"*; `ADR-0131` §8.3. ⛔ **No rank is assigned, inferred or implied by this entry.** Open as **`TSG-GAP-004`** (Architecture Owner) |
+| **Version** | **v0.1** |
+| **Subject / B9 relationship** | ⭐ **`PRD-021B` Social Graph, Discovery & Messaging — Part B9**, Technical & Production Architecture. ⭐ **B9 is CITED INPUT AND STRUCTURAL PRECEDENT ONLY** (`ADR-0131` §6.1). ⛔⛔ **B9 IS NOT CONVERTED, RE-EXPRESSED, REWRITTEN, RENAMED, RE-IDENTIFIED, RESTATUSED OR MOVED** — `ADR-0140` `D-2` disposed of `TSG-GAP-003` **for B9 only and in the negative**; B9 remains a **Rank 3** document at its own identifier and version |
+| **Authorising conferral for the TS itself** | `Accepted` **`ADR-0140`** `D-4` — a **four-office** one-act conferral (Technical + Architecture + Product + Domain Owner), ⛔ **all reverted on completion** |
+| **Requirement identifier stem** | ⭐ **`SGT`**, form `TS-001-SGT-<nnn>` (`ADR-0131` §5.2) |
+| **Requirements registered** | ⭐ **16** — `TS-001-SGT-001` … `TS-001-SGT-016`, **contiguous from `001`** |
+| **Size** | **338 lines / 31,268 bytes** |
+| **git blob** | `fba2441fcd971eccfb80f3331530eee587c00c94` |
+| **sha256 (leading 16)** | `7e2426f1bb600c38` |
+
+### 2V.3 Stem collision measurement — `SGT`, five directions
+
+⭐ Reproduced from the measurement made before use (`PRD_LIFECYCLE.md` §5 rule 2; exit gate **`X-2`**):
+
+| Direction | Instrument | Result |
+|---|---|---|
+| Documentation | `grep -ro 'SGT' docs/` | ⭐ **0** |
+| Code / tests / tooling | `grep -ro 'SGT' lib test tool` | ⭐ **0** |
+| Git history, all branches | `git log --all -S'SGT-'` | ⭐ **0** commits |
+| Prefix register | `grep -c 'SGT' PRD_REGISTRY.md` | ⭐ **0** |
+| **This matrix, before §2V** | `grep -c 'SGT' TRACEABILITY_MATRIX.md` | ⭐ **0** |
+
+⚠ **`RTM` (358 occurrences) and `TSG` (64) were considered and REFUSED on measurement.** ⛔⛔ **`TPA-*` and `MSG-*`
+are NOT reused, extended or reinterpreted** — they are B9's own (measured in B9: **80** `TPA-BR`, **43** `TPA-FR`,
+**30** `TPA-XC`, **24** `TPA-AC`, **19** `TPA-INV`, **13** `TPA-PRIN`, **12** `TPA-GAP`, **4** `TPA-GOAL`, plus
+`MSG-*`), and `ADR-0131` §5.3 binds: *"⛔⛔ **MUST NOT be reused.** B9's own identifiers stay B9's."* ⛔ `LTS-*`,
+`LCTS-*`, `LMT-*`, `IMPL-*` and `PERM-*` likewise not reused.
+
+⚠ **`X-2` is verified by LOCATION AND CONTEXT, not by a global count** (`ADR-0140` `D-7`; `ADR-0138` §3.4):
+`TS-001` measures **50+** repository-wide, ⭐ **all non-operative** — prohibitions, reservations and measurement
+reports. ⭐ The operative test is **zero occurrences in any operative position**, and `SGT` is operative **only**
+inside `TS-001`.
+
+### 2V.4 Traceability — requirement → authority, as registered in `TS-001`
+
+⭐ `TS-001` carries **section-level** traceability (`X-6`, **13** section rows) and a **gap register** (`X-5`,
+**12** rows). ⛔ **Nothing is re-derived here**; this is an inventory of what that document already states.
+
+| `TS-001` § | Requirements | Chain: PRD → Architecture/BC → ADR |
+|---|---|---|
+| §4.1 | `SGT-001` | B9 §7 `TPA-FR-001` → BC Map **L318**/**L319**/**L320**/**L328**/**L329**/**L330**/**L331**/**L332** → `ADR-0092`, `ADR-0055` |
+| §4.2 | `SGT-002` | B9 §7 `TPA-BR-001`, `XPB-CONF-011` → BC Map **L292** → `ADR-0065` |
+| §4.3 | `SGT-003` | Rank 1 `MP-CON-09` → BC Map → `ADR-0135` `API-3`, `ADR-0012` |
+| §5.1 | `SGT-004` | Rank 1 **L407**/**L408**/**L410** → BC Map **L226** → `ADR-0135` `API-1`…`API-9`, `ADR-0010` **L151** |
+| §5.2 | `SGT-005` | ⚠ *no PRD decides it — that is the gap* → — → `ADR-0135` **L194**/**L195**, `ADR-0139` |
+| §5.3 | `SGT-006` | Rank 1 `MP-GBR-26` → Matrix **L220** → `ADR-0135` SESSION |
+| §6.1 | `SGT-007` | FROZEN `AUTH-7.22` → `AP-9` → `ADR-0043` §5.1, `ADR-0132`, `ADR-0135` |
+| §6.2 | `SGT-008` | `LCM-AUTH-001`/`002` → — → `ADR-0135` AUTHZ |
+| §6.3 | `SGT-009` | Rank 1 **L410** → `AP-9` → `ADR-0135` `API-4`/`API-5`/`API-6` |
+| §7.1 | `SGT-010`…`012` | FROZEN `MSG-FR-011`, `MSG-BR-001`, `MSG-INV-004`; B9 §16 → — → `ADR-0135` `API-9`, `ADR-0092` |
+| §7.2 | `SGT-013`, `014` | B9 §19 `TPA-XC-013`, `TPA-FR-014` → BC Map **L292**/**L330**, Matrix **L357** `X-08` → `ADR-0092` |
+| §7.3 | `SGT-015` | B9 §9; Rank 1 `MP-GBR-18` → — → `ADR-0135` `API-9` |
+| §7.4 | `SGT-016` | Rank 1 `MP-CON-01`/`02`, `MP-RSK-05` → B9 §11 → `ADR-0137` `RET-12`, `ADR-0116`, `ADR-0124` |
+
+### 2V.5 Coverage stated at its measured value
+
+⛔⛔ **`ADMITTED` is not `VERIFIED`.** Registered honestly, ⛔ **not flattered**:
+
+| Measure | Value |
+|---|---|
+| Requirements registered | **16** |
+| Acceptance criteria | ⭐ **0** — ⛔ `TS-001` allocates none, by design (`ADR-0131` §8.2 **`P-8`**) |
+| `IMPL-*` tasks allocated | ⭐ **0** — ⛔ a `TS-*` document **MUST NOT** allocate `IMPL-*` (§5.3) |
+| Requirements proven by a test | ⛔ **0 of 16** |
+| Open gaps carried | **12**, ⛔ **none closed** |
+
+### 2V.6 ⛔ What this section does NOT do
+
+1. ⛔⛔ **Assigns no rank** to `TS-001` or to the Technical Specification class. `TSG-GAP-004` stays **OPEN**.
+2. ⛔⛔ **Creates no `TS-002`**, nominates no second subject, and authorises no further specification
+   (`ADR-0140` `D-10`). ⛔ **`TSG-GAP-003` stays OPEN for `PRD-021A` A8 and `PRD-021C` C8.**
+3. ⛔⛔ **Creates no new registry status** for the `TS-*` class — `TSG-GAP-006` stays **OPEN**.
+4. ⛔ **Does not rename, re-identify, re-version or modify `TS-001`**, and ⛔ **does not modify B9**.
+5. ⛔⛔ **Mints no permission identifier** — `AUTH-7.22` stays **CLOSED at 0**; ⛔ no `PERM-*`.
+6. ⛔ **Resolves nothing:** `API-GAP-001` **OPEN**, `API-8` **DEFERRED**, `Q-04`/`LR-01` untouched,
+   `TPA-GAP-004` **OPEN**, blocker **7a OPEN**, `B-5` **DISPOSED-not-closed**, `SX-02` **withdrawn**,
+   ⛔ **no `SX-05`**.
+7. ⛔ **Invents no API mechanism, header, endpoint, schema, migration, retention period, TTL, payment
+   mechanism, authentication rule or architecture boundary.**
+8. ⛔ **Enters no Stage 7 and no implementation**, and ⛔ **invents no "Stage 6A completion" act** — ⭐ §7A.2's
+   exit gate is an **artefact** (*"a `TS-*` document satisfying `X-1`…`X-6`"*), which exists and is admitted.
+9. ⛔ **Modifies no other file** — ⛔ not `DOCUMENTATION_BASELINE.md`, ⛔ not any Rank 1–5 document,
+   ⛔ not `ADR-0131`/`0135`/`0140`/`0141`, ⛔ no ADR at all.
+
+### 2V.7 ⭐ `TSG-GAP-005` — disposition on measurement
+
+| Limb, as `ADR-0131` §11 words it | Before this act | After this act |
+|---|---|---|
+| **(a)** *"`TRACEABILITY_MATRIX.md` **must gain a `TS-*` inventory**"* | ⛔ **0** `TS-*`/`TS-001`/`SGT` entries | ⭐ **SATISFIED — §2V is that inventory**, registering `TS-001` with subject, status, version, UNRANKED nature and traceability |
+| **(b)** *"**its stale header must be repaired** (98 unlisted ADRs)"* | ⛔ `ADRs applied` stopped at **`ADR-0032`** (20 of 129); `Date` stopped at **§2Q** of §2U | ⭐ **SATISFIED — `ADRs applied` re-measured to `ADR-0001` … `ADR-0141` (129 files)** and the `Date` cell's four missing sections (§2R–§2U) named; ⚠ **the stale `98` is disclosed and re-measured as `109`** |
+
+⭐⭐ **BOTH LIMBS ARE NOW SATISFIED, so `TSG-GAP-005` is recorded CLOSED — here, in the Technical Owner work
+product, and nowhere else.** ⛔ **No ADR is created merely to declare that closure**, because this document is
+unranked and `ADR-0131` **L468** already assigns the act to this office as *"a separate act"*.
+
+⚠⚠ **THREE LIMITS ARE STATED PLAINLY:**
+
+1. ⚠ **`ADR-0131` §11's own table still reads *"98 unlisted"* and is NOT edited** — it is an `Accepted` ADR, and
+   `ADR-INDEX` **L206** forbids editing its text (*"supersede it with a new ADR"*). ⭐ A reader comparing the two
+   will find the arithmetic reconciled **here**, not there. ⛔ Whether `ADR-0131`'s gap table should be formally
+   superseded is **not decided by this act** and needs its own governed act.
+2. ⚠⚠ **`DOCUMENTATION_BASELINE.md` §3.4 still records this file at `v1.1` against `v1.27`** — **26 versions**
+   stale, the `GCP-21` derived-statement class. ⛔ **NOT repaired here:** that declaration is a **Governance
+   Owner** artefact and this conferral is **Technical Owner** only (`ADR-0054` **L148** — *"Those are different
+   roles"*). ⭐ **Routed, not performed.**
+3. ⚠ **`ADRs applied` now states inventory coverage, not application.** ⛔ It does **not** claim all 129 ADRs were
+   applied to §2A–§2U's mappings; ⭐ the original **20** remain the historically applied set, and that statement is
+   **preserved in meaning**.
+
+⛔⛔ **THE CONFERRAL FOR THIS ACT IS NOW SPENT.** ⛔ It authorised **this file and this gap only**, and
+⛔ **expires on completion of this single act.**

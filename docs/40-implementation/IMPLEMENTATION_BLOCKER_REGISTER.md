@@ -469,3 +469,14 @@ identifier, derived mechanically: **`ADR-0117`** (104 files, highest identifier 
 
 ⛔ **Every act above is ONE ACT ONLY and NONE is a standing licence** (`ADR-0033` §7.1). ⛔ No holder is
 appointed and no personal name is recorded (`PRD_OWNERSHIP_MODEL.md` §7 rule 4).
+
+---
+
+> ⭐ **Cross-reference, ⛔ NOT a blocker.** The retention **legal risk** formerly implicit in blocker **7a** is recorded
+> as **`LR-01`** in [`../00-governance/LEGAL_RISK_REGISTER.md`](../00-governance/LEGAL_RISK_REGISTER.md), opened by
+> `Accepted` [`ADR-0137`](../00-governance/adr/ADR-0137-q-04-reframed-mp-dep-07-discharged-legal-risk-opened-as-lr-01.md).
+> ⛔⛔ **Blocker 7a itself is UNCHANGED and remains OPEN.** Its statement that there is **no authoritative retention
+> number** remains **TRUE**, and its instruction *"**Do not adopt** '7 years financial / 2 years attendance'"* remains
+> **BINDING**. ⛔ `ADR-0137` adopts **no** retention period, TTL, purge schedule, cron or deletion deadline, gives
+> **no** legal opinion, and claims **no** compliance. ⛔ **`LR-01` is a legal-risk item, not an implementation
+> blocker** — it blocks nothing and closes nothing here.

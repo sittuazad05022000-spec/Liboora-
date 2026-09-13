@@ -174,6 +174,15 @@ String encodeMembership(Membership m) => jsonEncode({
   'status': m.status.name,
   'priceSnapshot': _money(m.priceSnapshot),
   'planVersionAtPurchase': m.planVersionAtPurchase,
+  // §13.1 fields added by IMPL-410. Optional on read, so a row written
+  // before they existed still decodes.
+  'seatQuotaSnapshot': m.seatQuotaSnapshot,
+  'createdAt': m.createdAt == null ? null : _date(m.createdAt!),
+  'createdBy': m.createdBy,
+  'activatedAt': m.activatedAt == null ? null : _date(m.activatedAt!),
+  'activatedBy': m.activatedBy,
+  'renewedFromMembershipId': m.renewedFromMembershipId,
+  'upgradedFromMembershipId': m.upgradedFromMembershipId,
 });
 
 /// Status names as written by schema v1.
@@ -210,6 +219,15 @@ Membership decodeMembership(String raw) {
       priceSnapshot: _readMoney(m['priceSnapshot']),
       planVersionAtPurchase: m['planVersionAtPurchase']! as int,
       status: _readEnum(MembershipStatus.values, m['status'], (e) => e.name),
+      // Absent in the first v2 rows; defaulted rather than treated as
+      // corruption, because the field is Optional in §13.1.
+      seatQuotaSnapshot: m['seatQuotaSnapshot'] as int? ?? 0,
+      createdAt: _readDateOrNull(m['createdAt']),
+      createdBy: m['createdBy'] as String?,
+      activatedAt: _readDateOrNull(m['activatedAt']),
+      activatedBy: m['activatedBy'] as String?,
+      renewedFromMembershipId: m['renewedFromMembershipId'] as String?,
+      upgradedFromMembershipId: m['upgradedFromMembershipId'] as String?,
     );
   }
 
@@ -231,6 +249,8 @@ Membership decodeMembership(String raw) {
     priceSnapshot: _readMoney(p['price']),
     planVersionAtPurchase: 1,
     status: status,
+    // v1 stored the quota on the embedded plan; carry it onto the snapshot.
+    seatQuotaSnapshot: p['seatQuota'] as int? ?? 0,
   );
 }
 

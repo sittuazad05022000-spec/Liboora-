@@ -247,8 +247,7 @@ final class MembershipPlan {
   /// allowed set and `MM-CFG-001` merely supplies a default, so enumerating
   /// one here would invent a requirement. Three upper-case letters is what
   /// ISO-4217 specifies and all this module is entitled to assert.
-  static bool _isIso4217(String code) =>
-      RegExp(r'^[A-Z]{3}$').hasMatch(code);
+  static bool _isIso4217(String code) => RegExp(r'^[A-Z]{3}$').hasMatch(code);
 
   /// `MM-FR-008` — required. `MM-FR-021` — IMMUTABLE (identity).
   final String id;
@@ -399,7 +398,44 @@ final class Membership {
     required this.priceSnapshot,
     required this.planVersionAtPurchase,
     MembershipStatus status = MembershipStatus.active,
-  }) : _status = status;
+    this.seatQuotaSnapshot = 0,
+    this.createdAt,
+    this.createdBy,
+    DateTime? activatedAt,
+    String? activatedBy,
+    this.renewedFromMembershipId,
+    this.upgradedFromMembershipId,
+  }) : _status = status,
+       _activatedAt = activatedAt,
+       _activatedBy = activatedBy {
+    // MM-INV-010: exactly one plan reference, never zero.
+    if (planId.trim().isEmpty) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A membership must reference exactly one plan.',
+        context: {'field': 'planId', 'membershipId': id},
+      );
+    }
+    // MM-FR-012 / §13.1: priceSnapshot >= 0.
+    if (priceSnapshot.minorUnits < 0) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'priceSnapshot must not be negative.',
+        context: {'field': 'priceSnapshot', 'membershipId': id},
+      );
+    }
+    // MM-INV-011: activatedAt is set if and only if the membership has ever
+    // been Active. Constructing a PendingPayment row that already claims an
+    // activation timestamp would make the audit trail lie.
+    if (_activatedAt != null && _status == MembershipStatus.pendingPayment) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'activatedAt cannot be set on a membership that has never been '
+        'active.',
+        context: {'field': 'activatedAt', 'membershipId': id},
+      );
+    }
+  }
 
   /// Takes the `MM-FR-026` snapshots from [plan] *"at that moment"*.
   ///
@@ -411,6 +447,12 @@ final class Membership {
     required MembershipPlan plan,
     required DateRange term,
     MembershipStatus status = MembershipStatus.active,
+    DateTime? createdAt,
+    String? createdBy,
+    DateTime? activatedAt,
+    String? activatedBy,
+    String? renewedFromMembershipId,
+    String? upgradedFromMembershipId,
   }) => Membership(
     id: id,
     studentRecordId: studentRecordId,
@@ -418,8 +460,34 @@ final class Membership {
     term: term,
     priceSnapshot: plan.price,
     planVersionAtPurchase: plan.version,
+    // MM-FR-025: the quota published for an active membership must not move
+    // when the plan's quota changes, so it is snapshotted like the price.
+    seatQuotaSnapshot: plan.seatQuota,
     status: status,
+    createdAt: createdAt,
+    createdBy: createdBy,
+    activatedAt: activatedAt,
+    activatedBy: activatedBy,
+    renewedFromMembershipId: renewedFromMembershipId,
+    upgradedFromMembershipId: upgradedFromMembershipId,
   );
+
+  /// `MM-FR-041` — the initial status, decided by the payment condition and
+  /// **never invented**.
+  ///
+  /// `PendingPayment` when an amount is owed and no outcome has arrived;
+  /// `Active` when the amount is zero or a payment outcome already exists.
+  ///
+  /// `MM-BR-001`/`MM-BR-002`: the *amount* comes from the plan's own snapshot
+  /// and the *outcome* is a boolean this module was told, over `E-10`. No
+  /// ledger is read, no balance is computed, no gateway is called — which is
+  /// why the parameter is `paymentAlreadyReceived` and not an amount paid.
+  static MembershipStatus initialStatusFor({
+    required Money applicableAmount,
+    required bool paymentAlreadyReceived,
+  }) => applicableAmount.minorUnits == 0 || paymentAlreadyReceived
+      ? MembershipStatus.active
+      : MembershipStatus.pendingPayment;
 
   final String id;
   final StudentRecordId studentRecordId;
@@ -442,6 +510,36 @@ final class Membership {
   /// `MM-FR-026`/`MM-FR-027` — immutable. Proves *which* plan revision was
   /// sold; a price alone cannot.
   final int planVersionAtPurchase;
+
+  /// §13.1 — the seat allowance conferred, snapshotted. `MM-FR-025`.
+  final int seatQuotaSnapshot;
+
+  /// §13.1 creation metadata. UTC (`MM-FR-063`).
+  final DateTime? createdAt;
+  final String? createdBy;
+
+  /// §13.1 — `renewedFromMembershipId` / `upgradedFromMembershipId`.
+  ///
+  /// Lineage **fields only**. §24.1 classifies these as `B — Recommended for
+  /// V1` precisely because *"the Membership History feature surface remains
+  /// V2"*, so the ids are carried and no history UI is implied.
+  final String? renewedFromMembershipId;
+  final String? upgradedFromMembershipId;
+
+  DateTime? _activatedAt;
+  String? _activatedBy;
+
+  /// §13.1 — write-once activation metadata. `MM-INV-011`: set if and only if
+  /// the membership has ever been `Active`.
+  DateTime? get activatedAt => _activatedAt;
+  String? get activatedBy => _activatedBy;
+
+  /// `MM-BR-001` / `MM-XC-004` — the money boundary, stated as a property.
+  ///
+  /// This aggregate holds an *amount that applies* and nothing else: no
+  /// balance, no receipt, no refund, no ledger entry. The distinction is the
+  /// whole reason `BC-05` exists.
+  Money get applicableAmount => priceSnapshot;
 
   /// Mutable only through the `MM-FR-074` transition machine below.
   MembershipStatus _status;
@@ -522,7 +620,16 @@ final class Membership {
   void schedule() => _transitionTo(MembershipStatus.scheduled);
 
   /// → `Active`. Entitlement begins.
-  void activate() => _transitionTo(MembershipStatus.active);
+  ///
+  /// `MM-INV-011` — `activatedAt` is written **once**, on the first
+  /// activation. A later transition through `Active` must not overwrite it:
+  /// the audit question is *"when did entitlement begin"*, and that has one
+  /// answer per membership.
+  void activate({DateTime? at, String? by}) {
+    _transitionTo(MembershipStatus.active);
+    _activatedAt ??= at;
+    _activatedBy ??= by;
+  }
 
   /// `Active` → `Expired` when `endDate` has passed.
   void expire() => _transitionTo(MembershipStatus.expired);

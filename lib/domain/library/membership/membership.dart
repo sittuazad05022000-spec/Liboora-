@@ -187,16 +187,17 @@ final class MembershipValidityService implements MembershipValidityReader {
   MembershipValidity forStudent(StudentRecordId id, DateTime on) {
     for (final m in _repo.forStudent(id)) {
       if (m.isValidOn(on)) {
-        // MM-FR-025: seatQuota published for an active membership must not
-        // change when the plan changes. A missing plan (deleted catalogue row,
-        // or a membership restored before its plan) must not deny a paid
-        // student their seat, so quota falls back to zero and the term still
-        // reports valid.
+        // MM-FR-025: the quota published for an ACTIVE membership must not
+        // move when the plan's quota changes — retroactively reducing it
+        // could invalidate a seat a student is physically sitting in. So the
+        // quota comes from the membership's own snapshot, not the live plan.
+        // The plan is read for its display name only, and a missing plan does
+        // not deny a paid student their seat.
         final plan = _plans.byId(m.planId);
         return MembershipValidity(
           isValid: true,
           validUntil: m.term.end,
-          seatQuota: plan?.seatQuota ?? 0,
+          seatQuota: m.seatQuotaSnapshot,
           planName: plan?.name ?? '—',
         );
       }
@@ -227,6 +228,7 @@ final class CreateMembership {
     required StudentRecordId studentId,
     required MembershipPlan plan,
     DateTime? startingOn,
+    bool paymentAlreadyReceived = false,
   }) async {
     pdp.require(actorRole, Permission.createMembership);
 
@@ -246,6 +248,15 @@ final class CreateMembership {
     // Invariant check with data supplied by the repository.
     Membership.assertNoOverlap(repo.forStudent(studentId), term);
 
+    // MM-FR-041: the initial status is DECIDED by the payment condition, not
+    // assumed. MM-BR-002 means this module learns a payment outcome only from
+    // BC-05 over E-10, so at creation the only lawful inputs are the amount
+    // that applies and whether an outcome has already arrived.
+    final initialStatus = Membership.initialStatusFor(
+      applicableAmount: plan.price,
+      paymentAlreadyReceived: paymentAlreadyReceived,
+    );
+
     // MM-FR-026: the snapshots are taken from the plan being sold, at this
     // moment, together with its version.
     final m = Membership.fromPlan(
@@ -253,6 +264,16 @@ final class CreateMembership {
       studentRecordId: studentId,
       plan: plan,
       term: term,
+      status: initialStatus,
+      createdAt: clock.now(),
+      createdBy: tenant.actorId,
+      // MM-INV-011: activation metadata exists only if it activated now.
+      activatedAt: initialStatus == MembershipStatus.active
+          ? clock.now()
+          : null,
+      activatedBy: initialStatus == MembershipStatus.active
+          ? tenant.actorId
+          : null,
     );
     repo.save(m);
 

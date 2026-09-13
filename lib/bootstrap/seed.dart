@@ -493,11 +493,18 @@ Future<void> _seedStudents(AppContainer c) async {
     // Membership starts staggered in the past so the dashboard shows a mix of
     // "expiring soon" and "comfortable".
     final startedDaysAgo = 3 + (records.length * 2);
+    // MM-FR-041: the initial status turns on whether a payment *outcome* has
+    // been received -- not on whether the ledger is settled. MM-FR-043 keys
+    // activation on `fee.FeePaymentReceived`, and every roster row below
+    // collects a payment (full, or a 50% part payment). So the outcome exists
+    // for all of them and `true` is the honest answer here. `r.paidInFull`
+    // describes the resulting balance, which is a BC-05 concern, not BC-02's.
     await c.createMembership(
       actorRole: owner,
       studentId: student.id,
       plan: plan,
       startingOn: c.clock.today().subtract(Duration(days: startedDaysAgo)),
+      paymentAlreadyReceived: true,
     );
 
     // Fee: raise the plan price, collect fully or partially.
@@ -609,6 +616,7 @@ Future<void> _seedOtherTenantStudents(AppContainer c) async {
       studentId: s.id,
       plan: _planFor(c, kOtherTenant, kPlanReserved),
       startingOn: c.clock.today(),
+      paymentAlreadyReceived: true,
     );
   }
   c.clock.unpin();

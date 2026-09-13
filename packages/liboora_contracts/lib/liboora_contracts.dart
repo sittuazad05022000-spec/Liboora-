@@ -26,6 +26,7 @@ export 'src/ports/durable_store.dart';
 export 'src/ports/file_access.dart';
 export 'src/ports/id_generator.dart';
 export 'src/ports/job_runtime.dart';
+export 'src/ports/membership_config.dart';
 export 'src/ports/otp_delivery.dart';
 export 'src/ports/person_identity_factory.dart';
 export 'src/ports/random_source.dart';

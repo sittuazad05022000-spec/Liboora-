@@ -51,6 +51,7 @@ final class AppContainer {
     required this.analytics,
     required this.policies,
     required this.students,
+    required this.membershipConfig,
     required this.memberships,
     required this.membershipPlans,
     required this.membershipValidity,
@@ -109,6 +110,12 @@ final class AppContainer {
 
   final OfflineSyncEngine sync;
   final AuditTrail audit;
+
+  /// `IMPL-407` — the nine `MM-CFG-*` configurables, typed.
+  ///
+  /// Port-typed so that when `BC-25` Configuration is implemented, replacing
+  /// the default-carrying adapter stays a change to this file alone.
+  final MembershipConfig membershipConfig;
   final AnalyticsProjections analytics;
 
   // ── Domain repositories / read models ────────────────────────────
@@ -416,6 +423,12 @@ final class AppContainer {
         ledgerStore.restore();
 
     final students = InMemoryStudentRepository(studentStore);
+    // IMPL-407: BC-25 Configuration has no implementation yet, so the port is
+    // satisfied by the adapter carrying PRD-005 §13.4's published defaults.
+    // Task document L128 requires exactly this — build against the port with
+    // a fake, never defer.
+    const membershipConfig = DefaultMembershipConfig();
+
     final memberships = InMemoryMembershipRepository(membershipStore);
     final membershipPlans = InMemoryMembershipPlanRepository(
       membershipPlanStore,
@@ -480,6 +493,7 @@ final class AppContainer {
       analytics: analytics,
       policies: policies,
       students: students,
+      membershipConfig: membershipConfig,
       memberships: memberships,
       membershipPlans: membershipPlans,
       membershipValidity: membershipValidity,

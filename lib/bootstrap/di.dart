@@ -561,6 +561,10 @@ final class AppContainer {
       ),
       createMembership: CreateMembership(
         repo: memberships,
+        plans: membershipPlans,
+        // E-01, through the ACL below -- BC-02 never imports BC-01.
+        enrollment: StudentRecordEnrollmentAcl(students),
+        config: membershipConfig,
         events: events,
         clock: clock,
         ids: ids,
@@ -684,6 +688,34 @@ final class AppContainer {
       accountStore.saveAll(accounts);
     }
     return container;
+  }
+}
+
+/// `IMPL-411` — the `E-01` anti-corruption layer.
+///
+/// `BC-02` declares [EnrollmentStatusReader]; `BC-01` owns the state. Neither
+/// imports the other. The translation lives in the composition root, which is
+/// the one place already permitted to know both contexts, so the edge stays a
+/// port rather than becoming a compile-time dependency.
+///
+/// It is an ACL and not a pass-through: a `StudentRecord` carries name, phone
+/// and address, all of which `MM-BR-021` forbids on `BC-02`'s side. Only the
+/// enrollment state crosses, mapped value-by-value so that adding a fifth
+/// state upstream is a compile error here instead of a silent admission.
+final class StudentRecordEnrollmentAcl implements EnrollmentStatusReader {
+  const StudentRecordEnrollmentAcl(this._students);
+  final StudentRepository _students;
+
+  @override
+  MembershipEnrollmentState? stateFor(StudentRecordId id) {
+    final record = _students.byId(id);
+    if (record == null) return null;
+    return switch (record.status) {
+      EnrollmentStatus.active => MembershipEnrollmentState.active,
+      EnrollmentStatus.inactive => MembershipEnrollmentState.inactive,
+      EnrollmentStatus.suspended => MembershipEnrollmentState.suspended,
+      EnrollmentStatus.archived => MembershipEnrollmentState.archived,
+    };
   }
 }
 

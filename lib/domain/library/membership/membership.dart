@@ -59,6 +59,58 @@ enum MembershipEdge {
       this == MembershipEdge.e02SeatingProjection;
 }
 
+/// `IMPL-411` / `MM-FR-034` — the enrollment precondition, read over `E-01`.
+///
+/// Declared **here**, by the consumer, and implemented in `enrollment` and
+/// wired in `di.dart`. `BC-02` therefore never imports `BC-01`: the edge is a
+/// port, not a compile-time dependency, which is the same shape `seating`
+/// already uses to read `MembershipValidityReader` in the other direction.
+///
+/// This deliberately exposes **only** the enrollment state. `MM-FR-003` and
+/// `MM-BR-021` forbid `BC-01` data on this side of the boundary, so a port
+/// that returned a `StudentRecord` would hand this module a name, a phone
+/// number and an address it must not hold. The answer is one enum, or null
+/// when the student does not exist in this tenant.
+abstract interface class EnrollmentStatusReader {
+  /// The student's enrollment state, or `null` when no such record exists in
+  /// the current tenant.
+  ///
+  /// Implementations **MUST** throw rather than return `null` if the
+  /// underlying `E-01` state cannot be read at all — `MM-BR-013` requires
+  /// creation to fail closed, and `null` would be indistinguishable from
+  /// "definitely not enrolled".
+  MembershipEnrollmentState? stateFor(StudentRecordId id);
+}
+
+/// The `E-01` payload, narrowed to what `MM-FR-035` needs to name.
+///
+/// A copy of `BC-01`'s vocabulary rather than a shared type, because
+/// `MM-FR-003` keeps the two contexts' models independent. The four values
+/// are `MM-FR-035`'s own list: `Active` admits a membership, the other three
+/// are named in the rejection.
+enum MembershipEnrollmentState {
+  active,
+  inactive,
+  suspended,
+  archived;
+
+  /// `MM-FR-033` — only an `Active` enrollment may receive a membership.
+  bool get admitsNewMembership => this == MembershipEnrollmentState.active;
+}
+
+/// `MM-BR-013` — raised when the `E-01` stream cannot be read.
+///
+/// A distinct type from "not enrolled" on purpose: the two must never be
+/// collapsed, because assuming an active enrollment on an unavailable stream
+/// is the exact failure `MM-BR-013` forbids.
+final class EnrollmentStreamUnavailable implements Exception {
+  const EnrollmentStreamUnavailable(this.reason);
+  final String reason;
+
+  @override
+  String toString() => 'EnrollmentStreamUnavailable: $reason';
+}
+
 abstract interface class MembershipRepository {
   List<Membership> forStudent(StudentRecordId id);
   List<Membership> all();
@@ -214,6 +266,9 @@ final class CreateMembership {
     required this.ids,
     required this.tenant,
     required this.pdp,
+    required this.plans,
+    required this.enrollment,
+    required this.config,
   });
 
   final MembershipRepository repo;
@@ -223,6 +278,15 @@ final class CreateMembership {
   final TenantContext tenant;
   final PolicyDecisionPoint pdp;
 
+  /// `MM-FR-033` — the plan must be resolved from *this* tenant's catalogue.
+  final MembershipPlanRepository plans;
+
+  /// `E-01` — the enrollment precondition (`MM-FR-034`).
+  final EnrollmentStatusReader enrollment;
+
+  /// `E-19` — `MM-CFG-003`/`MM-CFG-004` back-date and forward-date windows.
+  final MembershipConfig config;
+
   Future<Membership> call({
     required AccessRole actorRole,
     required StudentRecordId studentId,
@@ -230,10 +294,24 @@ final class CreateMembership {
     DateTime? startingOn,
     bool paymentAlreadyReceived = false,
   }) async {
+    // MM-FR-033 requires every precondition to be verified BEFORE anything is
+    // mutated. They are therefore all checked here, in order, and each one
+    // throws — none of them degrades into a warning.
     pdp.require(actorRole, Permission.createMembership);
 
-    // MM-FR-020: a deactivated plan must not be selectable for a new
-    // membership. Checked before any mutation, per MM-FR-033.
+    // MM-FR-033: the plan must belong to this tenant/branch. Resolving it
+    // from the tenant-partitioned catalogue rather than trusting the passed
+    // object is what makes MM-BR-029 hold: a plan handed in from another
+    // tenant simply is not there.
+    if (plans.byId(plan.id) == null) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'The plan "${plan.name}" does not belong to this tenant or branch.',
+        context: {'planId': plan.id, 'field': 'planId'},
+      );
+    }
+
+    // MM-FR-020/MM-FR-033: a deactivated plan must not be selectable.
     if (!plan.isActive) {
       throw DomainError(
         DomainErrorCode.validationFailed,
@@ -242,7 +320,67 @@ final class CreateMembership {
       );
     }
 
-    final start = startingOn ?? clock.today();
+    // MM-FR-034/MM-FR-035: the enrollment precondition, read over E-01.
+    //
+    // MM-BR-013 says this must fail CLOSED. So the unavailable-stream case is
+    // allowed to propagate as EnrollmentStreamUnavailable rather than being
+    // caught and treated as "probably fine" -- and a null answer (no such
+    // record in this tenant) is a rejection, not a pass.
+    final enrollmentState = enrollment.stateFor(studentId);
+    if (enrollmentState == null) {
+      throw DomainError(
+        DomainErrorCode.notFound,
+        'No student record exists in this tenant for the given id.',
+        context: {'studentRecordId': studentId.value, 'field': 'studentId'},
+      );
+    }
+    if (!enrollmentState.admitsNewMembership) {
+      // MM-FR-035: the error must NAME the enrollment state.
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A student whose enrollment is "${enrollmentState.name}" cannot '
+        'receive a new membership.',
+        context: {
+          'studentRecordId': studentId.value,
+          'enrollmentStatus': enrollmentState.name,
+          'field': 'enrollmentStatus',
+        },
+      );
+    }
+
+    // MM-FR-038: startDate defaults to the current business date, and is
+    // bounded by MM-CFG-003 behind and MM-CFG-004 ahead. Read through the
+    // config port (E-19), never as a literal.
+    final today = clock.today();
+    final start = startingOn ?? today;
+    final offsetDays = start.difference(today).inDays;
+    if (offsetDays < -config.maxBackdateDays) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'startDate may not be more than ${config.maxBackdateDays} days in '
+        'the past.',
+        context: {
+          'field': 'startDate',
+          'maxBackdateDays': config.maxBackdateDays,
+          'requestedOffsetDays': offsetDays,
+        },
+      );
+    }
+    if (offsetDays > config.maxForwardDateDays) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'startDate may not be more than ${config.maxForwardDateDays} days in '
+        'the future.',
+        context: {
+          'field': 'startDate',
+          'maxForwardDateDays': config.maxForwardDateDays,
+          'requestedOffsetDays': offsetDays,
+        },
+      );
+    }
+
+    // MM-FR-039: endDate is COMPUTED here and is never a caller input. There
+    // is deliberately no endDate parameter on this command to supply.
     final term = DateRange.days(start, plan.durationDays);
 
     // Invariant check with data supplied by the repository.
@@ -295,6 +433,12 @@ final class CreateMembership {
           'priceMinor': m.priceSnapshot.minorUnits,
           'currency': m.currencySnapshot,
           'planVersionAtPurchase': m.planVersionAtPurchase,
+          // MM-FR-040: the persisted creation metadata travels with the event
+          // so BC-05 can raise the FeeDue (E-07) without reading BC-02.
+          'status': m.status.name,
+          'startDate': term.start.toIso8601String(),
+          'createdAt': m.createdAt?.toIso8601String(),
+          'createdBy': m.createdBy,
           'validUntil': term.end.toIso8601String(),
         },
       ),

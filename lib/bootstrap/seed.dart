@@ -492,7 +492,16 @@ Future<void> _seedStudents(AppContainer c) async {
 
     // Membership starts staggered in the past so the dashboard shows a mix of
     // "expiring soon" and "comfortable".
-    final startedDaysAgo = 3 + (records.length * 2);
+    //
+    // MM-FR-038 bounds a back-dated startDate by MM-CFG-003, and the seeder is
+    // a caller like any other -- it gets no exemption. The stagger is
+    // therefore taken modulo the configured window and read from the config
+    // port rather than hard-coded, so retuning MM-CFG-003 cannot silently
+    // break the seeder again. A shorter spread than the original 3..23 days,
+    // which is a cosmetic loss in demo data and the correct trade against
+    // weakening a frozen rule.
+    final backdateWindow = c.membershipConfig.maxBackdateDays;
+    final startedDaysAgo = records.length * 2 % (backdateWindow + 1);
     // MM-FR-041: the initial status turns on whether a payment *outcome* has
     // been received -- not on whether the ledger is settled. MM-FR-043 keys
     // activation on `fee.FeePaymentReceived`, and every roster row below

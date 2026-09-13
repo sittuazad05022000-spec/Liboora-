@@ -17,7 +17,20 @@ void main() {
     test('container boots and seeds without violating an invariant', () async {
       final c = await AppContainer.boot(seeder: seedDemoData);
       expect(c.tenants.length, 2);
+      // MM-FR-007: the plan catalogue is tenant-scoped, so reading it needs a
+      // tenant in scope. Reading it without one must THROW rather than return
+      // every tenant's pricing, so the scope is entered explicitly here.
+      c.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
       expect(c.plans, isNotEmpty);
+      c.leaveScope();
+      expect(
+        () => c.plans,
+        throwsA(isA<TenantContextMissing>()),
+        reason:
+            'A catalogue read with no tenant in scope must fail loudly. '
+            'Returning a merged list would leak one library\'s pricing to '
+            'another.',
+      );
       expect(c.events.log, isNotEmpty);
       // A populated dead-letter queue means a consumer threw during seeding.
       expect(c.events.deadLetter, isEmpty);

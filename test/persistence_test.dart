@@ -31,6 +31,8 @@
 /// file because it also proves no state hid in a static.
 library;
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/bootstrap/codecs.dart';
 import 'package:liboora/bootstrap/di.dart';
@@ -137,39 +139,180 @@ void main() {
       expect(r.status, EnrollmentStatus.active);
     });
 
-    test('2/6 Membership — plan is embedded, money keeps minor units', () {
-      final original = Membership(
+    test('2/6 Membership — snapshots survive, money keeps minor units', () {
+      final plan = MembershipPlan(
+        id: 'plan_full',
+        tenantId: const TenantId('tnt_1'),
+        branchId: const BranchId('brn_1'),
+        name: 'Full Day',
+        durationDays: 30,
+        price: Money.rupees(1250.75),
+        createdAt: _t0,
+        createdBy: 'owner_1',
+        seatQuota: 1,
+        version: 4,
+      );
+      final original = Membership.fromPlan(
         id: 'mem_1',
         studentRecordId: const StudentRecordId('sr_1'),
-        plan: MembershipPlan(
-          id: 'plan_full',
-          name: 'Full Day',
-          price: Money.rupees(1250.75),
-          durationDays: 30,
-          seatQuota: 1,
-          freezeDaysAllowed: 5,
-        ),
+        plan: plan,
         term: DateRange.days(_t0, 30),
-        status: MembershipStatus.frozen,
-        freezeDaysUsed: 3,
+        status: MembershipStatus.scheduled,
       );
 
       final r = decodeMembership(encodeMembership(original));
 
       expect(r.id, 'mem_1');
       expect(r.studentRecordId, const StudentRecordId('sr_1'));
-      expect(r.plan.id, 'plan_full');
-      expect(r.plan.name, 'Full Day');
+      expect(r.planId, 'plan_full');
+      // MM-FR-026/027: the snapshot is what must survive, because a plan edit
+      // must never restate a sold term.
       // 1250.75 rupees == 125075 paise. Asserted in minor units, because that
       // is the representation the type exists to protect.
-      expect(r.plan.price.minorUnits, 125075);
-      expect(r.plan.price.currency, 'INR');
-      expect(r.plan.durationDays, 30);
-      expect(r.plan.seatQuota, 1);
-      expect(r.plan.freezeDaysAllowed, 5);
+      expect(r.priceSnapshot.minorUnits, 125075);
+      expect(r.currencySnapshot, 'INR');
+      expect(r.planVersionAtPurchase, 4);
       expect(r.term, original.term);
-      expect(r.status, MembershipStatus.frozen);
-      expect(r.freezeDaysUsed, 3);
+      expect(r.status, MembershipStatus.scheduled);
+    });
+
+    test('2b/6 MembershipPlan — the MM-FR-006 aggregate round-trips', () {
+      final original = MembershipPlan(
+        id: 'plan_ac',
+        tenantId: const TenantId('tnt_1'),
+        branchId: const BranchId('brn_2'),
+        name: 'AC Cabin',
+        durationDays: 90,
+        price: Money.rupees(4800),
+        createdAt: _t0,
+        createdBy: 'owner_1',
+        availability: PlanAvailability.staffOnly,
+        isActive: false,
+        version: 7,
+        description: 'Staff cabin',
+        seatQuota: 2,
+      );
+
+      final r = decodeMembershipPlan(encodeMembershipPlan(original));
+
+      expect(r.id, 'plan_ac');
+      expect(r.tenantId, const TenantId('tnt_1'));
+      expect(r.branchId, const BranchId('brn_2'));
+      expect(r.name, 'AC Cabin');
+      expect(r.durationDays, 90);
+      expect(r.price.minorUnits, 480000);
+      expect(r.currency, 'INR');
+      expect(r.createdBy, 'owner_1');
+      expect(r.availability, PlanAvailability.staffOnly);
+      expect(
+        r.isActive,
+        isFalse,
+        reason:
+            'MM-FR-019: a deactivated plan must stay deactivated across a '
+            'restart, or retired pricing silently returns to the counter.',
+      );
+      expect(r.version, 7);
+      expect(r.description, 'Staff cabin');
+      expect(r.seatQuota, 2);
+    });
+
+    group('2c/6 Membership schema v1 → v2 migration', () {
+      // The exact bytes schema v1 wrote. Held literally rather than produced
+      // by an old encoder, because the point is to decode what is ALREADY on
+      // a user's disk.
+      String v1Row(String status) => jsonEncode({
+        'id': 'mem_legacy',
+        'studentRecordId': 'sr_9',
+        'plan': {
+          'id': 'plan_reserved',
+          'name': 'Reserved Seat Monthly',
+          'price': {'minorUnits': 180000, 'currency': 'INR'},
+          'durationDays': 30,
+          'seatQuota': 1,
+          'freezeDaysAllowed': 7,
+        },
+        'term': {
+          'start': _t0.toIso8601String(),
+          'end': _t0.add(const Duration(days: 30)).toIso8601String(),
+        },
+        'status': status,
+        'freezeDaysUsed': 0,
+      });
+
+      test('a v1 row decodes without data loss', () {
+        final r = decodeMembership(v1Row('active'));
+
+        expect(r.id, 'mem_legacy');
+        expect(r.studentRecordId, const StudentRecordId('sr_9'));
+        expect(
+          r.planId,
+          'plan_reserved',
+          reason: 'The embedded plan id becomes the reference.',
+        );
+        expect(
+          r.priceSnapshot.minorUnits,
+          180000,
+          reason:
+              'The embedded plan price is what was actually sold, so it is '
+              'the correct source for the MM-FR-026 snapshot.',
+        );
+        expect(r.currencySnapshot, 'INR');
+        expect(r.planVersionAtPurchase, 1);
+        expect(r.term.lengthInDays, 30);
+        expect(r.status, MembershipStatus.active);
+      });
+
+      test('v1 `pending` maps to PendingPayment — the same state renamed', () {
+        expect(
+          decodeMembership(v1Row('pending')).status,
+          MembershipStatus.pendingPayment,
+        );
+      });
+
+      test('v1 `expired` and `cancelled` are preserved exactly', () {
+        expect(
+          decodeMembership(v1Row('expired')).status,
+          MembershipStatus.expired,
+        );
+        expect(
+          decodeMembership(v1Row('cancelled')).status,
+          MembershipStatus.cancelled,
+        );
+      });
+
+      test('v1 `frozen` honours the paid term instead of revoking it', () {
+        final r = decodeMembership(v1Row('frozen'));
+        expect(
+          r.status,
+          MembershipStatus.active,
+          reason:
+              'MM-FR-073 leaves Frozen no lawful target. v1 freeze() EXTENDED '
+              'the term, so the stored term is already the one to honour. '
+              'Mapping to expired or cancelled would revoke paid entitlement '
+              'and dropping the row would lose it — both are worse.',
+        );
+        expect(r.term.lengthInDays, 30);
+        expect(r.priceSnapshot.minorUnits, 180000);
+      });
+
+      test('a v1 row re-encodes as v2 and is then stable', () {
+        final once = encodeMembership(decodeMembership(v1Row('active')));
+        expect(jsonDecode(once), containsPair('v', kMembershipSchemaV2));
+
+        // Idempotent: decoding the upgraded row yields the same thing again.
+        final twice = encodeMembership(decodeMembership(once));
+        expect(twice, once);
+      });
+
+      test('an unknown legacy status fails loudly, never silently', () {
+        expect(
+          () => decodeMembership(v1Row('teleported')),
+          throwsA(isA<FormatException>()),
+          reason:
+              'A status nobody wrote must not be quietly coerced to active — '
+              'that would confer entitlement from corrupt data.',
+        );
+      });
     });
 
     test('3/6 AttendanceDay — punches, flags and corrections', () {
@@ -683,6 +826,130 @@ void main() {
         second.leaveScope();
       },
     );
+
+    test(
+      'the plan catalogue survives a restart and is not re-seeded',
+      () async {
+        final durable = InMemoryKeyValueStore();
+
+        final first = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
+        first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+        final seeded = first.plans;
+        final seededIds = seeded.map((p) => p.id).toList();
+        first.leaveScope();
+
+        expect(seeded, isNotEmpty, reason: 'Seeder produced no plans.');
+        expect(
+          durable.readAll('membership_plans'),
+          isNotEmpty,
+          reason:
+              'MM-FR-006 made the plan an aggregate, so it must be persisted '
+              'like one. A catalogue rebuilt from code on every boot would '
+              'silently discard every owner edit.',
+        );
+
+        final second = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
+        second.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+        expect(
+          second.plans.map((p) => p.id).toList(),
+          seededIds,
+          reason:
+              'Plan ids changed across restart. Equal ids prove the seeder did '
+              'not run again and the restored rows are the seeded ones.',
+        );
+        second.leaveScope();
+
+        // The other tenant keeps its own catalogue across the restart too.
+        second.enterScope(tenant: kOtherTenant, branch: kOtherBranch);
+        expect(second.plans, isNotEmpty);
+        expect(
+          second.plans.every((p) => p.tenantId == kOtherTenant),
+          isTrue,
+          reason: 'MM-FR-007: a restored plan belongs to exactly one tenant.',
+        );
+        second.leaveScope();
+      },
+    );
+
+    test('an owner plan edit survives the next boot and is not overwritten '
+        'by the seeder', () async {
+      final durable = InMemoryKeyValueStore();
+      final first = await AppContainer.boot(
+        seeder: seedDemoData,
+        durable: durable,
+      );
+
+      first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+      final original = first.plans.first;
+      final edited = original.withEdits(price: Money.rupees(9999));
+      first.membershipPlans.save(edited);
+      expect(
+        first.membershipPlans.byId(original.id)!.version,
+        original.version + 1,
+      );
+      first.leaveScope();
+
+      final second = await AppContainer.boot(
+        seeder: seedDemoData,
+        durable: durable,
+      );
+      second.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+      final restored = second.membershipPlans.byId(original.id)!;
+      expect(
+        restored.price.minorUnits,
+        999900,
+        reason:
+            'The seeder must never overwrite a persisted plan. An owner who '
+            'raises a price and restarts the app must not find the demo '
+            'price back at the counter.',
+      );
+      expect(
+        restored.version,
+        original.version + 1,
+        reason: 'MM-FR-022: the incremented version must persist too.',
+      );
+      second.leaveScope();
+    });
+
+    test('a membership restored from disk keeps the price it was sold at, '
+        'even after the plan is re-priced', () async {
+      final durable = InMemoryKeyValueStore();
+      final first = await AppContainer.boot(
+        seeder: seedDemoData,
+        durable: durable,
+      );
+
+      first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+      final m = first.memberships.all().first;
+      final soldAt = m.priceSnapshot.minorUnits;
+      final soldVersion = m.planVersionAtPurchase;
+      final plan = first.membershipPlans.byId(m.planId)!;
+      first.membershipPlans.save(plan.withEdits(price: Money.rupees(1)));
+      first.leaveScope();
+
+      final second = await AppContainer.boot(
+        seeder: seedDemoData,
+        durable: durable,
+      );
+      second.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+      final restored = second.memberships.byId(m.id)!;
+      expect(
+        restored.priceSnapshot.minorUnits,
+        soldAt,
+        reason:
+            'MM-FR-023/MM-BR-033: an edit to a plan price must not alter any '
+            'existing membership. This is the whole reason the snapshot '
+            'exists.',
+      );
+      expect(restored.planVersionAtPurchase, soldVersion);
+      second.leaveScope();
+    });
 
     test('data written after boot survives the next boot', () async {
       final durable = InMemoryKeyValueStore();

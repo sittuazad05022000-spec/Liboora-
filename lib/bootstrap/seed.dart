@@ -37,17 +37,20 @@ const kOtherBranch = BranchId('brn_kota');
 Future<void> seedDemoData(AppContainer c, List<Account> accounts) async {
   _seedTenants(c);
   _seedPolicies(c);
-  _seedPlans(c);
   _seedAccounts(c, accounts);
 
   // ── Demo tenant ────────────────────────────────────────────────
+  // MM-FR-007: plans are tenant/branch-scoped, so the catalogue is seeded
+  // inside the scope it belongs to rather than once globally.
   c.enterScope(tenant: kDemoTenant, branch: kDemoBranch, actor: 'seed');
+  _seedPlans(c, tenant: kDemoTenant, branch: kDemoBranch);
   _seedSeatLayout(c);
   await _seedStudents(c);
   c.leaveScope();
 
   // ── Second tenant, so isolation is visible ─────────────────────
   c.enterScope(tenant: kOtherTenant, branch: kOtherBranch, actor: 'seed');
+  _seedPlans(c, tenant: kOtherTenant, branch: kOtherBranch);
   _seedOtherTenantSeats(c);
   await _seedOtherTenantStudents(c);
   c.leaveScope();
@@ -124,39 +127,80 @@ void _seedPolicies(AppContainer c) {
   );
 }
 
-void _seedPlans(AppContainer c) {
-  c.plans.addAll([
+/// Plan ids, so the roster names a plan instead of indexing a list.
+const kPlanFloating = 'plan_float';
+const kPlanReserved = 'plan_reserved';
+const kPlanQuarterly = 'plan_quarter';
+const kPlanAcCabin = 'plan_ac';
+
+void _seedPlans(
+  AppContainer c, {
+  required TenantId tenant,
+  required BranchId branch,
+}) {
+  final createdAt = c.clock.now();
+  // Ids are namespaced by tenant because the catalogue is per tenant
+  // (MM-FR-007) and two tenants may both sell a "Reserved Seat Monthly".
+  String planId(String base) => '${base}_${tenant.value}';
+
+  for (final p in <MembershipPlan>[
     MembershipPlan(
-      id: 'plan_float',
+      id: planId(kPlanFloating),
+      tenantId: tenant,
+      branchId: branch,
       name: 'Floating Monthly',
-      price: Money.rupees(1200),
       durationDays: 30,
+      price: Money.rupees(1200),
+      createdAt: createdAt,
+      createdBy: 'seed',
       seatQuota: 0, // no reserved chair — first come, first served
     ),
     MembershipPlan(
-      id: 'plan_reserved',
+      id: planId(kPlanReserved),
+      tenantId: tenant,
+      branchId: branch,
       name: 'Reserved Seat Monthly',
+      durationDays: 30,
       price: Money.rupees(1800),
-      durationDays: 30,
+      createdAt: createdAt,
+      createdBy: 'seed',
       seatQuota: 1,
     ),
     MembershipPlan(
-      id: 'plan_quarter',
+      id: planId(kPlanQuarterly),
+      tenantId: tenant,
+      branchId: branch,
       name: 'Reserved Quarterly',
-      price: Money.rupees(4800),
       durationDays: 90,
+      price: Money.rupees(4800),
+      createdAt: createdAt,
+      createdBy: 'seed',
       seatQuota: 1,
-      freezeDaysAllowed: 15,
     ),
     MembershipPlan(
-      id: 'plan_ac',
+      id: planId(kPlanAcCabin),
+      tenantId: tenant,
+      branchId: branch,
       name: 'AC Cabin Monthly',
-      price: Money.rupees(2500),
       durationDays: 30,
+      price: Money.rupees(2500),
+      createdAt: createdAt,
+      createdBy: 'seed',
       seatQuota: 1,
-      freezeDaysAllowed: 10,
     ),
-  ]);
+  ]) {
+    c.membershipPlans.save(p);
+  }
+}
+
+/// The plan a seeded student is sold, resolved by id within the scope.
+MembershipPlan _planFor(AppContainer c, TenantId tenant, String base) {
+  final id = '${base}_${tenant.value}';
+  final plan = c.membershipPlans.byId(id);
+  if (plan == null) {
+    throw StateError('Seed error: plan $id was not seeded for $tenant.');
+  }
+  return plan;
 }
 
 /// Seeds the demo accounts.
@@ -310,7 +354,7 @@ const _roster =
         String name,
         String phone,
         int birthYear,
-        int plan,
+        String plan,
         String? seat,
         bool paidInFull,
       })
@@ -319,7 +363,7 @@ const _roster =
         name: 'Sneha Verma',
         phone: '9810000004',
         birthYear: 2003,
-        plan: 2,
+        plan: kPlanQuarterly,
         seat: 'A3',
         paidInFull: true,
       ),
@@ -327,7 +371,7 @@ const _roster =
         name: 'Arjun Mehta',
         phone: '9810000011',
         birthYear: 2001,
-        plan: 1,
+        plan: kPlanReserved,
         seat: 'A5',
         paidInFull: true,
       ),
@@ -335,7 +379,7 @@ const _roster =
         name: 'Kavya Iyer',
         phone: '9810000012',
         birthYear: 2002,
-        plan: 3,
+        plan: kPlanAcCabin,
         seat: 'B2',
         paidInFull: false,
       ),
@@ -343,7 +387,7 @@ const _roster =
         name: 'Rohan Gupta',
         phone: '9810000013',
         birthYear: 2000,
-        plan: 0,
+        plan: kPlanFloating,
         seat: null,
         paidInFull: true,
       ),
@@ -351,7 +395,7 @@ const _roster =
         name: 'Ananya Singh',
         phone: '9810000014',
         birthYear: 2004,
-        plan: 1,
+        plan: kPlanReserved,
         seat: 'A8',
         paidInFull: false,
       ),
@@ -359,7 +403,7 @@ const _roster =
         name: 'Vikram Reddy',
         phone: '9810000015',
         birthYear: 1999,
-        plan: 1,
+        plan: kPlanReserved,
         seat: 'B5',
         paidInFull: true,
       ),
@@ -367,7 +411,7 @@ const _roster =
         name: 'Meera Joshi',
         phone: '9810000016',
         birthYear: 2003,
-        plan: 0,
+        plan: kPlanFloating,
         seat: null,
         paidInFull: false,
       ),
@@ -375,7 +419,7 @@ const _roster =
         name: 'Karan Malhotra',
         phone: '9810000017',
         birthYear: 2002,
-        plan: 2,
+        plan: kPlanQuarterly,
         seat: 'A11',
         paidInFull: true,
       ),
@@ -383,7 +427,7 @@ const _roster =
         name: 'Divya Menon',
         phone: '9810000018',
         birthYear: 2001,
-        plan: 3,
+        plan: kPlanAcCabin,
         seat: 'B7',
         paidInFull: true,
       ),
@@ -391,7 +435,7 @@ const _roster =
         name: 'Siddharth Rao',
         phone: '9810000019',
         birthYear: 2005,
-        plan: 1,
+        plan: kPlanReserved,
         seat: 'A14',
         paidInFull: false,
       ),
@@ -399,7 +443,7 @@ const _roster =
         name: 'Ishita Bansal',
         phone: '9810000020',
         birthYear: 2000,
-        plan: 0,
+        plan: kPlanFloating,
         seat: null,
         paidInFull: true,
       ),
@@ -407,7 +451,7 @@ const _roster =
         name: 'Nikhil Chawla',
         phone: '9810000021',
         birthYear: 2002,
-        plan: 1,
+        plan: kPlanReserved,
         seat: 'C2',
         paidInFull: false,
       ),
@@ -444,7 +488,7 @@ Future<void> _seedStudents(AppContainer c) async {
     records.add(student.id);
     c.studentAccountLinks[r.phone] = student.id;
 
-    final plan = c.plans[r.plan];
+    final plan = _planFor(c, kDemoTenant, r.plan);
 
     // Membership starts staggered in the past so the dashboard shows a mix of
     // "expiring soon" and "comfortable".
@@ -563,7 +607,7 @@ Future<void> _seedOtherTenantStudents(AppContainer c) async {
     await c.createMembership(
       actorRole: AccessRole.owner,
       studentId: s.id,
-      plan: c.plans[1],
+      plan: _planFor(c, kOtherTenant, kPlanReserved),
       startingOn: c.clock.today(),
     );
   }

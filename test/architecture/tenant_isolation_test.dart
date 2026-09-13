@@ -173,18 +173,23 @@ StudentRecord _student(String n, {required String enrollmentNumber}) =>
       personId: PersonId('P-$n'),
     );
 
-Membership _membership(String n, StudentRecordId student) => Membership(
-  id: 'M-$n',
-  studentRecordId: student,
-  plan: MembershipPlan(
-    id: 'PLAN-$n',
-    name: 'Plan $n',
-    price: Money.rupees(1000),
-    durationDays: 30,
-    seatQuota: 1,
-  ),
-  term: DateRange.days(_day, 30),
-);
+Membership _membership(String n, StudentRecordId student) =>
+    Membership.fromPlan(
+      id: 'M-$n',
+      studentRecordId: student,
+      plan: MembershipPlan(
+        id: 'PLAN-$n',
+        tenantId: TenantId('tnt_$n'),
+        branchId: BranchId('brn_$n'),
+        name: 'Plan $n',
+        durationDays: 30,
+        price: Money.rupees(1000),
+        createdAt: _day,
+        createdBy: 'test',
+        seatQuota: 1,
+      ),
+      term: DateRange.days(_day, 30),
+    );
 
 /// Every `implements *Repository` class declared under `lib/`.
 Set<String> _declaredRepositoryImplementations() {
@@ -247,6 +252,7 @@ void main() {
       const leakTested = {
         'StudentRepository',
         'MembershipRepository',
+        'MembershipPlanRepository',
         'AttendanceRepository',
         'SeatLayoutRepository',
         'SeatAllocationRepository',
@@ -405,6 +411,89 @@ void main() {
         expect(repo.byId('M-A'), isNull);
         return null;
       });
+    });
+
+    test('BC-02 MembershipPlan — the catalogue is per tenant (MM-FR-007)', () {
+      final ctx = _contextIn(_tenantA, _branchA);
+      final repo = InMemoryMembershipPlanRepository(
+        TenantPartitionedStore<MembershipPlan>(ctx),
+      );
+
+      MembershipPlan plan(String n, TenantId t, BranchId b) => MembershipPlan(
+        id: 'PLAN-$n',
+        tenantId: t,
+        branchId: b,
+        name: 'Plan $n',
+        durationDays: 30,
+        price: Money.rupees(1000),
+        createdAt: _day,
+        createdBy: 'test',
+      );
+
+      repo.save(plan('A', _tenantA, _branchA));
+      _asTenant(
+        ctx,
+        _tenantB,
+        _branchB,
+        () => repo.save(plan('B', _tenantB, _branchB)),
+      );
+
+      expect(
+        repo.all().map((p) => p.id),
+        ['PLAN-A'],
+        reason:
+            'Tenant A can see tenant B\'s catalogue. Pricing is commercially '
+            'sensitive: a competitor library must never read it.',
+      );
+      expect(repo.byId('PLAN-B'), isNull);
+      expect(repo.selectable().map((p) => p.id), ['PLAN-A']);
+
+      _asTenant(ctx, _tenantB, _branchB, () {
+        expect(repo.all().map((p) => p.id), ['PLAN-B']);
+        expect(repo.byId('PLAN-A'), isNull);
+        return null;
+      });
+    });
+
+    test('BC-02 MembershipPlan — a name clash in another tenant is not a '
+        'clash (MM-FR-010)', () {
+      final ctx = _contextIn(_tenantA, _branchA);
+      final repo = InMemoryMembershipPlanRepository(
+        TenantPartitionedStore<MembershipPlan>(ctx),
+      );
+
+      MembershipPlan named(String id, TenantId t, BranchId b) => MembershipPlan(
+        id: id,
+        tenantId: t,
+        branchId: b,
+        name: 'Reserved Seat Monthly',
+        durationDays: 30,
+        price: Money.rupees(1800),
+        createdAt: _day,
+        createdBy: 'test',
+      );
+
+      repo.save(named('PLAN-A', _tenantA, _branchA));
+
+      // MM-FR-010 scopes uniqueness to (tenantId, branchId). Two libraries
+      // selling an identically named plan is ordinary, and rejecting it would
+      // let one tenant's catalogue constrain another's.
+      _asTenant(ctx, _tenantB, _branchB, () {
+        expect(
+          () => repo.save(named('PLAN-B', _tenantB, _branchB)),
+          returnsNormally,
+        );
+        return null;
+      });
+
+      // Within one tenant and branch, the same name IS refused.
+      expect(
+        () => repo.save(named('PLAN-A2', _tenantA, _branchA)),
+        throwsA(isA<DomainError>()),
+        reason:
+            'MM-FR-010: reception staff must never be shown two identically '
+            'named plans in the same branch.',
+      );
     });
 
     test('BC-03 Attendance — find, onDate and forStudent are scoped', () {

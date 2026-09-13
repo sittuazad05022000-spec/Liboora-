@@ -311,7 +311,12 @@ class StudentPlanPage extends StatelessWidget {
                         : LiblColors.textMuted,
                   ),
                   title: Text(
-                    m.plan.name,
+                    // MM-FR-026: the history shows what was sold. The plan
+                    // name is looked up for display; the price comes from the
+                    // membership's own immutable snapshot, so a later plan
+                    // edit can never restate a past term.
+                    s.container.membershipPlans.byId(m.planId)?.name ??
+                        'Plan withdrawn',
                     style: const TextStyle(fontSize: 13.5),
                   ),
                   subtitle: Text(
@@ -320,7 +325,7 @@ class StudentPlanPage extends StatelessWidget {
                     style: const TextStyle(fontSize: 11.5),
                   ),
                   trailing: Text(
-                    m.plan.price.formatted,
+                    m.priceSnapshot.formatted,
                     style: const TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w600,

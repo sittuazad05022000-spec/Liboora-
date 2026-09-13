@@ -52,6 +52,7 @@ final class AppContainer {
     required this.policies,
     required this.students,
     required this.memberships,
+    required this.membershipPlans,
     required this.membershipValidity,
     required this.attendance,
     required this.seatLayouts,
@@ -114,6 +115,10 @@ final class AppContainer {
   final PolicyRepository policies;
   final StudentRepository students;
   final MembershipRepository memberships;
+
+  /// `MM-FR-006` — the plan catalogue, a tenant/branch-scoped aggregate.
+  final MembershipPlanRepository membershipPlans;
+
   final MembershipValidityReader membershipValidity;
   final AttendanceRepository attendance;
   final SeatLayoutRepository seatLayouts;
@@ -167,9 +172,18 @@ final class AppContainer {
   /// Registered tenants. Populated by the seeder.
   final List<Tenant> tenants = [];
 
-  /// Catalogue offered by the seeded tenant. Plans are configuration in V1,
-  /// not an aggregate (open question Q-05).
-  final List<MembershipPlan> plans = [];
+  /// The plan catalogue of the tenant currently in scope.
+  ///
+  /// `MM-FR-006`/`MM-FR-007` made this an aggregate scoped to one tenant, so
+  /// it is no longer a plain list held at the composition root: reading it
+  /// without a tenant in scope throws `TenantContextMissing`, exactly like
+  /// every other tenant-partitioned read. Ordered by name so a UI listing and
+  /// a seeded index are both stable (`MM-FR-030`).
+  List<MembershipPlan> get plans {
+    final all = membershipPlans.all();
+    all.sort((a, b) => a.name.compareTo(b.name));
+    return all;
+  }
 
   /// Phone number → the student record that account represents.
   ///
@@ -347,6 +361,16 @@ final class AppContainer {
       encode: durable == null ? null : encodeMembership,
       decode: durable == null ? null : decodeMembership,
     );
+    // MM-FR-006: the plan is a separate aggregate root, so it gets its own
+    // store and its own durable namespace. Sharing one would make a single
+    // transaction across both aggregates easy to write by accident.
+    final membershipPlanStore = TenantPartitionedStore<MembershipPlan>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'membership_plans',
+      encode: durable == null ? null : encodeMembershipPlan,
+      decode: durable == null ? null : decodeMembershipPlan,
+    );
     final attendanceStore = TenantPartitionedStore<AttendanceDay>(
       tenantContext,
       durable: durable,
@@ -385,6 +409,7 @@ final class AppContainer {
     final restoredRows =
         studentStore.restore() +
         membershipStore.restore() +
+        membershipPlanStore.restore() +
         attendanceStore.restore() +
         seatLayoutStore.restore() +
         seatAllocationStore.restore() +
@@ -392,7 +417,13 @@ final class AppContainer {
 
     final students = InMemoryStudentRepository(studentStore);
     final memberships = InMemoryMembershipRepository(membershipStore);
-    final membershipValidity = MembershipValidityService(memberships);
+    final membershipPlans = InMemoryMembershipPlanRepository(
+      membershipPlanStore,
+    );
+    final membershipValidity = MembershipValidityService(
+      memberships,
+      membershipPlans,
+    );
     final attendance = InMemoryAttendanceRepository(attendanceStore);
     final seatLayouts = InMemorySeatLayoutRepository(seatLayoutStore);
     final seatAllocations = InMemorySeatAllocationRepository(
@@ -450,6 +481,7 @@ final class AppContainer {
       policies: policies,
       students: students,
       memberships: memberships,
+      membershipPlans: membershipPlans,
       membershipValidity: membershipValidity,
       attendance: attendance,
       seatLayouts: seatLayouts,

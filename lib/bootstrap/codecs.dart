@@ -150,44 +150,130 @@ StudentRecord decodeStudentRecord(String raw) {
 // 2 — Membership (BC-02 Membership)
 // ───────────────────────────────────────────────────────────────────
 
-/// The plan is embedded rather than referenced by id.
+/// Schema version for the membership row.
 ///
-/// A membership's commercial terms must reproduce exactly what was sold, and
-/// the plan catalogue is re-seeded on every boot. Storing only an id would
-/// mean a catalogue edit retroactively rewrote historical memberships.
+/// v1 embedded the whole plan and used the five-value status enum
+/// `{pending, active, frozen, expired, cancelled}`. v2 stores `planId` plus
+/// the `MM-FR-026` snapshots, and the six-value `MM-FR-072` set. [
+/// decodeMembership] reads both; [encodeMembership] only ever writes v2.
+const int kMembershipSchemaV2 = 2;
+
+/// `MM-FR-026` \u2014 the snapshots are persisted, the plan is referenced.
+///
+/// v1 embedded the plan because the catalogue was re-seeded on every boot and
+/// an id-only reference would have let a catalogue edit rewrite history. The
+/// snapshots achieve the same protection correctly: price, currency and plan
+/// version are frozen onto the membership, so history is immune to plan edits
+/// (`MM-FR-023`) while the catalogue itself is now a persisted aggregate.
 String encodeMembership(Membership m) => jsonEncode({
+  'v': kMembershipSchemaV2,
   'id': m.id,
   'studentRecordId': m.studentRecordId.value,
-  'plan': {
-    'id': m.plan.id,
-    'name': m.plan.name,
-    'price': _money(m.plan.price),
-    'durationDays': m.plan.durationDays,
-    'seatQuota': m.plan.seatQuota,
-    'freezeDaysAllowed': m.plan.freezeDaysAllowed,
-  },
+  'planId': m.planId,
   'term': _range(m.term),
   'status': m.status.name,
-  'freezeDaysUsed': m.freezeDaysUsed,
+  'priceSnapshot': _money(m.priceSnapshot),
+  'planVersionAtPurchase': m.planVersionAtPurchase,
 });
+
+/// Status names as written by schema v1.
+///
+/// `pending` \u2192 `pendingPayment` is a rename of the same state: v1's `pending`
+/// meant "created, payment not yet received", which is `MM-FR-072`'s
+/// `PendingPayment` exactly.
+///
+/// `frozen` is the one lossy case, and it is handled explicitly rather than
+/// silently. `MM-FR-073`/`MM-XC-009` make `Frozen` unreachable in V1, so a
+/// persisted `frozen` row has no lawful target. It maps to `active`: the
+/// student paid for a term that has not ended, and v1's `freeze()` *extended*
+/// the term, so the term on disk is already the correct one to honour.
+/// Mapping it to `expired` or `cancelled` would revoke paid entitlement, and
+/// dropping the row would lose it \u2014 both are worse than honouring the term.
+const Map<String, MembershipStatus> _legacyMembershipStatus = {
+  'pending': MembershipStatus.pendingPayment,
+  'active': MembershipStatus.active,
+  'frozen': MembershipStatus.active,
+  'expired': MembershipStatus.expired,
+  'cancelled': MembershipStatus.cancelled,
+};
 
 Membership decodeMembership(String raw) {
   final m = jsonDecode(raw) as Map<String, Object?>;
+  final version = m['v'] as int? ?? 1;
+
+  if (version >= kMembershipSchemaV2) {
+    return Membership(
+      id: m['id']! as String,
+      studentRecordId: StudentRecordId(m['studentRecordId']! as String),
+      planId: m['planId']! as String,
+      term: _readRange(m['term']),
+      priceSnapshot: _readMoney(m['priceSnapshot']),
+      planVersionAtPurchase: m['planVersionAtPurchase']! as int,
+      status: _readEnum(MembershipStatus.values, m['status'], (e) => e.name),
+    );
+  }
+
+  // ── Schema v1 ────────────────────────────────────────────────────
+  // The embedded plan carries the price that was actually sold, so it is the
+  // correct source for the MM-FR-026 snapshot. Version 1 is recorded because
+  // v1 had no plan versioning and MembershipPlan.version defaults to 1.
   final p = m['plan']! as Map<String, Object?>;
+  final legacyName = m['status'] as String?;
+  final status = _legacyMembershipStatus[legacyName];
+  if (status == null) {
+    throw FormatException('Unknown legacy membership status: $legacyName');
+  }
   return Membership(
     id: m['id']! as String,
     studentRecordId: StudentRecordId(m['studentRecordId']! as String),
-    plan: MembershipPlan(
-      id: p['id']! as String,
-      name: p['name']! as String,
-      price: _readMoney(p['price']),
-      durationDays: p['durationDays']! as int,
-      seatQuota: p['seatQuota']! as int,
-      freezeDaysAllowed: p['freezeDaysAllowed']! as int,
-    ),
+    planId: p['id']! as String,
     term: _readRange(m['term']),
-    status: _readEnum(MembershipStatus.values, m['status'], (e) => e.name),
-    freezeDaysUsed: m['freezeDaysUsed']! as int,
+    priceSnapshot: _readMoney(p['price']),
+    planVersionAtPurchase: 1,
+    status: status,
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────
+// 2b — MembershipPlan (BC-02 Membership) — MM-FR-006 aggregate root
+// ───────────────────────────────────────────────────────────────────
+
+String encodeMembershipPlan(MembershipPlan p) => jsonEncode({
+  'id': p.id,
+  'tenantId': p.tenantId.value,
+  'branchId': p.branchId.value,
+  'name': p.name,
+  'durationDays': p.durationDays,
+  'price': _money(p.price),
+  'createdAt': _date(p.createdAt),
+  'createdBy': p.createdBy,
+  'availability': p.availability.name,
+  'isActive': p.isActive,
+  'version': p.version,
+  'description': p.description,
+  'seatQuota': p.seatQuota,
+});
+
+MembershipPlan decodeMembershipPlan(String raw) {
+  final p = jsonDecode(raw) as Map<String, Object?>;
+  return MembershipPlan(
+    id: p['id']! as String,
+    tenantId: TenantId(p['tenantId']! as String),
+    branchId: BranchId(p['branchId']! as String),
+    name: p['name']! as String,
+    durationDays: p['durationDays']! as int,
+    price: _readMoney(p['price']),
+    createdAt: _readDate(p['createdAt']),
+    createdBy: p['createdBy']! as String,
+    availability: _readEnum(
+      PlanAvailability.values,
+      p['availability'],
+      (e) => e.name,
+    ),
+    isActive: p['isActive']! as bool,
+    version: p['version']! as int,
+    description: p['description'] as String?,
+    seatQuota: p['seatQuota']! as int,
   );
 }
 

@@ -565,6 +565,7 @@ final class AppContainer {
         // E-01, through the ACL below -- BC-02 never imports BC-01.
         enrollment: StudentRecordEnrollmentAcl(students),
         config: membershipConfig,
+        idempotency: MembershipIdempotencyAdapter(idempotency),
         events: events,
         clock: clock,
         ids: ids,
@@ -689,6 +690,24 @@ final class AppContainer {
     }
     return container;
   }
+}
+
+/// `IMPL-414` — adapter for `BC-02`'s idempotency port.
+///
+/// `BC-02` declares [MembershipIdempotencyStore]; `platform/services` owns
+/// the mechanism. Binding them here keeps `domain/library` off the
+/// `platform/services` import edge, which `ADR-0012` currently waives only
+/// because *"the interfaces are missing"*.
+final class MembershipIdempotencyAdapter implements MembershipIdempotencyStore {
+  const MembershipIdempotencyAdapter(this._service);
+  final IdempotencyService _service;
+
+  @override
+  Membership? recall(IdempotencyKey key) => _service.recall<Membership>(key);
+
+  @override
+  void remember(IdempotencyKey key, Membership result) =>
+      _service.remember(key, result);
 }
 
 /// `IMPL-411` — the `E-01` anti-corruption layer.

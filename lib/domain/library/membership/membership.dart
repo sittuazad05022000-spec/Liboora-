@@ -111,11 +111,53 @@ final class EnrollmentStreamUnavailable implements Exception {
   String toString() => 'EnrollmentStreamUnavailable: $reason';
 }
 
+/// `IMPL-414` / `MM-FR-047` — idempotency, declared as a port by this
+/// consumer (law L3).
+///
+/// A narrow interface rather than an import of `IdempotencyService`. The
+/// boundary checker's own `ADR-0012` note on the
+/// `domain/library -> platform/services` edge says the fix is *"only the
+/// interfaces are missing"* — so this declares one instead of joining the
+/// waived debt. The adapter is wired in `di.dart`.
+///
+/// Two methods, not three: `seen` is redundant when [recall] already
+/// distinguishes a hit from a miss, and offering both invites the
+/// check-then-recall race that idempotency exists to prevent.
+abstract interface class MembershipIdempotencyStore {
+  /// The membership previously created under [key], or `null`.
+  Membership? recall(IdempotencyKey key);
+
+  /// Record [result] against [key]. Tenant-scoped (`MM-FR-048`).
+  void remember(IdempotencyKey key, Membership result);
+}
+
 abstract interface class MembershipRepository {
   List<Membership> forStudent(StudentRecordId id);
   List<Membership> all();
   Membership? byId(String id);
   void save(Membership m);
+
+  /// `IMPL-414` / `MM-FR-046` — insert a **new** membership, rejecting an
+  /// overlapping term at the persistence boundary.
+  ///
+  /// `MM-FR-046` requires overlap to be enforced *"by a database-level
+  /// constraint or an equivalent serialising lock, not by a read-then-write
+  /// check in application code"*. This project has no SQL layer (`MM-BR-025`
+  /// specifies none), so the equivalent is provided here: the overlap scan
+  /// and the write happen in **one synchronous block with no suspension
+  /// point between them**, inside the repository that owns the partition.
+  ///
+  /// That is the honest strength of the guarantee, and it is worth stating
+  /// exactly. Dart runs one isolate, so two reception terminals interleave
+  /// only at `await` boundaries. A read-then-write in the *use case* has an
+  /// `await` between the check and the save, and is therefore genuinely
+  /// unsafe; this has none, so no second command can observe the gap. When a
+  /// real database is introduced, this method is the single place that must
+  /// become a unique/exclusion constraint — the call sites do not change.
+  ///
+  /// Throws [DomainError] with [DomainErrorCode.overlappingMembershipTerm]
+  /// naming the conflicting membership (`MM-FR-049`).
+  void insertGuardingOverlap(Membership m);
 }
 
 /// `MM-FR-006` — the plan aggregate has its own repository.
@@ -153,6 +195,17 @@ final class InMemoryMembershipRepository implements MembershipRepository {
 
   @override
   void save(Membership m) => _store.put(m.id, m);
+
+  @override
+  void insertGuardingOverlap(Membership m) {
+    // Synchronous, single block, no await: the check and the write cannot be
+    // interleaved. See MembershipRepository.insertGuardingOverlap.
+    Membership.assertNoOverlap(
+      _store.where((e) => e.studentRecordId == m.studentRecordId),
+      m.term,
+    );
+    _store.put(m.id, m);
+  }
 }
 
 final class InMemoryMembershipPlanRepository
@@ -269,6 +322,7 @@ final class CreateMembership {
     required this.plans,
     required this.enrollment,
     required this.config,
+    required this.idempotency,
   });
 
   final MembershipRepository repo;
@@ -287,13 +341,28 @@ final class CreateMembership {
   /// `E-19` — `MM-CFG-003`/`MM-CFG-004` back-date and forward-date windows.
   final MembershipConfig config;
 
+  /// `MM-FR-047`/`MM-FR-048` — tenant-scoped idempotency records.
+  final MembershipIdempotencyStore idempotency;
+
   Future<Membership> call({
     required AccessRole actorRole,
+    required IdempotencyKey idempotencyKey,
     required StudentRecordId studentId,
     required MembershipPlan plan,
     DateTime? startingOn,
     bool paymentAlreadyReceived = false,
   }) async {
+    // MM-FR-047: a repeated command with the same key and tenant returns the
+    // ORIGINAL result — the same membershipId, no new event, no second write.
+    // Checked first, because a retry must not re-run the preconditions and
+    // fail on state the first call itself created (its own membership would
+    // now be an overlap).
+    //
+    // The service namespaces by tenant (MM-FR-048), so two tenants using the
+    // same key string are not each other's replay.
+    final replay = idempotency.recall(idempotencyKey);
+    if (replay != null) return replay;
+
     // MM-FR-033 requires every precondition to be verified BEFORE anything is
     // mutated. They are therefore all checked here, in order, and each one
     // throws — none of them degrades into a warning.
@@ -384,7 +453,6 @@ final class CreateMembership {
     final term = DateRange.days(start, plan.durationDays);
 
     // Invariant check with data supplied by the repository.
-    Membership.assertNoOverlap(repo.forStudent(studentId), term);
 
     // MM-FR-041: the initial status is DECIDED by the payment condition, not
     // assumed. MM-BR-002 means this module learns a payment outcome only from
@@ -393,6 +461,9 @@ final class CreateMembership {
     final initialStatus = Membership.initialStatusFor(
       applicableAmount: plan.price,
       paymentAlreadyReceived: paymentAlreadyReceived,
+      // MM-FR-053: an advance sale is held in Scheduled until startDate.
+      startDate: start,
+      today: today,
     );
 
     // MM-FR-026: the snapshots are taken from the plan being sold, at this
@@ -413,7 +484,11 @@ final class CreateMembership {
           ? tenant.actorId
           : null,
     );
-    repo.save(m);
+    // MM-FR-045/MM-FR-046: overlap is rejected at the persistence boundary,
+    // in the same synchronous block as the write. Deliberately NOT a
+    // read-then-write check up here -- there is an await above this line, so
+    // a check here would leave exactly the window MM-FR-046 forbids.
+    repo.insertGuardingOverlap(m);
 
     events.enqueue([
       DomainEvent(
@@ -443,6 +518,11 @@ final class CreateMembership {
         },
       ),
     ]);
+
+    // MM-FR-047: recorded AFTER the write succeeds. Remembering earlier would
+    // make a failed creation replay as a success.
+    idempotency.remember(idempotencyKey, m);
+
     await events.drain();
     return m;
   }

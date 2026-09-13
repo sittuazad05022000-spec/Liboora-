@@ -510,6 +510,9 @@ Future<void> _seedStudents(AppContainer c) async {
     // describes the resulting balance, which is a BC-05 concern, not BC-02's.
     await c.createMembership(
       actorRole: owner,
+      // MM-FR-047: a real caller supplies this. The seeder derives a stable
+      // key per student so a re-run cannot double-sell.
+      idempotencyKey: IdempotencyKey('seed_mem_${student.id.value}'),
       studentId: student.id,
       plan: plan,
       startingOn: c.clock.today().subtract(Duration(days: startedDaysAgo)),
@@ -622,6 +625,7 @@ Future<void> _seedOtherTenantStudents(AppContainer c) async {
     );
     await c.createMembership(
       actorRole: AccessRole.owner,
+      idempotencyKey: IdempotencyKey('seed_mem_${s.id.value}'),
       studentId: s.id,
       plan: _planFor(c, kOtherTenant, kPlanReserved),
       startingOn: c.clock.today(),

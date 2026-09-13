@@ -114,10 +114,8 @@ void main() {
       expect(existing.term.overlaps(adjacent), isFalse);
     });
 
-    test('a non-active term does not block a new one', () {
-      for (final status in MembershipStatus.values.where(
-        (e) => !e.confersEntitlement,
-      )) {
+    test('a TERMINAL term does not block a new one (MM-FR-049)', () {
+      for (final status in MembershipStatus.values.where((e) => e.isTerminal)) {
         final existing = _membership(status: status);
         expect(
           () => Membership.assertNoOverlap([
@@ -125,14 +123,39 @@ void main() {
           ], DateRange.days(_day1.add(const Duration(days: 10)), 30)),
           returnsNormally,
           reason:
-              'The invariant is scoped to ACTIVE terms. A cancelled or expired '
-              'membership must not permanently poison the student\'s calendar. '
+              'A cancelled, expired or superseded membership must not '
+              'permanently poison the student\'s calendar. '
               'Status under test: $status.',
         );
       }
-      // Derived from `confersEntitlement` rather than a hand-written list, so
-      // MM-INV-001's scope tracks MM-BR-032 automatically. Previously this
-      // list named `frozen`, which MM-FR-073 has since made unrepresentable.
+      // Derived from `isTerminal`, not from `confersEntitlement`.
+      //
+      // This scope was WIDENED deliberately. MM-FR-049 makes the conflict set
+      // "an existing NON-TERMINAL membership", which is not the same as the
+      // non-entitling set: PendingPayment and Scheduled confer nothing yet are
+      // non-terminal, so they DO block. The frozen spec settles it twice over
+      // -- MM-CFG-007 exists to "prevent indefinite blocking of MM-INV-001"
+      // by auto-voiding a stale PendingPayment, which is only meaningful if a
+      // PendingPayment blocks in the first place. Were it otherwise, one
+      // student could be sold two overlapping memberships while both awaited
+      // payment, and both would activate the moment the payments landed.
+    });
+
+    test('a NON-TERMINAL but non-entitling term DOES block (MM-FR-049)', () {
+      for (final status in MembershipStatus.values.where(
+        (e) => !e.isTerminal && !e.confersEntitlement,
+      )) {
+        final existing = _membership(status: status);
+        expect(
+          () => Membership.assertNoOverlap([
+            existing,
+          ], DateRange.days(_day1.add(const Duration(days: 10)), 30)),
+          throwsA(isA<DomainError>()),
+          reason:
+              'PendingPayment and Scheduled hold the student\'s term even '
+              'though they confer nothing yet. Status under test: $status.',
+        );
+      }
     });
 
     test('an empty existing list is not silently treated as a pass', () {

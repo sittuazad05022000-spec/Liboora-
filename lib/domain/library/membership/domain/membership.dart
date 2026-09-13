@@ -485,9 +485,26 @@ final class Membership {
   static MembershipStatus initialStatusFor({
     required Money applicableAmount,
     required bool paymentAlreadyReceived,
-  }) => applicableAmount.minorUnits == 0 || paymentAlreadyReceived
-      ? MembershipStatus.active
-      : MembershipStatus.pendingPayment;
+    DateTime? startDate,
+    DateTime? today,
+  }) {
+    final settled = applicableAmount.minorUnits == 0 || paymentAlreadyReceived;
+    if (!settled) return MembershipStatus.pendingPayment;
+
+    // MM-FR-053: a settled membership whose startDate is still in the future
+    // is held in Scheduled and confers nothing until that date. MM-FR-074's
+    // table says the same thing as a transition row:
+    //   -- -> Scheduled  (amount = 0 or already paid, FUTURE startDate)
+    //   -- -> Active     (amount = 0 or already paid, startDate = today)
+    //
+    // Without this, an advance sale made in March for an April term would
+    // confer entitlement in March -- a student walking in today with an
+    // April membership would be let through.
+    if (startDate != null && today != null && startDate.isAfter(today)) {
+      return MembershipStatus.scheduled;
+    }
+    return MembershipStatus.active;
+  }
 
   final String id;
   final StudentRecordId studentRecordId;
@@ -558,16 +575,36 @@ final class Membership {
     return _status.confersEntitlement && d > 0 && d <= within;
   }
 
+  /// Calendar day, without a time component that would imply more precision
+  /// than a term has (`MM-FR-056`: a term is a date range, not a timestamp
+  /// range).
+  static String _isoDay(DateTime d) => d.toIso8601String().substring(0, 10);
+
   /// Invariant `MM-INV-001`: no overlapping active terms for one student.
   /// [existing] is supplied by the repository — the aggregate does not query.
   static void assertNoOverlap(List<Membership> existing, DateRange proposed) {
     for (final m in existing) {
-      if (m.status.confersEntitlement && m.term.overlaps(proposed)) {
+      // MM-FR-049 counts any NON-TERMINAL membership as a conflict, not only
+      // an entitling one. A PendingPayment row already holds the student's
+      // term: letting a second sale overlap it would create the double-booking
+      // MM-INV-001 forbids, and would then activate into two live memberships
+      // the moment both payments landed.
+      if (!m.status.isTerminal && m.term.overlaps(proposed)) {
         throw DomainError(
           DomainErrorCode.overlappingMembershipTerm,
-          'This student already has an active membership until '
-          '${m.term.end.toIso8601String().substring(0, 10)}.',
-          context: {'existingMembershipId': m.id},
+          'This student already has a membership from '
+          '${_isoDay(m.term.start)} to ${_isoDay(m.term.end)} '
+          '(status: ${m.status.name}).',
+          // MM-FR-049: name the conflicting membershipId AND its term, so the
+          // actor can tell which sale is in the way rather than guessing. The
+          // existing membership is deliberately NOT returned -- they may have
+          // intended a different plan.
+          context: {
+            'existingMembershipId': m.id,
+            'existingStatus': m.status.name,
+            'existingStartDate': _isoDay(m.term.start),
+            'existingEndDate': _isoDay(m.term.end),
+          },
         );
       }
     }
@@ -629,6 +666,55 @@ final class Membership {
     _transitionTo(MembershipStatus.active);
     _activatedAt ??= at;
     _activatedBy ??= by;
+  }
+
+  /// `MM-FR-052` — activation is permitted only when the **term window** also
+  /// allows it: `startDate` reached, `endDate` not passed.
+  ///
+  /// Separate from [activate] because the transition table (`MM-FR-074`) and
+  /// the term window are two different gates, and `MM-FR-052` requires
+  /// *both*. Activating a membership whose `endDate` has already passed would
+  /// produce an `Active` row that confers nothing — valid by the status
+  /// machine and wrong by the calendar.
+  void activateOn(DateTime day, {String? by}) {
+    if (day.isBefore(term.start)) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'This membership cannot activate before its start date '
+        '(${_isoDay(term.start)}).',
+        context: {
+          'membershipId': id,
+          'startDate': _isoDay(term.start),
+          'attemptedOn': _isoDay(day),
+        },
+      );
+    }
+    if (!term.contains(day)) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'This membership cannot activate after its end date '
+        '(${_isoDay(term.end)}).',
+        context: {
+          'membershipId': id,
+          'endDate': _isoDay(term.end),
+          'attemptedOn': _isoDay(day),
+        },
+      );
+    }
+    activate(at: day, by: by);
+  }
+
+  /// `MM-FR-054`/`MM-CFG-007` — has this `PendingPayment` membership sat
+  /// unpaid past the void window?
+  ///
+  /// A predicate rather than a mutation: the *decision* is the aggregate's,
+  /// but voiding is a command with an actor and an event behind it
+  /// (`MM-EVT-007`), so the aggregate does not quietly cancel itself.
+  bool isStalePendingPayment(DateTime now, {required Duration window}) {
+    if (_status != MembershipStatus.pendingPayment) return false;
+    final since = createdAt;
+    if (since == null) return false;
+    return now.difference(since) > window;
   }
 
   /// `Active` → `Expired` when `endDate` has passed.

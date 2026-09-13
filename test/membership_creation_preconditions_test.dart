@@ -16,11 +16,13 @@ library;
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liboora/bootstrap/di.dart';
 import 'package:liboora/domain/library/membership/membership.dart';
 import 'package:liboora/platform/data/data.dart';
 import 'package:liboora/platform/event/event.dart';
 import 'package:liboora/platform/identity/identity.dart';
 import 'package:liboora/platform/observability/observability.dart';
+import 'package:liboora/platform/services/services.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 const String _modulePath = 'lib/domain/library/membership/membership.dart';
@@ -64,6 +66,8 @@ final class _Enrollment implements EnrollmentStatusReader {
   }
 }
 
+int _keySeq = 0;
+
 final class _SeqIds implements IdGenerator {
   int _n = 0;
   @override
@@ -90,6 +94,7 @@ final class _Fixture {
       plans: plans,
       enrollment: enrollment,
       config: config,
+      idempotency: MembershipIdempotencyAdapter(IdempotencyService(ctx)),
       events: events,
       clock: clock,
       ids: _SeqIds(),
@@ -125,6 +130,7 @@ final class _Fixture {
     bool paid = true,
   }) => create(
     actorRole: AccessRole.owner,
+    idempotencyKey: IdempotencyKey('idem_${++_keySeq}'),
     studentId: _student,
     plan: using ?? plan,
     startingOn: startingOn,
@@ -278,6 +284,7 @@ void main() {
       await expectLater(
         f.create(
           actorRole: AccessRole.student,
+          idempotencyKey: const IdempotencyKey('idem_unauth'),
           studentId: _student,
           plan: f.plan,
         ),

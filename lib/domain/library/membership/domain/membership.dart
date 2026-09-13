@@ -887,17 +887,37 @@ final class Membership {
   /// entitlement, which the transition table enforces.
   void cancel() => _transitionTo(MembershipStatus.cancelled);
 
-  /// `Q-06` — Membership computes the entitlement *delta*; the Business
-  /// Platform executes the money. Returns value, never a charge.
+  /// `MM-FR-099` — the **entitlement delta** for an upgrade: the source's
+  /// remaining day count.
   ///
-  /// Reads the immutable `MM-FR-026` snapshot, so the credit cannot be altered
-  /// by a later plan edit. Behaviour is unchanged from the pre-`IMPL-401`
-  /// implementation: the term's length equals the `durationDays` sold, because
-  /// the term was constructed from it.
-  Money prorationCreditFor(DateTime now) {
+  /// This replaces an earlier `prorationCreditFor` that returned a prorated
+  /// `Money` credit. `MM-FR-100` forbids exactly that: this module *"**MUST
+  /// NOT** compute a prorated monetary credit for the source membership's
+  /// unused days, and **MUST NOT** compute a refund."*
+  ///
+  /// The distinction is the `Q-06` boundary, which is **open**. BC Map `Q-06`
+  /// asks who owns proration arithmetic, recommending *"`BC-02` computes the
+  /// entitlement delta, Business Platform executes the money"*. A day count
+  /// and a price difference are the entitlement half; multiplying them into a
+  /// credit is the money half, and is `V2` (`MM-GAP-002`). Returning a `Money`
+  /// from here silently took the half that is not ours.
+  int remainingDaysFrom(DateTime now) {
     final remaining = daysRemainingFrom(now);
-    if (remaining <= 0) return Money.zero;
-    return priceSnapshot.prorate(remaining, term.lengthInDays);
+    return remaining <= 0 ? 0 : remaining;
+  }
+
+  /// `MM-FR-099` — the price difference for an upgrade onto [targetPrice].
+  ///
+  /// `targetPlan.price − sourceMembership.priceSnapshot`, read from the
+  /// immutable snapshot (`MM-FR-026`) so a later plan edit cannot change what
+  /// an upgrade from this membership costs.
+  ///
+  /// Never negative: `MM-FR-095` rejects an equal-or-lower-priced target as a
+  /// downgrade before this is reached, so a negative here would mean that
+  /// guard was bypassed.
+  Money priceDifferenceTo(Money targetPrice) {
+    final delta = targetPrice.minorUnits - priceSnapshot.minorUnits;
+    return delta <= 0 ? Money.zero : Money.paise(delta);
   }
 }
 

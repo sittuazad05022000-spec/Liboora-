@@ -72,6 +72,7 @@ final class AppContainer {
     required this.createMembership,
     required this.renewMembership,
     required this.expireDueMemberships,
+    required this.upgradeMembership,
     required this.checkIn,
     required this.checkOut,
     required this.assignSeat,
@@ -178,6 +179,9 @@ final class AppContainer {
   /// `IMPL-425` — the expiry sweep. It MATERIALISES the status change;
   /// validity itself is decided at read time (`MM-FR-104`/`MM-FR-107`).
   final ExpireDueMemberships expireDueMemberships;
+
+  /// `IMPL-427` — upgrade (`MM-FR-093`..`MM-FR-102`).
+  final UpgradeMembership upgradeMembership;
   final CheckInStudent checkIn;
   final CheckOutStudent checkOut;
   final AssignSeat assignSeat;
@@ -606,6 +610,18 @@ final class AppContainer {
         clock: clock,
         ids: ids,
         tenant: tenantContext,
+      ),
+      upgradeMembership: UpgradeMembership(
+        repo: memberships,
+        plans: membershipPlans,
+        enrollment: StudentRecordEnrollmentAcl(students),
+        calendar: TenantBusinessCalendar(membershipConfig.tenantTimezone),
+        idempotency: MembershipIdempotencyAdapter(idempotency),
+        events: events,
+        clock: clock,
+        ids: ids,
+        tenant: tenantContext,
+        pdp: pdp,
       ),
       checkIn: CheckInStudent(
         repo: attendance,

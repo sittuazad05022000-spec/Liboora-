@@ -963,3 +963,291 @@ final class ExpireDueMemberships {
         .toList();
   }
 }
+
+/// `IMPL-427` — upgrade: supersession, lineage, and the at-most-one-successor
+/// rule.
+///
+/// The hard boundary in this task is `MM-FR-100`, and it is the `Q-06`
+/// boundary, which is **open**. BC Map `Q-06` asks who owns proration
+/// arithmetic and recommends *"`BC-02` computes the entitlement delta,
+/// Business Platform executes the money"*. So this publishes the price
+/// difference and the source's remaining day count on `MM-EVT-004`
+/// (`MM-FR-099`) and stops there: no prorated credit, no refund, no money
+/// moved. Full Proration Rules are V2 (`MM-GAP-002`).
+final class UpgradeMembership {
+  UpgradeMembership({
+    required this.repo,
+    required this.plans,
+    required this.enrollment,
+    required this.calendar,
+    required this.idempotency,
+    required this.events,
+    required this.clock,
+    required this.ids,
+    required this.tenant,
+    required this.pdp,
+  });
+
+  final MembershipRepository repo;
+  final MembershipPlanRepository plans;
+  final EnrollmentStatusReader enrollment;
+  final TenantBusinessCalendar calendar;
+  final MembershipIdempotencyStore idempotency;
+  final EventBus events;
+  final Clock clock;
+  final IdGenerator ids;
+  final TenantContext tenant;
+  final PolicyDecisionPoint pdp;
+
+  UpgradeDelta? _lastDelta;
+
+  /// `MM-FR-099` — the entitlement delta from the most recent upgrade.
+  ///
+  /// Exposed because `MM-EVT-004` cannot be emitted while `MM-GAP-007a` is
+  /// open (see the note in [call]). Computing and holding it keeps the
+  /// requirement satisfied as far as this module lawfully can, and makes the
+  /// value testable, without publishing an event BC Map §9 has not declared.
+  UpgradeDelta? get lastDelta => _lastDelta;
+
+  /// `MM-FR-094` — the available upgrade targets.
+  ///
+  /// Active plans in this tenant/branch whose price is **strictly greater**
+  /// than the source's `priceSnapshot`. Strictly, because `MM-FR-095` rejects
+  /// an equal-priced target as a downgrade too — "same price, different plan"
+  /// is a plan change, not an upgrade, and Membership Downgrade is V2
+  /// (`MM-XC-008`).
+  List<MembershipPlan> targetsFor(Membership source) =>
+      plans
+          .selectable()
+          .where(
+            (p) =>
+                p.id != source.planId &&
+                p.price.minorUnits > source.priceSnapshot.minorUnits,
+          )
+          .toList()
+        ..sort((a, b) => a.price.minorUnits.compareTo(b.price.minorUnits));
+
+  Future<Membership> call({
+    required AccessRole actorRole,
+    required IdempotencyKey idempotencyKey,
+    required String sourceMembershipId,
+    required MembershipPlan ontoPlan,
+    bool paymentAlreadyReceived = false,
+  }) async {
+    // MM-FR-101: idempotent per MM-FR-047, checked first.
+    final replay = idempotency.recall(idempotencyKey);
+    if (replay != null) return replay;
+
+    // As with renewal, the MM-PO-* permission matrix is IMPL-436's and that
+    // task is blocked, so this reuses the create permission rather than
+    // coining a name that would pre-empt it.
+    pdp.require(actorRole, Permission.createMembership);
+
+    final source = repo.byId(sourceMembershipId);
+    if (source == null) {
+      throw DomainError(
+        DomainErrorCode.notFound,
+        'No membership with that id exists in this tenant.',
+        context: {
+          'sourceMembershipId': sourceMembershipId,
+          'field': 'sourceMembershipId',
+        },
+      );
+    }
+
+    // MM-FR-093/MM-FR-102: ONLY from Active. An expired membership has no
+    // remaining value to carry forward -- the correct operation there is
+    // renewal. And upgrading a still-PendingPayment membership is refused by
+    // this same guard; MM-FR-102 names void-and-recreate as the correction
+    // path, which is IMPL-423's voidBeforeActivation.
+    if (source.status != MembershipStatus.active) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'Only an active membership can be upgraded. This one is '
+        '"${source.status.name}".',
+        context: {
+          'sourceMembershipId': source.id,
+          'status': source.status.name,
+          'field': 'status',
+        },
+      );
+    }
+
+    // MM-FR-101/MM-INV-005: at most ONE successor by upgrade.
+    final existing = repo
+        .forStudent(source.studentRecordId)
+        .where((m) => m.upgradedFromMembershipId == source.id)
+        .toList();
+    if (existing.isNotEmpty) {
+      throw DomainError(
+        DomainErrorCode.conflict,
+        'This membership has already been upgraded.',
+        context: {
+          'sourceMembershipId': source.id,
+          'existingSuccessorId': existing.first.id,
+          'field': 'upgradedFromMembershipId',
+        },
+      );
+    }
+
+    final enrollmentState = enrollment.stateFor(source.studentRecordId);
+    if (enrollmentState == null || !enrollmentState.admitsNewMembership) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'An upgrade requires an active enrollment; this student is '
+        '"${enrollmentState?.name ?? 'not enrolled'}".',
+        context: {
+          'studentRecordId': source.studentRecordId.value,
+          'enrollmentStatus': enrollmentState?.name ?? 'missing',
+          'field': 'enrollmentStatus',
+        },
+      );
+    }
+
+    // MM-FR-094: the target must be in THIS tenant's catalogue and active.
+    final target = plans.byId(ontoPlan.id);
+    if (target == null) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'The plan "${ontoPlan.name}" does not belong to this tenant or '
+        'branch.',
+        context: {'planId': ontoPlan.id, 'field': 'planId'},
+      );
+    }
+    if (!target.isActive) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'The plan "${target.name}" is not active and cannot be sold.',
+        context: {'planId': target.id, 'field': 'isActive'},
+      );
+    }
+
+    // MM-FR-095: equal or lower price is a DOWNGRADE, which is V2.
+    if (target.price.minorUnits <= source.priceSnapshot.minorUnits) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'An upgrade must be onto a more expensive plan. '
+        '"${target.name}" is not, so this would be a downgrade '
+        '(Membership Downgrade is V2).',
+        context: {
+          'sourceMembershipId': source.id,
+          'targetPlanId': target.id,
+          'sourcePriceMinor': source.priceSnapshot.minorUnits,
+          'targetPriceMinor': target.price.minorUnits,
+          'field': 'price',
+        },
+      );
+    }
+
+    // MM-FR-097: effective TODAY, in tenant time, and the new term runs
+    // [today, today + (durationDays - 1)].
+    final today = calendar.businessDateAt(clock.now());
+    final term = DateRange.days(today, target.durationDays);
+
+    // MM-FR-099: the entitlement delta, computed BEFORE the source is
+    // superseded, because remaining days are counted against the term the
+    // student still holds at this moment.
+    final remainingDays = source.remainingDaysFrom(clock.now());
+    final priceDifference = source.priceDifferenceTo(target.price);
+
+    // MM-FR-101: the same payment dependency as creation (§3.3). Starting
+    // today, a settled upgrade is Active at once.
+    final initialStatus = Membership.initialStatusFor(
+      applicableAmount: target.price,
+      paymentAlreadyReceived: paymentAlreadyReceived,
+      startDate: today,
+      today: today,
+    );
+
+    final upgraded = Membership.fromPlan(
+      id: ids.next('mem'),
+      studentRecordId: source.studentRecordId,
+      plan: target,
+      term: term,
+      status: initialStatus,
+      createdAt: clock.now(),
+      createdBy: tenant.actorId,
+      activatedAt: initialStatus == MembershipStatus.active
+          ? clock.now()
+          : null,
+      activatedBy: initialStatus == MembershipStatus.active
+          ? tenant.actorId
+          : null,
+      // MM-FR-096: the lineage link.
+      upgradedFromMembershipId: source.id,
+    );
+
+    // MM-FR-096: the source becomes Superseded. Done BEFORE the insert,
+    // because the new term starts today and would otherwise overlap the
+    // source's still-Active term -- MM-INV-001 would refuse it, correctly.
+    //
+    // MM-FR-098: the source's endDate is NOT altered. Its remaining days are
+    // recorded on the event, not rewritten on the record.
+    source.supersede();
+    repo.save(source);
+
+    repo.insertGuardingOverlap(upgraded);
+
+    // ⛔ MM-EVT-004 IS NOT EMITTED, AND THAT IS A DISCLOSED BLOCKER.
+    //
+    // MM-FR-101 requires this to "emit MM-EVT-004 on success", and frozen
+    // PRD-005 §9 (L1029) names the event `membership.MembershipUpgraded`.
+    // But the repository's event authority is BC Map §9, and BC Map §9 OMITS
+    // MembershipUpgraded. That omission is already on the record as
+    // MM-GAP-007a -- "BC Map §9 omits MembershipUpgraded though E-07 names
+    // it" -- carried against the BC MAP, owned by the Architecture (BC Map)
+    // owner, and ADR-0019 expressly does NOT close it.
+    //
+    // There were three ways out and two of them were wrong:
+    //   * amend BC Map §9 -- a governance edit I have no authority to make;
+    //   * waive or weaken every_event_has_schema_test -- silencing the check
+    //     that exists to catch precisely this;
+    //   * emit nothing until the gap closes, and say so here.
+    //
+    // The third is taken. The entitlement delta MM-FR-099 requires is
+    // therefore COMPUTED and RETURNED (see upgradeDelta below) but not yet
+    // published, so no consumer can come to depend on an event the
+    // architecture has not declared. When MM-GAP-007a closes, the payload is
+    // exactly: membershipId, upgradedFromMembershipId, studentRecordId,
+    // planId, priceMinor, currency, planVersionAtPurchase, status, startDate,
+    // validUntil, priceDifferenceMinor, sourceRemainingDays, sourceEndDate.
+    _lastDelta = UpgradeDelta(
+      upgradedMembershipId: upgraded.id,
+      sourceMembershipId: source.id,
+      priceDifference: priceDifference,
+      sourceRemainingDays: remainingDays,
+      sourceEndDate: source.endDate,
+    );
+
+    idempotency.remember(idempotencyKey, upgraded);
+    await events.drain();
+    return upgraded;
+  }
+}
+
+/// `MM-FR-099` — the **entitlement delta** an upgrade produces.
+///
+/// A price difference and a day count. Deliberately not a prorated credit and
+/// not a refund: `MM-FR-100` forbids both, and `Q-06` -- resolved by
+/// `ADR-0133` -- puts money execution in the Business Platform at V2.
+final class UpgradeDelta {
+  const UpgradeDelta({
+    required this.upgradedMembershipId,
+    required this.sourceMembershipId,
+    required this.priceDifference,
+    required this.sourceRemainingDays,
+    required this.sourceEndDate,
+  });
+
+  final String upgradedMembershipId;
+  final String sourceMembershipId;
+
+  /// `targetPlan.price − sourceMembership.priceSnapshot`.
+  final Money priceDifference;
+
+  /// Whole business days the source still had when the upgrade committed.
+  final int sourceRemainingDays;
+
+  /// `MM-FR-098` — recorded, never rewritten.
+  final DateTime sourceEndDate;
+}

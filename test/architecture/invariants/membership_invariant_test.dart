@@ -376,25 +376,28 @@ void main() {
       );
     });
 
-    test('proration credit is a value, never a charge, and is never '
-        'negative', () {
-      // Q-06: Membership computes the entitlement delta; the Business Platform
-      // executes the money. The signature returning Money is the proof.
+    test('the entitlement delta is a DAY COUNT, never a monetary credit '
+        '(MM-FR-099, MM-FR-100)', () {
+      // This test previously exercised prorationCreditFor, which returned a
+      // prorated Money credit for the source's unused days. MM-FR-100 forbids
+      // exactly that -- BC-02 "MUST NOT compute a prorated monetary credit
+      // ... and MUST NOT compute a refund". Q-06 is open; its recommendation
+      // is that BC-02 computes the entitlement delta and the Business
+      // Platform executes the money, so a day count is ours and a credit is
+      // not. The method was REPLACED rather than kept alongside, so the
+      // unlawful half is absent rather than merely unused.
       final mid = _day1.add(const Duration(days: 15));
-      final credit = _membership(days: 30).prorationCreditFor(mid);
-      expect(credit.isNegative, isFalse);
-      expect(
-        credit.minorUnits,
-        lessThanOrEqualTo(Money.rupees(1200).minorUnits),
-      );
+      final remaining = _membership(days: 30).remainingDaysFrom(mid);
+      expect(remaining, greaterThan(0));
+      expect(remaining, lessThanOrEqualTo(30));
 
       final afterEnd = _day1.add(const Duration(days: 90));
       expect(
-        _membership(days: 30).prorationCreditFor(afterEnd),
-        Money.zero,
+        _membership(days: 30).remainingDaysFrom(afterEnd),
+        0,
         reason:
-            'A lapsed term must credit nothing. A negative credit would be a '
-            'charge raised by the wrong bounded context.',
+            'A lapsed term has no remaining days. A negative count would '
+            'become a charge the moment someone multiplied it by a price.',
       );
     });
   });

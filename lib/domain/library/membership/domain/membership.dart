@@ -565,8 +565,74 @@ final class Membership {
 
   /// `MM-FR-065`/`MM-BR-032` — validity is decided at read time by the term
   /// and the status together, never by a stored flag.
+  ///
+  /// `MM-FR-065` states the rule as a conjunction of four clauses: status is
+  /// `Active`; `startDate <= D`; `D <= endDate`; and the tenant matches. The
+  /// first three are answered here. The fourth cannot be checked by the
+  /// aggregate — it does not hold a tenant, by design (`MM-FR-003`) — and is
+  /// instead structurally guaranteed by `TenantPartitionedStore`: a
+  /// membership belonging to another tenant is not reachable to ask.
+  ///
+  /// `MM-BR-031` requires exactly **one** answer per membership per date.
+  /// That is why this is a pure function of `(status, term, day)` with no
+  /// clock, no cache and no stored `isValid` column: a second source could
+  /// disagree with the first.
   bool isValidOn(DateTime day) =>
       _status.confersEntitlement && term.contains(day);
+
+  /// `IMPL-423` / `MM-FR-078` — void a membership that never conferred
+  /// entitlement. **Not** a cancellation.
+  ///
+  /// `MM-FR-079` is emphatic about what this is not: it must not extend to an
+  /// `Active` membership, must not trigger a refund, and must not be
+  /// presented as *"cancel membership"* — that is V2 (`MM-XC-011`). So the
+  /// guard here is on the status, and the reason is **required** rather than
+  /// optional, because `MM-FR-078` requires the audit entry to carry one.
+  ///
+  /// Voiding frees the `MM-INV-001` slot, because `Cancelled` is terminal and
+  /// a terminal membership no longer blocks an overlapping term.
+  void voidBeforeActivation({required String reason, String? by}) {
+    if (_status != MembershipStatus.pendingPayment &&
+        _status != MembershipStatus.scheduled) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'Only a membership that has never conferred entitlement may be '
+        'voided. This one is "${_status.name}".',
+        context: {
+          'membershipId': id,
+          'status': _status.name,
+          'field': 'status',
+        },
+      );
+    }
+    if (reason.trim().isEmpty) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A void requires a reason (MM-FR-078).',
+        context: {'membershipId': id, 'field': 'voidReason'},
+      );
+    }
+    _transitionTo(MembershipStatus.cancelled);
+    _voidReason = reason.trim();
+    _voidedBy = by;
+  }
+
+  String? _voidReason;
+  String? _voidedBy;
+
+  /// `MM-FR-078` — the audited reason a pre-activation membership was voided.
+  String? get voidReason => _voidReason;
+
+  /// `MM-FR-078` — who authorised the void (`MM-PO-005`).
+  String? get voidedBy => _voidedBy;
+
+  /// `IMPL-423` — a void is distinguishable from any other terminal state.
+  ///
+  /// `MM-FR-079` forbids presenting this as a cancellation, and a consumer
+  /// can only honour that if it can tell the two apart. A `Cancelled` row
+  /// with a `voidReason` was voided before activation; one without was not.
+  bool get wasVoidedBeforeActivation =>
+      _status == MembershipStatus.cancelled && _voidReason != null;
 
   int daysRemainingFrom(DateTime now) => term.daysRemainingFrom(now);
 

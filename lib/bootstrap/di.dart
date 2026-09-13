@@ -436,6 +436,9 @@ final class AppContainer {
     final membershipValidity = MembershipValidityService(
       memberships,
       membershipPlans,
+      // MM-FR-077: a suspended student reports isValid: false for the
+      // duration of the suspension, without the membership being mutated.
+      enrollment: StudentRecordEnrollmentAcl(students),
     );
     final attendance = InMemoryAttendanceRepository(attendanceStore);
     final seatLayouts = InMemorySeatLayoutRepository(seatLayoutStore);

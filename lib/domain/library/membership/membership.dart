@@ -264,12 +264,34 @@ final class MembershipValidity {
     required this.validUntil,
     required this.seatQuota,
     required this.planName,
+    this.studentRecordId,
+    this.status,
+    this.planId,
+    this.tenantId,
   });
 
+  /// `MM-FR-067` — carried so no consumer re-derives the rule from
+  /// [validUntil], which is the duplication `MM-FR-066` forbids.
   final bool isValid;
+
+  /// The inclusive last business date (`MM-FR-055`), or `null` when invalid.
   final DateTime? validUntil;
   final int seatQuota;
   final String planName;
+
+  /// `MM-FR-067` — the exact `E-02` shape names `studentRecordId`.
+  final StudentRecordId? studentRecordId;
+
+  /// `MM-FR-067` — lets the Library Member Directory show **why** something
+  /// is invalid, which `PRD-004` `LMD-16`/`LMD-26` already require it to
+  /// display. Without it every consumer would guess.
+  final MembershipStatus? status;
+
+  final String? planId;
+
+  /// `MM-FR-065` — validity is tenant-qualified. Carrying the tenant makes a
+  /// cross-tenant answer detectable rather than merely unlikely.
+  final TenantId? tenantId;
 
   static const MembershipValidity none = MembershipValidity(
     isValid: false,
@@ -284,14 +306,48 @@ abstract interface class MembershipValidityReader {
 }
 
 final class MembershipValidityService implements MembershipValidityReader {
-  MembershipValidityService(this._repo, this._plans);
+  MembershipValidityService(this._repo, this._plans, {this.enrollment});
   final MembershipRepository _repo;
   final MembershipPlanRepository _plans;
 
+  /// `IMPL-422` / `MM-FR-077` — optional `E-01` read.
+  ///
+  /// A student suspension **MUST** cause the projection to report
+  /// `isValid: false` *"for the duration of the suspension, without mutating
+  /// the membership record"*. That is why the suspension is answered here, in
+  /// the read path, rather than by flipping a status: `MM-FR-070`/`MM-FR-071`
+  /// forbid this module from altering the membership or writing downstream
+  /// when validity is lost, and a suspension that expired a membership would
+  /// be irreversible.
+  ///
+  /// Optional so existing call sites keep working; when absent, enrollment is
+  /// simply not consulted.
+  final EnrollmentStatusReader? enrollment;
+
   @override
   MembershipValidity forStudent(StudentRecordId id, DateTime on) {
+    // MM-FR-077: a suspended student is reported invalid, and the membership
+    // record is left exactly as it is -- so reinstating the student restores
+    // entitlement without re-selling anything.
+    final state = enrollment?.stateFor(id);
+    final suspended = state != null && !state.admitsNewMembership;
+
     for (final m in _repo.forStudent(id)) {
       if (m.isValidOn(on)) {
+        if (suspended) {
+          // The membership itself is untouched and still Active; only the
+          // projected answer is false. MM-FR-076: the two statuses are
+          // separate fields, so `status` still reports the membership's own.
+          return MembershipValidity(
+            isValid: false,
+            validUntil: m.endDate,
+            seatQuota: 0,
+            planName: _plans.byId(m.planId)?.name ?? '—',
+            studentRecordId: id,
+            status: m.status,
+            planId: m.planId,
+          );
+        }
         // MM-FR-025: the quota published for an ACTIVE membership must not
         // move when the plan's quota changes — retroactively reducing it
         // could invalidate a seat a student is physically sitting in. So the
@@ -304,10 +360,33 @@ final class MembershipValidityService implements MembershipValidityReader {
           validUntil: m.endDate,
           seatQuota: m.seatQuotaSnapshot,
           planName: plan?.name ?? '—',
+          // MM-FR-067: the additional fields, so no consumer re-derives the
+          // rule MM-FR-066 says must exist in exactly one place.
+          studentRecordId: id,
+          status: m.status,
+          planId: m.planId,
         );
       }
     }
-    return MembershipValidity.none;
+
+    // MM-FR-068: PendingPayment, Scheduled and Expired all report
+    // isValid: false. Reporting the most recent one's status -- rather than
+    // the bare `none` -- is what lets the Directory show WHY, per MM-FR-067
+    // and PRD-004 LMD-16/LMD-26.
+    final all = _repo.forStudent(id);
+    if (all.isEmpty) return MembershipValidity.none;
+    final latest = all.reduce(
+      (a, b) => a.startDate.isAfter(b.startDate) ? a : b,
+    );
+    return MembershipValidity(
+      isValid: false,
+      validUntil: latest.endDate,
+      seatQuota: 0,
+      planName: _plans.byId(latest.planId)?.name ?? '—',
+      studentRecordId: id,
+      status: latest.status,
+      planId: latest.planId,
+    );
   }
 }
 

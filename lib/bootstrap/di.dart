@@ -30,6 +30,7 @@ import '../platform/observability/observability.dart';
 import '../platform/services/services.dart';
 import '../platform/tenancy/tenancy.dart';
 import 'clock.dart';
+import 'codecs.dart';
 
 /// Everything the app needs, assembled once.
 final class AppContainer {
@@ -229,7 +230,46 @@ final class AppContainer {
   ///
   /// [seeder] is injected rather than imported: see the note at the end of this
   /// method for why law L1 requires it.
-  static Future<AppContainer> boot({ContainerSeeder? seeder}) async {
+  /// Build, restore and optionally seed.
+  ///
+  /// [durable] is the persistence adapter. It is a **parameter, not a
+  /// constant**, for the same reason the seeder is: the technology choice
+  /// belongs to whoever composes the application. `main.dart` supplies the
+  /// Hive-backed adapter; a test supplies an in-memory one and gets identical
+  /// write-through and restore behaviour without touching a filesystem.
+  ///
+  /// Passing nothing keeps the historical behaviour exactly — in-memory only —
+  /// so every existing test and any caller that wants an ephemeral world is
+  /// unaffected.
+  /// Opens the durable adapter for the named box, falling back to memory.
+  ///
+  /// **Why this lives in `di.dart` and not in `main.dart`.** The composition
+  /// root is the one place permitted to know both a port and its adapter, and
+  /// `no_orphan_ports_test` enforces that literally: an adapter constructed
+  /// anywhere else leaves the port looking unwired. Selecting the adapter is
+  /// therefore this file's job, and `main.dart` only says *whether* it wants
+  /// durability and under what box name.
+  ///
+  /// A failure to open is deliberately **not** fatal. Losing durability is
+  /// bad; refusing to start is worse, because it turns a storage problem into
+  /// a total outage. The caller is told which adapter it got via
+  /// [DurableKeyValueStore] identity, and the reason is logged.
+  static Future<DurableKeyValueStore> openDurableStore(String boxName) async {
+    try {
+      return await HiveKeyValueStore.open(boxName);
+    } catch (error) {
+      debugPrint(
+        'Liboora: durable storage unavailable ($error). '
+        'Continuing in memory — data will not survive restart.',
+      );
+      return InMemoryKeyValueStore();
+    }
+  }
+
+  static Future<AppContainer> boot({
+    ContainerSeeder? seeder,
+    DurableKeyValueStore? durable,
+  }) async {
     final tenantContext = MutableTenantContext();
     final clock = MutableClock();
     final ids = SequentialIdGenerator();
@@ -267,25 +307,81 @@ final class AppContainer {
     // Tenant-partitioned stores. Every one of these refuses to answer
     // without a tenant in scope — cross-tenant leaks fail loud, not silent.
     final policies = PolicyRepository();
-    final students = InMemoryStudentRepository(
-      TenantPartitionedStore<StudentRecord>(tenantContext),
+
+    // The six persisted aggregates. Each store is handed the durable adapter,
+    // a namespace and the codec for its own type; with `durable == null` all
+    // three are absent and the store stays in memory, which is why this one
+    // expression serves both the persistent app and an ephemeral test.
+    //
+    // The namespace strings are the durable schema. They are written once,
+    // here, because a namespace typed at two call sites is a silent data-loss
+    // bug the first time the two disagree.
+    final studentStore = TenantPartitionedStore<StudentRecord>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'student_records',
+      encode: durable == null ? null : encodeStudentRecord,
+      decode: durable == null ? null : decodeStudentRecord,
     );
-    final memberships = InMemoryMembershipRepository(
-      TenantPartitionedStore<Membership>(tenantContext),
+    final membershipStore = TenantPartitionedStore<Membership>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'memberships',
+      encode: durable == null ? null : encodeMembership,
+      decode: durable == null ? null : decodeMembership,
     );
+    final attendanceStore = TenantPartitionedStore<AttendanceDay>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'attendance_days',
+      encode: durable == null ? null : encodeAttendanceDay,
+      decode: durable == null ? null : decodeAttendanceDay,
+    );
+    final seatLayoutStore = TenantPartitionedStore<SeatLayout>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'seat_layouts',
+      encode: durable == null ? null : encodeSeatLayout,
+      decode: durable == null ? null : decodeSeatLayout,
+    );
+    final seatAllocationStore = TenantPartitionedStore<SeatAllocation>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'seat_allocations',
+      encode: durable == null ? null : encodeSeatAllocation,
+      decode: durable == null ? null : decodeSeatAllocation,
+    );
+    final ledgerStore = TenantPartitionedStore<FeeLedger>(
+      tenantContext,
+      durable: durable,
+      namespace: durable == null ? null : 'fee_ledgers',
+      encode: durable == null ? null : encodeFeeLedger,
+      decode: durable == null ? null : decodeFeeLedger,
+    );
+
+    // ── RESTORE, BEFORE ANYTHING ELSE TOUCHES A STORE ──────────────
+    //
+    // Runs here rather than after the container is built, so no use case can
+    // observe a half-loaded world. No tenant scope is entered: restore is
+    // tenant-agnostic by design (see TenantPartitionedStore.restore), because
+    // the tenant is not known until sign-in.
+    final restoredRows =
+        studentStore.restore() +
+        membershipStore.restore() +
+        attendanceStore.restore() +
+        seatLayoutStore.restore() +
+        seatAllocationStore.restore() +
+        ledgerStore.restore();
+
+    final students = InMemoryStudentRepository(studentStore);
+    final memberships = InMemoryMembershipRepository(membershipStore);
     final membershipValidity = MembershipValidityService(memberships);
-    final attendance = InMemoryAttendanceRepository(
-      TenantPartitionedStore<AttendanceDay>(tenantContext),
-    );
-    final seatLayouts = InMemorySeatLayoutRepository(
-      TenantPartitionedStore<SeatLayout>(tenantContext),
-    );
+    final attendance = InMemoryAttendanceRepository(attendanceStore);
+    final seatLayouts = InMemorySeatLayoutRepository(seatLayoutStore);
     final seatAllocations = InMemorySeatAllocationRepository(
-      TenantPartitionedStore<SeatAllocation>(tenantContext),
+      seatAllocationStore,
     );
-    final ledgers = InMemoryFeeLedgerRepository(
-      TenantPartitionedStore<FeeLedger>(tenantContext),
-    );
+    final ledgers = InMemoryFeeLedgerRepository(ledgerStore);
 
     const pdp = PolicyDecisionPoint();
     final accounts = <Account>[];
@@ -451,7 +547,20 @@ final class AppContainer {
     // The parameter is optional because a container is valid unseeded; tests
     // that want an empty world simply pass nothing. `main.dart`, which is the
     // composition root and already knows both files, supplies the demo seeder.
-    if (seeder != null) {
+    // ── DEMO DATA NEVER OVERWRITES REAL DATA ───────────────────────
+    //
+    // The seeder drives the real use cases, so running it over a restored
+    // world would not merely duplicate rows — it would re-raise fees, re-punch
+    // attendance and re-allocate seats against live aggregates, and
+    // `assertNoOverlap`/`assertSeatFree` would start throwing at boot.
+    //
+    // `restoredRows > 0` is the test rather than "is this the first launch?",
+    // because it asks the only question that matters: is there already data
+    // here? A tenant that legitimately has zero rows is seeded, which is
+    // correct — an empty library is indistinguishable from a new one, and
+    // seeding it writes through to durable storage, so it happens exactly
+    // once.
+    if (seeder != null && restoredRows == 0) {
       await seeder(container, accounts);
     }
     return container;

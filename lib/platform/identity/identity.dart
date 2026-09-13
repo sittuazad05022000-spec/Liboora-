@@ -296,11 +296,13 @@ final class AuthService {
     required RandomSource random,
     required IdGenerator ids,
     required PersonIdentityFactory identities,
+    required OtpDeliveryChannel delivery,
     this.challengePeekEnabled = false,
   }) : _clock = clock,
        _random = random,
        _ids = ids,
-       _identities = identities;
+       _identities = identities,
+       _delivery = delivery;
 
   /// Adapter defaults. The normative bounds live in the locked challenge and
   /// lockout registers; these are the scaffold's configuration of them.
@@ -324,6 +326,29 @@ final class AuthService {
   /// Debug affordance for a scaffold with no SMS gateway. Must be false in any
   /// release wiring — a peek surface is a disclosure surface.
   final bool challengePeekEnabled;
+
+  /// Transport that actually carries the challenge to its subject.
+  ///
+  /// Held here, at the point the code is generated, rather than being left to
+  /// each caller: generating a challenge nobody can receive was the defect, so
+  /// issuance and delivery are now a single act that cannot be half-performed.
+  ///
+  /// **Required, with no default.** A default would mean constructing an
+  /// adapter here, outside the composition root — the leak
+  /// `no_orphan_ports_test` exists to catch, and the route by which a second
+  /// unregistered instance of a port enters the system. The wiring decision
+  /// belongs to `di.dart` alone.
+  final OtpDeliveryChannel _delivery;
+
+  /// Whether this deployment can deliver a challenge **to anyone at all**.
+  ///
+  /// Takes no phone number and is therefore uniform across subjects, so it is
+  /// not an enumeration oracle (`F-02`). Exposed so the sign-in surface can
+  /// tell the user the truth before collecting a number it cannot serve.
+  bool get canDeliverChallenges => _delivery.isConfigured;
+
+  /// Diagnostic name of the wired transport. Never evidence of a sent message.
+  String get deliveryChannelName => _delivery.channelName;
 
   final Map<String, _Challenge> _issued = {};
 
@@ -372,6 +397,12 @@ final class AuthService {
     // number consume the same work and leave the same internal state, so
     // neither the response, the timing, nor the memory profile discriminates.
     _issued[phone] = challenge;
+
+    // Delivery is part of issuance, not a step a caller may skip. Still a
+    // uniform act: the transport is handed every challenge regardless of
+    // whether the number is registered, and it reports nothing back, so this
+    // line adds no observable difference between subjects (AR-7, F-02).
+    _delivery.deliver(phone: phone, code: code);
   }
 
   /// Debug-only retrieval of the issued code. Returns null unless the wiring

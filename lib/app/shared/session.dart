@@ -34,6 +34,14 @@ final class SessionController extends ChangeNotifier {
   String? get otpHint => _otpHint;
   String? get error => _error;
 
+  /// Whether this deployment can deliver a possession challenge at all.
+  ///
+  /// Asks about the *system*, never about a number, so it discloses nothing
+  /// about who is registered (`F-02`). The sign-in surface uses it to say
+  /// plainly that sign-in is unavailable, rather than collecting a number and
+  /// then asking for a code that no transport will ever send (`IMPL-020`).
+  bool get canSignIn => container.auth.canDeliverChallenges;
+
   /// An account that passed OTP verification but holds no role in this tenant,
   /// so no session could be issued (AR-6). This is a legitimate state, not a
   /// failure: role assignment happens in Membership Processing, after

@@ -9,6 +9,7 @@
 /// It is also the only file allowed to call `MutableTenantContext.enter`.
 library;
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../domain/library/attendance/attendance.dart';
@@ -340,6 +341,23 @@ final class AppContainer {
         ids: ids,
         // SID-4.11: identity is created in the same unit of work as the account.
         identities: identityService,
+        // IMPL-020. The SMS transport is an external dependency (TRAI DLT
+        // registration), so the only honest release wiring is "not
+        // configured": the sign-in surface then says so instead of asking for
+        // a code that can never arrive.
+        //
+        // Outside a product build the challenge is written to the developer
+        // console. That is a transport terminating in a console, NOT a demo
+        // account and NOT a guest mode — no account is created and no role is
+        // granted, so MP-CON-11 is untouched. Swapping in the real gateway is
+        // a change to this expression alone.
+        // ONE adapter, whose own flag decides whether it is switched on. A
+        // ternary between two adapters would register two implementations of
+        // one port here, which is ambiguous wiring.
+        delivery: DebugConsoleOtpDelivery(
+          enabled: !const bool.fromEnvironment('dart.vm.product'),
+          sink: debugPrint,
+        ),
         // Debug-only peek. False in any release build.
         challengePeekEnabled: !const bool.fromEnvironment('dart.vm.product'),
       ),

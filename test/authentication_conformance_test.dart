@@ -35,14 +35,39 @@ AuthService _service({
   List<int> random = const [1, 2, 3, 4, 5, 6],
   bool peek = true,
   PersonIdentityFactory? identities,
+  OtpDeliveryChannel? delivery,
 }) => AuthService(
   accounts,
   clock: clock,
   random: FixedRandomSource(random),
   ids: SequentialIdGenerator(),
   identities: identities ?? _identityService(clock),
+  delivery: delivery ?? _noDelivery,
   challengePeekEnabled: peek,
 );
+
+/// The unconfigured transport, as a test fixture.
+///
+/// Built here rather than as a default inside `AuthService`, because an adapter
+/// constructed in production code outside `di.dart` is exactly the leak
+/// `no_orphan_ports_test` forbids. Test sources are not subject to that rule.
+const OtpDeliveryChannel _noDelivery = UnconfiguredOtpDelivery();
+
+/// Records every delivery attempt so a test can assert on the transport
+/// without reaching into `AuthService`'s private challenge store.
+final class _RecordingDelivery implements OtpDeliveryChannel {
+  final List<({String phone, String code})> sent = [];
+
+  @override
+  bool get isConfigured => true;
+
+  @override
+  String get channelName => 'recording';
+
+  @override
+  void deliver({required String phone, required String code}) =>
+      sent.add((phone: phone, code: code));
+}
 
 /// Every account carries a `PersonId` — the field is non-nullable, so a
 /// fixture that omitted one would no longer compile (`MP-GBR-02`, `SID-INV-1`).
@@ -312,6 +337,102 @@ void main() {
       );
       svc.requestOtp(known);
       expect(svc.debugPeekChallenge(known), isNull);
+    });
+
+    // ─────────────────────────────────────────────────────────────
+    // IMPL-020 — a challenge nobody can receive is not a challenge.
+    //
+    // The scaffold generated codes and delivered none, so a release build
+    // asked for a 6-digit code that existed only in memory and no user could
+    // ever satisfy. These tests guard the seam that fixes it AND guard
+    // against the fix reintroducing the F-02 oracle it sits next to.
+    // ─────────────────────────────────────────────────────────────
+
+    test('requesting a challenge delivers it to the transport', () {
+      final delivery = _RecordingDelivery();
+      final svc = _service(
+        accounts: [_account(known, tenant, AccessRole.student)],
+        clock: FixedClock(_t0),
+        delivery: delivery,
+      );
+
+      svc.requestOtp(known);
+
+      expect(
+        delivery.sent.length,
+        1,
+        reason:
+            'Issuance and delivery are one act. A generated code that never '
+            'reaches its subject is the IMPL-020 defect.',
+      );
+      expect(delivery.sent.single.phone, known);
+      // The delivered code must be the code that actually verifies, otherwise
+      // delivery is decorative.
+      expect(
+        svc.verifyOtp(phone: known, code: delivery.sent.single.code),
+        isNotNull,
+      );
+    });
+
+    test('delivery is attempted for an unregistered number too', () {
+      final delivery = _RecordingDelivery();
+      final svc = _service(
+        accounts: [_account(known, tenant, AccessRole.student)],
+        clock: FixedClock(_t0),
+        delivery: delivery,
+      );
+
+      svc.requestOtp(known);
+      svc.requestOtp(unknown);
+
+      // If delivery were skipped for unknown numbers, the transport would
+      // become the enumeration oracle F-02 removed from the response.
+      expect(
+        delivery.sent.map((s) => s.phone),
+        containsAll(<String>[known, unknown]),
+        reason:
+            'Branching delivery on registration status rebuilds the F-02 '
+            'oracle one layer down.',
+      );
+    });
+
+    test('the default transport is unconfigured, not a silent no-op', () {
+      // A deployment that forgot to wire delivery must be able to say so.
+      // Defaulting to "configured" would put users back at a dead code field.
+      final svc = _service(
+        accounts: [_account(known, tenant, AccessRole.student)],
+        clock: FixedClock(_t0),
+      );
+      expect(svc.canDeliverChallenges, isFalse);
+      expect(svc.deliveryChannelName, 'unconfigured');
+    });
+
+    test('an unconfigured transport still cannot throw or leak', () {
+      final svc = _service(
+        accounts: [_account(known, tenant, AccessRole.student)],
+        clock: FixedClock(_t0),
+        delivery: const UnconfiguredOtpDelivery(),
+      );
+      // Throwing would make the request path observably different from a
+      // configured deployment's — a timing and error-shape oracle.
+      expect(() => svc.requestOtp(known), returnsNormally);
+      expect(() => svc.requestOtp(unknown), returnsNormally);
+    });
+
+    test('delivery capability is uniform across subjects', () {
+      final svc = _service(
+        accounts: [_account(known, tenant, AccessRole.student)],
+        clock: FixedClock(_t0),
+        delivery: _RecordingDelivery(),
+      );
+      // canDeliverChallenges takes no argument by design: there is no
+      // signature through which a per-number probe could be asked.
+      expect(svc.canDeliverChallenges, isTrue);
+      expect(
+        svc.canDeliverChallenges,
+        isA<bool>(),
+        reason: 'A subject-dependent capability check would be an oracle.',
+      );
     });
 
     test('a session carries an opaque identity', () {

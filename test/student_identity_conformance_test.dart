@@ -45,6 +45,9 @@ void main() {
         random: FixedRandomSource(const [1, 1, 1, 1, 1, 1]),
         ids: SequentialIdGenerator(),
         identities: _service(repo),
+        // Required rather than defaulted: constructing an adapter inside
+        // production code would breach the composition-root rule.
+        delivery: const UnconfiguredOtpDelivery(),
         challengePeekEnabled: true,
       );
 
@@ -115,6 +118,7 @@ void main() {
         random: FixedRandomSource(const [2, 2, 2, 2, 2, 2]),
         ids: SequentialIdGenerator(),
         identities: _ThrowingIdentityFactory(),
+        delivery: const UnconfiguredOtpDelivery(),
         challengePeekEnabled: true,
       );
 

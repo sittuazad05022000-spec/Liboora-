@@ -105,6 +105,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _card(SessionController s) {
+    // IMPL-020. When no transport is wired, asking for a phone number and then
+    // for a 6-digit code is a dead end: the code is generated but nothing can
+    // carry it to the user. Saying so is the honest state, and it is uniform
+    // across every subject, so it discloses nothing about who is registered
+    // (F-02). The remedy is a delivery adapter at the composition root — NOT a
+    // bypass here (MP-CON-11, MP-GBR-25).
+    if (!s.canSignIn) return const _SignInUnavailable();
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(LiblSpace.xl),
@@ -208,6 +216,62 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: const Text('Change number'),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Shown when this deployment has no OTP transport wired (`IMPL-020`).
+///
+/// Deliberately offers **no** action: no demo account, no guest mode, no
+/// "continue anyway". `MP-CON-11` forbids the first two and `MP-GBR-25` makes
+/// possession of the number the sole factor, so there is no lawful button to
+/// put here. An honest closed door beats a form that cannot be completed.
+class _SignInUnavailable extends StatelessWidget {
+  const _SignInUnavailable();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(LiblSpace.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Icon(
+              Icons.sms_failed_outlined,
+              size: 34,
+              color: LiblColors.textMuted,
+            ),
+            const SizedBox(height: LiblSpace.md),
+            const Text(
+              'Sign-in is temporarily unavailable',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: LiblSpace.sm),
+            const Text(
+              'This deployment cannot send verification codes yet, so we '
+              'cannot sign anyone in. Nothing is wrong with your number.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12.5, color: LiblColors.textMuted),
+            ),
+            const SizedBox(height: LiblSpace.lg),
+            Container(
+              padding: const EdgeInsets.all(LiblSpace.md),
+              decoration: BoxDecoration(
+                color: LiblColors.brand.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'Awaiting SMS sender registration. Once the gateway is '
+                'connected, sign-in works with no change to this app.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 11.5, color: LiblColors.textMuted),
+              ),
+            ),
           ],
         ),
       ),

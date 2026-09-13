@@ -137,6 +137,13 @@ abstract interface class MembershipRepository {
   Membership? byId(String id);
   void save(Membership m);
 
+  /// `IMPL-435` / `MM-NFR-004` — branch-level read filtering.
+  ///
+  /// Required *"even though multi-branch is V3"*, so it exists now and is
+  /// tested now rather than being retrofitted when V3 arrives and the
+  /// absence becomes a data-leak between branches.
+  List<Membership> forBranch(BranchId branchId);
+
   /// `IMPL-414` / `MM-FR-046` — insert a **new** membership, rejecting an
   /// overlapping term at the persistence boundary.
   ///
@@ -195,6 +202,10 @@ final class InMemoryMembershipRepository implements MembershipRepository {
 
   @override
   void save(Membership m) => _store.put(m.id, m);
+
+  @override
+  List<Membership> forBranch(BranchId branchId) =>
+      _store.where((m) => m.branchId == branchId);
 
   @override
   void insertGuardingOverlap(Membership m) {
@@ -1250,4 +1261,132 @@ final class UpgradeDelta {
 
   /// `MM-FR-098` — recorded, never rewritten.
   final DateTime sourceEndDate;
+}
+
+/// `IMPL-416` / `MM-BR-004` — the reconciliation queue.
+///
+/// *"A visible **reconciliation queue** **MUST** exist for memberships whose
+/// payment and entitlement state disagree."* The PRD is explicit that this is
+/// architecture rather than invention: BC Map §10 records the V1 constraint
+/// that these cases are surfaced for a human rather than resolved
+/// automatically.
+///
+/// **Derived, never stored.** A queue table would be a second source of truth
+/// that could disagree with the memberships it describes — the same reason
+/// `MM-BR-031` forbids a stored `isValid`. So the queue is computed from the
+/// rows themselves, which means it cannot go stale and cannot be forgotten
+/// when a membership changes underneath it.
+final class MembershipReconciliation {
+  MembershipReconciliation({
+    required this.repo,
+    required this.calendar,
+    required this.config,
+    required this.clock,
+  });
+
+  final MembershipRepository repo;
+  final TenantBusinessCalendar calendar;
+  final MembershipConfig config;
+  final Clock clock;
+
+  /// Memberships whose payment and entitlement state disagree.
+  ///
+  /// Three disagreements are detectable from stored data alone:
+  ///
+  ///  * a `PendingPayment` membership past the `MM-CFG-007` void window — it
+  ///    is holding the student's `MM-INV-001` slot for a payment that is not
+  ///    coming (`MM-FR-054`);
+  ///  * an `Active` membership whose term has elapsed but which the expiry
+  ///    sweep has not yet materialised — validity already reports false
+  ///    (`MM-FR-107`), so the *row* is the thing out of step;
+  ///  * a `Scheduled` membership whose `startDate` has passed without
+  ///    activation — entitlement is owed and not being given.
+  ///
+  /// Deliberately **not** included: anything requiring a ledger read.
+  /// `MM-BR-001` forbids this module a balance, so "paid but not active" in
+  /// the *money* sense is `BC-05`'s half of the same queue.
+  List<ReconciliationItem> items() {
+    final now = clock.now();
+    final today = calendar.businessDateAt(now);
+    final out = <ReconciliationItem>[];
+
+    for (final m in repo.all()) {
+      if (m.isStalePendingPayment(
+        now,
+        window: config.pendingPaymentVoidWindow,
+      )) {
+        out.add(
+          ReconciliationItem(
+            membership: m,
+            reason: ReconciliationReason.pendingPaymentExpired,
+            detail:
+                'Unpaid for more than '
+                '${config.pendingPaymentVoidWindow.inDays} days '
+                '(MM-CFG-007), and still holding the student\'s term.',
+          ),
+        );
+        continue;
+      }
+
+      if (m.status == MembershipStatus.active &&
+          calendar.isExpiredAt(now, m.endDate)) {
+        out.add(
+          ReconciliationItem(
+            membership: m,
+            reason: ReconciliationReason.expiredButNotMaterialised,
+            detail:
+                'Term ended ${m.endDate.toIso8601String().substring(0, 10)} '
+                'but the row still reads Active. Validity already reports '
+                'false (MM-FR-107); the sweep has not run.',
+          ),
+        );
+        continue;
+      }
+
+      if (m.status == MembershipStatus.scheduled &&
+          !today.isBefore(m.startDate)) {
+        out.add(
+          ReconciliationItem(
+            membership: m,
+            reason: ReconciliationReason.scheduledButNotActivated,
+            detail:
+                'Start date '
+                '${m.startDate.toIso8601String().substring(0, 10)} has been '
+                'reached but the membership is still Scheduled, so paid-for '
+                'entitlement is not being given.',
+          ),
+        );
+      }
+    }
+
+    return out;
+  }
+}
+
+/// Why a membership is on the `MM-BR-004` reconciliation queue.
+enum ReconciliationReason {
+  /// `MM-CFG-007` elapsed on a `PendingPayment` membership.
+  pendingPaymentExpired,
+
+  /// Term elapsed, row still `Active` — the sweep has not run.
+  expiredButNotMaterialised,
+
+  /// `startDate` reached, row still `Scheduled`.
+  scheduledButNotActivated,
+}
+
+/// One `MM-BR-004` queue entry.
+///
+/// Carries the membership and a human-readable reason, because the queue is
+/// *visible* — a code alone would make a reception desk guess.
+final class ReconciliationItem {
+  const ReconciliationItem({
+    required this.membership,
+    required this.reason,
+    required this.detail,
+  });
+
+  final Membership membership;
+  final ReconciliationReason reason;
+  final String detail;
 }

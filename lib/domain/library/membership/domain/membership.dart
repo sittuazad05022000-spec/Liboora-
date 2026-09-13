@@ -397,6 +397,7 @@ final class Membership {
     required this.term,
     required this.priceSnapshot,
     required this.planVersionAtPurchase,
+    required this.branchId,
     MembershipStatus status = MembershipStatus.active,
     this.seatQuotaSnapshot = 0,
     this.createdAt,
@@ -460,6 +461,7 @@ final class Membership {
     term: term,
     priceSnapshot: plan.price,
     planVersionAtPurchase: plan.version,
+    branchId: plan.branchId,
     // MM-FR-025: the quota published for an active membership must not move
     // when the plan's quota changes, so it is snapshotted like the price.
     seatQuotaSnapshot: plan.seatQuota,
@@ -527,6 +529,17 @@ final class Membership {
   /// `MM-FR-026`/`MM-FR-027` — immutable. Proves *which* plan revision was
   /// sold; a price alone cannot.
   final int planVersionAtPurchase;
+
+  /// `MM-NFR-004` — a membership **MUST** be scoped to a `branchId`, and
+  /// branch-level read filtering **MUST** be supported, *"even though
+  /// multi-branch is V3"*.
+  ///
+  /// Taken from the plan at sale time rather than read live: the plan's branch
+  /// is immutable (`MM-FR-007`), but reading it through `planId` would make a
+  /// membership's branch depend on a row that `MM-FR-020` allows to be
+  /// withdrawn. Snapshotting keeps branch filtering answerable for a
+  /// membership whose plan has since been archived.
+  final BranchId branchId;
 
   /// §13.1 — the seat allowance conferred, snapshotted. `MM-FR-025`.
   final int seatQuotaSnapshot;

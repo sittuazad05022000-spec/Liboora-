@@ -311,6 +311,7 @@ void main() {
         id: 'mem_1',
         studentRecordId: const StudentRecordId('stu_1'),
         planId: 'plan_1',
+        branchId: const BranchId('brn_a'),
         term: term,
         priceSnapshot: Money.rupees(1200),
         planVersionAtPurchase: 1,

@@ -174,6 +174,8 @@ String encodeMembership(Membership m) => jsonEncode({
   'status': m.status.name,
   'priceSnapshot': _money(m.priceSnapshot),
   'planVersionAtPurchase': m.planVersionAtPurchase,
+  // MM-NFR-004 (IMPL-435): the membership's own branch scope.
+  'branchId': m.branchId.value,
   // §13.1 fields added by IMPL-410. Optional on read, so a row written
   // before they existed still decodes.
   'seatQuotaSnapshot': m.seatQuotaSnapshot,
@@ -218,6 +220,13 @@ Membership decodeMembership(String raw) {
       term: _readRange(m['term']),
       priceSnapshot: _readMoney(m['priceSnapshot']),
       planVersionAtPurchase: m['planVersionAtPurchase']! as int,
+      // MM-NFR-004: absent in the earliest v2 rows, which were written
+      // before IMPL-435 added the field. Defaulted to the tenant's single
+      // V1 branch rather than failing the read: MP-CON-13 makes
+      // multi-branch V3, so every existing row belongs to one branch and
+      // dropping the membership would lose a paid term to recover a value
+      // that is not yet ambiguous.
+      branchId: BranchId(m['branchId'] as String? ?? 'main'),
       status: _readEnum(MembershipStatus.values, m['status'], (e) => e.name),
       // Absent in the first v2 rows; defaulted rather than treated as
       // corruption, because the field is Optional in §13.1.
@@ -248,6 +257,9 @@ Membership decodeMembership(String raw) {
     term: _readRange(m['term']),
     priceSnapshot: _readMoney(p['price']),
     planVersionAtPurchase: 1,
+    // MM-NFR-004: v1 embedded the whole plan, so the branch it was sold in
+    // is recoverable exactly rather than defaulted.
+    branchId: BranchId(p['branchId'] as String? ?? 'main'),
     status: status,
     // v1 stored the quota on the embedded plan; carry it onto the snapshot.
     seatQuotaSnapshot: p['seatQuota'] as int? ?? 0,

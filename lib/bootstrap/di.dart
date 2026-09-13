@@ -73,6 +73,7 @@ final class AppContainer {
     required this.renewMembership,
     required this.expireDueMemberships,
     required this.upgradeMembership,
+    required this.reconciliation,
     required this.checkIn,
     required this.checkOut,
     required this.assignSeat,
@@ -182,6 +183,9 @@ final class AppContainer {
 
   /// `IMPL-427` — upgrade (`MM-FR-093`..`MM-FR-102`).
   final UpgradeMembership upgradeMembership;
+
+  /// `IMPL-416` / `MM-BR-004` — the visible reconciliation queue.
+  final MembershipReconciliation reconciliation;
   final CheckInStudent checkIn;
   final CheckOutStudent checkOut;
   final AssignSeat assignSeat;
@@ -622,6 +626,12 @@ final class AppContainer {
         ids: ids,
         tenant: tenantContext,
         pdp: pdp,
+      ),
+      reconciliation: MembershipReconciliation(
+        repo: memberships,
+        calendar: TenantBusinessCalendar(membershipConfig.tenantTimezone),
+        config: membershipConfig,
+        clock: clock,
       ),
       checkIn: CheckInStudent(
         repo: attendance,

@@ -10,6 +10,55 @@ import '../../../platform/event/event.dart';
 import '../../../platform/identity/identity.dart';
 import 'domain/membership.dart';
 
+/// `IMPL-428` / `MM-BR-006` — the **closed** set of integration edges this
+/// module may use. An eleventh is not constructible.
+///
+/// BC Map L292: *"if an edge is not in this table, it does not exist and
+/// adding it requires an ADR."* Modelling the set as an enum makes that
+/// mechanical: a developer cannot reach for `E-06` because the value does not
+/// exist, so `MM-BR-008` (no `BC-06` Library Policy consumption) holds by
+/// construction rather than by review.
+enum MembershipEdge {
+  /// `BC-01` → `BC-02`. Enrollment precondition (§3.1).
+  e01EnrollmentInbound,
+
+  /// `BC-02` → `BC-04`. `MembershipValidity`; Seating **rejects** if invalid.
+  e02SeatingProjection,
+
+  /// `BC-02` → `BC-03`. Same projection; Attendance **flags**, never blocks.
+  e03AttendanceProjection,
+
+  /// `BC-02` → `BC-05`. Created/Renewed/Upgraded → `FeeDue`.
+  e07FeeOutbound,
+
+  /// `BC-05` → `BC-02`. `FeePaymentReceived` activates a pending membership.
+  e10PaymentInbound,
+
+  /// `BC-02` → `BC-21`. Entitlement check **before** mutation.
+  e17Entitlement,
+
+  /// `BC-02` → `BC-19`. Ambient `TenantContext`; never a method parameter.
+  e18Tenancy,
+
+  /// `BC-02` → `BC-25`. Typed config accessors (§13.4).
+  e19Configuration,
+
+  /// `BC-02` → `BC-24`. Audit; outbox-backed, **never synchronous**.
+  e20Audit,
+
+  /// `BC-02` → `BC-22`. Notification facts only, never "send an SMS".
+  e23Notification;
+
+  /// `MM-BR-007` — the asymmetry that must survive future "fixes".
+  ///
+  /// Seating blocks on an invalid membership; Attendance records and flags.
+  /// `MP-GBR-16` states it globally and BC Map §7.1 adds *"documented here so
+  /// a future engineer does not 'fix' it."* Never lock a paying student out
+  /// at the door.
+  bool get blocksOnInvalidMembership =>
+      this == MembershipEdge.e02SeatingProjection;
+}
+
 abstract interface class MembershipRepository {
   List<Membership> forStudent(StudentRecordId id);
   List<Membership> all();
@@ -24,8 +73,13 @@ abstract interface class MembershipRepository {
 abstract interface class MembershipPlanRepository {
   List<MembershipPlan> all();
 
-  /// `MM-FR-020` — the plans selectable for a new membership.
+  /// `MM-FR-020`/`MM-BR-029` — the plans selectable for a create, renewal or
+  /// upgrade target.
   List<MembershipPlan> selectable();
+
+  /// `MM-FR-015` — the plans a student may be shown. A `StaffOnly` plan is
+  /// absent (`MM-AC-012`).
+  List<MembershipPlan> studentVisible();
 
   MembershipPlan? byId(String id);
   void save(MembershipPlan plan);
@@ -58,7 +112,11 @@ final class InMemoryMembershipPlanRepository
   List<MembershipPlan> all() => _store.all();
 
   @override
-  List<MembershipPlan> selectable() => _store.where((p) => p.isActive);
+  List<MembershipPlan> selectable() => _store.where((p) => p.isSelectable);
+
+  @override
+  List<MembershipPlan> studentVisible() =>
+      _store.where((p) => p.isStudentVisible);
 
   @override
   MembershipPlan? byId(String id) => _store.get(id);

@@ -144,7 +144,7 @@ void _seedPlans(
   String planId(String base) => '${base}_${tenant.value}';
 
   for (final p in <MembershipPlan>[
-    MembershipPlan(
+    MembershipPlan.create(
       id: planId(kPlanFloating),
       tenantId: tenant,
       branchId: branch,
@@ -155,7 +155,7 @@ void _seedPlans(
       createdBy: 'seed',
       seatQuota: 0, // no reserved chair — first come, first served
     ),
-    MembershipPlan(
+    MembershipPlan.create(
       id: planId(kPlanReserved),
       tenantId: tenant,
       branchId: branch,
@@ -166,7 +166,7 @@ void _seedPlans(
       createdBy: 'seed',
       seatQuota: 1,
     ),
-    MembershipPlan(
+    MembershipPlan.create(
       id: planId(kPlanQuarterly),
       tenantId: tenant,
       branchId: branch,
@@ -177,7 +177,7 @@ void _seedPlans(
       createdBy: 'seed',
       seatQuota: 1,
     ),
-    MembershipPlan(
+    MembershipPlan.create(
       id: planId(kPlanAcCabin),
       tenantId: tenant,
       branchId: branch,

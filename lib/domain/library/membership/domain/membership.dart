@@ -14,6 +14,72 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 /// `MM-FR-015` — a plan is offerable to any enrolled student, or to staff only.
 enum PlanAvailability { public, staffOnly }
 
+/// `MM-FR-016` — the **entire** V1 eligibility rule set, and no more.
+///
+/// Two rules only: an `Active` enrollment (always applied, so it is not
+/// modelled as an option) and an optional age bound. A general rule engine is
+/// a product in its own right and nothing in the Master PRD or EA asks for
+/// one, so the type admits nothing else.
+///
+/// `MM-FR-017`/`MM-XC-001`: this module **MUST NOT** read, store or compute
+/// from a date of birth. The bound is therefore carried as *years* and
+/// evaluated by asking `BC-01` a boolean — [isSatisfiedByAge] takes an age
+/// that `BC-01` resolved, never a birth date.
+///
+/// ⚠ `MM-GAP-003` is OPEN: whether DOB is reliably available is unresolved
+/// (`GCP-05`/`SM-GAP-10`), so age eligibility stays **`MAY`** and is never
+/// mandatory. This type does not resolve that gap.
+final class PlanEligibility {
+  const PlanEligibility({this.minAgeYears, this.maxAgeYears});
+
+  /// No age bound — the common case. An `Active` enrollment is still required
+  /// by `MM-FR-033`, which is a creation precondition rather than a plan rule.
+  static const PlanEligibility enrollmentOnly = PlanEligibility();
+
+  final int? minAgeYears;
+  final int? maxAgeYears;
+
+  bool get hasAgeBound => minAgeYears != null || maxAgeYears != null;
+
+  /// Validates the bound itself. A reversed or negative bound is a typed
+  /// rejection naming the field (`MM-FR-009`, `IMPL-403`).
+  void assertValid() {
+    final lo = minAgeYears;
+    final hi = maxAgeYears;
+    if (lo != null && lo < 0) {
+      throw const DomainError(
+        DomainErrorCode.validationFailed,
+        'minAgeYears must not be negative.',
+        context: {'field': 'minAgeYears'},
+      );
+    }
+    if (hi != null && hi < 0) {
+      throw const DomainError(
+        DomainErrorCode.validationFailed,
+        'maxAgeYears must not be negative.',
+        context: {'field': 'maxAgeYears'},
+      );
+    }
+    if (lo != null && hi != null && hi < lo) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'maxAgeYears ($hi) must not be below minAgeYears ($lo).',
+        context: {'field': 'maxAgeYears'},
+      );
+    }
+  }
+
+  /// `MM-FR-017` — evaluated from an age supplied by `BC-01`, never derived
+  /// from a stored date of birth.
+  bool isSatisfiedByAge(int ageYears) {
+    final lo = minAgeYears;
+    final hi = maxAgeYears;
+    if (lo != null && ageYears < lo) return false;
+    if (hi != null && ageYears > hi) return false;
+    return true;
+  }
+}
+
 /// `MM-FR-072` — the closed set of **exactly six** V1 values.
 ///
 /// `Frozen` is deliberately **absent**, not merely unused. `MM-FR-073` makes it
@@ -75,7 +141,114 @@ final class MembershipPlan {
     this.version = 1,
     this.description,
     this.seatQuota = 0,
+    this.eligibility = PlanEligibility.enrollmentOnly,
   });
+
+  /// `MM-FR-018` — create, with every `MM-FR-008`…`015` field validated
+  /// before an instance exists.
+  ///
+  /// Validation lives in a factory rather than in the caller, so there is no
+  /// path that constructs an invalid plan and validates it afterwards.
+  /// `IMPL-403`'s obligation is that each field's validation *"rejects with a
+  /// typed error naming the field"*.
+  factory MembershipPlan.create({
+    required String id,
+    required TenantId tenantId,
+    required BranchId branchId,
+    required String name,
+    required int durationDays,
+    required Money price,
+    required DateTime createdAt,
+    required String createdBy,
+    PlanAvailability availability = PlanAvailability.public,
+    bool isActive = true,
+    String? description,
+    int seatQuota = 0,
+    PlanEligibility eligibility = PlanEligibility.enrollmentOnly,
+  }) {
+    _assertFields(
+      id: id,
+      name: name,
+      durationDays: durationDays,
+      price: price,
+      createdBy: createdBy,
+      seatQuota: seatQuota,
+      eligibility: eligibility,
+    );
+    return MembershipPlan(
+      id: id,
+      tenantId: tenantId,
+      branchId: branchId,
+      name: name,
+      durationDays: durationDays,
+      price: price,
+      createdAt: createdAt,
+      createdBy: createdBy,
+      availability: availability,
+      isActive: isActive,
+      description: description,
+      seatQuota: seatQuota,
+      eligibility: eligibility,
+    );
+  }
+
+  static void _assertFields({
+    required String id,
+    required String name,
+    required int durationDays,
+    required Money price,
+    required String createdBy,
+    required int seatQuota,
+    required PlanEligibility eligibility,
+  }) {
+    void reject(String field, String message) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        message,
+        context: {'field': field},
+      );
+    }
+
+    if (id.trim().isEmpty) reject('planId', 'planId must not be blank.');
+    if (createdBy.trim().isEmpty) {
+      reject('createdBy', 'createdBy must not be blank.');
+    }
+    // MM-FR-010's uniqueness is a repository concern; blankness is not.
+    if (name.trim().isEmpty) reject('name', 'Plan name must not be blank.');
+    // MM-FR-011 — a positive integer, in days.
+    if (durationDays <= 0) {
+      reject(
+        'durationDays',
+        'durationDays must be a positive integer, got $durationDays.',
+      );
+    }
+    // MM-FR-012 — non-negative, and Money already guarantees minor units
+    // rather than a floating-point type.
+    if (price.minorUnits < 0) {
+      reject('price', 'price must not be negative.');
+    }
+    // MM-FR-013 — an ISO-4217 code.
+    if (!_isIso4217(price.currency)) {
+      reject(
+        'currency',
+        '"${price.currency}" is not an ISO-4217 currency code.',
+      );
+    }
+    // MM-FR-014 — a non-negative integer.
+    if (seatQuota < 0) {
+      reject('seatQuota', 'seatQuota must not be negative.');
+    }
+    eligibility.assertValid();
+  }
+
+  /// `MM-FR-013` — shape check only.
+  ///
+  /// Deliberately **not** a closed list of currencies: `PRD-005` names no
+  /// allowed set and `MM-CFG-001` merely supplies a default, so enumerating
+  /// one here would invent a requirement. Three upper-case letters is what
+  /// ISO-4217 specifies and all this module is entitled to assert.
+  static bool _isIso4217(String code) =>
+      RegExp(r'^[A-Z]{3}$').hasMatch(code);
 
   /// `MM-FR-008` — required. `MM-FR-021` — IMMUTABLE (identity).
   final String id;
@@ -123,6 +296,9 @@ final class MembershipPlan {
   /// position. See the ubiquitous language table. `MM-FR-009` — optional.
   final int seatQuota;
 
+  /// `MM-FR-016` — optional, and limited to the two specified rules.
+  final PlanEligibility eligibility;
+
   /// `MM-FR-008` — exposed as a named field, derived from [price] so the two
   /// are structurally incapable of disagreeing.
   String get currency => price.currency;
@@ -145,21 +321,61 @@ final class MembershipPlan {
     bool? isActive,
     String? description,
     int? seatQuota,
-  }) => MembershipPlan(
-    id: id,
-    tenantId: tenantId,
-    branchId: branchId,
-    name: name ?? this.name,
-    durationDays: durationDays ?? this.durationDays,
-    price: price ?? this.price,
-    createdAt: createdAt,
-    createdBy: createdBy,
-    availability: availability ?? this.availability,
-    isActive: isActive ?? this.isActive,
-    version: version + 1,
-    description: description ?? this.description,
-    seatQuota: seatQuota ?? this.seatQuota,
-  );
+    PlanEligibility? eligibility,
+  }) {
+    // MM-FR-024: currency is IMMUTABLE once any membership references the
+    // plan. Money carries its currency, so a price edit could smuggle one in.
+    final nextPrice = price ?? this.price;
+    if (nextPrice.currency != this.price.currency) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A plan\'s currency cannot change: it would silently restate the '
+        'meaning of every price snapshot taken against it.',
+        context: {'field': 'currency', 'planId': id},
+      );
+    }
+
+    // An edit is validated by the same rules as a creation. A plan that could
+    // be edited into an invalid state is not validated, merely gated.
+    _assertFields(
+      id: id,
+      name: name ?? this.name,
+      durationDays: durationDays ?? this.durationDays,
+      price: nextPrice,
+      createdBy: createdBy,
+      seatQuota: seatQuota ?? this.seatQuota,
+      eligibility: eligibility ?? this.eligibility,
+    );
+
+    return MembershipPlan(
+      id: id,
+      tenantId: tenantId,
+      branchId: branchId,
+      name: name ?? this.name,
+      durationDays: durationDays ?? this.durationDays,
+      price: nextPrice,
+      createdAt: createdAt,
+      createdBy: createdBy,
+      availability: availability ?? this.availability,
+      isActive: isActive ?? this.isActive,
+      version: version + 1,
+      description: description ?? this.description,
+      seatQuota: seatQuota ?? this.seatQuota,
+      eligibility: eligibility ?? this.eligibility,
+    );
+  }
+
+  /// `MM-FR-020`/`MM-BR-029` — selectable for create, renew or upgrade.
+  ///
+  /// One predicate, so the three call sites cannot drift apart. Tenant match
+  /// is the caller's ambient concern (`MM-BR-027`); this answers the plan's
+  /// own half.
+  bool get isSelectable => isActive;
+
+  /// `MM-FR-015` — a `StaffOnly` plan never appears in a student-facing list
+  /// (`MM-AC-012`).
+  bool get isStudentVisible =>
+      isActive && availability == PlanAvailability.public;
 
   /// `MM-FR-018` — deactivate. `MM-FR-019` — this leaves every committed
   /// membership untouched, which holds structurally because a membership holds

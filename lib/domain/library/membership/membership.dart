@@ -301,7 +301,7 @@ final class MembershipValidityService implements MembershipValidityReader {
         final plan = _plans.byId(m.planId);
         return MembershipValidity(
           isValid: true,
-          validUntil: m.term.end,
+          validUntil: m.endDate,
           seatQuota: m.seatQuotaSnapshot,
           planName: plan?.name ?? '—',
         );
@@ -514,7 +514,9 @@ final class CreateMembership {
           'startDate': term.start.toIso8601String(),
           'createdAt': m.createdAt?.toIso8601String(),
           'createdBy': m.createdBy,
-          'validUntil': term.end.toIso8601String(),
+          // MM-FR-055: the inclusive last business date, not the half-open
+          // DateRange bound, which is a day later.
+          'validUntil': m.endDate.toIso8601String(),
         },
       ),
     ]);

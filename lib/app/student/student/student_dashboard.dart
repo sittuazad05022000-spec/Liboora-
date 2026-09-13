@@ -321,7 +321,7 @@ class StudentPlanPage extends StatelessWidget {
                   ),
                   subtitle: Text(
                     '${m.term.start.toIso8601String().substring(0, 10)} → '
-                    '${m.term.end.toIso8601String().substring(0, 10)}',
+                    '${m.endDate.toIso8601String().substring(0, 10)}',
                     style: const TextStyle(fontSize: 11.5),
                   ),
                   trailing: Text(

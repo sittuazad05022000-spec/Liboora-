@@ -580,6 +580,95 @@ final class Membership {
   /// range).
   static String _isoDay(DateTime d) => d.toIso8601String().substring(0, 10);
 
+  /// `IMPL-417` — `startDate`, the inclusive first business date
+  /// (`MM-FR-055`).
+  DateTime get startDate => term.start;
+
+  /// `IMPL-417`/`IMPL-418` — `endDate`, the inclusive **last** business date.
+  ///
+  /// `MM-FR-055` defines the term as the closed interval
+  /// `[startDate, endDate]`, and `MM-FR-057` fixes
+  /// `endDate = startDate + (durationDays - 1)`. [term] is a [DateRange],
+  /// which is **half-open** `[start, end)` — so `term.end` is the day *after*
+  /// the term, one day later than the spec's `endDate`.
+  ///
+  /// The distinction is not cosmetic, and it is not currently visible as an
+  /// entitlement bug, because `term.contains` already treats the last day
+  /// correctly: a 30-day term from 1 March admits the 30th and refuses the
+  /// 31st. It leaks in the two places that read the *number* rather than ask
+  /// the question:
+  ///
+  ///  * every `validUntil` published to `BC-03`/`BC-04` and to the student's
+  ///    own dashboard was a day late; and
+  ///  * `MM-FR-085` derives a renewal's `startDate` from `endDate + 1 day`,
+  ///    so renewing from the half-open value would overlap the old term by a
+  ///    day and be refused by `MM-INV-001`.
+  ///
+  /// Exposing the inclusive value here — rather than changing [DateRange],
+  /// which is shared R0 vocabulary that attendance and seating use with
+  /// half-open semantics they rely on — keeps the fix inside `BC-02`, the
+  /// context the requirement belongs to.
+  DateTime get endDate => term.end.subtract(const Duration(days: 1));
+
+  /// `MM-FR-057` — the term's length in whole business days, which equals the
+  /// plan's `durationDays`.
+  int get durationDays => term.lengthInDays;
+
+  /// `IMPL-418` — the deterministic end-date formula, as a pure function.
+  ///
+  /// `MM-FR-058` requires this to depend on nothing but its inputs: not the
+  /// clock, not holidays, not a working calendar. It is `static` so it cannot
+  /// reach instance state, which is the cheapest way to keep that true.
+  ///
+  /// `MM-FR-057`: `endDate = startDate + (durationDays - 1)`.
+  static DateTime endDateFor(DateTime startDate, int durationDays) {
+    if (durationDays < 1) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'durationDays must be at least 1.',
+        context: {'field': 'durationDays', 'durationDays': durationDays},
+      );
+    }
+    // Calendar-date arithmetic by field, not by adding a Duration: day
+    // overflow (e.g. day 32) normalises into the next month, which is what
+    // makes every month-end and leap-day case fall out for free instead of
+    // needing a table of special cases.
+    //
+    // Built with the local `DateTime(...)` constructor, matching
+    // `DateRange._dateOnly` and `Clock.today()`. Using `DateTime.utc` here
+    // would look more rigorous and would be worse: business dates in this
+    // codebase are local-kind, and mixing kinds makes `isBefore`/`isAfter`
+    // comparisons depend on the runner's offset. Tenant-timezone evaluation
+    // is MM-FR-061's subject and belongs to IMPL-419, which has not run.
+    return DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day + (durationDays - 1),
+    );
+  }
+
+  /// `IMPL-418`/`MM-FR-057a` — the single permitted re-derivation.
+  ///
+  /// When a delayed payment activates a membership whose `startDate` has
+  /// already passed and `MM-CFG-009` is enabled, **both** endpoints are
+  /// re-derived from the activation date using the `MM-FR-057` formula
+  /// unchanged.
+  ///
+  /// Re-deriving both is the whole point, and the spec is emphatic about why:
+  /// moving `endDate` while holding `startDate` fixed would make `endDate` a
+  /// function of the clock (breaking `MM-FR-058`) and would stretch the term
+  /// past `durationDays` (breaking `MM-FR-057`). The returned term is exactly
+  /// as long as the one sold.
+  static DateRange reDerivedTerm({
+    required DateTime activationDate,
+    required int durationDays,
+  }) => DateRange.days(
+    // Normalised to its calendar date, so the hour a payment happens to land
+    // cannot change the term. Local kind, matching DateRange._dateOnly.
+    DateTime(activationDate.year, activationDate.month, activationDate.day),
+    durationDays,
+  );
+
   /// Invariant `MM-INV-001`: no overlapping active terms for one student.
   /// [existing] is supplied by the repository — the aggregate does not query.
   static void assertNoOverlap(List<Membership> existing, DateRange proposed) {
@@ -593,7 +682,7 @@ final class Membership {
         throw DomainError(
           DomainErrorCode.overlappingMembershipTerm,
           'This student already has a membership from '
-          '${_isoDay(m.term.start)} to ${_isoDay(m.term.end)} '
+          '${_isoDay(m.startDate)} to ${_isoDay(m.endDate)} '
           '(status: ${m.status.name}).',
           // MM-FR-049: name the conflicting membershipId AND its term, so the
           // actor can tell which sale is in the way rather than guessing. The
@@ -603,7 +692,7 @@ final class Membership {
             'existingMembershipId': m.id,
             'existingStatus': m.status.name,
             'existingStartDate': _isoDay(m.term.start),
-            'existingEndDate': _isoDay(m.term.end),
+            'existingEndDate': _isoDay(m.endDate),
           },
         );
       }
@@ -693,10 +782,10 @@ final class Membership {
       throw DomainError(
         DomainErrorCode.validationFailed,
         'This membership cannot activate after its end date '
-        '(${_isoDay(term.end)}).',
+        '(${_isoDay(endDate)}).',
         context: {
           'membershipId': id,
-          'endDate': _isoDay(term.end),
+          'endDate': _isoDay(endDate),
           'attemptedOn': _isoDay(day),
         },
       );

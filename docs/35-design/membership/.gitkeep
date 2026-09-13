@@ -1,0 +1,4 @@
+# Keeps this directory in git until the first Design Doc lands here.
+# Not a Design Doc, and not a placeholder for one: whether a module needs a
+# Design Doc is a feature-specific and governance-specific judgement.
+# See ../README.md

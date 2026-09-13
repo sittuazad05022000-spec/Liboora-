@@ -19,7 +19,17 @@ import '../../platform/identity/identity.dart';
 import '../../platform/tenancy/tenancy.dart';
 
 final class SessionController extends ChangeNotifier {
-  SessionController(this.container);
+  /// Builds the controller and **restores any persisted session** (P1).
+  ///
+  /// Restore happens in the constructor, synchronously, rather than in an
+  /// `initState` or a `Future`. That is deliberate: by the time the first
+  /// frame is built the answer is already known, so a returning user never
+  /// sees the sign-in screen flash before being replaced by their dashboard.
+  /// The durable adapter was already opened at boot, so nothing here needs to
+  /// await anything.
+  SessionController(this.container) {
+    _restorePersistedSession();
+  }
 
   final AppContainer container;
 
@@ -29,8 +39,80 @@ final class SessionController extends ChangeNotifier {
   String? _otpHint;
   String? _error;
 
+  /// Re-establish a session persisted by a previous run, if it is still valid.
+  ///
+  /// Every rejection path is silent and lands on the sign-in screen: a device
+  /// with no session, an expired one, a revoked role or an unreadable record
+  /// are all simply "not signed in". `SessionStore.restore` clears the record
+  /// in the rejecting cases, so a bad record cannot fail repeatedly.
+  ///
+  /// ⛔ This grants nothing. `SessionStore` re-checks the `CFG-5`/`CFG-6`
+  /// expiry boundaries and re-reads the account's *current* roles before
+  /// returning anything, so a restored session is strictly weaker than the one
+  /// that was issued — never stronger.
+  void _restorePersistedSession() {
+    final restored = container.sessionStore.restore(
+      accounts: container.auth.accounts,
+      now: container.clock.now(),
+    );
+    if (restored == null) return;
+
+    _session = restored;
+    _branch = restored.branchId;
+
+    // The same scope entry sign-in performs. Without it every repository read
+    // on the first frame would throw TenantContextMissing.
+    container.enterScope(
+      tenant: restored.tenantId,
+      branch: restored.branchId,
+      actor: restored.account.displayName,
+    );
+
+    // Activity refreshes the idle boundary only (AUTH-6.16: the absolute
+    // boundary cannot move). Persisted immediately, so closing the app without
+    // further interaction does not lose the fact that it was opened.
+    _session = restored.touchedAt(container.clock.now());
+    container.sessionStore.save(_session!);
+  }
+
   AuthSession? get session => _session;
-  bool get isSignedIn => _session != null;
+
+  /// Whether a session is live **right now**.
+  ///
+  /// Re-tests the `CFG-5`/`CFG-6` boundaries on every read rather than
+  /// trusting `_session != null`. Without this, only a *restart* enforced
+  /// expiry: a reception tablet left open past its 30-minute idle limit would
+  /// stay signed in for the rest of the day, which is the exact scenario
+  /// `DOCUMENTATION_AUDIT-001` `R-C` corrected the value for.
+  ///
+  /// Expiry is evaluated lazily on read instead of by a timer: a timer that
+  /// fires while the app is backgrounded is unreliable, and one that fires
+  /// while it is foregrounded would still need this check to be correct.
+  bool get isSignedIn {
+    final s = _session;
+    if (s == null) return false;
+    if (s.isExpiredAt(container.clock.now())) {
+      // Terminate for real, not just report false — otherwise the tenant
+      // scope would stay entered behind an apparently signed-out UI.
+      _expireSession();
+      return false;
+    }
+    return true;
+  }
+
+  /// Ends an expired session (`AUTH-6.18`, `AUTH-6.20`).
+  ///
+  /// Deliberately does **not** call `notifyListeners`: this runs during a
+  /// `build` via `isSignedIn`, and notifying mid-build would throw. The read
+  /// that triggered it already returns the correct value, so the frame being
+  /// built is right; nothing stale is shown.
+  void _expireSession() {
+    _session = null;
+    _verifiedAccount = null;
+    _otpHint = null;
+    container.sessionStore.clear();
+    container.leaveScope();
+  }
   String? get otpHint => _otpHint;
   String? get error => _error;
 
@@ -147,6 +229,11 @@ final class SessionController extends ChangeNotifier {
     _session = s;
     _otpHint = null;
 
+    // Persist so the next launch can restore it (P1). Written only after a
+    // session was actually ISSUED — never after mere OTP verification, which
+    // grants no authorization (AR-6).
+    container.sessionStore.save(s);
+
     // Enter the tenant scope for the lifetime of the session.
     container.enterScope(
       tenant: s.tenantId,
@@ -162,6 +249,14 @@ final class SessionController extends ChangeNotifier {
     _verifiedAccount = null;
     _otpHint = null;
     _error = null;
+
+    // AUTH-6.21 — termination must be immediate and IRREVERSIBLE, so the
+    // record is deleted rather than flagged. This is what stops the next
+    // launch from silently signing the user back in.
+    container.sessionStore.clear();
+
+    // AUTH-6.23 — sign-out must clear the active tenant context and retain no
+    // authorization state.
     container.leaveScope();
     notifyListeners();
   }
@@ -175,6 +270,20 @@ final class SessionController extends ChangeNotifier {
         branch: id,
         actor: s.account.displayName,
       );
+      // Re-persist, so a restart reopens the branch the user was actually in
+      // rather than the one they signed in to. Switching library is a
+      // session-SCOPE change, never a re-authentication (ADR-0004), so the
+      // session id and its absolute boundary are untouched.
+      _session = AuthSession(
+        id: s.id,
+        account: s.account,
+        tenantId: s.tenantId,
+        branchId: id,
+        activeRole: s.activeRole,
+        startedAt: s.startedAt,
+        lastActiveAt: container.clock.now(),
+      );
+      container.sessionStore.save(_session!);
     }
     notifyListeners();
   }

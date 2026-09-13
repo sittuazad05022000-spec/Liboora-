@@ -31,6 +31,7 @@ import '../platform/services/services.dart';
 import '../platform/tenancy/tenancy.dart';
 import 'clock.dart';
 import 'codecs.dart';
+import 'session_store.dart';
 
 /// Everything the app needs, assembled once.
 final class AppContainer {
@@ -62,6 +63,7 @@ final class AppContainer {
     required this.socialPresences,
     required this.messagingEnforcement,
     required this.auth,
+    required this.sessionStore,
     required this.enrollStudent,
     required this.createMembership,
     required this.checkIn,
@@ -136,6 +138,13 @@ final class AppContainer {
 
   // ── Identity ─────────────────────────────────────────────────────
   final AuthService auth;
+
+  /// Persistence for the signed-in session (P1 session restore).
+  ///
+  /// Talks to `DurableKeyValueStore` directly rather than through a
+  /// `TenantPartitionedStore`, because a session is what *establishes* the
+  /// tenant scope — see `SessionStore` for why that is not an `X-13` hole.
+  final SessionStore sessionStore;
 
   // ── Use cases ────────────────────────────────────────────────────
   final EnrollStudent enrollStudent;
@@ -429,6 +438,11 @@ final class AppContainer {
       identityService: identityService,
       socialPresences: InMemorySocialPresenceRepository(),
       messagingEnforcement: messagingEnforcement,
+      // P1 session restore. Given the SAME durable adapter as every other
+      // store when one exists, so a session and the data it unlocks live or
+      // die together; an in-memory adapter otherwise, which keeps the field
+      // non-nullable and every call site free of null checks.
+      sessionStore: SessionStore(durable ?? InMemoryKeyValueStore()),
       auth: AuthService(
         accounts,
         clock: clock,

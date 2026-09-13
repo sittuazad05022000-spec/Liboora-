@@ -81,7 +81,8 @@ final class AuthSession {
     required this.branchId,
     required this.activeRole,
     required this.startedAt,
-  });
+    DateTime? lastActiveAt,
+  }) : _lastActiveAt = lastActiveAt;
 
   /// Opaque, non-guessable (amendment A-8). Never a log or metric dimension.
   final SessionId id;
@@ -90,7 +91,92 @@ final class AuthSession {
   final BranchId branchId;
   final AccessRole activeRole;
   final DateTime startedAt;
+
+  /// Last observed activity, for the **idle** boundary (`CFG-5`).
+  ///
+  /// Defaults to [startedAt]: a session that has never been used since
+  /// creation is idle *from* creation, which is the conservative reading and
+  /// the only one that cannot extend a session for free.
+  final DateTime? _lastActiveAt;
+  DateTime get lastActiveAt => _lastActiveAt ?? startedAt;
+
+  /// Whether this session's audience is **staff**, which carries the shorter
+  /// limits (`AUTH-6.19`).
+  ///
+  /// `AUTH-6.19`: *"Where an account holds both a staff and a non-staff role,
+  /// the shorter limits apply."* Implemented by asking whether the account
+  /// holds **any** staff role in the active tenant, not merely whether the
+  /// currently-active role is a staff one — otherwise a staff user could
+  /// obtain mobile-length limits by switching to a student role.
+  bool get isStaffAudience => account
+      .rolesIn(tenantId)
+      .any(kStaffRoles.contains);
+
+  /// The moment this session ends, whichever boundary comes first
+  /// (`AUTH-6.18`, `AC-6.6`).
+  DateTime get expiresAt {
+    final idleLimit = isStaffAudience ? kStaffIdle : kMobileIdle;
+    final absoluteLimit = isStaffAudience ? kStaffAbsolute : kMobileAbsolute;
+    final idleDeadline = lastActiveAt.add(idleLimit);
+    final absoluteDeadline = startedAt.add(absoluteLimit);
+    return idleDeadline.isBefore(absoluteDeadline)
+        ? idleDeadline
+        : absoluteDeadline;
+  }
+
+  /// True once either boundary has been reached.
+  ///
+  /// Takes `now` as a parameter rather than reading a clock: `X-09` bans
+  /// ambient `DateTime.now()`, and an injected instant is what lets a test pin
+  /// the boundary exactly rather than sleeping.
+  bool isExpiredAt(DateTime now) => !now.isBefore(expiresAt);
+
+  /// A copy with activity refreshed to [now], for the idle boundary.
+  ///
+  /// `AUTH-6.16`: renewal **MUST NOT** re-establish identity, and the absolute
+  /// boundary cannot move — so [startedAt] and [id] are carried over
+  /// unchanged and only [lastActiveAt] advances.
+  AuthSession touchedAt(DateTime now) => AuthSession(
+    id: id,
+    account: account,
+    tenantId: tenantId,
+    branchId: branchId,
+    activeRole: activeRole,
+    startedAt: startedAt,
+    lastActiveAt: now,
+  );
 }
+
+/// The roles that make a session **staff** for expiry purposes
+/// (`AUTH-6.19`).
+///
+/// Declared here, in `BC-18`, because "which roles are staff" is an identity
+/// fact, not a presentation one. Platform roles are deliberately absent — they
+/// do not exist in [AccessRole] (`SECP-FR-007`), so listing them would imply a
+/// capability the system does not have.
+const Set<AccessRole> kStaffRoles = {
+  AccessRole.owner,
+  AccessRole.manager,
+  AccessRole.reception,
+};
+
+/// `CFG-5` idle / `CFG-6` absolute session boundaries.
+///
+/// **These four values are normative, not chosen here.** They are carried from
+/// `CONFIGURATION_GUIDE` `CFG-5`/`CFG-6` and `Authentication_PRD` chapter 6
+/// (`AUTH-6.18`, `AUTH-6.19`, `AC-6.6`), and Authentication PRD **v3.0**
+/// states that *"`CFG-1`…`CFG-12` are carried forward unchanged"*, so the v2
+/// table remains current.
+///
+/// The staff values are short on purpose: a reception desk is a **shared**
+/// device in a public area, and NIST SP 800-63B AAL2 requires
+/// reauthentication after 30 minutes of inactivity. `DOCUMENTATION_AUDIT-001`
+/// `R-C` records that a previous 12-hour idle value was corrected precisely
+/// because it left an unattended tablet signed in all day.
+const Duration kMobileIdle = Duration(days: 30);
+const Duration kMobileAbsolute = Duration(days: 90);
+const Duration kStaffIdle = Duration(minutes: 30);
+const Duration kStaffAbsolute = Duration(hours: 12);
 
 /// Permissions, checked by the Policy Decision Point.
 ///

@@ -834,3 +834,107 @@ final class Membership {
     return priceSnapshot.prorate(remaining, term.lengthInDays);
   }
 }
+
+/// `IMPL-419` — tenant-timezone business dates and day boundaries.
+///
+/// `MM-FR-061` is explicit that term arithmetic, expiry determination and
+/// business-date resolution **MUST** use the tenant's configured timezone
+/// (`MM-CFG-006`), *"never the server's, never the client's."*
+///
+/// That rules out `Clock.today()` for this purpose: `SystemClock.today()`
+/// reads `DateTime.now()` and truncates, which is the *server's* date. On a
+/// UTC-hosted server at 23:00 UTC it is already tomorrow in `Asia/Kolkata`,
+/// so a membership created then would be stamped with yesterday's business
+/// date and a student's last day would be computed a day early.
+///
+/// **Scope, stated honestly.** This resolves a business date from a UTC
+/// instant using a fixed UTC offset. `MM-CFG-006`'s default, `Asia/Kolkata`,
+/// is `+05:30` year-round with no daylight saving, so a fixed offset is
+/// exactly correct for it. A tenant in a DST-observing zone needs an IANA
+/// timezone database, which this project does not depend on — so
+/// [offsetFor] throws for a zone it cannot honour rather than silently
+/// returning a wrong date. Guessing would produce the very
+/// server-time-by-another-name error `MM-FR-061` forbids.
+final class TenantBusinessCalendar {
+  const TenantBusinessCalendar(this.timezone);
+
+  /// An IANA zone name, e.g. `Asia/Kolkata` (`MM-CFG-006`).
+  final String timezone;
+
+  /// Fixed offsets for the zones this project can serve correctly.
+  ///
+  /// Deliberately a short, explicit list. Every entry here is a zone with no
+  /// daylight saving, so a single offset is the whole truth about it.
+  static const Map<String, Duration> _fixedOffsets = {
+    'Asia/Kolkata': Duration(hours: 5, minutes: 30),
+    'Asia/Calcutta': Duration(hours: 5, minutes: 30),
+    'Asia/Kathmandu': Duration(hours: 5, minutes: 45),
+    'Asia/Dubai': Duration(hours: 4),
+    'Asia/Karachi': Duration(hours: 5),
+    'Asia/Dhaka': Duration(hours: 6),
+    'Asia/Colombo': Duration(hours: 5, minutes: 30),
+    'Asia/Singapore': Duration(hours: 8),
+    'Asia/Tokyo': Duration(hours: 9),
+    'UTC': Duration.zero,
+  };
+
+  /// The zone's fixed offset from UTC.
+  ///
+  /// Throws [DomainError] for an unknown or DST-observing zone. Failing loudly
+  /// is the point: `MM-FR-061` forbids falling back to the server's zone, and
+  /// a silent default would be precisely that.
+  static Duration offsetFor(String timezone) {
+    final offset = _fixedOffsets[timezone];
+    if (offset == null) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'Timezone "$timezone" is not supported without an IANA timezone '
+        'database. MM-FR-061 forbids falling back to the server timezone.',
+        context: {'field': 'tenantTimezone', 'timezone': timezone},
+      );
+    }
+    return offset;
+  }
+
+  Duration get offset => offsetFor(timezone);
+
+  /// `MM-FR-061`/§4.4 — the tenant's current business date for a UTC instant.
+  ///
+  /// The returned value is a local-kind midnight, matching
+  /// `DateRange._dateOnly`, so it compares correctly with term endpoints.
+  DateTime businessDateAt(DateTime utcInstant) {
+    final shifted = utcInstant.toUtc().add(offset);
+    return DateTime(shifted.year, shifted.month, shifted.day);
+  }
+
+  /// `MM-FR-062` — a term is valid for the **whole of** `endDate`.
+  ///
+  /// So the instant a term stops conferring entitlement is the start of the
+  /// following business date, expressed back in UTC.
+  DateTime endOfBusinessDateUtc(DateTime businessDate) {
+    final startOfNextDay = DateTime.utc(
+      businessDate.year,
+      businessDate.month,
+      businessDate.day + 1,
+    );
+    return startOfNextDay.subtract(offset);
+  }
+
+  /// `MM-FR-103` — expired once the tenant-timezone business date is strictly
+  /// greater than `endDate`.
+  bool isExpiredAt(DateTime utcInstant, DateTime endDate) =>
+      businessDateAt(utcInstant).isAfter(_midnight(endDate));
+
+  /// `MM-FR-062` — valid for the whole of `endDate`, inclusive.
+  bool coversInstant(
+    DateTime utcInstant, {
+    required DateTime startDate,
+    required DateTime endDate,
+  }) {
+    final today = businessDateAt(utcInstant);
+    return !today.isBefore(_midnight(startDate)) &&
+        !today.isAfter(_midnight(endDate));
+  }
+
+  static DateTime _midnight(DateTime d) => DateTime(d.year, d.month, d.day);
+}

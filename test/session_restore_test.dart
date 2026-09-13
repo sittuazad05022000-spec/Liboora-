@@ -613,55 +613,46 @@ void main() {
         durable: durable,
       );
 
-      // ⚠ THE ACCOUNT DIRECTORY IS NOT PERSISTED, and that is a PRE-EXISTING
-      // gap, not something session restore introduced. Accounts live in an
-      // in-memory `List<Account>` populated only by the seeder, and the
-      // seeder correctly does NOT run on the second boot (P0 #2: demo data
-      // must never overwrite restored data). So `second.auth.accounts` is
-      // empty and restore refuses — which is the CORRECT behaviour of the
-      // code under test: an account it cannot find is an account whose roles
-      // it cannot verify, and honouring the session anyway would be
-      // fail-open.
+      // ⭐ UPDATED: the account directory is now persisted, so this asserts
+      // the real thing rather than the gap.
+      //
+      // When this test was written the directory was an in-memory list that
+      // only the seeder populated, the seeder correctly did not run on a
+      // second boot, and restore therefore refused. The note left here said:
+      // *"if this ever becomes non-empty, account persistence has landed and
+      // this test should assert a successful restore against
+      // second.auth.accounts directly."* That is exactly what happened, and
+      // this is that assertion.
       expect(
         second.auth.accounts,
-        isEmpty,
-        reason:
-            'If this ever becomes non-empty, account persistence has landed '
-            'and this test should assert a successful restore against '
-            'second.auth.accounts directly.',
+        isNotEmpty,
+        reason: 'The directory is restored from durable storage at boot.',
       );
 
-      // Assert the SUCCESS case first. A rejecting restore deliberately
-      // CLEARS the record, so probing the empty-directory case first would
-      // destroy the very record the success case needs — the order here is
-      // load-bearing, not cosmetic.
       final restored = second.sessionStore.restore(
-        accounts: first.auth.accounts,
+        // The container's OWN directory now — no longer borrowed from the
+        // previous boot, which is what makes this genuinely end-to-end.
+        accounts: second.auth.accounts,
         now: second.clock.now(),
       );
-      expect(
-        restored,
-        isNotNull,
-        reason:
-            'The session record itself survived the restart: restoring it '
-            'against the directory a running app would hold succeeds.',
-      );
+      expect(restored, isNotNull);
       expect(restored!.account.id, staff.id);
       expect(restored.tenantId, kDemoTenant);
       expect(restored.branchId, kDemoBranch);
 
-      // Now the empty-directory case, on a freshly written record.
+      // The fail-closed path is still intact: given a directory that cannot
+      // confirm the account, restore must refuse. Asserted on a freshly
+      // written record, because a rejecting restore deliberately clears it.
       second.sessionStore.save(issued);
       expect(
         second.sessionStore.restore(
-          accounts: second.auth.accounts,
+          accounts: const [],
           now: second.clock.now(),
         ),
         isNull,
         reason:
-            'Refusing is correct when the directory cannot confirm the '
-            'account: restore must never trust the account snapshot inside '
-            'its own record.',
+            'Restore must never trust the account snapshot inside its own '
+            'record — an unconfirmable account is refused.',
       );
       expect(
         durable.readAll(kSessionNamespace),

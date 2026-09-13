@@ -383,12 +383,14 @@ final class AuthService {
     required IdGenerator ids,
     required PersonIdentityFactory identities,
     required OtpDeliveryChannel delivery,
+    void Function(Account account)? onAccountChanged,
     this.challengePeekEnabled = false,
   }) : _clock = clock,
        _random = random,
        _ids = ids,
        _identities = identities,
-       _delivery = delivery;
+       _delivery = delivery,
+       _onAccountChanged = onAccountChanged;
 
   /// Adapter defaults. The normative bounds live in the locked challenge and
   /// lockout registers; these are the scaffold's configuration of them.
@@ -397,6 +399,20 @@ final class AuthService {
   static const int _codeDigits = 6; // TRAI DLT numeric template
 
   final List<Account> _accounts;
+
+  /// Notified whenever an account is added to the directory.
+  ///
+  /// A **callback, not a store**. `BC-18` is rank 4 and persistence adapters
+  /// are rank 2, so handing this service a store would invert the dependency;
+  /// more importantly, an authentication service that knows how accounts are
+  /// written is an authentication service with a second responsibility. This
+  /// way `AuthService` announces a fact and the composition root decides what
+  /// to do with it — the same inversion `PersonIdentityFactory` uses.
+  ///
+  /// Null-safe: with no listener the directory behaves exactly as before, so
+  /// every existing test and any ephemeral wiring is unaffected.
+  final void Function(Account account)? _onAccountChanged;
+
   final Clock _clock;
   final RandomSource _random;
   final IdGenerator _ids;
@@ -456,6 +472,7 @@ final class AuthService {
   void registerProvisionedAccount(Account account) {
     if (_accountForPhone(account.phone) != null) return;
     _accounts.add(account);
+    _onAccountChanged?.call(account);
   }
 
   /// Private on purpose: a public lookup by number is an enumeration oracle
@@ -572,6 +589,10 @@ final class AuthService {
       roles: const {},
     );
     _accounts.add(created);
+    // Announced so the directory survives a restart. Note what is NOT
+    // announced: the challenge. An OTP is short-lived by design and must never
+    // become durable.
+    _onAccountChanged?.call(created);
     return created;
   }
 

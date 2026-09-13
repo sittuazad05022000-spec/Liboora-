@@ -30,6 +30,7 @@ import '../platform/observability/observability.dart';
 import '../platform/services/services.dart';
 import '../platform/tenancy/tenancy.dart';
 import 'clock.dart';
+import 'account_store.dart';
 import 'codecs.dart';
 import 'session_store.dart';
 
@@ -64,6 +65,7 @@ final class AppContainer {
     required this.messagingEnforcement,
     required this.auth,
     required this.sessionStore,
+    required this.accountStore,
     required this.enrollStudent,
     required this.createMembership,
     required this.checkIn,
@@ -145,6 +147,12 @@ final class AppContainer {
   /// `TenantPartitionedStore`, because a session is what *establishes* the
   /// tenant scope — see `SessionStore` for why that is not an `X-13` hole.
   final SessionStore sessionStore;
+
+  /// Persistence for the global account directory (`BC-18`, `ADR-0003`).
+  ///
+  /// Not tenant-partitioned, because an account is not a tenant-scoped row —
+  /// see `AccountStore`. Tenant isolation lives in each account's `roles` map.
+  final AccountStore accountStore;
 
   // ── Use cases ────────────────────────────────────────────────────
   final EnrollStudent enrollStudent;
@@ -393,7 +401,27 @@ final class AppContainer {
     final ledgers = InMemoryFeeLedgerRepository(ledgerStore);
 
     const pdp = PolicyDecisionPoint();
-    final accounts = <Account>[];
+
+    // ── ACCOUNT DIRECTORY (BC-18) ───────────────────────────────────
+    //
+    // One durable adapter for both stores, so the session and the directory it
+    // depends on can never disagree about whether persistence exists. An
+    // in-memory adapter when none was supplied keeps both fields
+    // non-nullable.
+    final persistence = durable ?? InMemoryKeyValueStore();
+    final accountStore = AccountStore(persistence);
+    final sessionStore = SessionStore(persistence);
+
+    // Restored BEFORE AuthService is constructed, because the directory is an
+    // input to authentication, not an output of it. `ADR-0003` makes accounts
+    // global and cross-tenant, so this happens with NO tenant in scope —
+    // correctly: tenant isolation for an account lives in its `roles` map, not
+    // in where the record is stored.
+    final accounts = <Account>[...accountStore.restoreAll()];
+
+    // Counted separately from `accounts.length`: a directory of only corrupt
+    // records must not look like a first launch and be seeded over.
+    final persistedAccountCount = accountStore.persistedCount;
 
     // BC-10 Global Person Identity. Constructed BEFORE AuthService, because
     // account creation now depends on identity creation rather than the reverse
@@ -438,11 +466,11 @@ final class AppContainer {
       identityService: identityService,
       socialPresences: InMemorySocialPresenceRepository(),
       messagingEnforcement: messagingEnforcement,
-      // P1 session restore. Given the SAME durable adapter as every other
-      // store when one exists, so a session and the data it unlocks live or
-      // die together; an in-memory adapter otherwise, which keeps the field
-      // non-nullable and every call site free of null checks.
-      sessionStore: SessionStore(durable ?? InMemoryKeyValueStore()),
+      // P1 session restore. Shares one adapter with the account directory, so
+      // a restored session is always validated against a directory from the
+      // same storage.
+      sessionStore: sessionStore,
+      accountStore: accountStore,
       auth: AuthService(
         accounts,
         clock: clock,
@@ -464,6 +492,11 @@ final class AppContainer {
         // ONE adapter, whose own flag decides whether it is switched on. A
         // ternary between two adapters would register two implementations of
         // one port here, which is ambiguous wiring.
+        // Every account added at runtime — by a first successful OTP, or by
+        // reception provisioning a walk-in — is written through immediately.
+        // A callback rather than a store: BC-18 is rank 4 and the adapter is
+        // rank 2, so injecting a store would invert the dependency.
+        onAccountChanged: accountStore.save,
         delivery: DebugConsoleOtpDelivery(
           enabled: !const bool.fromEnvironment('dart.vm.product'),
           sink: debugPrint,
@@ -574,8 +607,35 @@ final class AppContainer {
     // correct — an empty library is indistinguishable from a new one, and
     // seeding it writes through to durable storage, so it happens exactly
     // once.
-    if (seeder != null && restoredRows == 0) {
+    //
+    // ⭐ THE ACCOUNT DIRECTORY IS A SECOND, INDEPENDENT CONDITION.
+    //
+    // `persistedAccountCount` is checked as well as `restoredRows`, because
+    // the two can legitimately disagree and the seeder must be blocked if
+    // EITHER holds data. A directory that already contains accounts must never
+    // be re-seeded: doing so would mint duplicate identities for numbers that
+    // already have one, breaching the 1:1 account/identity invariant
+    // (`SID-INV-1`), and would silently overwrite live roles with demo roles.
+    //
+    // The count is used rather than `accounts.isNotEmpty` on purpose: a
+    // directory whose records all fail to decode has a count above zero but an
+    // empty list. Seeding over it would destroy the damaged records — and the
+    // only evidence of the damage — so a corrupt directory fails CLOSED
+    // (sign-in unavailable, records preserved for recovery) rather than being
+    // quietly replaced by demo data.
+    final hasPersistedState = restoredRows > 0 || persistedAccountCount > 0;
+
+    if (seeder != null && !hasPersistedState) {
       await seeder(container, accounts);
+
+      // Persist the seeded directory, so the NEXT boot can resolve the
+      // accounts a persisted session points at. Written after the seeder
+      // rather than inside it: the seeder builds the account list, and
+      // persistence is the composition root's concern, not its.
+      //
+      // This is what makes P1 session restore work end to end — without it a
+      // restored session finds an empty directory and is correctly refused.
+      accountStore.saveAll(accounts);
     }
     return container;
   }

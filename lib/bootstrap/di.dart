@@ -70,6 +70,7 @@ final class AppContainer {
     required this.accountStore,
     required this.enrollStudent,
     required this.createMembership,
+    required this.renewMembership,
     required this.checkIn,
     required this.checkOut,
     required this.assignSeat,
@@ -169,6 +170,9 @@ final class AppContainer {
   // ── Use cases ────────────────────────────────────────────────────
   final EnrollStudent enrollStudent;
   final CreateMembership createMembership;
+
+  /// `IMPL-424` — renewal (`MM-FR-080`..`MM-FR-092`).
+  final RenewMembership renewMembership;
   final CheckInStudent checkIn;
   final CheckOutStudent checkOut;
   final AssignSeat assignSeat;
@@ -568,6 +572,20 @@ final class AppContainer {
         // E-01, through the ACL below -- BC-02 never imports BC-01.
         enrollment: StudentRecordEnrollmentAcl(students),
         config: membershipConfig,
+        idempotency: MembershipIdempotencyAdapter(idempotency),
+        events: events,
+        clock: clock,
+        ids: ids,
+        tenant: tenantContext,
+        pdp: pdp,
+      ),
+      renewMembership: RenewMembership(
+        repo: memberships,
+        plans: membershipPlans,
+        enrollment: StudentRecordEnrollmentAcl(students),
+        // MM-FR-085/MM-FR-061: the boundary cases are decided against the
+        // TENANT's business date, never the server's.
+        calendar: TenantBusinessCalendar(membershipConfig.tenantTimezone),
         idempotency: MembershipIdempotencyAdapter(idempotency),
         events: events,
         clock: clock,

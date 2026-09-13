@@ -608,3 +608,254 @@ final class CreateMembership {
     return m;
   }
 }
+
+/// `IMPL-424` — renewal.
+///
+/// `MM-FR-084`: renewal creates a **new** `Membership` with a new id, a new
+/// term and a fresh price snapshot, and records `renewedFromMembershipId`. It
+/// does not extend the source in place, and the PRD explains why: with an
+/// immutable price snapshot (`MM-FR-027`) and one `FeeDue` per renewal event,
+/// extending in place would make one record carry two prices and two fee
+/// events, and would erase the history a library needs to answer *"what did
+/// this student pay, and for which period?"*.
+final class RenewMembership {
+  RenewMembership({
+    required this.repo,
+    required this.plans,
+    required this.enrollment,
+    required this.calendar,
+    required this.idempotency,
+    required this.events,
+    required this.clock,
+    required this.ids,
+    required this.tenant,
+    required this.pdp,
+  });
+
+  final MembershipRepository repo;
+  final MembershipPlanRepository plans;
+  final EnrollmentStatusReader enrollment;
+
+  /// `MM-FR-085` — "today" must be the **tenant's** business date, not the
+  /// server's, because the three boundary cases turn on comparing it to
+  /// `endDate` (`MM-FR-061`).
+  final TenantBusinessCalendar calendar;
+
+  final MembershipIdempotencyStore idempotency;
+  final EventBus events;
+  final Clock clock;
+  final IdGenerator ids;
+  final TenantContext tenant;
+  final PolicyDecisionPoint pdp;
+
+  /// `MM-FR-085` — the normative start-date table, as a pure function.
+  ///
+  /// | Case | Condition | New `startDate` |
+  /// |---|---|---|
+  /// | Before expiry | `Active`, `today < endDate` | `endDate + 1 day` |
+  /// | On the boundary | `Active`, `today == endDate` | `endDate + 1 day` |
+  /// | After expiry | `Expired`, `today > endDate` | `today` |
+  ///
+  /// The first two rows collapse deliberately: the source is valid for the
+  /// whole of `endDate` (`MM-FR-062`), so renewing *on* the boundary is the
+  /// same as renewing before it. Back-dating the third case to `endDate + 1`
+  /// would sell days that have already elapsed.
+  static DateTime renewalStartDate({
+    required DateTime today,
+    required DateTime sourceEndDate,
+  }) {
+    if (today.isAfter(sourceEndDate)) return today;
+    return sourceEndDate.add(const Duration(days: 1));
+  }
+
+  Future<Membership> call({
+    required AccessRole actorRole,
+    required IdempotencyKey idempotencyKey,
+    required String sourceMembershipId,
+    MembershipPlan? ontoPlan,
+    bool paymentAlreadyReceived = false,
+  }) async {
+    // MM-FR-089: idempotent per MM-FR-047, and checked first so a retry does
+    // not trip over the successor its own first call created.
+    final replay = idempotency.recall(idempotencyKey);
+    if (replay != null) return replay;
+
+    // Reusing createMembership rather than inventing a permission: the
+    // eleven MM-PO-* protected operations are IMPL-436's subject, and that
+    // task is blocked on the app-module boundary edge. Inventing a role or a
+    // permission name here would pre-empt a decision that is not mine.
+    pdp.require(actorRole, Permission.createMembership);
+
+    // MM-FR-080: the source must exist in THIS tenant. The store is
+    // partitioned, so a foreign id is simply absent.
+    final source = repo.byId(sourceMembershipId);
+    if (source == null) {
+      throw DomainError(
+        DomainErrorCode.notFound,
+        'No membership with that id exists in this tenant.',
+        context: {
+          'sourceMembershipId': sourceMembershipId,
+          'field': 'sourceMembershipId',
+        },
+      );
+    }
+
+    // MM-FR-080/082: renewable from Active or Expired ONLY. MM-FR-081 adds
+    // that Expired carries no time limit in V1 and requires no re-enrollment,
+    // so there is deliberately no staleness check here.
+    if (source.status != MembershipStatus.active &&
+        source.status != MembershipStatus.expired) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A membership in "${source.status.name}" cannot be renewed. Only an '
+        'active or expired membership may be.',
+        context: {
+          'sourceMembershipId': source.id,
+          'status': source.status.name,
+          'field': 'status',
+        },
+      );
+    }
+
+    // MM-FR-090/MM-INV-005: at most ONE successor by renewal.
+    final existing = repo
+        .forStudent(source.studentRecordId)
+        .where((m) => m.renewedFromMembershipId == source.id)
+        .toList();
+    if (existing.isNotEmpty) {
+      throw DomainError(
+        DomainErrorCode.conflict,
+        'This membership has already been renewed.',
+        context: {
+          'sourceMembershipId': source.id,
+          'existingSuccessorId': existing.first.id,
+          'field': 'renewedFromMembershipId',
+        },
+      );
+    }
+
+    // MM-FR-080: the student's enrollment must be Active. MM-BR-013's
+    // fail-closed rule applies here exactly as it does to creation.
+    final enrollmentState = enrollment.stateFor(source.studentRecordId);
+    if (enrollmentState == null || !enrollmentState.admitsNewMembership) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'A renewal requires an active enrollment; this student is '
+        '"${enrollmentState?.name ?? 'not enrolled'}".',
+        context: {
+          'studentRecordId': source.studentRecordId.value,
+          'enrollmentStatus': enrollmentState?.name ?? 'missing',
+          'field': 'enrollmentStatus',
+        },
+      );
+    }
+
+    // MM-FR-083: V1 renews onto the SAME plan by default. Renewing onto a
+    // different plan is a new creation, not a renewal, so term arithmetic and
+    // price snapshotting stay unambiguous -- so a mismatched plan is refused
+    // here rather than quietly treated as a renewal.
+    final plan = ontoPlan ?? plans.byId(source.planId);
+    if (plan == null) {
+      throw DomainError(
+        DomainErrorCode.notFound,
+        'The plan this membership was sold on is no longer in the catalogue.',
+        context: {'planId': source.planId, 'field': 'planId'},
+      );
+    }
+    if (plan.id != source.planId) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'V1 renews onto the same plan. Renewing onto "${plan.name}" is a new '
+        'membership creation, not a renewal (MM-FR-083).',
+        context: {
+          'sourcePlanId': source.planId,
+          'requestedPlanId': plan.id,
+          'field': 'planId',
+        },
+      );
+    }
+    // MM-FR-080: the target plan must be active.
+    if (!plan.isActive) {
+      throw DomainError(
+        DomainErrorCode.validationFailed,
+        'The plan "${plan.name}" is not active and cannot be sold.',
+        context: {'planId': plan.id, 'field': 'isActive'},
+      );
+    }
+
+    // MM-FR-085: the boundary cases, decided against the TENANT's business
+    // date (MM-FR-061) rather than the server's.
+    final today = calendar.businessDateAt(clock.now());
+    final start = renewalStartDate(today: today, sourceEndDate: source.endDate);
+
+    // MM-FR-086: the new endDate comes from §4.3 using the TARGET plan's
+    // CURRENT durationDays, not the duration the source was sold with.
+    final term = DateRange.days(start, plan.durationDays);
+
+    // MM-FR-092/MM-FR-087: the same payment dependency as creation. A
+    // renewal before expiry starts in the future, so a settled one is
+    // Scheduled until its startDate -- at which point the source is already
+    // Expired, which is how MM-FR-087 avoids two active terms.
+    //
+    // MM-FR-088: the amount is the target plan's CURRENT price, snapshotted
+    // fresh. Copying the source's snapshot is explicitly forbidden.
+    final initialStatus = Membership.initialStatusFor(
+      applicableAmount: plan.price,
+      paymentAlreadyReceived: paymentAlreadyReceived,
+      startDate: start,
+      today: today,
+    );
+
+    final renewal = Membership.fromPlan(
+      id: ids.next('mem'),
+      studentRecordId: source.studentRecordId,
+      plan: plan,
+      term: term,
+      status: initialStatus,
+      createdAt: clock.now(),
+      createdBy: tenant.actorId,
+      activatedAt: initialStatus == MembershipStatus.active
+          ? clock.now()
+          : null,
+      activatedBy: initialStatus == MembershipStatus.active
+          ? tenant.actorId
+          : null,
+      // MM-FR-084: the lineage link.
+      renewedFromMembershipId: source.id,
+    );
+
+    // MM-BR-034/MM-INV-001: enforced at the write, like every other insert.
+    // MM-FR-084 also requires the source's term to be left alone, and it is:
+    // nothing above mutates `source`.
+    repo.insertGuardingOverlap(renewal);
+
+    events.enqueue([
+      DomainEvent(
+        eventId: ids.next('evt'),
+        eventType: 'membership.MembershipRenewed',
+        tenantId: tenant.tenantId,
+        aggregateId: renewal.id,
+        occurredAt: clock.now(),
+        actorId: tenant.actorId,
+        correlationId: tenant.correlationId,
+        payload: {
+          'membershipId': renewal.id,
+          'renewedFromMembershipId': source.id,
+          'studentRecordId': renewal.studentRecordId.value,
+          'planId': renewal.planId,
+          'planName': plan.name,
+          'priceMinor': renewal.priceSnapshot.minorUnits,
+          'currency': renewal.currencySnapshot,
+          'planVersionAtPurchase': renewal.planVersionAtPurchase,
+          'status': renewal.status.name,
+          'startDate': renewal.startDate.toIso8601String(),
+          'validUntil': renewal.endDate.toIso8601String(),
+        },
+      ),
+    ]);
+
+    idempotency.remember(idempotencyKey, renewal);
+    await events.drain();
+    return renewal;
+  }
+}

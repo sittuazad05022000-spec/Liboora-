@@ -580,10 +580,12 @@ void main() {
       // asserted as *known*.
       expect(
         raised.length,
-        // 8 -> 9: IMPL-424 added membership.MembershipRenewed (MM-EVT-003),
-        // which §9 already declares. An increase is progress, and the test's
-        // own instruction is to update the pin in the same change.
-        9,
+        // 8 -> 9: IMPL-424 added membership.MembershipRenewed (MM-EVT-003).
+        // 9 -> 10: IMPL-425 added membership.MembershipExpired (MM-EVT-005).
+        // Both are already declared in §9, so each is a producer catching up
+        // with the catalogue. An increase is progress, and the test's own
+        // instruction is to update the pin in the same change.
+        10,
         reason:
             'Measured: ${raised.length} of ${declared.length} declared §9 '
             'events are raised in lib/. Raised: '

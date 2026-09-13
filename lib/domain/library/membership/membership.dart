@@ -859,3 +859,107 @@ final class RenewMembership {
     return renewal;
   }
 }
+
+/// `IMPL-425` — expiry detection and the expiring-soon notice.
+///
+/// **The split matters, and the PRD explains it.** `MM-FR-104` requires
+/// expiry to be *deterministic from stored data* and **not** to depend on
+/// whether a background job has run; `MM-FR-107` requires an elapsed
+/// membership to report `isValid: false` *even if* this process has not run.
+/// So truth lives in the read-time rule (§4.5), and this sweep exists only to
+/// **materialise** the status change and emit `MM-EVT-005` — never to define
+/// validity. Reading validity must never return a stale `Active` because a
+/// scheduler was down.
+///
+/// `MM-FR-111`/`MM-FR-112`: there is deliberately **no grace period** here,
+/// and no seat reclamation. Both are other people's decisions — the grace
+/// period is undecided by the architecture, and seat release is `BC-04`'s,
+/// driven by the event this emits.
+final class ExpireDueMemberships {
+  ExpireDueMemberships({
+    required this.repo,
+    required this.calendar,
+    required this.config,
+    required this.events,
+    required this.clock,
+    required this.ids,
+    required this.tenant,
+  });
+
+  final MembershipRepository repo;
+  final TenantBusinessCalendar calendar;
+  final MembershipConfig config;
+  final EventBus events;
+  final Clock clock;
+  final IdGenerator ids;
+  final TenantContext tenant;
+
+  /// Transitions every due membership and emits `MM-EVT-005` once each.
+  ///
+  /// `MM-FR-106`: idempotent and safe to re-run. A membership already
+  /// `Expired` is skipped, so a second run emits nothing. Effects are
+  /// tenant-scoped because the repository is partitioned — this cannot reach
+  /// another tenant's rows to expire them.
+  ///
+  /// Returns the memberships it transitioned.
+  Future<List<Membership>> call() async {
+    final today = calendar.businessDateAt(clock.now());
+    final expired = <Membership>[];
+
+    for (final m in repo.all()) {
+      // MM-FR-105: only Active -> Expired. MM-FR-074 permits no other source,
+      // and MM-FR-106 forbids a duplicate event for one already Expired.
+      if (m.status != MembershipStatus.active) continue;
+      // MM-FR-103: strictly greater than endDate, in tenant time.
+      if (!calendar.isExpiredAt(clock.now(), m.endDate)) continue;
+
+      m.expire();
+      repo.save(m);
+      expired.add(m);
+
+      events.enqueue([
+        DomainEvent(
+          eventId: ids.next('evt'),
+          eventType: 'membership.MembershipExpired',
+          tenantId: tenant.tenantId,
+          aggregateId: m.id,
+          occurredAt: clock.now(),
+          actorId: tenant.actorId,
+          correlationId: tenant.correlationId,
+          payload: {
+            'membershipId': m.id,
+            'studentRecordId': m.studentRecordId.value,
+            'planId': m.planId,
+            'endDate': m.endDate.toIso8601String(),
+            'businessDate': today.toIso8601String(),
+          },
+        ),
+      ]);
+    }
+
+    if (expired.isNotEmpty) await events.drain();
+    return expired;
+  }
+
+  /// `MM-FR-108` — the memberships within `MM-CFG-008` days of `endDate`.
+  ///
+  /// `MM-BR-026` requires `MM-CFG-008` to be the **single** shared threshold
+  /// behind both this notice and the "expiring soon" view, so it is read from
+  /// the config port rather than passed in or hard-coded.
+  ///
+  /// *"Exactly once per membership per threshold crossing"* needs a record of
+  /// what has already been notified, which is the outbox/notification
+  /// concern `IMPL-429`/`IMPL-430` own. This reports the due set; it does not
+  /// pretend to deduplicate across runs.
+  List<Membership> expiringSoon() {
+    final now = clock.now();
+    return repo
+        .all()
+        .where(
+          (m) =>
+              m.status == MembershipStatus.active &&
+              m.expiringSoon(now, within: config.expiringSoonDays),
+        )
+        .toList();
+  }
+}

@@ -442,6 +442,21 @@ platform/identity:
     # implementation is rank 7.5, so this platform never points upward.
     # `banned_imports: ["domain/**"]` below still holds literally.
     - contracts:person_identity_factory
+    # ADR-0146 AO-1/AO-2 — V1 Google federated identity (OIDC). BC Map edge
+    # E-34 (section 24.1), INBOUND assertion validation only.
+    #
+    # Declared as a PORT at rank 0, on the person_identity_factory precedent
+    # directly above and on the otp_delivery precedent: the interface lives in
+    # contracts (rank 0) and the adapter is provided by platform/integration
+    # (rank 5), so this rank-4 platform NEVER points upward. Law L2 holds
+    # literally; only the composition root binds the two.
+    #
+    # NOT sso_provider. That port is scoped above to "possession challenge
+    # delivery only" and carries an OUTBOUND message we generated; this one
+    # validates an INBOUND assertion an external issuer generated. ADR-0129
+    # L76: the failure modes differ in kind -- message undelivered versus
+    # identity forged. sso_provider is byte-unchanged and E-33 is not widened.
+    - contracts:identity_provider
   banned_imports: ["domain/**", "app/**"]
 
   # Ports this platform PROVIDES to others. Both are deliberately narrower
@@ -756,4 +771,14 @@ platform/integration:
     - payment_gateway     # consumed at L416 (platform/business); ADR-0035
     - model_provider      # consumed at L288 (platform/ai)
     - sso_provider        # consumed at L439 (platform/identity)
+    # ADR-0146 AO-1/AO-2 — BC Map edge E-34 (section 24.1). This module provides
+    # the ADAPTER; the INTERFACE is rank 0 in contracts, declared as a port by
+    # platform/identity. INBOUND Google OIDC assertion validation only: this
+    # module holds the provider contract, client ID, client secret and JWKS
+    # fetch, so BC-18 holds none of them.
+    #
+    # Distinct from sso_provider above, which is byte-unchanged and still
+    # scoped to possession-challenge delivery. E-33 is not widened or
+    # re-pointed; E-34 carries NO OTP and NO SMS.
+    - identity_provider
   banned_imports: ["domain/**", "app/**"]

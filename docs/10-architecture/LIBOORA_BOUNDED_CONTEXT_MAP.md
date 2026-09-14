@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | ⭐ **v1.17** |
+| **Version** | ⭐ **v1.18** — ⭐⭐ **appends §24, registering edge `E-34` `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 Google federated-identity (OIDC) assertion-validation path**, admitted by `ADR-0146` `AO-2`. ⭐ It **EXECUTES `A-7`**, which `Accepted` `ADR-0129` **L79** decided and **L83** expressly declined to allocate. **Edges: 32** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + `E-32` (§20.1) + `E-33` (§19.1) + **`E-34`** (**§24.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and absent; ⛔ **`E-35` NOT allocated**. ⛔⛔ **`E-33` is BYTE-UNCHANGED — L1108 md5-verified identical — and `ADR-0128` is NOT reopened.** **Context count remains 31 (23 in V1)**; no aggregate, member, event or invariant changed *(prior: v1.17)* |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 ⭐ **v1.13 appends §19**, declaring **`E-33`** `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 OTP / possession-challenge transport**, admitted by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) under a **joint Architecture Owner + Product Owner** one-act conferral — again **appended, not inserted**. ⭐ It **ratifies a route the module manifest has declared since `a2caa22`** (`tool/module_dependencies.yaml` **L437–439**, *"the single sanctioned bypass of `platform/communication`, for possession challenge delivery only"*), rather than creating one. **Edges: 30** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-33`** (**§19.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` reserved** for `PRD-021C`/`TSF-GAP-009` and **`E-32`** allocated to `BC-22 → BC-31` by `ADR-0127` but **NOT yet minted here** — neither appears in this file. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed ⭐ **v1.14 appends §20**, registering **`E-32`** `BC-22 Notification Delivery` → `BC-31 Integration` (`CF`, Sync port, **V1**, **Push/FCM egress only**) — the **M2 execution** of the allocation `Accepted` [`ADR-0127`](../00-governance/adr/ADR-0127-r1-e-32-bc-22-to-bc-31-push-fcm.md) approved and expressly **deferred to M2**; again **appended, not inserted**. ⭐ It **registers an identifier for an already-authoritative contract** — Rank-1 `MASTER_PRD` **L229** (*"Push notifications | `BC-22` **via `BC-31`** … FCM (V1)"*) and `PRD-010` **`NTF-FR-031`** — and creates no capability. **Edges: 31** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-32`** (**§20.1**) + `E-33` (§19.1); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and **absent from this file**. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed |
@@ -1390,3 +1390,112 @@ commit* limb is satisfied: **every amendment and `ADR-0133` move in ONE governed
 > §7 rule 4. ⭐⭐ But **`MASTER_PRD` v1.11 → v1.12 is a Rank 1 version change in this same commit**, which **does**
 > trigger it — so the baseline identifier advances **`BASELINE-2026-09-11-A` → `BASELINE-2026-09-11-B`**, and §7
 > rule 3's *same commit* limb is satisfied: **`ADR-0138` and every amendment in ONE governed commit.**
+
+---
+
+## 24. ⭐⭐ `ADR-0146` Extension — the V1 Google federated-identity edge `E-34` (V1)
+
+> ⚠⚠ **THIS SECTION IS THIS FILE'S v1.18 CHANGELOG ENTRY AND ITS `E-34` REGISTER ROW.** It is recorded here, **at
+> end of file**, and ⛔ **NOT as a row in the `## Changelog` table above** — the same append discipline §21, §22 and
+> §23 established, and for the identical measured reason: a newest-first row would land at **L613** and shift ten
+> live citations, including ⭐⭐ **L1108, which is cited by `Accepted`
+> [`ADR-0129`](../00-governance/adr/ADR-0129-google-sign-in-v1-primary-authentication-mobile-otp-v2.md) L79** — an
+> edit `ADR-INDEX` **L206** forbids. ⭐ **Appending here shifts ZERO citations.** ⭐ The header `Version` cell reads
+> **v1.18**, so the current version is unambiguous.
+
+### 24.1 The edge
+
+⭐⭐ **This section EXECUTES `A-7`, a decision `Accepted` `ADR-0129` already took and deliberately did not carry
+out.** `ADR-0129` **L79** determined that *"Google federated identity requires a **NEW, distinct** BC Map edge"*,
+and **L83** expressly declined to allocate the number: *"⛔ **NO EDGE IDENTIFIER IS ALLOCATED OR RESERVED BY THIS
+ADR** … Allocation must be **re-measured immediately before minting**."* ⭐ **That re-measurement is performed
+here**, not assumed.
+
+**Identifier determination — measured immediately before minting:**
+
+| Test | Method | Result |
+|---|---|---|
+| Highest allocated edge in this register | `grep -oE "E-[0-9]{2}"`, sorted unique | ⭐ **`E-33`** |
+| `E-34` present in this file | `grep -c "E-34"` | ⭐ **0** |
+| `E-34` allocated anywhere in `docs/` | 47 occurrences read **individually** | ⭐⭐ **0 allocations — all 47 are express refusals** (*"`E-34` NOT allocated"*) |
+| `E-35` free | `grep -rn "E-35" docs/ lib/ test/ tool/` | **0** — ⛔ **not needed; numbering is sequential** |
+| Sequential numbering obeyed | `ADR-INDEX` **L206** — *"Number sequentially. **Never reuse a number.**"* | ⭐ **`E-34` is the next lawful number, not a leapfrog** |
+
+⭐ **`E-34` is therefore the correct next identifier — determined from the register, not invented.** A refusal to
+allocate is not an allocation; the 47 prior occurrences are precisely the record of the number being **held free**
+for the act that would lawfully need it.
+
+| # | Upstream (provider) | Downstream (consumer) | Pattern | Mechanism | Release | Contract |
+|---|---|---|---|---|---|---|
+| **E-34** | BC-18 Identity & Access | BC-31 Integration | `CF` | Sync port | **V1** | ⭐⭐ **The V1 Google federated-identity (OIDC) assertion-validation path — INBOUND identity verification ONLY.** `BC-18` *"Owns credentials, sessions, devices, OTP, roles, permissions, policy decisions, consent"* (**L127**) and requests validation of an externally-issued OIDC assertion over a port; `BC-31` *"Owns outbound third-party contracts, credentials, retries, idempotent delivery"* (**L140**) and holds the provider contract, the client ID, the client secret and the JWKS fetch. ⛔⛔ **Carries NO OTP, NO SMS and NO possession challenge.** ⛔ **`BC-18` holds no vendor name, client secret or JWKS cache**; ⛔ **`BC-22` is not on this path**. Admitted by `ADR-0146` `AO-2` |
+
+**Direction.** Inbound to `BC-31`. ⭐ `BC-31` is already an edge consumer three times over — **`E-25`**
+(`BC-20 Billing → BC-31`, **L334**), **`E-32`** (`BC-22 → BC-31`, **§20.1**) and **`E-33`**
+(`BC-18 → BC-31`, **§19.1**) — so this row confers **no new capability** on it; it names one further caller.
+
+**Pattern.** `CF` + Sync port is **copied from `E-25`**, and matches `E-32` and `E-33` exactly. ⭐ **No new
+integration pattern is introduced.**
+
+**On §7's "in V1" heading.** **L292** scopes §7 to V1, and both endpoints are **V1** contexts (**L127**,
+**L140**). The row is V1-scoped and raises no V2 question.
+
+### 24.2 ⛔⛔ `E-34` is NOT an OTP path — `E-33` is neither widened, reopened, re-pointed nor collapsed
+
+⚠ `BC-31` now has **three** inbound edges from platform contexts, and they are **deliberately distinct** —
+the discipline §20.2 established:
+
+| Edge | Route | Carries | Direction of trust | Authority |
+|---|---|---|---|---|
+| **`E-32`** (**§20.1**) | `BC-22` → `BC-31` | **Push / FCM only** | Outbound | `ADR-0127` |
+| **`E-33`** (**§19.1**) | `BC-18` → `BC-31` | **OTP / possession challenge** | **Outbound** — a message *we* generated | `ADR-0128` |
+| **`E-34`** *(this section)* | `BC-18` → `BC-31` | **Google OIDC assertion validation** | ⭐ **INBOUND** — an assertion an *external issuer* generated | `ADR-0146` `AO-2` |
+
+⭐⭐ **`E-33` IS BYTE-UNCHANGED BY THIS SECTION.** **L1108** is not edited, not re-worded, not re-scoped and not
+re-pointed; its *"V1 OTP / possession-challenge transport"* purpose stands exactly as `ADR-0128` conferred it.
+⛔ **`ADR-0128` is NOT reopened or amended**, which `ADR-0129` **L174** requires and `ADR-INDEX` **L206**
+independently compels.
+
+⭐⭐ **Why a distinct edge rather than a re-use, stated as the substantive reason and not as a formality.**
+`ADR-0129` **L76** measured the two functions as **opposites**: `sso_provider`/`E-33` carries an **outbound**
+message the platform itself generated, while federated identity validates an **inbound** assertion generated by
+an external issuer *"whose signature, `iss`, `aud` and `nonce` must be verified."* ⭐ **Their failure modes differ
+in kind — *message undelivered* versus *identity forged*.** Collapsing them would place a forgery-resistance
+boundary behind a delivery-reliability contract.
+
+⛔ **The pair-grained counter-argument is rejected on this file's own precedent, as `ADR-0129` L81 already
+recorded.** §20.2 states that `BC-31` holds *"**two** inbound edges from platform contexts, and they are
+**deliberately distinct**"*, warning that *"**Collapsing them would breach four rules**."* ⭐ Purpose-scoping
+overrides pair-grain; `BC-18 → BC-31` now carries **two** purpose-distinct edges, exactly as the reasoning
+requires.
+
+⛔ **The existing `IAM → INT` Matrix cell is NOT relied upon as a substitute.** Matrix **L137** carries
+`R4 IDENTITY & ACCESS` → `INT` = `◇` (*"port (no import)"*, **L156**), which governs the **module-graph
+mechanism**; §7 **L292** governs **context-boundary existence** — *"If an edge is not in this table, it **does not
+exist**"*. ⭐ **Two different registers answering two different questions**; the Matrix cell is satisfied *and*
+the edge is registered.
+
+### 24.3 ⛔ What this section does NOT do
+
+- ⛔ **Registers an edge, not a capability.** No Google Cloud project, OAuth client ID, client secret, consent
+  screen, redirect URI, SHA-1/SHA-256 fingerprint, Supabase project, JWKS endpoint, SDK, dependency or credential
+- ⛔ **Mints no other edge.** ⛔ **`E-27`** stays permanently vacant (`ADR-0033`; *"numbers are never reused"*);
+  ⛔ **`E-31`** stays **reserved** for `PRD-021C`/`TSF-GAP-009` and **absent from this file**; ⛔ **`E-35` is NOT
+  allocated**
+- ⛔ **No context, aggregate, member, event or invariant** added, removed or altered — **31** contexts (23 in V1)
+- ⛔ **`BLK-01`, `BLK-02`, `IMPL-020`, `TASK-D10`, `MP-DEP-03`, `MP-DEP-07`, Gate 3, D3 and H1–H4 are ALL
+  UNCHANGED** — ⭐ **a registered edge is not an implementation**
+- ⛔ **`ADR-0002`/`ADR-0005` remain `Accepted` and un-superseded** — that act is still outstanding
+- ⛔ **No frozen PRD and no Rank 1–3 requirement is altered**; ⛔ **no Authentication PRD v4.0**
+- ⛔ **FROZEN `AUTH-10.37`**, **`PRD-010` §5 N7**, **`NTF-FR-030`** and **`AUTH-3.5`** are **preserved
+  unweakened** — ⭐ `E-34` carries no message traffic of any kind, so the OTP-path prohibitions are untouched
+
+### 24.4 Baseline and citation cost
+
+⭐ **Citation cost: ZERO.** The §24 append shifts **0** citations; the `Version` and `Context Count` cell edits
+add **no line**. **L1108** is verified byte-identical before and after this act.
+
+⚠ **Baseline:** this file is **Rank 4**, so its version change does ⛔ **not** trigger `DOCUMENTATION_BASELINE.md`
+§7 **rule 4** — and ⛔ **no Rank 1–3 document changes version in this commit**, so **`BASELINE-2026-09-11-B`
+STANDS**. ⭐ §7 **rule 2** (version + changelog in the same commit) and **rule 3** (declaration updated in the same
+commit) **are both discharged in this commit**, which is the obligation `ADR-0128` §8 previously recorded as
+satisfied when it was not.

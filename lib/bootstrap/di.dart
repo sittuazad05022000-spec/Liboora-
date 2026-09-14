@@ -71,6 +71,8 @@ final class AppContainer {
     required this.enrollStudent,
     required this.createMembership,
     required this.renewMembership,
+    required this.activateMembership,
+    required this.voidMembership,
     required this.expireDueMemberships,
     required this.upgradeMembership,
     required this.reconciliation,
@@ -179,6 +181,15 @@ final class AppContainer {
 
   /// `IMPL-425` — the expiry sweep. It MATERIALISES the status change;
   /// validity itself is decided at read time (`MM-FR-104`/`MM-FR-107`).
+  /// `IMPL-431` / `MM-FR-054` — activation, emitting `MM-EVT-002`.
+  final ActivateMembership activateMembership;
+
+  /// `IMPL-431` / `MM-FR-078` — void before activation, emitting
+  /// `MM-EVT-007`. Deliberately NOT named `cancelMembership`: `MM-FR-079`
+  /// forbids presenting this as "cancel membership", and a container field
+  /// name is the first place that slip would happen.
+  final VoidMembership voidMembership;
+
   final ExpireDueMemberships expireDueMemberships;
 
   /// `IMPL-427` — upgrade (`MM-FR-093`..`MM-FR-102`).
@@ -599,6 +610,25 @@ final class AppContainer {
         // MM-FR-085/MM-FR-061: the boundary cases are decided against the
         // TENANT's business date, never the server's.
         calendar: TenantBusinessCalendar(membershipConfig.tenantTimezone),
+        idempotency: MembershipIdempotencyAdapter(idempotency),
+        events: events,
+        clock: clock,
+        ids: ids,
+        tenant: tenantContext,
+        pdp: pdp,
+      ),
+      activateMembership: ActivateMembership(
+        repo: memberships,
+        calendar: TenantBusinessCalendar(membershipConfig.tenantTimezone),
+        idempotency: MembershipIdempotencyAdapter(idempotency),
+        events: events,
+        clock: clock,
+        ids: ids,
+        tenant: tenantContext,
+        pdp: pdp,
+      ),
+      voidMembership: VoidMembership(
+        repo: memberships,
         idempotency: MembershipIdempotencyAdapter(idempotency),
         events: events,
         clock: clock,

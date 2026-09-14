@@ -159,6 +159,36 @@ const Map<String, String> _shorthandExpansions = {
   'billing.PaymentFailed': 'billing.SubscriptionPaymentFailed',
 };
 
+/// Events NOT listed in BC Map §9 but ratified into `BC-02`'s surface by the
+/// **closure of `MM-GAP-007`** (2026-08-04, no ADR, BC Map unmodified).
+///
+/// This is a narrow, evidence-backed allowance, not a waiver, and the
+/// difference matters. Frozen `PRD-005` §12 reconciles these two against the
+/// ratified `BC-01` precedent: BC Map §9 self-describes as the *"seed"* of an
+/// Event Catalog that does not exist, declares closure only for `BC-10`
+/// (L429), and its sole ADR trigger (L292) is scoped to **edges** — none is
+/// added here. The same reading already blessed `PRD-004` §7.4's 10 `BC-01`
+/// events where §9 lists 4, under `ADR-0018`.
+///
+/// `MM-FR-054` names `MembershipActivated` and `MM-FR-078` names
+/// `MembershipVoided` with **MUST emit**, so refusing to emit them would
+/// breach the frozen PRD rather than protect the architecture.
+///
+/// ⛔ `membership.MembershipUpgraded` is DELIBERATELY ABSENT from this map.
+/// Its omission is `MM-GAP-007a`, which is **still open** against the BC Map
+/// and which `ADR-0019` expressly does not close. The two cases look alike
+/// and are not: one is ratified, one is an open architecture question. Adding
+/// `Upgraded` here would decide a question that belongs to the Architecture
+/// (BC Map) owner.
+///
+/// The allowance is self-validating — [_assertGap007StillClosed] re-reads the
+/// ratification from the frozen PRD, so if that closure is ever withdrawn
+/// this map stops being justified and the suite says so.
+const Map<String, String> _ratifiedBeyondSection9 = {
+  'membership.MembershipActivated': 'MM-FR-054 / MM-GAP-007 closed',
+  'membership.MembershipVoided': 'MM-FR-078 / MM-GAP-007 closed',
+};
+
 // ══════════════════════════════════════════════════════════════════════
 // Parsing §9
 // ══════════════════════════════════════════════════════════════════════
@@ -212,16 +242,60 @@ Map<String, String> _parseSection9() {
   return events;
 }
 
+/// The `MembershipEventType` enum value -> wire name map, read from source.
+///
+/// Needed because a producer may name its event through the enum rather than
+/// with a literal. Resolved from source rather than by importing the enum, so
+/// this scanner keeps working if the enum moves module.
+Map<String, String> _enumWireNames() {
+  final f = File('lib/platform/event/event.dart');
+  if (!f.existsSync()) return const {};
+  final src = f.readAsStringSync();
+  final start = src.indexOf('enum MembershipEventType {');
+  if (start < 0) return const {};
+  final end = src.indexOf('\n}', start);
+  final body = src.substring(start, end < 0 ? src.length : end);
+  final out = <String, String>{};
+  for (final m in RegExp(r"(\w+)\('([^']+)'\)").allMatches(body)) {
+    out[m.group(1)!] = m.group(2)!;
+  }
+  return out;
+}
+
 /// Event names actually raised anywhere in `lib/`.
+///
+/// Matches BOTH forms a producer can use:
+///   * a literal          — `eventType: 'membership.MembershipCreated'`
+///   * an enum reference   — `eventType: MembershipEventType.created.wireName`
+///
+/// The second form was added by `IMPL-431`. Scanning only for literals would
+/// have made those producers INVISIBLE here, which matters: this file's real
+/// job is "no undeclared event is raised anywhere", and an unscanned producer
+/// is exactly how an undeclared event would slip past. A checker that cannot
+/// see the code it checks is worse than no checker, because it reports green.
 Map<String, String> _raisedEventTypes() {
   final out = <String, String>{};
   final dir = Directory('lib');
   if (!dir.existsSync()) fail('Cannot find lib/.');
-  final shape = RegExp(r"eventType:\s*'([^']+)'");
+  final literal = RegExp(r"eventType:\s*'([^']+)'");
+  final viaEnum = RegExp(r'eventType:\s*MembershipEventType\.(\w+)\.wireName');
+  final wireNames = _enumWireNames();
   for (final f in dir.listSync(recursive: true).whereType<File>()) {
     if (!f.path.endsWith('.dart')) continue;
-    for (final m in shape.allMatches(f.readAsStringSync())) {
+    final src = f.readAsStringSync();
+    for (final m in literal.allMatches(src)) {
       out[m.group(1)!] = f.path;
+    }
+    for (final m in viaEnum.allMatches(src)) {
+      final wire = wireNames[m.group(1)!];
+      if (wire == null) {
+        fail(
+          'Producer in ${f.path} names MembershipEventType.${m.group(1)}, '
+          'which is not a value of the enum. Either the enum changed or the '
+          'scanner needs updating — this must not pass silently.',
+        );
+      }
+      out[wire] = f.path;
     }
   }
   return out;
@@ -530,6 +604,65 @@ void main() {
   // ════════════════════════════════════════════════════════════════════
   // ENFORCEABLE HALF 2 — nothing undeclared reaches the bus.
   // ════════════════════════════════════════════════════════════════════
+  group('the MM-GAP-007 allowance is still justified', () {
+    const prd =
+        'docs/30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md';
+
+    test('MM-GAP-007 is still recorded as closed in the frozen PRD', () {
+      final text = File(prd).readAsStringSync();
+      expect(
+        text.contains('**Status of `MM-GAP-007`: closed.**'),
+        isTrue,
+        reason:
+            'The allowance in _ratifiedBeyondSection9 rests entirely on this '
+            'closure. If it is ever withdrawn, those two events must go back '
+            'to being undeclared and this suite must fail rather than keep '
+            'quietly permitting them.',
+      );
+    });
+
+    test('the frozen PRD still says MUST emit for both allowed events', () {
+      final text = File(prd).readAsStringSync();
+      expect(
+        text.contains(
+          'Activation **MUST** emit `MM-EVT-002` '
+          '`membership.MembershipActivated`',
+        ),
+        isTrue,
+        reason: 'MM-FR-054 is why Activated is emitted at all',
+      );
+      expect(
+        text.contains('**MUST** emit `MM-EVT-007`'),
+        isTrue,
+        reason: 'MM-FR-078 is why Voided is emitted at all',
+      );
+    });
+
+    test('MembershipUpgraded is NOT in the allowance (MM-GAP-007a open)', () {
+      expect(
+        _ratifiedBeyondSection9.containsKey('membership.MembershipUpgraded'),
+        isFalse,
+        reason:
+            'MM-GAP-007a is open against the BC Map and ADR-0019 does not '
+            'close it. Adding Upgraded here would silently decide an '
+            'architecture question that is not an implementation\'s to '
+            'decide, and would let a consumer come to depend on an event the '
+            'Published Language has not declared.',
+      );
+    });
+
+    test('the allowance covers exactly two events, and no more', () {
+      expect(
+        _ratifiedBeyondSection9.keys.toSet(),
+        {'membership.MembershipActivated', 'membership.MembershipVoided'},
+        reason:
+            'MM-GAP-007 closed for Activated and Voided specifically. This '
+            'map is not a general escape hatch and must not grow without a '
+            'matching ratification.',
+      );
+    });
+  });
+
   group('every event raised in code is declared in §9', () {
     test('no undeclared event type is raised anywhere in lib/', () {
       expect(
@@ -546,7 +679,8 @@ void main() {
         final name = entry.key;
         final isDeclared =
             declared.containsKey(name) ||
-            _shorthandExpansions.values.contains(name);
+            _shorthandExpansions.values.contains(name) ||
+            _ratifiedBeyondSection9.containsKey(name);
         if (!isDeclared) undeclared.add('${entry.key}  (${entry.value})');
       }
 
@@ -585,7 +719,19 @@ void main() {
         // Both are already declared in §9, so each is a producer catching up
         // with the catalogue. An increase is progress, and the test's own
         // instruction is to update the pin in the same change.
-        10,
+        //
+        // 10 -> 13: IMPL-431 wired the three remaining V1 transitions --
+        // MembershipActivated (MM-EVT-002), MembershipVoided (MM-EVT-007)
+        // and MembershipExpiringSoon (MM-EVT-006). ExpiringSoon is declared
+        // in §9 (L411); the other two are covered by the MM-GAP-007 closure
+        // recorded in _ratifiedBeyondSection9.
+        //
+        // Part of this jump is also a SCANNER FIX, and that is worth stating
+        // plainly: _raisedEventTypes previously matched only string literals,
+        // so IMPL-431's enum-named producers would have been invisible to it
+        // and this measurement would have under-reported while reporting
+        // green. The scanner now reads both forms.
+        13,
         reason:
             'Measured: ${raised.length} of ${declared.length} declared §9 '
             'events are raised in lib/. Raised: '
@@ -595,13 +741,31 @@ void main() {
             'declares the event, which is an architecture regression.',
       );
 
+      // The partition is over DECLARED events, so the complement must be
+      // counted against the declared events that are raised -- not against
+      // `raised.length`. Those differ once a producer raises something §9
+      // does not declare, which is now the case for the two events the
+      // MM-GAP-007 closure ratified (see _ratifiedBeyondSection9). The old
+      // form subtracted `raised.length` and happened to be right only while
+      // every raised event was also declared.
+      final declaredAndRaised = declared.keys
+          .where((e) => raised.containsKey(e))
+          .length;
       final unraised = declared.keys
           .where((e) => !raised.containsKey(e))
           .length;
       expect(
         unraised,
-        declared.length - raised.length,
+        declared.length - declaredAndRaised,
         reason: 'Partition failure between raised and unraised events.',
+      );
+      expect(
+        raised.length - declaredAndRaised,
+        _ratifiedBeyondSection9.length,
+        reason:
+            'Every raised event that §9 does not declare must be one the '
+            'MM-GAP-007 closure ratified. Any other is an undeclared event '
+            'on the bus, which the test above rejects.',
       );
     });
   });

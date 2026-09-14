@@ -370,6 +370,26 @@ final class AppContainer {
       consumer: 'messaging-enforcement',
     );
 
+    // IMPL-438 / MM-NFR-009 — audit over E-20, fire-and-forget and
+    // outbox-backed.
+    //
+    // Wired HERE rather than inside platform/audit on purpose. §6 grants
+    // platform/audit (R5) only a contracts import, so subscribing inside it
+    // would need platform/event (R3) — the same edge already carried as
+    // acknowledged debt for platform/analytics -> platform/event. The
+    // composition root is the sanctioned place to know two modules, so this
+    // costs no new debt.
+    //
+    // Subscribing on the bus is also what makes §17's "MUST NOT call audit
+    // synchronously" structurally true: the domain has no audit reference to
+    // call, and delivery happens during drain, after the emitter's
+    // transaction has committed.
+    events.subscribe(
+      'membership.*',
+      audit.recordDomainFact,
+      consumer: 'audit-bc24',
+    );
+
     // Tenant-partitioned stores. Every one of these refuses to answer
     // without a tenant in scope — cross-tenant leaks fail loud, not silent.
     final policies = PolicyRepository();

@@ -462,7 +462,8 @@ final class CreateMembership {
     // from the tenant-partitioned catalogue rather than trusting the passed
     // object is what makes MM-BR-029 hold: a plan handed in from another
     // tenant simply is not there.
-    if (plans.byId(plan.id) == null) {
+    final stored = plans.byId(plan.id);
+    if (stored == null) {
       throw DomainError(
         DomainErrorCode.validationFailed,
         'The plan "${plan.name}" does not belong to this tenant or branch.',
@@ -471,11 +472,18 @@ final class CreateMembership {
     }
 
     // MM-FR-020/MM-FR-033: a deactivated plan must not be selectable.
-    if (!plan.isActive) {
+    //
+    // Read from `stored`, NOT from the `plan` argument. §15's "plan becomes
+    // inactive mid-operation" row requires isActive to be "re-checked INSIDE
+    // the committing transaction", and the caller's instance was fetched
+    // before the operation began. Trusting it would sell a plan an owner has
+    // since withdrawn -- the caller's copy still says isActive: true because
+    // MembershipPlan is immutable and deactivation produced a NEW instance.
+    if (!stored.isActive) {
       throw DomainError(
         DomainErrorCode.validationFailed,
-        'The plan "${plan.name}" is not active and cannot be sold.',
-        context: {'planId': plan.id, 'field': 'isActive'},
+        'The plan "${stored.name}" is not active and cannot be sold.',
+        context: {'planId': stored.id, 'field': 'isActive'},
       );
     }
 
@@ -786,11 +794,18 @@ final class RenewMembership {
       );
     }
     // MM-FR-080: the target plan must be active.
-    if (!plan.isActive) {
+    //
+    // Re-read from the catalogue rather than reading `plan`, for §15's "plan
+    // becomes inactive mid-operation" row: when `ontoPlan` was supplied the
+    // caller is holding an instance fetched before this call, and
+    // MembershipPlan is immutable, so deactivation since then produced a NEW
+    // instance the caller has never seen.
+    final currentPlan = plans.byId(plan.id) ?? plan;
+    if (!currentPlan.isActive) {
       throw DomainError(
         DomainErrorCode.validationFailed,
-        'The plan "${plan.name}" is not active and cannot be sold.',
-        context: {'planId': plan.id, 'field': 'isActive'},
+        'The plan "${currentPlan.name}" is not active and cannot be sold.',
+        context: {'planId': currentPlan.id, 'field': 'isActive'},
       );
     }
 

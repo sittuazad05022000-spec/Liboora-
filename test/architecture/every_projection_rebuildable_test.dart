@@ -141,6 +141,13 @@ List<DomainEvent> _representativeLog() {
       _tenantA,
       aggregateId: 'MEM-1',
       payload: const {
+        // MM-BR-016 requires membershipId and studentRecordId on every
+        // membership event, and EventBus.enqueue now enforces that. This
+        // fixture predates the enforcement; completing it keeps the fixture
+        // representative of what a real producer emits rather than weakening
+        // the rule to accommodate a stub.
+        'membershipId': 'MEM-1',
+        'studentRecordId': 'SR-1',
         'planName': 'Monthly',
         'validUntil': '2026-09-20T00:00:00.000Z',
       },

@@ -398,6 +398,7 @@ final class Membership {
     required this.priceSnapshot,
     required this.planVersionAtPurchase,
     required this.branchId,
+    int version = 1,
     MembershipStatus status = MembershipStatus.active,
     this.seatQuotaSnapshot = 0,
     this.createdAt,
@@ -408,7 +409,8 @@ final class Membership {
     this.upgradedFromMembershipId,
   }) : _status = status,
        _activatedAt = activatedAt,
-       _activatedBy = activatedBy {
+       _activatedBy = activatedBy,
+       _version = version {
     // MM-INV-010: exactly one plan reference, never zero.
     if (planId.trim().isEmpty) {
       throw DomainError(
@@ -540,6 +542,21 @@ final class Membership {
   /// withdrawn. Snapshotting keeps branch filtering answerable for a
   /// membership whose plan has since been archived.
   final BranchId branchId;
+
+  int _version;
+
+  /// `IMPL-437` / `MM-NFR-001` — the optimistic-concurrency version.
+  ///
+  /// §15 requires two conflicts to be *serialised by the source's version*
+  /// rather than resolved by whoever writes last: a simultaneous renewal and
+  /// upgrade of one source, and the expiry job racing an upgrade. Both are
+  /// read-modify-write on the SAME membership, which the MM-INV-001 overlap
+  /// constraint cannot catch -- it guards new rows, not edits to an existing
+  /// one.
+  ///
+  /// Every state transition bumps this, so a caller holding a stale copy is
+  /// detectable at the write instead of silently overwriting the winner.
+  int get version => _version;
 
   /// §13.1 — the seat allowance conferred, snapshotted. `MM-FR-025`.
   final int seatQuotaSnapshot;
@@ -806,6 +823,26 @@ final class Membership {
     MembershipStatus.cancelled: <MembershipStatus>{},
   };
 
+  /// `MM-NFR-001` — asserts the caller's copy is current before a write.
+  ///
+  /// Throws [DomainError] with [DomainErrorCode.conflict] when [expected]
+  /// does not match, which is §15's *"the loser fails on a stale-version
+  /// conflict"*.
+  void assertVersion(int expected) {
+    if (expected != _version) {
+      throw DomainError(
+        DomainErrorCode.conflict,
+        'This membership was changed by someone else. Reload and try again.',
+        context: {
+          'membershipId': id,
+          'expectedVersion': expected,
+          'actualVersion': _version,
+          'field': 'version',
+        },
+      );
+    }
+  }
+
   void _transitionTo(MembershipStatus next) {
     final permitted = _allowed[_status] ?? const <MembershipStatus>{};
     if (!permitted.contains(next)) {
@@ -818,6 +855,8 @@ final class Membership {
       );
     }
     _status = next;
+    // MM-NFR-001: every transition makes any copy held elsewhere stale.
+    _version++;
   }
 
   /// `PendingPayment` → `Scheduled`. The payment condition is satisfied but

@@ -60,33 +60,6 @@ governance-specific judgement**, not something a directory layout decides.
 New contexts get a new subdirectory when a Design Doc for them is actually
 written — not pre-emptively.
 
-### 2.2 ⭐ Register — which contexts have a Design Doc, and why the rest do not
-
-⚠️ **The paragraph above said *"No Design Doc has been written for any
-module"*. That was correct when written and is now false for `membership/`;
-it is corrected here rather than deleted.**
-
-One Design Doc exists. The **discriminator is measured, not editorial**: a
-Design Doc can only be written where a frozen PRD actually fixes surface
-requirements, because inventing them is the untraceable design claim
-[`../design/PRD_DESIGN_TRACEABILITY.md`](../design/PRD_DESIGN_TRACEABILITY.md)
-§3 rejects.
-
-| Context | Design Doc | Frozen PRD's UI/UX section | Disposition |
-|---|---|---|---|
-| `membership/` | ⭐ [`DD-0001`](membership/DD-0001-membership-management-surface-design.md) **v0.2** | ⭐ **`PRD-005` §20 — 13 `MUST`/`MUST NOT` surface rows** | **WRITTEN** — full handoff depth; ⭐ Figma-ready with 2 labelled substitutions (§19.1) |
-| `student-management/` | — | **0** | ⛔ Not written — no surface requirements to design from |
-| `attendance/` | — | **0** (0 occurrences of screen/UI/UX) | ⛔ Not written |
-| `seat-management/` | — | **0** — 8 UI occurrences, ⛔ **every one a prohibition** | ⛔ Not written |
-| `fees-finance/` | — | 1 — `PRD-008` §42.7, ⛔ an express statement of **absence** | ⛔ Not written |
-| `shared/` | — | n/a | ⛔ Empty — see §2.1 |
-
-⭐ **Their absence is NOT a defect**, on this README §5.1's own rule that a
-missing Design Doc *"is not a precondition of implementation"* and must not
-be treated as a blocker. A Design Doc becomes writable for those contexts
-when their PRD gains surface requirements — or when a named product office
-supplies them.
-
 ### 2.1 When `shared/` is correct, and when it is not
 
 `shared/` is for a design that genuinely spans contexts and cannot be
@@ -98,6 +71,88 @@ usually still *belongs* to one of them. Filing it in `shared/` makes it
 nobody's, and an unowned design document is one nobody maintains. If you
 cannot name the owning context, that is a signal to resolve the ownership
 question first — not to file the ambiguity.
+
+---
+
+## 2A. ⭐ Central Design Doc catalog
+
+⭐⭐ **This section is the catalog of every Design Doc in the repository.** A
+reader should be able to answer *"what feature-level design exists, and how
+far has it travelled?"* from this one table.
+
+⛔⛔ **It registers. It confers nothing.** ⛔ No status, approval, freeze,
+rank or readiness is conferred, implied or claimed here. Each cell restates a
+fact measured in the named source; where a cell and its source disagree,
+**the source wins and this row is the defect.**
+
+| DD ID | Feature / Bounded context | PRD | Design Doc | DD status | Figma status | TS status | Readiness note |
+|---|---|---|---|---|---|---|---|
+| ⭐ **`DD-0001`** | **`BC-02` Membership Management** *(`membership/`)* | [`PRD-005`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) — **`FROZEN` v1.4** (`ADR-0019`); designed from ⭐ **§20, 13 `MUST`/`MUST NOT` surface rows** | [`DD-0001-membership-management-surface-design.md`](membership/DD-0001-membership-management-surface-design.md) — **v0.2**, 13 surfaces `S-1`…`S-13` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists.** The repository holds [`FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md) only, whose token names and values are themselves `TO BE DECIDED`. ⭐ `DD-0001` §19.1 judges prototyping **READY — with 2 labelled substitutions** (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-02`: `docs/50-technical/` holds `TS-001` (`PRD-021B`) and `TS-002` (`PRD-021C`) only, and the central `TS-*` inventory ([`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V) registers `TS-001` alone. ⭐ `DD-0001` §19.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied or authorised** | ⛔ **Not implementable today.** All **5** `app`-module surface tasks (`IMPL-409`/`432`/`433`/`434`/`436`) are blocked by `ADR-0012` §3.4 — `DD-0001` §17.1. **12** gaps open (§18); surface test coverage measured **0** |
+
+### 2A.1 How to read the `Figma status` and `TS status` columns
+
+⛔ **Neither column is a plan, a schedule or a commitment.** Both report
+**presence or absence of an artifact**, plus whatever readiness the Design
+Doc itself has *recorded about its own inputs*. Neither authorises the
+downstream artifact:
+
+* A **Figma file** is produced under [`../design/FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md)
+  and [`../design/DESIGN_ENGINEERING_HANDOFF.md`](../design/DESIGN_ENGINEERING_HANDOFF.md),
+  not by a row in this table.
+* A **`TS-*`** enters Stage `6A` only on an **ADR-borne conferral**
+  (`ADR-0131`). ⛔ A Design Doc is **UNRANKED input, never authority**, so no
+  entry here moves a TS one step closer to existing.
+
+⚠️ ⛔ **Do not populate either column by inference.** If no artifact exists
+and no source records its state, the cell reads **absent** — an invented
+status is worse than an empty one.
+
+### 2A.2 Maintaining this catalog
+
+1. A **new Design Doc adds exactly one row**, at the time the Design Doc is
+   committed — not when it is planned.
+2. `NNNN` comes from §3 and is **never reused**, so a row is never renumbered
+   and never deleted; a `SUPERSEDED` Design Doc keeps its row and names its
+   successor.
+3. ⛔ **Never edit a status cell to match an expectation.** Status is
+   conferred in the governing document and *restated* here. Correct the
+   source, then the row.
+
+### 2A.3 ⭐ Coverage — the five contexts with no Design Doc, and why
+
+⚠️ **§2's paragraph once read *"No Design Doc has been written for any
+module"*. That was correct when written and is now false for `membership/`;
+it has been corrected rather than deleted.**
+
+The **discriminator is measured, not editorial**: a Design Doc can only be
+written where a frozen PRD actually fixes surface requirements, because
+inventing them is the untraceable design claim
+[`../design/PRD_DESIGN_TRACEABILITY.md`](../design/PRD_DESIGN_TRACEABILITY.md)
+§3 rejects.
+
+| Context | Design Doc | Frozen PRD's UI/UX section | Disposition |
+|---|---|---|---|
+| `membership/` | ⭐ [`DD-0001`](membership/DD-0001-membership-management-surface-design.md) **v0.2** | ⭐ **`PRD-005` §20 — 13 `MUST`/`MUST NOT` surface rows** | **WRITTEN** — see §2A |
+| `student-management/` | — | **0** | ⛔ Not written — no surface requirements to design from |
+| `attendance/` | — | **0** (0 occurrences of screen/UI/UX) | ⛔ Not written |
+| `seat-management/` | — | **0** — 8 UI occurrences, ⛔ **every one a prohibition** | ⛔ Not written |
+| `fees-finance/` | — | 1 — `PRD-008` §42.7, ⛔ an express statement of **absence** | ⛔ Not written |
+| `shared/` | — | n/a | ⛔ Empty — see §2.1 |
+
+⭐⭐ **Their absence is NOT a defect, and an empty subdirectory is NOT a
+missing Design Doc.** Two rules already settle this and neither is relaxed
+here:
+
+* ⛔ **A feature does not automatically require a Design Doc.** §5.1 —
+  *"It is not a precondition of implementation."* No governance rule requires
+  a Design Doc before code.
+* ⛔ **The directory layout decides nothing.** The subdirectories were created
+  empty by design (§2); whether a feature needs a Design Doc is a
+  **feature-specific and governance-specific judgement**.
+
+A Design Doc becomes writable for those contexts when their PRD gains surface
+requirements — or when a named product office supplies them. ⛔ Until then,
+writing one would manufacture the appearance of progress, which §5.1 forbids.
 
 ---
 
@@ -189,8 +244,15 @@ Both directories exist, deliberately, and they hold different things.
 | | `docs/design/` | `docs/35-design/` |
 |---|---|---|
 | **Holds** | Design *foundation* — the design system, visual language, UX and screen architecture, accessibility, design governance, ownership, QA, DDR register | Per-feature **Design Docs** |
-| **Scope** | Product-wide and durable | One feature, one context |
+| **Scope** | ⭐ **Product-wide** and durable | ⭐ **Feature-level** — one feature, one context |
 | **Organised by** | Concern | Bounded context |
+| **Catalog** | [`../design/README.md`](../design/README.md) §coverage map | ⭐ **§2A of this file** |
+
+⭐ **They are not duplicates and neither supersedes the other.** A Design Doc
+in `docs/35-design/` *consumes* the foundation in `docs/design/` — it cites
+the design system, it does not restate it, and it must not fork it. ⛔ A
+document that applies product-wide belongs in `docs/design/`; ⛔ a document
+about one feature's surfaces belongs here.
 
 **`docs/design/` was deliberately left where it is.** Its 16 foundation
 documents cross-link each other as **relative siblings**

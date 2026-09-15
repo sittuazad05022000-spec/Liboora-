@@ -36,6 +36,7 @@ const kOtherBranch = BranchId('brn_kota');
 
 Future<void> seedDemoData(AppContainer c, List<Account> accounts) async {
   _seedTenants(c);
+  _seedBranches(c);
   _seedPolicies(c);
   _seedAccounts(c, accounts);
 
@@ -68,35 +69,53 @@ void _seedTenants(AppContainer c) {
       id: kDemoTenant,
       name: 'Aspirants Study Hub',
       tier: TenantTier.growth,
-      branches: [
-        Branch(
-          id: kDemoBranch,
-          name: 'Lajpat Nagar',
-          address: 'Block C, Lajpat Nagar II, New Delhi',
-        ),
-        Branch(
-          id: kDemoBranchTwo,
-          name: 'Saket',
-          address: 'Press Enclave Road, Saket, New Delhi',
-        ),
-      ],
     ),
     const Tenant(
       id: kOtherTenant,
       name: 'FocusZone Library',
       tier: TenantTier.starter,
-      branches: [
-        Branch(
-          id: kOtherBranch,
-          name: 'Kota Main',
-          address: 'Talwandi, Kota, Rajasthan',
-        ),
-      ],
     ),
   ]);
 
   c.entitlements.registerTenant(kDemoTenant, TenantTier.growth);
   c.entitlements.registerTenant(kOtherTenant, TenantTier.starter);
+}
+
+/// Branch display records, owned by **BC-06** rather than by `Tenant`.
+///
+/// These three `BranchDisplay` records carry exactly the fields the previous
+/// `Tenant.branches` list carried, so no screen changes what it shows. What
+/// changed is *who owns them*: `IMPL-801` removed `Branch` from
+/// `platform/tenancy` (defect `D-013-01`, `ADR-0050` §3.1), and Bounded
+/// Context Map L210 puts branches in BC-06.
+///
+/// ⛔ This seeds **display data only**. It enforces no `LIB-9.1` one-branch
+/// rule and creates no `Floor` or `Zone` — `PRD-002` `LIB-9`…`LIB-11` remain
+/// unimplemented. The two-branch demo tenant is seed data for the branch
+/// switcher, ⛔ **not** a claim that multi-branch is supported (that is V3,
+/// per Bounded Context Map L210 and open question `Q-02`).
+void _seedBranches(AppContainer c) {
+  c.branches.save(
+    const BranchDisplay(
+      id: kDemoBranch,
+      name: 'Lajpat Nagar',
+      address: 'Block C, Lajpat Nagar II, New Delhi',
+    ),
+  );
+  c.branches.save(
+    const BranchDisplay(
+      id: kDemoBranchTwo,
+      name: 'Saket',
+      address: 'Press Enclave Road, Saket, New Delhi',
+    ),
+  );
+  c.branches.save(
+    const BranchDisplay(
+      id: kOtherBranch,
+      name: 'Kota Main',
+      address: 'Talwandi, Kota, Rajasthan',
+    ),
+  );
 }
 
 void _seedPolicies(AppContainer c) {

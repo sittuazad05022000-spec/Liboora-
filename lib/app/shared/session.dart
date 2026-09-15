@@ -113,6 +113,7 @@ final class SessionController extends ChangeNotifier {
     container.sessionStore.clear();
     container.leaveScope();
   }
+
   String? get otpHint => _otpHint;
   String? get error => _error;
 
@@ -147,10 +148,28 @@ final class SessionController extends ChangeNotifier {
   BranchId get branch => _branch;
 
   Tenant get tenant => container.tenantById(_session?.tenantId ?? kDemoTenant);
-  Branch get branchInfo => tenant.branches.firstWhere(
-    (b) => b.id == _branch,
-    orElse: () => tenant.branches.first,
-  );
+
+  /// Display facts about the active branch.
+  ///
+  /// Read from **BC-06** through [BranchReader], not from `Tenant`: `IMPL-801`
+  /// removed `Branch` from `platform/tenancy` (defect `D-013-01`), and
+  /// Bounded Context Map L210 owns branches in BC-06.
+  ///
+  /// The previous implementation fell back to the tenant's first branch when
+  /// the active id was unknown. That fallback is preserved deliberately —
+  /// dropping it would turn an unknown branch into a thrown
+  /// [DomainError] on a screen that merely wants a label, which is a
+  /// behaviour change this task is not authorised to make.
+  BranchView get branchInfo {
+    final all = container.branchViews();
+    for (final b in all) {
+      if (b.id == _branch) return b;
+    }
+    return all.first;
+  }
+
+  /// Every branch, for the switcher. Ordered by name by the reader.
+  List<BranchView> get branchOptions => container.branchViews();
 
   /// The signed-in account's own phone, or null when signed out.
   ///

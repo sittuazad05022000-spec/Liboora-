@@ -34,6 +34,28 @@ import 'account_store.dart';
 import 'codecs.dart';
 import 'session_store.dart';
 
+/// Branch display facts, flattened for the UI.
+///
+/// A deliberate duplicate of BC-06's `BranchDisplay` **fields**, not of its
+/// type. `app` may not import `domain/library` (manifest L534 lists it under
+/// `ports:`, not `imports:`), so handing the domain type straight to a widget
+/// would be a boundary violation. This carries the same three facts across
+/// that seam without `app` naming a rank-8 type.
+///
+/// ⛔ It has no behaviour and no invariant. If it ever grows either, it has
+/// become a model and belongs behind a real port instead.
+final class BranchView {
+  const BranchView({
+    required this.id,
+    required this.name,
+    required this.address,
+  });
+
+  final BranchId id;
+  final String name;
+  final String address;
+}
+
 /// Everything the app needs, assembled once.
 final class AppContainer {
   AppContainer._({
@@ -50,6 +72,7 @@ final class AppContainer {
     required this.audit,
     required this.analytics,
     required this.policies,
+    required this.branches,
     required this.students,
     required this.membershipConfig,
     required this.memberships,
@@ -126,6 +149,29 @@ final class AppContainer {
 
   // ── Domain repositories / read models ────────────────────────────
   final PolicyRepository policies;
+
+  /// BC-06 branch display records. Architecture Owner decision Option 1 —
+  /// the minimum display slice; NOT the PRD-002 LIB-9..11 registry.
+  final BranchDisplayRepository branches;
+
+  /// Branch display data projected for the UI.
+  ///
+  /// **Why this lives at the composition root and not in `app`.** `app`
+  /// declares `domain/library` in `ports:`, not `imports:` (manifest L534),
+  /// so an `app` file importing the BC-06 barrel is a boundary violation —
+  /// measured: adding one moved the checker from 9 to 10 findings. The
+  /// composition root is the one place permitted to know two modules, so the
+  /// projection happens here and `app` receives a rank-agnostic [BranchView].
+  ///
+  /// ⚠ This is **not** the read model that `ADR-0012` (manifest L702–707)
+  /// prescribes for `app → platform/tenancy` display data. That remedy
+  /// remains **unimplemented and waived until 2027-03-31**, and no task in
+  /// `PRD-013` owns it.
+  List<BranchView> branchViews() => [
+    for (final b in branches.allDisplays())
+      BranchView(id: b.id, name: b.name, address: b.address),
+  ];
+
   final StudentRepository students;
   final MembershipRepository memberships;
 
@@ -393,6 +439,7 @@ final class AppContainer {
     // Tenant-partitioned stores. Every one of these refuses to answer
     // without a tenant in scope — cross-tenant leaks fail loud, not silent.
     final policies = PolicyRepository();
+    final branches = BranchDisplayRepository();
 
     // The six persisted aggregates. Each store is handed the durable adapter,
     // a namespace and the codec for its own type; with `durable == null` all
@@ -543,6 +590,7 @@ final class AppContainer {
       audit: audit,
       analytics: analytics,
       policies: policies,
+      branches: branches,
       students: students,
       membershipConfig: membershipConfig,
       memberships: memberships,

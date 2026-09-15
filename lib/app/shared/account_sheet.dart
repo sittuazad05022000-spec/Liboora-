@@ -61,7 +61,7 @@ class AccountSheet extends StatelessWidget {
             if (showBranchSwitcher) ...[
               const SheetSectionLabel('BRANCH'),
               const SizedBox(height: LiblSpace.sm),
-              for (final b in s.tenant.branches)
+              for (final b in s.branchOptions)
                 BranchOptionTile(
                   name: b.name,
                   address: b.address,

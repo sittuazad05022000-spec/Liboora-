@@ -31,6 +31,24 @@ This model is equivalent in form to the repository PRD ownership model: every de
 | PRD→Design Traceability Owner | Owns requirement-to-design mapping and source freshness | Can reject untraceable design claims | Cannot reinterpret frozen requirements | Design Governance Owner | Source owner; Founder/Product Authority for product ambiguity |
 | Design Documentation Owner | Owns this documentation set, links, index, and audit record | Can update design docs under change control | Cannot silently update frozen source | Design Governance Owner | Design Governance Owner, then source authority |
 
+### 1.1 Where an owner's open items are recorded
+
+A role above may own a decision that is **open**. Open items are recorded in
+registers rather than left implicit:
+
+| Register | Holds |
+|---|---|
+| [`DESIGN_DEBT.md`](DESIGN_DEBT.md) | `DBT-*` — measured debt and deprecations, each routed to an office |
+| [`SECURITY_PRIVACY_UX.md`](SECURITY_PRIVACY_UX.md) | `SPX-GAP-*` — security/privacy UX gaps |
+| [`DESIGN_IMPLEMENTATION_TRACEABILITY.md`](DESIGN_IMPLEMENTATION_TRACEABILITY.md) | `DIT-OD-*` — open traceability decisions |
+| [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md) | `C-*` — source conflicts |
+
+⚠️ **An office may exist while its holder does not.** The **Privacy Owner**
+role is constituted by `Accepted` `ADR-0077`, and its holder is recorded
+elsewhere in the repository as **VACANT** — so three `SPX-GAP-*` rows are
+presently undecidable by anyone. ⛔ Such a row is never reassigned to a
+reachable office to make it actionable.
+
 ## 2. Separation of powers
 
 The author, reviewer, implementation mechanism, and final business authority are separate by design. AI may draft or validate. Figma MCP may implement. None of them is final business authority.

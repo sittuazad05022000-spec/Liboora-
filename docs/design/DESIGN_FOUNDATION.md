@@ -51,6 +51,9 @@ The product should feel premium through hierarchy, spacing, typography, illustra
 
 ## 6. Required foundation artifacts
 
+Navigation, coverage status and the two-directory rule are in the
+[Design Documentation Index](README.md).
+
 - [Design Governance](DESIGN_GOVERNANCE.md)
 - [Design Ownership](DESIGN_OWNERSHIP.md)
 - [Design System](DESIGN_SYSTEM.md)
@@ -67,6 +70,13 @@ The product should feel premium through hierarchy, spacing, typography, illustra
 - [Design QA](DESIGN_QA.md)
 - [Design Change Management](DESIGN_CHANGE_MANAGEMENT.md)
 - [Design Decision Records](design-decisions/README.md)
+
+Registers and reusable forms, added after an audit measured them missing:
+
+- [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md) — the downstream half of the traceability chain
+- [Security & Privacy UX Gap Register](SECURITY_PRIVACY_UX.md) — ⛔ gaps only; specifies no behaviour
+- [Design Debt & Deprecation Register](DESIGN_DEBT.md) — measured debt, each row routed to an office
+- [Templates](templates/) — screen spec, component spec, QA evidence
 
 ## 7. First governed journey
 

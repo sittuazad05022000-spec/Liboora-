@@ -33,6 +33,14 @@ A request to correct, clarify, or align a frozen PRD or ADR is recorded in desig
 
 Every approved change records: change ID, artifact and version, reason, source references, affected flows and components, owner, approver role, decision status, date, QA evidence, and unresolved follow-up.
 
+### 4.1 Deprecation and debt
+
+A superseded artifact is **not deleted**. It is restatused `SUPERSEDED`,
+must name its successor, and is recorded in
+[`DESIGN_DEBT.md`](DESIGN_DEBT.md) §3. Known divergences between documented
+intent and observed reality are recorded in that same register as `DBT-*`,
+each routed to an owning office.
+
 ## 5. Rollback
 
 Figma branches and repository commits remain recoverable. If a change creates source conflict or accessibility/performance regression, revert the design artifact and retain the decision record explaining why.

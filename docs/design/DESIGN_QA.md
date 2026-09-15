@@ -38,9 +38,16 @@
 - Figma artifact is canonical, versioned, and linked.
 - Engineering questions and unresolved decisions are visible.
 
+### Security and privacy restraint
+- No security or privacy behaviour is depicted that no source defines; any such behaviour is marked TO BE DECIDED and cites its `SPX-GAP-*` row in [Security & Privacy UX](SECURITY_PRIVACY_UX.md). This is a restraint check, not a new security requirement.
+
 ## 2. Evidence
 
 QA evidence may be a Figma review record, annotated screenshots, a state matrix, accessibility review, asset report, or implementation comparison. Evidence must identify artifact version and reviewer role.
+
+Use [`templates/DESIGN_QA_EVIDENCE_TEMPLATE.md`](templates/DESIGN_QA_EVIDENCE_TEMPLATE.md) to record a review result.
+
+⚠️ **Evidence availability is currently thin, and the checklist above outweighs it.** Measured: **1** `testWidgets` assertion exists repository-wide, so for nearly every surface automated UI evidence does not exist and must be recorded as `NONE OBSERVED` — see [Design Debt](DESIGN_DEBT.md) `DBT-004`. ⛔ The wider **819**-test suite is not UI evidence; it tests domain rules.
 
 ## 3. Blocking conditions
 

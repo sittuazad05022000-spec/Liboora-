@@ -17,6 +17,8 @@ Every handoff includes: canonical Figma link or artifact reference; screen and c
 
 A surface is not ready when only the happy path is designed. It is ready when the Design QA Owner confirms state coverage, the Accessibility Owner confirms required checks, the Design Performance Owner confirms asset/effect posture, and the traceability row is complete.
 
+Where the downstream row is filed: [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md). Reusable forms: [`templates/`](templates/).
+
 ## 3. Ownership boundaries
 
 - Design does not define API shape, database structure, bounded contexts, event contracts, permissions, quotas, locks, ranking, or booking authority.

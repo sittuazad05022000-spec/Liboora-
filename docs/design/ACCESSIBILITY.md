@@ -29,6 +29,12 @@ Accessibility is a design and QA requirement across structure, content, input, s
 
 Write for translation, dynamic text length, plain-language comprehension, and Indian mobile context without embedding assumptions that the PRD does not make. Exact supported languages are **TO BE DECIDED**.
 
+⚠️ **Implementation status, measured:** **0** occurrences of `Semantics`,
+`semanticsLabel`, `meetsGuideline` or `textScaleFactor` under `lib/`, and
+**0** accessibility assertions under `test/`. The checks above are specified
+and currently unimplemented — recorded as `DIT-007` in
+[Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md).
+
 ## 4. Exceptions
 
 An accessibility exception requires the affected surface, user impact, reason, mitigation, owner, expiry or review date, and Founder/Product Authority or Design Governance approval. “Hard to implement” is not an exception record.

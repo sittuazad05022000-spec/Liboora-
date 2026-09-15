@@ -26,7 +26,17 @@ The system is layered: foundations → tokens → primitives → components → 
 | Illustration | CONFIRMED | About 10% premium 3D-style illustration; compress, lazy-load, and keep the functional UI 2D-first. |
 | Motion | RECOMMENDED | Short, purposeful transitions with reduced-motion alternatives; no motion required to understand a task. |
 
+### 2.1 ⚠️ Recorded finding — these values are declared undecided while code defines them
+
+`lib/app/shared/theme.dart` already defines a colour set (`LiblColors`, **12** constants) and a spacing scale (`LiblSpace`, **6** steps), and `theme.dart` predates this document by two days. The table above nonetheless records those foundations as `TO BE DECIDED`.
+
+⛔ **This note does not adopt, approve or ratify those values as design tokens.** Doing so is the **Design System Owner's** act and it has not been taken; recording a code default as design authority by side effect is exactly what [Design Change Management](DESIGN_CHANGE_MANAGEMENT.md) §1 class `D2` requires an approval path for.
+
+The divergence — and the absence of any radius, elevation or type token class against §2's own foundation list — is recorded as [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` and `DBT-005`, routed to the Design System Owner. The as-built inventory is recorded as `DIT-001` in [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md), whose status is `CONFLICT`.
+
 ## 3. Component contract
+
+Use [`templates/COMPONENT_SPEC_TEMPLATE.md`](templates/COMPONENT_SPEC_TEMPLATE.md), whose headings are exactly the eleven items below.
 
 Every component specification records purpose, anatomy, variants, content rules, interaction states, responsive behavior, accessibility behavior, loading and error behavior, performance notes, and source trace links.
 

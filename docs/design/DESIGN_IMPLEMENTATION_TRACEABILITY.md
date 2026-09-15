@@ -110,6 +110,22 @@ PRD→Design Traceability Owner, and inventing the mapping would be the
 untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md)
 §3 exists to reject.
 
+### 4.2 ⭐ First feature-level design row
+
+| Trace ID | PRD requirement | Design artifact | Surface | Implementation | QA evidence | Status | Owner |
+|---|---|---|---|---|---|---|---|
+| `DIT-009` | ⭐ **`PRD-005` §20 — 13 UI/UX rows** (`FROZEN` v1.4) | ⭐ [`../35-design/membership/DD-0001-membership-management-surface-design.md`](../35-design/membership/DD-0001-membership-management-surface-design.md) | 13 `BC-02` membership surfaces `S-1`…`S-13`, 6 states each (`DD-0001` **v0.2**) | ⚠️ `IMPL-409`/`432`/`433`/`434`/`436` — **all 5 blocked** by `ADR-0012` §3.4 | 15 membership test files *(domain-level; ⛔ **0** surface tests)* | ⛔ **BLOCKED** | UX Architecture Owner |
+
+⭐⭐ **This is the first row in this register carrying a PRD requirement
+link**, which `DIT-OD-001` recorded as measured at **0**. ⛔ It does **not**
+discharge `DIT-OD-001`: one of nine rows now carries an upstream link, and
+the other eight still do not.
+
+⚠️ It is `BLOCKED` rather than `PARTIAL` for a measured reason — **every**
+`app`-module task in `PRD-005`'s register is one of the five `ADR-0012` §3.4
+blocked tasks, so no membership surface is implementable as designed today.
+See `DD-0001` §5.1.
+
 ## 5. Governing constraint — the `app` boundary
 
 Any design that proposes a screen reading domain data directly must respect

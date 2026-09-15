@@ -53,13 +53,39 @@ docs/35-design/
 └── shared/              genuinely cross-cutting designs only
 ```
 
-The subdirectories are currently **empty by design**. No Design Doc has been
-written for any module, and this README does not create one: whether a
-feature needs a Design Doc is a **feature-specific and governance-specific
-judgement**, not something a directory layout decides.
+The subdirectories were created **empty by design**, and this README creates
+no Design Doc: whether a feature needs one is a **feature-specific and
+governance-specific judgement**, not something a directory layout decides.
 
 New contexts get a new subdirectory when a Design Doc for them is actually
 written — not pre-emptively.
+
+### 2.2 ⭐ Register — which contexts have a Design Doc, and why the rest do not
+
+⚠️ **The paragraph above said *"No Design Doc has been written for any
+module"*. That was correct when written and is now false for `membership/`;
+it is corrected here rather than deleted.**
+
+One Design Doc exists. The **discriminator is measured, not editorial**: a
+Design Doc can only be written where a frozen PRD actually fixes surface
+requirements, because inventing them is the untraceable design claim
+[`../design/PRD_DESIGN_TRACEABILITY.md`](../design/PRD_DESIGN_TRACEABILITY.md)
+§3 rejects.
+
+| Context | Design Doc | Frozen PRD's UI/UX section | Disposition |
+|---|---|---|---|
+| `membership/` | ⭐ [`DD-0001`](membership/DD-0001-membership-management-surface-design.md) **v0.2** | ⭐ **`PRD-005` §20 — 13 `MUST`/`MUST NOT` surface rows** | **WRITTEN** — full handoff depth; ⭐ Figma-ready with 2 labelled substitutions (§19.1) |
+| `student-management/` | — | **0** | ⛔ Not written — no surface requirements to design from |
+| `attendance/` | — | **0** (0 occurrences of screen/UI/UX) | ⛔ Not written |
+| `seat-management/` | — | **0** — 8 UI occurrences, ⛔ **every one a prohibition** | ⛔ Not written |
+| `fees-finance/` | — | 1 — `PRD-008` §42.7, ⛔ an express statement of **absence** | ⛔ Not written |
+| `shared/` | — | n/a | ⛔ Empty — see §2.1 |
+
+⭐ **Their absence is NOT a defect**, on this README §5.1's own rule that a
+missing Design Doc *"is not a precondition of implementation"* and must not
+be treated as a blocker. A Design Doc becomes writable for those contexts
+when their PRD gains surface requirements — or when a named product office
+supplies them.
 
 ### 2.1 When `shared/` is correct, and when it is not
 

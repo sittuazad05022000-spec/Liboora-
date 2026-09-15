@@ -106,7 +106,7 @@ approved, implemented or verified. Every foundation document is still
 | Information architecture | `INFORMATION_ARCHITECTURE.md` | Documented |
 | Navigation & flows | `USER_FLOWS.md`, `INFORMATION_ARCHITECTURE.md` §3 | Documented |
 | Screen architecture | `SCREEN_ARCHITECTURE.md` | Documented |
-| Feature-level design | [`../35-design/`](../35-design/README.md) | Structure exists; **0** Design Docs written |
+| Feature-level design | [`../35-design/`](../35-design/README.md) | ⭐ **1** Design Doc — [`DD-0001`](../35-design/membership/DD-0001-membership-management-surface-design.md) (`BC-02`); the other 5 contexts have no surface requirements to design from — see [`../35-design/README.md`](../35-design/README.md) §2.2 |
 | Responsive behaviour | scattered across 5 documents | ⚠️ **No owning document** — `DBT-002` |
 | Figma workflow | `FIGMA_FOUNDATION.md` | Documented |
 | Governance & ownership | `DESIGN_GOVERNANCE.md`, `DESIGN_OWNERSHIP.md` | Documented |

@@ -60,6 +60,15 @@ governance-specific judgement**, not something a directory layout decides.
 New contexts get a new subdirectory when a Design Doc for them is actually
 written — not pre-emptively.
 
+⚠️ **One context directory now carries its own `README.md`, and it is an
+index rather than a design.** ⭐ [`attendance/README.md`](attendance/README.md)
+restates `DD-0003`'s status, readiness, app boundary, blockers and
+constraints for a reader who opens the directory directly. ⛔ **It confers
+nothing** and ⛔ creates no requirement, role, permission, surface or status;
+⛔ where it and `DD-0003` disagree, **`DD-0003` wins and the index is the
+defect.** ⛔ A context README is **not** required, and ⛔ its absence elsewhere
+is **not** a defect — ⭐ §2's judgement rule above still governs.
+
 ### 2.1 When `shared/` is correct, and when it is not
 
 `shared/` is for a design that genuinely spans contexts and cannot be
@@ -89,6 +98,7 @@ fact measured in the named source; where a cell and its source disagree,
 |---|---|---|---|---|---|---|---|---|
 | ⭐ **`DD-0001`** | **`BC-02` Membership Management** *(`membership/`)* | ⚠️ **Not declared** — written before §2B. §4.1 separates two audiences (staff + student), but ⛔ **no APP + ROLE BOUNDARY section exists** and ⛔ no boundary audit has been run (§2B.6) | [`PRD-005`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) — **`FROZEN` v1.4** (`ADR-0019`); designed from ⭐ **§20, 13 `MUST`/`MUST NOT` surface rows** | [`DD-0001-membership-management-surface-design.md`](membership/DD-0001-membership-management-surface-design.md) — **v0.2**, 13 surfaces `S-1`…`S-13` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists.** The repository holds [`FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md) only, whose token names and values are themselves `TO BE DECIDED`. ⭐ `DD-0001` §19.1 judges prototyping **READY — with 2 labelled substitutions** (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-02`: `docs/50-technical/` holds `TS-001` (`PRD-021B`) and `TS-002` (`PRD-021C`) only, and the central `TS-*` inventory ([`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V) registers `TS-001` alone. ⭐ `DD-0001` §19.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied or authorised** | ⛔ **Not implementable today.** All **5** `app`-module surface tasks (`IMPL-409`/`432`/`433`/`434`/`436`) are blocked by `ADR-0012` §3.4 — `DD-0001` §17.1. **12** gaps open (§18); surface test coverage measured **0** |
 | ⭐ **`DD-0002`** | **`BC-01` Enrollment — Student Management** *(`student-management/`)*; ⭐ also Master PRD §8 **module 3** Library Member Directory as `PRD-004` §5's **read composition** | ⚠️ **Not declared** — written before §2B. §4.1 separates staff / `TR-4` own-only / `TR-5` denied and §14.3 assigns all **12** `SM-PO-*` by role, but ⛔ **no APP + ROLE BOUNDARY section exists** and ⛔ no boundary audit has been run (§2B.6) | [`PRD-004`](../30-product/student-management/Student_Management_PRD_v1.md) — **`FROZEN` v1.2** (`ADR-0018`); ⚠️ **no UI/UX chapter** — designed from ⭐ **§5's 35 `LMD-*` display requirements**, §8.2's closed **12×5** permission matrix and §9.2's **16** pre-specified edge cases | [`DD-0002-student-management-surface-design.md`](student-management/DD-0002-student-management-surface-design.md) — **v0.1a**, 14 surfaces `S-1`…`S-14` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists** — same repository fact as `DD-0001`. ⭐ `DD-0002` §21.1 judges prototyping **READY WITH NON-BLOCKING GAPS**, with the **same 2** labelled substitutions (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-01` — the inventory at [`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V registers `TS-001` alone. ⭐ `DD-0002` §21.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied, authorised, allocated or reserved** | ⭐⭐ **0 BLOCKING design gaps.** ⚠️ But ⛔ **not implementable today**: **2** `REQUIREMENT CONFLICT`s between the frozen PRD and shipped code (`GAP-011`, `GAP-012`), and the existing surface contributes **2** of the **9** live boundary violations, which `TASK-D10` does **not** clear (§17.1). **12** gaps (10 non-blocking + 2 conflicts); surface test coverage measured **0** |
+| ⭐⭐ **`DD-0003`** | **`BC-03` Attendance** *(`attendance/`)* — aggregate `AttendanceDay`, ⭐ *one student-day, not one punch* | ⭐⭐ **DECLARED — the first Design Doc to carry one.** ⭐ **APP 1** Student App (`TR-4` Student · `TR-5` Parent) **+ APP 2** Library App (`TR-1` Owner · `TR-2` Manager · `TR-3` Reception). ⭐⭐ **APP 3 = 0 surfaces**, measured from `ATT-FR-003` (five **tenant** roles, ⛔ *"MUST NOT define, introduce, extend or infer any role"*), `ATT-FR-005` (closed 3-scope register) and `AUTH-2.5`. ⭐ §3 states all **five** §2B.3 declarations; ⭐ §4 runs the **13-check** App-Boundary QA | [`PRD-006`](../30-product/attendance-management/PRD-006_ATTENDANCE-MANAGEMENT.md) — **`FROZEN` v1.9, Rank 3** (`ADR-0034`, `BASELINE-2026-08-05-A`), 3216 lines, **525** identifiers; ⚠️ **no UI/UX chapter and 0 literal `UI`/`UX`/`screen`** — designed from ⭐ **§23.4a's 6 presence renderings**, ⭐ **§10A.1's 9-status vocabulary**, ⭐ §14.1's **4-row** state table, ⭐ §25's **19** signals + **4 mandated silences**, ⭐ §10A.10 *"The student experience"* and ⭐ **§30.20's `ATT-AC-214`…`222`** | [`DD-0003-attendance-surface-design.md`](attendance/DD-0003-attendance-surface-design.md) — **v0.1**, **32** surfaces `S-S1`…`S-S14` · `S-P1`…`S-P2` · `S-L1`…`S-L15` *(incl. ⭐ `S-L8a`)*; 17 flows, 26 states on **4 axes**, 34 edge cases | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔⛔ **No Figma file exists** — same repository fact as `DD-0001`/`DD-0002`. ⭐ `DD-0003` §32 judges the gate ⛔ **NOT OPEN**, and ⛔ **not opened merely by this document existing**: **4 hard blockers** — ⚪ `DBT-001` token values · ⚪ the unratified accessibility standard · ⛔⛔ `ATT-GAP-002a` *(a Seat Card prototype would have to show states the system cannot compute, or silently omit 2 required renderings — **both wrong**)* · ⚪ `DD3-GAP-001`/`002` *(label authority)* | ⛔ **None.** ⛔ No `TS-*` covers `BC-03` — the inventory at [`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V registers `TS-001` alone. ⛔ **No `TS-003` is created, implied, authorised, allocated or reserved** | ⭐ **READY WITH EXPLICIT DESIGN GAPS** — ⭐⭐ **23 of 32 surfaces designable now**; **48** requirement groups `COVERED`. ⛔ **3 BLOCKING gaps, each blocking only its named subset**: `ATT-GAP-002a` *(booked-shift input — `ADR-0029` **`Proposed`**; removes 3 statuses + 2 renderings + axis 2 of `ATT-AC-222`)* · `ATT-FR-064` *(Face)* · `ATT-FR-080` *(OCR)*. ⚠️ Also **12** non-blocking, ⚪ **6** `DD3-GAP-*`, ⚠️ **9** implementation deviations *(incl. ⛔ `AIV-05` — `AccessRole.student` holds **no** `recordAttendance`, so a student cannot self-attend in current code)*, ⛔ 1 inherited conflict `ATT-GAP-015`, ⚠️ 1 source defect `DD3-DEFECT-001`. ⛔⛔ **0 of 222 acceptance criteria proven by test**; surface test coverage measured **0** |
 
 ### 2A.1 How to read the `Figma status` and `TS status` columns
 
@@ -123,11 +133,12 @@ status is worse than an empty one.
    conferred in the governing document and *restated* here. Correct the
    source, then the row.
 
-### 2A.3 ⭐ Coverage — the five contexts with no Design Doc, and why
+### 2A.3 ⭐ Coverage — which contexts have a Design Doc, and why
 
 ⚠️ **§2's paragraph once read *"No Design Doc has been written for any
-module"*. That was correct when written and is now false for `membership/`
-and `student-management/`; it has been corrected rather than deleted.**
+module"*. That was correct when written and is now false for `membership/`,
+`student-management/` and ⭐ `attendance/`; it has been corrected rather than
+deleted.**
 
 The **discriminator is measured, not editorial**: a Design Doc can only be
 written where a frozen PRD actually fixes surface requirements, because
@@ -151,7 +162,7 @@ instrument and are **unchanged**.
 |---|---|---|---|
 | `membership/` | ⭐ [`DD-0001`](membership/DD-0001-membership-management-surface-design.md) **v0.2** | ⭐ **`PRD-005` §20 — 13 `MUST`/`MUST NOT` surface rows** | **WRITTEN** — see §2A |
 | ⭐ `student-management/` | ⭐ [`DD-0002`](student-management/DD-0002-student-management-surface-design.md) **v0.1a** | ⭐⭐ **`PRD-004` §5 — 35 `LMD-*` display requirements** *(⛔ no UI/UX section; ⛔ 0 literal `UI`/`UX`)*, plus §8.2's closed **12×5** permission matrix and §9.2's **16** edge cases | **WRITTEN** — see §2A |
-| ⚠️ `attendance/` | — | ⭐⭐ **`PRD-006` §23.4a — 6 named presence renderings** *(🟢 PRESENT · 🟡 PRESENCE CHECKING · ⚪ NOT PRESENT · 🟡 OUTSIDE SHIFT WINDOW · 🔴 SHIFT OVERSTAY · 🟠 NO BOOKED SHIFT)*, a **MUST NOT collapse** rule and §30.20's `ATT-AC-214`…`222`. ⛔ **0** literal `UI`/`UX`/`screen` | ⚠️⚠️ **Not written — and NOT because there is nothing to design.** ⭐ `PRD-006` is **`FROZEN` v1.9, Rank 3** (`ADR-0034`); see §2A.4 |
+| ⭐ `attendance/` | ⭐ [`DD-0003`](attendance/DD-0003-attendance-surface-design.md) **v0.1** | ⭐⭐ **`PRD-006` §23.4a — 6 named presence renderings** *(🟢 PRESENT · 🟡 PRESENCE CHECKING · ⚪ NOT PRESENT · 🟡 OUTSIDE SHIFT WINDOW · 🔴 SHIFT OVERSTAY · 🟠 NO BOOKED SHIFT)*, a **MUST NOT collapse** rule and §30.20's `ATT-AC-214`…`222`; plus ⭐ §10A.1's **9-status vocabulary**, §14.1's **4-row** state table, §25's **19** distinguishable signals and **4 mandated silences**, and ⭐ §10A.10 *"The student experience"*. ⛔ **0** literal `UI`/`UX`/`screen` | ⭐⭐ **WRITTEN** — ⭐ the third case proving the corrected instrument: a PRD with **0** occurrences of *"UI"* was the **most** surface-prescriptive of the five. See §2A |
 | `seat-management/` | — | **0** — 8 UI occurrences, ⛔ **every one a prohibition** | ⛔ Not written |
 | `fees-finance/` | — | 1 — `PRD-008` §42.7, ⛔ an express statement of **absence** | ⛔ Not written |
 | `shared/` | — | n/a | ⛔ Empty — see §2.1 |
@@ -182,7 +193,7 @@ automatically require a Design Doc.
 |---|---|---|
 | `membership/` | ⭐ **COMPLETE** | `DD-0001` **v0.2** — Figma-ready with 2 labelled substitutions |
 | ⭐ `student-management/` | ⭐ **COMPLETE** | `DD-0002` **v0.1a** — 0 BLOCKING design gaps; ⚠️ 2 `REQUIREMENT CONFLICT`s escalated |
-| ⚠️⚠️ `attendance/` | ⭐ **NOT YET AUDITED** — ⭐⭐ **and now the strongest candidate** | ⚠️⚠️ **A prior revision of this row was WRONG and is corrected rather than quietly replaced.** It read *"`PRD-006` is **unwritten** (`SM-GAP-9` records this)"*. ⛔ **`SM-GAP-9` says no such thing** — it records that the *attendance-percentage **formula*** has no owner, which is **not** the same as the PRD being absent. ⭐ Measured: `PRD-006_ATTENDANCE-MANAGEMENT.md` is **`FROZEN` v1.9, Rank 3, 3216 lines**, baselined by `ADR-0034` under `BASELINE-2026-08-05-A`, with **525** identifiers and ⭐ **§23.4a's six colour-named presence renderings**. ⛔ A full readiness audit has **not** been run, so ⛔ no readiness is claimed here either way |
+| ⭐ `attendance/` | ⭐ **COMPLETE** | ⭐⭐ **Audited, then designed.** `DD-0003` **v0.1** — ⭐ **READY WITH EXPLICIT DESIGN GAPS**: **32** surfaces (⭐ **23 designable now**), 17 flows, 26 states on **4 axes**, 34 edge cases, 19 failure signals, 4 mandated silences. ⭐ **3 BLOCKING gaps, each blocking only its named subset** — `ATT-GAP-002a` (booked-shift input, `ADR-0029` `Proposed`) · `ATT-FR-064` (Face) · `ATT-FR-080` (OCR). ⭐ Source measured **`FROZEN` v1.9, Rank 3, 3216 lines**, `ADR-0034` under `BASELINE-2026-08-05-A`, **525** identifiers. ⚠️ **A prior revision of this row was WRONG and is corrected rather than quietly replaced:** it read *"`PRD-006` is **unwritten** (`SM-GAP-9` records this)"* — ⛔ `SM-GAP-9` says no such thing; it records that the *attendance-percentage **formula*** has no owner |
 | `seat-management/` | ⚪ **NOT REQUIRED** *(on current evidence)* | ⭐ All **8** UI occurrences in its PRD are **prohibitions**; ⛔ a prohibition fixes no surface to design |
 | `fees-finance/` | ⚪ **NOT REQUIRED** *(on current evidence)* | ⭐ `PRD-008` §42.7 is an express statement of **absence** |
 | `shared/` | ⚪ **NOT REQUIRED** | ⭐ By §2.1 — cross-cutting designs only; ⛔ not an "unsure" bucket |
@@ -323,7 +334,8 @@ DD-NNNN-short-kebab-title.md
 
 * `DD-` is the Design Doc prefix. Measured **free** when this README was
   written: **0** occurrences of `DD-NNNN` repository-wide. ⭐ Now allocated:
-  **`DD-0001`**, **`DD-0002`** — so ⭐ **the next Design Doc is `DD-0003`**.
+  **`DD-0001`**, **`DD-0002`**, **`DD-0003`** — so ⭐ **the next Design Doc is
+  `DD-0004`**.
 * `NNNN` is a stable, zero-padded, repository-wide sequential number. It is
   **never reused and never reassigned**, for the same reason `IMPL-*` numbers
   are not: cross-references in commits, reviews and test names outlive the

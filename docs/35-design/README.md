@@ -88,6 +88,7 @@ fact measured in the named source; where a cell and its source disagree,
 | DD ID | Feature / Bounded context | PRD | Design Doc | DD status | Figma status | TS status | Readiness note |
 |---|---|---|---|---|---|---|---|
 | ⭐ **`DD-0001`** | **`BC-02` Membership Management** *(`membership/`)* | [`PRD-005`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) — **`FROZEN` v1.4** (`ADR-0019`); designed from ⭐ **§20, 13 `MUST`/`MUST NOT` surface rows** | [`DD-0001-membership-management-surface-design.md`](membership/DD-0001-membership-management-surface-design.md) — **v0.2**, 13 surfaces `S-1`…`S-13` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists.** The repository holds [`FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md) only, whose token names and values are themselves `TO BE DECIDED`. ⭐ `DD-0001` §19.1 judges prototyping **READY — with 2 labelled substitutions** (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-02`: `docs/50-technical/` holds `TS-001` (`PRD-021B`) and `TS-002` (`PRD-021C`) only, and the central `TS-*` inventory ([`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V) registers `TS-001` alone. ⭐ `DD-0001` §19.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied or authorised** | ⛔ **Not implementable today.** All **5** `app`-module surface tasks (`IMPL-409`/`432`/`433`/`434`/`436`) are blocked by `ADR-0012` §3.4 — `DD-0001` §17.1. **12** gaps open (§18); surface test coverage measured **0** |
+| ⭐ **`DD-0002`** | **`BC-01` Enrollment — Student Management** *(`student-management/`)*; ⭐ also Master PRD §8 **module 3** Library Member Directory as `PRD-004` §5's **read composition** | [`PRD-004`](../30-product/student-management/Student_Management_PRD_v1.md) — **`FROZEN` v1.2** (`ADR-0018`); ⚠️ **no UI/UX chapter** — designed from ⭐ **§5's 35 `LMD-*` display requirements**, §8.2's closed **12×5** permission matrix and §9.2's **16** pre-specified edge cases | [`DD-0002-student-management-surface-design.md`](student-management/DD-0002-student-management-surface-design.md) — **v0.1**, 14 surfaces `S-1`…`S-14` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists** — same repository fact as `DD-0001`. ⭐ `DD-0002` §21.1 judges prototyping **READY WITH NON-BLOCKING GAPS**, with the **same 2** labelled substitutions (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-01` — the inventory at [`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V registers `TS-001` alone. ⭐ `DD-0002` §21.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied, authorised, allocated or reserved** | ⭐⭐ **0 BLOCKING design gaps.** ⚠️ But ⛔ **not implementable today**: **2** `REQUIREMENT CONFLICT`s between the frozen PRD and shipped code (`GAP-011`, `GAP-012`), and the existing surface contributes **2** of the **9** live boundary violations, which `TASK-D10` does **not** clear (§17.1). **12** gaps (10 non-blocking + 2 conflicts); surface test coverage measured **0** |
 
 ### 2A.1 How to read the `Figma status` and `TS status` columns
 
@@ -121,8 +122,8 @@ status is worse than an empty one.
 ### 2A.3 ⭐ Coverage — the five contexts with no Design Doc, and why
 
 ⚠️ **§2's paragraph once read *"No Design Doc has been written for any
-module"*. That was correct when written and is now false for `membership/`;
-it has been corrected rather than deleted.**
+module"*. That was correct when written and is now false for `membership/`
+and `student-management/`; it has been corrected rather than deleted.**
 
 The **discriminator is measured, not editorial**: a Design Doc can only be
 written where a frozen PRD actually fixes surface requirements, because
@@ -130,10 +131,22 @@ inventing them is the untraceable design claim
 [`../design/PRD_DESIGN_TRACEABILITY.md`](../design/PRD_DESIGN_TRACEABILITY.md)
 §3 rejects.
 
-| Context | Design Doc | Frozen PRD's UI/UX section | Disposition |
+⚠️⚠️ **The discriminator stands; the *instrument* was wrong once and is
+corrected.** An earlier revision of this table scored each context by its
+PRD's **UI/UX section**, and recorded `student-management/` as **0**. ⭐ That
+was true of the *section* and false of the *content*: `PRD-004` has **no**
+UI/UX chapter and **0** literal `UI`/`UX` occurrences, yet its §5 carries
+**35** `LMD-*` requirements governing a screen — pagination, search,
+filters, sorting, composition, status indicators, empty-vs-unavailable and
+bulk caps. ⭐ **A PRD can fix surface requirements without a section named
+for them**, so the column below now reads **surface requirements**, not
+*UI/UX section*. ⛔ The other four rows were re-measured under the corrected
+instrument and are **unchanged**.
+
+| Context | Design Doc | Frozen PRD's surface requirements | Disposition |
 |---|---|---|---|
 | `membership/` | ⭐ [`DD-0001`](membership/DD-0001-membership-management-surface-design.md) **v0.2** | ⭐ **`PRD-005` §20 — 13 `MUST`/`MUST NOT` surface rows** | **WRITTEN** — see §2A |
-| `student-management/` | — | **0** | ⛔ Not written — no surface requirements to design from |
+| ⭐ `student-management/` | ⭐ [`DD-0002`](student-management/DD-0002-student-management-surface-design.md) **v0.1** | ⭐⭐ **`PRD-004` §5 — 35 `LMD-*` display requirements** *(⛔ no UI/UX section; ⛔ 0 literal `UI`/`UX`)*, plus §8.2's closed **12×5** permission matrix and §9.2's **16** edge cases | **WRITTEN** — see §2A |
 | `attendance/` | — | **0** (0 occurrences of screen/UI/UX) | ⛔ Not written |
 | `seat-management/` | — | **0** — 8 UI occurrences, ⛔ **every one a prohibition** | ⛔ Not written |
 | `fees-finance/` | — | 1 — `PRD-008` §42.7, ⛔ an express statement of **absence** | ⛔ Not written |
@@ -154,6 +167,29 @@ A Design Doc becomes writable for those contexts when their PRD gains surface
 requirements — or when a named product office supplies them. ⛔ Until then,
 writing one would manufacture the appearance of progress, which §5.1 forbids.
 
+### 2A.4 Design roadmap
+
+⛔⛔ **This is a status record, not a plan or a commitment.** ⛔ No schedule,
+order or obligation is created, and ⛔ **`NOT REQUIRED` is a legitimate
+terminal state** — §2A.3 and §5.1 both hold that a feature does **not**
+automatically require a Design Doc.
+
+| Context | Status | Basis |
+|---|---|---|
+| `membership/` | ⭐ **COMPLETE** | `DD-0001` **v0.2** — Figma-ready with 2 labelled substitutions |
+| ⭐ `student-management/` | ⭐ **COMPLETE** | `DD-0002` **v0.1** — 0 BLOCKING design gaps; ⚠️ 2 `REQUIREMENT CONFLICT`s escalated |
+| `attendance/` | ⚪ **NOT YET AUDITED** | ⚠️ Scored **0** on the §2A.3 instrument, but ⭐ `PRD-006` is **unwritten** (`SM-GAP-9` records this), so ⛔ there is nothing to audit yet |
+| `seat-management/` | ⚪ **NOT REQUIRED** *(on current evidence)* | ⭐ All **8** UI occurrences in its PRD are **prohibitions**; ⛔ a prohibition fixes no surface to design |
+| `fees-finance/` | ⚪ **NOT REQUIRED** *(on current evidence)* | ⭐ `PRD-008` §42.7 is an express statement of **absence** |
+| `shared/` | ⚪ **NOT REQUIRED** | ⭐ By §2.1 — cross-cutting designs only; ⛔ not an "unsure" bucket |
+
+⚠️ **No context is marked `IN PROGRESS` or `BLOCKED`**, because ⛔ neither
+is true of any context today. ⭐ Those values exist for when they are.
+
+⚠️ **`NOT REQUIRED` is provisional on evidence, not permanent.** Should a
+PRD later gain surface requirements, the row changes — which is exactly
+what happened to `student-management/` (§2A.3).
+
 ---
 
 ## 3. Naming
@@ -162,8 +198,9 @@ writing one would manufacture the appearance of progress, which §5.1 forbids.
 DD-NNNN-short-kebab-title.md
 ```
 
-* `DD-` is the Design Doc prefix. Measured **free** at the time of writing:
-  **0** occurrences of `DD-NNNN` repository-wide.
+* `DD-` is the Design Doc prefix. Measured **free** when this README was
+  written: **0** occurrences of `DD-NNNN` repository-wide. ⭐ Now allocated:
+  **`DD-0001`**, **`DD-0002`** — so ⭐ **the next Design Doc is `DD-0003`**.
 * `NNNN` is a stable, zero-padded, repository-wide sequential number. It is
   **never reused and never reassigned**, for the same reason `IMPL-*` numbers
   are not: cross-references in commits, reviews and test names outlive the

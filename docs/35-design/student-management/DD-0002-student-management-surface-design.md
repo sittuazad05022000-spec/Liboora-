@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0002` |
-| **Version** | **v0.1** |
+| **Version** | **v0.1a** — ⚠️ v0.1 plus one self-reported factual correction (§23) |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-01` Enrollment** `[CORE]`, Library Management cluster, rank 8 |
@@ -162,7 +162,7 @@ dignity when their record is read aloud in front of them*.
 | `SM-GAP-6` | Emergency contact ≠ guardian | ⛔ `SID-2.8` names guardian contact only (§15) |
 | `SM-GAP-7` | Member-to-member directory visibility | ⛔ No requirement defines the member-facing field set |
 | `SM-GAP-8` | Bulk import validation | ⭐ `SM-3.8` names `Import` as a source; ⛔ no import specification exists |
-| `SM-GAP-9` | Attendance-percentage definition | ⛔⛔ `BC-03` owns the formula and `PRD-006` is **unwritten** ⇒ ⛔ **no percentage, no `MeterBar`** (§9.1, `AttendanceFactRow`) |
+| ⭐ `SM-GAP-9` | Attendance-percentage definition | ⭐⭐ **Stronger than the gap alone:** `PRD-006` (**`FROZEN` v1.9**, `ADR-0034`) declares percentages a **non-goal** at **`NG-6`** — *"Attendance reports, percentages, streaks, dashboards"* belong to **`BC-26` Analytics** — and **L2278** forbids `BC-03` becoming *"the source for any attendance percentage, streak"*. ⛔⛔ So ⛔ **no percentage, no `MeterBar`** (§9.1, `AttendanceFactRow`) |
 | ⭐ `SM-GAP-10` | Whether DOB becomes **mandatory** at `BC-10` | ⭐ `SM-4.5c` forbids this module from requiring it. ⭐⭐ **S-5 is designed to be correct either way** — the three-case branch (§7.8) holds whether `PRD-003` keeps DOB optional or makes it mandatory |
 | `SM-GAP-11` | `BC-26` as an `SM-EV-*` consumer | ⛔ A BC Map §8-vs-§7 tension; ⛔ no surface consequence (§6.3) |
 
@@ -449,7 +449,7 @@ predates `PRD-004`'s freeze. ⛔ It is **not** an implementation of `PRD-004`
 |---|---|---|---|
 | ⭐ **`BC-02` Membership** | `SID-2.7` composition *(read)* + `E-01` *(events)* | **Eventual** | ⭐⭐ **Two badges, never merged** (`LMD-3`/`LMD-25`); expiry from the `BC-02` projection only (`LMD-16`); ⛔ renewal **navigates out** to `BC-02` (`SM-6.8`) → `DD-0001` S-8. **As-of label required** |
 | **`BC-04` Seating** | `SID-2.7` composition | **Eventual** | S-3 seat section; ⛔ no seat action here. `Suspended` ⇒ `BC-04` refuses new allocation (`SM-2.14`) — stated, ⛔ not enforced |
-| **`BC-03` Attendance** | `SID-2.7` composition | **Eventual** | ⭐ Attendance as **fact only** (§2); ⛔ **formula undefined** — `SM-GAP-9`, so ⛔ **no percentage is drawn** (§9.2) |
+| **`BC-03` Attendance** | `SID-2.7` composition | **Eventual** | ⭐ Attendance as **fact only** (§2); ⛔⛔ **no percentage is drawn** — `SM-GAP-9` leaves the formula unowned **and** `PRD-006` **`NG-6`** makes percentages a **non-goal** owned by `BC-26` (§9.1). ⚠️ `PRD-006` is **`FROZEN` v1.9**, so ⛔ this is a **prohibition**, not an absence |
 | **`BC-05` Fee** | `SID-2.7` composition + `E-09` *(dues assertion)* | **Eventual** *(read)* / authoritative *(archive gate)* | ⭐ Blocks archive (`SM-2.9`); ⛔ **no collection control** on this surface (`LMD-28`, vs `IDV-010`) |
 | **`BC-10` Person Identity** | `E-13` **declared edge**, ACL | **Strong, read-time** | ⭐ Name/DOB/gender/global photo are **read-only here**; an edit attempt **MUST** be refused *with a pointer to `BC-10`* (`SM-6.4`) — ⛔ never silently ignored (§7.4) |
 | **`BC-18` Identity & Access** | `E-11`; authorisation | Request-time | ⭐ **Every** control's visibility and enablement is a `BC-18` decision (`SM-8.6`); ⛔ this module evaluates none |
@@ -746,10 +746,19 @@ System Owner to record why composition is insufficient.
 | `MeterBar` | same | ⛔ **NOT USED** — see below |
 
 ⛔⛔ **`MeterBar` is deliberately unused in this context.** The only
-plausible use is an attendance percentage, and ⛔ `SM-GAP-9` records that
-**no owner has defined the formula** (`BC-03` owns it; `PRD-006` is
-unwritten). Rendering a progress bar over an undefined metric would
-fabricate precision.
+plausible use is an attendance percentage, and ⭐⭐ **two independent
+authorities forbid it here**: ⛔ `SM-GAP-9` records that **no owner has
+defined the formula**, and ⛔⛔ `PRD-006` (**`FROZEN` v1.9**) makes
+percentages an express **non-goal** at **`NG-6`**, assigning *"reports,
+percentages, streaks, dashboards"* to **`BC-26` Analytics**, with **L2278**
+forbidding `BC-03` from becoming *"the source for any attendance
+percentage, streak"*. Rendering a progress bar here would fabricate
+precision **and** claim a metric another context owns.
+
+⚠️ **A prior revision of this paragraph said `PRD-006` was *"unwritten"*.
+That was wrong** — it is frozen at **v1.9**, **Rank 3**, **3216 lines**
+(`ADR-0034`). ⭐ The conclusion is unchanged and now rests on the
+requirement that actually exists.
 
 ⛔ **Citing these components is not approving them** — they were built
 without a design artifact (`DD-0001-GAP-009`, unchanged).
@@ -1365,3 +1374,4 @@ authorised, allocated or reserved.**
 | Version | Change |
 |---|---|
 | **v0.1** | ⭐ Created. Readiness audited across **21** areas (**DONE 14 · PARTIAL 6 · BLOCKED 0**) and classified ⭐ **READY WITH EXPLICIT DESIGN GAPS**. ⭐⭐ Established that `PRD-004` **is** designable despite **0** literal `UI`/`UX` occurrences, on **35** `LMD-*` display requirements, a closed **12×5** permission matrix and **16** pre-specified edge cases — correcting [`../README.md`](../README.md) §2A.3's *"**0**"* entry for this context only. **14** surfaces `S-1`…`S-14`; **7** states each *(adds `Unavailable` over `DD-0001`'s six, per `LMD-18`/`LMD-21`)*; **5** flows; **7** existing + **7** new components with ⭐ **5 reused from `DD-0001`**; ⭐ **0** 3D assets, reasoned; **12** Design QA blocking conditions; **12** gaps — ⭐⭐ **0 BLOCKING**, **10** non-blocking, **2** `REQUIREMENT CONFLICT` escalated to Architecture + Domain Owner. Existing implementation audited: **1 MATCH · 10 IMPLEMENTATION DEVIATION · 2 REQUIREMENT CONFLICT · 2 DESIGN GAP**. ⛔ **Nothing invented:** 0 requirements, 0 tokens, 0 breakpoints, 0 accessibility thresholds, 0 permissions, 0 surfaces beyond `PRD-004`, and ⛔ **0 surfaces for any of the 11 `SM-GAP-*`**. ⛔ No PRD, ADR, architecture document, TS, code, test or `DD-0001` modified |
+| **v0.1a** | ⚠️⚠️ **Factual correction, self-reported.** v0.1 stated in two places that **`PRD-006` is *"unwritten"***, citing `SM-GAP-9`. ⛔ **Both statements were false and the citation was over-read.** ⭐ Measured: `PRD-006_ATTENDANCE-MANAGEMENT.md` is **`FROZEN` v1.9**, **Rank 3**, **3216 lines**, admitted by **`ADR-0034`** under `BASELINE-2026-08-05-A`, carrying **525** identifiers. ⭐ `SM-GAP-9` says only that the attendance-**percentage formula** has no owner — ⛔ **not** that the PRD is absent. ⭐⭐ **The design conclusion is UNCHANGED and now rests on stronger authority**: `PRD-006` **`NG-6`** makes *"reports, percentages, streaks, dashboards"* an express **non-goal** owned by **`BC-26` Analytics**, and **L2278** forbids `BC-03` becoming *"the source for any attendance percentage, streak"* — so ⛔ **no percentage and no `MeterBar`** is a **prohibition**, not an absence. §2, §6.3 and §9.1 corrected; ⛔ **no surface, state, component, flow, gap or coverage classification changed.** ⛔ Nothing else in this document is affected, and ⛔ no PRD, ADR, code or test was modified |

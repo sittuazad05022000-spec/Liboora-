@@ -85,10 +85,10 @@ rank or readiness is conferred, implied or claimed here. Each cell restates a
 fact measured in the named source; where a cell and its source disagree,
 **the source wins and this row is the defect.**
 
-| DD ID | Feature / Bounded context | PRD | Design Doc | DD status | Figma status | TS status | Readiness note |
-|---|---|---|---|---|---|---|---|
-| ⭐ **`DD-0001`** | **`BC-02` Membership Management** *(`membership/`)* | [`PRD-005`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) — **`FROZEN` v1.4** (`ADR-0019`); designed from ⭐ **§20, 13 `MUST`/`MUST NOT` surface rows** | [`DD-0001-membership-management-surface-design.md`](membership/DD-0001-membership-management-surface-design.md) — **v0.2**, 13 surfaces `S-1`…`S-13` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists.** The repository holds [`FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md) only, whose token names and values are themselves `TO BE DECIDED`. ⭐ `DD-0001` §19.1 judges prototyping **READY — with 2 labelled substitutions** (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-02`: `docs/50-technical/` holds `TS-001` (`PRD-021B`) and `TS-002` (`PRD-021C`) only, and the central `TS-*` inventory ([`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V) registers `TS-001` alone. ⭐ `DD-0001` §19.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied or authorised** | ⛔ **Not implementable today.** All **5** `app`-module surface tasks (`IMPL-409`/`432`/`433`/`434`/`436`) are blocked by `ADR-0012` §3.4 — `DD-0001` §17.1. **12** gaps open (§18); surface test coverage measured **0** |
-| ⭐ **`DD-0002`** | **`BC-01` Enrollment — Student Management** *(`student-management/`)*; ⭐ also Master PRD §8 **module 3** Library Member Directory as `PRD-004` §5's **read composition** | [`PRD-004`](../30-product/student-management/Student_Management_PRD_v1.md) — **`FROZEN` v1.2** (`ADR-0018`); ⚠️ **no UI/UX chapter** — designed from ⭐ **§5's 35 `LMD-*` display requirements**, §8.2's closed **12×5** permission matrix and §9.2's **16** pre-specified edge cases | [`DD-0002-student-management-surface-design.md`](student-management/DD-0002-student-management-surface-design.md) — **v0.1a**, 14 surfaces `S-1`…`S-14` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists** — same repository fact as `DD-0001`. ⭐ `DD-0002` §21.1 judges prototyping **READY WITH NON-BLOCKING GAPS**, with the **same 2** labelled substitutions (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-01` — the inventory at [`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V registers `TS-001` alone. ⭐ `DD-0002` §21.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied, authorised, allocated or reserved** | ⭐⭐ **0 BLOCKING design gaps.** ⚠️ But ⛔ **not implementable today**: **2** `REQUIREMENT CONFLICT`s between the frozen PRD and shipped code (`GAP-011`, `GAP-012`), and the existing surface contributes **2** of the **9** live boundary violations, which `TASK-D10` does **not** clear (§17.1). **12** gaps (10 non-blocking + 2 conflicts); surface test coverage measured **0** |
+| DD ID | Feature / Bounded context | ⭐ App + Role(s) | PRD | Design Doc | DD status | Figma status | TS status | Readiness note |
+|---|---|---|---|---|---|---|---|---|
+| ⭐ **`DD-0001`** | **`BC-02` Membership Management** *(`membership/`)* | ⚠️ **Not declared** — written before §2B. §4.1 separates two audiences (staff + student), but ⛔ **no APP + ROLE BOUNDARY section exists** and ⛔ no boundary audit has been run (§2B.6) | [`PRD-005`](../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) — **`FROZEN` v1.4** (`ADR-0019`); designed from ⭐ **§20, 13 `MUST`/`MUST NOT` surface rows** | [`DD-0001-membership-management-surface-design.md`](membership/DD-0001-membership-management-surface-design.md) — **v0.2**, 13 surfaces `S-1`…`S-13` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists.** The repository holds [`FIGMA_FOUNDATION.md`](../design/FIGMA_FOUNDATION.md) only, whose token names and values are themselves `TO BE DECIDED`. ⭐ `DD-0001` §19.1 judges prototyping **READY — with 2 labelled substitutions** (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-02`: `docs/50-technical/` holds `TS-001` (`PRD-021B`) and `TS-002` (`PRD-021C`) only, and the central `TS-*` inventory ([`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V) registers `TS-001` alone. ⭐ `DD-0001` §19.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied or authorised** | ⛔ **Not implementable today.** All **5** `app`-module surface tasks (`IMPL-409`/`432`/`433`/`434`/`436`) are blocked by `ADR-0012` §3.4 — `DD-0001` §17.1. **12** gaps open (§18); surface test coverage measured **0** |
+| ⭐ **`DD-0002`** | **`BC-01` Enrollment — Student Management** *(`student-management/`)*; ⭐ also Master PRD §8 **module 3** Library Member Directory as `PRD-004` §5's **read composition** | ⚠️ **Not declared** — written before §2B. §4.1 separates staff / `TR-4` own-only / `TR-5` denied and §14.3 assigns all **12** `SM-PO-*` by role, but ⛔ **no APP + ROLE BOUNDARY section exists** and ⛔ no boundary audit has been run (§2B.6) | [`PRD-004`](../30-product/student-management/Student_Management_PRD_v1.md) — **`FROZEN` v1.2** (`ADR-0018`); ⚠️ **no UI/UX chapter** — designed from ⭐ **§5's 35 `LMD-*` display requirements**, §8.2's closed **12×5** permission matrix and §9.2's **16** pre-specified edge cases | [`DD-0002-student-management-surface-design.md`](student-management/DD-0002-student-management-surface-design.md) — **v0.1a**, 14 surfaces `S-1`…`S-14` | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** **UNRANKED** | ⛔ **No Figma file exists** — same repository fact as `DD-0001`. ⭐ `DD-0002` §21.1 judges prototyping **READY WITH NON-BLOCKING GAPS**, with the **same 2** labelled substitutions (token values, reference width) | ⛔ **None.** ⛔ No `TS-*` covers `BC-01` — the inventory at [`TRACEABILITY_MATRIX.md`](../40-implementation/TRACEABILITY_MATRIX.md) §2V registers `TS-001` alone. ⭐ `DD-0002` §21.2: **NOT READY** — and ⛔ **no `TS-003` is created, implied, authorised, allocated or reserved** | ⭐⭐ **0 BLOCKING design gaps.** ⚠️ But ⛔ **not implementable today**: **2** `REQUIREMENT CONFLICT`s between the frozen PRD and shipped code (`GAP-011`, `GAP-012`), and the existing surface contributes **2** of the **9** live boundary violations, which `TASK-D10` does **not** clear (§17.1). **12** gaps (10 non-blocking + 2 conflicts); surface test coverage measured **0** |
 
 ### 2A.1 How to read the `Figma status` and `TS status` columns
 
@@ -110,6 +110,10 @@ status is worse than an empty one.
 
 ### 2A.2 Maintaining this catalog
 
+0. ⭐⭐ **The `App + Role(s)` cell is mandatory for every new row**, and it
+   restates the Design Doc's own **APP + ROLE BOUNDARY** section (§2B.3).
+   ⛔ A new row reading *"Not declared"* is a defect, not a status — the two
+   existing rows carry it only because they predate §2B (§2B.6).
 1. A **new Design Doc adds exactly one row**, at the time the Design Doc is
    committed — not when it is planned.
 2. `NNNN` comes from §3 and is **never reused**, so a row is never renumbered
@@ -189,6 +193,125 @@ is true of any context today. ⭐ Those values exist for when they are.
 ⚠️ **`NOT REQUIRED` is provisional on evidence, not permanent.** Should a
 PRD later gain surface requirements, the row changes — which is exactly
 what happened to `student-management/` (§2A.3).
+
+---
+
+## 2B. ⭐⭐ MANDATORY — the three-app boundary
+
+⭐⭐⭐ **This section is BINDING on every Design Doc written from this point
+forward.** It is a **standing product-owner instruction**, recorded here
+because this README is the one file every Design Doc author reads.
+
+⛔⛔ **PRIMARY PRINCIPLE — design the feature for its final app boundary
+now.** ⛔ **Do NOT design one mixed-role application and plan to split the
+apps later.**
+
+### 2B.1 The three apps
+
+| App | Roles | Scope | Code home *(already reserved)* |
+|---|---|---|---|
+| ⭐ **APP 1 — Student App** | `TR-4` **Student** · `TR-5` **Parent** | One student's own data, within one tenant | `lib/app/student/{student,parent}/` |
+| ⭐ **APP 2 — Library App** | `TR-1` **Owner** · `TR-2` **Manager** · `TR-3` **Reception** | One library / tenant's operations | `lib/app/staff/{owner,manager,reception}/` |
+| ⭐ **APP 3 — Platform Admin App** | `PR-1` **Platform Administrator** · `PR-2` **Platform Support** *(and platform-level authority where applicable)* | ⛔ **Platform-level objects ONLY** | `lib/app/platform_admin/{platform_owner,platform_admin}/` |
+
+⭐⭐ **This boundary is not newly invented by this section — it is already
+structural in the repository.** Measured: `lib/app/` contains exactly
+`student/`, `staff/`, `platform_admin/` and `shared/`, with the role
+subdirectories above already present, and
+[`lib/app/platform_admin/README.md`](../../lib/app/platform_admin/README.md)
+exists specifically to hold that boundary open *"reserved, deliberately
+empty."*
+
+### 2B.2 Authority for the roles — ⛔ never invent one
+
+| Claim | Source | Verified |
+|---|---|---|
+| `TR-1`…`TR-5` are the tenant roles | [`PRD-001` Authentication **v2.0**](../30-product/authentication/Authentication_PRD_v2.md) §2.4 | ⭐ **YES** — `TR-1` Owner, `TR-2` Manager, `TR-3` Reception, `TR-4` Student, `TR-5` Parent |
+| `PR-1`, `PR-2` are the platform roles, **closed** | `PRD-001` **§2.3** | ⭐ **YES** — *"Platform roles govern Liboora itself. **Two exist. The set is closed.**"* |
+| ⭐⭐ Platform access does **NOT** imply tenant data access | `PRD-001` **`AUTH-2.5`** | ⭐ **YES** — *"Platform roles **MUST NOT** grant access to tenant business data"*; obtained *"only"* via time-bounded elevation |
+| The platform-role set may not be widened | `PRD-012a` Part 2 `SECP-FR-003`, `SECP-XC-012` | ⭐ Recorded in `platform_admin/README.md` §1 |
+| Code role enum | `AccessRole` (`lib/platform/identity/identity.dart`) | ⚠️ **5 tenant values only** — `owner`, `manager`, `reception`, `student`, `parent`; ⛔ **no platform value exists** |
+
+⚠️⚠️ **ONE DISCREPANCY IS RECORDED RATHER THAN RESOLVED.** The standing
+instruction names *"Platform Owner / platform-level authority"* for APP 3.
+⛔ **"Platform Owner" has 0 occurrences** in `PRD-001`, `MASTER_PRD.md` or
+`PRD-012a` Part 2 — a fact `platform_admin/README.md` §1 already measured
+and records. ⭐ **Both statements are preserved:** the **app boundary** is
+binding as instructed, and the **role vocabulary** for APP 3 remains
+`PR-1`/`PR-2` until a named authority establishes otherwise. ⛔ A Design
+Doc **MUST NOT** cite *"Platform Owner"* as an authoritative role
+identifier, and ⛔ **MUST NOT** invent one. → `DSN-APP-GAP-001`, **Product
+Owner + Architecture Owner**.
+
+### 2B.3 ⭐ What every new Design Doc MUST declare
+
+⭐ A Design Doc is **not design-ready** until it carries an
+**"APP + ROLE BOUNDARY"** section stating all five:
+
+| # | Declaration | ⛔ Not acceptable |
+|---|---|---|
+| 1 | **Target App** — APP 1, APP 2, APP 3, or an explicit, justified set | ⛔ "all apps" without justification |
+| 2 | **Target Role(s)** — by identifier (`TR-n` / `PR-n`) | ⛔ "staff", "admin", "user" |
+| 3 | **Permission Scope** — the authoritative operation×role source | ⛔ An invented or widened permission |
+| 4 | **Tenant / Library / Platform scope** | ⛔ Silence on scope |
+| 5 | **Cross-App dependencies**, if any | ⛔ An undeclared jump between apps |
+
+### 2B.4 ⭐ Assignment and separation rules
+
+1. ⭐ **Every** screen, flow, state, action and edge case is assigned to an
+   app **and** a role. ⛔ An unassigned surface is a defect.
+2. ⛔⛔ **MUST NOT mix role experiences for convenience.** Where apps need
+   materially different UX, document them **separately within** the feature
+   design.
+3. ⭐ **Shared design is permitted only when genuinely cross-app *and* the
+   same UX is appropriate.** ⛔ Convenience is not a justification.
+4. ⛔⛔ **Permissions come from PRD / ADR / Auth sources only.** ⛔ Never
+   widen a permission to make a flow easier — that is the
+   `SM-8.4a`/`AP-3` deny-by-default rule, applied to design.
+5. ⭐ **Parent (`TR-5`) is a Student-App role with its own scope.** ⛔ Parent
+   is **NOT** a separate application.
+6. ⭐ **`TR-1`/`TR-2`/`TR-3` are Library-App roles with different
+   permissions**, and the design **MUST** respect the differences —
+   ⛔ not render one screen and grey controls out by role as an afterthought.
+7. ⛔⛔ **Platform roles stay separated from tenant operations** — `AUTH-2.5`.
+   ⛔ Platform access **MUST NOT** be assumed to confer tenant
+   business-data access.
+8. ⭐ **Future Figma prototypes MUST preserve these boundaries.** ⛔ No one
+   giant mixed-role prototype to be split later.
+
+### 2B.5 ⭐ App-Boundary QA check — required before design-ready
+
+⭐ Every Design Doc classifies itself, with evidence:
+
+| Verdict | Meaning |
+|---|---|
+| ⭐ **PASS** | App, roles, permission scope, tenancy scope and cross-app dependencies all declared and sourced |
+| ⚠️ **GAP** | A declaration is missing or unsourced; ⛔ the Design Doc is **not** design-ready until closed or classified |
+| ⛔ **CONFLICT** | A source-vs-source or source-vs-code contradiction. ⛔ Record and escalate; ⛔ **do not resolve by choosing** |
+| ⚪ **TO BE DECIDED** | A named authority must decide. ⛔ Inventing an answer is prohibited |
+
+### 2B.6 ⚠️ Existing Design Docs — audit, do not rewrite
+
+⛔⛔ **`DD-0001` and `DD-0002` are NOT rewritten automatically.** Per the
+standing instruction, existing docs are **audited** and updated **only**
+where the boundary audit finds a **real conflict or missing information**.
+
+⭐ A first-pass reading, recorded without acting on it: both already
+separate audiences — `DD-0001` §4.1 (two audiences) and `DD-0002` §4.1
+(staff vs `TR-4` own-only vs `TR-5` denied) — and `DD-0002` §14.3 assigns a
+presentation rule to all **12** protected operations by role. ⛔ **No
+boundary audit has been run on either**, so ⛔ **no verdict is claimed here**
+for them, in either direction.
+
+### 2B.7 Scope of this rule
+
+⭐ Applies to **ALL future Design Docs** — ⛔ not only Membership, Student
+Management, Attendance, Seat Management and Fees & Finance.
+
+⛔⛔ **This section confers nothing else.** ⛔ It creates no role, no
+permission, no `PERM-*`, no app, no edge, no requirement; ⛔ it does not
+amend `PRD-001`, any ADR, or `AccessRole`; and ⛔ it does not authorise
+implementing APP 3, which `platform_admin/README.md` §3 leaves governed.
 
 ---
 

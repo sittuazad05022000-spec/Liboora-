@@ -2,9 +2,10 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.27** ⭐ *(advanced 2026-09-11 by the Technical Owner one-act act that adds **§2V**, the central `TS-*` inventory, and repairs the stale `ADRs applied` cell — `TSG-GAP-005`. ⚠ **Prior: v1.26.** ⚠⚠ **A VERSION DRIFT IS DISCLOSED AND DELIBERATELY NOT REPAIRED HERE:** `DOCUMENTATION_BASELINE.md` §3.4 records this document at **`v1.1`** — **26 versions stale** — the `GCP-21` derived-statement class. ⛔ **That declaration is NOT edited by this act:** it is a **Governance Owner** artefact and this conferral is **Technical Owner** only — *"Those are different roles"* (`ADR-0054` **L148**). ⭐ Repair is routed, not performed. ⛔ This matrix is **unranked**, so no baseline identifier moves and no ADR was required — the **L173** precedent in this very file: *"This document is unranked, so no ADR was required to correct it."*)* |
+| **Version** | **v1.28** ⭐⭐ *(advanced 2026-09-17 under **`PRD_LIFECYCLE.md` Stage 8 L199** — *"update the traceability matrix **in the same commit** as the code"* — adding **§2W**, the **first implementation-traceability section in this matrix**, recording `IMPL-2000`/`2001`/`2002`/`2028`. ⚠ **Prior: v1.27.** ⛔⛔ **The Technical Owner one-act conferral that produced §2V is SPENT and is NOT relied on here**; Stage 8 is a standing rule attached to implementation and needs no conferral. ⛔ **No gap closed, no requirement moved to ✅, no PRD or ADR touched.** ⚠ The `DOCUMENTATION_BASELINE.md` §3.4 `v1.1` drift is now **27 versions** stale and remains a **Governance Owner** repair — ⭐ routed, not performed.)* |
+| **Version (prior)** | **v1.27** ⭐ *(advanced 2026-09-11 by the Technical Owner one-act act that adds **§2V**, the central `TS-*` inventory, and repairs the stale `ADRs applied` cell — `TSG-GAP-005`. ⚠ **Prior: v1.26.** ⚠⚠ **A VERSION DRIFT IS DISCLOSED AND DELIBERATELY NOT REPAIRED HERE:** `DOCUMENTATION_BASELINE.md` §3.4 records this document at **`v1.1`** — **26 versions stale** — the `GCP-21` derived-statement class. ⛔ **That declaration is NOT edited by this act:** it is a **Governance Owner** artefact and this conferral is **Technical Owner** only — *"Those are different roles"* (`ADR-0054` **L148**). ⭐ Repair is routed, not performed. ⛔ This matrix is **unranked**, so no baseline identifier moves and no ADR was required — the **L173** precedent in this very file: *"This document is unranked, so no ADR was required to correct it."*)* |
 | **Status** | Active — updated with every requirement implemented |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** · ⚠⚠ **THIS CELL WAS ITSELF STALE AND IS CORRECTED HERE, NOT REWRITTEN:** it stopped at **§2Q** while the document already carried **§2R**, **§2S**, **§2T** and **§2U** — ⭐ **§2R** (`PRD-021C` C0–C8, L2721) · **§2S** (`PRD-015` Search Indexing, L2972) · **§2T** (`PRD-010` Notifications, L3552) · **§2U** (`PRD-009` Analytics, L3637) — each added without extending this Date field. ⭐ The four omissions are now named; ⛔ **no section is renamed, renumbered, moved or altered**, and ⛔ **no historical date is changed**. · ⭐⭐ **§2V added 2026-09-11** — the **central `TS-*` inventory**, the first entry of the Technical Specification class in this matrix, under the Technical Owner one-act conferral discharging `TSG-GAP-005` |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended and §2C corrected 2026-08-04** · **§2D added 2026-08-04** · **§2E added 2026-08-04** · **§2F added 2026-08-04** · **§2G added 2026-08-15** · **§2H added 2026-08-15** · **§2I added 2026-08-17** · **§2J added 2026-08-19** · **§2K added 2026-08-19** · **§2L added 2026-08-20** · **§2M added 2026-08-20** · **§2N added 2026-08-21** · **§2N corrected 2026-08-21** — six §2N.2 cells and two §2N header cells superseded by the Stage 7 admission, prior text retained verbatim; on the **v1.4 precedent**, where *"§2C corrected"* was itself a version increment · **§2O added 2026-08-23** · **§2P added 2026-09-01** · **§2Q added 2026-09-02** · ⚠⚠ **THIS CELL WAS ITSELF STALE AND IS CORRECTED HERE, NOT REWRITTEN:** it stopped at **§2Q** while the document already carried **§2R**, **§2S**, **§2T** and **§2U** — ⭐ **§2R** (`PRD-021C` C0–C8, L2721) · **§2S** (`PRD-015` Search Indexing, L2972) · **§2T** (`PRD-010` Notifications, L3552) · **§2U** (`PRD-009` Analytics, L3637) — each added without extending this Date field. ⭐ The four omissions are now named; ⛔ **no section is renamed, renumbered, moved or altered**, and ⛔ **no historical date is changed**. · ⭐⭐ **§2V added 2026-09-11** — the **central `TS-*` inventory**, the first entry of the Technical Specification class in this matrix, under the Technical Owner one-act conferral discharging `TSG-GAP-005` · ⭐⭐ **§2W added 2026-09-17** — the **first implementation-traceability section**, registering the Analytics semantic layer under Stage 8's same-commit rule |
 | **Baseline** | **BASELINE-2026-08-04-D** — ⚠ **not re-issued by §2G.** `DOCUMENTATION_BASELINE.md` §7 step 4 moves the baseline identifier only *"when a Rank 1–3 document changes version"*. `PRD-008` is **byte-unchanged** by this pass, so no baseline change is due, and this matrix is **unranked** — it confers nothing |
 | **Sources** | Authentication PRD v2.0 · Library PRD **v1.1** + §14A + §14B + Invitation Security Specification · Student Identity & Profile PRD v1.0 · **Student Management PRD v1.2 (`PRD-004`, `FROZEN`)** · **Membership Management PRD v1.4 (`PRD-005`, `FROZEN`)** · **Seat Management PRD v1.0 (`PRD-007`, `DRAFT`)** · **Attendance Management PRD v1.3 (`PRD-006`, `DRAFT`)** · **Revenue & Finance PRD v1.7 (`PRD-008`, `DRAFT`)** · **Integration PRD v0.2 (`PRD-019`, `DRAFT`)** · **Tenancy PRD v0.1 (`PRD-013`, `FROZEN`)** · **Audit Trail PRD v0.1 (`PRD-016`, `DRAFT`)** · **Entitlement PRD v0.1 (`PRD-014`, `DRAFT`)** · **Settings & Configuration PRD v0.1 (`PRD-023`, `DRAFT`)** · **File & Media PRD v0.1 (`PRD-017`, `DRAFT`)** ⚠ **Superseded:** the `BC-18` authority is now **Authentication PRD v3.0** (`Accepted` `ADR-0129`; `DOCUMENTATION_BASELINE.md` **L258**). ⭐ V1 authentication is **Google Sign-In (Google OIDC)**, the sole required method (`AUTH-3.40`); ⛔ **Mobile OTP is a V2 capability, not a V1 requirement** (`AUTH-3.42`, `AUTH-3.46`). ⚠ The v2.0 citation is retained for traceability; prefer **v3.0**. |
 | **ADRs applied** | ⭐⭐ **RE-MEASURED 2026-09-11 under the Technical Owner one-act conferral that discharges `TSG-GAP-005` (see §2V).** ⭐ **The governed ADR inventory is `ADR-0001` … `ADR-0141` — 129 files on disk, lowest `ADR-0001`, highest `ADR-0141`, counted mechanically (`ls docs/00-governance/adr/ADR-0*.md`).** ⚠⚠ **THE PRIOR TEXT OF THIS CELL WAS STALE AND IS DISCLOSED, NOT REWRITTEN AWAY:** it read *"`ADR-0001` … **`ADR-0018`**, **`ADR-0020`**, **`ADR-0032`**"* — an enumeration of **20** identifiers, correct when written and stale since. ⚠ `ADR-0131` **L467** recorded the shortfall as *"leaving **98 ADRs unlisted**"*; ⭐ **re-measured today the figure is 109 unlisted** (129 − 20), because **11 further ADRs were accepted after that measurement** (`ADR-0131` … `ADR-0141`). ⛔ **The historical figure `98` is NOT corrected in `ADR-0131`** — that is an `Accepted` ADR and `ADR-INDEX` **L206** forbids editing its text; ⭐ the drift is recorded **here**, in the unranked document that can carry it. ⛔⛔ **THIS CELL ASSERTS COVERAGE OF THE INVENTORY, NOT APPLICATION OF EVERY ADR:** ⛔ it does **not** claim all 129 ADRs were applied to this matrix's requirement mappings, ⛔ does **not** re-open or re-apply any ADR, and ⛔ does **not** confer or alter any ADR's status. ⭐ The **20** identifiers named above remain the set historically *applied* to §2A–§2C's mappings; ⛔ **that historical statement is preserved in meaning and is not withdrawn.** |
@@ -3898,3 +3899,167 @@ unranked and `ADR-0131` **L468** already assigns the act to this office as *"a s
 
 ⛔⛔ **THE CONFERRAL FOR THIS ACT IS NOW SPENT.** ⛔ It authorised **this file and this gap only**, and
 ⛔ **expires on completion of this single act.**
+
+---
+
+---
+
+## 2W. Implementation traceability — the Analytics semantic layer (`IMPL-2000`/`2001`/`2002`/`2028`)
+
+⭐⭐ **This is the FIRST section in this matrix to register *implemented code* rather than an identifier inventory.**
+Every §2A–§2V entry registers identifiers, documents or gate records. This one registers **Dart source that exists,
+compiles and is covered by passing tests**, and it is therefore the first section whose claims are falsifiable by
+running the repository rather than by reading it.
+
+⛔⛔ **It registers an implementation. It confers nothing.** ⛔ No gap is closed, no requirement moves to ✅, no PRD
+status moves, no rank is conferred and no stage is claimed beyond the Stage 8 rule that compelled this edit.
+
+### 2W.1 Authority for this act
+
+| Field | Value |
+|---|---|
+| **Act** | ⭐ Record, in the **same commit as the code**, the implementation of `IMPL-2000`, `IMPL-2001`, `IMPL-2002` and `IMPL-2028`. ⛔ **NOTHING ELSE** |
+| **Authority** | ⭐⭐ **`PRD_LIFECYCLE.md` Stage 8, L199** — *"update the traceability matrix **in the same commit** as the code"*. ⛔ This is a **standing rule attached to implementation**, not a conferral: it does not need one, and it grants nothing beyond itself |
+| **Authority for the code** | ⭐ [`PRD-009_STAGE6_IMPLEMENTATION_TASKS.md`](../30-product/analytics/PRD-009_STAGE6_IMPLEMENTATION_TASKS.md), Wave 1 — *"Semantic layer + certified-metric registry — the F-1 foundation"*. All four tasks carry `Blocked by` = **"—"**, and the document's own headline reads *"Startable now: 24 of 32"*. ⛔ **No new authority was sought, because none was needed and none was missing** |
+| **⛔ NOT claimed** | ⛔⛔ The **Technical Owner one-act conferral** that produced **§2V** is **SPENT** — that section says so in its own last line. ⛔ **It is NOT relied on here, not extended, and not treated as standing.** This act rests on Stage 8 alone |
+| **Why no ADR** | ⭐ This matrix is **unranked** (`DOCUMENTATION_BASELINE.md` §3.4; **0** rows in §4's precedence table), so §7 rule 1 (*"A change to any **Rank 1–5** document requires an ADR"*) does not reach it. ⛔ **No ADR minted; no ADR number allocated** |
+
+### 2W.2 The four tasks, and exactly what was built
+
+| `IMPL-*` | Task, as written in Stage 6 | Traces to | Artefact | Status |
+|---|---|---|---|---|
+| **`IMPL-2000`** | Define `CertifiedMetric` value type carrying **all nine** fields | `ANL-FR-008` | `lib/platform/analytics/semantic_layer.dart` — `final class CertifiedMetric` | ⭐ **BUILT** |
+| **`IMPL-2001`** | Metric registry that **rejects at registration** any metric missing a field | `ANL-FR-009` | same file — `final class CertifiedMetricRegistry` | ⭐ **BUILT** |
+| **`IMPL-2002`** | Semantic-layer module boundary — the only place a formula may be defined | `ANL-FR-001`, `AN-2`, `MP-GBR-36` | same file — the module **is** the boundary; **1** definition site repository-wide | ⭐ **BUILT** |
+| **`IMPL-2028`** | Architecture test enforcing `AN-2` | `AN-2` | `test/architecture/no_metric_defined_outside_semantic_layer_test.dart` — 4 groups, **14** tests | ⭐ **BUILT** |
+
+⛔⛔ **Four tasks. Not five.** `IMPL-2003` (versioning), `IMPL-2004` (reject definitions originating outside the
+layer), `IMPL-2005` (migrate the 12 `DashboardMetrics` counters), `IMPL-2006`, `IMPL-2007` are **NOT claimed**,
+even though `IMPL-2000` necessarily carries a `version` field and the `IMPL-2028` test necessarily detects outside
+definitions. ⭐ **Carrying a field is not implementing the task that governs it**, and a test that detects a
+condition is not the enforcement task. ⛔ **No task is marked done by proximity.**
+
+### 2W.3 ⚠⚠ A field-list discrepancy between the gate record and the FROZEN PRD — resolved BY RULE, not by preference
+
+⛔⛔ **`IMPL-2000` and `ANL-FR-008` do not list the same nine fields, and the difference is not cosmetic.**
+
+| Source | Rank | The nine |
+|---|---|---|
+| **`ANL-FR-008`**, `PRD-009` **L484–486** | ⭐ **Rank 3, FROZEN v0.6** (`ADR-0113` `Accepted`; `DOCUMENTATION_BASELINE.md` **L217**) | `metricId` · `name` · **`definition`** · `sourceEvents[]` · **`calculation`** · **`owningContext`** · `timeSemantics` · `freshnessExpectation` · `accessScope` |
+| **`IMPL-2000`**, Stage 6 tasks **L96** | ⚠ Gate record | `metricId` · `name` · **`formula`** · **`unit`** · `timeSemantics` · `accessScope` · `sourceEvents` · `freshnessExpectation` · **`version`** |
+
+⭐⭐ **The PRD governs, and the rule that says so is quoted rather than paraphrased:** `DOCUMENTATION_BASELINE.md` —
+*"Where a gate record and the PRD disagree, **the PRD governs**"* — reinforced by that file's own `PRD-009` row,
+which marks the Stage-6 document *"Not part of the specification"*.
+
+⭐ **Resolution actually implemented:** the type carries **the PRD's nine**, plus **`version`** and **`unit`** as
+**separately authorised extras** — `version` by **`ANL-FR-010`** (*"Metric definitions **MUST** be versioned"*) and
+`unit` by **`ADR-0097` §3.1**, which states one for `ProfileViews`. ⛔ **Eleven fields, of which nine are the
+mandate and two carry their own authority.** ⛔ **No PRD text was edited to make the code agree**, and ⛔ **no
+`IMPL-2000` text was edited to make the gate record agree** — both subjects are **byte-unchanged**.
+
+⚠ **The discrepancy itself is NOT repaired.** Amending `IMPL-2000` is a **Stage-6 gate-record** act and amending
+`ANL-FR-008` would require unfreezing a Rank-3 PRD. ⭐ **Raised and routed to the Product Owner; not performed.**
+
+### 2W.4 ⭐⭐ `AN-2` — the assertion is now not merely assertable but ASSERTED
+
+`tool/module_dependencies.yaml` **L325** declares: *"no metric defined outside the semantic layer"*. §2U.3 recorded
+that this was **assertable but unasserted**, because no semantic layer existed. Measured today:
+
+| Probe | Command | Result |
+|---|---|---|
+| Metric definition sites in `lib/` | `grep -rln "class CertifiedMetric\|CertifiedMetric(" lib/` | ⭐ **1** — `lib/platform/analytics/semantic_layer.dart`, and nothing else |
+| Does the projection store define a metric? | `grep -c "CertifiedMetric\|semantic_layer" lib/platform/analytics/analytics.dart` | ⭐ **0** |
+| `UniqueViewers` in executable position | `grep -rn "UniqueViewers" lib/` minus comment lines | ⭐⭐ **0** — all **3** occurrences are explanatory comments citing `ADR-0097` §5 |
+| Is `AN-2` covered by a test that can fail? | `flutter test test/architecture/no_metric_defined_outside_semantic_layer_test.dart` | ⭐ **14 / 14 pass** |
+
+### 2W.5 ⛔⛔ One certified metric. Not two. `ADR-0097` is obeyed, not interpreted
+
+⭐ **`ProfileViews` is registered verbatim from [`ADR-0097`](../00-governance/adr/ADR-0097-profileviews-certified-uniqueviewers-not-certified.md) §3** — it is the **only**
+`CertifiedMetric` defined anywhere in this repository, exactly as it is the only one defined anywhere in the
+documentation.
+
+⛔⛔ **`UniqueViewers` IS DELIBERATELY ABSENT**, and the absence is enforced by a test (`ADR-0097` §5, rules
+`U1`–`U8`). ⭐ It is not merely unimplemented — it is **uncomputable from the data that crosses the boundary**:
+`ADR-0096` §17.2.1 fixes the `E-30` payload of `tenancy.LibraryProfileViewed`, and that payload **carries no viewer
+identity**. ⛔ **Implementing it would have required inventing a domain fact.**
+
+⛔ **Also NOT done, each because nothing authorises it:** **0** new metrics minted · **0** thresholds added
+(`ANL-CFG-*` values are owed to SRE, `ANL-GAP-020`) · **0** invented `timeSemantics` — `ProfileViews` carries
+`ADR-0097`'s rolling 7-day window and **records that the non-overlapping variant is NOT certified** (`T5`) · **0**
+`iam.*` subscriptions (`AN-3`, `ANL-XC-012`, and the live `ANL-AL-B1` Rank-4 conflict) · **0** new event edges.
+
+### 2W.6 ⚠⚠ What this does NOT close — including the gap it most looks like it closes
+
+- ⛔⛔ **`F-1` is NOT closed, and `ANL-GAP-001` remains OPEN.** ⭐ What changed is **a fact, not a status**: §2U.3
+  recorded that `lib/platform/analytics/analytics.dart` *"contains **no semantic layer**"*, and that measurement
+  **is now stale** — a semantic layer exists at `lib/platform/analytics/semantic_layer.dart`. ⛔ **But F-1 names
+  more than a registry**: `IMPL-2005` (migrating the **12** existing `DashboardMetrics` counters) is unstarted, so
+  **12** counters still compute outside the layer as ordinary code. ⛔ **Gap closure is an Architecture +
+  Implementation owner act** (`ADR-0113` **L168**) and is ⛔ **NOT performed here.**
+- ⛔ **§2U.3 and §2U's text are NOT edited.** On this file's own v1.23 precedent — *"retained verbatim, the
+  correction living in the later record"* — the stale measurement stands where it was written and is corrected
+  **here**. ⭐ A reader comparing the two will find the reconciliation in this section.
+- ⛔ **No requirement moves to ✅.** Stage 8 **L199–200**: *"a requirement moves to ✅ only when its acceptance
+  criteria are proven by automated tests."* ⚠⚠ **Measured: of `PRD-009`'s 36 `ANL-AC-*`, exactly ONE**
+  (`ANL-AC-009`, **L1059**) binds to this cluster, and it binds `ANL-FR-010`/`-011` — **versioning and version
+  citation** — ⛔ **not** `ANL-FR-008` or `ANL-FR-009`, which have **no acceptance criterion at all**. ⭐ The tests
+  written here therefore prove **the requirement text**, and ⛔ **cannot discharge criteria that do not exist**.
+  Carried as **`DD6-GAP`-adjacent**; routed to the **Product Owner**.
+- ⛔ **`PRD-009` is unchanged and remains FROZEN v0.6.** ⚠ It still contains **0** references to `ADR-0097`,
+  `ProfileViews` or `UniqueViewers` — ⭐ the FROZEN Rank-3 PRD is **unaware of the Rank-2 ADR that governs its only
+  certifiable metric**. ⛔ **Disclosed, not repaired**: repair means unfreezing a Rank-3 document.
+- ⛔ **`ANL-OBD-002`/`-004`/`-008`/`-009` remain OPEN. `F-2` and `F-3` are untouched.** `F-3` is **structurally**
+  barred by `MP-GBR-21`'s closed 3-scope register, which this code **implements as a closed enum of exactly three
+  values** rather than leaving open.
+- ⛔ **`DD-0006` is NOT modified**, and its verdict — **1** designable surface of **11** — is **unchanged** by this
+  commit. ⭐ Building the registry does not make an undesignable surface designable; it supplies the one metric
+  that surface already had.
+
+### 2W.7 ⚠⚠ The six pipeline gates — published with the one that is RED, and why it is red
+
+| # | Gate | Result | Reading |
+|---|---|---|---|
+| 1 | `dart format --set-exit-if-changed` | ⭐ **PASS** | *Formatted 2 files (0 changed)*, exit **0** |
+| 2 | `flutter analyze` | ⭐ **PASS** | **No issues found!** |
+| 3 | `dart run tool/check_module_boundaries.dart` ◄ *blocks merge* | ⚠⚠ **FAIL — 9 violation(s) in 1 category(ies)** | ⭐⭐ **BYTE-IDENTICAL to the baseline captured BEFORE any change**, and ⭐ **0 of the 9 mention `semantic_layer`** |
+| 4 | `flutter test test/architecture/` ◄ *blocks merge* | ⭐ **PASS** | **270** tests, all passed |
+| 5 | `flutter test` | ⭐ **PASS** | **833** tests, all passed |
+| 6 | `flutter build web --release` | ⭐ **PASS** | ✓ Built `build/web` |
+
+⛔⛔ **GATE 3 IS RED AND STAGE 8 MARKS IT *"blocks merge"*. THAT IS STATED PLAINLY RATHER THAN EXPLAINED AWAY.**
+⭐ The nine violations are **pre-existing `ADR-0012` debt** with recorded expiries (2026-10-31 / 2026-12-31 /
+2027-03-31), the newest of which predates this work. ⭐ The **decisive** evidence that this commit did not cause
+and did not worsen it: the identical count was captured **before** the first file was written, and **0** of the
+nine name the new module. ⛔ **The check was NOT silenced**, ⛔ `tool/module_dependencies.yaml` was **NOT** amended
+to make it pass — the file's own footer forbids exactly that: *"Fix the code, or amend
+`tool/module_dependencies.yaml` through an ADR — never silence the check."* ⚠ **Merge-readiness is therefore a
+decision for the Architecture Owner holding the `ADR-0012` debt, not a claim this section makes.**
+
+### 2W.8 ⭐ The test-count baseline was MEASURED, not assumed
+
+⚠⚠ **A carried-forward figure of "807" was wrong, and it was caught by measuring instead of citing.** The true
+pre-change baseline was established by **removing the new test file and re-running the full suite**:
+
+| Run | Count |
+|---|---|
+| Full suite, new test file **removed** | ⭐ **819** |
+| Full suite, new test file **present** | ⭐ **833** |
+| Delta | ⭐⭐ **+14 — exactly the 14 tests added, no more and no fewer** |
+
+⭐ **This matters because an unmeasured baseline cannot detect a test that was silently disabled**; a delta that
+matches the additions exactly is the evidence that none was.
+
+### 2W.9 Subject hashes at registration (sha256, leading 16)
+
+| Artefact | Hash | Note |
+|---|---|---|
+| `lib/platform/analytics/semantic_layer.dart` | `4224cf4057bbd145` | ⭐ **NEW**, 429 lines |
+| `test/architecture/no_metric_defined_outside_semantic_layer_test.dart` | `114ecca0cc86ef14` | ⭐ **NEW**, 14 tests |
+| `PRD-009_STAGE6_IMPLEMENTATION_TASKS.md` | `a5bb34a56b374c48` | ⛔ **byte-unchanged** |
+| `ADR-0097-profileviews-certified-uniqueviewers-not-certified.md` | `488ec14cf8586669` | ⛔ **byte-unchanged** |
+
+⛔⛔ **Forbidden-path verification: 0 changes** under `docs/30-product/`, `docs/00-governance/adr/`,
+`docs/10-architecture/`, `docs/design/` or `tool/module_dependencies.yaml`. ⛔ **`DD-0006` is byte-unchanged**
+(md5 `352ddb5af64b4d1a88db33df3482e628`). ⛔ **No PRD, no ADR, no architecture document and no manifest was
+touched by this commit.**

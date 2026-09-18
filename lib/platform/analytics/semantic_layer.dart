@@ -68,6 +68,8 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
+import 'dashboard_metrics_catalog.dart';
+
 /// The access scope a metric may be read under.
 ///
 /// **This register is CLOSED and must not be extended.** Rank 1 `MP-GBR-21`:
@@ -271,7 +273,13 @@ final class CertifiedMetricRegistry {
   /// not a code decision.
   factory CertifiedMetricRegistry.withCertifiedMetrics() {
     final CertifiedMetricRegistry registry = CertifiedMetricRegistry();
+    // ADR-0097 — the first certified metric.
     registry.register(profileViews);
+    // ADR-0147 (Accepted 2026-09-18) — the 12 DashboardMetrics counters.
+    // IMPL-2005. UniqueViewers remains absent (ADR-0097 section 5, U1-U8).
+    for (final CertifiedMetric metric in DashboardMetricsCatalog.all) {
+      registry.register(metric);
+    }
     return registry;
   }
 

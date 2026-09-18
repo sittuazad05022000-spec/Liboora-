@@ -222,6 +222,24 @@ List<DomainEvent> _representativeLog() {
       aggregateId: 'ALLOC-9',
       payload: const {'seatLabel': 'B-02', 'studentRecordId': 'SR-9'},
     ),
+    // ADR-0147 §7 residue R-9: `seating.SeatTransferred` is declared by
+    // SEAT-EVT-003 but no producer emits it and no PRD specifies its payload.
+    // The consumer is therefore defensive, and this fixture asserts only what
+    // the consumer actually reads — it does NOT certify a payload contract.
+    // The shape here mirrors SeatAssigned/SeatReleased (the two events whose
+    // payloads *are* observable in code) plus a from/to pair, which is the
+    // minimum a re-point requires. If BC-04 later emits a different shape,
+    // this fixture must change with it, not the other way round.
+    _event(
+      'seating.SeatTransferred',
+      _tenantB,
+      aggregateId: 'ALLOC-9',
+      payload: const {
+        'studentRecordId': 'SR-9',
+        'fromSeatLabel': 'B-02',
+        'toSeatLabel': 'B-07',
+      },
+    ),
     _event(
       'fee.FeeDueRaised',
       _tenantA,

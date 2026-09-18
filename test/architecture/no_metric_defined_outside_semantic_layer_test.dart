@@ -50,6 +50,7 @@ library;
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liboora/platform/analytics/dashboard_metrics_catalog.dart';
 import 'package:liboora/platform/analytics/semantic_layer.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
@@ -225,18 +226,75 @@ void main() {
   });
 
   group('ADR-0097 — ProfileViews certified, UniqueViewers NOT', () {
-    test('exactly ONE metric is certified repository-wide', () {
+    test('exactly THIRTEEN metrics are certified repository-wide', () {
       final CertifiedMetricRegistry registry =
           CertifiedMetricRegistry.withCertifiedMetrics();
       expect(
         registry.length,
-        1,
+        13,
         reason:
-            'ADR-0097 defines the FIRST and still the ONLY CertifiedMetric in '
-            'this repository. A second entry requires a new Accepted ADR '
-            'supplying all nine fields — it is not a code decision.',
+            'The registry is a register of Accepted ADRs, not a code '
+            'decision. Exactly two ADRs have certified metrics: ADR-0097 '
+            '(ProfileViews, the first) and ADR-0147 (the 12 DashboardMetrics '
+            'counters, Accepted 2026-09-18, resolving ANL-OBD-001). A '
+            'fourteenth entry requires a further Accepted ADR supplying all '
+            'nine ANL-FR-008 fields — ANL-FR-009 forbids publishing with '
+            'blanks.',
       );
-      expect(registry.all.single.metricId, 'ProfileViews');
+      // ADR-0097 — the one metric certified before ADR-0147.
+      expect(registry.isCertified('ProfileViews'), isTrue);
+      // ADR-0147 §3.2 — the twelve, named exactly as the ADR names them.
+      // Pinned as a literal set so that adding a metric in code without an
+      // ADR fails here, and so that renaming one is caught rather than
+      // silently absorbed by a count.
+      expect(
+        registry.all.map((CertifiedMetric m) => m.metricId).toSet(),
+        <String>{
+          'ProfileViews',
+          'StudentsEnrolled',
+          'MembershipsCreated',
+          'CheckInsToday',
+          'CheckOutsToday',
+          'LateEntriesToday',
+          'FlaggedEntriesToday',
+          'SeatsAssigned',
+          'SeatsReleased',
+          'CollectedTodayMinor',
+          'DuesRaisedTodayMinor',
+          'SeatsOccupied',
+          'InsideNow',
+        },
+      );
+    });
+
+    test('ADR-0147 certifies exactly twelve, all owned by BC-26', () {
+      final CertifiedMetricRegistry registry =
+          CertifiedMetricRegistry.withCertifiedMetrics();
+      expect(
+        DashboardMetricsCatalog.all.length,
+        12,
+        reason:
+            'ADR-0147 §3.2 certifies twelve counters and closes ANL-OBD-001 '
+            'for those twelve ONLY. A thirteenth counter is outside the '
+            'conferral.',
+      );
+      for (final CertifiedMetric m in DashboardMetricsCatalog.all) {
+        expect(
+          registry.isCertified(m.metricId),
+          isTrue,
+          reason:
+              '${m.metricId} is certified by ADR-0147 but absent from the '
+              'registry, so DashboardMetrics would read an uncertified '
+              'number — the defect IMPL-2005 exists to remove.',
+        );
+        // ADR-0147 §3.0 — BC-26 is the sole definitional authority for all
+        // twelve, per SEAT-XC-019 ("BC-04 publishes the facts, BC-26 defines
+        // the metric") applied generally.
+        expect(m.owningContext, contains('BC-26'));
+        // §3.4 — all twelve are tenantWide. guardianOf is barred while
+        // ANL-OBD-004 is OPEN; self is meaningless for a tenant aggregate.
+        expect(m.accessScope, MetricAccessScope.tenantWide);
+      }
     });
 
     test('ProfileViews fields match ADR-0097 §3', () {

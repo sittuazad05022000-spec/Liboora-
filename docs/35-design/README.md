@@ -49,7 +49,7 @@ docs/35-design/
 ├── student-management/  BC-01 Enrollment
 ├── attendance/          BC-03 Attendance
 ├── seat-management/     BC-04 Seating
-├── fees-finance/       BC-05 Fee, and revenue/finance concerns
+├── fees-finance/        BC-05 Fee, and revenue/finance concerns
 ├── analytics/           BC-26 Analytics Read Model
 └── shared/              genuinely cross-cutting designs only
 ```

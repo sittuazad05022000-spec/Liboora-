@@ -213,6 +213,53 @@ here would set product policy from a feature artifact.
 ---
 ## 4. Information architecture
 
+### 4.0 ⭐⭐ APP + ROLE BOUNDARY — Declaration 1 (Target App)
+
+⚠️ **Added by the README §2B boundary audit.** This document was written
+before README **§2B**, which **L314** binds *"from this point forward"*, and
+**§2B.6** requires existing Design Docs to be **audited, not rewritten**. The
+audit found Declarations 2–5 already stated and sourced *(§4.1, §14.3, §14.1,
+§6.3)*; ⛔ **only Declaration 1's APP vocabulary was absent.** ⭐ **Nothing
+below is new design** — every cell restates a fact already carried by this
+document or by `PRD-004`, in the vocabulary §2B.3 mandates.
+
+| App | In scope? | Roles | Code home | ⭐ Basis already in this document |
+|---|---|---|---|---|
+| ⭐ **APP 1 — Student App** | ⭐ **YES** | `TR-4` Student · `TR-5` Parent | `lib/app/student/{student,parent}/` | §4.1 — `TR-4` *"Own record only"* (`SM-PO-2` *"own only"*); ⭐⭐ `TR-5` receives a **designed absence**, specified at §14.3 |
+| ⭐ **APP 2 — Library App** | ⭐ **YES** | `TR-1` Owner · `TR-2` Manager · `TR-3` Reception | `lib/app/staff/{owner,manager,reception}/` | §4.1 — entry via the Directory list (S-1), *"Many records, one tenant"*; per-role rules at §14.3 |
+| ⛔⛔ **APP 3 — Platform Admin** | ⛔⛔ **NO — 0 surfaces** | ⛔ `PR-1` / `PR-2` — **0 surfaces** | — | §4.1 — *"**Platform Administrator is drawn nowhere**"*; `PRD-004` **`SM-8.4`** (**L857**): a Platform Administrator ⛔ *"**MUST NOT** have access to tenant student data by virtue of the role"* |
+
+⭐ **This is not "all apps"** (§2B.3 Declaration 1): it is a **two-app** set,
+each with a reason already sourced above, plus a **measured zero** for APP 3.
+
+⛔⛔ **Library Owner ≠ Platform Owner.** `TR-1` Owner governs **one tenant**
+and lives in `lib/app/staff/`; `PR-1`/`PR-2` govern **the platform** and live
+in `lib/app/platform_admin/`, which
+[`README.md`](../../../lib/app/platform_admin/README.md) **L1** holds open as
+*"reserved, deliberately empty."* ⛔ *"Platform Owner"* is **not** cited as an
+authoritative role identifier anywhere in this document — README §2B.2's
+`DSN-APP-GAP-001` prohibition, measured **0** occurrences.
+
+⭐ **`TR-5` Parent is an APP 1 role, ⛔ not an application** — README §2B.4
+rule 5. ⚠️ Its V1 denial is **interim, not architectural**: `PRD-004`
+**`SM-8.4a`** (**L880**) denies `SM-PO-2` and `SM-PO-10` and calls it *"an
+**interim decision, not a resolution**"*, with **`SM-GAP-4`** left **OPEN**
+(`PRD-004` **L1170**). ⛔ This document neither closes that gap nor designs a
+Parent surface.
+
+⭐ **Declarations 2–5 are not restated here** — they already exist and remain
+the normative statements: **D2** Roles → **§4.1**; **D3** Permission Scope →
+**§14.3**, derived *"only from `PRD-004` §8.2's closed matrix"* of **12**
+protected operations; **D4** Tenant scope → **§14.1** (`SM-8.1`–`SM-8.3`, a
+cross-tenant read *"**impossible**, not merely filtered"*); **D5** Cross-app
+dependencies → **§6.3**, including the ⛔ navigate-out to `BC-02`
+(`SM-6.8`) → `DD-0001` S-8.
+
+⛔ **This subsection confers nothing.** ⛔ It creates no role, permission,
+`SM-PO-*`, surface, scope or app; ⛔ it does not amend `PRD-004`, any ADR or
+`AccessRole`; ⛔ it does not authorise implementing APP 3; and ⛔ it changes
+**no** existing design decision in this document.
+
 ### 4.1 Two audiences, and the asymmetry that shapes everything
 
 | | Staff (`TR-1`/`TR-2`/`TR-3`) | Student (`TR-4`) | Parent (`TR-5`) |

@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | **v0.1** |
+| **Version** | **v0.2** — ⚠️ v0.1 amended under `Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md) *(`ADR-0152-F-1`)*: **D1 `GAP` → `PASS`**, and one **self-reported factual correction** to §5.3 (§30). ⛔ **D5 remains `GAP`** |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
@@ -109,7 +109,8 @@ taken from existing practice, not chosen.
 | 3 | `PRD-001` Authentication v2.0 | `TR-1`…`TR-5`, `PR-1`, `PR-2`; `AUTH-2.5`, `AUTH-2.9`; `AC-7.8`; `AP-3`, `AP-4` |
 | 3 | `PRD-002` Library v1.1 | `LCFG-1`…`LCFG-13` definitions; `LIB-16.1`…`16.9`; `LIB-12.4` |
 | 3 | `PRD-005` Membership v1.6 | `MM-CFG-001`…`009` (§13.4); `MM-BR-026` |
-| 3 | `PRD-012a` Part 2 | `SECP-HRO-005`; `SECP-BR-004` closure rule |
+| ⛔ **Unranked** | `PRD-012a` Part 2 *(`DRAFT`)* | `SECP-HRO-005`; `SECP-BR-004` closure rule. ⚠️ **Unranked — `MUST NOT` be cited as authority against any ranked document** (its own header); see §5.3 |
+| 2 | ⭐⭐ **`ADR-0152`** | **The platform-configuration boundary.** `SECP-HRO-005` is a **governance / change-control act**; ⛔ **0** APP 3 runtime configuration surfaces |
 | 4 | BC Map v1.11 | **L134** `BC-25` row; **L271** FOUNDATIONAL band; **L328** `E-19`; **L331** `E-22` |
 | 7 | `CONFIGURATION_GUIDE.md` v1.2 | §2/§2A/§2B registers; §3 `INV-1`…`INV-16`; §4 profiles + **L829**; §5 change control; §6 observability |
 | — | `DD-0001`…`DD-0006` | Structure, verdict vocabulary, state/loading patterns, App-Boundary QA |
@@ -138,7 +139,7 @@ reported as such — ⛔ not rounded to PASS.**
 
 | # | Declaration | Value | Verdict |
 |---|---|---|---|
-| **1** | **Target App** | ⭐ **APP 2 — Library App**, for `TR-1`/`TR-2`/`TR-3`. ⛔ **APP 1 = 0 surfaces.** ⚠️ **APP 3 = UNRESOLVED** — §5.3 | ⚠️ **GAP** |
+| **1** | **Target App** | ⭐ **APP 2 — Library App**, for `TR-1`/`TR-2`/`TR-3`. ⛔ **APP 1 = 0 surfaces.** ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces** — `Accepted` **`ADR-0152`** §7, §5.3 | ⭐ **PASS** |
 | **2** | **Target Roles** | ⭐ `TR-1` Owner · `TR-2` Manager · `TR-3` Reception — all `PRD-001` v2.0 §2.4. ⛔ `TR-4`/`TR-5` **excluded**, §5.2 | ⭐ **PASS** |
 | **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** — the operation×role source. ⚠️ **PARTIAL: 22 of 104 parameters**; ⛔ the other **82 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
 | **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10** · `Library` **8** · `Platform default` **4** (`ADR-0151` §2.3; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
@@ -148,7 +149,7 @@ reported as such — ⛔ not rounded to PASS.**
 |---|---|---|---|
 | ⭐ **APP 1 — Student App** | ⛔ **NO — 0 surfaces** | — | — |
 | ⭐ **APP 2 — Library App** | ⭐ **YES** | `TR-1` Owner · `TR-2` Manager · `TR-3` Reception | `lib/app/staff/{owner,manager,reception}/` *(verified present)* |
-| ⚠️ **APP 3 — Platform Admin** | ⚠️ **UNRESOLVED — `DD7-GAP-002`** | — | — |
+| ⛔ **APP 3 — Platform Admin** | ⛔⛔ **NO — 0 `BC-25` configuration surfaces** *(`ADR-0152` §7)* | — | — |
 
 ### 5.1 ⭐ Why APP 2 = YES
 
@@ -169,45 +170,47 @@ reserved. ⛔ No other app hosts these roles.
 configuration through other modules' behaviour (§18) — ⛔ which is an effect, not
 a surface.
 
-### 5.3 ⚠️⚠️ Why APP 3 is UNRESOLVED — a Rank 3 vs Rank 3 contradiction
+### 5.3 ⭐⭐ Why APP 3 = 0 `BC-25` configuration surfaces — settled by `ADR-0152`
 
-⛔⛔ **Two frozen Rank-3 sources contradict each other**, and ⛔ precedence cannot
-break a same-rank tie:
+⭐⭐ **`Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md)
+(Rank 2) resolves this.** `SECP-HRO-005` *"Change platform configuration"* is a
+**governance / change-control act**; ⛔ it establishes **no** APP 3 runtime
+configuration surface, API or write path (`ADR-0152` §7).
 
-| Source | Rank | Text |
-|---|---|---|
-| **`SECP-HRO-005`** *(`PRD-012a` Part 2, **L232**)* | 3 | High-risk operation **"Change platform configuration"** · *"`PR-1` Scope; **`BC-25` owns the hierarchy**"* · Class **Platform-affecting** |
-| **`CNF-FR-020`** *(`PRD-023`)* | 3 | Scope 1 *"**SHALL NOT** be writable at runtime by any actor, **including a platform role**"* |
+| # | Source | Text | Rank |
+|---|---|---|---|
+| 1 | ⭐⭐ **`ADR-0152` §7** | *"`SECP-HRO-005`… is a **GOVERNANCE / CHANGE-CONTROL ACT**. ⛔ It does NOT establish an APP 3 / Platform Admin runtime configuration surface, API or write path."* | ⭐ **2, Accepted** |
+| 2 | **`CNF-FR-020`** *(`PRD-023`)* | Scope 1 *"**SHALL NOT** be writable at runtime by any actor, **including a platform role**"* | ⭐ **3, FROZEN** |
+| 3 | **`CNF-AC-011`** | *"**No** API, role, actor, environment or maintenance path can write a value at scope 1 at runtime"* | ⭐ **3, FROZEN** |
+| 4 | **`AUTH-2.9`** | *"No tenant role, including Owner, **MAY** confer any platform-level permission."* | ⭐ **3, FROZEN** |
+| 5 | **`CONFIGURATION_GUIDE` §5** | Default changes route to *"**An ADR**"* and/or *"**A PRD amendment**"* — ⭐ **governance acts, not screens** | 7 |
 
-⭐ **`PRD-001` v2.0 L128** corroborates the first: `PR-1` Scope = *"platform-level
-objects only — tenants as entities, **platform configuration**, platform role
-assignments."*
+⭐ **`PR-1`'s authority is NOT narrowed.** `PRD-001` v2.0 **L128** keeps *"platform
+configuration"* inside `PR-1` Scope; ⭐ `ADR-0152` §7 item 1 preserves it, and
+§3 distinguishes **authority in principle** from a **runtime product surface**.
+⭐ `SECP-HRO-005` also **retains full force** as a control obligation
+(`SECP-FR-011` audit, `SECP-BR-004` closure) — `ADR-0152` §7 item 4.
 
-⚠️⚠️ **This is the same shape `DD-0006` recorded as `ANL-AL-B1` and refused to
-resolve.** ⛔ **This Design Doc does not resolve it either** — README §5.1: a
-Design Doc *"cannot substitute for an ADR."*
+⚠️⚠️ **SELF-REPORTED FACTUAL CORRECTION — v0.1 of this section was WRONG, and it
+is corrected rather than quietly replaced.** v0.1 read *"Why APP 3 is UNRESOLVED
+— a **Rank 3 vs Rank 3** contradiction"* and concluded *"precedence cannot break
+a same-rank tie."* ⛔ **The premise was false.** `PRD-012a` Part 2's own header
+states: *"**Unranked.** No `DOCUMENTATION_BASELINE.md` §3 row. **Not** Rank 3;
+**MUST NOT** be cited as authority against any ranked document"* — measured
+identically across **all 8** `PRD-012a` parts, with `Status` = **`DRAFT`**.
+⚠️ The error was reading `PRD-012a`'s **module rank 2** (`platform/security`) as a
+**document precedence rank**; ⭐ they are different ladders. ⛔ There was never a
+tie to break, and ordinary precedence settles it (`ADR-0152` §4.1, §7.1).
 
-⭐⭐ **What this document does instead — the conservative construction:**
+⭐ A second independent ground stands alone: `PRD-012a` Part 2 **§0.2** excludes
+*"tables, APIs, SQL, code, **UI**, cloud resources or cryptographic mechanisms"*
+from what it specifies — ⛔ **a document that does not specify UI cannot create
+one** (`ADR-0152` §4.2).
 
-⛔ **It designs NO APP 3 surface.** ⛔ No platform-admin configuration panel, no
-platform-admin runtime write path, no platform-admin API, no new permission.
-
-⭐ **That is the safe direction and it is stated as a design choice, not a
-resolution**, for three reasons:
-
-1. ⭐ **`CNF-FR-020` is absolute and testable.** `CNF-AC-011`: *"**No** API, role,
-   actor, environment or maintenance path can write a value at scope 1 at
-   runtime."* Designing a write surface would design a violation.
-2. ⭐ **`CONFIGURATION_GUIDE` §5 already routes default changes elsewhere** — a
-   value outside its range requires *"**An ADR**"*; adding a parameter requires
-   *"**A PRD amendment**"*. Both are **governance acts**, not screens.
-3. ⭐ **`AUTH-2.9`** — *"No tenant role, including Owner, **MAY** confer any
-   platform-level permission."*
-
-⛔⛔ **But designing nothing is NOT the same as deciding APP 3 = 0.** ⚠️ Recording
-APP 3 as **0 surfaces** would assert that `SECP-HRO-005` denotes no surface —
-which is precisely the question **`DD7-GAP-002`** holds open. ⭐ **The declaration
-is therefore `GAP`, and it is the honest verdict.**
+⛔ **This document designs NO APP 3 surface**: no platform-admin configuration
+panel, no platform-admin runtime write path, no platform-admin API, no new
+permission. ⭐ That is now a **recorded governance outcome**, ⛔ no longer merely a
+conservative design choice.
 
 ### 5.4 ⚠️ Why Declaration 5 is a GAP
 
@@ -255,7 +258,7 @@ event-based cross-app dependency.
 | 4 | Parent inside APP 1, not separate | ⭐ **PASS** *(vacuously — `TR-5` has **0** surfaces, §5.2)* |
 | 5 | Student data scoped to self | ⭐ **PASS** *(vacuously — `TR-4` has **0** surfaces)* |
 | 6 | `TR-1`/`TR-2`/`TR-3` differences respected | ⭐ **PASS** — `ADR-0151` §2.3 gives three distinct row treatments (§12) |
-| 7 | Platform roles separated (`AUTH-2.5`) | ⚠️ **GAP** — ⛔ `DD7-GAP-002` OPEN; ⛔ no APP 3 surface designed, but the question is unresolved |
+| 7 | Platform roles separated (`AUTH-2.5`) | ⭐ **PASS** — ⛔ APP 3 holds **0** `BC-25` configuration surfaces (`ADR-0152` §7); `AUTH-2.5` untouched |
 | 8 | Figma preserves boundaries | ⭐ **PASS by construction** — ⛔ gate is **BLOCKED** (§25) |
 | 9 | No mixed-role shell | ⭐ **PASS** — one surface, three role treatments, ⛔ not one screen greyed by role (§12.4) |
 | 10 | Tenant scope explicit | ⭐ **PASS** — `CNF-INV-003`/`004`; every row carries a scope |
@@ -263,12 +266,14 @@ event-based cross-app dependency.
 | 12 | No permission inferred from visibility | ⭐ **PASS** — §12.5; every cell traces to `ADR-0151` §2.3 |
 | 13 | Evidence cited per declaration | ⭐ **PASS** |
 
-⭐ **11 of 13 PASS · 2 GAP** *(checks 7 and 11)*.
+⭐ **12 of 13 PASS · 1 GAP** *(check 11)* — ⭐ advanced from **11/13** at v0.1 by
+`ADR-0152` closing check 7.
 
-⚠️⚠️ **The GAPs are disclosed rather than rounded.** ⛔ `DD-0003`, `DD-0004` and
-`DD-0005` each recorded 13/13; `DD-0006` recorded **12/13** and set the precedent
-that a GAP is published, not smoothed. ⛔ Claiming 13/13 here would mean asserting
-APP 3 = 0 and inventing a cross-app dependency statement.
+⚠️⚠️ **The remaining GAP is disclosed rather than rounded.** ⛔ `DD-0003`,
+`DD-0004` and `DD-0005` each recorded 13/13; `DD-0006` recorded **12/13** and set
+the precedent that a GAP is published, not smoothed. ⛔ Claiming 13/13 here would
+mean inventing a cross-app dependency statement — ⛔ `CNF-GAP-002` is **OPEN** at
+**7 consumers / 0 providers** (`ADR-0053`: *"OPEN. Scheduled, not resolved"*).
 
 ---
 
@@ -1011,8 +1016,8 @@ outcome when the frozen source is silent on a real scenario.
 
 | ID | Gap | Blocking? | Owner | Lawful instrument |
 |---|---|---|---|---|
-| ⛔⛔ **`DD7-GAP-001`** | **`SECP-HRO-005` vs `CNF-FR-020` — Rank 3 vs Rank 3.** Does `PR-1`'s *"change platform configuration"* denote a **runtime surface** or a **governance act**? ⛔ Precedence cannot break a same-rank tie | ⭐ **BLOCKING Declaration 1** | Architecture Owner + Security | **Rank 2 ADR** |
-| ⛔⛔ **`DD7-GAP-002`** | ***"Platform configuration" is not a defined parameter set*** — **23** uses repo-wide, **0** definitions. Even if APP 3 has a surface, its contents are undetermined | ⭐ **BLOCKING APP 3** | Product Owner + Architecture Owner | Rank 2 ADR or `PRD-023` v0.2 |
+| ⭐⭐ **`DD7-GAP-001`** | ~~`SECP-HRO-005` vs `CNF-FR-020`~~ — ⭐⭐ **CLOSED** by `Accepted` **`ADR-0152`** §8.1. ⚠️ The v0.1 premise *("Rank 3 vs Rank 3")* was **false**: `PRD-012a` Part 2 is **Unranked** (§5.3), so precedence resolves it | ⭐ **CLOSED** | — | ⭐ Discharged by `ADR-0152` |
+| ⭐ **`DD7-GAP-002`** | ***"Platform configuration" is not a defined parameter set*** — **23** uses repo-wide, **0** definitions. ⭐⭐ **MOOT for the runtime APP 3 surface** (`ADR-0152` §8.2): its precondition *"even if APP 3 has a surface"* is settled in the negative. ⚠️⚠️ **The definitional gap itself REMAINS — still 0 definitions** — and returns if any future act needs the set enumerated | ⛔ **No longer blocking** | Product Owner + Architecture Owner | ⭐ `ADR-0152-F-2` — Rank 2 ADR or `PRD-023` amendment |
 | ⛔ **`DD7-GAP-003`** | **Does `BC-25` own a configuration SURFACE at all, or does each owning module render its own?** ⚠️ `DD-0003` `S-L8` renders 24 `ATT-CFG-*` as a `BC-06` surface — evidence for the distributed reading | ⚠️ **Shapes scope, not validity** | Product Owner + UX Architecture Owner | Product decision |
 | ⚠️ **`DD7-GAP-004`** | **`MM-CFG-006` and `LCFG-1` both govern timezone** at Tenant scope. ⛔ Which prevails is unstated | ⛔ No — both render | Architecture Owner | Clarification in an owning PRD |
 | ⚠️ **`DD7-GAP-005`** | **`MM-CFG-008` and `SMCFG-3` are both *"expiring-soon threshold"*.** `MM-BR-026` binds `MM-CFG-008` to one view **and** `MM-EVT-006`; `LMD-26` requires the Directory's threshold configurable. ⛔ Relationship unstated, and `SMCFG-3` is **NOT authorized** | ⛔ No | Product Owner | Clarification in `PRD-004`/`PRD-005` |
@@ -1028,13 +1033,17 @@ outcome when the frozen source is silent on a real scenario.
 (`PRD-023` §14) · `CNF-D-1`, `CNF-D-2` (`ADR-0151` §6) · ⭐ **`CNF-D-3`** *(new,
 §6.1 — `PRD-023` §3.6 cites `PRD-005` v1.4; repository is at v1.6)*.
 
-⚠️ **`DD7-GAP-002` is carried forward OPEN, exactly as instructed.** ⛔ Nothing in
-this repository closes it: measured **0** occurrences of `DD7-GAP-002` before
-this document, and **0** ADRs referencing `SECP-HRO-005`. ⭐ The brief's
-"Decision B" was applied **as a design constraint** — ⛔ no APP 3 surface,
-API, write path or permission is designed — ⛔ **but no repository evidence
-records it as an accepted governance decision**, so the gap stays OPEN and
-Declaration 1 stays `GAP` (§5.3).
+⚠️⚠️ **`DD7-GAP-002` — MOOT is not ANSWERED, and v0.2 preserves the difference.**
+⭐ `ADR-0152` §8.2 closes it **as moot** for the runtime APP 3 surface, because its
+stated precondition *"even if APP 3 has a surface"* is now settled in the
+negative. ⛔ **But *"platform configuration"* still has 0 definitions as a
+parameter set** — re-measured at this amendment, unchanged. ⭐ If any future act
+needs that set enumerated, the definitional question **returns**, and it is
+carried as **`ADR-0152-F-2`**, ⛔ not treated as resolved.
+
+⚠️ **v0.1 recorded this gap as OPEN and blocking, and that was correct when
+written** — at the time, measured **0** ADRs referenced `SECP-HRO-005`. ⭐ `ADR-0152`
+is that ADR, and it did not exist until after v0.1 was committed.
 
 ---
 
@@ -1065,7 +1074,7 @@ Declaration 1 stays `GAP` (§5.3).
 | One parameter, one write — ⛔ no bulk save | `CNF-FR-067` | — | §15.2 | ⚠️ **Design Recommendation** |
 | ⛔ No optimistic UI | `CNF-BR-007`, `CNF-INV-004` | — | §15.4 | ⚠️ **Design Recommendation** |
 | `TR-3` gets no scope selector | `CNF-FR-081` extended | — | §12.4 | ⚠️ **Design Recommendation** |
-| APP 3 surface existence | ⛔ **`DD7-GAP-001`/`002`** | — | Declaration 1 | ⛔ **Open Product Decision** |
+| ⭐ **APP 3 = 0 `BC-25` configuration surfaces**; `SECP-HRO-005` is a governance act | **`ADR-0152`** §7 | **Rank 2, Accepted** | Declaration 1 → **PASS** | ⭐ **Accepted ADR Decision** |
 | Concurrency behaviour | ⛔ **`DD7-GAP-011`** | — | Journey 8 | ⛔ **Open Product Decision** |
 | `C-4` change-history readers | ⛔ **`DD7-GAP-008`** | — | `C-4` | ⛔ **Open Product Decision** |
 | Branch / user scope surfaces | `CNF-GAP-003`, `CNF-FR-011` | — | ⛔ Not designed | ⭐ **Future / V2** |
@@ -1101,7 +1110,7 @@ of **59**.
 | `DD7-AC-017` | Every input has a persistent visible label; ⛔ no placeholder-only field | `MP-NFR-08` |
 | `DD7-AC-018` | Layout is portrait-optimised and does not reflow on validation | `MP-NFR-06`, `CNF-FR-082` |
 | `DD7-AC-019` | ⛔ **No** `PERM-*`, role, action class or scope class is introduced by any surface | `AUTH-7.22`, `ADR-0132` |
-| `DD7-AC-020` | ⛔ **No** APP 3 surface, platform-admin API or platform write path exists | `CNF-FR-020`, `AUTH-2.9`; ⚠️ `DD7-GAP-002` OPEN |
+| `DD7-AC-020` | ⛔ **No** APP 3 surface, platform-admin API or platform write path exists | `CNF-FR-020`, `AUTH-2.9`; ⭐ **`ADR-0152`** §7 |
 | ⚠️ `DD7-AC-021` | **Performance / latency budget** | ⛔ **OPEN — `DD7-GAP-009`.** ⛔ No authoritative budget exists; ⛔ no number invented |
 | ⚠️ `DD7-AC-022` | **Contrast ratio / touch-target minimum** | ⛔ **OPEN — `DD7-GAP-007`/`009`.** Owner = UI Design System, which does not exist |
 
@@ -1112,11 +1121,12 @@ would be the exact defect `PRD-023` §14.1 records.
 
 ## 25. Figma readiness
 
-⛔⛔ **The Figma gate is NOT OPEN.** ⭐ 5 blockers:
+⛔⛔ **The Figma gate is NOT OPEN.** ⭐ **4** blockers at v0.2 *(was 5 — blocker 1
+cleared by `Accepted` `ADR-0152`)*:
 
 | # | Blocker | Reference |
 |---|---|---|
-| 1 | ⛔ **Declaration 1 is `GAP`** — APP 3 unresolved | `DD7-GAP-001`, `DD7-GAP-002` |
+| 1 | ⭐ ~~Declaration 1 is `GAP`~~ — **CLEARED** at v0.2 by `Accepted` `ADR-0152` | ⭐ **RESOLVED** |
 | 2 | ⛔ **Declaration 5 is `GAP`** — cross-app dependency undeterminable | §5.4 |
 | 3 | ⛔ **UI Design System does not exist** — no tokens, type scale or a11y targets to bind to | `DD7-GAP-007` |
 | 4 | ⛔ **No NFR budgets** — no breakpoint or target size may be drawn | `DD7-GAP-009` |
@@ -1136,8 +1146,8 @@ would be the exact defect `PRD-023` §14.1 records.
 | Surfaces specified | ⭐ **3 of 4** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED |
 | Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** |
 | Authorization coverage | ⚠️ **22 / 104 = 21.2%** |
-| §2B declarations | ⭐ D2 **PASS** · ⭐ D4 **PASS** · ⚠️ D3 **PARTIAL** · ⚠️ D1 **GAP** · ⚠️ D5 **GAP** |
-| App-Boundary QA | ⭐ **11 / 13 PASS**, 2 GAP |
+| §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ D3 **PARTIAL** · ⭐ D4 **PASS** · ⚠️ **D5 `GAP`** |
+| App-Boundary QA | ⭐ **12 / 13 PASS**, 1 GAP |
 | New `PERM-*` / roles / actions / scopes | ⛔ **0 / 0 / 0 / 0** |
 | Frozen documents modified | ⛔ **0** |
 | Runtime code changed | ⛔ **0 lines** |
@@ -1145,6 +1155,12 @@ would be the exact defect `PRD-023` §14.1 records.
 ⛔⛔ **`DD-0007` is NOT design-ready under README §2B.5**, because a `GAP` means
 *"the Design Doc is **not** design-ready until closed or classified."*
 ⭐ **This document is the classification.**
+
+⚠️⚠️ **v0.2 does NOT change that verdict.** ⭐ `ADR-0152` closed **D1**, ⛔ but
+**D5 remains `GAP`** — its causes (`CNF-GAP-002` at **7 consumers / 0 providers**,
+`CNF-GAP-007`, `E-19`'s bounded-context wording, the app-root port declaration)
+are **untouched** by that ADR and were re-measured at this amendment as still
+open. ⛔ **One `GAP` is enough to withhold design-readiness**, and it is withheld.
 
 ---
 
@@ -1165,6 +1181,8 @@ would be the exact defect `PRD-023` §14.1 records.
 | `CNF-AC-011`, `CNF-AC-056` | `DD7-AC-012`, `DD7-AC-003` |
 | `CNF-GAP-001`…`008` | §22 — preserved OPEN |
 | `ADR-0151` §2.3, §2.4, §3.2, §3.5, §5, §6, §7 | §6, §8, §12, §22, §23 |
+| ⭐ **`ADR-0152`** §3, §4.1, §4.2, §7, §8.1, §8.2, §8.3, §8.4, §8.5 | §3, §5, §5.3, §5.5, §22, §23, §24, §25, §26, §30 |
+| `SECP-HRO-005`, `SECP-BR-004` *(⛔ Unranked)* | §3, §5.3 |
 | `MP-NFR-06`, `MP-NFR-08`, `MP-CON-11` | §11.3, §14, §15.4 |
 | `AC-7.8`, `AP-3`, `AUTH-2.5`, `AUTH-2.9` | §5.3, §8.2, §12.3, §16 |
 | `E-19`, `E-20`, `E-22` | §5.4, §17, §23 |
@@ -1181,7 +1199,7 @@ would be the exact defect `PRD-023` §14.1 records.
 | 3 | ⛔ `TR-2` hard-coded as ALLOW on the 18 non-commercial | Medium | High — `AP-3` breach | §8.1; §12.2; journey 2 |
 | 4 | ⛔ Platform-default rows given a write control | Medium | High — `CNF-FR-020` breach | §3.5 of `ADR-0151`; `DD7-AC-012` |
 | 5 | ⛔ Reset implemented as "set to parent's value" | ⭐⭐ High | Medium — silent pinning | §10.1; §19; `DD7-AC-005` |
-| 6 | ⛔ APP 3 panel built from `SECP-HRO-005` alone | Low | ⭐⭐ **High** | §5.3; `DD7-AC-020`; `DD7-GAP-001`/`002` |
+| 6 | ⛔ APP 3 panel built from `SECP-HRO-005` alone | Low | ⭐⭐ **High** | §5.3; `DD7-AC-020`; ⭐ **`ADR-0152`** §7 settles it |
 | 7 | ⚠️ Concurrency handled ad hoc per implementer | ⭐ High | Medium — divergent behaviour | `DD7-GAP-011`; journey 8 BLOCKED |
 
 ---
@@ -1200,4 +1218,5 @@ both at **V2**, `PRD-023` §0.3)*.
 
 | Version | Date | Change |
 |---|---|---|
+| ⭐⭐ **v0.2** | 2026-09-19 | ⭐⭐ **AMENDED under `Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md) — the follow-up that ADR itself routed as `ADR-0152-F-1`.** ⭐⭐ **`DD7-GAP-001` is CLOSED** and ⭐⭐ **Declaration 1 moves `GAP` → `PASS`**: **APP 2** *(`TR-1`/`TR-2`/`TR-3`)* · ⛔ **APP 1 = 0** · ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces**. ⚠️⚠️ **A SELF-REPORTED FACTUAL CORRECTION IS RECORDED RATHER THAN QUIETLY REPLACED (§5.3):** v0.1 called this a *"**Rank 3 vs Rank 3** contradiction"* where *"precedence cannot break a same-rank tie"* — ⛔ **the premise was false.** `PRD-012a` Part 2's own header reads *"**Unranked.** … **Not** Rank 3; **MUST NOT** be cited as authority against any ranked document"*, measured identically across **all 8** parts, `Status` **`DRAFT`**. ⚠️ The error was reading `PRD-012a`'s **module rank 2** as a **document precedence rank** — ⭐ different ladders. ⭐ A second independent ground stands alone: Part 2 **§0.2** excludes *"… **UI**…"* from what it specifies. ⭐ **`DD7-GAP-002` → MOOT for the runtime APP 3 surface**, ⚠️⚠️ **but NOT answered** — *"platform configuration"* **still has 0 definitions** as a parameter set, re-measured here and carried as **`ADR-0152-F-2`**. ⭐ **App-Boundary QA 11/13 → 12/13** *(check 7 closed; ⛔ check 11 still `GAP`)*. ⭐ **Figma blockers 5 → 4.** ⛔⛔ **D5 IS UNCHANGED AND REMAINS `GAP`** — `CNF-GAP-002` re-verified **OPEN** (`ADR-0053`: *"OPEN. Scheduled, not resolved"*), `CNF-GAP-007` open, `E-19` wording and the app-root port declaration unchanged — so ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔⛔ **PRESERVED UNCHANGED:** the `ADR-0151` 22-parameter allocation · the **104**-parameter inventory *(18 + 4 + 82)* · every authorization decision · roles, action classes, scopes · `PERM-*` vocabulary *(**0** minted)* · `AUTH-7.22` · all frozen PRDs · the UI architecture, design recommendations and NFR decisions · §6–§21 and §27–§29 byte-unchanged apart from the cited-source rows. ⭐ **Smallest lawful diff — ⛔ no section rewritten for style.** ⛔ **0 lines of runtime code.** |
 | **v0.1** | 2026-09-19 | ⭐⭐ **Created** as the `BC-25` Configuration surface design, after a **six-gate governance check** (§2) that verified ownership, freeze, README §2A/§2B permission, number availability, non-existence and path convention **before** authoring. ⭐ `configuration/` is the **EIGHTH** context directory, created at the moment this document was written, per README §2 and the `analytics/` precedent. ⭐⭐ **The governing discovery is `ADR-0151`**: it is the **only** operation×role source for any `BC-25` parameter, and it covers **22 of 104** — so ⭐ **exactly 22 parameters are designable and 82 are not**. ⭐ **4 surfaces** `C-1`…`C-4` *(⭐ 3 designable · ⛔ 1 BLOCKED)*, **18 editable + 4 read-only** parameters, **11 user journeys**, a **19-row impact model**, **12 design-system reuses** and ⚠️ **3 new components requested** — each named by `PRD-023` §12.2, ⛔ none invented. ⚠️⚠️ **Authorization coverage is published as measured: 21.2%.** ⛔ The 82 unallocated parameters are inventoried with **Scope `OPEN`**, **Comm `OPEN`**, **`NOT YET AUTHORIZED`** and **⛔ Not designed** — ⛔ **inventory is not authorization**, and the banner at §6.2 says so. ⭐⭐ **The sharpest design finding is §8.2: deny-read renders ABSENT, not greyed** — because a greyed row discloses that a parameter exists and has a value, which for `MM-CFG-007`/`009` is the financial disclosure `AC-7.8` denies *"regardless of other roles held anywhere"*; ⭐ so `TR-3` sees **13 rows, not 22 with 9 greyed**. ⭐ **`TR-2` is NOT hard-coded as ALLOW** on the 18 non-commercial parameters — `ADR-0151` §2.4's *existing model* is carried as a **runtime-resolved** rendering (§8.1), ⛔ not converted into a grant. ⭐ **The 4 platform-default parameters get 0 write affordance for every role** (`CNF-FR-020`, `CNF-AC-011`). ⚠️⚠️ **TWO DECLARATIONS ARE `GAP` AND ARE NOT ROUNDED TO PASS** — **D1** because `SECP-HRO-005` *(Rank 3)* and `CNF-FR-020` *(Rank 3)* contradict each other on whether `PR-1` has a runtime configuration surface, and ⛔ precedence cannot break a same-rank tie; **D5** because `CNF-GAP-002` is OPEN at **7 consumers / 0 providers** and `E-19`'s *"All contexts"* is not an app-boundary statement. ⭐ **App-Boundary QA reported as 11 of 13 with 2 GAP**, on the `DD-0006` precedent of publishing rather than rounding. ⛔⛔ **`DD7-GAP-002` is carried forward OPEN** — measured **0** prior occurrences and **0** ADRs citing `SECP-HRO-005`, so ⭐ the brief's *"Decision B"* was applied **as a design constraint** *(⛔ no APP 3 panel, API, write path or permission)* ⛔ **but is NOT recorded as repository-accepted governance**, and the gap is not closed. ⭐ **12 `DD7-GAP-*` raised**, ⛔ all carrying **no authority**; ⭐ `CNF-GAP-*` stays **8** and `CNF-AC-*` stays **59** — ⛔ no closed register is extended. ⭐ **New: `CNF-D-3`** — `PRD-023` §3.6 cites `PRD-005` *"FROZEN v1.4"* while the repository is at **v1.6**; ⛔ a stale citation, ⛔ not a register change *(`MM-CFG-*` verified still **9**)*, ⛔ not repaired because `PRD-023` is FROZEN. ⭐ **UI/UX Pro Max @ `15de38f`: 4 APPLIED · 1 ADAPTED · 3 REJECTED** — ⛔ every rejection names a Liboora source, and ⛔ all visual-token domains were rejected under `CNF-XC-016`. ⭐ **`MeterBar` PROHIBITED** — the **fourth** consecutive Design Doc to prohibit it, for a fourth distinct reason. ⛔⛔ **0 `PERM-*` · 0 new roles · 0 new action classes · 0 new scope classes · `AUTH-7.22` untouched · `ADR-0151` untouched · 0 frozen documents modified · 0 lines of runtime code.** ⚠️ **2 acceptance criteria left deliberately OPEN** *(`DD7-AC-021`, `DD7-AC-022`)* because no authoritative NFR budget or UI Design System exists — ⛔ inventing numbers was declined. ⛔⛔ **Figma gate NOT OPEN — 5 blockers.** ⭐ Verdict: ⚠️ **DESIGNED WITH EXPLICIT BLOCKERS**; ⛔ **`DD-0007` is NOT design-ready**, and this document is the classification, not a claim of readiness. |

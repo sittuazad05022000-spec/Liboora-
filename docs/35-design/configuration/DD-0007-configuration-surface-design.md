@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | **v0.2** — ⚠️ v0.1 amended under `Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md) *(`ADR-0152-F-1`)*: **D1 `GAP` → `PASS`**, and one **self-reported factual correction** to §5.3 (§30). ⛔ **D5 remains `GAP`** |
+| **Version** | ⭐ **v0.3** — ⭐⭐ **D5 `GAP` → `PASS`** on existing authority *(`ADR-0151` §2.3 · `ADR-0152` §7 · §5.2 · `DD-0001` §4.0.4)*; ⭐ App-Boundary QA **12/13 → 13/13**. ⛔ **`CNF-GAP-002` and `CNF-GAP-007` remain OPEN — Stage 6, ⛔ NOT closed here.** ⚠️ **D3 remains `PARTIAL` at 22 / 104** and is now the **sole** blocker *(prior: **v0.2** — D1 `GAP` → `PASS` under `ADR-0152`)* |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
@@ -134,8 +134,10 @@ taken from existing practice, not chosen.
 
 ## 5. APP + ROLE BOUNDARY
 
-⭐ Per README §2B.3, all five declarations are stated. ⚠️ **Two are `GAP` and are
-reported as such — ⛔ not rounded to PASS.**
+⭐ Per README §2B.3, all five declarations are stated. ⭐ **Four are `PASS`.**
+⚠️⚠️ **Declaration 3 is `PARTIAL` and is reported as such — ⛔ NOT rounded to
+PASS**: `ADR-0151` covers **22 of 104**, and ⛔ the other **82 remain
+`NOT YET AUTHORIZED`**.
 
 | # | Declaration | Value | Verdict |
 |---|---|---|---|
@@ -143,7 +145,7 @@ reported as such — ⛔ not rounded to PASS.**
 | **2** | **Target Roles** | ⭐ `TR-1` Owner · `TR-2` Manager · `TR-3` Reception — all `PRD-001` v2.0 §2.4. ⛔ `TR-4`/`TR-5` **excluded**, §5.2 | ⭐ **PASS** |
 | **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** — the operation×role source. ⚠️ **PARTIAL: 22 of 104 parameters**; ⛔ the other **82 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
 | **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10** · `Library` **8** · `Platform default` **4** (`ADR-0151` §2.3; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
-| **5** | **Cross-App dependencies** | ⚠️ **Cross-BC edges evidenced** (`E-19`, `E-22`); ⛔ **cross-APP dependency undeterminable** — §5.4 | ⚠️ **GAP** |
+| **5** | **Cross-App dependencies** | ⭐⭐ **NONE — a measured NEGATIVE.** ⛔ Every authorized surface is **APP 2** (`ADR-0151` §2.3); ⛔ APP 1 = 0 (§5.2); ⛔ APP 3 = 0 (`ADR-0152` §7). ⭐ `E-19`/`E-22` are **bounded-context** edges, ⛔ not app boundaries (`DD-0001` §4.0.4) — §5.4 | ⭐ **PASS** |
 
 | App | In scope? | Roles | Code home |
 |---|---|---|---|
@@ -212,7 +214,12 @@ panel, no platform-admin runtime write path, no platform-admin API, no new
 permission. ⭐ That is now a **recorded governance outcome**, ⛔ no longer merely a
 conservative design choice.
 
-### 5.4 ⚠️ Why Declaration 5 is a GAP
+### 5.4 ⭐ Declaration 5 — the measured NEGATIVE
+
+⭐⭐ **There is NO cross-APP dependency for the `BC-25` runtime configuration
+surface.** ⛔ That is a **measured finding**, not an absence of one, and README
+§2B.3 Declaration 5 — *"Cross-App dependencies, **if any**"* — is satisfied by a
+**sourced negative**, exactly as `DD-0001` §4.0.4 was.
 
 ⭐ **What IS evidenced — cross-BC:**
 
@@ -231,22 +238,121 @@ event-based cross-app dependency.
 `platform/ai` (L280) · `platform/analytics` (L309) · `platform/workflow` (L336) ·
 **`app`** (L540, rank 9).
 
-⛔ **Why that is still a GAP:**
+#### 5.4.1 ⭐⭐ The dependency test, applied one endpoint at a time
 
-1. ⛔ **`CNF-GAP-002` is OPEN, severity High** — *"Seven modules declare a
-   dependency on a port **no module provides**"* (0 providers). A dependency on an
-   unprovided port cannot be reported as satisfied.
-2. ⛔ **`E-19` says *"All contexts"*, which is not an app-boundary statement.** It
-   says every context consumes configuration; ⛔ it does not say which *app*
-   renders a configuration surface.
-3. ⚠️ **The `app` module declares the port at the app ROOT, not per app.**
-   `lib/app/` contains `student/`, `staff/` **and** `platform_admin/`. ⛔ So the
-   manifest is consistent with all three apps reading configuration — the
-   Declaration 1 contradiction reappearing on the dependency axis. ⛔ **Port
-   visibility is not authorization**, and it was not treated as such.
-4. ⛔ **`CNF-GAP-007` is OPEN** — `platform/configuration` has **no module block**
-   in the manifest; under `default_decision: deny` the provider side is not yet
-   lawfully declarable.
+⭐ Each candidate dependency was tested for an **authoritative** statement placing
+its endpoints in **different apps** — the `DD-0001` §4.0.4 method.
+
+| # | Candidate dependency | Direction | Crosses an APP boundary? | ⭐ Authoritative basis |
+|---|---|---|---|---|
+| 1 | `TR-1`/`TR-2`/`TR-3` configuration surfaces | within APP 2 | ⛔ **NO — APP 2 → APP 2** | ⭐⭐ **`ADR-0151` §2.3** allocates to `TR-1`/`TR-2`/`TR-3` **only**; ⭐ all three are **APP 2** roles by README §2B.1 |
+| 2 | `E-19` *All contexts* → `BC-25` | inbound to `BC-25` | ⛔ **NO — a bounded-context edge** | BC Map **L328**; §5.4.2 |
+| 3 | `E-22` `BC-25` → `BC-29` branding media | outbound | ⛔ **NO — a BC edge; both endpoints APP 2** | BC Map **L331** |
+| 4 | APP 1 `TR-4`/`TR-5` | — | ⛔ **NO — 0 surfaces, so no endpoint exists** | ⭐ **§5.2** — four independent sources |
+| 5 | APP 3 `PR-1`/`PR-2` | — | ⛔ **NO — 0 `BC-25` runtime surfaces** | ⭐⭐ **`Accepted` `ADR-0152` §7** |
+
+⭐⭐ **A feature whose every authorized surface lives in one app cannot contain a
+jump between apps.** ⛔ **No undeclared jump between apps exists** — README
+§2B.3's stated failure mode is measured **absent**: **0** navigations from an
+APP 1 or APP 3 surface into an APP 2 configuration surface, ⭐ those apps holding
+**0** configuration surfaces between them.
+
+#### 5.4.2 ⛔⛔ `E-19` is a BOUNDED-CONTEXT edge and MUST NOT be treated as an APP boundary
+
+⭐ `E-19`'s source column reads *"All contexts"* — a quantifier over **bounded
+contexts** (BC Map Rank 4), ⛔ **not** over APP 1 / APP 2 / APP 3, a *product
+surface* vocabulary introduced by `docs/35-design/README.md` §2B.1.
+
+⭐⭐ **`DD-0001` §4.0.4 is the governing precedent and it is followed here
+verbatim:** *"⛔⛔ **A BOUNDED-CONTEXT EDGE IS NOT AN APP BOUNDARY, AND THIS
+DECLARATION DOES NOT TREAT ONE AS THE OTHER.**"* ⭐ `DD-0001` converted the same
+observation into its **grounds for PASS** via a measured negative.
+
+⚠️ **One residue is DISCLOSED, not resolved:** ⛔ no document maps the
+bounded-context vocabulary onto the APP vocabulary. ⭐ This affects **every**
+wildcard edge (`E-17`, `E-18`, `E-19`, `E-20`, `E-23`), ⛔ is **not** a `BC-25`
+defect, and ⛔ **does not change the answer** — app placement here is fixed by
+`ADR-0151` **by role**, ⛔ never by an edge.
+
+#### 5.4.3 ⛔⛔ Why `CNF-GAP-002` and `CNF-GAP-007` are NOT Declaration 5 blockers
+
+⚠️⚠️ **BOTH REMAIN OPEN. ⛔ Neither is closed, narrowed or re-dispositioned by
+this document** — ⛔ a Design Doc cannot close a `PRD-023` gap.
+
+| Gap | Text | Severity | Status | ⭐ Disposition — *stated by `FROZEN` `PRD-023` itself* |
+|---|---|---|---|---|
+| **`CNF-GAP-002`** | *"Seven modules declare a dependency on a port **no module provides**"* (7 consumers / 0 providers) | **High** | ⛔⛔ **OPEN** *(`ADR-0053` **L131**: "OPEN. Scheduled, not resolved")* | ⭐⭐ **`PRD-023` L1368 — "Stage 6 — closed by the implementation task that declares the provider"**. Owner: **Technical Owner** |
+| **`CNF-GAP-007`** | `platform/configuration` has **no module block** in `tool/module_dependencies.yaml` | Medium | ⛔⛔ **OPEN** | ⭐⭐ **`PRD-023` L1373 — "Stage 6"**; §1.3 adds it is *"a Stage 6 obligation… **not a defect in the manifest**"*. Owner: **Technical Owner** |
+
+⭐ **Both are real, both are OPEN, and both are STAGE 6 IMPLEMENTATION concerns.**
+⛔ **Neither is a Declaration 5 blocker**, for four independent reasons:
+
+1. ⛔ **README §2B.3 requires no provider.** Declaration 5 asks for *"Cross-App
+   dependencies, **if any**"*; its only named failure mode is *"an undeclared
+   jump between apps"*. ⛔ Measured **0** occurrences of *provider*,
+   *implementation*, *binding* or *manifest* in §2B.3 or §2B.5.
+2. ⭐⭐ **`FROZEN` `PRD-023` dispositions both to Stage 6**, and README §5.1 holds
+   that a Design Doc *"**is not a precondition of implementation**"*
+   (`ADR-0131` §4.3). ⛔ Treating a Stage 6 item as a design blocker would make
+   the design wait on the implementation while the implementation does not wait
+   on the design — ⛔ a deadlock no authority creates.
+3. ⭐ **The condition is repository-wide, not `BC-25`-specific** — measured in
+   `tool/module_dependencies.yaml`: **25 of 35** consumed ports have no provider
+   declaration; `provides_ports` is used by **3 of 18** modules; **7 of 22**
+   ranked modules have no module block; and `tool/check_module_boundaries.dart`
+   reads `provides_ports` **0** times across its **12** enforced categories.
+   ⭐ The manifest's own legend (**L14**) defines a port as an *"interface
+   declared by **consumer**, implemented elsewhere, DI-wired"* — ⛔ so a
+   `provides_ports` counterpart is not structurally required.
+4. ⭐⭐ **Precedent is unanimous and one case is on all fours.** `DD-0006`'s
+   subject port `platform/analytics:read_model` is declared by `app` at the
+   **same app root** (**L539**, one line above `settings` at **L540**), has **no**
+   provider declaration, and was awarded ⭐ **D5 PASS** on a design-level
+   statement (`DD-0006` §5.3). ⭐ `DD-0005` §3.3 did likewise. ⛔ **No** Design
+   Doc has ever been required to show a provider, a binding or an
+   implementation to satisfy Declaration 5.
+
+#### 5.4.4 ⚠️ The app-root port declaration — tested, and it does not sustain a GAP
+
+⭐ The fact is **true and preserved**: the `app` module (rank 9) declares
+`platform/configuration:settings` at **L540**, the **app ROOT**, and `lib/app/`
+contains `student/`, `staff/` **and** `platform_admin/`.
+
+⛔ It does not sustain a Declaration 5 GAP, on four measurements:
+
+1. ⛔ The manifest contains **0** per-app submodules — per-app declaration is
+   **not expressible** in the current schema, so ⛔ its absence cannot be a
+   `BC-25` defect.
+2. ⛔ **All 11** ports `app` declares are root-declared, ⭐ including `DD-0006`'s
+   `read_model` at **L539**.
+3. ⭐⭐ **Port visibility is not authorization** — the rule v0.1 correctly stated
+   and, ⚠️ having stated it, then used a **visibility** fact to withhold an
+   **authorization** conclusion. ⭐ Applied consistently, it resolves the other
+   way.
+4. ⭐⭐ **Authorization is app-determinate from a Rank-2 source**: `ADR-0151` §2.3
+   allocates to `TR-1`/`TR-2`/`TR-3` only — all APP 2. ⭐ README §2B.4 rule 4
+   requires exactly this: *"Permissions come from PRD / ADR / Auth sources
+   only"* — ⛔ never from a build manifest.
+
+⚠️ **Recorded as a separate observation, ⛔ not as a `BC-25` blocker:** that the
+manifest cannot express per-app port granularity is a genuine **Rank 4**
+question affecting all **11** `app` ports. → **`DD7-GAP-013`**, Architecture
+Owner (§22).
+
+#### 5.4.5 ⭐ Verdict
+
+⭐⭐ **Declaration 5 = `PASS`** — the cross-app dependency position is
+**declared** (there is none) and **sourced** (`ADR-0151` §2.3 · `ADR-0152` §7 ·
+§5.2 · `DD-0001` §4.0.4 · BC Map **L328**/**L331**), which is what README §2B.5
+requires.
+
+⚠️⚠️ **SELF-REPORTED CORRECTION — v0.2's four numbered blockers were all
+FACTUALLY TRUE, and every one of them is preserved above.** ⛔ What was wrong was
+the **adjudication**, not the measurement: three of the four are **Stage 6
+implementation** facts and the fourth (`E-19`'s bounded-context wording) is the
+affirmative **ground for PASS** under `DD-0001` §4.0.4. ⭐ The error was applying
+an implementation-readiness test to a **design-readiness** declaration. ⛔ It is
+corrected here rather than quietly replaced.
 
 ### 5.5 ⭐ App-Boundary QA — the 13 checks (README §2B.5)
 
@@ -262,18 +368,26 @@ event-based cross-app dependency.
 | 8 | Figma preserves boundaries | ⭐ **PASS by construction** — ⛔ gate is **BLOCKED** (§25) |
 | 9 | No mixed-role shell | ⭐ **PASS** — one surface, three role treatments, ⛔ not one screen greyed by role (§12.4) |
 | 10 | Tenant scope explicit | ⭐ **PASS** — `CNF-INV-003`/`004`; every row carries a scope |
-| 11 | Cross-app dependency named | ⚠️ **GAP** — §5.4 |
+| 11 | Cross-app dependency named | ⭐ **PASS** — §5.4; ⭐ named as a measured **NEGATIVE** |
 | 12 | No permission inferred from visibility | ⭐ **PASS** — §12.5; every cell traces to `ADR-0151` §2.3 |
 | 13 | Evidence cited per declaration | ⭐ **PASS** |
 
-⭐ **12 of 13 PASS · 1 GAP** *(check 11)* — ⭐ advanced from **11/13** at v0.1 by
-`ADR-0152` closing check 7.
+⭐⭐ **13 of 13 PASS · 0 GAP** — ⭐ advanced from **11/13** at v0.1 (`ADR-0152`
+closed check 7) and from **12/13** at v0.2 (check 11 closed at v0.3, §5.4).
 
-⚠️⚠️ **The remaining GAP is disclosed rather than rounded.** ⛔ `DD-0003`,
-`DD-0004` and `DD-0005` each recorded 13/13; `DD-0006` recorded **12/13** and set
-the precedent that a GAP is published, not smoothed. ⛔ Claiming 13/13 here would
-mean inventing a cross-app dependency statement — ⛔ `CNF-GAP-002` is **OPEN** at
-**7 consumers / 0 providers** (`ADR-0053`: *"OPEN. Scheduled, not resolved"*).
+⭐⭐ **13/13 is reached WITHOUT inventing anything.** ⛔ No cross-app dependency
+statement was manufactured; ⭐ the declaration is a **measured negative**, sourced
+to `ADR-0151` §2.3, `ADR-0152` §7, §5.2 and `DD-0001` §4.0.4 — ⭐ the same
+instrument `DD-0001` used to record **D5 PASS** on a measured negative.
+
+⚠️⚠️ **THIS IS NOT A ROUNDING-UP, and the distinction is stated because v0.2
+expressly warned against one.** ⛔ `CNF-GAP-002` *(7 consumers / 0 providers,
+**High**)* and `CNF-GAP-007` remain **OPEN** — ⛔ **neither is closed here** —
+and `ADR-0053` **L131**'s *"OPEN. Scheduled, not resolved"* stands unaltered.
+⭐ What changed is **which test they answer**: `FROZEN` `PRD-023` dispositions
+both to **Stage 6 implementation** (L1368, L1373), ⛔ and Declaration 5 is a
+**design-readiness** declaration about app boundaries. ⭐ §5.4.3 sets this out
+with the repository-wide measurements and the `DD-0005`/`DD-0006` precedent.
 
 ---
 
@@ -1028,6 +1142,18 @@ outcome when the frozen source is silent on a real scenario.
 | ⚠️ **`DD7-GAP-010`** | **Lowering a cap below existing usage is unspecified** — `LCFG-7`, `LCFG-8`, `LCFG-9`, `LCFG-10`. ⛔ `CNF-XC-001` bars `BC-25` from interpreting them | ⛔ No — rows render | `PRD-002` + `PRD-007` Owners | PRD clarification |
 | ⛔ **`DD7-GAP-011`** | **No concurrency / staleness rule for configuration writes.** Measured **0** occurrences of `etag`, `version conflict`, `concurrent write` in `PRD-023` | ⭐ **BLOCKING journey 8** | Architecture Owner + `PRD-023` Owner | `PRD-023` v0.2 or Rank 2 ADR |
 | ⚠️ **`DD7-GAP-012`** | **No idempotency / replay rule for configuration writes** | ⛔ No | Security + Architecture Owner | Recommendation to route |
+| ⭐ **`DD7-GAP-013`** | ***(new, v0.3)*** **`tool/module_dependencies.yaml` cannot express per-app port granularity.** The `app` module (rank 9) declares **all 11** of its ports at the **app ROOT**, and the schema contains **0** per-app submodules — so the manifest cannot distinguish APP 1 / APP 2 / APP 3 consumption. ⛔ **Not a `BC-25` defect** — it affects every `app` port equally, ⭐ including `DD-0006`'s `platform/analytics:read_model` (**L539**) | ⛔ **No — not a D5 blocker** (§5.4.4); ⭐ authorization is fixed **by role** at `ADR-0151` §2.3, ⛔ never by the manifest | Architecture Owner | Rank 4 manifest question — ⛔ **not** an ADR, ⛔ **not** `DD-0007`'s to resolve |
+
+⚠️⚠️ **`CNF-GAP-002` and `CNF-GAP-007` — RE-VERIFIED OPEN AT THIS AMENDMENT, and
+⛔ NEITHER IS CLOSED BY IT.** ⭐ `CNF-GAP-002` *(7 consumers / 0 providers,
+**High**)* remains **OPEN** — `ADR-0053` **L131**, *"OPEN. Scheduled, not
+resolved"*, **Technical Owner** — dispositioned by `FROZEN` `PRD-023` **L1368**
+to *"**Stage 6** — closed by the implementation task that declares the
+provider"*. ⭐ `CNF-GAP-007` remains **OPEN**, **Stage 6** (**L1373**), which
+`PRD-023` §1.3 calls *"a Stage 6 obligation… **not a defect in the manifest**"*.
+⛔⛔ **A Design Doc cannot close either, and v0.3 does not.** ⭐ v0.3 records only
+that **neither is a Declaration 5 blocker** (§5.4.3) — ⛔ a statement about which
+test they answer, ⛔ not about their status.
 
 ⭐ **Inherited and preserved OPEN, not re-litigated:** `CNF-GAP-001`…`008`
 (`PRD-023` §14) · `CNF-D-1`, `CNF-D-2` (`ADR-0151` §6) · ⭐ **`CNF-D-3`** *(new,
@@ -1121,19 +1247,23 @@ would be the exact defect `PRD-023` §14.1 records.
 
 ## 25. Figma readiness
 
-⛔⛔ **The Figma gate is NOT OPEN.** ⭐ **4** blockers at v0.2 *(was 5 — blocker 1
-cleared by `Accepted` `ADR-0152`)*:
+⛔⛔ **The Figma gate is NOT OPEN.** ⭐ **3** blockers at v0.3 *(was 4 — blocker 2
+cleared; was 5 at v0.1)*:
 
 | # | Blocker | Reference |
 |---|---|---|
 | 1 | ⭐ ~~Declaration 1 is `GAP`~~ — **CLEARED** at v0.2 by `Accepted` `ADR-0152` | ⭐ **RESOLVED** |
-| 2 | ⛔ **Declaration 5 is `GAP`** — cross-app dependency undeterminable | §5.4 |
+| 2 | ⭐ ~~Declaration 5 is `GAP`~~ — **CLEARED** at v0.3; ⭐ the cross-app position is a **sourced negative** | ⭐ **RESOLVED** — §5.4 |
 | 3 | ⛔ **UI Design System does not exist** — no tokens, type scale or a11y targets to bind to | `DD7-GAP-007` |
 | 4 | ⛔ **No NFR budgets** — no breakpoint or target size may be drawn | `DD7-GAP-009` |
 | 5 | ⛔ **Surface `C-4` has no authorized reader** | `DD7-GAP-008` |
 
-⭐ 3 of 4 surfaces are **specified** well enough to prototype once 1–4 clear;
+⭐ 3 of 4 surfaces are **specified** well enough to prototype once 3–5 clear;
 ⛔ the gate is a governance state, not a completeness state.
+
+⚠️⚠️ **Clearing D5 does NOT open the gate, and ⛔ it must not be read as doing
+so.** ⭐ Three blockers stand, and ⚠️ **Declaration 3 remains `PARTIAL` at
+22 / 104** — ⛔ **82 parameters are NOT authorized and MUST NOT be prototyped**.
 
 ---
 
@@ -1146,21 +1276,37 @@ cleared by `Accepted` `ADR-0152`)*:
 | Surfaces specified | ⭐ **3 of 4** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED |
 | Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** |
 | Authorization coverage | ⚠️ **22 / 104 = 21.2%** |
-| §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ D3 **PARTIAL** · ⭐ D4 **PASS** · ⚠️ **D5 `GAP`** |
-| App-Boundary QA | ⭐ **12 / 13 PASS**, 1 GAP |
+| §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ **D3 `PARTIAL`** · ⭐ D4 **PASS** · ⭐ D5 **PASS** |
+| App-Boundary QA | ⭐⭐ **13 / 13 PASS**, 0 GAP |
 | New `PERM-*` / roles / actions / scopes | ⛔ **0 / 0 / 0 / 0** |
 | Frozen documents modified | ⛔ **0** |
 | Runtime code changed | ⛔ **0 lines** |
 
-⛔⛔ **`DD-0007` is NOT design-ready under README §2B.5**, because a `GAP` means
-*"the Design Doc is **not** design-ready until closed or classified."*
-⭐ **This document is the classification.**
+⛔⛔ **`DD-0007` is STILL NOT design-ready under README §2B.5** — ⭐ and v0.3
+narrows the reason to **one**, rather than removing it.
 
-⚠️⚠️ **v0.2 does NOT change that verdict.** ⭐ `ADR-0152` closed **D1**, ⛔ but
-**D5 remains `GAP`** — its causes (`CNF-GAP-002` at **7 consumers / 0 providers**,
-`CNF-GAP-007`, `E-19`'s bounded-context wording, the app-root port declaration)
-are **untouched** by that ADR and were re-measured at this amendment as still
-open. ⛔ **One `GAP` is enough to withhold design-readiness**, and it is withheld.
+⚠️⚠️ **DECLARATION 3 IS NOW THE SOLE REMAINING BLOCKER, AND IT IS THE REAL ONE.**
+⛔ `ADR-0151` is the **only** operation×role source for any `BC-25` parameter and
+it covers **22 of 104**. ⛔ The other **82 remain `NOT YET AUTHORIZED`** — ⛔ no
+role, ⛔ no action class, ⛔ no scope, ⛔ no `PERM-*`. ⭐ Under README §2B.5 an
+unsourced declaration is not design-ready, ⭐ and **`PARTIAL` is disclosed
+exactly as measured**, ⛔ never rounded to `PASS`. ⭐ **This document is the
+classification.**
+
+⭐⭐ **What v0.3 changed, stated narrowly:** ⭐ **D5 `GAP` → `PASS`**, because the
+cross-app position is **declared and sourced** as a measured **negative** —
+`ADR-0151` §2.3 places every authorized role in **APP 2**, §5.2 measures
+**APP 1 = 0**, `ADR-0152` §7 settles **APP 3 = 0**, and `DD-0001` §4.0.4 holds
+that a bounded-context edge is not an app boundary. ⛔ **Nothing else moved.**
+
+⛔⛔ **WHAT v0.3 EXPRESSLY DID NOT DO:** ⛔ **`CNF-GAP-002` remains OPEN**
+*(High, 7 consumers / 0 providers, **Stage 6**, Technical Owner)* · ⛔
+**`CNF-GAP-007` remains OPEN** *(**Stage 6**)* — ⭐ v0.3 records only that
+**neither is a Declaration 5 blocker** (§5.4.3), ⛔ **not** that either is
+resolved · ⛔ **D3 is untouched at 22 / 104** · ⛔ **0** of the 82 parameters
+authorized · ⛔ **0** `PERM-*`, roles, action classes or scopes minted · ⛔
+`ADR-0151`, `ADR-0152`, `PRD-023` and `AUTH-7.22` **byte-unchanged** · ⛔ **0**
+lines of runtime code.
 
 ---
 
@@ -1218,5 +1364,6 @@ both at **V2**, `PRD-023` §0.3)*.
 
 | Version | Date | Change |
 |---|---|---|
+| ⭐⭐ **v0.3** | 2026-09-19 | ⭐⭐ **DECLARATION 5 MOVES `GAP` → `PASS` ON EXISTING AUTHORITY. ⛔ NO NEW AUTHORITY WAS CREATED, SOUGHT OR IMPLIED — ⛔ no ADR, ⛔ no PRD amendment, ⛔ no register touched.** ⭐ The cross-app position is **declared and sourced** as a **measured NEGATIVE**: ⛔ **there is no cross-APP dependency** for the `BC-25` runtime configuration surface, because `ADR-0151` §2.3 allocates to `TR-1`/`TR-2`/`TR-3` **only** — ⭐ all **APP 2** by README §2B.1 — while ⛔ **APP 1 = 0 surfaces** (§5.2, four sources) and ⛔ **APP 3 = 0 `BC-25` runtime surfaces** (`Accepted` `ADR-0152` §7). ⭐⭐ **A feature whose every authorized surface lives in one app cannot contain a jump between apps**, and README §2B.3's stated failure mode — *"an **undeclared jump between apps**"* — is measured **absent**. ⭐ README §2B.3 asks for cross-app dependencies *"**if any**"*, ⭐ which a sourced negative satisfies — the instrument `DD-0001` §4.0.4 used for the same declaration. ⭐⭐ **`E-19` IS A BOUNDED-CONTEXT EDGE AND MUST NOT BE TREATED AS AN APP BOUNDARY** (§5.4.2): its *"All contexts"* quantifies the 31 **bounded contexts** (Rank 4), ⛔ not APP 1/2/3 (a Design-README vocabulary) — ⭐ `DD-0001` §4.0.4: *"a bounded-context edge is not an app boundary"*. ⛔ `E-19` and `E-22` are **byte-unchanged** and BC Map is **untouched**. ⚠️⚠️ **`CNF-GAP-002` AND `CNF-GAP-007` REMAIN OPEN AND ARE ⛔ NOT CLOSED BY THIS AMENDMENT** — ⭐ `CNF-GAP-002` *(7 consumers / 0 providers, **High**, `ADR-0053` **L131** "OPEN. Scheduled, not resolved", **Technical Owner**)* is dispositioned by `FROZEN` `PRD-023` **L1368** to *"**Stage 6** — closed by the implementation task that declares the provider"*; ⭐ `CNF-GAP-007` is **Stage 6** (**L1373**), which `PRD-023` §1.3 calls *"a Stage 6 obligation… **not a defect in the manifest**"*. ⭐⭐ **Both are real, both stay OPEN, and ⛔ NEITHER IS A DECLARATION 5 BLOCKER** (§5.4.3) — README §2B.3 requires **no** provider *(**0** occurrences of provider/implementation/binding/manifest in §2B.3 or §2B.5)*; README §5.1 holds a Design Doc *"is **not** a precondition of implementation"*; the condition is **repository-wide** *(**25 of 35** consumed ports have no provider declaration; `provides_ports` used by **3 of 18** modules; **7 of 22** ranked modules have no module block; `check_module_boundaries.dart` reads `provides_ports` **0** times across **12** categories; manifest **L14** defines a port as *"interface declared by **consumer**"*)*; and ⭐ **precedent is unanimous** — `DD-0006` §5.3 recorded **D5 PASS** on `platform/analytics:read_model`, declared at the **same app root** (**L539**, adjacent to `settings` at **L540**) with **no** provider, and `DD-0005` §3.3 likewise. ⭐ **The app-root observation is preserved and tested** (§5.4.4): the manifest has **0** per-app submodules, **all 11** `app` ports are root-declared, ⭐ *"port visibility is not authorization"*, and authorization is app-determinate from **Rank 2** per README §2B.4 rule 4 — ⛔ never from a build manifest. ⚠️ Its residue is recorded as ⭐ **new `DD7-GAP-013`** *(Architecture Owner, Rank 4 manifest question, ⛔ **not** an ADR, ⛔ **not** blocking)*. ⚠️⚠️ **SELF-REPORTED CORRECTION:** ⭐ v0.2's four numbered blockers were **all factually true and all are preserved above**; ⛔ what was wrong was the **adjudication** — three are **Stage 6 implementation** facts and the fourth is the affirmative **ground for PASS**. ⛔ The error was applying an **implementation-readiness** test to a **design-readiness** declaration; ⛔ it is corrected, not quietly replaced. ⭐ **App-Boundary QA 12/13 → 13/13** *(check 11)*; ⭐ **Figma blockers 4 → 3**. ⚠️⚠️ **`DD-0007` REMAINS NOT DESIGN-READY — ⭐ D3 `PARTIAL` at 22 / 104 is now the SOLE blocker**, and ⛔ the **82** parameters remain **`NOT YET AUTHORIZED`**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `ADR-0151` · `ADR-0152` · `PRD-023` · `AUTH-7.22` · BC Map · `tool/module_dependencies.yaml` · all frozen PRDs · the **104**-parameter inventory *(18 + 4 + 82)* · §6–§21 and §23–§24 and §27–§29 · every authorization decision · roles, action classes, scopes · `PERM-*` *(**0** minted)*. ⛔ **0** parameters authorized · ⛔ **0** new roles/actions/scopes/`PERM-*` · ⛔ **0** registers extended *(`CNF-GAP-*` stays **8**)* · ⛔ **0** frozen documents modified · ⛔ **0** lines of runtime code. ⭐ **Smallest lawful diff — ⛔ no section rewritten for style, ⛔ no unrelated section touched.** |
 | ⭐⭐ **v0.2** | 2026-09-19 | ⭐⭐ **AMENDED under `Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md) — the follow-up that ADR itself routed as `ADR-0152-F-1`.** ⭐⭐ **`DD7-GAP-001` is CLOSED** and ⭐⭐ **Declaration 1 moves `GAP` → `PASS`**: **APP 2** *(`TR-1`/`TR-2`/`TR-3`)* · ⛔ **APP 1 = 0** · ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces**. ⚠️⚠️ **A SELF-REPORTED FACTUAL CORRECTION IS RECORDED RATHER THAN QUIETLY REPLACED (§5.3):** v0.1 called this a *"**Rank 3 vs Rank 3** contradiction"* where *"precedence cannot break a same-rank tie"* — ⛔ **the premise was false.** `PRD-012a` Part 2's own header reads *"**Unranked.** … **Not** Rank 3; **MUST NOT** be cited as authority against any ranked document"*, measured identically across **all 8** parts, `Status` **`DRAFT`**. ⚠️ The error was reading `PRD-012a`'s **module rank 2** as a **document precedence rank** — ⭐ different ladders. ⭐ A second independent ground stands alone: Part 2 **§0.2** excludes *"… **UI**…"* from what it specifies. ⭐ **`DD7-GAP-002` → MOOT for the runtime APP 3 surface**, ⚠️⚠️ **but NOT answered** — *"platform configuration"* **still has 0 definitions** as a parameter set, re-measured here and carried as **`ADR-0152-F-2`**. ⭐ **App-Boundary QA 11/13 → 12/13** *(check 7 closed; ⛔ check 11 still `GAP`)*. ⭐ **Figma blockers 5 → 4.** ⛔⛔ **D5 IS UNCHANGED AND REMAINS `GAP`** — `CNF-GAP-002` re-verified **OPEN** (`ADR-0053`: *"OPEN. Scheduled, not resolved"*), `CNF-GAP-007` open, `E-19` wording and the app-root port declaration unchanged — so ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔⛔ **PRESERVED UNCHANGED:** the `ADR-0151` 22-parameter allocation · the **104**-parameter inventory *(18 + 4 + 82)* · every authorization decision · roles, action classes, scopes · `PERM-*` vocabulary *(**0** minted)* · `AUTH-7.22` · all frozen PRDs · the UI architecture, design recommendations and NFR decisions · §6–§21 and §27–§29 byte-unchanged apart from the cited-source rows. ⭐ **Smallest lawful diff — ⛔ no section rewritten for style.** ⛔ **0 lines of runtime code.** |
 | **v0.1** | 2026-09-19 | ⭐⭐ **Created** as the `BC-25` Configuration surface design, after a **six-gate governance check** (§2) that verified ownership, freeze, README §2A/§2B permission, number availability, non-existence and path convention **before** authoring. ⭐ `configuration/` is the **EIGHTH** context directory, created at the moment this document was written, per README §2 and the `analytics/` precedent. ⭐⭐ **The governing discovery is `ADR-0151`**: it is the **only** operation×role source for any `BC-25` parameter, and it covers **22 of 104** — so ⭐ **exactly 22 parameters are designable and 82 are not**. ⭐ **4 surfaces** `C-1`…`C-4` *(⭐ 3 designable · ⛔ 1 BLOCKED)*, **18 editable + 4 read-only** parameters, **11 user journeys**, a **19-row impact model**, **12 design-system reuses** and ⚠️ **3 new components requested** — each named by `PRD-023` §12.2, ⛔ none invented. ⚠️⚠️ **Authorization coverage is published as measured: 21.2%.** ⛔ The 82 unallocated parameters are inventoried with **Scope `OPEN`**, **Comm `OPEN`**, **`NOT YET AUTHORIZED`** and **⛔ Not designed** — ⛔ **inventory is not authorization**, and the banner at §6.2 says so. ⭐⭐ **The sharpest design finding is §8.2: deny-read renders ABSENT, not greyed** — because a greyed row discloses that a parameter exists and has a value, which for `MM-CFG-007`/`009` is the financial disclosure `AC-7.8` denies *"regardless of other roles held anywhere"*; ⭐ so `TR-3` sees **13 rows, not 22 with 9 greyed**. ⭐ **`TR-2` is NOT hard-coded as ALLOW** on the 18 non-commercial parameters — `ADR-0151` §2.4's *existing model* is carried as a **runtime-resolved** rendering (§8.1), ⛔ not converted into a grant. ⭐ **The 4 platform-default parameters get 0 write affordance for every role** (`CNF-FR-020`, `CNF-AC-011`). ⚠️⚠️ **TWO DECLARATIONS ARE `GAP` AND ARE NOT ROUNDED TO PASS** — **D1** because `SECP-HRO-005` *(Rank 3)* and `CNF-FR-020` *(Rank 3)* contradict each other on whether `PR-1` has a runtime configuration surface, and ⛔ precedence cannot break a same-rank tie; **D5** because `CNF-GAP-002` is OPEN at **7 consumers / 0 providers** and `E-19`'s *"All contexts"* is not an app-boundary statement. ⭐ **App-Boundary QA reported as 11 of 13 with 2 GAP**, on the `DD-0006` precedent of publishing rather than rounding. ⛔⛔ **`DD7-GAP-002` is carried forward OPEN** — measured **0** prior occurrences and **0** ADRs citing `SECP-HRO-005`, so ⭐ the brief's *"Decision B"* was applied **as a design constraint** *(⛔ no APP 3 panel, API, write path or permission)* ⛔ **but is NOT recorded as repository-accepted governance**, and the gap is not closed. ⭐ **12 `DD7-GAP-*` raised**, ⛔ all carrying **no authority**; ⭐ `CNF-GAP-*` stays **8** and `CNF-AC-*` stays **59** — ⛔ no closed register is extended. ⭐ **New: `CNF-D-3`** — `PRD-023` §3.6 cites `PRD-005` *"FROZEN v1.4"* while the repository is at **v1.6**; ⛔ a stale citation, ⛔ not a register change *(`MM-CFG-*` verified still **9**)*, ⛔ not repaired because `PRD-023` is FROZEN. ⭐ **UI/UX Pro Max @ `15de38f`: 4 APPLIED · 1 ADAPTED · 3 REJECTED** — ⛔ every rejection names a Liboora source, and ⛔ all visual-token domains were rejected under `CNF-XC-016`. ⭐ **`MeterBar` PROHIBITED** — the **fourth** consecutive Design Doc to prohibit it, for a fourth distinct reason. ⛔⛔ **0 `PERM-*` · 0 new roles · 0 new action classes · 0 new scope classes · `AUTH-7.22` untouched · `ADR-0151` untouched · 0 frozen documents modified · 0 lines of runtime code.** ⚠️ **2 acceptance criteria left deliberately OPEN** *(`DD7-AC-021`, `DD7-AC-022`)* because no authoritative NFR budget or UI Design System exists — ⛔ inventing numbers was declined. ⛔⛔ **Figma gate NOT OPEN — 5 blockers.** ⭐ Verdict: ⚠️ **DESIGNED WITH EXPLICIT BLOCKERS**; ⛔ **`DD-0007` is NOT design-ready**, and this document is the classification, not a claim of readiness. |

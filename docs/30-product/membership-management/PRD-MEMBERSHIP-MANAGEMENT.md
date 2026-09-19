@@ -4,9 +4,10 @@
 |---|---|
 | **PRD ID** | `PRD-005` |
 | **Document** | Membership Management — `BC-02` Membership |
-| **Version** | v1.4 (Startup MVP) |
+| **Version** | ⭐ **v1.5** (Startup MVP) — successor amendment under `Accepted` [`ADR-0149`](../../00-governance/adr/ADR-0149-membership-plan-and-configuration-change-request-workflow-authorization.md); **v1.4** text carried forward unchanged except as §26's v1.5 row records |
 | **Status** | **FROZEN** — [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) Stage 7. Admitted to the documentation baseline by [`ADR-0019`](../../00-governance/adr/ADR-0019-membership-management-prd-v1.4-baseline.md). **Frozen, not `VERIFIED`** — Stage 9 requires implementation evidence that does not yet exist |
-| **Date** | 2026-08-04 *(four times corrected same day across five independent reviews)* |
+| **Date** | 2026-09-18 *(v1.5 successor amendment; v1.4 was 2026-08-04, four times corrected same day across five independent reviews)* |
+| ⭐ **Amendment authority (v1.5)** | ⭐ **Domain Owner (Library Domain)** for `PRD-005` (`PRD_OWNERSHIP_MODEL.md` §2.2 and §4.1), by **direct, explicit conferral of the human principal of this engagement, scoped to THIS SINGLE ACT ONLY** — the authoring of the v1.5 successor amendment implementing `ADR-0149` `D-1`…`D-15`. ⛔ **The office REVERTS ON COMPLETION** (`ADR-0033` §7.1: *"a conferral for one act is not a standing licence"*). ⭐ **Product Owner** and **Architecture Owner** authority for the underlying decisions was conferred and recorded separately by `ADR-0149`, and is **preserved, not re-taken, here**. ⚠️⚠️ **DISCLOSURE — Product Owner, Architecture Owner and Domain Owner are exercised by ONE principal**, so ⛔ **no independent review, no ARB quorum and no external Security audit is claimed**. ⛔ The conferral does **not** authorise code, any other PRD, `ADR-0132`, `AUTH-7.22`, permission identifiers, new action or scope vocabulary, new events, new aggregate roots or new BC Map rows |
 | **Baseline** | **`BASELINE-2026-08-04-D`** |
 | **Rank** | **Rank 3** (module PRD) — the fifth Rank 3 module baseline, per [`DOCUMENTATION_BASELINE.md`](../../00-governance/DOCUMENTATION_BASELINE.md) §3.3 and §4 |
 | **Owning context** | **`BC-02` Membership** `[CORE]`, Library Management cluster, rank 8 |
@@ -50,20 +51,31 @@ the promise false.
 
 | Prefix | Meaning | Count | Range | Chapter |
 |---|---|---|---|---|
-| `MM-FR-n` | Functional requirement | **119** | `MM-FR-001` … `MM-FR-118`, plus the suffixed `MM-FR-057a` | 2–11, 19–20 |
+| `MM-FR-n` | Functional requirement | ⭐ **143** | `MM-FR-001` … `MM-FR-137`, plus the suffixed `MM-FR-057a`, `MM-FR-119a`, `MM-FR-121a`, `MM-FR-123a`, `MM-FR-127a`, `MM-FR-131a` | 2–11, 19–20; **§2.4a, §16.3a, §17.1a (v1.5)** |
 | `MM-BR-n` | Business rule | **35** | `MM-BR-001` … `MM-BR-035` | §12, §14 |
 | `MM-INV-n` | Domain invariant (enforced inside the aggregate) | **12** | `MM-INV-001` … `MM-INV-012` | §14.2 |
 | `MM-EVT-n` | Domain event (**closed set**) | **7** | `MM-EVT-001` … `MM-EVT-007` | §12 |
 | `MM-XC-n` | Exclusion — must be impossible | **16** | `MM-XC-001` … `MM-XC-016` | §1.5 |
-| `MM-AC-n` | Acceptance criterion | **97** | `MM-AC-001` … `MM-AC-094`, plus the suffixed `MM-AC-074a`, `MM-AC-076a`, `MM-AC-080a` | §23 |
+| `MM-AC-n` | Acceptance criterion | ⭐ **106** | `MM-AC-001` … `MM-AC-103`, plus the suffixed `MM-AC-074a`, `MM-AC-076a`, `MM-AC-080a` | §23; **§23.2 (v1.5)** |
 | `MM-NFR-n` | Non-functional requirement | **14** | `MM-NFR-001` … `MM-NFR-014` | §16.5 |
-| `MM-PO-n` | Protected operation (**closed list**) | **11** | `MM-PO-001` … `MM-PO-011` | §16.3 |
+| `MM-PO-n` | Protected operation (**closed list**) | **11** ⛔ *unchanged at v1.5* | `MM-PO-001` … `MM-PO-011` | §16.3; allocation only in **§16.3a** |
 | `MM-CFG-n` | Configurable | **9** | `MM-CFG-001` … `MM-CFG-009` | §13.4 |
 | `MM-GAP-n` | Proposed gap / open question — **not a requirement** | **13** | `MM-GAP-001` … `MM-GAP-010`, plus the suffixed successors `MM-GAP-006a`, `MM-GAP-007a` and `MM-GAP-010a` | §25.2 |
 
-**Total: 333 identifiers**, of which **320 carry obligation** and 13 are `MM-GAP-*` open questions, which are not
-obligations. Of the 320, **223 are obligations that an acceptance criterion can verify** (all registers except
-`MM-AC-*` itself).
+⭐⭐ **Total: 366 identifiers** *(v1.5; was **333** at v1.4)*, of which ⭐ **353 carry obligation** and 13 are
+`MM-GAP-*` open questions, which are not obligations. Of the 353, ⭐ **247 are obligations that an acceptance
+criterion can verify** (all registers except `MM-AC-*` itself).
+
+> ⚠️⚠️ **THESE THREE DERIVED FIGURES, AND THE COVERAGE TABLE BELOW THEM, WERE LEFT AT THEIR v1.4 VALUES WHEN THE
+> PER-REGISTER ROWS ABOVE WERE ADVANCED, AND THE OMISSION IS RECORDED RATHER THAN QUIETLY REPAIRED.** The v1.5 pass
+> updated `MM-FR-n` to **143** and `MM-AC-n` to **106** in the table above but left this paragraph reading **333 /
+> 320 / 223** and the table below reading **134 / 223 = 60.1%** — ⛔ **a table and the sentence derived from it edited
+> in separate steps**, which is precisely the `GCP-08` / `GCP-21` derived-statement class this repository has logged
+> repeatedly. ⭐⭐ **IT WAS NOT CAUGHT BY REVIEW. It was caught by [`tool/docs_check/prd005_traceability.py`](../../../tool/docs_check/prd005_traceability.py)**,
+> the committed checker, which reported `MM-FR-n` **declared 119 / measured 143 → FAIL** and `MM-AC-n` **declared 97 /
+> measured 106 → FAIL`**. ⭐ **The defect was mine, and the script disproved me** — the same service §2C's history
+> records, where stale figures survived *"two correction passes until a script disproved them"* (`SR-01`, HIGH).
+> ⭐ **The PRD was corrected to match the measurement; the checker was NOT loosened to match the PRD.**
 
 **Coverage counting rule (binding on every coverage figure in this document).** An obligation counts as *verified* if
 and only if **its identifier appears in the *Verifies* column of at least one `MM-AC-*` row in §23**. Nothing else
@@ -74,11 +86,22 @@ measures prose rather than verification. Under this rule the measured figures ar
 
 | Scope | Verified | Total | Coverage |
 |---|---|---|---|
-| `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*`, `MM-EVT-*` (the five *rule* registers) | **77** | **81** | **95.1%** |
-| All criterion-verifiable obligations | **134** | **223** | **60.1%** |
+| `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*`, `MM-EVT-*` (the five *rule* registers) | **77** | **81** | **95.1%** ⛔ *unchanged at v1.5* |
+| All criterion-verifiable obligations | ⭐ **146** | ⭐ **247** | ⚠️ **59.1%** *(v1.4: 134 / 223 = 60.1%)* |
 
-Per register: `MM-BR-*` 31/35 · `MM-INV-*` 12/12 · `MM-EVT-*` 7/7 · `MM-XC-*` 16/16 · `MM-PO-*` 11/11 · `MM-FR-*`
-48/119 · `MM-NFR-*` 7/14 · `MM-CFG-*` 2/9.
+Per register: `MM-BR-*` 31/35 · `MM-INV-*` 12/12 · `MM-EVT-*` 7/7 · `MM-XC-*` 16/16 · `MM-PO-*` 11/11 · ⭐ `MM-FR-*`
+**60/143** · `MM-NFR-*` 7/14 · `MM-CFG-*` 2/9.
+
+> ⚠️⚠️ **OVERALL COVERAGE FELL AT v1.5 — 60.1% → 59.1% — AND THE FIGURE IS PUBLISHED AS MEASURED RATHER THAN
+> SOFTENED, ROUNDED UP OR OMITTED.** v1.5 added **24** `MM-FR-*` obligations and **9** `MM-AC-*` criteria; the new
+> criteria verify **12** of the 24 (`MM-FR-120`…`MM-FR-131`), so the numerator rose by 12 while the denominator rose
+> by 24. ⭐ **A denominator growing faster than a numerator is a genuine reduction in verified proportion**, and the
+> rule immediately above forbids disguising it. ⛔ **THE 12 UNVERIFIED NEW OBLIGATIONS ARE NAMED, NOT ARGUED AWAY:**
+> `MM-FR-119`, `MM-FR-119a`, `MM-FR-121a`, `MM-FR-123a`, `MM-FR-127a`, `MM-FR-131a`, `MM-FR-132`, and the five
+> authorization requirements `MM-FR-133`…`MM-FR-137`. ⭐ **Writing criteria to order purely to lift the ratio was
+> DELIBERATELY DECLINED** — a metric raisable by writing criteria measures criteria, exactly as one raisable by
+> writing prose measures prose; ⛔ **no existing criterion was widened and no `MM-AC-*` was back-filled.** ⭐ The five
+> *rule* registers are untouched at **77/81**, and **`MM-PO-*` remains 11/11** on a **closed list still closed at 11**.
 
 The four rule-register obligations **not** verified under this rule are `MM-BR-012`, `MM-BR-022`, `MM-BR-027` and
 `MM-BR-028`. Each is a restatement whose substance is exercised by criteria written against its definition site
@@ -269,6 +292,111 @@ membership, and **MUST NOT** alter any price snapshot.
 
 `MM-FR-021` — A plan **MUST NOT** be hard-deleted once any membership references it. The system **MUST** offer
 deactivation instead and **MUST** state that reason to the actor.
+
+### 2.4a Membership change requests — added at v1.5 (`ADR-0149` `D-1`, `D-6`, `D-7`)
+
+A Student may **ask** for a plan or membership-configuration change without holding authority to **make** one.
+`prd-v2/02` scopes `TR-4` Student to *"Own records"*, and `AP-3` makes the absence of authorisation a **deny** — so
+the ask is modelled as a record, and the decision is modelled separately (§16.3a).
+
+`MM-FR-119` — A **membership change request** **MUST** be a record owned by this module (`BC-02`), carrying: request
+identifier · `tenantId` · requesting `studentRecordId` · the **target operation** (`MM-PO-002` or `MM-PO-011`) · a
+**structured requested-change descriptor** · an **optional** Student message · state · created audit stamp.
+
+`MM-FR-119a` — The optional Student message **MUST** supplement the structured descriptor and **MUST NOT** be the
+sole machine-readable meaning of a request. A request whose meaning exists only in free text **MUST** be rejected
+at creation.
+
+#### Lifecycle — normative and closed
+
+`MM-FR-120` — A change request **MUST** carry exactly one state from the closed set: `Pending` · `Approved` ·
+`Rejected` · `Cancelled` · `Expired`. The following are the **only** permitted V1 transitions; any other transition
+**MUST** be impossible.
+
+| From | To | Trigger | Actor |
+|---|---|---|---|
+| — | `Pending` | Student raises the request | `TR-4` Student |
+| `Pending` | `Approved` | Authorised staff approve; conditions re-evaluated at approval time (`MM-FR-123`) | staff (§16.3a) |
+| `Pending` | `Rejected` | Authorised staff reject; reason mandatory (`MM-FR-128`) | staff (§16.3a) |
+| `Pending` | `Cancelled` | The requesting Student cancels (`MM-FR-127`) | `TR-4` Student |
+| `Pending` | `Expired` | The decision deadline elapses (`MM-FR-124`) | system |
+
+`MM-FR-121` — `Pending` **MUST** be the **only** non-terminal state. `Approved`, `Rejected`, `Cancelled` and
+`Expired` **MUST** be terminal. A terminal request **MUST** be retained with its terminal state and its cause, and
+**MUST NOT** be deleted. A new ask **MUST** create a **new** request rather than reviving a terminal one.
+
+`MM-FR-121a` — Request state **MUST** be stored and displayed as a field **separate** from `MembershipStatus`
+(§5.1) and from a plan's `isActive` (`MM-FR-019`). The three **MUST NOT** be merged, and a value of one **MUST
+NOT** be derived from another — the discipline `MM-FR-076` already applies to membership and enrollment status.
+
+`MM-FR-122` — A `Pending` request **MUST NOT** create, hold, reserve, mutate or pre-commit anything. It **MUST NOT**
+alter the target `MembershipPlan`, any `MM-CFG-*` value, or any `Membership`. **It is a request record only.**
+
+`MM-FR-123` — Eligibility and every applicable condition **MUST** be evaluated at **approval** time, not at request
+time. Where a condition no longer holds at approval, the approval **MUST** fail with the failing reason named, and
+the request **MUST** remain `Pending`.
+
+`MM-FR-123a` — Every transition to `Expired`, and every transition to `Cancelled`, **MUST** record the cause that
+produced it. A terminal state with no recorded cause **MUST NOT** be a possible entry.
+
+#### Fixed V1 constants
+
+`MM-FR-124` — A `Pending` request **MUST** transition to `Expired` once **7 days** have elapsed since creation.
+
+`MM-FR-125` — A Student **MUST NOT** hold more than **one** `Pending` request at a time. A request in a terminal
+state — including `Cancelled` — **MUST NOT** count toward this limit.
+
+> **Why these are fixed constants and not configurables.** §13.4 closes `MM-CFG-*` at **nine**, and this amendment
+> does not reopen it. Both figures match the defaults two frozen PRDs already carry, and the fixed-rather-than-
+> configurable shape follows `ADR-0036`, whose renewal window is recorded as *"FIXED and mandatory in V1 … NOT
+> tenant-configurable"*. Whether either should later become a `BC-25` configurable is an architecture decision this
+> amendment does not take.
+
+#### Student capability
+
+`MM-FR-126` — A Student **MUST** be able to create a change request for their own account, at **`Self`** scope
+only. A Student **MUST NOT** raise a request on behalf of another Student.
+
+`MM-FR-127` — A Student **MUST** be able to cancel **their own** request while it is `Pending`, producing
+`Cancelled` with the Student recorded as actor. A Student **MUST NOT** cancel another Student's request, and
+**MUST NOT** cancel a request that has reached a terminal state.
+
+`MM-FR-127a` — Cancelling a request **MUST NOT** cancel, suspend or alter any `Membership`, **MUST NOT** trigger a
+refund, and **MUST NOT** be presented to users as *"cancel membership"*. Membership cancellation with refund
+remains **V2** (`MM-XC-011`), and `MM-FR-079` is unaffected.
+
+#### Decision record
+
+`MM-FR-128` — A decision reason **MUST** be required on `Rejected` and **MUST** be optional on `Approved`. Where a
+structured reason set applies, a free-text reason **MUST** be stored **in addition to**, never instead of, the
+structured value.
+
+`MM-FR-129` — The **Student's message** (`MM-FR-119`) and the **staff decision note** (`MM-FR-128`) **MUST** be
+stored and presented as **separate** fields. They **MUST NOT** be merged, substituted for one another, or
+attributed to the wrong author.
+
+`MM-FR-130` — Approving a request and executing the underlying operation **MUST** occur in **separate**
+transactions. BC Map §8 fixes the aggregate as the transaction boundary *"no exceptions"*, and `MM-FR-006` already
+forbids a plan edit sharing a transaction with membership work.
+
+#### Read visibility
+
+`MM-FR-131` — A change-request read **MUST** be field-restricted by role. `TR-3` Reception **MUST** be able to read
+a request's existence, requester to the extent already authorised, target operation, state, timestamps and
+non-commercial requested-change information, and **MUST NOT** be able to read `price`, `currency`, or any other
+value the role model denies to Reception. The restriction **MUST** be enforced at the read model, and a restricted
+field **MUST** be presented as restricted rather than silently omitted where a surface would otherwise show it.
+
+> **This preserves `AC-7.8` literally rather than weakening it.** Reception receives **no** financial permission;
+> it receives a non-financial view. The shape is already frozen elsewhere: `PRD-004` §8.2 grants `TR-3`
+> *"View member detail"* while denying it *"View sensitive data"* over the same entity, and `MM-NFR-010` already
+> restricts a read by field within this module. `PRD-023` `CNF-BR-010` is the governing rule that read authority
+> **SHALL NOT** be assumed to follow write authority.
+
+`MM-FR-131a` — Request lookup **MUST** be performed by local matching within `BC-02`. This module **MUST NOT**
+acquire a `BC-23` Search Indexing dependency for requests; `MM-GAP-004` already resolved that question in the
+negative and no `BC-02` → `BC-23` edge exists.
+
 
 ### 2.5 What may change after a plan is in use — normative
 
@@ -1336,6 +1464,56 @@ void or edit a plan.
 > activate, conferring entitlement with no money. That is the revenue-leakage failure `Q-03` is concerned with, in a
 > different guise.
 
+### 16.3a Change-request authorization — added at v1.5 (`ADR-0149` `D-2`, `D-3`, `D-4`, `D-7`)
+
+⛔⛔ **The `MM-PO-*` register above remains CLOSED AT ELEVEN.** This subsection creates **no** protected-operation
+identifier. It allocates, per role, the authority to **decide a request** about two operations that already exist.
+
+`MM-FR-133` — Authorization for the change-request workflow **MUST** be expressed through the **derived-capability**
+mechanism recorded by `Accepted` `ADR-0132` §5.3 and already baselined at Rank 3 under `ADR-0087`. This module
+**MUST NOT** introduce a permission identifier (`MM-XC-016`, `AUTH-7.22`), and **MUST NOT** introduce an action
+class or a scope class: only **Read**, **Create**, **Update** and **Approve**, at **`Self`** or **`Tenant`**, all
+of which `prd-v2/07` already defines.
+
+`MM-FR-134` — Each role's treatment **MUST** be stated **explicitly**. No authority is inherited between roles
+(`AUTH-7.35`), no permission implies another (`AUTH-7.28`), and **Approve MUST always be granted explicitly**
+(`AUTH-7.25`).
+
+| Capability | Action | Scope | `TR-1` Owner | `TR-2` Manager | `TR-3` Reception | `TR-4` Student | `TR-5` Parent |
+|---|---|---|---|---|---|---|---|
+| Create a change request | Create | `Self` | — | — | — | ✅ | ⛔ |
+| Read own change request | Read | `Self` | — | — | — | ✅ | ⛔ |
+| Read a change request | Read | `Tenant` | ✅ | ✅ | ✅ **field-restricted** (`MM-FR-131`) | ⛔ | ⛔ |
+| Approve/reject a request to **edit** a plan (`MM-PO-002`) | Approve | `Tenant` | ✅ | ⛔ | ⛔ | ⛔ | ⛔ |
+| Approve/reject a request to **activate or deactivate** a plan (`MM-PO-002`) | Approve | `Tenant` | ✅ | ✅ | ⛔ | ⛔ | ⛔ |
+| Approve/reject a request to change a configurable (`MM-PO-011`) | Approve | `Tenant` | ✅ | ⛔ | ⛔ | ⛔ | ⛔ |
+| Cancel one's own `Pending` request | Update | `Self` | — | — | — | ✅ | ⛔ |
+| Execute `MM-PO-002` or `MM-PO-011` | Update | `Tenant` | *pre-existing — unchanged by this amendment* | | | ⛔ | ⛔ |
+
+`MM-FR-135` — `TR-2` Manager **MUST NOT** approve a request to **edit** a plan. A plan carries `price` and
+`currency` (`MM-FR-008`), and `TR-2` cannot alter library-level commercial configuration.
+
+> **Why activate/deactivate is different, and why the split is by operation rather than by field.** `MM-FR-018`
+> already enumerates *create, edit, activate, deactivate, list* as **distinct** operations, so this split uses a
+> boundary this document itself draws. `MM-FR-019` states that deactivation **MUST NOT** alter any existing
+> membership and **MUST NOT** alter any price snapshot, and `MM-FR-023` names `price`, `durationDays` and
+> `eligibilityRule` — **not** `isActive` — as the economically significant edits. ⛔ **No commercial field set is
+> defined or inferred here**: `PRD-023` `CNF-BR-008` places that determination with the owning PRD, and this
+> amendment declines to make it. Splitting by **operation** is what makes the determination unnecessary.
+
+`MM-FR-136` — An approval grant **MUST NOT** confer authority to execute the underlying operation. Approving a
+request and performing the `MM-PO-002` or `MM-PO-011` **Update** are **separately grantable** (`AUTH-7.24`), and a
+caller holding one **MUST** be refused the other unless it is independently granted. `TR-2`'s authority to approve
+an activate/deactivate request therefore confers **no** update authority over the `MembershipPlan`.
+
+> This is the discipline `MM-NFR-008` already applies to `MM-PO-003`/`MM-PO-004`: *"Without this separation, the
+> payment gate is decorative."* An approval grant that silently carried execution would make `MM-FR-135`
+> decorative in exactly the same way.
+
+`MM-FR-137` — `TR-4` Student and `TR-5` Parent **MUST NOT** hold **Approve** on any change request, and a request
+**MUST NOT** be approvable by the account that raised it.
+
+
 ### 16.4 Data minimisation and auditability
 
 `MM-NFR-009` — This module **MUST** store no PII (`MM-FR-003`). Its sensitive data is commercial — price snapshots and
@@ -1383,6 +1561,27 @@ Restatement for locality (no new obligation): audit records carry no mobile numb
 governing rules are `MP-GBR-34` (Rank 1) and `MM-BR-015`, defined in §12.
 
 ---
+
+### 17.1a Change-request auditability — added at v1.5 (`ADR-0149` `D-5`)
+
+`MM-FR-132` — Every change-request decision **MUST** be audited through the **existing** audit architecture — the
+`E-20` outbound path to `BC-24` Audit Trail — and this module **MUST NOT** store an audit log of its own (§1.2).
+
+| Act | Audited | Recorded |
+|---|---|---|
+| Request created | **Yes** | Requesting `studentRecordId`, request type, structured requested change, timestamp |
+| Request approved | **Yes** | Deciding actor, timestamp, decision note **where supplied** |
+| Request rejected | **Yes** | Deciding actor, timestamp, **reason — mandatory** (`MM-FR-128`) |
+| Request cancelled by the Student | **Yes** | The **Student** as actor, timestamp, cause |
+| Request expired | **Yes** | **System** actor, timestamp, cause. The actor **MUST NOT** be recorded as a human |
+
+> **Why no new event.** `MM-BR-035` closes the `MM-EVT-*` register at **seven**, and nothing in this amendment
+> reopens it. Audit reaches `BC-24` on `E-20`, the fire-and-forget path this module already uses for every other
+> audited act, so the request workflow needs **no** eighth event and asserts **no** new integration edge.
+
+⛔ An audit record for a change request **MUST NOT** carry a mobile number (`MP-GBR-34`), nor a name, email,
+photograph or any `BC-10` profile field (`MM-BR-015`).
+
 
 ## 18. Notification Integration
 
@@ -1666,6 +1865,23 @@ block had been numbered; the suffix convention is the one documented in §0.2.
 
 ---
 
+### 23.2 Membership change-request criteria — `MM-AC-095` … `MM-AC-103` (9 criteria)
+
+Added at **v1.5** under `ADR-0149`. Every criterion verifies an identifier added by the same amendment.
+
+| ID | Criterion | Verifies |
+|---|---|---|
+| `MM-AC-095` | A change request exists in exactly one of `Pending`, `Approved`, `Rejected`, `Cancelled`, `Expired`; no other value is representable, and no transition outside §2.4a's table is possible | `MM-FR-120`, `MM-FR-121` |
+| `MM-AC-096` | A `Pending` change request leaves the target `MembershipPlan`, every `MM-CFG-*` value and every `Membership` byte-unchanged | `MM-FR-122` |
+| `MM-AC-097` | Approval re-evaluates conditions at approval time; where they no longer hold, approval fails and the request remains `Pending` | `MM-FR-123` |
+| `MM-AC-098` | A `Pending` request older than 7 days reads `Expired`, with its cause recorded; a Student holding one `Pending` request cannot raise a second, and a `Cancelled` request frees the slot | `MM-FR-124`, `MM-FR-125` |
+| `MM-AC-099` | A Student may create a request only at `Self` scope, and may cancel only their own `Pending` request; a cancelled request reads `Cancelled`, is retained, and records actor and cause | `MM-FR-126`, `MM-FR-127` |
+| `MM-AC-100` | A rejection without a reason is refused; an approval without a reason succeeds; the Student message and the staff decision note are returned as separate fields and are never merged | `MM-FR-128`, `MM-FR-129` |
+| `MM-AC-101` | Approving a request and executing the underlying operation do not share a database transaction | `MM-FR-130` |
+| `MM-AC-102` | A `TR-3` Reception read of a change request returns no `price` and no `currency`, while a `TR-1` or `TR-2` read of the same request returns the full record | `MM-FR-131` |
+| `MM-AC-103` | A caller holding approval on `MM-PO-002` activate/deactivate is refused an edit approval and is refused execution of the plan update; `TR-2` is refused approval of an `MM-PO-011` request | §16.3a, `MM-NFR-007` |
+
+
 ## 24. Expert-Discovered Additions
 
 Capabilities **not** in the supplied feature list, found by reviewing the domain against this repository's own
@@ -1805,3 +2021,5 @@ citations remain resolvable, and each leaves a non-blocking successor observatio
 | v1.3 | 2026-08-04 | **Correction of the five findings raised by [`PRD-005_THIRD_INDEPENDENT_REVIEW.md`](PRD-005_THIRD_INDEPENDENT_REVIEW.md) (verdict **B**); recorded in [`PRD-005_TR-1-TR-5_CORRECTION_REPORT.md`](PRD-005_TR-1-TR-5_CORRECTION_REPORT.md).** **`TR-1` (`MM-BR-035` violated by its own table, high):** v1.2's `MM-BR-035` required *every* consumer named in §12 to be reachable on an `MM-BR-006` edge, yet `MM-EVT-006` listed `BC-28`, which appears on **no** BC Map §7 edge at all. Investigation of the primary source shows the review's suggested remedy (a) — de-list `BC-28` and record a second architectural gap — would have recorded a **defect that does not exist**: BC Map §7 is scoped by its own preamble (L292) to *"every edge that crosses a context boundary **in V1**"*, `BC-28` Workflow is a **V2** context (L137, L147), and **no** wholly-V2 context (`BC-07`, `BC-08`, `BC-09`, `BC-28`) has a §7 row. `BC-28`'s absence is §7 working as designed, **not** the `BC-26` tension, in which a **V1** context is named as a consumer with no inbound edge. *(**This justification was later shown to be false and is superseded by v1.4.** §7 **does** contain edges whose consumers are V2 contexts — `E-14` (L318) runs from V1 `BC-13` to the V2 contexts `BC-14` and `BC-15` (L118/L119) — so "no wholly-V2 context has a §7 row" is untrue, and `BC-28`'s absence cannot be shown to be by construction. The fourth independent review raised this as `QR-1`. The **outcome** below stands, and is re-justified in v1.4 on the verified facts alone; the **stated ground for rejecting remedy (a)** does not, and the `BC-28` question is now recorded as `MM-GAP-010a`. The row is annotated rather than rewritten, so the reasoning v1.3 actually published stays auditable — the same convention applied to the v1.1 and v1.2 rows.)* Remedy **(b)** applied instead: `MM-BR-035`'s reachability clause is narrowed to **V1** consumers, and a `(V2)`-annotated consumer is now defined to assert **no V1 edge and no V1 delivery obligation**, may be listed only where BC Map §9 already names it (L411 does), and **MUST NOT** be depended on by any V1 behaviour. `BC-28` is retained with its `(V2)` annotation so §12 does not diverge from the Rank 4 Published Language. `MM-AC-075` re-verified and tightened to test the annotation rule. **No edge invented, no ADR created, BC Map unmodified.** **`TR-2` (coverage figure not reproducible, high):** v1.2 declared **81/81 = 100.0%** and **140/223 = 62.8%**, figures reachable only by scanning each §23 block *including its prose*; the 100% depended on the very sentence stating that four rules were **not** separately covered. A metric that rises when prose about a gap is written measures prose, not verification. §0.2 now defines a **binding strict counting rule** — an obligation is verified **only** if its identifier appears in an `MM-AC-*` *Verifies* cell — and publishes the measured result with a per-register breakdown. **The claim was corrected, not the coverage: no criterion was deleted, weakened or manufactured.** **`TR-3` (false universal claim):** §25.3's *"Every `MM-BR-*`, `MM-INV-*`, `MM-XC-*`, `MM-PO-*` and `MM-EVT-*` now carries at least one verifying `MM-AC-*` — 81/81 = 100.0%"* was untrue and is replaced by the measured statement, naming the four unverified rules explicitly. No requirement weakened, no criterion removed. **`TR-4` (traceability hygiene):** `MM-EVT-001`…`MM-EVT-006`, `MM-PO-003` and `MM-PO-004` were each already tested by an existing criterion whose **text** named them but whose *Verifies* cell did not. The register IDs were added to those **existing** cells — `MM-AC-062`, `MM-AC-024`, `MM-AC-040`, `MM-AC-049`, `MM-AC-042`, `MM-AC-043`/`MM-AC-081`, `MM-AC-027`, `MM-AC-026` — with **no new criterion, no duplicate criterion and no change to any criterion's substance**. Strict coverage consequently rises from **69/81 (85.2%)** to **77/81 (95.1%)**, and from **126/223 (56.5%)** to **134/223 (60.1%)**. **`TR-5` (gap too narrow):** `MM-GAP-010` described only the `BC-02` instance. It is broadened to the systemic Rank 4 defect — BC Map §9 names `BC-26` a consumer for **eleven** producing contexts while §7 declares an inbound edge to `BC-26` from only **one** (`E-26`) — and now poses the general question (must Published-Language consumption carry its own §7 edge?) with the three candidate resolutions, so one ruling settles the class rather than each module PRD re-deriving the same refusal. `BC-28` is explicitly excluded from the gap, with the V1-scope reasoning. Registers unchanged: **332 identifiers, 320 obligation-bearing, 12 `MM-GAP`**, all contiguous, zero duplicates, 97 `MM-AC-*` rows. **No requirement was added, deleted, weakened or renumbered; no scope, status value, event, payload or invariant changed; no ranked or frozen document modified; no ADR created; no API, schema, SQL, UI or test was specified; no code touched; not frozen, not registered, not approved.** |
 | v1.4 | 2026-08-04 | **Correction of the two findings raised by [`PRD-005_FOURTH_INDEPENDENT_REVIEW.md`](PRD-005_FOURTH_INDEPENDENT_REVIEW.md) (verdict **B**); recorded in [`PRD-005_QR-1-QR-2_CORRECTION_REPORT.md`](PRD-005_QR-1-QR-2_CORRECTION_REPORT.md).** **`QR-1` (false claim about a Rank 4 document, medium):** v1.3's §12 note justified retaining `BC-28 (V2)` on the assertion that `BC-28` has no BC Map §7 row *"and neither do the other wholly-V2 contexts `BC-07`, `BC-08` and `BC-09`"*, concluding that the absence was *"that table working as designed, not a defect"*. **The premise is false.** §7 **does** declare edges whose consumers are V2 contexts: `E-14` (L318) runs from **V1** `BC-13` Trust & Safety to `BC-11`, `BC-12` and the **V2** contexts `BC-14` and `BC-15` (L118/L119), and `BC-14` is upstream on `E-22` (L331); the string *"wholly-V2"* appears nowhere in the BC Map. V2 status therefore does **not** entail absence from §7, and `BC-28`'s absence cannot be shown to be by construction. The note is rewritten to rest **only** on facts verified in the primary source — `BC-28` is V2 (L137, L147), §9 L411 names it a consumer, and §7 declares no edge to it — and to state plainly that the BC Map does not distinguish deliberate deferral from omission, which **this document may not settle**. The retention of `BC-28` with its `(V2)` annotation is **unchanged** and is re-justified on the narrow true ground: `MM-BR-035` makes `(V2)` assert **no V1 edge and no V1 delivery obligation**, V1 delivery of `MM-EVT-006` is to `BC-22` on `E-23` alone, so the document is correct under **either** reading and no resolution can falsify it. The suppressed question is now recorded for the architecture owner as **`MM-GAP-010a`** (§25.2), using the suffixed-successor convention already established by `MM-GAP-006a`/`MM-GAP-007a`; `MM-GAP-010`'s parenthetical excluding `BC-28` on the false basis is replaced by a cross-reference, and the v1.3 history row is annotated. **No edge invented, no ADR created, BC Map unmodified, no requirement changed.** **`QR-2` (residual `TR-3`-class claim, low):** §23.1's introduction still asserted that `MM-NFR-014` *"holds for the business-rule, invariant, exclusion, protected-operation and event registers"*, though `MM-BR-012`, `MM-BR-022`, `MM-BR-027` and `MM-BR-028` carry no verifying criterion — the same false universal `TR-3` corrected at §25.3, surviving one section earlier. Qualified to the measured position: full coverage of the invariant, exclusion, protected-operation and event registers, **31 of 35** business rules, with the four exceptions named. **Coverage figures are unchanged and were re-measured to confirm it: 77/81 = 95.1% and 134/223 = 60.1%** — no criterion added, deleted, weakened or manufactured, and no requirement text altered. Registers: **333 identifiers, 320 obligation-bearing, 13 `MM-GAP`** (`MM-GAP-010a` added; obligation-bearing count unchanged because `MM-GAP-*` carries no obligation), all contiguous, zero duplicates, 97 `MM-AC-*` rows. **No requirement was added, deleted, weakened or renumbered; no scope, status value, event, payload or invariant changed; no ranked or frozen document modified; no ADR created; no API, schema, SQL, UI or test was specified; no code touched; not frozen, not registered, not approved.** |
 | v1.4 | 2026-08-04 | **FROZEN — admitted to the documentation baseline by [`ADR-0019`](../../00-governance/adr/ADR-0019-membership-management-prd-v1.4-baseline.md).** `PRD_LIFECYCLE.md` Stage 7 reached, after Stage 5 (`TRACEABILITY_MATRIX.md` **v1.5** §2D — ten `MM-*` registers, **333** identifiers, all contiguous, **0** duplicates, **0** collisions) and Stage 6 (`PRD-005_IMPLEMENTATION_TASKS.md` **v1.0** — **42 tasks `IMPL-400`…`IMPL-441`**, five waves, **223/223 = 100.0%** of obligations claimed), both re-run and **PASS** at exit 0 immediately before admission. `DOCUMENTATION_BASELINE.md` → **BASELINE-2026-08-04-D** with this document listed in §3.3 at **Rank 3** — the **fifth** Rank 3 module baseline and the second `[CORE]` context of the Library cluster to be frozen, so the `E-01` dependency *"membership may not exist without an active enrollment"* is now frozen on **both** sides. `PRD_REGISTRY.md` → v1.6 with the status changed `PLANNED` → **FROZEN**. **No requirement, API, event, payload, invariant, acceptance criterion, business rule, register, coverage figure or scope statement changed in this pass** — the entire diff to this file is this row plus the *Status*, *Date*, *Baseline*, *Rank* and *ADRs applied* header rows. **The version is deliberately preserved at v1.4 and was not renumbered to v1.0**, following the `PRD-003`-at-v1.0 and `PRD-004`-at-v1.2 precedents: Stage 7 confers status, and baseline §7 step 2 increments a version only when *content* changes. Registers unchanged: **333 identifiers, 320 obligation-bearing, 223 criterion-verifiable, 97 `MM-AC-*`, seven `MM-EVT-*` closed at seven by `MM-BR-035`, 13 `MM-GAP-*`**. **Coverage is admitted at its measured value, not rounded up — 77/81 = 95.1% and 134/223 = 60.1%** (`ADR-0019` §2.5), the corrected figures that replaced the false 100% retracted at v1.3 by `TR-2`; the four business rules no criterion verifies (`MM-BR-012`, `MM-BR-022`, `MM-BR-027`, `MM-BR-028`) are named in `ADR-0019` §3.5 and remain open for a post-freeze **clarifying pass**, which needs a changelog entry and no ADR. **Five gaps are admitted OPEN and are NOT ratified by admission** — `MM-GAP-001` (`Q-01` grace period), `MM-GAP-002` (`Q-06` proration), `MM-GAP-005`, `MM-GAP-010` and `MM-GAP-010a` — plus `MM-GAP-006a`/`MM-GAP-007a`, which are carried against the **BC Map** and not against this document; each requires a decision from its named owner, and `ADR-0019` §3 records those owners rather than inventing an answer. `MM-GAP-010` is admitted as **systemic** and supersedes the per-module `SM-GAP-11`/`GCP-06` instance. **No ranked document was amended, no integration edge was added** (despite four recorded temptations), no bounded context was created (still **31**), no global business rule was touched, and `TRACEABILITY_MATRIX.md`, `PRD-005_IMPLEMENTATION_TASKS.md`, `PRD-004` and the three other Rank 3 baselines are **byte-identical**. **§25.4's closing bullet and the task document's §9 are now stale** — both were true when written; they are recorded in `ADR-0019` §3.6 and deliberately **left unmodified**, on the `ADR-0018` §3.4 precedent, so the bytes the fifth independent review verified are preserved. This document is **`FROZEN`, not `VERIFIED`**: **0 of 42 tasks and 0 of 97 acceptance criteria are proven by a test**, so nothing here claims `BC-02` works. Any future change requires **an ADR before the change** (baseline §7 step 1). |
+
+| ⭐ **v1.5** | 2026-09-18 | ⭐⭐ **SUCCESSOR AMENDMENT — the Student-raised MEMBERSHIP CHANGE REQUEST is specified, implementing `Accepted` [`ADR-0149`](../../00-governance/adr/ADR-0149-membership-plan-and-configuration-change-request-workflow-authorization.md) `D-1`…`D-15`. `FROZEN` and Rank 3 are RETAINED.** Executed through `PRD_LIFECYCLE.md` **§4**'s frozen-PRD route, whose step 1 (*"Write an ADR — **BEFORE** the change"*) was satisfied by `ADR-0149`, committed **before** this file was touched. ⭐ **Instrument determined by measurement, not preference:** a separate successor PRD is ⛔ **barred by `PRD_LIFECYCLE` L67** (*"Does another PRD already own the context? **It is an amendment to that PRD, not a new one.**"*) — `PRD-005` owns `BC-02` — the identical ground on which `ADR-0134` **L100** rejected a new identity for `PRD-008`; and a **v2 re-baseline** was rejected as disproportionate on `ADR-0134` **L99**'s method, since it would re-open **333** identifiers for a purely additive change. ⭐ **WHAT IS ADDED — §2.4a, §16.3a, §17.1a and 9 acceptance criteria:** the request concept (`MM-FR-119`), the closed 5-state lifecycle `Pending → Approved | Rejected | Cancelled | Expired` with `Pending` the **only** non-terminal state (`MM-FR-120`, `MM-FR-121`), the non-mutation rule (`MM-FR-122`), approval-time re-evaluation (`MM-FR-123`), the **fixed V1 constants** 7 days and 1 concurrent request (`MM-FR-124`, `MM-FR-125`), Student create at `Self` (`MM-FR-126`), Student self-cancellation (`MM-FR-127`), reason **required on reject / optional on approve** (`MM-FR-128`), message-vs-note separation (`MM-FR-129`), separate transactions (`MM-FR-130`), the `TR-3` field-restricted read (`MM-FR-131`), and the approval allocation for `MM-PO-002` (**`TR-1`** edit · **`TR-1`+`TR-2`** activate/deactivate) and `MM-PO-011` (**`TR-1`** only) in **§16.3a**. ⭐⭐ **EVERY CLOSED REGISTER IS PRESERVED, and that is the whole reason this amendment is lawful in place:** ⛔ **`MM-PO-*` stays at ELEVEN** — the allocation is a role-differentiated grant on the **existing** `MM-PO-002`/`MM-PO-011` rows, the shape `SEAT-PO-016`/`SEAT-FR-028` already uses; ⛔ **`MM-EVT-*` stays at SEVEN** (`MM-BR-035` untouched — request facts travel on `E-20` to `BC-24`, the route `PRD-005` **L172** already relies on); ⛔ **`MM-CFG-*` stays at NINE** — the deadline and cap are **fixed V1 constants**, not configurables, on the `ADR-0036`/BC Map **L540** precedent (*"NOT tenant-configurable"*); ⛔ **`MembershipStatus` stays at SIX** — request status is a **separate** field and **MUST NOT** be merged with it (`MM-FR-121`, the `MM-FR-076` discipline). ⭐ **Only OPEN, contiguous registers grew:** `MM-FR-*` **119 → 143** — `MM-FR-119`…`MM-FR-137`, contiguous from the prior maximum `MM-FR-118`, plus the five suffixed clarifications `MM-FR-119a`, `MM-FR-121a`, `MM-FR-123a`, `MM-FR-127a` and `MM-FR-131a` on the existing `MM-FR-057a` convention — and `MM-AC-*` **97 → 106** (`MM-AC-095`…`MM-AC-103`, contiguous from `MM-AC-094`); ⭐ **total 333 → 366**, re-counted mechanically against the written file rather than asserted. ⚠️ *A working draft of this row stated "`MM-FR` 119 → 132" and "total 333 → 355"; both figures were **wrong** — they omitted the five suffixed clarifications and the last six `MM-FR` identifiers — and they are **corrected here rather than repeated**, on the v1.2/v1.3 precedent of recording a miscount instead of quietly restating it.* ⛔⛔ **NOTHING IS WEAKENED, DELETED OR RENUMBERED:** no existing requirement, invariant, business rule, event, payload, status value, configurable, acceptance criterion or scope statement is altered; ⛔ **`MM-FR-018`/`019`/`020`/`021` byte-unchanged**; ⛔ §2.5's editability table untouched; ⛔ §5.2's transition table untouched. ⛔⛔ **ZERO permission identifiers** — `AUTH-7.22` remains **closed at zero** and ⛔ **`ADR-0132` is NOT reopened**; authorization is expressed through the **derived-capability mechanism** (`ADR-0132` §5.3, 253 identifiers at Rank 3 under `ADR-0087`), in the `LCM-AUTH-007` per-role form. ⛔ **No new action or scope vocabulary** — only **Read · Create · Update · Approve** and **`Self`/`Tenant`**, all pre-existing in `prd-v2/07` **L141-169**. ⛔ **No aggregate root and no BC Map row** — measured precedent: BC Map **L374** gives `BC-04` only `SeatAllocation`·`SeatLayout` **despite** `PRD-006` §10 carrying a complete frozen request workflow. ⛔ **No `BC-23` edge** — local `BC-02` match stands (`MM-FR-030`, `MM-GAP-004`). ⚠️ **TWO ITEMS ARE DISCLOSED AND EXPRESSLY NOT RESOLVED:** **(1) `G-8`** — `PRD-005` **L1444**/**L1442** require the creation flow and plan list to show the amount and price, and `MM-PO-003` **L1322**'s Notes cell reads *"Reception class and above"*, while `AC-7.8` denies Reception financial permissions *"regardless of other roles held anywhere"*; ⭐ this is **pre-existing**, is a **GAP not a CONFLICT** (the Notes cell is prose, disclaimed as role-modelling by `ADR-0019` **L103**), is ⛔ **not caused by and not resolved by** this amendment, and ⛔ **`AC-7.8` is untouched** — owner **Product + Authorization Owner**. **(2) The commercial field set is NOT defined or inferred** — `PRD-023` `CNF-BR-008` assigns that determination to the owning PRD and this amendment declines to make it, which is precisely why the `MM-PO-002` split is **by operation** (`MM-FR-019` proves deactivation alters no price snapshot) rather than by field. ⛔ **Privacy items remain OPEN** — student free text has no authoritative source (`SM-GAP-5`), and ⛔ **no PII, redaction, length or retention rule is invented**; ⚠️ the **Privacy Owner office is VACANT** (`ADR-0080` **L85**) so ⛔ **no privacy sign-off is claimed**. ⛔ **No `MM-GAP-*` is closed** — all 13 stand. ⛔ **No other document's requirements are changed**: `PRD-004`, `PRD-006`, `PRD-023`, `prd-v2/*`, `MASTER_PRD`, the BC Map, `ADR-0132` and `ADR-0149` are **byte-unchanged**; ⛔ **0 code files**. ⚠️⚠️ **AUTHORITY AND ITS LIMITS ARE DISCLOSED, NOT ASSUMED:** the **Domain Owner (Library Domain)** conferral recorded in the header is **scoped to this single act and reverts on completion** (`ADR-0033` §7.1 — *"a conferral for one act is not a standing licence"*), and ⚠️ **Product Owner, Architecture Owner and Domain Owner are exercised by ONE principal**, so ⛔ **no independent review, no ARB quorum and no external Security audit is claimed**. ⛔ **This document remains `FROZEN`, not `VERIFIED`** — **0 of 42** tasks and now **0 of 106** acceptance criteria are proven by a test, so nothing here claims `BC-02` works. ⚠️⚠️ **A FURTHER DEFECT IN THIS SAME AMENDMENT WAS FOUND BY THE COMMITTED CHECKER AFTER THE ABOVE CORRECTION, AND IS RECORDED RATHER THAN QUIETLY REPAIRED:** the per-register rows of **§0.2** were advanced to `MM-FR-n` **143** and `MM-AC-n` **106**, but the **derived total sentence and coverage table immediately beneath them were left at their v1.4 values** — *"Total: 333 identifiers … 320 carry obligation … 223 … verifiable"* and *"134 / 223 = 60.1%"*. ⛔ **A table and the sentences derived from it were edited in separate steps** — the `GCP-08` / `GCP-21` derived-statement class exactly. ⭐⭐ **IT WAS NOT CAUGHT BY REVIEW: [`tool/docs_check/prd005_traceability.py`](../../../tool/docs_check/prd005_traceability.py) reported `MM-FR-n` declared 119 / measured 143 → FAIL and `MM-AC-n` declared 97 / measured 106 → FAIL.** ⭐ **The error was mine and the script disproved me** — the same service §2C's history records (*"stale figures carried through two correction passes until a script disproved them"*, `SR-01`, HIGH). §0.2 now reads **366 / 353 / 247** with coverage **146 / 247 = 59.1%**, ⭐ **corrected to match the measurement — the checker was NOT loosened to match the document.** ⚠️⚠️ **COVERAGE FELL, 60.1% → 59.1%, AND IS PUBLISHED AS MEASURED:** the 9 new criteria verify **12** of the 24 new obligations, so the denominator grew faster than the numerator; ⛔ **the 12 unverified new obligations are NAMED** (`MM-FR-119`, `119a`, `121a`, `123a`, `127a`, `131a`, `132`, `133`…`137`) and ⭐ **writing criteria to order to lift the ratio was DELIBERATELY DECLINED**. ⚠️ **THE CHECKER'S OWN TWO HARDCODED CONSTANTS (119, 97) STILL MIRROR v1.4 AND ARE DELIBERATELY NOT EDITED HERE**, so the script still exits FAIL on those two mirror rows while ⭐ **every substantive check it performs PASSES — contiguity yes/yes, duplicate definitions 0, prefix collisions 0, empty `Verifies` 0, `MM-GAP-*` cited as verifiable 0, dangling identifiers 0**. ⛔ **`tool/` is code, and this is a Domain Owner one-act conferral to amend a PRD, not a Technical Owner conferral to amend a checker** — *"Those are different roles"* (`ADR-0054` **L148**); ⭐ the constant refresh is **routed to the Technical Owner, NOT performed**, and is logged as a **new open item** below. |

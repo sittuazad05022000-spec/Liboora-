@@ -142,6 +142,222 @@ feature artifact.
 
 ## 4. Information architecture
 
+### 4.0 ⭐⭐ APP + ROLE BOUNDARY — the §2B.6 boundary audit
+
+⚠️ **Added by the README §2B.6 boundary audit, under a one-act conferral of
+the human principal of this engagement scoped to THIS SINGLE ACT ONLY** —
+the conducting and recording of that audit. ⛔ **The authority REVERTS ON
+COMPLETION** (`ADR-0033` §7.1: *"a conferral for one act is not a standing
+licence"*).
+
+⭐ This document was written **before** README **§2B**, which **L314** binds
+*"from this point forward"*, and **§2B.6** requires existing Design Docs to
+be **audited, not rewritten**. Before this audit, §2B.6 recorded that
+*"**no boundary audit has been run on either**"* `DD-0001` or `DD-0002`, and
+claimed *"**no verdict**… in either direction"*. ⭐ **That is now discharged
+for `DD-0001`.**
+
+⛔⛔ **THIS SUBSECTION IS A RECORDING ACT, NOT AUTHORIZATION DESIGN.** ⛔ It
+creates **no** role, permission, action, scope, `PERM-*`, operation×role
+mapping, surface, app or requirement; ⛔ it does not amend `PRD-005`,
+`AUTH-7.22`, `ADR-0132`, `ADR-0043` or `AccessRole`; ⛔ it changes **no**
+existing design decision in this document; and ⛔ it does **not** close a gap
+by inventing what the gap is missing.
+
+#### 4.0.1 The five declarations — verdicts
+
+⭐ Vocabulary is **only** §2B.5's four verdicts — **PASS / GAP / CONFLICT /
+TO BE DECIDED**. ⛔ **No `PARTIAL` verdict is invented**; §2B.5 defines none,
+and a declaration that is partly stated is, on **L399**'s test (*"a
+declaration is **missing or unsourced**"*), **`GAP`**.
+
+| # | Declaration | Verdict | Basis — measured, not asserted |
+|---|---|---|---|
+| **D1** | **Target App** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of `APP 1`, `APP 2`, `APP 3` and `platform_admin` in this document. §4.1 separates *"Staff"* from *"Student / parent"*, which is an **audience** split, ⛔ **not the APP vocabulary §2B.3 Declaration 1 mandates**. ⭐ The underlying facts exist and are unchanged; ⛔ the **declaration** does not |
+| **D2** | **Target Role(s)** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of `TR-1`…`TR-5` and `PR-1`/`PR-2`. §4.1 names *"Staff (reception / owner)"* and *"Student / parent"* — ⛔ **exactly the forms §2B.3 lists as not acceptable** (*"staff", "admin", "user"*). ⭐ A role **identifier** is required; a role **word** is not one |
+| **D3** | **Permission Scope** | ⚠️ **GAP** | ⛔ **No authoritative whole-module operation×role source exists for `BC-02`.** See §4.0.2 — this is the declaration the audit examined most closely, and the verdict is **negative on measurement** |
+| **D4** | **Tenant / Library / Platform scope** | ⚠️ **GAP** | ⛔ Measured **3** lowercase `tenant` hits, **all** incidental: §2 duration labelling, §14's `SPX-GAP-007` pointer, §14's error-message rule. ⛔ **0** `MM-XC-*`, **0** `tenantWide`, **0** `MP-RSK-01`. ⭐ §2B.3 lists *"⛔ Silence on scope"* as not acceptable, and **naming a gap is not stating a scope** |
+| **D5** | **Cross-App dependencies** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of *"cross-app"*. ⭐ **Cross-CONTEXT dependencies ARE documented** — §5 names the `BC-05` payment hand-off (*"a later payment must be refused and surfaced for `BC-05`"*) and §17 carries PRD traceability — ⚠️ **but a bounded-context edge is not an app boundary**, and D5 asks which **app** a surface jumps to. ⛔ Undeclared in that vocabulary |
+
+⚠️⚠️ **FIVE `GAP`s, AND THE AUDIT DELIBERATELY DID NOT SOFTEN THAT.** ⭐ The
+`DD-0002` precedent (its §4.0) found *"Declarations 2–5 **already stated and
+sourced**"* and needed to add only D1. ⛔ **`DD-0001` is materially
+different, and the difference was measured rather than assumed:** `DD-0002`
+§4.1 already carried `TR-4`/`TR-5` identifiers and §14.3 already assigned a
+presentation rule to **all 12** of `PRD-004` §8.2's protected operations.
+⛔ **`DD-0001` carries none of that.** ⭐ Copying `DD-0002`'s outcome would
+have been convenient and **false**.
+
+⛔⛔ **CONFLICT WAS TESTED FOR AND NOT FOUND.** §2B.5 **L400** reserves
+`CONFLICT` for *"a source-vs-source or source-vs-code contradiction"*. This
+document **asserts nothing** about apps, role identifiers, permission scope
+or tenancy, and a document that is silent cannot contradict a source.
+⭐ **`GAP` is therefore correct and `CONFLICT` would overstate** — the same
+reasoning `ADR-0149` §11 already recorded for D3.
+
+#### 4.0.2 ⭐⭐ D3 in full — why it stays `GAP` after `PRD-005` v1.5
+
+⭐⭐ **`PRD-005` v1.5 materially advanced D3's input, and that is recorded
+positively.** `Accepted` [`ADR-0149`](../../00-governance/adr/ADR-0149-membership-plan-and-configuration-change-request-workflow-authorization.md)
+and the v1.5 successor amendment added **§16.3a**, the **first genuine
+operation×role matrix for `BC-02` in a ranked document** — 8 rows × the five
+`TR-n` columns, in `ADR-0132` §5.3's existing vocabulary (`Action` ∈ Create /
+Read / Approve / Update; `Scope` ∈ Self / Tenant), with ⛔ **0 `PERM-*`
+minted** and `AUTH-7.22` **untouched and still closed at zero enumerated
+permissions**.
+
+⛔⛔ **BUT IT IS NOT WHOLE-MODULE COVERAGE, AND THE SHORTFALL IS MEASURED:**
+
+| Measurement | Result |
+|---|---|
+| `MM-PO-*` protected operations in `PRD-005` | **11** (`MM-PO-001` … `MM-PO-011`, a **closed list**, unchanged at v1.5) |
+| Of those, carried in §16.3a's role-column matrix | ⛔ **2** — `MM-PO-002` and `MM-PO-011` **only** |
+| Remaining with no ranked operation×role source | ⛔ **9** — `MM-PO-001`, `003`, `004`, `005`, `006`, `007`, `008`, `009`, `010` |
+
+⚠️ **A near-miss was checked rather than counted.** A bare search appears to
+show `MM-PO-003` and `MM-PO-004` inside §16.3a — ⛔ **they are not matrix
+rows.** They occur in one **prose** sentence citing `MM-NFR-008`'s existing
+separation discipline. ⭐ **Inspected at the line rather than counted as a
+hit**, which is the §2D.1 principle this repository applies to substring
+near-misses.
+
+⭐⭐ **The nine remaining operations are still governed only by the informal
+`"class"` language of §16.3** — *"Owner/Manager class"*, *"Reception class
+and above"*, *"Owner class"* — which is precisely what `Accepted`
+[`ADR-0019`](../../00-governance/adr/ADR-0019-membership-management-prd-v1.4-baseline.md)
+**L103** describes as naming the protected operations *"**without modelling a
+role**"*. ⛔ **A class noun is not a `TR-n` identifier**, and D3 requires an
+*operation×role* source.
+
+⛔⛔ **THIS IS THE STRUCTURAL DIFFERENCE FROM `DD-0002`, AND IT IS NOT
+CURABLE HERE.** `DD-0002` D3 resolves to its §14.3, derived *"only from
+`PRD-004` §8.2's **closed matrix**"* of 12 protected operations — ⭐ **a
+whole-module source that already existed**. ⛔ **`PRD-005` has no
+equivalent.** Constructing one — assigning the nine uncovered operations to
+roles — would be **inventing an operation×role mapping**, which README
+§2B.4 rule 4 forbids (*"Permissions come from PRD / ADR / Auth sources
+only"*), which `ADR-0043` **L177** forbids in terms (*"**Do not invent a new
+permission ID**"*), and which this audit's conferral **expressly excludes**.
+⭐ **The gap is therefore recorded, not closed.**
+
+⛔ **`ADR-0132` §7's seven prerequisites are NOT engaged by this finding.**
+That gate governs **minting a permission identifier**, and ⭐ **D3 requires
+none** — it requires only that an existing authoritative source be **cited**.
+⛔ **Prerequisite 7's hard gate on `ADR-0043` §5.1 is neither reached nor
+weakened**, and ⛔ **`ADR-0132` and `ADR-0043` are byte-unchanged.**
+
+#### 4.0.2a ⭐⭐ D3 — the four lawful authorization routes were EXHAUSTED, not assumed closed
+
+⭐ Before `GAP` was retained, each existing route to authoritative
+whole-module coverage for the **nine** uncovered operations — `MM-PO-001`,
+`003`, `004`, `005`, `006`, `007`, `008`, `009`, `010` — was tested against
+the repository. ⛔ **All four close, and each closes for a different,
+measured reason.**
+
+| Route | Question | Measured result |
+|---|---|---|
+| **(a)** `BC-18` / `PRD-001` already holds an operation×role source | Does the authorization context own this allocation? | ⛔ **NO — ZERO.** `grep -rc "MM-PO-" docs/30-product/authentication/` returns **0** across the entire corpus, and **0** `prd-v2/*` file mentions a membership operation. ⭐ `BC-18` owns the **mechanism**, not each module's allocation |
+| **(b)** `ADR-0132` §5.3 derived capabilities can express it | Is the mechanism sufficient *in kind*? | ⭐ **YES in kind — but it does not say WHERE.** Measured: the **253** `LCF-/LCM-/LCO-AUTH-*` precedents live in **`PRD-021A` A1**, the **module's own PRD**, ⛔ **not** in `BC-18`. For `BC-02` that document is **`PRD-005`** |
+| **(c)** An existing instrument already authorizes extending coverage | Does `ADR-0149` reach these nine? | ⛔ **NO — excluded in terms.** Its §5 states it does **not** amend `PRD-005` beyond its own subject and does **not** mark D3 `PASS` (§11). Its §16.3a matrix is confined to `MM-PO-002` and `MM-PO-011` |
+| **(d)** A PO + Authorization Owner route exists | Is there a lawful path at all? | ⭐ **YES — and it is `PRD_LIFECYCLE.md` §4**, the frozen-PRD amendment route. ⛔ **But its destination is `PRD-005` itself** |
+
+⭐⭐ **All four routes converge on one destination: a `PRD-005` amendment.**
+⛔ **That is exactly what this act may not do** — and the proof is this
+repository's own most recent precedent rather than an argument. Coverage for
+`MM-PO-002`/`MM-PO-011` did **not** appear by derivation, inference or design
+note: it required **new ranked requirements** — **`MM-FR-133`**…**`MM-FR-137`**
+— authored into `PRD-005` **§16.3a** under `Accepted`
+[`ADR-0149`](../../00-governance/adr/ADR-0149-membership-plan-and-configuration-change-request-workflow-authorization.md)
+through the full **§4 seven-step route**. ⭐ **The nine remaining operations
+would require the identical treatment: a new ADR, then a `PRD-005` v1.6.**
+
+⛔⛔ **NEITHER IS AVAILABLE TO A DESIGN-DOC BOUNDARY AUDIT.** A Design Doc is
+**UNRANKED** and *"never authority"*; ⛔ it cannot create a ranked
+requirement, and ⛔ recording an allocation **here** would place authority in
+the one document class that may not hold it — the precise error §2B.4 rule 4
+and `ADR-0043` **L177** exist to prevent.
+
+⭐ **The gap is therefore GENUINE, not procedural.** ⛔ It is **not** that the
+answer exists somewhere unread; measured, **the answer does not exist in any
+ranked document**. ⭐ **Recording `GAP` is the accurate finding, and
+manufacturing coverage would have been the defect.**
+
+⛔ **`ADR-0132` §7 remains NOT ENGAGED** — that gate governs **minting a
+permission identifier**, and ⭐ this shortfall needs **none**: the nine
+operations need an **allocation expressed in the existing derived-capability
+vocabulary**, not a `PERM-*`. ⛔ **Prerequisite 7's hard gate over
+`ADR-0043` §5.1 is neither reached, tested nor weakened.**
+
+⭐ **Smallest lawful next action, routed and NOT performed here:** a **Product
+Owner + Authorization (`BC-18`) Owner** one-act conferral to author an ADR
+allocating the nine operations across `TR-1`…`TR-5` in the existing
+`Action` × `Scope` vocabulary, executed as a `PRD-005` **v1.6** §4 successor
+amendment. ⛔ **No part of that act is begun, pre-approved, drafted or
+implied by this audit.**
+
+#### 4.0.2b ⭐ D1, D2, D4 and D5 re-evaluated against existing evidence
+
+⭐ Each was re-tested **independently** against ranked sources, to establish
+whether its `GAP` is *"the fact does not exist"* or *"the fact exists but
+this document has not declared it."* ⛔ **The distinction changes the owner
+of the remedy; it does NOT change the verdict** — §2B.5 **L399** makes a
+declaration that is *"missing **or** unsourced"* a `GAP`, and all four remain
+undeclared **in this document**.
+
+| # | Verdict | Do the underlying facts exist in a ranked source? | Why the verdict still stands |
+|---|---|---|---|
+| **D1** | ⚠️ **GAP** | ⭐ **Partly.** README §2B.1 fixes the three apps and their code homes, and `lib/app/{student,staff,platform_admin}/` exists | ⛔ The **mapping of these 13 surfaces onto APP 1 / APP 2** is a **design** statement only this document can make. ⛔ Measured **0** `APP n` tokens |
+| **D2** | ⚠️ **GAP** | ⭐ **Yes, for the role set** — `PRD-001` §2.4 closes `TR-1`…`TR-5`; `PRD-005` **`MM-FR-137`** now names `TR-4`/`TR-5` explicitly | ⛔ This document still measures **0** `TR-n`. ⭐ Rewriting §4.1's *"Staff (reception / owner)"* into identifiers is **design authorship**, ⛔ not audit recording — and §2B.6 authorises *"audited, **not rewritten**"* |
+| **D4** | ⚠️ **GAP** | ⭐⭐ **YES — decisively, and this is the strongest of the four.** **`MM-XC-014`** excludes *"**Reading or writing another tenant's membership under any circumstance**"*; **`MM-XC-013`** excludes cross-tenant membership; **`MM-AC-094`** verifies that *"no cross-tenant or cross-library membership is representable"* | ⛔ **But the source existing is not the declaration being made.** This document cites **none** of them — measured **0** `MM-XC-*`. ⭐ `DD-0002` reached `PASS` on D4 because **its §14.1 states the scope and cites `SM-8.1`–`SM-8.3`**; ⛔ `DD-0001` has no equivalent subsection |
+| **D5** | ⚠️ **GAP** | ⭐ **Partly** — §5 documents the `BC-05` payment hand-off, a **bounded-context** edge | ⛔ A context edge is **not** an app boundary. ⭐ **S-4 Payment is assigned to the Staff audience**, so on the ranked evidence it is an intra-APP-2 step, ⛔ **but this document nowhere states that in app vocabulary** |
+
+⭐⭐ **D4 IS THE CLEAREST CASE FOR THE DISTINCTION THIS AUDIT REFUSES TO
+BLUR.** ⛔ Its authoritative source is **frozen, ranked and unambiguous** —
+so it would have been easy, and wrong, to mark it `PASS`. ⭐ **`PASS` under
+§2B.5 requires the scope be *"declared and sourced"*, and this document
+declares nothing.** ⛔ Marking `PASS` would record a declaration that a
+reader could not find — the defect §2B.5 exists to expose.
+
+⛔⛔ **WHY THE AUDIT DOES NOT SIMPLY WRITE THE MISSING DECLARATIONS.** ⭐ All
+four are closable by a **recording** act, and `DD-0002` §4.0 is the
+precedent — ⚠️ **but that precedent added only Declaration 1**, because
+`DD-0002` **already carried** D2–D5 in its own §4.1/§14.1/§14.3/§6.3.
+⛔ **`DD-0001` carries none of the four**, so supplying them is **authoring
+four new declarations**, not restating existing ones — ⭐ exactly what
+§2B.6's *"audited, not rewritten"* withholds from an audit act, and the
+**UX Architecture Owner**'s to author.
+
+⭐ **Routed, NOT performed:** a **UX Architecture Owner** act may close
+**D1, D2, D4 and D5** purely by recording facts that already exist in
+ranked sources — ⛔ **no new governance, no PO or Authorization Owner act,
+and no `PRD-005` amendment is required for those four**. ⚠️⚠️ **`D3` is
+different in kind and is NOT closable that way** (§4.0.2a): its fact
+**does not exist in any ranked document**, which **`MM-XC-016`** states
+positively — *"Defining a role, permission or authorisation model"* is
+**excluded from `BC-02`**, and `BC-18` holds **zero** `MM-PO-*`.
+⭐ **So `PRD-005` is barred from defining it and `BC-18` has not: that is the
+gap, and it is real.**
+
+#### 4.0.3 What the audit did NOT do
+
+⛔ **No declaration was upgraded to `PASS` to make this document look
+design-ready.** ⭐ Under §2B.5, `DD-0001` is therefore ⛔ **NOT design-ready**
+— a conclusion this document's own §19 readiness verdict and §18 gap register
+already reach on independent grounds, and which this audit **corroborates
+rather than contradicts**.
+
+⛔ **No `DD-0001-GAP-*` identifier is minted for these five verdicts.** They
+are recorded **here**, in the audit subsection §2B.6 calls for; ⭐ the §18
+register's **12** existing entries are **unchanged**, and ⛔ **none is closed,
+reopened, renumbered or reworded.**
+
+⛔ **The version and status cells are NOT advanced** — this document remains
+**v0.2**, ⛔ **`PROPOSED`**, ⛔ **UNRANKED**. ⭐ That follows the `DD-0002`
+precedent exactly: its §4.0 boundary audit added a subsection and ⛔ **did not
+bump its version or status**, because §2B.6 authorises an **audit**, and
+recording a verdict is not approving a document. ⛔ **This subsection confers
+nothing.**
+
 ### 4.1 Two audiences, one context
 
 `PRD-005` addresses two distinct readers; the IA separates them:

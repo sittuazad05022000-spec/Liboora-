@@ -173,11 +173,11 @@ declaration is **missing or unsourced**"*), **`GAP`**.
 
 | # | Declaration | Verdict | Basis — measured, not asserted |
 |---|---|---|---|
-| **D1** | **Target App** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of `APP 1`, `APP 2`, `APP 3` and `platform_admin` in this document. §4.1 separates *"Staff"* from *"Student / parent"*, which is an **audience** split, ⛔ **not the APP vocabulary §2B.3 Declaration 1 mandates**. ⭐ The underlying facts exist and are unchanged; ⛔ the **declaration** does not |
-| **D2** | **Target Role(s)** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of `TR-1`…`TR-5` and `PR-1`/`PR-2`. §4.1 names *"Staff (reception / owner)"* and *"Student / parent"* — ⛔ **exactly the forms §2B.3 lists as not acceptable** (*"staff", "admin", "user"*). ⭐ A role **identifier** is required; a role **word** is not one |
+| **D1** | **Target App** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4** — **APP 2** (S-1…S-5, S-8…S-12) and **APP 1** (S-6, S-7, S-13, read-only); ⛔ **APP 3 = 0 surfaces**. **13 of 13 assigned.** Sourced to README **§2B.1** and `AUTH-2.5`. *(Prior verdict, correct until §4.0.4 was written: **GAP** — measured **0** `APP n` tokens; retained because the audit's finding was true when made)* |
+| **D2** | **Target Role(s)** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4** by identifier — `TR-1`/`TR-2`/`TR-3` (APP 2), `TR-4`/`TR-5` (APP 1), `PR-1`/`PR-2` **none**. Sourced to `PRD-001` **§2.4** (closed set) and **§2.3**. ⚠️ **Names the AUDIENCE, not the operation×role allocation** — that is **D3**, still `GAP`. *(Prior: **GAP** — measured **0** `TR-n`)* |
 | **D3** | **Permission Scope** | ⚠️ **GAP** | ⛔ **No authoritative whole-module operation×role source exists for `BC-02`.** See §4.0.2 — this is the declaration the audit examined most closely, and the verdict is **negative on measurement** |
-| **D4** | **Tenant / Library / Platform scope** | ⚠️ **GAP** | ⛔ Measured **3** lowercase `tenant` hits, **all** incidental: §2 duration labelling, §14's `SPX-GAP-007` pointer, §14's error-message rule. ⛔ **0** `MM-XC-*`, **0** `tenantWide`, **0** `MP-RSK-01`. ⭐ §2B.3 lists *"⛔ Silence on scope"* as not acceptable, and **naming a gap is not stating a scope** |
-| **D5** | **Cross-App dependencies** | ⚠️ **GAP** | ⛔ Measured **0** occurrences of *"cross-app"*. ⭐ **Cross-CONTEXT dependencies ARE documented** — §5 names the `BC-05` payment hand-off (*"a later payment must be refused and surfaced for `BC-05`"*) and §17 carries PRD traceability — ⚠️ **but a bounded-context edge is not an app boundary**, and D5 asks which **app** a surface jumps to. ⛔ Undeclared in that vocabulary |
+| **D4** | **Tenant / Library / Platform scope** | ⭐⭐ **PASS** | ⭐⭐ **DECLARED at §4.0.4** — **exactly one tenant**; cross-tenant membership is ⛔ **not representable**, not merely filtered. Sourced to **`MM-XC-014`**, **`MM-XC-013`**, **`MM-AC-094`** (ranked, `FROZEN`) and `AUTH-2.5`. *(Prior: **GAP** — the sources existed but this document cited **0** of them)* |
+| **D5** | **Cross-App dependencies** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4 — and the declaration is a measured NEGATIVE: there is NO cross-APP dependency.** The `DD-0002` → S-8 renewal navigation (`PRD-004` **`SM-6.8`**) and the `BC-05` payment hand-off are both **APP 2 → APP 2**; ⛔ a bounded-context edge is **not** an app boundary. *(Prior: **GAP** — measured **0** *"cross-app"*)* |
 
 ⚠️⚠️ **FIVE `GAP`s, AND THE AUDIT DELIBERATELY DID NOT SOFTEN THAT.** ⭐ The
 `DD-0002` precedent (its §4.0) found *"Declarations 2–5 **already stated and
@@ -327,7 +327,18 @@ four new declarations**, not restating existing ones — ⭐ exactly what
 §2B.6's *"audited, not rewritten"* withholds from an audit act, and the
 **UX Architecture Owner**'s to author.
 
-⭐ **Routed, NOT performed:** a **UX Architecture Owner** act may close
+⭐⭐ **SUPERSEDED IN PART — AND THE ROUTING ABOVE WAS ACTED ON, NOT LEFT
+OPEN.** This subsection's four `GAP` verdicts were **correct when written**
+and are retained verbatim as the audit's finding. ⭐ **They are now closed
+by §4.0.4**, which performs exactly the recording act this paragraph
+predicted: **D1, D2, D4 and D5 are `PASS`**, each *stated in this document*
+and *sourced* to an existing authoritative source, with ⛔ **no new
+governance, no PO or Authorization Owner act, and no `PRD-005` amendment**.
+⚠️ **The prior text is NOT rewritten**, because the reasoning that produced
+it — *"the source existing is not the declaration being made"* — is exactly
+what §4.0.4 had to satisfy, and deleting it would hide the standard applied.
+
+⭐ **Original routing, retained verbatim:** a **UX Architecture Owner** act may close
 **D1, D2, D4 and D5** purely by recording facts that already exist in
 ranked sources — ⛔ **no new governance, no PO or Authorization Owner act,
 and no `PRD-005` amendment is required for those four**. ⚠️⚠️ **`D3` is
@@ -338,13 +349,132 @@ positively — *"Defining a role, permission or authorisation model"* is
 ⭐ **So `PRD-005` is barred from defining it and `BC-18` has not: that is the
 gap, and it is real.**
 
+#### 4.0.4 ⭐⭐ DECLARATIONS D1, D2, D4 and D5 — stated here, and sourced
+
+⚠️ **Added under a one-act conferral of the human principal of this
+engagement, scoped to THIS SINGLE ACT ONLY** — the authoring and recording
+of the minimum amendment needed to close **D1, D2, D4 and D5**. ⛔ **The
+authority REVERTS ON COMPLETION** (`ADR-0033` §7.1). ⛔⛔ **`D3` is expressly
+OUT OF SCOPE and is NOT touched** — it remains **`GAP`** on §4.0.2a's
+measured grounds.
+
+⭐⭐ **§2B.5 requires a declaration to be BOTH *stated* and *sourced*. The
+four below are now stated HERE, in this document, each against an existing
+authoritative source.** ⛔ **Nothing below is new design, new product
+behaviour or new authorization**: every cell restates a fact already carried
+by a ranked source or by this document, in the vocabulary §2B.3 mandates.
+
+##### D1 — Target App
+
+| App | In scope? | Roles | Code home | ⭐ Authoritative basis |
+|---|---|---|---|---|
+| ⭐ **APP 2 — Library App** | ⭐ **YES** | `TR-1` Owner · `TR-2` Manager · `TR-3` Reception | `lib/app/staff/{owner,manager,reception}/` | README **§2B.1**; this document's **§4.1** *"Staff"* audience — **S-1, S-2, S-3, S-4, S-5, S-8, S-9, S-10, S-11, S-12** |
+| ⭐ **APP 1 — Student App** | ⭐ **YES** | `TR-4` Student · `TR-5` Parent | `lib/app/student/{student,parent}/` | README **§2B.1**; **§4.1** *"Student / parent"* audience — **S-6, S-7, S-13**, ⭐ **read-only** |
+| ⛔⛔ **APP 3 — Platform Admin** | ⛔⛔ **NO — 0 surfaces** | ⛔ `PR-1` / `PR-2` — **0 surfaces** | — | ⭐ **Measured: 0** of the 13 surfaces address a platform role. `PRD-001` **`AUTH-2.5`** — platform roles *"**MUST NOT** grant access to tenant business data"*; **`MM-XC-014`** forbids reading another tenant's membership *"under any circumstance"* |
+
+⭐ **This is not *"all apps"*** (§2B.3 Declaration 1): it is a **two-app**
+set — **10** surfaces to APP 2, **3** to APP 1, **13 of 13 assigned** — plus
+a **measured zero** for APP 3.
+
+⛔⛔ **Library Owner ≠ Platform Owner.** `TR-1` governs **one tenant** and
+lives in `lib/app/staff/`; `PR-1`/`PR-2` govern **the platform** and live in
+`lib/app/platform_admin/`, which its own `README.md` holds *"reserved,
+deliberately empty."* ⛔ *"Platform Owner"* is **not** cited as an
+authoritative role identifier anywhere in this document — README §2B.2's
+`DSN-APP-GAP-001` prohibition; measured **0** occurrences.
+
+⚠️ **This does NOT close `DD-0001-GAP-001`**, which is the **app-level
+navigation placement of the context root** — a different question, owned by
+the Information Architecture Owner, and ⛔ **left OPEN**.
+
+##### D2 — Target Role(s)
+
+⭐ **The tenant role set is `TR-1`…`TR-5`, and it is CLOSED.** Source:
+**`PRD-001` Authentication §2.4** — `TR-1` Owner, `TR-2` Manager, `TR-3`
+Reception, `TR-4` Student, `TR-5` Parent. Platform roles are `PR-1`/`PR-2`,
+**also closed** (`PRD-001` §2.3: *"Two exist. The set is closed."*).
+
+| Role | This document's surfaces | ⭐ Basis |
+|---|---|---|
+| `TR-1` Owner · `TR-2` Manager · `TR-3` Reception | S-1, S-2, S-3, S-4, S-5, S-8, S-9, S-10, S-11, S-12 | §4.1 *"Staff"*; ⚠️ **per-role differentiation among the three is `D3`, still `GAP`** |
+| `TR-4` Student | S-6, S-7, S-13 — **read-only** | §4.1; `PRD-005` **`MM-FR-137`** names `TR-4` expressly |
+| `TR-5` Parent | ⚠️ **No surface is designed for `TR-5` in this document** | `PRD-005` **`MM-FR-137`** names `TR-5` expressly and denies it **Approve**; ⛔ this document designs no Parent surface and ⛔ **does not decide whether one is owed** |
+| `PR-1` / `PR-2` | ⛔ **None — 0 surfaces** | `AUTH-2.5`; see D1 |
+
+⭐ **`TR-5` Parent is an APP 1 role, ⛔ not an application** — README §2B.4
+rule 5. ⛔ **No role is created, renamed, widened or merged here**, and
+⛔ **`TR-6` and `PR-3` do not exist.**
+
+⚠️⚠️ **D2 states WHICH ROLES USE THIS MODULE. It does NOT state WHICH ROLE
+MAY PERFORM WHICH OPERATION** — that is **D3**, and ⛔ **D3 remains `GAP`**.
+⭐ The two are deliberately kept apart: naming an audience is not granting
+authority, and ⛔ **nothing here may be read as an authorization allocation.**
+
+##### D4 — Tenant / Library / Platform scope
+
+⭐⭐ **Every surface in this document operates within EXACTLY ONE TENANT.
+Cross-tenant and cross-library membership is not merely filtered — it is
+NOT REPRESENTABLE.**
+
+| Claim | ⭐ Authoritative source *(ranked, `PRD-005` `FROZEN`)* |
+|---|---|
+| ⛔ Reading or writing another tenant's membership is **impossible** | **`MM-XC-014`** — *"Reading or writing another tenant's membership **under any circumstance**"* is an exclusion, i.e. **must be impossible** (§1.5) |
+| ⛔ Cross-library / cross-tenant membership does **not exist** as a concept | **`MM-XC-013`** — *"Cross-library or cross-tenant membership (**Future**)"* |
+| ⭐ This is **verified**, not merely asserted | **`MM-AC-094`** — *"no cross-tenant or cross-library membership is **representable**"* |
+| ⛔ Platform scope is **absent** from this module | **`AUTH-2.5`**; and D1's measured **0** APP 3 surfaces |
+
+⭐ **Consequence for design, stated rather than implied:** ⛔ no surface
+offers a tenant selector, a tenant switcher, or any control that names or
+reaches another tenant; ⛔ no list, filter, search or export in **S-1**,
+**S-10** or **S-11** may span tenants. ⚠️ **A staff member acting in the
+wrong tenant remains `SPX-GAP-007`** — ⭐ that is a **presentation /
+identification** gap, ⛔ **not a scope ambiguity**: the scope is fixed by
+`MM-XC-014` and is not in doubt.
+
+##### D5 — Cross-App dependencies
+
+⭐⭐ **There is NO cross-APP dependency. There is exactly one cross-DOCUMENT
+inbound navigation, and one cross-CONTEXT hand-off — both INSIDE APP 2.**
+
+| Dependency | Direction | Crosses an app boundary? | ⭐ Authoritative basis |
+|---|---|---|---|
+| ⭐ **`DD-0002` S-x → this document's S-8 Renewal** | **Inbound** | ⛔ **NO — APP 2 → APP 2** | **`PRD-004` `SM-6.8`** (ranked, `FROZEN`): *"Membership renewal **MUST** be delegated to `BC-02`. This module **MUST NOT** extend a membership term."* ⭐ Recorded from the other side by `DD-0002` §6.3 — *"renewal **navigates out** → `DD-0001` S-8"*. ⭐ Both endpoints are **staff** surfaces |
+| **S-4 Payment → `BC-05` Fee & Collection** | Outbound | ⛔ **NO — a bounded-context edge, not an app boundary** | §5; BC Map **L465** two-stage flow. ⭐ Both stages are **staff** surfaces in **APP 2** |
+| **Authorisation decisions → `BC-18`** | Outbound | ⛔ **NO — a port, not a surface** | §14 — *"Asked of `BC-18`; ⛔ never inferred from visibility"* |
+
+⛔⛔ **A BOUNDED-CONTEXT EDGE IS NOT AN APP BOUNDARY, AND THIS DECLARATION
+DOES NOT TREAT ONE AS THE OTHER.** ⭐ Each dependency above was tested for an
+**authoritative** statement placing its endpoints in **different apps**;
+⛔ **none exists**. `BC-01`, `BC-02` and `BC-05` staff surfaces all live in
+**APP 2** by README §2B.1, so every edge here is **intra-app**.
+
+⛔ **No undeclared jump between apps exists** — §2B.3 Declaration 5's
+prohibition: measured **0** navigations from an APP 1 surface (S-6, S-7,
+S-13) into an APP 2 surface, those three being **read-only**.
+
+##### ⛔ What §4.0.4 does NOT do
+
+⛔ It does **not** touch **D3**, which stays **`GAP`** · ⛔ creates **no**
+role, permission, `PERM-*`, action, scope or operation×role mapping ·
+⛔ amends **no** ranked document — `PRD-005`, `PRD-004`, `PRD-001`,
+`AUTH-7.22`, `ADR-0132`, `ADR-0043` are **untouched** · ⛔ creates **no** ADR
+and **no** new artifact class · ⛔ closes **no** `DD-0001-GAP-*`, including
+**`GAP-001`** · ⛔ changes **no** existing design decision, surface, state or
+flow · ⛔ does **not** advance this document's **version**, **status** or
+**rank**, which remain **v0.2**, **`PROPOSED`**, **UNRANKED** · and
+⛔ **confers nothing** — recording a declaration is not approving a document.
+
 #### 4.0.3 What the audit did NOT do
 
 ⛔ **No declaration was upgraded to `PASS` to make this document look
-design-ready.** ⭐ Under §2B.5, `DD-0001` is therefore ⛔ **NOT design-ready**
-— a conclusion this document's own §19 readiness verdict and §18 gap register
-already reach on independent grounds, and which this audit **corroborates
-rather than contradicts**.
+design-ready.** ⚠️⚠️ **UPDATED BY §4.0.4, WHICH WAS A SEPARATE, LATER,
+SEPARATELY-CONFERRED ACT:** **D1, D2, D4 and D5 are now `PASS`** — ⭐ not
+because the audit softened, but because the **declarations were actually
+written** and sourced. ⛔⛔ **`DD-0001` IS STILL NOT DESIGN-READY**, because
+**D3 remains `GAP`** and §2B.5 requires **all five**; ⭐ this also remains
+consistent with §19 and the **12** open entries in §18, which are untouched.
+⭐ **The audit's own discipline held: the verdict changed only after the
+document changed, never to flatter it.**
 
 ⛔ **No `DD-0001-GAP-*` identifier is minted for these five verdicts.** They
 are recorded **here**, in the audit subsection §2B.6 calls for; ⭐ the §18

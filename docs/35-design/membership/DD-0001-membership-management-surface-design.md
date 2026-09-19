@@ -175,7 +175,7 @@ declaration is **missing or unsourced**"*), **`GAP`**.
 |---|---|---|---|
 | **D1** | **Target App** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4** — **APP 2** (S-1…S-5, S-8…S-12) and **APP 1** (S-6, S-7, S-13, read-only); ⛔ **APP 3 = 0 surfaces**. **13 of 13 assigned.** Sourced to README **§2B.1** and `AUTH-2.5`. *(Prior verdict, correct until §4.0.4 was written: **GAP** — measured **0** `APP n` tokens; retained because the audit's finding was true when made)* |
 | **D2** | **Target Role(s)** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4** by identifier — `TR-1`/`TR-2`/`TR-3` (APP 2), `TR-4`/`TR-5` (APP 1), `PR-1`/`PR-2` **none**. Sourced to `PRD-001` **§2.4** (closed set) and **§2.3**. ⚠️ **Names the AUDIENCE, not the operation×role allocation** — that is **D3**, still `GAP`. *(Prior: **GAP** — measured **0** `TR-n`)* |
-| **D3** | **Permission Scope** | ⚠️ **GAP** | ⛔ **No authoritative whole-module operation×role source exists for `BC-02`.** See §4.0.2 — this is the declaration the audit examined most closely, and the verdict is **negative on measurement** |
+| **D3** | **Permission Scope** | ⭐⭐ **PASS** | ⭐⭐ **DECLARED at §4.0.5** — the authoritative whole-module source is `PRD-005` **v1.6 §16.3b** (ranked, `FROZEN`), covering **all 11** `MM-PO-*` operations across `TR-1`…`TR-5`, under `Accepted` **`ADR-0150`**. *(Prior verdict, correct until `PRD-005` v1.6 existed: **GAP** — only 2 of 11 operations had a ranked source. Retained because the finding was true when made, and because it is what caused the source to be created.)* |
 | **D4** | **Tenant / Library / Platform scope** | ⭐⭐ **PASS** | ⭐⭐ **DECLARED at §4.0.4** — **exactly one tenant**; cross-tenant membership is ⛔ **not representable**, not merely filtered. Sourced to **`MM-XC-014`**, **`MM-XC-013`**, **`MM-AC-094`** (ranked, `FROZEN`) and `AUTH-2.5`. *(Prior: **GAP** — the sources existed but this document cited **0** of them)* |
 | **D5** | **Cross-App dependencies** | ⭐ **PASS** | ⭐ **DECLARED at §4.0.4 — and the declaration is a measured NEGATIVE: there is NO cross-APP dependency.** The `DD-0002` → S-8 renewal navigation (`PRD-004` **`SM-6.8`**) and the `BC-05` payment hand-off are both **APP 2 → APP 2**; ⛔ a bounded-context edge is **not** an app boundary. *(Prior: **GAP** — measured **0** *"cross-app"*)* |
 
@@ -288,7 +288,24 @@ operations need an **allocation expressed in the existing derived-capability
 vocabulary**, not a `PERM-*`. ⛔ **Prerequisite 7's hard gate over
 `ADR-0043` §5.1 is neither reached, tested nor weakened.**
 
-⭐ **Smallest lawful next action, routed and NOT performed here:** a **Product
+⭐⭐ **SUPERSEDED — THE ROUTED ACTION WAS SUBSEQUENTLY PERFORMED, BY THE
+NAMED AUTHORITIES, IN EXACTLY THE FORM PREDICTED.** ⭐ This subsection's
+finding was **correct when written** and is retained verbatim, because it is
+what caused the source to be created. ⭐ The **Product Owner** supplied the
+substantive allocation and the **Authorization (`BC-18`) Owner** formalised
+it, under one-act conferrals recorded in `Accepted`
+[`ADR-0150`](../../00-governance/adr/ADR-0150-bc-02-membership-complete-operation-role-authorization-allocation.md),
+executed as the `PRD-005` **v1.6** §4 successor amendment — ⭐ **the ADR,
+the owners, the vocabulary and the instrument all as this paragraph
+anticipated.** ⭐⭐ **All eleven `MM-PO-*` operations now carry a ranked
+source (§16.3b), so `D3` is `PASS` — see §4.0.5.**
+
+⚠️ **The prior text is NOT rewritten**, because the standard it applied —
+*"the answer does not exist in any ranked document"* — is precisely the test
+that had to be **satisfied**, not argued around, and deleting it would hide
+why the gap was real.
+
+⭐ **Original routing, retained verbatim:** a **Product
 Owner + Authorization (`BC-18`) Owner** one-act conferral to author an ADR
 allocating the nine operations across `TR-1`…`TR-5` in the existing
 `Action` × `Scope` vocabulary, executed as a `PRD-005` **v1.6** §4 successor
@@ -464,15 +481,73 @@ flow · ⛔ does **not** advance this document's **version**, **status** or
 **rank**, which remain **v0.2**, **`PROPOSED`**, **UNRANKED** · and
 ⛔ **confers nothing** — recording a declaration is not approving a document.
 
+#### 4.0.5 ⭐⭐ DECLARATION D3 — Permission Scope, stated here and sourced
+
+⚠️ **Added under a one-act conferral, after `PRD-005` v1.6 became authoritative.** ⛔ **The authority REVERTS ON
+COMPLETION** (`ADR-0033` §7.1).
+
+⭐⭐ **The authoritative operation×role source for every surface in this document is
+[`PRD-005`](../../30-product/membership-management/PRD-MEMBERSHIP-MANAGEMENT.md) **v1.6 §16.3b** — ranked (Rank 3),
+`FROZEN`, covering ALL ELEVEN `MM-PO-*` protected operations across `TR-1`…`TR-5`**, established by `Accepted`
+[`ADR-0150`](../../00-governance/adr/ADR-0150-bc-02-membership-complete-operation-role-authorization-allocation.md)
+(the nine formerly uncovered operations) together with `Accepted`
+[`ADR-0149`](../../00-governance/adr/ADR-0149-membership-plan-and-configuration-change-request-workflow-authorization.md)
+§16.3a (`MM-PO-002`, `MM-PO-011`, **unchanged**).
+
+| Surface(s) | Protected operation | Roles permitted — **per `PRD-005` §16.3b** |
+|---|---|---|
+| **S-1** Plan list | `MM-PO-009` *(list)* | `TR-1` · `TR-2` · `TR-3` — Read/`Tenant` |
+| **S-2** Create / edit plan | `MM-PO-001` *(create)* · `MM-PO-002` *(edit)* | ⭐ **`TR-1` only** for create; edit per §16.3a |
+| **S-3** Membership creation | `MM-PO-003` | `TR-1` · `TR-2` · `TR-3` — Create/`Tenant` |
+| **S-4** Payment step | `MM-PO-004` *(manual activate)* | `TR-1` · `TR-2` · `TR-3` — Update/`Tenant` |
+| **S-5** Membership detail | `MM-PO-008` | ⛔⛔ **`TR-3` DENIED** · `TR-1`/`TR-2` Read/`Tenant` · `TR-4` Read/`Self` · `TR-5` Read/`Linked` |
+| **S-6** Status · **S-7** Validity · **S-13** `PendingPayment` | `MM-PO-010` | `TR-1`/`TR-2`/`TR-3` Read/`Tenant` · `TR-4` Read/`Self` · `TR-5` Read/`Linked` |
+| **S-8** Renewal | `MM-PO-006` | `TR-1` · `TR-2` · `TR-3` — Create/`Tenant` |
+| **S-9** Upgrade | `MM-PO-007` | `TR-1` · `TR-2` · `TR-3` — Create/`Tenant` |
+| **S-10** Expiring lists · **S-11** Reconciliation queue | `MM-PO-009` | `TR-1` · `TR-2` · `TR-3` — Read/`Tenant` |
+| *(void path from S-5)* | `MM-PO-005` | `TR-1` · `TR-2` · `TR-3` — Update/`Tenant` |
+
+⭐ **Coverage is complete: 11 of 11 operations, 5 of 5 roles, every cell explicit.** ⛔ Nothing is inherited,
+implied, or derived from role naming or ordering (`AP-4` / `AUTH-7.7`; `AUTH-7.28`).
+
+⛔⛔ **TWO DESIGN CONSEQUENCES FOLLOW DIRECTLY, AND THEY NARROW THIS DOCUMENT RATHER THAN WIDEN IT:**
+
+1. ⭐⭐ **`TR-3` Reception is DENIED `MM-PO-008`** (`MM-FR-140`), because membership detail includes the **price
+   snapshot** and `AC-7.8` denies Reception financial permissions *"regardless of other roles held anywhere"*.
+   ⛔ **S-5 is therefore NOT a `TR-3` surface**, and ⛔ **no field-restricted variant of it is authorised** — the
+   Product Owner expressly refused to create one.
+2. ⭐ **`TR-2` Manager is DENIED `MM-PO-001`** (`MM-FR-141`), so ⛔ **S-2's *create* path is `TR-1`-only**, plans
+   being commercial configuration which `prd-v2/02` §2.4.1 excludes from `TR-2`.
+
+⚠️ **`TR-4` Student holds no Create or Update anywhere in this module** (`MM-FR-143`) — recorded upstream as
+**`MM-GAP-011`**, **NON-BLOCKING**. ⛔ This document therefore designs **no** student-initiated renewal, upgrade
+or void surface, and ⛔ **must not**, since `AP-3` makes the absence a refusal.
+
+⛔⛔ **AUTHORISATION REMAINS `BC-18`'s TO DECIDE AT REQUEST TIME.** §16.3b is expressed as a **derived
+capability** (`ADR-0132` §5.3), ⛔ **not** an enumerated permission: `AUTH-7.22` stays **closed at zero** and
+⛔ **0 `PERM-*` exist**. ⭐ This table tells the designer **which surfaces a role may reach**; ⛔ it does **not**
+authorise the surface to evaluate anything itself — §14's rule stands: *"Asked of `BC-18`; ⛔ never inferred from
+visibility."*
+
+⛔ **This subsection confers nothing.** ⛔ It creates no role, permission, action, scope, operation or surface;
+⛔ it amends no ranked document; ⛔ it closes no `DD-0001-GAP-*`; and ⛔ it does not advance this document's
+version, status or rank — still **v0.2**, **`PROPOSED`**, **UNRANKED**.
+
 #### 4.0.3 What the audit did NOT do
 
 ⛔ **No declaration was upgraded to `PASS` to make this document look
 design-ready.** ⚠️⚠️ **UPDATED BY §4.0.4, WHICH WAS A SEPARATE, LATER,
 SEPARATELY-CONFERRED ACT:** **D1, D2, D4 and D5 are now `PASS`** — ⭐ not
 because the audit softened, but because the **declarations were actually
-written** and sourced. ⛔⛔ **`DD-0001` IS STILL NOT DESIGN-READY**, because
-**D3 remains `GAP`** and §2B.5 requires **all five**; ⭐ this also remains
-consistent with §19 and the **12** open entries in §18, which are untouched.
+written** and sourced. ⚠️⚠️ **UPDATED AGAIN BY §4.0.5:** ⭐⭐ **D3 is now `PASS`, so ALL FIVE
+§2B.3 declarations are `PASS`** and the §2B boundary requirement is
+satisfied. ⛔⛔ **That does NOT make `DD-0001` design-ready in the broader
+sense**, and this audit does not claim it: §19's readiness verdict and the
+**12** still-open entries in §18 — including **`DD-0001-GAP-001`**,
+`GAP-003`, `GAP-004` and `GAP-005` — are **untouched** and rest on
+independent grounds (accessibility standard, breakpoints, permission-denied
+presentation). ⭐ **The boundary is declared; the design is not therefore
+complete.**
 ⭐ **The audit's own discipline held: the verdict changed only after the
 document changed, never to flatter it.**
 

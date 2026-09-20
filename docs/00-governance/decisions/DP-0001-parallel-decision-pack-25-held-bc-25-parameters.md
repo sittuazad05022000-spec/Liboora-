@@ -728,3 +728,59 @@ formal decision request in
 ⛔⛔ **`DP-0001` is NOT superseded and NOT closed.** ⭐ It remains **OPEN** with ⛔ **0
 authority responses**; ⭐ `DP-0002` addresses the **blockers**, this sheet the
 **parameters**. ⛔ **Coverage unchanged at 79 / 104.**
+
+
+---
+
+## 5E. ⭐⭐ `ADR-0162` — **6 AUTHORIZED**, 19 held *(appended 2026-09-19)*
+
+⭐ `Accepted` **`ADR-0162`** applies the principal's per-track instrument. ⭐ **Coverage
+79 / 104 → 85 / 104.** ⛔⛔ **104/104 NOT claimed.**
+
+### 5E.1 ⭐ The six released
+
+| ID | Scope | `WRITE` | `READ` | Commercial | Released by |
+|---|---|---|---|---|---|
+| ⭐ `ATT-CFG-022` | `Tenant` | **`TR-1`** ✅ | `TR-1`+`TR-2`+`TR-3` ✅ | `NOT COMMERCIAL` | `B-1′` |
+| ⭐ `ATT-CFG-023` | `Tenant` | **`TR-1`** ✅ | `TR-1`+`TR-2`+`TR-3` ✅ | `NOT COMMERCIAL` | `B-1′` |
+| ⭐ `ATT-CFG-024` | `Tenant` | **`TR-1`** ✅ | `TR-1`+`TR-2`+`TR-3` ✅ | `NOT COMMERCIAL` | `B-1′` |
+| ⭐ `SEAT-CFG-005` | `Tenant` | **`TR-1`** ✅ only | **`TR-1`** ✅ only | `NOT COMMERCIAL` | `B-1′` |
+| ⭐ `SEAT-CFG-014` | `Tenant` | **`TR-1`** ✅ only | **`TR-1`** ✅ only | `NOT COMMERCIAL` | `B-1′` |
+| ⭐ `SMCFG-5` | `Tenant` | `TR-1`+`TR-2` ✅, `TR-3` ⛔ | all three ✅ | `NOT COMMERCIAL` | `B-7` |
+
+⭐⭐ **`WRITE` was CONSUMED, not decided** — `PRD-006` §16.3's Owner column and
+`PRD-007` **`SEAT-PO-021`**. ⭐ **`READ` was DECIDED independently** *(`CNF-BR-010`,
+`AUTH-7.24`)* — visibly so: `TR-2`/`TR-3` read what they cannot write on the `ATT`
+three, while the `SEAT` two get `TR-1` **only**.
+
+### 5E.2 ⛔ The nineteen still held
+
+| Group | IDs | Count | Blocker |
+|---|---|---:|---|
+| ⛔ Invitation security | `ICFG-1`…`10` | **10** | `B-3′` — `READ` **0** statements · scope **ambiguous** |
+| ⛔ Face family | `ATT-CFG-013`/`014`/`015`/`016` | **4** | `B-10` ⇒ `B-6` |
+| ⛔ Retention | `CFG-10`, `SCFG-4` | **2** | `B-5′` ⇒ ⛔ **`B-6` external** |
+| ⛔ Self-referential | `CFG-12` | **1** | `B-1″` — ⭐ **legal limb withdrawn**; self-reference survives |
+| ⛔ Reviewer unnamed | `SCFG-2` | **1** | `B-2` — ⛔ named **nowhere** |
+| ⛔ `E-05` contract | `SEAT-CFG-017` | **1** | `B-8′` — ⛔ **Rank-1 BC Map amendment** |
+| | **TOTAL** | ⭐ **19** | |
+
+⭐⭐ **85 + 19 = 104.** ⛔ The inventory is **unchanged**.
+
+### 5E.3 ⚠️⚠️ **§3's routing of `CFG-10` / `SCFG-4` is CORRECTED**
+
+⛔ This sheet addressed both to the **Privacy Owner**. ⭐⭐ **`LR-01` names that office
+among those who CANNOT close the retention question.** ⭐ `ADR-0162` §6.1 corrects it:
+the **value** limb is ⛔ **external** *(`B-6`)*; the **allocation** limb, once the
+value limb clears, belongs to the **Authorization Owner**. ⛔ **`LR-01` is not closed,
+narrowed or re-statused.**
+
+### 5E.4 ⚠️ Three claims in `DP-0002`/`DP-0003` withdrawn as errors
+
+⛔ **(1)** *"`ICFG` scope already determined"* — ⭐ it is **OPEN**; ⚠️ `B-3` is
+**harder**. ⛔ **(2)** *"`CFG-12` engages `B-6`"* — ⭐ **0** measured hits in
+`LEGAL_RISK_REGISTER`. ⛔ **(3)** `B-8`'s authority is **Architecture**, ⛔ not a
+Domain Owner. ⭐⭐ **All three release ZERO parameters.**
+
+⛔⛔ **`DP-0001` remains OPEN** — ⭐ **6 of 25** dispositioned by decision, ⛔ **19
+outstanding**; ⛔ **D3 `PARTIAL` at 85 / 104**; ⛔⛔ **`DD-0007` NOT design-ready.**

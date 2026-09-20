@@ -324,3 +324,35 @@ reusing the repository's established *Pack → Request* pattern.
 
 ⛔⛔ **`DP-0003` decides nothing and proposes no value or allocation.** ⭐ Coverage stays
 **79 / 104**; ⛔ **D3 `PARTIAL`**; ⛔ **`DD-0007` NOT design-ready**.
+
+
+---
+
+## 7. ⭐⭐ DISPOSITION by `ADR-0162` — **3 blockers closed, 3 of THIS pack's own claims CORRECTED** *(appended 2026-09-19)*
+
+| Blocker | Disposition | Params |
+|---|---|---:|
+| ⭐⭐ **`B-1′`** | ✅ **CLOSED — CONFIGURATION act.** ⛔ Not permission/role creation; the **effect** stays in the existing authorization boundary | ⭐ **5 released** · ⛔ `CFG-12` held |
+| ⛔ **`B-2`** | ⛔ **HELD** — reviewer named **nowhere**; `S-3` makes `HOLD` the correct answer | **1** |
+| ⛔ **`B-3`** | ⛔ **HELD** — ⭐ commercial limb **evidenced `NOT COMMERCIAL`**; ⛔ `READ` **0** statements · ⚠️ **scope OPEN, see §7.1 below** | **10** |
+| ⛔ **`B-5`** | ⛔ **HOLD preserved** — ⭐ tested: **neither** Governance nor Architecture has authority. ⭐⭐ **Routing corrected** | **2** |
+| ⛔⛔ **`B-6`** | ⛔⛔ **EXTERNAL — untouched.** ⛔ No `Legal Owner`, ⛔ no legal conclusion, ⛔ `ADR-0137` not overridden | *(gates)* |
+| ⭐⭐ **`B-7`** | ✅ **CLOSED — NOT human-meaningful**, on **5** machine-facing obligations vs **0** human-meaning ones | ⭐ **1 released** |
+| ⛔ **`B-8`** | ⛔ **HELD** — ⭐ `E-05`'s payload is `SeatRules{maxTransfersPerDay, reservationWindow}`; confirming a threshold = **Rank-1 amendment** | **1** |
+| ⛔ **`B-10`** | ⛔ **HELD** — `ATT-GAP-012` is a **BC Map** act; `ATT-GAP-014` **is `LR-01` §5 condition 4** | **4** |
+
+### 7.1 ⚠️⚠️ THREE CLAIMS IN **THIS DOCUMENT** ARE WITHDRAWN AS ERRORS
+
+| # | The claim, as written here | ⛔ Why it is wrong |
+|---|---|---|
+| **1** | `B-3` §5: *"**Scope and `WRITE` are ALREADY DETERMINED**"* for `ICFG` | ⭐ `ADR-0154` **§7 is titled *"expressly NOT batched"*** and concludes *"remain `NOT YET AUTHORIZED`"*; ⭐⭐ `Accepted` `ADR-0158` §2.4a records scope **AMBIGUOUS / Sufficient? NO**. ⚠️ **`B-3` is HARDER than stated** |
+| **2** | `B-6-adj`: *"`CFG-12` … **engages `B-6`**"* | ⭐ Measured **0** hits for `CFG-12`, *"elevated"* and *"elevation"* in `LEGAL_RISK_REGISTER`; `LR-01`'s subject is retention of four named data classes. ⭐ **A word in an owner-of-record cell is not an engagement of a risk register** |
+| **3** | `B-8` §3: authority = *"**`PRD-002` Domain Owner** + Product Owner"* | ⭐ `SEAT-GAP-005`'s own owner column *(`PRD-007` **L2257**)* reads **Architecture** — the act is a **BC Map payload amendment** |
+
+⛔⛔ **All three release ZERO parameters.** ⭐ They are recorded because they were
+**mine**.
+
+### 7.2 ⭐ Current state
+
+⭐⭐ **85 / 104 authorized · 19 held** · ⚠️ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT
+design-ready.** ⭐ **Part B is unchanged and remains the external request of record.**

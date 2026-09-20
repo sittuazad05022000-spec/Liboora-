@@ -1537,3 +1537,25 @@ only; ⛔ **not counted in the ADR register**, ⛔ no ADR number, ⛔ **decides 
 | ⛔ **Expressly NOT done** | ⛔ **No decision made** · ⛔ **0** parameters authorized · ⛔ **no `AUTHORIZE`/`HOLD` status changed** · ⛔ **0** `PERM-*`, roles, actions or scopes · ⛔ **no authority invented** · ⛔ `DD-0007` **not modified** · ⛔ `DP-0001`/`DP-0002` **not superseded or closed** · ⛔ **no `Accepted` ADR edited** |
 | **Coverage** | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT design-ready** |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0162` (2026-09-19)
+
+| Field | Value |
+|---|---|
+| **ADR** | ⭐⭐ **`ADR-0162`** — `BC-25` closure pass: **6 AUTHORIZED**, **3 of my own prior claims CORRECTED**, **19 HELD** |
+| **Status** | ⭐ **Accepted** — Rank 2 |
+| **Supersedes** | ⛔ **NOTHING** — ⛔ no `Accepted` ADR overturned, in whole or in part |
+| ⭐ **Authorized — 6** | `ATT-CFG-022` · `ATT-CFG-023` · `ATT-CFG-024` *(`Tenant`; `WRITE` **`TR-1`** consumed from FROZEN `PRD-006` §16.3; `READ` **`TR-1`+`TR-2`+`TR-3`**; `NOT COMMERCIAL`)* · `SEAT-CFG-005` · `SEAT-CFG-014` *(`Tenant`; `WRITE`/`READ` **`TR-1` only**, on **`SEAT-PO-021`** — which governs *"a module configurable **owned by `BC-25`**"*, and ⭐ **both are `BC-25`-owned**; `NOT COMMERCIAL` **mandated** by `SEAT-FR-279`)* · `SMCFG-5` *(`Tenant`; `WRITE` **`TR-1`+`TR-2`**, `TR-3` ⛔; `READ` all three)* |
+| ⭐⭐ **`B-1′` determination** | **A capability-conferring configuration write is a CONFIGURATION act** — ⛔ **not** the creation of a permission or role. ⭐ The limiting half is enforced: the **effect** stays inside the existing authorization boundary. ⭐⭐ Coherent because **`SEAT-FR-272`'s protected-operation list is CLOSED and already contains the `C` cells** — ⛔ nothing is added |
+| ⭐⭐ **`B-7` determination** | ⛔ **`enrollmentNumber` is NOT human-meaningful** — on **5** measured machine-facing obligations *(`SM-INV-1`; `SM-3.4` step 5 *"**allocate**"*; `SM-3.17` collision-free; `SM-3.5`; `SM-EV-9` *"**searchable**"*)* and ⛔ **0** human-meaning obligations. ⭐ The *"tenant-prefixed sequence"* default is **expressly confirmed as an opaque generation strategy**, ⛔ **not ratified by silence** |
+| ⚠️⚠️ **3 own errors WITHDRAWN** | ⛔ **(1)** *"`ICFG` scope already determined by `ADR-0154` §7"* — ⭐ §7 is titled *"expressly **NOT** batched"* and `Accepted` `ADR-0158` §2.4a records scope **AMBIGUOUS / Sufficient? NO** ⇒ ⚠️ `B-3` is **HARDER** · ⛔ **(2)** *"`CFG-12` engages the legal blocker"* — ⭐ measured **0** hits for `CFG-12` / *"elevated"* / *"elevation"* in `LEGAL_RISK_REGISTER` ⇒ ⭐ **a word in an owner-of-record cell is not an engagement of a risk register** · ⛔ **(3)** `B-8` routed to the *"`PRD-002` Domain Owner"* — ⭐ `SEAT-GAP-005`'s own owner column reads **Architecture** |
+| ⛔ **Held — 19** | `ICFG-1`…`10` **(10)** · Face family `ATT-CFG-013`/`014`/`015`/`016` **(4)** · `CFG-10` · `SCFG-4` · `CFG-12` · `SCFG-2` · `SEAT-CFG-017` |
+| ⛔ **Preserved on express grounds** | `B-2` *(reviewer named **nowhere** — `S-3` makes `HOLD` correct)* · `B-3` *(commercial **evidenced**, but `READ` **0** statements + scope ambiguous)* · `B-5` *(**neither** Governance nor Architecture has authority — `LR-01` L64 makes the Architecture Owner *"custodian of the record **only**"*)* · `B-8` *(`E-05`'s payload is `SeatRules{maxTransfersPerDay, reservationWindow}` — confirming a threshold means **amending a Rank-1 contract**)* · `B-10` *(`ATT-GAP-014` **is** `LR-01` §5 condition 4)* |
+| ⭐ **Routing conflict FIXED** | `DP-0001` §3 addressed `CFG-10`/`SCFG-4` to the **Privacy Owner**, whom **`LR-01` disqualifies**. ⭐ Value limb ⇒ **external**; allocation limb ⇒ **Authorization Owner** |
+| ⛔⛔ **`B-6` untouched** | ⛔ **No `Legal Owner` constituted** *(measured **0**; `ADR-0137` refused it)* · ⛔ **no legal conclusion** · ⛔ **`ADR-0137` not overridden** |
+| **Coverage** | ⭐⭐ **79 / 104 → 85 / 104** · ⚠️ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT design-ready** · ⭐ D1/D2/D5 unchanged, D4 gains **6** at `Tenant` |
+| ⚠️ **Disclosed, not repaired** | `Accepted` `ADR-0155` `D-4` says ⚪ `WRITE` = `N/A` *"for all 11"* while its §2.5 row shows `SCFG-2` **HELD** — ⛔ nothing here depends on it. **Owner: Architecture Owner** · ⚠️ **`DD-0007` v0.9's 79/104 is now STALE by six** — ⛔ outside the permitted change set |
+| ⛔ **Not created** | **0** `PERM-*` · **0** roles/actions/scopes · **0** offices or appointments · **0** edges *(⛔ `E-05` payload unchanged)* · **0** retention periods · **0** legal conclusions · **0** frozen edits · **0** runtime code |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

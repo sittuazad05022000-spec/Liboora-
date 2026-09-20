@@ -462,3 +462,28 @@ the **104** inventory unchanged · ⛔ no `Accepted` ADR edited or superseded by
 | `PRD-023` *(FROZEN)* · `Authentication_PRD_v2` | the §0 constraints, `B-8` scope |
 | `PRD_OWNERSHIP_MODEL` §2.2, §12.1, §16 · `PRD_REGISTRY` **L456** | the authorities |
 | ⭐ `PRD-006_ATT-GAP-017_OWNER_DECISION_REQUEST` | ⭐ **the template pattern reused here** |
+
+
+---
+
+## 10. ⭐⭐ ANSWERED — disposition by `ADR-0162` *(appended 2026-09-19)*
+
+⭐ All five tracks received an answer under a one-act conferral. ⛔ **Status: CLOSED as
+a request sheet.**
+
+| Track | Answer | Params released |
+|---|---|---:|
+| ⭐⭐ **`B-1′`** | **(a) CONFIGURATION act** — with the limiting half enforced. ⭐ `022`/`023` answered **together**; ⛔ `CFG-12` **out of scope here**, held on self-reference | ⭐ **5** |
+| ⛔ **`B-2`** | **(c) HOLD** — ⭐ expressly permitted by `S-3`; reviewer named **nowhere** | **0** |
+| ⛔ **`B-3`** | ⛔ **HOLD** — ⭐ commercial **evidenced `NOT COMMERCIAL`**; `READ` **HELD**; ⭐⭐ `ADR-0158` §2.4b's refusal **CONFIRMED a third time** | **0** |
+| ⭐⭐ **`B-7`** | ⛔ **NOT human-meaningful** — opaque, system-allocated; default **confirmed as a generation strategy**, ⛔ not ratified by silence | ⭐ **1** |
+| ⛔ **`B-8`** | ⛔ **HOLD** — ⭐ `E-05` payload amendment is **Rank 1**; ⚠️ **authority corrected to Architecture Owner** | **0** |
+
+⚠️⚠️ **§4.3 of this sheet is WRONG and is withdrawn:** it states `ICFG` **scope** is
+*"already determined"* by `ADR-0154` §7 and *"must not be re-decided"*. ⭐ `ADR-0158`
+§2.4a records it **AMBIGUOUS**. ⛔ **Scope is OPEN** — ⚠️ `B-3` is **harder**, not
+easier.
+
+⛔ **`B-5`/`B-6`/`B-10` were correctly excluded** from this sheet and remain so.
+
+⭐⭐ **85 / 104 · 19 held · D3 `PARTIAL` · ⛔ `DD-0007` NOT design-ready.**

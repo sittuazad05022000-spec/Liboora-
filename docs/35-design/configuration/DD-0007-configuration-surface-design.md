@@ -9,12 +9,12 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | ⭐ **v0.4** — ⭐⭐ **Authorization coverage 22 / 104 → 39 / 104** by recording `Accepted` **[`ADR-0153`](../../00-governance/adr/ADR-0153-att-cfg-attendance-configuration-authorization-allocation.md)** *(17 `ATT-CFG-*`)*. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed** and **65** stay `NOT YET AUTHORIZED`; ⛔ **7 `ATT-CFG-*` held**. ⛔ `CNF-GAP-002` / `CNF-GAP-007` **still OPEN, Stage 6**. ⛔ D1/D2/D4/D5 unchanged *(prior: **v0.3** — D5 `GAP` → `PASS`)* |
+| **Version** | ⭐ **v0.5** — ⭐⭐ **Authorization coverage 39 / 104 → 49 / 104** by recording `Accepted` **[`ADR-0154`](../../00-governance/adr/ADR-0154-app-3-read-only-bc-25-configuration-surface-and-cfg-platform-default-read-allocation.md)** *(10 `CFG-*`, `READ` = `PR-1` + `PR-2`)*. ⭐⭐ **D1 RESTATED — APP 2 + APP 3 (read-only)**; ⭐⭐ **D5 RE-DECLARED as a POSITIVE cross-app dependency**, ⛔ the v0.3 *"measured NEGATIVE"* being **void**. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed** and **55** stay `NOT YET AUTHORIZED`; ⛔ **7 `ATT-CFG-*` + `CFG-10` + `CFG-12` held**. ⛔ `CNF-GAP-002` / `CNF-GAP-007` **still OPEN, Stage 6** *(prior: **v0.4** — coverage 22 → 39)* |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
 | **Subject PRD** | `PRD-023` Settings & Configuration — **`FROZEN` v0.1**, Rank 3, admitted 2026-08-20 by `ACCEPTED` `ADR-0053` under `BASELINE-2026-08-20-A`. **180 identifiers / 8 registers / 113 obligation-bearing** |
-| ⭐⭐ **Governing authorization authority** | **`ADR-0151`** *(Rank 2, **Accepted** — 22)* **+ ⭐ `ADR-0153`** *(Rank 2, **Accepted** — 17 `ATT-CFG-*`)* — together the **only** operation×role sources for any `BC-25` parameter. ⛔ They cover **39 of 104**; ⛔ the other **65 are NOT authorized** |
+| ⭐⭐ **Governing authorization authority** | **`ADR-0151`** *(Rank 2, **Accepted** — 22)* **+ ⭐ `ADR-0153`** *(Rank 2, **Accepted** — 17 `ATT-CFG-*`)* **+ ⭐ `ADR-0154`** *(Rank 2, **Accepted** — 10 `CFG-*`)* — together the **only** operation×role sources for any `BC-25` parameter. ⛔ They cover **49 of 104**; ⛔ the other **55 are NOT authorized** |
 | **Owner** | UX Architecture Owner *(role, never a personal name)* |
 | **External method** | UI/UX Pro Max skill — `nextlevelbuilder/ui-ux-pro-max-skill` @ **`15de38f`**, MIT. ⚠️ **Reference only, subordinate to every Liboora source** |
 | **Purpose** | Specify the `BC-25` configuration surfaces precisely enough that a Figma prototype or Flutter implementation could be built **without inventing UX, parameters, roles or authority** |
@@ -110,7 +110,8 @@ taken from existing practice, not chosen.
 | 3 | `PRD-002` Library v1.1 | `LCFG-1`…`LCFG-13` definitions; `LIB-16.1`…`16.9`; `LIB-12.4` |
 | 3 | `PRD-005` Membership v1.6 | `MM-CFG-001`…`009` (§13.4); `MM-BR-026` |
 | ⛔ **Unranked** | `PRD-012a` Part 2 *(`DRAFT`)* | `SECP-HRO-005`; `SECP-BR-004` closure rule. ⚠️ **Unranked — `MUST NOT` be cited as authority against any ranked document** (its own header); see §5.3 |
-| 2 | ⭐⭐ **`ADR-0152`** | **The platform-configuration boundary.** `SECP-HRO-005` is a **governance / change-control act**; ⛔ **0** APP 3 runtime configuration surfaces |
+| 2 | ⭐⭐ **`ADR-0152`** | **The platform-configuration boundary.** `SECP-HRO-005` is a **governance / change-control act**; ⛔ **0** APP 3 runtime configuration **write** paths. ⚠️ Its §7 *"surface"* limb and §8.5 are **superseded IN PART and IN EFFECT ONLY** by `ADR-0154` §4.3 — ⛔ `ADR-0152` itself is **byte-unchanged** and remains **`Accepted`** |
+| 2 | ⭐⭐ **`ADR-0154`** | **The APP 3 read-only boundary and the `CFG-*` allocation.** APP 3 **may** hold a **read-only** `BC-25` surface for `PR-1`/`PR-2`; ⛔ **no write path**. Allocates **10** `CFG-*` |
 | 4 | BC Map v1.11 | **L134** `BC-25` row; **L271** FOUNDATIONAL band; **L328** `E-19`; **L331** `E-22` |
 | 7 | `CONFIGURATION_GUIDE.md` v1.2 | §2/§2A/§2B registers; §3 `INV-1`…`INV-16`; §4 profiles + **L829**; §5 change control; §6 observability |
 | — | `DD-0001`…`DD-0006` | Structure, verdict vocabulary, state/loading patterns, App-Boundary QA |
@@ -136,22 +137,22 @@ taken from existing practice, not chosen.
 
 ⭐ Per README §2B.3, all five declarations are stated. ⭐ **Four are `PASS`.**
 ⚠️⚠️ **Declaration 3 is `PARTIAL` and is reported as such — ⛔ NOT rounded to
-PASS**: `ADR-0151` *(22)* and `ADR-0153` *(17)* cover **39 of 104**, and ⛔ the
-other **65 remain `NOT YET AUTHORIZED`**.
+PASS**: `ADR-0151` *(22)*, `ADR-0153` *(17)* and `ADR-0154` *(10)* cover
+**49 of 104**, and ⛔ the other **55 remain `NOT YET AUTHORIZED`**.
 
 | # | Declaration | Value | Verdict |
 |---|---|---|---|
-| **1** | **Target App** | ⭐ **APP 2 — Library App**, for `TR-1`/`TR-2`/`TR-3`. ⛔ **APP 1 = 0 surfaces.** ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces** — `Accepted` **`ADR-0152`** §7, §5.3 | ⭐ **PASS** |
+| **1** | **Target App** | ⭐⭐ **A JUSTIFIED TWO-APP SET** *(README §2B.3 D1: "APP 1, APP 2, APP 3, **or an explicit, justified set**")* — ⭐ **APP 2 — Library App** for `TR-1`/`TR-2`/`TR-3` *(read **and** write)*; ⭐ **APP 3 — Platform Admin** for `PR-1`/`PR-2` *(**READ-ONLY**)*. ⛔ **APP 1 = 0 surfaces.** ⛔ **APP 3 = 0 *writable* surfaces** — `Accepted` **`ADR-0154`** `D-2`/`D-4`, §5.3 | ⭐ **PASS** |
 | **2** | **Target Roles** | ⭐ `TR-1` Owner · `TR-2` Manager · `TR-3` Reception — all `PRD-001` v2.0 §2.4. ⛔ `TR-4`/`TR-5` **excluded**, §5.2 | ⭐ **PASS** |
-| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** *(22)* **+ ⭐ `ADR-0153` §2.3** *(17 `ATT-CFG-*`)* — the operation×role sources. ⚠️ **PARTIAL: 39 of 104 parameters**; ⛔ the other **65 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
-| **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10** · `Library` **8** · `Platform default` **4** (`ADR-0151` §2.3; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
-| **5** | **Cross-App dependencies** | ⭐⭐ **NONE — a measured NEGATIVE.** ⛔ Every authorized surface is **APP 2** (`ADR-0151` §2.3); ⛔ APP 1 = 0 (§5.2); ⛔ APP 3 = 0 (`ADR-0152` §7). ⭐ `E-19`/`E-22` are **bounded-context** edges, ⛔ not app boundaries (`DD-0001` §4.0.4) — §5.4 | ⭐ **PASS** |
+| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** *(22)* **+ ⭐ `ADR-0153` §2.3** *(17 `ATT-CFG-*`)* **+ ⭐ `ADR-0154` §2.5** *(10 `CFG-*`, **READ-only** to `PR-1`/`PR-2`)* — the operation×role sources. ⚠️ **PARTIAL: 49 of 104 parameters**; ⛔ the other **55 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
+| **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10 + 17** · `Library` **8** · `Platform default` **4 + 10** (`ADR-0151` §2.3; `ADR-0153` §2.3; `ADR-0154` §2.5; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
+| **5** | **Cross-App dependencies** | ⭐⭐ **ONE — DECLARED, SOURCED AND ONE-DIRECTIONAL.** The **10** `CFG-*` platform-default parameters are **read** in **two apps**: **APP 2** *(`TR-n`, as resolved effective values)* and **APP 3** *(`PR-1`/`PR-2`, read-only — `ADR-0154` `D-2`/`D-3`)*. ⛔ **No app writes them** (`CNF-FR-020`); ⛔ **no navigation between the two surfaces**; ⛔ APP 1 = 0 (§5.2). ⭐ `E-19`/`E-22` remain **bounded-context** edges, ⛔ not app boundaries (`DD-0001` §4.0.4) — §5.4 | ⭐ **PASS** |
 
 | App | In scope? | Roles | Code home |
 |---|---|---|---|
 | ⭐ **APP 1 — Student App** | ⛔ **NO — 0 surfaces** | — | — |
 | ⭐ **APP 2 — Library App** | ⭐ **YES** | `TR-1` Owner · `TR-2` Manager · `TR-3` Reception | `lib/app/staff/{owner,manager,reception}/` *(verified present)* |
-| ⛔ **APP 3 — Platform Admin** | ⛔⛔ **NO — 0 `BC-25` configuration surfaces** *(`ADR-0152` §7)* | — | — |
+| ⭐ **APP 3 — Platform Admin** | ⭐ **YES — READ-ONLY** *(`ADR-0154` `D-2`)*; ⛔⛔ **0 *writable* surfaces** *(`ADR-0152` §7 limb 3, preserved)* | `PR-1` Platform Administrator · `PR-2` Platform Support | `lib/app/platform_admin/` *(⛔ **reserved, 0 Dart files — implementation NOT authorized**)* |
 
 ### 5.1 ⭐ Why APP 2 = YES
 
@@ -172,16 +173,30 @@ reserved. ⛔ No other app hosts these roles.
 configuration through other modules' behaviour (§18) — ⛔ which is an effect, not
 a surface.
 
-### 5.3 ⭐⭐ Why APP 3 = 0 `BC-25` configuration surfaces — settled by `ADR-0152`
+### 5.3 ⭐⭐ APP 3 holds a READ-ONLY `BC-25` surface and **0 writable** surfaces — settled by `ADR-0152` as superseded in part by `ADR-0154`
 
-⭐⭐ **`Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md)
-(Rank 2) resolves this.** `SECP-HRO-005` *"Change platform configuration"* is a
-**governance / change-control act**; ⛔ it establishes **no** APP 3 runtime
-configuration surface, API or write path (`ADR-0152` §7).
+⭐⭐ **Two `Accepted` Rank 2 ADRs govern this jointly, and the division between
+them is exact.**
+
+| | |
+|---|---|
+| ⭐ **`ADR-0154`** `D-2` | **APP 3 MAY hold a READ-ONLY `BC-25` configuration surface** for `PR-1` and `PR-2` |
+| ⛔⛔ **`ADR-0152` §7 limb 3** *(preserved in full)* | **"No runtime write path to scope 1 exists or may be built"** |
+
+⭐⭐ **`ADR-0154` §4.3 supersedes `ADR-0152` IN PART and IN EFFECT ONLY, in
+exactly two places** — §7's word *"surface"* and §8.5's one table row — on the
+**`ADR-0130`** instrument. ⛔⛔ **`ADR-0152` is byte-unchanged** (md5
+`7fc60c7ff06a8fb6e47c17d88dec9071`) ⛔ **and remains `Accepted`.** ⭐ Its *"API"*
+and *"write path"* nouns, limbs **1**, **2**, **4** and §8.1–§8.4 all **stand
+unamended**.
+
+⭐ `SECP-HRO-005` is **still** a governance / change-control act — ⛔ `ADR-0154`
+does not reclassify it.
 
 | # | Source | Text | Rank |
 |---|---|---|---|
-| 1 | ⭐⭐ **`ADR-0152` §7** | *"`SECP-HRO-005`… is a **GOVERNANCE / CHANGE-CONTROL ACT**. ⛔ It does NOT establish an APP 3 / Platform Admin runtime configuration surface, API or write path."* | ⭐ **2, Accepted** |
+| 0 | ⭐⭐ **`ADR-0154`** `D-2`, `D-4` | *"APP 3 MAY hold a READ-ONLY `BC-25` configuration surface… ⛔ **NO WRITE AUTHORITY IS CREATED FOR ANY ACTOR AT ANY SCOPE**."* | ⭐ **2, Accepted** |
+| 1 | ⭐⭐ **`ADR-0152` §7** *(limb 3, preserved)* | *"⛔ It does NOT establish an APP 3 / Platform Admin runtime configuration… **API or write path**."* ⚠️ The *"surface"* noun is superseded in part | ⭐ **2, Accepted** |
 | 2 | **`CNF-FR-020`** *(`PRD-023`)* | Scope 1 *"**SHALL NOT** be writable at runtime by any actor, **including a platform role**"* | ⭐ **3, FROZEN** |
 | 3 | **`CNF-AC-011`** | *"**No** API, role, actor, environment or maintenance path can write a value at scope 1 at runtime"* | ⭐ **3, FROZEN** |
 | 4 | **`AUTH-2.9`** | *"No tenant role, including Owner, **MAY** confer any platform-level permission."* | ⭐ **3, FROZEN** |
@@ -214,12 +229,19 @@ panel, no platform-admin runtime write path, no platform-admin API, no new
 permission. ⭐ That is now a **recorded governance outcome**, ⛔ no longer merely a
 conservative design choice.
 
-### 5.4 ⭐ Declaration 5 — the measured NEGATIVE
+### 5.4 ⭐⭐ Declaration 5 — ONE declared cross-app dependency
 
-⭐⭐ **There is NO cross-APP dependency for the `BC-25` runtime configuration
-surface.** ⛔ That is a **measured finding**, not an absence of one, and README
-§2B.3 Declaration 5 — *"Cross-App dependencies, **if any**"* — is satisfied by a
-**sourced negative**, exactly as `DD-0001` §4.0.4 was.
+⭐⭐ **There is EXACTLY ONE cross-APP dependency for the `BC-25` configuration
+surface, and it is declared in full at §5.4.5.** ⚠️⚠️ **This REPLACES v0.3's
+*"measured NEGATIVE"*, which is VOID** — ⛔ not re-worded, ⛔ not retained.
+`Accepted` **`ADR-0154`** `D-2` authorises a **read-only APP 3 surface**, which
+falsifies the old premise *"every authorized surface is APP 2"* **by
+construction**.
+
+⭐ README §2B.3 Declaration 5 — *"Cross-App dependencies, **if any**"* — is
+satisfied by a **declared, sourced, one-directional** dependency; ⛔ its stated
+failure mode is an *"**undeclared** jump between apps"*, and ⭐ this is the
+opposite of undeclared.
 
 ⭐ **What IS evidenced — cross-BC:**
 
@@ -249,13 +271,49 @@ its endpoints in **different apps** — the `DD-0001` §4.0.4 method.
 | 2 | `E-19` *All contexts* → `BC-25` | inbound to `BC-25` | ⛔ **NO — a bounded-context edge** | BC Map **L328**; §5.4.2 |
 | 3 | `E-22` `BC-25` → `BC-29` branding media | outbound | ⛔ **NO — a BC edge; both endpoints APP 2** | BC Map **L331** |
 | 4 | APP 1 `TR-4`/`TR-5` | — | ⛔ **NO — 0 surfaces, so no endpoint exists** | ⭐ **§5.2** — four independent sources |
-| 5 | APP 3 `PR-1`/`PR-2` | — | ⛔ **NO — 0 `BC-25` runtime surfaces** | ⭐⭐ **`Accepted` `ADR-0152` §7** |
+| 5 | ⭐⭐ **APP 3 `PR-1`/`PR-2` read-only view of the 10 `CFG-*`** | **APP 3** *(read)* ↔ **APP 2** *(read)* of the **same** scope-1 values | ⭐⭐ **YES — AND IT IS DECLARED** | ⭐⭐ **`Accepted` `ADR-0154`** `D-2`, `D-3`; §5.4.5 below |
 
-⭐⭐ **A feature whose every authorized surface lives in one app cannot contain a
-jump between apps.** ⛔ **No undeclared jump between apps exists** — README
-§2B.3's stated failure mode is measured **absent**: **0** navigations from an
-APP 1 or APP 3 surface into an APP 2 configuration surface, ⭐ those apps holding
-**0** configuration surfaces between them.
+continued at §5.4.5.
+
+#### 5.4.5 ⭐⭐ The ONE cross-app dependency — declared, not discovered
+
+⚠️⚠️ **v0.3's *"measured NEGATIVE"* is VOID and is NOT retained.** It rested on
+the premise *"every authorized surface is APP 2, therefore no jump between apps
+is possible"* — ⛔ a premise `ADR-0154` `D-2` falsifies **by construction**.
+⭐ **The correction is recorded rather than quietly replaced** (`ADR-0154` `D-9`).
+
+⭐⭐ **The dependency, stated in full:**
+
+> ⭐ The **ten** `CFG-*` platform-default parameters — `CFG-1`…`CFG-9`, `CFG-11` —
+> resolve at **scope 1** and are **READ** in **two apps**:
+> · ⭐ **APP 2 — Library App**: `TR-1`/`TR-2`/`TR-3` experience them as **resolved
+>   effective values** behind other surfaces.
+> · ⭐ **APP 3 — Platform Admin**: `PR-1`/`PR-2` may view them **read-only**
+>   (`ADR-0154` `D-3`).
+>
+> ⛔ **The dependency is ONE-DIRECTIONAL and READ-ONLY.** ⛔ **Neither app writes
+> them** — the value originates from the **environment profile at deployment**
+> (`CNF-FR-026`, `CNF-FR-029`) and is unwritable at runtime by **any** actor
+> (`CNF-FR-020`, `CNF-AC-011`).
+> ⛔ **There is NO navigation between the two surfaces**, ⛔ no shared shell, and
+> ⛔ no mixed-role screen — README §2B.4 rules **2** and **7**.
+> ⛔ **APP 1 remains at 0 surfaces** (§5.2).
+
+table—
+
+| Property | Value |
+|---|---|
+| Endpoints | **APP 2** *(read)* · **APP 3** *(read)* |
+| Direction | ⭐ **One-directional** — both are readers of a deployment-supplied value; ⛔ neither calls the other |
+| Action | ⭐ **READ only** — `AUTH-7.24`: *"Read **MUST NOT** imply any other action"* |
+| Shared UI | ⛔ **NONE** — materially different UX, documented separately (README §2B.4 rule **3**) |
+| Writer | ⛔ **NONE at runtime** — environment profile at deployment |
+
+⭐⭐ **README §2B.3 Declaration 5 asks for cross-app dependencies *"if any"*, and
+names the failure mode as *"an **undeclared** jump between apps."*** ⭐ A
+**declared, sourced, one-directional** dependency satisfies the declaration; ⛔ a
+concealed one would not. ⛔ **Nothing is rounded up here** — the declaration is
+*larger* than v0.3's, not smaller.
 
 #### 5.4.2 ⛔⛔ `E-19` is a BOUNDED-CONTEXT edge and MUST NOT be treated as an APP boundary
 
@@ -364,21 +422,26 @@ corrected here rather than quietly replaced.
 | 4 | Parent inside APP 1, not separate | ⭐ **PASS** *(vacuously — `TR-5` has **0** surfaces, §5.2)* |
 | 5 | Student data scoped to self | ⭐ **PASS** *(vacuously — `TR-4` has **0** surfaces)* |
 | 6 | `TR-1`/`TR-2`/`TR-3` differences respected | ⭐ **PASS** — `ADR-0151` §2.3 gives three distinct row treatments (§12) |
-| 7 | Platform roles separated (`AUTH-2.5`) | ⭐ **PASS** — ⛔ APP 3 holds **0** `BC-25` configuration surfaces (`ADR-0152` §7); `AUTH-2.5` untouched |
+| 7 | Platform roles separated (`AUTH-2.5`) | ⭐ **PASS** — ⭐ APP 3's surface is **READ-ONLY** and its parameters resolve at **scope 1**, which `PRD-023` **L316** places outside tenant settability; ⭐ `CFG-*` are therefore **platform-level objects**, ⛔ **not tenant business data**, so `AUTH-2.5`/`AUTH-7.13`/`AUTH-7.61` are **not engaged** (`ADR-0154` §3.2). ⛔ **0 tenant-role authority granted**; ⛔ `PR-1`/`PR-2` granted **separately**, never merged |
 | 8 | Figma preserves boundaries | ⭐ **PASS by construction** — ⛔ gate is **BLOCKED** (§25) |
 | 9 | No mixed-role shell | ⭐ **PASS** — one surface, three role treatments, ⛔ not one screen greyed by role (§12.4) |
 | 10 | Tenant scope explicit | ⭐ **PASS** — `CNF-INV-003`/`004`; every row carries a scope |
-| 11 | Cross-app dependency named | ⭐ **PASS** — §5.4; ⭐ named as a measured **NEGATIVE** |
-| 12 | No permission inferred from visibility | ⭐ **PASS** — §12.5; every cell traces to `ADR-0151` §2.3 |
+| 11 | Cross-app dependency named | ⭐ **PASS** — §5.4.5; ⭐⭐ named as **ONE DECLARED, one-directional, read-only** dependency *(⚠️ v0.3's measured negative is **void**)* |
+| 12 | No permission inferred from visibility | ⭐ **PASS** — §12.5; every cell traces to `ADR-0151` §2.3, `ADR-0153` §2.3 or `ADR-0154` §2.5 |
 | 13 | Evidence cited per declaration | ⭐ **PASS** |
 
-⭐⭐ **13 of 13 PASS · 0 GAP** — ⭐ advanced from **11/13** at v0.1 (`ADR-0152`
-closed check 7) and from **12/13** at v0.2 (check 11 closed at v0.3, §5.4).
+⭐⭐ **13 of 13 PASS · 0 GAP** — ⭐ advanced from **11/13** at v0.1, **12/13** at
+v0.2, **13/13** at v0.3; ⭐ **held at 13/13 at v0.5 by re-earning check 11 in the
+opposite form**.
 
-⭐⭐ **13/13 is reached WITHOUT inventing anything.** ⛔ No cross-app dependency
-statement was manufactured; ⭐ the declaration is a **measured negative**, sourced
-to `ADR-0151` §2.3, `ADR-0152` §7, §5.2 and `DD-0001` §4.0.4 — ⭐ the same
-instrument `DD-0001` used to record **D5 PASS** on a measured negative.
+⚠️⚠️ **Check 11 was RE-EARNED, NOT CARRIED FORWARD.** ⛔ v0.3 passed it on a
+**measured negative**; that negative is now **false**. ⭐ It passes at v0.5
+because the dependency is **declared, sourced and one-directional** (§5.4.5) —
+⭐ a different route to the same verdict, ⛔ not the same claim restated.
+
+⭐⭐ **13/13 is reached WITHOUT inventing anything**, and ⛔ **without rounding**:
+⭐ check 7 is re-argued from `PRD-023` **L316** rather than from *"APP 3 = 0"*,
+and ⭐ check 11 is re-argued from `ADR-0154` `D-2`.
 
 ⚠️⚠️ **THIS IS NOT A ROUNDING-UP, and the distinction is stated because v0.2
 expressly warned against one.** ⛔ `CNF-GAP-002` *(7 consumers / 0 providers,

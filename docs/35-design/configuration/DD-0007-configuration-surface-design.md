@@ -400,9 +400,15 @@ Owner (§22).
 #### 5.4.5 ⭐ Verdict
 
 ⭐⭐ **Declaration 5 = `PASS`** — the cross-app dependency position is
-**declared** (there is none) and **sourced** (`ADR-0151` §2.3 · `ADR-0152` §7 ·
-§5.2 · `DD-0001` §4.0.4 · BC Map **L328**/**L331**), which is what README §2B.5
-requires.
+**declared** and **sourced**, which is what README §2B.5 requires.
+
+⚠️⚠️ **AT v0.5 THE CONTENT OF THAT DECLARATION IS INVERTED, AND THE PASS IS
+RE-EARNED RATHER THAN CARRIED FORWARD.** ⛔ v0.3 declared *"there is none"*;
+⭐ v0.5 declares **ONE** — the APP 2 ↔ APP 3 read-only dependency at §5.4.5,
+sourced to `Accepted` **`ADR-0154`** `D-2`/`D-3`. ⛔ **The old negative is void,
+not re-worded.** ⭐ README §2B.3 asks for cross-app dependencies *"**if any**"*,
+so ⭐ **both a sourced negative and a declared positive satisfy it** — ⛔ what it
+forbids is an *undeclared* jump.
 
 ⚠️⚠️ **SELF-REPORTED CORRECTION — v0.2's four numbered blockers were all
 FACTUALLY TRUE, and every one of them is preserved above.** ⛔ What was wrong was
@@ -1338,7 +1344,8 @@ is that ADR, and it did not exist until after v0.1 was committed.
 | One parameter, one write — ⛔ no bulk save | `CNF-FR-067` | — | §15.2 | ⚠️ **Design Recommendation** |
 | ⛔ No optimistic UI | `CNF-BR-007`, `CNF-INV-004` | — | §15.4 | ⚠️ **Design Recommendation** |
 | `TR-3` gets no scope selector | `CNF-FR-081` extended | — | §12.4 | ⚠️ **Design Recommendation** |
-| ⭐ **APP 3 = 0 `BC-25` configuration surfaces**; `SECP-HRO-005` is a governance act | **`ADR-0152`** §7 | **Rank 2, Accepted** | Declaration 1 → **PASS** | ⭐ **Accepted ADR Decision** |
+| ⭐ **APP 3 = 0 `BC-25` *writable* surfaces**; `SECP-HRO-005` is a governance act. ⚠️ §7's *"surface"* limb and §8.5 **superseded IN PART** by `ADR-0154` §4.3 | **`ADR-0152`** §7 *(limb 3 preserved)* | **Rank 2, Accepted** | Declaration 1 → **PASS** | ⭐ **Accepted ADR Decision** |
+| ⭐⭐ **APP 3 MAY hold a READ-ONLY `BC-25` surface**; the **10** `CFG-*` allocated `READ` = `PR-1` + `PR-2`, `NOT COMMERCIAL`, `Platform default` | ⭐⭐ **`ADR-0154`** `D-2`, `D-3`, §2.5 | **Rank 2, Accepted** | Declarations **1**, **3**, **4**, **5** | ⭐ **Accepted ADR Decision** |
 | Concurrency behaviour | ⛔ **`DD7-GAP-011`** | — | Journey 8 | ⛔ **Open Product Decision** |
 | `C-4` change-history readers | ⛔ **`DD7-GAP-008`** | — | `C-4` | ⛔ **Open Product Decision** |
 | Branch / user scope surfaces | `CNF-GAP-003`, `CNF-FR-011` | — | ⛔ Not designed | ⭐ **Future / V2** |
@@ -1392,12 +1399,13 @@ cleared; was 5 at v0.1)*:
 | # | Blocker | Reference |
 |---|---|---|
 | 1 | ⭐ ~~Declaration 1 is `GAP`~~ — **CLEARED** at v0.2 by `Accepted` `ADR-0152` | ⭐ **RESOLVED** |
-| 2 | ⭐ ~~Declaration 5 is `GAP`~~ — **CLEARED** at v0.3; ⭐ the cross-app position is a **sourced negative** | ⭐ **RESOLVED** — §5.4 |
+| 2 | ⭐ ~~Declaration 5 is `GAP`~~ — **CLEARED** at v0.3; ⚠️⚠️ **RE-EARNED at v0.5 in the OPPOSITE form** — ⛔ the sourced *negative* is **void**; ⭐ the dependency is now **declared positive** | ⭐ **RESOLVED** — §5.4.5 |
 | 3 | ⛔ **UI Design System does not exist** — no tokens, type scale or a11y targets to bind to | `DD7-GAP-007` |
 | 4 | ⛔ **No NFR budgets** — no breakpoint or target size may be drawn | `DD7-GAP-009` |
 | 5 | ⛔ **Surface `C-4` has no authorized reader** | `DD7-GAP-008` |
+| 6 | ⚠️ **Surface `C-5` (APP 3 read-only viewer) is AUTHORIZED but NOT DESIGNED**, and ⛔ **APP 3 implementation is not authorized** | ⭐ `ADR-0154` `D-7`; §11.1 |
 
-⭐ 3 of 4 surfaces are **specified** well enough to prototype once 3–5 clear;
+⭐ 3 of 5 surfaces are **specified** well enough to prototype once 3–6 clear;
 ⛔ the gate is a governance state, not a completeness state.
 
 ⚠️⚠️ **Clearing D5 does NOT open the gate, and ⛔ it must not be read as doing
@@ -1412,22 +1420,23 @@ so.** ⭐ Three blockers stand, and ⚠️ **Declaration 3 remains `PARTIAL` at
 
 | Dimension | Result |
 |---|---|
-| Surfaces specified | ⭐ **3 of 4** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED |
-| Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** *(⚠️ incl. the 17 newly **authorized** `ATT-CFG-*` — `DD7-GAP-003` open)* |
-| Authorization coverage | ⚠️ **39 / 104 = 37.5%** — ⭐ **22** `ADR-0151` + ⭐ **17** `ADR-0153` |
+| Surfaces specified | ⭐ **3 of 5** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED; ⚠️ **`C-5` AUTHORIZED but NOT DESIGNED** |
+| Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** *(⚠️⚠️ incl. the **17 authorized** `ATT-CFG-*` and the **10 authorized** `CFG-*` — ⛔⛔ **AUTHORIZED ≠ DESIGNED**; `DD7-GAP-003` open)* |
+| Authorization coverage | ⚠️ **49 / 104 = 47.1%** — ⭐ **22** `ADR-0151` + ⭐ **17** `ADR-0153` + ⭐ **10** `ADR-0154` |
 | §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ **D3 `PARTIAL`** · ⭐ D4 **PASS** · ⭐ D5 **PASS** |
 | App-Boundary QA | ⭐⭐ **13 / 13 PASS**, 0 GAP |
 | New `PERM-*` / roles / actions / scopes | ⛔ **0 / 0 / 0 / 0** |
 | Frozen documents modified | ⛔ **0** |
 | Runtime code changed | ⛔ **0 lines** |
 
-⛔⛔ **`DD-0007` is STILL NOT design-ready under README §2B.5** — ⭐ and v0.3
-narrows the reason to **one**, rather than removing it.
+⛔⛔ **`DD-0007` is STILL NOT design-ready under README §2B.5** — ⭐ v0.5 moves
+coverage, ⛔ **it does not remove the blocker**.
 
 ⚠️⚠️ **DECLARATION 3 IS STILL THE SOLE REMAINING BLOCKER, AND IT IS THE REAL ONE.**
-⛔ `ADR-0151` *(22)* and `ADR-0153` *(17)* are the **only** operation×role
-sources for any `BC-25` parameter and together they cover **39 of 104**. ⛔ The
-other **65 remain `NOT YET AUTHORIZED`** — ⛔ no role, ⛔ no action class, ⛔ no
+⛔ `ADR-0151` *(22)*, `ADR-0153` *(17)* and `ADR-0154` *(10)* are the **only**
+operation×role sources for any `BC-25` parameter and together they cover
+**49 of 104**. ⛔ The
+other **55 remain `NOT YET AUTHORIZED`** — ⛔ no role, ⛔ no action class, ⛔ no
 scope, ⛔ no `PERM-*`. ⭐ Under README §2B.5 an unsourced declaration is not
 design-ready, ⭐ and **`PARTIAL` is disclosed exactly as measured**, ⛔ never
 rounded to `PASS`. ⭐ **This document is the classification.**

@@ -852,3 +852,169 @@ durability model would produce a number with no referent.**
 | **v1.6** | 2026-09-08 | ⭐⭐ **A ninth role — `DATA / EVENT` — is constituted and conferred FOR ONE ACT ONLY, under `Accepted` [`ADR-0118`](../adr/ADR-0118-data-event-office-conferred-for-bc-30-queue-depth-act-only.md)** — to decide the `BC-30` Offline Sync queue-depth / backpressure bound (Item 7b). Derived from **Rank 1** `MP-NFR-04` (`MASTER_PRD.md` **L498**), which names the office verbatim while this document defined it **nowhere** (measured **0**); ⚠ the **compound name is preserved and not split**. ⭐ Written as a **separate** ADR from `ADR-0117` on the `ADR-0103`/`ADR-0104` reasoning — two offices, two conferrals, two subjects; an omnibus would claim one standing grant where two per-act conferrals were made. ⛔ **Not a standing licence** (`ADR-0033` §7.1); **VACANT** outside the act; no holder or personal name (§7 rule 4). ⛔⛔ **No queue-depth value or backpressure policy is decided**, and ⚠ **the act is not yet exercisable** — it is sequenced behind Item 3, whose durability model does not exist, so **Item 7b remains BLOCKED behind Item 3**. Recorded by **APPEND** beneath §14 in the same commit; both pure appends; every pre-existing line byte-identical; **0** citations shifted. |
 
 ⚠ The L6 `Version` field is again **NOT edited** — pre-existing staleness, disclosed and not repaired.
+
+---
+
+## 16. ⭐ A tenth office — the `Authorization Owner` — constituted by derivation under `ADR-0159` (2026-09-19)
+
+> **Recorded by APPEND, for the reason §9, §10, §11, §12, §13, §14 and §15 all give.** Re-measured this
+> pass: **380** line-citations point into this document across **77** distinct lines — **L85** (×72),
+> **L197** (×35), **L418** (×30), **L509** (×20), **L83** (×17), **L284** (×16) — and the highest
+> **genuine** cited line is **L509**. Appending below **L854** invalidates ⭐ **0**; inserting a row into
+> §2.2's role table would silently misdirect every citation beneath it, in **Accepted** ADRs and in
+> `DOCUMENTATION_BASELINE.md`. **No existing line of this document is modified by this section.**
+
+### 16.1 The office
+
+| Role | Decides | Attests | ⛔ Never decides |
+|---|---|---|---|
+| ⭐ **Authorization Owner** *(the anchored long form used in the repository: **Authorization (`BC-18`/`PRD-001`) Owner**)* | Which **existing** role may exercise which **existing** protected operation, at which **existing** action and scope — i.e. the **allocation** of authorization; the resolution of **authorization-semantic** configuration parameters; the `AP-4`/`AP-8` relationship (`ADR-0132` §7 row 4); and, should a permission catalogue ever be populated, the **naming convention**, per-permission **category / action class / mandatory scope**, and the demonstration that a derived mechanism will not serve (`ADR-0132` §7 rows 2, 5, 6) | That an authorization allocation demanded by an existing rule has been **decided**, so a gate or design conditioned on it can be evaluated | ⛔ Boundaries, ranks or permitted edges (**Architecture Owner**) · ⛔ scope, priority or acceptance (**Product Owner**) · ⛔ domain correctness (**Domain Owner**) · ⛔ implementation or sequencing (**Technical Owner**) · ⛔ document status or freeze (**Governance Owner**) · ⛔ whether personal-data processing is permissible (**Privacy Owner**, §9.1) · ⛔ security review or security decision (**Security Owner**, §17.1) · ⛔⛔ **the minting of a `PERM-*` identifier**, which `ADR-0132` §7 row 7 reserves to an **Architecture Owner** act superseding `ADR-0043` §5.1 · ⛔ its own conferral, and ⛔ its own scope |
+
+⭐ **One holder, per §3 rule 1.** ⛔ **No personal name is recorded**, per §7 rule 4. The office is
+**vacant as constituted** — constituting an office does not fill it, and nothing in this document
+appoints anyone.
+
+⭐⭐ **This is a STANDING office, not a one-act conferral** — unlike §13, §14 and §15. The rules it
+serves are continuing obligations, and ⭐ **three `Accepted` ADRs have already exercised it**.
+
+⚠️⚠️ ⛔ **A governance office is not a runtime role.** Constituting this office adds **nothing** to
+`AUTH` ch.07: the platform register stays **closed at two** (`PR-1`, `PR-2`) and the library register
+**closed at five** (`TR-1`…`TR-5`). ⛔ **0** `PERM-*` exist, and ⛔ **allocation is not minting**.
+
+### 16.2 Derivation — seven rules that already required it, three of them already exercised
+
+⭐ `ADR-0159` applies §2.1's own method. §2.1's minimality clause is a **conditional test** — a further
+role is excluded *if and only if* **no rule serves it** — and the test is **met, not overridden**.
+
+| # | Rule | Where | Rank / status | What it demands |
+|---|---|---|---|---|
+| 1 | ⭐⭐ **The authorization concern, expressly unmergeable** | `ARCHITECTURE_RULINGS.md` **L230**, **L232** | ⭐ **5** | *"**Authorization** \| Tenant roles \| `BC-18` Identity & Access — **authorization concern**, evaluated with a tenant in scope"*, immediately followed by *"**Do not merge Authentication and Authorization responsibilities.**"* |
+| 2 | Five permission-minting prerequisites, each naming this office | `ADR-0132` §7 rows 2, 3, 4, 5, 6 | **`Accepted`** | A named authority for the naming convention, the catalogue's lawful home, the `AP-4`/`AP-8` relationship, per-permission category/action/scope, and the no-derived-mechanism demonstration |
+| 3 | The `BC-02` operation×role allocation | `ADR-0150` **L8** | ⭐⭐ **`Accepted` — already exercised** | *"The **Authorization Owner** conferral is recorded **in this ADR**, the instrument that exercises it"* |
+| 4 | The `BC-25` configuration allocation (22 parameters) | `ADR-0151` **L8** | ⭐⭐ **`Accepted` — already exercised** | the same sentence |
+| 5 | The `ATT-CFG` allocation (17 parameters) | `ADR-0153` **L8** | ⭐⭐ **`Accepted` — already exercised** | the same sentence |
+| 6 | `SAAS-GAP-004` — *"No enumerated permission for settlement, for any role"* | `PAYMENT_GOVERNANCE_RESOLUTION.md` **L104** | open | Owner recorded as *"**Authorization owner** (`BC-18`/`PRD-001`) + **Product Owner**"* |
+| 7 | Routing target of open items | `ADR-0155` `S-3` · `ADR-0157` `SE-2` · `ADR-0158` `R-3`, `R-7`, `O-3`, `O-7` | four **`Accepted`** ADRs | A routing target that does not exist is an item that can **never** be actioned |
+
+**Measured, repository-wide, before `ADR-0159`:** *"Authorization Owner"* occurs ⭐ **70** times across
+⭐ **25** files — and ⛔⛔ **0** times in this document. ⭐ **The office was never missing from
+practice; only from the document whose purpose is to define offices.** §2.3's *"role vocabulary is
+reused, not invented"* rule is satisfied by those 70 occurrences, and the **anchored compound form**
+is preserved rather than renamed.
+
+⚠️ **The circularity objection, answered rather than avoided.** `ADR-0033` §7.1 warns against unbounded
+self-authorisation. The authority is **not created here**: **L230** already assigns the authorization
+concern at **Rank 5**, and `ADR-0150`/`0151`/`0153` already exercised it under direct conferral. This
+section **writes down an authority that pre-exists it**. Refusing to write it down would not remove
+the authority — it would only keep it undocumented.
+
+### 16.3 Why none of the other nine can absorb it
+
+| Candidate | Why not |
+|---|---|
+| **Architecture Owner** | ⛔ Foreclosed by measured practice: `ADR-0155` records `S-3` *(**Authorization Owner**)* and `S-4` *(**Architecture Owner**)* as **two distinct decisions in one ADR**, as does `ADR-0157` with `SE-2` and `SE-4`. Merging would overturn two **`Accepted`** ADRs by side effect |
+| **Product Owner** | ⛔ `ADR-0150`/`0151`/`0153` each record a **joint Product Owner + Authorization Owner** conferral — ⭐ a joint conferral is only meaningful if the offices differ. §2.2 also scopes it to *"business intent: scope, priority, acceptance"* |
+| ⭐⭐ **Security Owner** | ⛔⛔ **Expressly excluded by `ADR-0158` §2.1b** — *"no **permission authority**"*, and *"`R-3` stays with the **Authorization Owner**"*. ⭐ **A security office is not an authorization office** |
+| **Governance Owner** | §10.1 scopes it to *"document **status** and **process**"*. ⛔ Whether `TR-2` may WRITE a parameter is neither |
+| **Domain Owner** | §3 makes it **per-PRD** and derived from bounded contexts. ⛔ Authorization spans contexts — `ADR-0151` alone reaches `BC-25`, `BC-02`, `BC-06`, `BC-13`, `BC-18` |
+| **Technical Owner** | §2.2 scopes it to implementation and sequencing, explicitly **not** *"whether a requirement is right"* |
+| **Privacy Owner** | §9.1 decides whether processing personal data is **permissible**. ⛔ `ADR-0158` `O-5` routes the retention pair to it **separately** from `O-3`/`O-7` |
+| **SRE / Observability** · **EVENT platform** · **DATA / EVENT** | ⛔ Each is **VACANT outside a single conferred act** (§13.1, §14.1, §15.1), and none of those acts concerns authorization |
+
+### 16.4 ⛔⛔ What constituting this office does **not** do
+
+| Claim | Status |
+|---|---|
+| A holder is appointed | ⛔ **No.** Vacant; §7 rule 4 forbids recording a name |
+| Any `BC-25` parameter is authorized | ⛔⛔ **No.** ⭐ Coverage **79 / 104**, unchanged; **D3 stays `PARTIAL`** |
+| `DP-0001` Groups 1–5 are decided | ⛔ **No.** All **25** remain **HELD**; the pack stays **OPEN** with **0** authority responses |
+| `ADR-0158` `O-3` / `O-7` are discharged | ⛔ **No** — ⭐ the office that owns them now **exists**; the decisions do **not** |
+| A `PERM-*` may now be minted | ⛔⛔ **No.** `ADR-0132` §7 prerequisite **1** *(an explicit conferral naming catalogue population as its subject)* is **absent**, and prerequisite **7** *(supersede `ADR-0043` §5.1, an **Architecture Owner** act)* is **untouched**. `AUTH-7.22` stays **closed at zero** |
+| A role, action class or scope class is created | ⛔ **No** — `PR-1`/`PR-2` closed at two; `TR-1`…`TR-5` closed at five |
+| `DD-0007` becomes design-ready, or any count or verdict moves | ⛔⛔ **No** — **v0.9**, **79 / 104**, ⛔ **not design-ready** |
+| §2.1, §2.2, §2.3, §5, §8, §9, §10, §11, §12, §13, §14 or §15 is amended | ⛔ **No** — every cited line **byte-identical**; **0** citations shifted |
+
+### 16.5 ⚠️ Change-history row — recorded HERE, not inserted into §8
+
+⚠️ **The row belongs in §8's changelog table, and it is deliberately NOT written there** — for the
+reason §13.3, §14.3 and §15.3 each record: citations sit **BELOW** §8's table (**L353**, **L356**,
+**L418**, **L419**, **L509**), and inserting a row after **L334** shifts every one of them.
+
+| Version | Date | Change |
+|---|---|---|
+| ⭐⭐ **v1.7** | 2026-09-19 | ⭐⭐ **A tenth office — the `Authorization Owner` — is constituted BY DERIVATION as a STANDING office, under `Accepted` [`ADR-0159`](../adr/ADR-0159-authorization-owner-office-constituted-by-derivation-and-security-owner-recorded.md)**, together with §17's recording of the **`Security Owner`**. ⭐ **The derivation is the strongest since §10's:** **Rank 5** `ARCHITECTURE_RULINGS.md` **L230** assigns the *"authorization concern"* to `BC-18` and **L232** forbids merging it with authentication; `ADR-0132` §7 names this office in **five** permission-minting prerequisites; and ⭐⭐ **three `Accepted` ADRs — `ADR-0150`, `ADR-0151`, `ADR-0153` — have ALREADY EXERCISED it**, each recording *"The **Authorization Owner** conferral is recorded **in this ADR**"*. Measured before §16 existed: **70** occurrences across **25** files, and ⛔ **0** in this document — so an office that had already allocated authorization for `BC-02` and `BC-25` was **defined nowhere**. §2.1's minimality clause is a **conditional test** and is **MET, not overridden**; §2.3's *"reused, not invented"* rule is satisfied, and the **anchored form *"Authorization (`BC-18`/`PRD-001`) Owner"*** is preserved. ⛔ **Constituting an office is not exercising it:** ⛔⛔ **NO `BC-25` parameter is authorized** — ⭐ coverage **UNCHANGED at 79 / 104**, **D3 stays `PARTIAL`**, ⛔ **`DD-0007` is NOT design-ready**; ⛔ **all 25 `DP-0001` items remain HELD** and the pack stays **OPEN** with **0** authority responses; ⛔ `O-3` and `O-7` remain **OPEN**. ⛔⛔ **0** `PERM-*` · **0** roles, action classes or scope classes · `AUTH-7.22` **closed at zero** · `ADR-0132` **not reopened** and ⛔ **none of its §7 prerequisites engaged** · **0** frozen edits · **0** lines of runtime code. ⛔ **No holder appointed and no personal name recorded** (§7 rule 4); both offices **VACANT**. Executed **by APPEND** below **L854**: **380** line-citations re-measured across **77** lines, highest **genuine** cited line **L509**, ⭐⭐ **0 invalidated** — ⚠️ and **3 apparent out-of-range citations were inspected individually rather than assumed**, of which **2** proved to be **EA** line numbers captured by regex proximity and **1** (**L980**) is **pre-existing drift**, ⛔ **disclosed, not repaired**. ⚠️ The **L6 `Version` field is again NOT edited** — pre-existing staleness since v1.2. |
+
+---
+
+## 17. ⭐ The `Security Owner` office — designated by `ADR-0158` `R-1`, recorded here under `ADR-0159` (discharging `O-1`)
+
+> **Recorded by APPEND**, on the same measurement §16 records. Appending below §16's last line
+> invalidates **0** citations. **No existing line of this document is modified by this section.**
+
+### 17.1 The office
+
+⚠️⚠️ ⭐ **The authority boundary below is TRANSCRIBED from `ADR-0158` §2.1b. ⛔ It is not restated,
+widened, narrowed or paraphrased into new scope.**
+
+| Role | Decides | Attests | ⛔ Never decides |
+|---|---|---|---|
+| ⭐ **Security Owner** *(the office `ADR-0158` `R-1` designates **SECURITY PLATFORM** to hold)* | **Security decisions** within its review remit — including the security determinations `ADR-0021` **L7**/**L200** require as *"security input"*, and the biometric-ownership and retention/deletion questions `ATT-GAP-012` and `ATT-GAP-014` pose | That a **security review** demanded by an existing rule has been *completed*, so a gate conditioned on it can be evaluated | ⛔ **Product authority** · ⛔ **Architecture authority** · ⛔ **Tenant authority** · ⛔ **Implementation authority** · ⛔⛔ **Permission authority** · ⛔⛔ **Permission-creation authority** · ⛔ document status or freeze (**Governance Owner**) · ⛔ whether personal-data processing is permissible (**Privacy Owner**, §9.1) · ⛔ the allocation of authorization (**Authorization Owner**, §16.1) · ⛔ its own conferral, and ⛔ its own scope |
+
+⭐ **One holder, per §3 rule 1.** ⛔ **No personal name is recorded**, per §7 rule 4. The office is
+**vacant as constituted**.
+
+⚠️⚠️ ⛔⛔ **THE PERMISSION EXCLUSION IS LOAD-BEARING.** `ADR-0158` §2.1b holds that it means the
+Security Owner ⛔ **cannot** resolve the **authorization-semantic** parameters of `R-3` — *"those stay
+with the **Authorization Owner**"*. ⭐ **Constituting the Authorization Owner in §16 does not relax
+that boundary; it supplies the office the boundary points at.**
+
+⚠️ ⭐ **A governance office is not a bounded context.** `Accepted` **`ADR-0060`** holds that the
+SECURITY platform **has no bounded context**, and ⛔ **this record does not give it one** — no `BC-nn`,
+no edge, no aggregate, no port.
+
+### 17.2 Authority basis — this office was designated elsewhere, and is only **recorded** here
+
+| # | Basis | Where |
+|---|---|---|
+| 1 | ⭐⭐ The designation itself — *"Formally designate SECURITY PLATFORM as the 'Security Owner' … limited to security-review/decision authority. No extra product, architecture, tenant, implementation, or permission authority."* | `ADR-0158` `R-1`, **`Accepted`** |
+| 2 | The prior routing that had no addressee — `ADR-0153` routed **4** Face parameters to *"Product Owner + **Security Owner**"* | `ADR-0153`, **`Accepted`** |
+| 3 | *"**security input required** for `ATT-CFG-014`"* | `ADR-0021` **L7**, **L200**, **`Accepted`** |
+| 4 | ⭐ The obligation to record it **here** | `ADR-0158` §7 **`O-1`**, owner **Governance Owner** |
+
+**Measured before §17 existed:** *"security owner"* occurs **36** times across **11** files, and
+⛔ **0** times in this document.
+
+### 17.3 ⛔ What recording this office does **not** do
+
+| Claim | Status |
+|---|---|
+| New authority is created | ⛔⛔ **No.** ⭐ `ADR-0158` `R-1` designated it; this is a **transcription**, and the boundary is carried across **intact** |
+| The Security Owner may resolve authorization-semantic parameters | ⛔⛔ **No** — the **permission exclusion** forbids it; those stay with the **Authorization Owner** (§16.1) |
+| The Security Owner may mint a `PERM-*` | ⛔⛔ **No** — **permission-creation authority is expressly excluded** |
+| `ATT-GAP-012` or `ATT-GAP-014` is resolved | ⛔ **No** — both **OPEN**; `ADR-0158` `O-2` stands |
+| The four Face parameters (`ATT-CFG-013`/`014`/`015`/`016`) are authorized | ⛔⛔ **No** — all **HELD**. ⭐ `ATT-FR-064` *(FROZEN)* still holds that *"face verification **MUST NOT** be implemented"* |
+| The SECURITY platform gains a bounded context | ⛔ **No** — `ADR-0060` stands |
+| A holder is appointed | ⛔ **No.** Vacant; §7 rule 4 |
+
+### 17.4 ⭐ `O-1` — discharged, with one deviation disclosed
+
+`ADR-0158` §7 **`O-1`** reads: *"Record the **Security Owner** office in `PRD_OWNERSHIP_MODEL` **§2.2**"*.
+
+✅ **Discharged.** ⚠️⚠️ **But NOT at §2.2**, and the deviation is disclosed rather than glossed:
+§2.2's role table spans **L81–L86**, and **72** citations point at **L85** alone. ⛔ An inserted row
+shifts every citation beneath it — in **Accepted** ADRs and in `DOCUMENTATION_BASELINE.md` —
+including the **16** citations to **L284** that are the evidence for the authority under which
+`ADR-0159` was itself conferred.
+
+⭐ **This is the sixth application of a rule this document has applied to every office since
+`ADR-0077`**: §9, §10, §13, §14 and §15 are **all** recorded outside §2.2 for exactly this reason.
+⭐ **`O-1`'s substance is satisfied in full** — only its **section number** is departed from, and
+⛔ **`ADR-0158` is NOT edited** to match.
+
+### 17.5 ⚠️ Change-history row — recorded HERE, not inserted into §8
+
+⚠️ Same constraint as §13.3, §14.3, §15.3 and §16.5. **The row, in §8's format:**
+
+| Version | Date | Change |
+|---|---|---|
+| ⭐ **v1.7** *(same act as §16.5; recorded once per section, not counted twice)* | 2026-09-19 | ⭐⭐ **The `Security Owner` office — already designated by `Accepted` `ADR-0158` `R-1` — is RECORDED in this document under `Accepted` [`ADR-0159`](../adr/ADR-0159-authorization-owner-office-constituted-by-derivation-and-security-owner-recorded.md), discharging `ADR-0158` §7 `O-1`.** ⭐⭐ **No new authority is created** — the boundary is **transcribed verbatim** from `ADR-0158` §2.1b: ⭐ **HAS** security review and security decision; ⛔ **DOES NOT HAVE** product, architecture, tenant, implementation, **permission** or **permission-creation** authority. ⚠️⚠️ ⛔ **The permission exclusion is carried across INTACT** — the Security Owner ⛔ **cannot** resolve the 5 authorization-semantic parameters, which stay with the **Authorization Owner** (§16). Measured before §17 existed: **36** occurrences across **11** files, ⛔ **0** in this document. ⚠️⚠️ **`O-1` named §2.2 and the record is made at §17 instead** — ⛔ **disclosed, not glossed**: §2.2 spans **L81–L86** and **72** citations point at **L85** alone, so an inserted row would misdirect them all, including the **16** to **L284**; ⭐ this is the **sixth** office recorded outside §2.2 since `ADR-0077`, and ⛔ **`ADR-0158` is NOT edited** to match. ⛔ **`ATT-GAP-012` and `ATT-GAP-014` remain OPEN**; ⛔ the **4 Face parameters remain HELD** (`ATT-FR-064`, FROZEN: *"face verification **MUST NOT** be implemented"*); ⛔ `O-2` stands. ⛔ **`ADR-0060` stands — the SECURITY platform still has NO bounded context**, no edge, no aggregate, no port. ⛔ **0** `PERM-*` · **0** parameters authorized · **0** holder appointed · **0** personal names (§7 rule 4). Executed **by APPEND**; every pre-existing line byte-identical; **0** citations shifted. |

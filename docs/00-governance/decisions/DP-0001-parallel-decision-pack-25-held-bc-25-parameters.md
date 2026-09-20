@@ -709,3 +709,22 @@ behind an external legal determination ⛔ **no governance act can manufacture**
 | `DP-0001` | ⛔ **OPEN** · ⛔ **0 authority responses** · ⭐ §5A/§5B **unchanged** |
 | Coverage | ⭐ **79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **NOT design-ready** |
 | Created | ⛔ **0** `PERM-*` · **0** roles/actions/scopes *(⭐ `Branch` **pre-existed**)* · **0** holders · **0** frozen edits · **0** runtime code |
+
+---
+
+## 5D. ⭐ Successor decision request — `DP-0002` *(2026-09-19)*
+
+⭐ The **8 remaining blockers** identified by `Accepted` `ADR-0161` §7 are stated as a
+formal decision request in
+[`DP-0002`](DP-0002-final-governance-decision-request-eight-remaining-bc-25-blockers.md).
+
+| | |
+|---|---|
+| ⭐ **Part A** — decidable **inside** the repository | **5** blockers *(`B-1′`, `B-2`, `B-3`, `B-5`, `B-7`, `B-8`)* · **21** parameters |
+| ⛔ **Part B** — requires an **external** principal | **2** blockers *(`B-6`, `B-10`)* · **4** parameters *(+`B-6`'s 2, counted in Part A)* |
+| ⭐ **Parallelism** | **5 independent tracks** reach **19 of 25** with ⛔ **no inter-dependency** |
+| ⛔ **Critical path** | ⭐⭐ **`B-6`** — an **external legal determination**; ⛔ **no governance act can supply it** |
+
+⛔⛔ **`DP-0001` is NOT superseded and NOT closed.** ⭐ It remains **OPEN** with ⛔ **0
+authority responses**; ⭐ `DP-0002` addresses the **blockers**, this sheet the
+**parameters**. ⛔ **Coverage unchanged at 79 / 104.**

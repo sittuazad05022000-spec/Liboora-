@@ -1496,3 +1496,24 @@ anywhere in the Status cell; the **leading-token** instrument every prior pass u
 | ⛔ **Supersedes** | ⛔⛔ **NOTHING** · ⚠️ **`Count` cell at L9 NOT incremented** |
 | ⛔ **NOT done** | ⛔ **0** parameters · **0** `PERM-*` · **0** roles/actions/scopes *(⭐ `Branch` **pre-existed**)* · **0** holders · **0** personal names · ⛔ **`Legal Counsel` NOT constituted** · ⛔ `LR-01` **not closed** · ⛔ `DP-0001` stays **OPEN** with **0** authority responses · **0** frozen edits · **0** runtime code · ⭐ **79 + 25 = 104** exact |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐ ADDENDUM — `DP-0002` decision-request registration *(end-of-file; ⛔ L9 Count cell NOT edited)*
+
+⚠️ **`DP-0002` is a DECISION REQUEST, ⛔ not an ADR.** ⭐ It is registered here for
+traceability only — ⛔ **it is not counted in the ADR register**, ⛔ carries no ADR
+number, and ⛔ **decides nothing**.
+
+| Field | Value |
+|---|---|
+| **Artifact** | [`DP-0002`](../decisions/DP-0002-final-governance-decision-request-eight-remaining-bc-25-blockers.md) — **FINAL governance decision request: the 8 remaining `DP-0001` blockers** |
+| **Status** | ⛔ **OPEN** · ⛔ **0 responses** |
+| **Raised under** | ⭐ `Accepted` [`ADR-0161`](ADR-0161-dp-0001-blocker-resolution-pass-b1-b9-corrected-b3-b4-narrowed-six-blockers-preserved.md) §7 |
+| ⭐ **Part A — internal** | **`B-1′`** *(Authorization Owner · 6)* · **`B-2`** *(Authorization Owner · 1)* · **`B-3`** *(PO + SECURITY PLATFORM · 10)* · **`B-5`** *(Governance + Architecture · 2)* · **`B-7`** *(Product Owner · 1)* · **`B-8`** *(`PRD-002` Domain Owner + PO · 1)* — ⭐ **21 parameters** |
+| ⛔ **Part B — external** | **`B-6`** *(⛔ qualified Indian advocate / court / DPB — `LR-01` §5)* · **`B-10`** *(Security Owner + ⛔ *Legal* + `BC-13`/`BC-18` · 4)* |
+| ⭐ **Parallelism** | **5 independent tracks**, ⛔ no inter-dependency, reaching **19 of 25** |
+| ⛔⛔ **Critical path** | ⭐⭐ **`B-6`** — ⛔ **leaves this repository entirely**; `LR-01` closes only on **all five** §5 conditions, of which **(1)** is an **external written determination** |
+| ⛔ **Expressly NOT done** | ⛔ **No question answered** · ⛔ **0** parameters authorized · ⛔ **0** `PERM-*`, roles, actions or scopes · ⛔ **no `Legal Owner` invented** *(`ADR-0137`'s refusal stands)* · ⛔ **no `AUTHORIZE`/`HOLD` status changed** · ⛔ `DD-0007` **not modified** · ⛔ `DP-0001` **not superseded or closed** · ⛔ **no `Accepted` ADR edited** |
+| **Coverage** | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT design-ready** |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

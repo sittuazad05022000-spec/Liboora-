@@ -487,3 +487,23 @@ easier.
 ⛔ **`B-5`/`B-6`/`B-10` were correctly excluded** from this sheet and remain so.
 
 ⭐⭐ **85 / 104 · 19 held · D3 `PARTIAL` · ⛔ `DD-0007` NOT design-ready.**
+
+
+---
+
+## ⭐ SUPERSEDED IN FUNCTION by `DP-0004` *(appended 2026-09-19)*
+
+⭐ `Accepted` **`ADR-0163`** completes the disposition begun by `ADR-0162`. ⭐ The
+**terminal** decision requests now live at **`DP-0004`** — ⭐ **Part A: 4 internal
+blockers (13 params)** · ⛔ **Part B: 3 external (6 params)**.
+
+⛔⛔ **This sheet is NOT superseded as a record** — ⭐ its evidence and quotations stand,
+including the **three corrections** already recorded against it. ⭐ It is superseded
+only as the **request of record**.
+
+⚠️ **One further correction from `ADR-0163`:** ⭐ `ICFG` **scope is now RESOLVED** as
+`Platform default` — ⛔ **not** because this sheet said so *(it was wrong — see the
+withdrawal above)*, ⭐ but on the `CNF-FR-026`/`003`/`028` chain. ⛔ `READ` remains
+**HELD**.
+
+⭐⭐ **85 / 104 · 19 held · D3 `PARTIAL` · ⛔ `DD-0007` NOT design-ready.**

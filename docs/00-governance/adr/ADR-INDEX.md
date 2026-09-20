@@ -1559,3 +1559,24 @@ only; ⛔ **not counted in the ADR register**, ⛔ no ADR number, ⛔ **decides 
 | ⚠️ **Disclosed, not repaired** | `Accepted` `ADR-0155` `D-4` says ⚪ `WRITE` = `N/A` *"for all 11"* while its §2.5 row shows `SCFG-2` **HELD** — ⛔ nothing here depends on it. **Owner: Architecture Owner** · ⚠️ **`DD-0007` v0.9's 79/104 is now STALE by six** — ⛔ outside the permitted change set |
 | ⛔ **Not created** | **0** `PERM-*` · **0** roles/actions/scopes · **0** offices or appointments · **0** edges *(⛔ `E-05` payload unchanged)* · **0** retention periods · **0** legal conclusions · **0** frozen edits · **0** runtime code |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0163` + `DP-0004` (2026-09-19)
+
+| Field | Value |
+|---|---|
+| **ADR** | ⭐⭐ **`ADR-0163`** — `SMCFG-5` audit **UPHELD** · `ICFG` scope **RESOLVED** · `DD-0007` update path **prescribed** · final disposition of all 7 blockers |
+| **Status** | ⭐ **Accepted** — Rank 2 · **Supersedes** ⛔ **NOTHING** |
+| **Coverage** | ⭐ **85 / 104 — UNCHANGED.** ⛔ **0 further parameters authorized** — ⭐ and that is the correct outcome |
+| ⭐⭐ **`SMCFG-5` audit — UPHELD** | ⭐ Run to **falsify** my own act. `ADR-0162` set its own reversion test; ⭐⭐ **four measurements show `SM-1` was NOT exhaustive**, the dispositive one being **`ADR-0156` §7 `O-1`** — *"**Resolve `SM-GAP-2`, THEN ALLOCATE `SMCFG-5` \| Product Owner**"* ⇒ ⛔ **an exhaustive enumeration would have no `O-1`**. Corroborated by `SM-1`'s qualifier *"for the **uncontested** … parameters"*, `SM-3`'s **conditional** *("**IF** … does not resolve … KEEP HELD")*, and §5's routing. ⛔ **Definition decision UNCHANGED, not re-argued** |
+| ⭐⭐ **`ICFG` scope RESOLVED** | ⭐ **`Platform default`** — on the rule chain, ⛔ **not** analogy: **`CNF-FR-026`** *(env profile **is** scope 1)* + **10 of 10** in the env table + **`CNF-FR-003`** *(owning PRD must declare tenant-settability — declared ⭐ **ZERO** times)* + **`CNF-FR-028`** *(then scope 1 is the **only** scope, *"unconditionally"*)*; ⛔ the **L829** carve-out names only `LCFG-*`. ⭐⭐ ***"per library"* in `ICFG-5`/`6`/`7` is the COUNTING UNIT OF THE VALUE, ⛔ not a scope declaration** |
+| ⛔ **`ICFG` `READ` still HELD** | ⭐ Final anchored sweep over **both** owning sources: ⛔ **0** read statements ⇒ ⛔ **all ten stay `NOT YET AUTHORIZED`** at **2 of 3** dimensions resolved |
+| ⚠️⚠️ **Band argument refused a FOURTH time** | ⭐ With scope now fixed at `Platform default`, the scope-1 `CFG-*` and `SCFG-*` both carry `READ` = `PR-1`+`PR-2` — ⛔ but `ADR-0155` held **"A BAND IS NOT A DECISION"**, seeking **four** decisions where the band matched exactly. ⭐⭐ **A shared band is not a shared decision** |
+| ⭐⭐ **`DD-0007` update path** | ⭐ Measured **UNRANKED · `PROPOSED` · ⛔ not frozen**, owner **UX Architecture Owner** ⇒ ⭐ an **ordinary owner act**. ⛔ **Not executed here** — outside the permitted change set and this conferral; ⭐ `ADR-0156` `O-5`: *"authorization is not design"*. ⭐ **Exact minimum change prepared at `ADR-0163` §4.4** *(v0.9→v1.0 · 79→**85** · holds 25→**19** · ⛔ D3 stays `PARTIAL` · ⛔ `C-5` stays 19 · ⛔ Figma blockers stay 4)* |
+| ⛔ **6 blockers re-tested, all HELD** | `B-1″` — ⭐ all **8** `CFG-12` citations are **enforcement** rules; ⚠️ the `XC-2.5` *"distinct Platform Administrator"* argument **tested and REFUSED** *(⭐ `PR-1` approves an **elevation request**; expiry is **automatic** — ⭐⭐ the system enforcing a value is not a human reading a parameter)* · `B-2` — **2** lines repo-wide, ⛔ **no actor named** · `B-5′` — ⛔ external *(`T-10`)* · `B-8′` — ⭐ BC Map **L302** carries **no** threshold ⇒ **Rank-1 amendment**; ⭐ **NEW independent bar: `LIB-14B.13` makes live occupancy V2** · `B-10` — ⭐⭐ **`biometric` measured ZERO times in the whole BC Map**, confirming `ATT-GAP-012` **by direct measurement**; ⛔ `ATT-GAP-014` **is** `LR-01` §5 condition 4 |
+| ⛔⛔ **`B-6` untouched** | ⛔ No `Legal Owner` · ⛔ no legal conclusion · ⛔ `ADR-0137` not overridden · ⛔ `LR-01` not narrowed |
+| **Decision pack** | ⭐ **`DP-0004`** — terminal requests: **Part A 4 internal** *(13 params)* · **Part B 3 external** *(6 params)*; ⭐ `A-4` authority **corrected to Architecture Owner** |
+| **Gates** | ⭐ D1/D2/D5 unchanged · ⭐ D4 **PASS** *(⛔ no new scope class)* · ⚠️ **D3 `PARTIAL` 85/104** · ⛔⛔ **`DD-0007` NOT design-ready** |
+| ⛔ **Not created** | **0** `PERM-*` · **0** roles/actions/scopes · **0** offices · **0** edges *(⛔ `E-05` unchanged)* · **0** retention periods · **0** legal conclusions · **0** frozen edits · **0** `DD-0007` edits · **0** runtime code |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

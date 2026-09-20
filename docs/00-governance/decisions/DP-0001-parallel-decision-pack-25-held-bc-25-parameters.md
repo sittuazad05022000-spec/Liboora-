@@ -784,3 +784,21 @@ Domain Owner. ⭐⭐ **All three release ZERO parameters.**
 
 ⛔⛔ **`DP-0001` remains OPEN** — ⭐ **6 of 25** dispositioned by decision, ⛔ **19
 outstanding**; ⛔ **D3 `PARTIAL` at 85 / 104**; ⛔⛔ **`DD-0007` NOT design-ready.**
+
+
+---
+
+## 5F. ⭐ `ADR-0163` — audit **upheld**, `ICFG` scope **resolved** *(appended 2026-09-19)*
+
+⭐ **Coverage UNCHANGED at 85 / 104.** ⛔ **0 further parameters authorized.**
+
+| Item | Outcome |
+|---|---|
+| ⭐⭐ **`SMCFG-5` audit** | ⭐ **UPHELD** — ⭐⭐ `ADR-0156` §7 **`O-1`** reads *"Resolve `SM-GAP-2`, **THEN ALLOCATE** `SMCFG-5` \| **Product Owner**"* ⇒ ⛔ `SM-1` was **not** exhaustive. ⛔ **Not reverted.** ⛔ Definition decision **unchanged** |
+| ⭐⭐ **`ICFG` scope** | ⭐ **RESOLVED = `Platform default`** via `CNF-FR-026` → `CNF-FR-003` → `CNF-FR-028`; ⭐ *"per library"* is the **value's counting unit**, ⛔ not a scope |
+| ⛔ **`ICFG` `READ`** | ⛔ **Still HELD** — **0** statements; ⭐ band argument refused a **fourth** time |
+| ⛔ **`CFG-12`, `SCFG-2`, `SEAT-CFG-017`, Face ×4, `CFG-10`, `SCFG-4`** | ⛔ **All HELD**, each re-tested |
+| ⭐ **`DD-0007`** | ⭐ Update path **prescribed** *(`ADR-0163` §4.4)*, ⛔ **not executed** — **UX Architecture Owner** act |
+
+⭐⭐ **85 + 19 = 104.** ⛔ **`DP-0001` remains OPEN**; ⭐ the terminal requests are at
+**`DP-0004`**. ⛔ **D3 `PARTIAL` · `DD-0007` NOT design-ready.**

@@ -489,18 +489,25 @@ resolved here:**
 ### 6.2 ⭐⭐ Authorization coverage — the separation that matters most
 
 ⛔⛔ **INVENTORY IS NOT AUTHORIZATION.** The table in §6.3 lists all 104 so the
-design scope is honest about what exists. ⛔ **65 of them carry NO operation×role
+design scope is honest about what exists. ⛔ **55 of them carry NO operation×role
 source and MUST NOT be rendered by any surface this document describes.**
 
 | Band | Count | Label | Meaning |
 |---|---:|---|---|
 | ⭐ **Authorized** | **35** | `AUTHORIZED` | A complete role×action×scope treatment **and** a write path exists — **18** by `ADR-0151`, ⭐ **17** by `ADR-0153` |
-| ⭐ **Platform default** | **4** | `PLATFORM DEFAULT` | `ADR-0151` covers them, but `CNF-FR-020` makes them **unwritable by any actor**; read decided |
-| ⛔ **Not authorized** | **65** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
+| ⭐ **Platform default** | **14** | `PLATFORM DEFAULT` | Role×action×scope decided, but `CNF-FR-020` makes them **unwritable by any actor** — **4** by `ADR-0151` *(`LCFG-*`)*, ⭐ **10** by `ADR-0154` *(`CFG-*`, read-only to `PR-1`/`PR-2`)* |
+| ⛔ **Not authorized** | **55** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
 | | **104** | | |
 
 ⭐ **18 + 4 = 22** — the `ADR-0151` subset. ⭐ **+ 17** — the `ADR-0153` `ATT-CFG-*`
-subset. ⭐ **35 + 4 = 39 authorized; 39 + 65 = 104.**
+subset. ⭐ **+ 10** — the `ADR-0154` `CFG-*` subset. ⭐ **35 + 14 = 49 authorized;
+49 + 55 = 104.**
+
+⚠️⚠️ **`PLATFORM DEFAULT` IS NOT `AUTHORIZED`-WITH-A-WRITE-PATH, AND THE TWO
+BANDS ARE NOT MERGED.** ⛔ The **10** new `CFG-*` are **read-only for every
+actor** — ⛔ they are **not** editable configuration, ⛔ no surface may offer a
+write affordance for them, and ⛔ their WRITE cells are ⚪ **N/A**, not ⛔ DENY
+(`ADR-0154` §2.6).
 
 ⚠️ **`PARTIALLY AUTHORIZED` is used for exactly 0 parameters**, because
 `ADR-0151` treats each of its 22 completely. ⚠️ **`OPEN` is used for 0
@@ -556,27 +563,48 @@ expressly that it *"creates no design artifact"*.
 | `LCFG-12` | Public search page size | ⚪ `Platform default` | ⭐ **PLATFORM DEFAULT** | NOT COMMERCIAL | `ADR-0151` §2.3, §3.5 | ⛔ **Not writable** | — | — |
 | `LCFG-13` | Public preview cache TTL | ⚪ `Platform default` | ⭐ **PLATFORM DEFAULT** | NOT COMMERCIAL | `ADR-0151` §2.3, §3.5 | ⛔ **Not writable** | — | `INV-12`, `LIB-14B.49` |
 
-#### 6.3.3 ⛔ NOT YET AUTHORIZED — `CFG-1`…`CFG-12` *(`PRD-001` / `BC-18`)*
+#### 6.3.3 ⭐ PARTLY AUTHORIZED — `CFG-1`…`CFG-12` *(`PRD-001` / `BC-18`)*
 
-⛔ **No operation×role source exists for any row below.** ⚠️ These are
-authentication controls; `CNF-FR-028` notes that if the hierarchy allowed a
-tenant override on an unsettable parameter *"a library could raise its own OTP
-quota"*.
+⭐⭐ **10 of 12 are AUTHORIZED at `Platform default` by `Accepted` `ADR-0154`
+§2.5** — `READ` = **`PR-1` + `PR-2`**, `NOT COMMERCIAL`. ⛔⛔ **2 remain HELD**
+*(`CFG-10`, `CFG-12` — §6.3.3a)*.
 
-| ID | Name | Scope | Auth | Comm | Evidence | Design |
-|---|---|---|---|---|---|---|
-| `CFG-1` | OTP requests per mobile number / hour | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-2` | Min interval between OTP requests | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-3` | OTP requests per network origin / hour | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-4` | Temporary lock after quota exhaustion | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-5` | Idle session timeout | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-6` | Absolute session lifetime | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-7` | Trusted-device trust lifetime | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-8` | Max concurrent registered devices | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-9` | Pending-verification retention | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-10` | Soft-deleted account retention | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-11` | Account-claim failures before lock | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
-| `CFG-12` | Platform Support elevated-access max duration | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | Guide §2 | ⛔ Not designed |
+⛔⛔ **AUTHORIZED HERE MEANS READ-ONLY, FOR EVERY ACTOR.** ⛔ `CNF-FR-020` and
+`CNF-AC-011` make scope 1 unwritable *"by any actor, **including a platform
+role**"*, so ⭐ **every WRITE cell is ⚪ N/A, not ⛔ DENY** (`ADR-0154` §2.6) —
+⛔ there is no write decision to take. ⚠️ `CNF-FR-028` notes that if the
+hierarchy allowed a tenant override *"a library could raise its own OTP quota"*.
+
+⛔ **No tenant role receives READ on any row below** — `TR-1`…`TR-5` = ⛔ none.
+
+| ID | Name | Scope | Auth | Comm | `PR-1`/`PR-2` R | Any W | Evidence | Design |
+|---|---|---|---|---|---|---|---|---|
+| `CFG-1` | OTP requests per mobile number / hour | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-2` | Min interval between OTP requests | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-3` | OTP requests per network origin / hour | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-4` | Temporary lock after quota exhaustion | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-5` | Idle session timeout *(mobile + staff limbs)* | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5, §2.7 | ⛔ Not designed |
+| `CFG-6` | Absolute session lifetime *(mobile + staff limbs)* | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5, §2.7 | ⛔ Not designed |
+| `CFG-7` | Trusted-device trust lifetime | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-8` | Max concurrent registered devices | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| `CFG-9` | Pending-verification retention | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| ⛔ `CFG-10` | Soft-deleted account retention | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | ⛔ | ⚪ **N/A** | Guide §2 | ⛔ Not designed |
+| `CFG-11` | Account-claim failures before lock | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
+| ⛔ `CFG-12` | Platform Support elevated-access max duration | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | ⛔ | ⚪ **N/A** | Guide §2 | ⛔ Not designed |
+
+⭐ **Counts verified: 10 AUTHORIZED · 2 HELD · 12 total.** ⭐ `CFG-5` and `CFG-6`
+remain **one parameter each** despite carrying two value limbs — ⛔ **0 new
+identifiers**, inventory unchanged at **104** (`ADR-0154` §2.7).
+
+##### 6.3.3a ⛔⛔ The two held `CFG-*` — NOT allocated, and why
+
+| Parameter | Reason held | Required authority |
+|---|---|---|
+| ⛔ **`CFG-10`** Soft-deleted account retention | ⚠️ **DPDP erasure obligation** — Guide §2: *"defensible as erasure under DPDP"* | **Legal + Security** |
+| ⛔ **`CFG-12`** Platform Support elevated-access duration | ⛔⛔ **AUTHORIZATION-SEMANTIC** — it bounds **`PR-2`'s own elevation ceiling** (`AUTH-7.19`, `XC-2.5`); ⚠️ a `PR-2` read of it is **self-referential** | **Authorization Owner + Security + Legal** |
+
+⭐⭐ **`CFG-12` is held even though the ten beside it were allowed.** ⛔ Adjacency
+is not a reason — the `ATT-CFG-022`/`024` pattern (`ADR-0153` §5).
 
 #### 6.3.4 ⛔ NOT YET AUTHORIZED — `ICFG-1`…`ICFG-10` *(Invitation Security Spec)*
 
@@ -706,14 +734,21 @@ distributed-ownership reading in **`DD7-GAP-003`** (§22).
 |---|---:|---|
 | ⭐ `AUTHORIZED` *(writable, role-allocated)* — `ADR-0151` | **18** | ⭐ **YES** |
 | ⭐ `AUTHORIZED` *(writable, role-allocated)* — ⭐ `ADR-0153` `ATT-CFG-*` | **17** | ⛔ **NO — authorized, not designed** *(`DD7-GAP-003`)* |
-| ⭐ `PLATFORM DEFAULT` *(read-only by `CNF-FR-020`)* | **4** | ⚠️ **Read decision exists; ⛔ 0 write affordance** |
-| ⛔ `NOT YET AUTHORIZED` | **65** | ⛔ **NO** |
-| **Total** | **104** | ⭐ **39 of 104 = 37.5% authorization coverage** |
+| ⭐ `PLATFORM DEFAULT` *(read-only by `CNF-FR-020`)* — `ADR-0151` `LCFG-*` | **4** | ⚠️ **Read decision exists; ⛔ 0 write affordance** |
+| ⭐ `PLATFORM DEFAULT` *(read-only by `CNF-FR-020`)* — ⭐ `ADR-0154` `CFG-*` | **10** | ⚠️ **Read allocated to `PR-1`/`PR-2`; ⛔ 0 write affordance; ⛔ not designed** |
+| ⛔ `NOT YET AUTHORIZED` | **55** | ⛔ **NO** |
+| **Total** | **104** | ⭐ **49 of 104 = 47.1% authorization coverage** |
 
-⛔⛔ **37.5% is published as measured.** ⛔ It is not rounded, not described as
-"most of the important ones", and ⛔ the 65 are **not** presented as authorized
+⛔⛔ **47.1% is published as measured.** ⛔ It is not rounded, not described as
+"most of the important ones", and ⛔ the 55 are **not** presented as authorized
 merely because they are inventoried. ⚠️ **Authorization coverage is NOT design
-coverage** — ⭐ **22** parameters are designed here, ⛔ not 39.
+coverage** — ⭐ **22** parameters are designed here, ⛔ not 49.
+
+⚠️⚠️ **The 55 reconcile exactly:** `ICFG` **10** + `SCFG` **11** + `SMCFG` **7**
++ `SEAT-CFG` **18** + held `ATT-CFG` **7** + held `CFG-10`/`CFG-12` **2** = **55**.
+⛔⛔ **`ICFG-1`…`10` are NOT covered by `ADR-0154`** — ⭐ measured structurally
+identical to `CFG-*`, ⚠️ **but the B2 Security decision expressly forbids
+extension by analogy** (`ADR-0154` §7).
 
 ---
 
@@ -859,7 +894,22 @@ name an owner that cannot yet receive them — carried as **`DD7-GAP-007`**.
 | **`C-3`** | **Scope selector** — which populated scope is being edited | APP 2 | `TR-1` · `TR-2` | `Tenant` / `Library` | `PRD-023` §12.2 *(scope selector)*, `CNF-FR-009`, `CNF-FR-011` | ⭐ **DESIGNABLE** |
 | **`C-4`** | **Change history** — read-projection of the audit trail | APP 2 | ⚠️ **roles UNRESOLVED** | `Tenant` | `CNF-FR-060`, `CNF-BR-006` | ⛔ **BLOCKED — `DD7-GAP-008`** |
 
-⭐ **3 of 4 designable now.** ⛔ `C-4` is blocked: `CNF-BR-006` says history
+⭐ **3 of 4 designable now.** ⚠️⚠️ **A FIFTH SURFACE IS AUTHORIZED BUT NOT
+DESIGNED** — `Accepted` `ADR-0154` `D-2` permits a **READ-ONLY APP 3** `BC-25`
+surface for `PR-1`/`PR-2`:
+
+| ID | Surface | App | Roles | Scope | Traces to | Status |
+|---|---|---|---|---|---|---|
+| ⚠️ **`C-5`** | **Platform configuration viewer** — the 10 `CFG-*`, **read-only** | ⭐ **APP 3** | `PR-1` · `PR-2` | `Platform default` | ⭐⭐ `ADR-0154` `D-2`, `D-3`; `CNF-FR-081` | ⚠️ **AUTHORIZED, ⛔ NOT DESIGNED** |
+
+⛔⛔ **`C-5` IS NOT DESIGNED HERE, AND THAT IS DELIBERATE.** ⭐ Authorization and
+design are different acts — the same separation `ADR-0153`'s 17 `ATT-CFG-*` carry
+(`DD7-GAP-003`). ⛔ **`C-5` carries 0 write affordance of any kind** — no edit
+control, no save action, no override store, no API (`ADR-0154` `D-4`;
+`ADR-0152` §7 limb 3, preserved). ⛔ **APP 3 implementation is not authorized**
+(`ADR-0154` `D-7`), so ⛔ designing it now would precede its own prerequisite.
+
+⛔ `C-4` is blocked: `CNF-BR-006` says history
 *"**SHALL** be reconstructible from the audit trail"* and `CNF-XC-010` forbids
 `BC-25` to hold a query surface — ⛔ so the reader is `BC-24`/`PRD-016`, and
 ⛔ **no source allocates `TR-1`/`TR-2`/`TR-3` read on configuration audit
@@ -1325,7 +1375,7 @@ of **59**.
 | `DD7-AC-017` | Every input has a persistent visible label; ⛔ no placeholder-only field | `MP-NFR-08` |
 | `DD7-AC-018` | Layout is portrait-optimised and does not reflow on validation | `MP-NFR-06`, `CNF-FR-082` |
 | `DD7-AC-019` | ⛔ **No** `PERM-*`, role, action class or scope class is introduced by any surface | `AUTH-7.22`, `ADR-0132` |
-| `DD7-AC-020` | ⛔ **No** APP 3 surface, platform-admin API or platform write path exists | `CNF-FR-020`, `AUTH-2.9`; ⭐ **`ADR-0152`** §7 |
+| `DD7-AC-020` | ⛔⛔ **No** APP 3 **write** path, platform-admin **write API**, editable control or override store exists · ⭐ **A READ-ONLY APP 3 surface IS permitted** *(`ADR-0154` `D-2`)*, and ⛔ **it offers 0 write affordance** | `CNF-FR-020`, `CNF-AC-011`, `AUTH-2.9`; ⭐ **`ADR-0152`** §7 **limb 3** *(preserved)*; ⭐⭐ **`ADR-0154`** `D-2`, `D-4` |
 | ⚠️ `DD7-AC-021` | **Performance / latency budget** | ⛔ **OPEN — `DD7-GAP-009`.** ⛔ No authoritative budget exists; ⛔ no number invented |
 | ⚠️ `DD7-AC-022` | **Contrast ratio / touch-target minimum** | ⛔ **OPEN — `DD7-GAP-007`/`009`.** Owner = UI Design System, which does not exist |
 
@@ -1448,7 +1498,7 @@ lines of runtime code.
 | 3 | ⛔ `TR-2` hard-coded as ALLOW on the 18 non-commercial | Medium | High — `AP-3` breach | §8.1; §12.2; journey 2 |
 | 4 | ⛔ Platform-default rows given a write control | Medium | High — `CNF-FR-020` breach | §3.5 of `ADR-0151`; `DD7-AC-012` |
 | 5 | ⛔ Reset implemented as "set to parent's value" | ⭐⭐ High | Medium — silent pinning | §10.1; §19; `DD7-AC-005` |
-| 6 | ⛔ APP 3 panel built from `SECP-HRO-005` alone | Low | ⭐⭐ **High** | §5.3; `DD7-AC-020`; ⭐ **`ADR-0152`** §7 settles it |
+| 6 | ⚠️⚠️ APP 3 read-only viewer **acquires a write affordance** by drift *("why not editable?")* | Low | ⭐⭐ **High** | ⛔⛔ **`ADR-0154` `D-4` states the prohibition expressly**, and `ADR-0152` §7 **limb 3** is preserved verbatim: *"No runtime write path to scope 1 exists or may be built"* · `CNF-FR-020`, `CNF-AC-011` · `DD7-AC-020` · ⭐ every `CFG-*` WRITE cell is ⚪ **N/A** (§6.3.3) |
 | 7 | ⚠️ Concurrency handled ad hoc per implementer | ⭐ High | Medium — divergent behaviour | `DD7-GAP-011`; journey 8 BLOCKED |
 
 ---

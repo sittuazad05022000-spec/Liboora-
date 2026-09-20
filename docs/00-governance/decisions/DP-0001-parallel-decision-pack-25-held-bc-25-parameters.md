@@ -598,3 +598,114 @@ overruled — ⛔ no express authority to overrule it was presented.
 | `DP-0001` | ⛔ **OPEN** · ⛔ **0 authority responses** · ⭐ §5A **unchanged** |
 | Coverage | ⭐ **79 / 104** — ⛔ unchanged · ⛔ **D3 `PARTIAL`** · ⛔⛔ **NOT design-ready** |
 | Created | ⛔ **0** `PERM-*` · **0** roles/actions/scopes · **0** holders · **0** frozen edits · **0** runtime code |
+
+---
+
+## 5C. ⭐⭐ BLOCKER RESOLUTION PASS — `ADR-0161` *(2026-09-19)*
+
+⛔⛔ **STILL NOT AN AUTHORITY RESPONSE.** ⭐ `DP-0001` remains **OPEN** with ⛔ **0
+authority responses**. ⚠️ §5A and §5B are **byte-unchanged**.
+
+⭐ Recorded under `Accepted`
+[`ADR-0161`](../adr/ADR-0161-dp-0001-blocker-resolution-pass-b1-b9-corrected-b3-b4-narrowed-six-blockers-preserved.md).
+
+### 5C.0 ⚠️⚠️ The headline is TWO RETRACTIONS, ⛔ not two closures
+
+| | |
+|---|---|
+| Blockers before | **10** *(`B-1`…`B-10`)* |
+| ⚠️⚠️ **Withdrawn as ERRORS of `ADR-0160`** | ⭐ **`B-1`**, ⭐ **`B-9`** — ⛔ **not resolved by new authority** |
+| ⛔ Preserved | **8** |
+| ✅ **Parameters released** | ⛔⛔ **0** |
+| Coverage | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **NOT design-ready** |
+
+⚠️⚠️ **A shorter blocker list is NOT progress toward 104/104.** ⭐ Two entries were
+**never real**; ⛔ the other eight are **untouched**.
+
+### 5C.1 ⛔⛔ `B-1` WITHDRAWN — *"the office is VACANT"* was never a blocker
+
+⭐ `ADR-0160` said Group 1 needed *"**an appointment**"*. ⛔⛔ **Category error.**
+
+| Measurement | Value |
+|---|---|
+| *"one-act conferral"* across the ADR corpus | ⭐⭐ **76** |
+| direct-conferral variants | ⭐ **19** |
+| Offices with a **named holder** | ⛔⛔ **0** — §7 rule 4: *"**Never** record a personal name"* |
+| VACANT offices that have **acted** | ⭐ Privacy · Governance · SRE · EVENT platform · DATA/EVENT · Security |
+
+⭐⭐ `PRD_OWNERSHIP_MODEL` **§12.1** is controlling — a **VACANT** Governance Owner
+**registered six prefixes**, *"filled **for this act only** by direct conferral"*.
+⭐ **Vacancy is the NORMAL state in this repository.**
+
+⭐ **The real Group 1 bar is substantive and is preserved as `B-1′`:** ⛔⛔ *whether a
+configuration write may **confer or remove a role capability** at all* — ⛔ undecided,
+catalogue **closed at zero**.
+
+### 5C.2 ⛔⛔ `B-9` WITHDRAWN — `Branch` **IS** a constituted scope
+
+⭐ `ADR-0160` asserted *"`Branch` is NOT a constituted scope class"*, reasoning from its
+**absence in `ADR-0151`…`0157`**. ⛔⛔ **FROZEN `PRD-023` §3.1 L377 refutes it:**
+
+> ⭐ *"the **settings hierarchy** and its precedence order — **platform default → tenant
+> → library → branch → user**."*
+
+⭐ Corroborated at `PRD-023_ARCHITECTURE_ALIGNMENT` **L473** *("five scopes")*, **L308**
+*("One tenant, library or **branch**")* and `CNF-AC-012` *(five fixed, ⛔ no sixth)*.
+
+⭐⭐ **The error was inferring NON-EXISTENCE from NON-USE.** ⛔ `SEAT-CFG-017` stays
+**HELD** on its three original grounds — ⭐ only a **phantom prerequisite** is removed.
+
+### 5C.3 ⭐⭐ `B-3`/`B-4` NARROWED — by CITATION, ⛔ not by new decision
+
+⭐⭐ **`Accepted` `ADR-0154` §7 had ALREADY audited `ICFG`.** ⭐ This pass **cites** it:
+
+| Dimension | ⭐ Finding | Status |
+|---|---|---|
+| **Scope** | **`Platform default`** — **10 of 10** in the §4 env table *(**L806-815**)*; ⛔ the per-library carve-out at **L829** names only `LCFG` | ⭐⭐ **DETERMINED** |
+| **`WRITE`** | **None storable** — `CNF-FR-028`; ⛔ *"tenant-settable"* declared **0** times ⇒ ⚪ **`N/A`, ⛔ NOT `DENY`** | ⭐⭐ **DETERMINED** |
+| **`READ`** | ⛔⛔ **0 statements** | ⛔ **OPEN** |
+| **Commercial** | ⛔ **0 statements** | ⛔ **OPEN** |
+
+⭐ The scope chain closes by **frozen rule**: `CNF-FR-026` *(env profile supplies **scope
+1**)* → `CNF-FR-003` *(tenant-settability declared **by the owning PRD**)* → `CNF-FR-028`
+→ `CNF-FR-020` *("**SHALL NOT** be writable … by **any** actor, including a platform role")*.
+
+⛔⛔ **ALL 10 STAY HELD.** ⭐ `READ` and Commercial are at **zero**, `CNF-BR-010` makes the
+dimensions **independent**, and `ADR-0154` §7 records B2's express instruction: ⛔ *"**do
+NOT automatically apply this decision**"*.
+
+### 5C.4 ⛔ The eight preserved blockers
+
+| # | Blocker | Blocks | ⭐ Exact missing item | Owner |
+|---|---|---:|---|---|
+| **`B-1′`** | ⛔⛔ May a configuration write **confer/remove a role capability**? | **6** | ⭐ An **Authorization Owner determination** *(by one-act conferral — ⛔ **not** an appointment)* + a `READ` decision | **Authorization Owner** |
+| **`B-2`** | ⛔ `SCFG-2` reviewer unnamed | **1** | ⭐ An express statement of the review authority | **Authorization Owner** |
+| **`B-3`** | ⛔ `ICFG` **`READ`** + Commercial | **10** | ⭐ An express `READ` allocation and classification | **PO + SECURITY PLATFORM** |
+| **`B-5`** | ⚠️⚠️ Group 3 routing **CONFLICT** vs `LR-01` | **2** | ⭐ Which office may allocate where the hold reason **is** the legal question | **Governance + Architecture Owner** |
+| **`B-6`** | ⛔⛔ `Legal` office **refused by `ADR-0137`** | **2** *(+4)* | ⭐⭐ **An external legal determination** — ⛔ **not** an internal office | Human principal *(`LR-01` **risk bearer**)* |
+| **`B-7`** | ⛔ `SM-GAP-2` definition undecided | **1** | ⭐ *"Is `enrollmentNumber` human-meaningful?"* + format | **Product Owner** |
+| **`B-8`** | ⛔ `SEAT-GAP-005` not in the `E-05` contract | **1** | ⭐ **Stage-3 confirmation** *(`SEAT-FR-267`)* | **`PRD-002` Domain Owner** + PO |
+| **`B-10`** | ⛔⛔ `ATT-FR-064` + `ATT-GAP-012`/`014` OPEN | **4** | ⭐ Both gaps answered — ⛔ **blocked by `B-6`** | **Security Owner** + ⛔ *Legal* + `BC-13`/`BC-18` |
+
+⭐⭐ **`B-6` is the critical path, and it leaves this repository.** ⛔ **6 of the 25** sit
+behind an external legal determination ⛔ **no governance act can manufacture**.
+
+### 5C.5 ⛔⛔ Seven moves considered and REFUSED
+
+| ⛔ Refused | Why |
+|---|---|
+| Treat `B-1`'s withdrawal as **unblocking Group 1** | ⭐ **Removing a wrong reason supplies no right one** |
+| Allocate `ICFG` `READ` = ⚪ `N/A` *"by symmetry with `WRITE`"* | ⛔⛔ **`CNF-BR-010` forbids exactly this**; ⭐ `N/A` rests on a **write-only** rule, so it would be **positively false** for read |
+| Authorize `ICFG` on **3 of 4** dimensions | ⛔ All dimensions or none; ⛔ B2 is **express** |
+| Constitute a **`Legal Owner`** as `ADR-0159` did | ⛔⛔ **`ADR-0137` REFUSED it** — would **overturn an `Accepted` ADR by implication** |
+| Re-route Group 3 to escape `LR-01` | ⛔ `LR-01` names **both** offices; ⭐ **evasion, not resolution** |
+| Use `SEAT-XC-022` to settle `SEAT-CFG-017`'s scope | ⛔ The clause is **conditional**; ⭐ scope was **never** its blocker |
+| Leave `ADR-0160`'s two errors standing | ⛔ They are **live claims** that would misdirect the next pass |
+
+### 5C.6 ⛔ Status
+
+| | |
+|---|---|
+| `DP-0001` | ⛔ **OPEN** · ⛔ **0 authority responses** · ⭐ §5A/§5B **unchanged** |
+| Coverage | ⭐ **79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **NOT design-ready** |
+| Created | ⛔ **0** `PERM-*` · **0** roles/actions/scopes *(⭐ `Branch` **pre-existed**)* · **0** holders · **0** frozen edits · **0** runtime code |

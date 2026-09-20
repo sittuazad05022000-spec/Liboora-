@@ -306,3 +306,21 @@ or scopes · ⛔ **0** frozen edits · ⛔ **0** runtime code · ⛔ **0** param
 | `INVITATION_SECURITY_SPECIFICATION` · `CONFIGURATION_GUIDE` | `B-3` |
 | `PRD-023` *(FROZEN)* · `Authentication_PRD_v2` | the §0 constraints |
 | `PRD_OWNERSHIP_MODEL` §12.1, §16, §17 | the authorities and the conferral mechanism |
+
+---
+
+## 6. ⭐ Owner-facing workspace for Part A — `DP-0003`
+
+⭐ The **5 internally decidable tracks** of Part A are prepared as an owner-facing
+decision workspace in
+[`DP-0003`](DP-0003-owner-decision-request-five-internally-decidable-bc-25-tracks.md),
+reusing the repository's established *Pack → Request* pattern.
+
+| | |
+|---|---|
+| ⭐ Tracks | `B-1′` · `B-2` · `B-3` · `B-7` · `B-8` — **19** parameters |
+| ⭐ Per track | ⭐ one-sentence question · exact authority · **verbatim** evidence · allowed choices · ⛔ what the decision must **not** change · a **fill-in decision template** |
+| ⛔ Out of scope | ⛔⛔ **`B-5`, `B-6`, `B-10` are NOT addressed there** — ⭐ they need an **external** principal and are **untouched** |
+
+⛔⛔ **`DP-0003` decides nothing and proposes no value or allocation.** ⭐ Coverage stays
+**79 / 104**; ⛔ **D3 `PARTIAL`**; ⛔ **`DD-0007` NOT design-ready**.

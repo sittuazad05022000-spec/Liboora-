@@ -1517,3 +1517,23 @@ number, and ⛔ **decides nothing**.
 | ⛔ **Expressly NOT done** | ⛔ **No question answered** · ⛔ **0** parameters authorized · ⛔ **0** `PERM-*`, roles, actions or scopes · ⛔ **no `Legal Owner` invented** *(`ADR-0137`'s refusal stands)* · ⛔ **no `AUTHORIZE`/`HOLD` status changed** · ⛔ `DD-0007` **not modified** · ⛔ `DP-0001` **not superseded or closed** · ⛔ **no `Accepted` ADR edited** |
 | **Coverage** | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT design-ready** |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐ ADDENDUM — `DP-0003` decision-request registration *(end-of-file; ⛔ L9 Count cell NOT edited)*
+
+⚠️ **`DP-0003` is a DECISION REQUEST, ⛔ not an ADR** — ⭐ registered for traceability
+only; ⛔ **not counted in the ADR register**, ⛔ no ADR number, ⛔ **decides nothing**.
+
+| Field | Value |
+|---|---|
+| **Artifact** | [`DP-0003`](../decisions/DP-0003-owner-decision-request-five-internally-decidable-bc-25-tracks.md) — **Owner Decision Request: the 5 internally decidable `BC-25` tracks** |
+| **Status** | ⛔ **OPEN** · ⛔ **0 responses** |
+| **Raised under** | ⭐ [`DP-0002`](../decisions/DP-0002-final-governance-decision-request-eight-remaining-bc-25-blockers.md) Part A · `Accepted` `ADR-0161` §7 |
+| ⭐ **Pattern reused** | ⭐ `PRD-006_ATT-GAP-017_OWNER_DECISION_REQUEST` — ⛔ **no new format invented**; ⭐ **ONE** artifact, ⛔ not five |
+| ⭐ **Tracks** | **`B-1′`** *(Authorization Owner · 6)* · **`B-2`** *(Authorization Owner · 1)* · **`B-3`** *(PO + SECURITY PLATFORM · 10)* · **`B-7`** *(Product Owner · 1)* · **`B-8`** *(`PRD-002` Domain Owner + PO · 1)* — ⭐ **19 parameters** |
+| ⭐ **Per track** | one-sentence question · exact authority · **verbatim** evidence · allowed choices *(from existing governance only)* · ⛔ must-not-change list · **fill-in decision template** |
+| ⛔ **Out of scope** | ⛔⛔ **`B-5`, `B-6`, `B-10` untouched** — ⭐ external principal required |
+| ⛔ **Expressly NOT done** | ⛔ **No decision made** · ⛔ **0** parameters authorized · ⛔ **no `AUTHORIZE`/`HOLD` status changed** · ⛔ **0** `PERM-*`, roles, actions or scopes · ⛔ **no authority invented** · ⛔ `DD-0007` **not modified** · ⛔ `DP-0001`/`DP-0002` **not superseded or closed** · ⛔ **no `Accepted` ADR edited** |
+| **Coverage** | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔⛔ **`DD-0007` NOT design-ready** |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

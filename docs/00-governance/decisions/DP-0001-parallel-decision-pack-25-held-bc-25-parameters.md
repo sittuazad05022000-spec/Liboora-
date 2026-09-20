@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Type** | ⭐ **Decision request** — ⛔ **NOT a decision, NOT an ADR, NOT an authorization** |
-| **Status** | ⭐ **OPEN — awaiting 5 authorities, in parallel** |
+| **Status** | ⭐ **OPEN — awaiting 5 authorities, in parallel.** ⚠️⚠️ **§5A now carries 25 PROPOSED dispositions — ⛔ these are NOT authority decisions and ⛔ have NOT been processed.** |
 | **Raised from** | `DD-0007` **v0.9** *(coverage **79 / 104**)* · `ADR-0158` §3 hold register |
 | **Baseline** | HEAD `98fb1e8` · `github/main` `98fb1e8` |
 | **Authorizes** | ⛔⛔ **NOTHING.** ⭐ This sheet **asks**; it does not answer. |
@@ -292,6 +292,154 @@ precedent** and should be recorded as such.
 
 ⛔ **`ATT-CFG-014` is separately blocked** — outside V1 by `D-3a`. ⭐ Please
 treat it independently of the other three.
+
+---
+
+## 5A. ⚠️⚠️ PROPOSED DISPOSITIONS — AWAITING AUTHORITY CONFIRMATION
+
+⛔⛔ **EVERY ROW IN THIS SECTION IS `PROPOSED — AWAITING AUTHORITY CONFIRMATION`.**
+
+⚠️⚠️ **These are NOT authority decisions.** ⛔ They were **not** issued by any of
+the five named authorities; ⭐ they are a **suggested starting position**, recorded
+so each authority has something concrete to **confirm, amend or reject**.
+
+### 5A.0 ⛔ What these proposals have NOT done
+
+| ⛔ Not done | Confirmation |
+|---|---|
+| ⛔ **No ADR created** | ⛔ `ADR-0159`+ **does not exist** |
+| ⛔ **`DD-0007` NOT modified** | ⭐ still **v0.9** |
+| ⛔ **Authorization counts UNCHANGED** | ⭐ **79 authorized · 25 held · 104 total** |
+| ⛔ **No frozen file touched** | ⭐ all hashes intact |
+| ⛔ **No `PERM-*`, role, action class or scope created** | ⭐ **0 / 0 / 0 / 0** |
+| ⛔ **`DP-0001` remains OPEN** | ⭐ all 5 groups still awaited |
+
+⭐⭐ **Every proposal below is `HOLD`.** ⛔ **Not one parameter is proposed for
+authorization**, so ⛔ confirming **all 25 exactly as proposed would still leave
+coverage at 79 / 104** and ⛔ `DD-0007` **not design-ready**. ⭐ These proposals
+therefore **cannot** be mistaken for progress toward 104/104.
+
+⚠️ **A `HOLD` proposal is still only a proposal.** ⭐ An authority may reply
+**`AUTHORIZE`**, and that reply governs — ⛔ the rows below do **not** constrain it.
+
+---
+
+### 5A.1 Group 1 — **Authorization Owner** · 7 · ⚠️ PROPOSED
+
+| ID | Parameter | Proposed | Scope | `READ` | `WRITE` | Commercial | Status |
+|---|---|---|---|---|---|---|---|
+| `ATT-CFG-022` | Staff correction permitted | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `ATT-CFG-023` | Correction window | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `ATT-CFG-024` | Parent attendance visibility | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `SEAT-CFG-005` | Override grant | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `SEAT-CFG-014` | Reception may cancel a reservation | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `CFG-12` | Platform Support elevated-access max duration | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `SCFG-2` | Reserved-username list | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+
+⭐ **Proposed rationale:** ⛔ each parameter **configures role capability itself**
+*(evidence at §1.1–§1.7)*; ⛔ no Authorization Owner determination exists.
+
+⚠️ **Scope / `READ` / `WRITE` / Commercial are left blank deliberately** — ⛔ a
+`HOLD` decides none of them, and ⭐ filling them in would imply an allocation.
+
+---
+
+### 5A.2 Group 2 — **PO + SECURITY PLATFORM** · 10 · ⚠️ PROPOSED
+
+| ID | Proposed | Scope *(proposed)* | `READ` | `WRITE` | Commercial *(proposed)* | Status |
+|---|---|---|---|---|---|---|
+| `ICFG-1` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-2` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-3` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-4` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-5` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-6` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-7` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-8` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-9` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+| `ICFG-10` | ⛔ **HOLD** | ⚠️ *Platform Default* | — | — | *NOT COMMERCIAL* | ⚠️ **PROPOSED** |
+
+⭐ **Proposed rationale:** ⛔ **explicit `READ`/`WRITE` authority is still missing**
+— the register has **no read statement** and **no write role**, only
+`INV-SEC-018`'s prohibition.
+
+⚠️⚠️ **TWO CAVEATS ON THIS GROUP'S PROPOSED FIELDS — please read before
+confirming:**
+
+1. ⚠️⚠️ **The proposed scope `Platform Default` is NOT what the sources say.**
+   ⛔ `ICFG-5`/`6`/`7` read *"**per library**"*; ⭐ the env table **L806-815** gives
+   per-environment values; ⛔ and the `LCFG-*` per-library carve-out at **L829**
+   **names no `ICFG-*`**. ⭐ §2.1 `Q-A` records this as **AMBIGUOUS**.
+   ⛔⛔ **This proposal does not resolve that ambiguity and must not be read as
+   having done so** — ⭐ `Q-A` stays open and still requires an express answer.
+2. ⭐ **`NOT COMMERCIAL` is consistent with the evidence** *(TTLs, caps, rate
+   limits — §2.0)*, ⚠️ but is still **proposed**, ⛔ not confirmed.
+
+⭐ ⛔ **Confirming `HOLD` does not settle `Q-A`, `Q-B` or `Q-C`** — those three
+questions survive the hold and ⭐ still need answers before any allocation.
+
+---
+
+### 5A.3 Group 3 — **Privacy Owner** · 2 · ⚠️ PROPOSED
+
+| ID | Parameter | Proposed | Scope | `READ` | `WRITE` | Commercial | Status |
+|---|---|---|---|---|---|---|---|
+| `CFG-10` | Soft-deleted account retention | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `SCFG-4` | Username-history retention | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+
+⭐ **Proposed rationale:** ⛔ **Privacy Owner determination required.**
+
+---
+
+### 5A.4 Group 4 — **PO + `BC-06` Owner** · 2 · ⚠️ PROPOSED
+
+| ID | Parameter | Proposed | Scope | `READ` | `WRITE` | Commercial | Status |
+|---|---|---|---|---|---|---|---|
+| `SMCFG-5` | Enrollment number format | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `SEAT-CFG-017` | Occupancy % emitting `SEAT-EVT-004` | ⛔ **HOLD** | ⚠️ *unresolved — `Tenant` **or** `Branch`* | — | — | — | ⚠️ **PROPOSED** |
+
+⭐ **Proposed rationale:** ⛔ **`SM-GAP-2` and `SEAT-GAP-005` remain unresolved.**
+
+⚠️ ⭐ `SEAT-CFG-017`'s scope stays **expressly unresolved** — `SEAT-XC-022` admits
+**`Branch`** where `BC-06` owns the parameter, and ⛔ this proposal does **not**
+convert it to `Tenant`.
+
+---
+
+### 5A.5 Group 5 — **Security Owner + `BC-13`/`BC-18`** · 4 · ⚠️ PROPOSED
+
+| ID | Parameter | Proposed | Scope | `READ` | `WRITE` | Commercial | Status |
+|---|---|---|---|---|---|---|---|
+| `ATT-CFG-013` | Face enrollment required | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `ATT-CFG-014` | Face match confidence threshold | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `ATT-CFG-015` | Face liveness required | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+| `ATT-CFG-016` | Face mode enabled | ⛔ **HOLD** | — | — | — | — | ⚠️ **PROPOSED** |
+
+⭐ **Proposed rationale:** ⛔ **`ATT-FR-064` blocks Face Verification build
+authorization**; ⛔ **`ATT-CFG-014` is explicitly outside V1**.
+
+⚠️⚠️ **A distinction the confirming authority should preserve:** ⭐ the four are
+**not** held on one ground. ⛔ `ATT-CFG-014` is outside V1 *(`D-3a`, Face = **V3**;
+both §16.3 columns read "Not in V1")*, whereas ⭐ `013`/`015`/`016` **DO carry V1
+defaults** and are held **only** because `ATT-FR-064` forbids building the mode
+while `ATT-GAP-012`/`014` stay open. ⭐ **If those two gaps are answered,
+`013`/`015`/`016` could move — ⛔ `014` would not.**
+
+---
+
+### 5A.6 ⭐ Reconciliation of the proposals
+
+| Group | Authority | Proposed `HOLD` | Proposed `AUTHORIZE` |
+|---|---|---:|---:|
+| 1 | Authorization Owner | **7** | **0** |
+| 2 | PO + SECURITY PLATFORM | **10** | **0** |
+| 3 | Privacy Owner | **2** | **0** |
+| 4 | PO + `BC-06` Owner | **2** | **0** |
+| 5 | Security Owner + `BC-13`/`BC-18` | **4** | **0** |
+| | **TOTAL** | ⭐ **25** | ⛔ **0** |
+
+⭐⭐ **25 proposed-held + 79 authorized = 104.** ⛔ The **79** are untouched by this
+section, and ⛔ the **104** inventory is unchanged.
 
 ---
 

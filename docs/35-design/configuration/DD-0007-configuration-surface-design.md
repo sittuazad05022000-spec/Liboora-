@@ -9,12 +9,12 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | ⭐ **v0.3** — ⭐⭐ **D5 `GAP` → `PASS`** on existing authority *(`ADR-0151` §2.3 · `ADR-0152` §7 · §5.2 · `DD-0001` §4.0.4)*; ⭐ App-Boundary QA **12/13 → 13/13**. ⛔ **`CNF-GAP-002` and `CNF-GAP-007` remain OPEN — Stage 6, ⛔ NOT closed here.** ⚠️ **D3 remains `PARTIAL` at 22 / 104** and is now the **sole** blocker *(prior: **v0.2** — D1 `GAP` → `PASS` under `ADR-0152`)* |
+| **Version** | ⭐ **v0.4** — ⭐⭐ **Authorization coverage 22 / 104 → 39 / 104** by recording `Accepted` **[`ADR-0153`](../../00-governance/adr/ADR-0153-att-cfg-attendance-configuration-authorization-allocation.md)** *(17 `ATT-CFG-*`)*. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed** and **65** stay `NOT YET AUTHORIZED`; ⛔ **7 `ATT-CFG-*` held**. ⛔ `CNF-GAP-002` / `CNF-GAP-007` **still OPEN, Stage 6**. ⛔ D1/D2/D4/D5 unchanged *(prior: **v0.3** — D5 `GAP` → `PASS`)* |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
 | **Subject PRD** | `PRD-023` Settings & Configuration — **`FROZEN` v0.1**, Rank 3, admitted 2026-08-20 by `ACCEPTED` `ADR-0053` under `BASELINE-2026-08-20-A`. **180 identifiers / 8 registers / 113 obligation-bearing** |
-| ⭐⭐ **Governing authorization authority** | **`ADR-0151`** (Rank 2, **Accepted**) — the **only** operation×role source for any `BC-25` parameter. ⛔ It covers **22 of 104**; ⛔ the other **82 are NOT authorized** |
+| ⭐⭐ **Governing authorization authority** | **`ADR-0151`** *(Rank 2, **Accepted** — 22)* **+ ⭐ `ADR-0153`** *(Rank 2, **Accepted** — 17 `ATT-CFG-*`)* — together the **only** operation×role sources for any `BC-25` parameter. ⛔ They cover **39 of 104**; ⛔ the other **65 are NOT authorized** |
 | **Owner** | UX Architecture Owner *(role, never a personal name)* |
 | **External method** | UI/UX Pro Max skill — `nextlevelbuilder/ui-ux-pro-max-skill` @ **`15de38f`**, MIT. ⚠️ **Reference only, subordinate to every Liboora source** |
 | **Purpose** | Specify the `BC-25` configuration surfaces precisely enough that a Figma prototype or Flutter implementation could be built **without inventing UX, parameters, roles or authority** |
@@ -35,7 +35,7 @@ to build **without guessing**.
 ⛔ It does not amend `PRD-023`, `PRD-002`, `PRD-005`, `PRD-001` or
 `CONFIGURATION_GUIDE.md`. ⛔ It does not create a parameter, a role, an action
 class, a scope class, a `PERM-*` identifier or an authorization model.
-⛔ It does not authorize the 82 unallocated parameters. ⛔ It does not prescribe
+⛔ It does not authorize the 65 unallocated parameters. ⛔ It does not prescribe
 database schema, API shape, event contracts or implementation internals.
 ⛔ It confers no status on itself.
 
@@ -136,14 +136,14 @@ taken from existing practice, not chosen.
 
 ⭐ Per README §2B.3, all five declarations are stated. ⭐ **Four are `PASS`.**
 ⚠️⚠️ **Declaration 3 is `PARTIAL` and is reported as such — ⛔ NOT rounded to
-PASS**: `ADR-0151` covers **22 of 104**, and ⛔ the other **82 remain
-`NOT YET AUTHORIZED`**.
+PASS**: `ADR-0151` *(22)* and `ADR-0153` *(17)* cover **39 of 104**, and ⛔ the
+other **65 remain `NOT YET AUTHORIZED`**.
 
 | # | Declaration | Value | Verdict |
 |---|---|---|---|
 | **1** | **Target App** | ⭐ **APP 2 — Library App**, for `TR-1`/`TR-2`/`TR-3`. ⛔ **APP 1 = 0 surfaces.** ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces** — `Accepted` **`ADR-0152`** §7, §5.3 | ⭐ **PASS** |
 | **2** | **Target Roles** | ⭐ `TR-1` Owner · `TR-2` Manager · `TR-3` Reception — all `PRD-001` v2.0 §2.4. ⛔ `TR-4`/`TR-5` **excluded**, §5.2 | ⭐ **PASS** |
-| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** — the operation×role source. ⚠️ **PARTIAL: 22 of 104 parameters**; ⛔ the other **82 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
+| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** *(22)* **+ ⭐ `ADR-0153` §2.3** *(17 `ATT-CFG-*`)* — the operation×role sources. ⚠️ **PARTIAL: 39 of 104 parameters**; ⛔ the other **65 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
 | **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10** · `Library` **8** · `Platform default` **4** (`ADR-0151` §2.3; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
 | **5** | **Cross-App dependencies** | ⭐⭐ **NONE — a measured NEGATIVE.** ⛔ Every authorized surface is **APP 2** (`ADR-0151` §2.3); ⛔ APP 1 = 0 (§5.2); ⛔ APP 3 = 0 (`ADR-0152` §7). ⭐ `E-19`/`E-22` are **bounded-context** edges, ⛔ not app boundaries (`DD-0001` §4.0.4) — §5.4 | ⭐ **PASS** |
 
@@ -426,17 +426,18 @@ resolved here:**
 ### 6.2 ⭐⭐ Authorization coverage — the separation that matters most
 
 ⛔⛔ **INVENTORY IS NOT AUTHORIZATION.** The table in §6.3 lists all 104 so the
-design scope is honest about what exists. ⛔ **82 of them carry NO operation×role
+design scope is honest about what exists. ⛔ **65 of them carry NO operation×role
 source and MUST NOT be rendered by any surface this document describes.**
 
 | Band | Count | Label | Meaning |
 |---|---:|---|---|
-| ⭐ **Authorized** | **18** | `AUTHORIZED` | `ADR-0151` gives a complete role×action×scope treatment **and** a write path exists |
+| ⭐ **Authorized** | **35** | `AUTHORIZED` | A complete role×action×scope treatment **and** a write path exists — **18** by `ADR-0151`, ⭐ **17** by `ADR-0153` |
 | ⭐ **Platform default** | **4** | `PLATFORM DEFAULT` | `ADR-0151` covers them, but `CNF-FR-020` makes them **unwritable by any actor**; read decided |
-| ⛔ **Not authorized** | **82** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
+| ⛔ **Not authorized** | **65** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
 | | **104** | | |
 
-⭐ **18 + 4 = 22** — the `ADR-0151` subset. ⭐ **22 + 82 = 104.**
+⭐ **18 + 4 = 22** — the `ADR-0151` subset. ⭐ **+ 17** — the `ADR-0153` `ATT-CFG-*`
+subset. ⭐ **35 + 4 = 39 authorized; 39 + 65 = 104.**
 
 ⚠️ **`PARTIALLY AUTHORIZED` is used for exactly 0 parameters**, because
 `ADR-0151` treats each of its 22 completely. ⚠️ **`OPEN` is used for 0
@@ -449,9 +450,16 @@ column.
 status · **Comm** = commercial classification · **Design** = whether `DD-0007`
 designs a row for it.
 
-⛔ For all 82 unallocated rows: **Scope = `OPEN`**, **Comm = `OPEN`**,
+⛔ For all 65 unallocated rows: **Scope = `OPEN`**, **Comm = `OPEN`**,
 **Design = ⛔ NOT DESIGNED** — ⛔ and that is not an oversight, it is the absence
 of a lawful source.
+
+⚠️⚠️ **The 17 `ATT-CFG-*` rows authorized by `ADR-0153` are `AUTHORIZED` but
+remain ⛔ NOT DESIGNED in this document.** ⭐ Authorization and design are
+separate: `DD7-GAP-003` — whether `BC-25` owns a configuration surface at all,
+or each owning module renders its own — is ⛔ **still open**, and `DD-0003`
+`S-L8` already renders these 24 as a **`BC-06`** surface. ⛔ `ADR-0153` §7 states
+expressly that it *"creates no design artifact"*.
 
 #### 6.3.1 ⭐ AUTHORIZED — `MM-CFG-001`…`009` *(`PRD-005` / `BC-02`)*
 
@@ -579,7 +587,22 @@ Recorded as **`DD7-GAP-006`**.
 | `SEAT-CFG-017` | Occupancy % emitting `SEAT-EVT-004` | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
 | `SEAT-CFG-018` | *Expiring soon* filter horizon | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
 
-#### 6.3.8 ⛔ NOT YET AUTHORIZED — `ATT-CFG-001`…`024` *(`PRD-006` / `BC-06`)*
+#### 6.3.8 ⭐ PARTLY AUTHORIZED — `ATT-CFG-001`…`024` *(`PRD-006` / `BC-06`)*
+
+⭐⭐ **17 of 24 AUTHORIZED by `Accepted` [`ADR-0153`](../../00-governance/adr/ADR-0153-att-cfg-attendance-configuration-authorization-allocation.md)** —
+`ATT-CFG-001`…`012` and `017`…`021`: **`READ` = `TR-1` + `TR-2` + `TR-3`**,
+**`NOT COMMERCIAL`**, **Scope = `Tenant`**. ⭐ **`WRITE` is unchanged** and comes
+from FROZEN `PRD-006` §16.3 — `TR-1` on 16, **`TR-1` + `TR-2` on `ATT-CFG-008`**
+(`D-12`); ⛔ `ADR-0153` did not decide it.
+
+⛔⛔ **7 remain `NOT YET AUTHORIZED` and are NOT allocated:** `ATT-CFG-013`,
+`014`, `015`, `016` *(Face — V1/V3 boundary; `ADR-0021` requires **Security
+Owner** input for `014`)* · **`022`**, **`023`**, **`024`** *(⛔ **authorization-
+semantic** — `022` gates `TR-2`/`TR-3` correction rights and `024` gates `TR-5`
+parent visibility, `PRD-006` §19.2 **L1980**/**L1983**; both need the
+**Authorization Owner**)*. ⭐ `ADR-0153` §5.
+⭐⭐ **A `WRITE` role in §16.3 was NOT treated as sufficient to authorize
+them** — all seven carry `WRITE` = `Owner` exactly like the 17.
 
 ⚠️⚠️ **`DD-0003` §16.2 already designs a surface (`S-L8`) rendering these 24 rows,
 assigned `TR-1` ONLY, plus `S-L8a` for `TR-1`+`TR-2`.** ⛔ That is a **`BC-06`**
@@ -589,27 +612,27 @@ distributed-ownership reading in **`DD7-GAP-003`** (§22).
 
 | ID | Name | Scope | Auth | Comm | Evidence | Design |
 |---|---|---|---|---|---|---|
-| `ATT-CFG-001` | Fixed QR enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-002` | Dynamic QR enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-003` | Fixed QR + Wi-Fi enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-004` | Fixed QR + GPS enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-005` | Dynamic QR rotation interval | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-006` | Dynamic QR validity window | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-007` | Dynamic QR single-use per student-day | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-008` | Approved Wi-Fi network(s) | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8a`)* |
-| `ATT-CFG-009` | Wi-Fi verification strictness | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-010` | Library coordinates | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-011` | GPS acceptance radius | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-012` | Minimum acceptable location accuracy | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-001` | Fixed QR enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-002` | Dynamic QR enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-003` | Fixed QR + Wi-Fi enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-004` | Fixed QR + GPS enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-005` | Dynamic QR rotation interval | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-006` | Dynamic QR validity window | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-007` | Dynamic QR single-use per student-day | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-008` | Approved Wi-Fi network(s) | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3; `ATT-FR-032` | ⛔ Not designed *(`DD-0003` `S-L8a`)* |
+| `ATT-CFG-009` | Wi-Fi verification strictness | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-010` | Library coordinates | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-011` | GPS acceptance radius | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-012` | Minimum acceptable location accuracy | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-013` | Face enrollment required before use | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-014` | Face match confidence threshold | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed — ⚠️ §6.1 note 3 |
 | `ATT-CFG-015` | Face liveness required | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-016` | Face mode enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-017` | Manual mode enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-018` | Register-image workflow enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-019` | OCR high-confidence threshold | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-020` | Unattended creation of OCR entries | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
-| `ATT-CFG-021` | Check-out tracking enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-017` | Manual mode enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-018` | Register-image workflow enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-019` | OCR high-confidence threshold | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-020` | Unattended creation of OCR entries | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
+| `ATT-CFG-021` | Check-out tracking enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | `ADR-0153` §2.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-022` | Staff correction permitted | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-023` | Correction window | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-024` | Parent attendance visibility | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
@@ -618,14 +641,16 @@ distributed-ownership reading in **`DD7-GAP-003`** (§22).
 
 | Band | Count | Renders in `DD-0007`? |
 |---|---:|---|
-| ⭐ `AUTHORIZED` *(writable, role-allocated)* | **18** | ⭐ **YES** |
+| ⭐ `AUTHORIZED` *(writable, role-allocated)* — `ADR-0151` | **18** | ⭐ **YES** |
+| ⭐ `AUTHORIZED` *(writable, role-allocated)* — ⭐ `ADR-0153` `ATT-CFG-*` | **17** | ⛔ **NO — authorized, not designed** *(`DD7-GAP-003`)* |
 | ⭐ `PLATFORM DEFAULT` *(read-only by `CNF-FR-020`)* | **4** | ⚠️ **Read decision exists; ⛔ 0 write affordance** |
-| ⛔ `NOT YET AUTHORIZED` | **82** | ⛔ **NO** |
-| **Total** | **104** | ⭐ **22 of 104 = 21.2% authorization coverage** |
+| ⛔ `NOT YET AUTHORIZED` | **65** | ⛔ **NO** |
+| **Total** | **104** | ⭐ **39 of 104 = 37.5% authorization coverage** |
 
-⛔⛔ **21.2% is published as measured.** ⛔ It is not rounded, not described as
-"most of the important ones", and ⛔ the 82 are **not** presented as authorized
-merely because they are inventoried.
+⛔⛔ **37.5% is published as measured.** ⛔ It is not rounded, not described as
+"most of the important ones", and ⛔ the 65 are **not** presented as authorized
+merely because they are inventoried. ⚠️ **Authorization coverage is NOT design
+coverage** — ⭐ **22** parameters are designed here, ⛔ not 39.
 
 ---
 
@@ -1204,7 +1229,8 @@ is that ADR, and it did not exist until after v0.1 was committed.
 | Concurrency behaviour | ⛔ **`DD7-GAP-011`** | — | Journey 8 | ⛔ **Open Product Decision** |
 | `C-4` change-history readers | ⛔ **`DD7-GAP-008`** | — | `C-4` | ⛔ **Open Product Decision** |
 | Branch / user scope surfaces | `CNF-GAP-003`, `CNF-FR-011` | — | ⛔ Not designed | ⭐ **Future / V2** |
-| The other 82 parameters | ⛔ No operation×role source | — | ⛔ Not designed | ⭐ **Future / V2** |
+| The other 65 parameters | ⛔ No operation×role source | — | ⛔ Not designed | ⭐ **Future / V2** |
+| ⭐ The 17 `ATT-CFG-*` authorized by `ADR-0153` | ⭐ Authorized — ⛔ but `DD7-GAP-003` open; `DD-0003` `S-L8` renders them as a `BC-06` surface | — | ⛔ Not designed **here** | ⭐ **Future** |
 | Second locale | `LCFG-2` — *"Only locale with complete strings at V1"* | — | ⛔ Not designed | ⭐ **Future / V2** |
 
 ---
@@ -1218,7 +1244,7 @@ of **59**.
 | ID | Criterion | Traces to |
 |---|---|---|
 | `DD7-AC-001` | Every rendered row traces to a parameter listed `AUTHORIZED` or `PLATFORM DEFAULT` in §6.3 | `ADR-0151` |
-| `DD7-AC-002` | ⛔ **No** surface renders any of the 82 `NOT YET AUTHORIZED` parameters | §6.2 |
+| `DD7-AC-002` | ⛔ **No** surface renders any of the 65 `NOT YET AUTHORIZED` parameters | §6.2 |
 | `DD7-AC-003` | An inherited value and an override are **not** visually identical, and the difference is **not colour-only** | `CNF-FR-076` |
 | `DD7-AC-004` | An inherited row names its source scope | `CNF-FR-077` |
 | `DD7-AC-005` | Reset-to-inherited exists as a control distinct from setting a value, wherever an override exists | `CNF-FR-078` |
@@ -1263,7 +1289,7 @@ cleared; was 5 at v0.1)*:
 
 ⚠️⚠️ **Clearing D5 does NOT open the gate, and ⛔ it must not be read as doing
 so.** ⭐ Three blockers stand, and ⚠️ **Declaration 3 remains `PARTIAL` at
-22 / 104** — ⛔ **82 parameters are NOT authorized and MUST NOT be prototyped**.
+39 / 104** — ⛔ **65 parameters are NOT authorized and MUST NOT be prototyped**.
 
 ---
 
@@ -1274,8 +1300,8 @@ so.** ⭐ Three blockers stand, and ⚠️ **Declaration 3 remains `PARTIAL` at
 | Dimension | Result |
 |---|---|
 | Surfaces specified | ⭐ **3 of 4** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED |
-| Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** |
-| Authorization coverage | ⚠️ **22 / 104 = 21.2%** |
+| Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** *(⚠️ incl. the 17 newly **authorized** `ATT-CFG-*` — `DD7-GAP-003` open)* |
+| Authorization coverage | ⚠️ **39 / 104 = 37.5%** — ⭐ **22** `ADR-0151` + ⭐ **17** `ADR-0153` |
 | §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ **D3 `PARTIAL`** · ⭐ D4 **PASS** · ⭐ D5 **PASS** |
 | App-Boundary QA | ⭐⭐ **13 / 13 PASS**, 0 GAP |
 | New `PERM-*` / roles / actions / scopes | ⛔ **0 / 0 / 0 / 0** |
@@ -1285,13 +1311,27 @@ so.** ⭐ Three blockers stand, and ⚠️ **Declaration 3 remains `PARTIAL` at
 ⛔⛔ **`DD-0007` is STILL NOT design-ready under README §2B.5** — ⭐ and v0.3
 narrows the reason to **one**, rather than removing it.
 
-⚠️⚠️ **DECLARATION 3 IS NOW THE SOLE REMAINING BLOCKER, AND IT IS THE REAL ONE.**
-⛔ `ADR-0151` is the **only** operation×role source for any `BC-25` parameter and
-it covers **22 of 104**. ⛔ The other **82 remain `NOT YET AUTHORIZED`** — ⛔ no
-role, ⛔ no action class, ⛔ no scope, ⛔ no `PERM-*`. ⭐ Under README §2B.5 an
-unsourced declaration is not design-ready, ⭐ and **`PARTIAL` is disclosed
-exactly as measured**, ⛔ never rounded to `PASS`. ⭐ **This document is the
-classification.**
+⚠️⚠️ **DECLARATION 3 IS STILL THE SOLE REMAINING BLOCKER, AND IT IS THE REAL ONE.**
+⛔ `ADR-0151` *(22)* and `ADR-0153` *(17)* are the **only** operation×role
+sources for any `BC-25` parameter and together they cover **39 of 104**. ⛔ The
+other **65 remain `NOT YET AUTHORIZED`** — ⛔ no role, ⛔ no action class, ⛔ no
+scope, ⛔ no `PERM-*`. ⭐ Under README §2B.5 an unsourced declaration is not
+design-ready, ⭐ and **`PARTIAL` is disclosed exactly as measured**, ⛔ never
+rounded to `PASS`. ⭐ **This document is the classification.**
+
+⭐⭐ **What v0.4 changed, stated narrowly:** ⭐ authorization coverage
+**22/104 → 39/104**, by recording `Accepted` **`ADR-0153`**'s allocation of
+**17** `ATT-CFG-*` parameters. ⛔ **D3 remains `PARTIAL`** — ⛔ it does **not**
+become `PASS`, and ⛔ **104/104 is NOT claimed**. ⛔ **Nothing else moved.**
+
+⛔⛔ **WHAT v0.4 EXPRESSLY DID NOT DO:** ⛔ **`CNF-GAP-002` remains OPEN**
+*(High, Stage 6)* · ⛔ **`CNF-GAP-007` remains OPEN** *(Stage 6)* · ⛔ **D1, D2,
+D4, D5 untouched** · ⛔ **7 `ATT-CFG-*` held** — `013`…`016`, `022`, `023`,
+`024` · ⛔ **0** `PERM-*`, roles, action classes or scopes minted · ⛔
+`ADR-0151`, `ADR-0152`, `PRD-006`, `PRD-023` and `AUTH-7.22` **byte-unchanged**
+· ⛔ **`G-5` NOT corrected** — still an **Architecture Owner** item
+(`ADR-0153` §6) · ⛔ **0** lines of runtime code · ⚠️ **no new surface designed**
+— the 17 are **authorized, not designed** (`DD7-GAP-003`).
 
 ⭐⭐ **What v0.3 changed, stated narrowly:** ⭐ **D5 `GAP` → `PASS`**, because the
 cross-app position is **declared and sourced** as a measured **negative** —
@@ -1364,6 +1404,7 @@ both at **V2**, `PRD-023` §0.3)*.
 
 | Version | Date | Change |
 |---|---|---|
+| ⭐⭐ **v0.4** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE 22 / 104 → 39 / 104**, recording `Accepted` **[`ADR-0153`](../../00-governance/adr/ADR-0153-att-cfg-attendance-configuration-authorization-allocation.md)** — the successor act `ADR-0151` §7 anticipated *("Each needs the same act, by the same route")*. ⭐ **17 `ATT-CFG-*` parameters AUTHORIZED**: `ATT-CFG-001`…`012` and `017`…`021` — **`READ` = `TR-1` + `TR-2` + `TR-3`**, **`NOT COMMERCIAL`**, **Scope = `Tenant`**. ⭐⭐ **`WRITE` is CONSUMED, not decided** — FROZEN `PRD-006` §16.3 (`TR-1` on 16; **`TR-1` + `TR-2` on `ATT-CFG-008`**, `D-12`); ⛔ unchanged. ⭐⭐ **`READ` was DECIDED, ⛔ NOT DERIVED** (`CNF-BR-010`) — `TR-2`/`TR-3` hold `READ` where `WRITE` is denied on **16 of 17**, which **`CNF-FR-081`** renders **read-only** *(⚠️ the opposite of §8.2's deny-read ABSENT treatment for `MM-CFG-007`/`009`, where `AC-7.8` denies the read — ⛔ neither rule weakened)*. ⚠️⚠️ **A first formulation proposed `Scope = Library`; it was REPORTED AS A CONFLICT AND NOT APPLIED** — `ATT-FR-032`, **`ATT-FR-041`**, **`ATT-FR-042`** each say *"**MUST** be configurable **per tenant**"*, ⭐ including for `ATT-CFG-010` *"Library coordinates"*, whose **name is not a scope declaration**; the Product Owner then decided **`Tenant`**. ⛔ **No frozen text was bent to fit a decision.** ⛔⛔ **7 `ATT-CFG-*` REMAIN `NOT YET AUTHORIZED`** — `013`/`015`/`016` and **`014`** *(Face, V1/V3; `ADR-0021` requires **Security Owner** input for `014`)*, **`022`**, **`023`**, **`024`** *(⛔ **authorization-semantic** — `022` gates `TR-2`/`TR-3` correction rights, `024` gates `TR-5` parent visibility, §19.2 **L1980**/**L1983**; **Authorization Owner** required)*. ⭐⭐ **A `WRITE` role in §16.3 was NOT treated as sufficient to authorize them.** ⚠️⚠️ **AUTHORIZED ≠ DESIGNED** — ⛔ the 17 are **not designed here**; **`DD7-GAP-003`** is still open and `DD-0003` `S-L8` already renders them as a **`BC-06`** surface, so ⛔ parameters designed stays **22** and ⛔ surfaces stay **3 of 4**. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed**, **65** remain unauthorized, and ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⚠️ **`G-5` DISCLOSED, ⛔ NOT CORRECTED** — `ADR-0151` §1's *"0 of 104 carries a write-authority declaration"* is inaccurate *(true: **24 of 104**)*, ⛔ but correcting an `Accepted` Rank 2 ADR is an **Architecture Owner** act (`ADR-0153` §6). ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `ADR-0151` · `ADR-0152` · `PRD-006` · `PRD-023` · `AUTH-7.22` · the **104**-parameter inventory · D1/D2/D4/D5 · `CNF-GAP-002` and `CNF-GAP-007` **both OPEN at Stage 6** · `DD7-GAP-013` · §7–§21 and §23–§24 and §27–§29. ⛔ **0** `PERM-*` · **0** roles/actions/scopes · **0** frozen documents modified · **0** lines of runtime code. |
 | ⭐⭐ **v0.3** | 2026-09-19 | ⭐⭐ **DECLARATION 5 MOVES `GAP` → `PASS` ON EXISTING AUTHORITY. ⛔ NO NEW AUTHORITY WAS CREATED, SOUGHT OR IMPLIED — ⛔ no ADR, ⛔ no PRD amendment, ⛔ no register touched.** ⭐ The cross-app position is **declared and sourced** as a **measured NEGATIVE**: ⛔ **there is no cross-APP dependency** for the `BC-25` runtime configuration surface, because `ADR-0151` §2.3 allocates to `TR-1`/`TR-2`/`TR-3` **only** — ⭐ all **APP 2** by README §2B.1 — while ⛔ **APP 1 = 0 surfaces** (§5.2, four sources) and ⛔ **APP 3 = 0 `BC-25` runtime surfaces** (`Accepted` `ADR-0152` §7). ⭐⭐ **A feature whose every authorized surface lives in one app cannot contain a jump between apps**, and README §2B.3's stated failure mode — *"an **undeclared jump between apps**"* — is measured **absent**. ⭐ README §2B.3 asks for cross-app dependencies *"**if any**"*, ⭐ which a sourced negative satisfies — the instrument `DD-0001` §4.0.4 used for the same declaration. ⭐⭐ **`E-19` IS A BOUNDED-CONTEXT EDGE AND MUST NOT BE TREATED AS AN APP BOUNDARY** (§5.4.2): its *"All contexts"* quantifies the 31 **bounded contexts** (Rank 4), ⛔ not APP 1/2/3 (a Design-README vocabulary) — ⭐ `DD-0001` §4.0.4: *"a bounded-context edge is not an app boundary"*. ⛔ `E-19` and `E-22` are **byte-unchanged** and BC Map is **untouched**. ⚠️⚠️ **`CNF-GAP-002` AND `CNF-GAP-007` REMAIN OPEN AND ARE ⛔ NOT CLOSED BY THIS AMENDMENT** — ⭐ `CNF-GAP-002` *(7 consumers / 0 providers, **High**, `ADR-0053` **L131** "OPEN. Scheduled, not resolved", **Technical Owner**)* is dispositioned by `FROZEN` `PRD-023` **L1368** to *"**Stage 6** — closed by the implementation task that declares the provider"*; ⭐ `CNF-GAP-007` is **Stage 6** (**L1373**), which `PRD-023` §1.3 calls *"a Stage 6 obligation… **not a defect in the manifest**"*. ⭐⭐ **Both are real, both stay OPEN, and ⛔ NEITHER IS A DECLARATION 5 BLOCKER** (§5.4.3) — README §2B.3 requires **no** provider *(**0** occurrences of provider/implementation/binding/manifest in §2B.3 or §2B.5)*; README §5.1 holds a Design Doc *"is **not** a precondition of implementation"*; the condition is **repository-wide** *(**25 of 35** consumed ports have no provider declaration; `provides_ports` used by **3 of 18** modules; **7 of 22** ranked modules have no module block; `check_module_boundaries.dart` reads `provides_ports` **0** times across **12** categories; manifest **L14** defines a port as *"interface declared by **consumer**"*)*; and ⭐ **precedent is unanimous** — `DD-0006` §5.3 recorded **D5 PASS** on `platform/analytics:read_model`, declared at the **same app root** (**L539**, adjacent to `settings` at **L540**) with **no** provider, and `DD-0005` §3.3 likewise. ⭐ **The app-root observation is preserved and tested** (§5.4.4): the manifest has **0** per-app submodules, **all 11** `app` ports are root-declared, ⭐ *"port visibility is not authorization"*, and authorization is app-determinate from **Rank 2** per README §2B.4 rule 4 — ⛔ never from a build manifest. ⚠️ Its residue is recorded as ⭐ **new `DD7-GAP-013`** *(Architecture Owner, Rank 4 manifest question, ⛔ **not** an ADR, ⛔ **not** blocking)*. ⚠️⚠️ **SELF-REPORTED CORRECTION:** ⭐ v0.2's four numbered blockers were **all factually true and all are preserved above**; ⛔ what was wrong was the **adjudication** — three are **Stage 6 implementation** facts and the fourth is the affirmative **ground for PASS**. ⛔ The error was applying an **implementation-readiness** test to a **design-readiness** declaration; ⛔ it is corrected, not quietly replaced. ⭐ **App-Boundary QA 12/13 → 13/13** *(check 11)*; ⭐ **Figma blockers 4 → 3**. ⚠️⚠️ **`DD-0007` REMAINS NOT DESIGN-READY — ⭐ D3 `PARTIAL` at 22 / 104 is now the SOLE blocker**, and ⛔ the **82** parameters remain **`NOT YET AUTHORIZED`**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `ADR-0151` · `ADR-0152` · `PRD-023` · `AUTH-7.22` · BC Map · `tool/module_dependencies.yaml` · all frozen PRDs · the **104**-parameter inventory *(18 + 4 + 82)* · §6–§21 and §23–§24 and §27–§29 · every authorization decision · roles, action classes, scopes · `PERM-*` *(**0** minted)*. ⛔ **0** parameters authorized · ⛔ **0** new roles/actions/scopes/`PERM-*` · ⛔ **0** registers extended *(`CNF-GAP-*` stays **8**)* · ⛔ **0** frozen documents modified · ⛔ **0** lines of runtime code. ⭐ **Smallest lawful diff — ⛔ no section rewritten for style, ⛔ no unrelated section touched.** |
 | ⭐⭐ **v0.2** | 2026-09-19 | ⭐⭐ **AMENDED under `Accepted` [`ADR-0152`](../../00-governance/adr/ADR-0152-secp-hro-005-is-a-governance-act-not-an-app-3-runtime-configuration-surface.md) — the follow-up that ADR itself routed as `ADR-0152-F-1`.** ⭐⭐ **`DD7-GAP-001` is CLOSED** and ⭐⭐ **Declaration 1 moves `GAP` → `PASS`**: **APP 2** *(`TR-1`/`TR-2`/`TR-3`)* · ⛔ **APP 1 = 0** · ⛔ **APP 3 = 0 `BC-25` runtime configuration surfaces**. ⚠️⚠️ **A SELF-REPORTED FACTUAL CORRECTION IS RECORDED RATHER THAN QUIETLY REPLACED (§5.3):** v0.1 called this a *"**Rank 3 vs Rank 3** contradiction"* where *"precedence cannot break a same-rank tie"* — ⛔ **the premise was false.** `PRD-012a` Part 2's own header reads *"**Unranked.** … **Not** Rank 3; **MUST NOT** be cited as authority against any ranked document"*, measured identically across **all 8** parts, `Status` **`DRAFT`**. ⚠️ The error was reading `PRD-012a`'s **module rank 2** as a **document precedence rank** — ⭐ different ladders. ⭐ A second independent ground stands alone: Part 2 **§0.2** excludes *"… **UI**…"* from what it specifies. ⭐ **`DD7-GAP-002` → MOOT for the runtime APP 3 surface**, ⚠️⚠️ **but NOT answered** — *"platform configuration"* **still has 0 definitions** as a parameter set, re-measured here and carried as **`ADR-0152-F-2`**. ⭐ **App-Boundary QA 11/13 → 12/13** *(check 7 closed; ⛔ check 11 still `GAP`)*. ⭐ **Figma blockers 5 → 4.** ⛔⛔ **D5 IS UNCHANGED AND REMAINS `GAP`** — `CNF-GAP-002` re-verified **OPEN** (`ADR-0053`: *"OPEN. Scheduled, not resolved"*), `CNF-GAP-007` open, `E-19` wording and the app-root port declaration unchanged — so ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔⛔ **PRESERVED UNCHANGED:** the `ADR-0151` 22-parameter allocation · the **104**-parameter inventory *(18 + 4 + 82)* · every authorization decision · roles, action classes, scopes · `PERM-*` vocabulary *(**0** minted)* · `AUTH-7.22` · all frozen PRDs · the UI architecture, design recommendations and NFR decisions · §6–§21 and §27–§29 byte-unchanged apart from the cited-source rows. ⭐ **Smallest lawful diff — ⛔ no section rewritten for style.** ⛔ **0 lines of runtime code.** |
 | **v0.1** | 2026-09-19 | ⭐⭐ **Created** as the `BC-25` Configuration surface design, after a **six-gate governance check** (§2) that verified ownership, freeze, README §2A/§2B permission, number availability, non-existence and path convention **before** authoring. ⭐ `configuration/` is the **EIGHTH** context directory, created at the moment this document was written, per README §2 and the `analytics/` precedent. ⭐⭐ **The governing discovery is `ADR-0151`**: it is the **only** operation×role source for any `BC-25` parameter, and it covers **22 of 104** — so ⭐ **exactly 22 parameters are designable and 82 are not**. ⭐ **4 surfaces** `C-1`…`C-4` *(⭐ 3 designable · ⛔ 1 BLOCKED)*, **18 editable + 4 read-only** parameters, **11 user journeys**, a **19-row impact model**, **12 design-system reuses** and ⚠️ **3 new components requested** — each named by `PRD-023` §12.2, ⛔ none invented. ⚠️⚠️ **Authorization coverage is published as measured: 21.2%.** ⛔ The 82 unallocated parameters are inventoried with **Scope `OPEN`**, **Comm `OPEN`**, **`NOT YET AUTHORIZED`** and **⛔ Not designed** — ⛔ **inventory is not authorization**, and the banner at §6.2 says so. ⭐⭐ **The sharpest design finding is §8.2: deny-read renders ABSENT, not greyed** — because a greyed row discloses that a parameter exists and has a value, which for `MM-CFG-007`/`009` is the financial disclosure `AC-7.8` denies *"regardless of other roles held anywhere"*; ⭐ so `TR-3` sees **13 rows, not 22 with 9 greyed**. ⭐ **`TR-2` is NOT hard-coded as ALLOW** on the 18 non-commercial parameters — `ADR-0151` §2.4's *existing model* is carried as a **runtime-resolved** rendering (§8.1), ⛔ not converted into a grant. ⭐ **The 4 platform-default parameters get 0 write affordance for every role** (`CNF-FR-020`, `CNF-AC-011`). ⚠️⚠️ **TWO DECLARATIONS ARE `GAP` AND ARE NOT ROUNDED TO PASS** — **D1** because `SECP-HRO-005` *(Rank 3)* and `CNF-FR-020` *(Rank 3)* contradict each other on whether `PR-1` has a runtime configuration surface, and ⛔ precedence cannot break a same-rank tie; **D5** because `CNF-GAP-002` is OPEN at **7 consumers / 0 providers** and `E-19`'s *"All contexts"* is not an app-boundary statement. ⭐ **App-Boundary QA reported as 11 of 13 with 2 GAP**, on the `DD-0006` precedent of publishing rather than rounding. ⛔⛔ **`DD7-GAP-002` is carried forward OPEN** — measured **0** prior occurrences and **0** ADRs citing `SECP-HRO-005`, so ⭐ the brief's *"Decision B"* was applied **as a design constraint** *(⛔ no APP 3 panel, API, write path or permission)* ⛔ **but is NOT recorded as repository-accepted governance**, and the gap is not closed. ⭐ **12 `DD7-GAP-*` raised**, ⛔ all carrying **no authority**; ⭐ `CNF-GAP-*` stays **8** and `CNF-AC-*` stays **59** — ⛔ no closed register is extended. ⭐ **New: `CNF-D-3`** — `PRD-023` §3.6 cites `PRD-005` *"FROZEN v1.4"* while the repository is at **v1.6**; ⛔ a stale citation, ⛔ not a register change *(`MM-CFG-*` verified still **9**)*, ⛔ not repaired because `PRD-023` is FROZEN. ⭐ **UI/UX Pro Max @ `15de38f`: 4 APPLIED · 1 ADAPTED · 3 REJECTED** — ⛔ every rejection names a Liboora source, and ⛔ all visual-token domains were rejected under `CNF-XC-016`. ⭐ **`MeterBar` PROHIBITED** — the **fourth** consecutive Design Doc to prohibit it, for a fourth distinct reason. ⛔⛔ **0 `PERM-*` · 0 new roles · 0 new action classes · 0 new scope classes · `AUTH-7.22` untouched · `ADR-0151` untouched · 0 frozen documents modified · 0 lines of runtime code.** ⚠️ **2 acceptance criteria left deliberately OPEN** *(`DD7-AC-021`, `DD7-AC-022`)* because no authoritative NFR budget or UI Design System exists — ⛔ inventing numbers was declined. ⛔⛔ **Figma gate NOT OPEN — 5 blockers.** ⭐ Verdict: ⚠️ **DESIGNED WITH EXPLICIT BLOCKERS**; ⛔ **`DD-0007` is NOT design-ready**, and this document is the classification, not a claim of readiness. |

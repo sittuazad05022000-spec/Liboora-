@@ -492,3 +492,109 @@ to close it.**
 | `INVITATION_SECURITY_SPECIFICATION` *(`1c680a3d`)* | Group 2 |
 | `CONFIGURATION_GUIDE` *(`e435d4f7`)* | 1.6 · 2 · 3.1 |
 | `ADR-0151`…`ADR-0158` | constraints and precedent |
+
+---
+
+## 5B. ⭐⭐ ASSESSMENT RESULTS — `ADR-0160` parallel closure pass *(2026-09-19)*
+
+⛔⛔ **THIS SECTION IS AN ASSESSMENT, ⛔ NOT AN AUTHORITY RESPONSE.** ⭐ `DP-0001`
+remains **OPEN** with ⛔ **0 authority responses received**. ⚠️ §5A's PROPOSED
+dispositions are **unchanged and unaltered** by this section.
+
+⭐ Recorded under `Accepted`
+[`ADR-0160`](../adr/ADR-0160-dp-0001-parallel-closure-pass-all-25-assessed-zero-authorized-blockers-re-characterized.md).
+
+### 5B.0 ⛔⛔ The headline
+
+| | |
+|---|---|
+| Parameters assessed | ⭐ **25 of 25** |
+| ✅ **AUTHORIZED** | ⛔⛔ **0** |
+| Coverage | ⭐ **UNCHANGED at 79 / 104** · ⛔ **D3 `PARTIAL`** · ⛔ **`DD-0007` NOT design-ready** |
+
+⭐⭐ **Not one parameter was authorized, and none was authorized to reduce the hold
+count.** ⭐ What the pass produced instead is **four re-characterized blockers** and
+**two structural findings**.
+
+### 5B.1 Verdicts — all 25
+
+| ID | Group | ⭐ Verdict | Ground |
+|---|---|---|---|
+| `ATT-CFG-022` | 1 | ⚠️ **NEEDS OWNER DECISION** | §19.2 **L1980** — a `TR-1` write removes a `TR-2`/`TR-3` capability |
+| `ATT-CFG-023` | 1 | ⚠️ **NEEDS OWNER DECISION** | ⭐ Time-bounds `022`; ⛔ not separable |
+| `ATT-CFG-024` | 1 | ⚠️ **NEEDS OWNER DECISION** | §19.2 **L1983** — gates `TR-5` parent visibility |
+| `SEAT-CFG-005` | 1 | ⚠️ **NEEDS OWNER DECISION** | `SEAT-PO-010` = **`C`** — ⭐ the parameter **IS** the grant |
+| `SEAT-CFG-014` | 1 | ⚠️ **NEEDS OWNER DECISION** | `SEAT-PO-007` = **`C`**; `SEAT-AC-080` denies while unset |
+| `CFG-12` | 1 | ⚠️ **NEEDS OWNER DECISION** ⛔ **+ missing office** | ⭐ Self-referential *(bounds `PR-2`'s own ceiling)*; ⛔ owner of record names **Legal** — §5B.3 |
+| `SCFG-2` | 1 | ⛔ **HOLD** | ⛔ The source says *"requires **review**"* and **never says by whom** |
+| `ICFG-1`…`ICFG-10` | 2 | ⛔ **HOLD** *(all 10)* | ⛔ **`Q-B` `READ` = zero statements**; ⛔ **`Q-C` `WRITE` = no role**, only `INV-SEC-018`'s prohibition |
+| `CFG-10` | 3 | ⛔ **HOLD** + ⚠️⚠️ **ROUTING CONFLICT** | §5B.2 |
+| `SCFG-4` | 3 | ⛔ **HOLD** + ⚠️⚠️ **ROUTING CONFLICT** | §5B.2 |
+| `SMCFG-5` | 4 | ⛔ **HOLD** | ⭐ **The definition itself is undecided** — `SM-GAP-2` OPEN, **0** ADRs |
+| `SEAT-CFG-017` | 4 | ⛔ **HOLD** | ⭐ Three grounds intact: `BC-06`-owned · *"Unset in V1"* · `SEAT-GAP-005` OPEN. ⛔⛔ **90% NOT applied as a fallback** |
+| `ATT-CFG-013` | 5 | ⛔ **HOLD** | ⚠️ Has a V1 value — ⛔ but `ATT-FR-064` forbids building the mode |
+| `ATT-CFG-014` | 5 | ⛔ **HOLD** | ⛔⛔ **Independently outside V1** *(`D-3a`, Face = **V3**)* — ⭐ would **not** move even if the gaps closed |
+| `ATT-CFG-015` | 5 | ⛔ **HOLD** | ⚠️ Has a V1 value — same bar as `013` |
+| `ATT-CFG-016` | 5 | ⛔ **HOLD** | ⚠️ Has a V1 value; ⭐ its own domain note reads *"blocked by `ATT-FR-064`"* |
+
+⭐ **Totals:** ⛔ **19** HOLD · ⚠️ **6** NEEDS OWNER DECISION · ⚠️ **2** CONFLICT
+*(routing, on 2 already-held parameters)* · ✅ **0** AUTHORIZE.
+⭐⭐ **79 + 25 = 104**, exact.
+
+### 5B.2 ⭐⭐ What CHANGED — four blockers re-characterized
+
+1. ⭐⭐ **Group 1's blocker changed CLASS.** ⛔ Before: *"the `Authorization Owner`
+   office does not exist"* — **unanswerable by any evidence**. ⭐ Now, after
+   `Accepted` `ADR-0159` constituted it: *"the office exists and is **VACANT**"* —
+   ⭐ **answerable by an appointment**, a far smaller act.
+2. ⭐⭐ **`Q-A` IS RESOLVED — NEGATIVELY, BY MEASUREMENT.** ⭐ All **10** `ICFG` sit
+   in the §4 **per-environment** table; ⭐ the *"per library"* wording occurs **only
+   inside the NAMES** of `ICFG-5`/`ICFG-7` *(a **counting unit**, not a scope)*; ⛔
+   the `LCFG` per-library carve-out at **L829** **names no `ICFG`**. ⭐ This applies
+   the **existing** `ADR-0153` precedent — *a name is not a scope declaration*.
+   ⛔⛔ **BUT THE POSITIVE SCOPE CLASS IS STILL NOT ALLOCATED** — ⭐ reading is not
+   deciding. ⛔ **`Q-B` and `Q-C` remain at ZERO evidence.**
+3. ⚠️⚠️ **A ROUTING CONFLICT IN THIS PACK ITSELF.** ⭐ §3 routes `CFG-10`/`SCFG-4`
+   to the **Privacy Owner**. ⛔ `LEGAL_RISK_REGISTER` **`LR-01`** records retention
+   legal basis as *"**PERMANENTLY OPEN** … **NOT closable by** Product, Domain,
+   Architecture, Technical, **Privacy**, Governance, SRE, EVENT-platform or
+   DATA/EVENT Owner, **jointly or severally**"*. ⭐ **The limit, stated honestly:**
+   `LR-01` governs the **legal basis**; this pack asks the **narrower** allocation
+   question — ⛔ but `CFG-10`'s hold reason **is** that legal question
+   (*"defensible as erasure under DPDP"*). ⚠️ **The addressee must be corrected
+   before an answer can lawfully be given.**
+4. ⛔⛔ **GROUP 5 IS DEEPER THAN RECORDED.** ⭐ **`ATT-GAP-014` is named in `LR-01`'s
+   own *"Related, all still OPEN and UNAMENDED"* list** — ⛔ entangling it with a
+   question **no constituted office may close**.
+
+### 5B.3 ⛔⛔ Two structural findings
+
+| # | Finding |
+|---|---|
+| **1** | ⛔⛔ **An office named as owner of 4 held parameters DOES NOT EXIST — and was EXPRESSLY REFUSED.** *"Legal Owner"* measures **0** repository-wide, and `Accepted` **`ADR-0137`** states ⛔ *"Does **not** constitute **Legal Counsel** as an office"*. ⭐ It is the owner of record for **`CFG-10`**, **`CFG-12`**, and via their gaps **`ATT-GAP-012`**/**`ATT-GAP-014`** *(which block 4 Face parameters)*. ⭐⭐ **`ADR-0160` deliberately did NOT repeat `ADR-0159`'s remedy** — constituting it would **overturn an `Accepted` ADR by side effect**, and ⭐ `LR-01` shows the missing input is an **external determination**, ⛔ **not an internal office** |
+| **2** | ⚠️⚠️ **`Branch` IS NOT A CONSTITUTED SCOPE CLASS.** ⭐ Only **`Tenant`**, **`Platform default`** and **`Library`** are in use across `ADR-0151`…`ADR-0157`. ⛔ So `SEAT-CFG-017` could **not** be branch-scoped even if its owner decided to, without a **prior constituting act** |
+
+### 5B.4 ⭐ Two routing facts resolved *(⛔ neither is a decision)*
+
+| | ⭐ Resolved |
+|---|---|
+| **The `BC-06` incumbent** | ⭐ `PRD_REGISTRY` **L456** maps **`BC-06` → `PRD-002`**, whose Domain Owner is **Library Domain** *(`PRD_OWNERSHIP_MODEL` **L147**)*. ⭐ `SEAT-CFG-017` is now **addressable**; ⛔ the decision is still **not made** |
+| **Group 5's Security limb** | ⭐ Addressable via `ADR-0159` **§17** — ⛔ but **blocked** by the missing Legal co-owner |
+
+### 5B.5 ⛔⛔ Two arguments tested and REFUSED
+
+| Argument | Disposition |
+|---|---|
+| ⭐ *"Authorize Group 1's `WRITE` — `PRD-006` §16.3 and `SEAT-PO-021` already frozen-state `TR-1`"* | ⛔⛔ **REFUSED.** ⭐ The strongest available case, and it still fails: **(1)** `READ` has **no** decision — `ADR-0153` decided **17 named** parameters and ⛔ **these are not among them**; **(2)** `CNF-BR-010` makes the dimensions **independent**, so a `WRITE`-only record resolves nothing for **D3**; **(3)** ⭐⭐ the live question is **whether a configuration write may confer or remove a role capability at all** — ⛔ **undecided**, catalogue closed at **zero** |
+| ⭐ §5.1's *"configuration authority may be allocated **ahead of** build authorization"* | ⛔⛔ **EXPRESSLY DECLINED.** ⭐ A **new precedent** that would allocate authority over settings of a mode a **FROZEN `MUST NOT`** forbids building; `PRD-006` calls the risk *"a **legal exposure**, not a scheduling detail"* |
+
+⭐ `ADR-0158` §2.4b's refusal of the `PR-n` `ICFG` argument is ⭐ **CONFIRMED**, ⛔ not
+overruled — ⛔ no express authority to overrule it was presented.
+
+### 5B.6 ⛔ Status after this pass
+
+| | |
+|---|---|
+| `DP-0001` | ⛔ **OPEN** · ⛔ **0 authority responses** · ⭐ §5A **unchanged** |
+| Coverage | ⭐ **79 / 104** — ⛔ unchanged · ⛔ **D3 `PARTIAL`** · ⛔⛔ **NOT design-ready** |
+| Created | ⛔ **0** `PERM-*` · **0** roles/actions/scopes · **0** holders · **0** frozen edits · **0** runtime code |

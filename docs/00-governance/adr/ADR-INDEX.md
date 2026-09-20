@@ -1377,3 +1377,26 @@ anywhere in the Status cell; the **leading-token** instrument every prior pass u
 | **⛔ NOT done** | ⛔ **0** `PR-n` authority over tenant configuration *(a distinct question, not reached)* · ⛔ `SEAT-CFG` **not audited** · ⛔ `ICFG` not batched · ⛔ **0** `PERM-*` · **0** roles/actions/scopes · **0** frozen edits · **0** runtime code · ⚠⚠ **AUTHORIZED ≠ DESIGNED** |
 | **Coverage** | ⭐ **58 / 104 → 64 / 104** *(61.5%)*; ⭐⭐ **`AUTHORIZED` band 35 → 41** — the first band movement since `ADR-0153`, these being the first tenant-scoped parameters authorized since, ⭐ carrying a **real write path**. ⛔⛔ **D3 stays `PARTIAL`; 40 remain**; ⛔ **`DD-0007` is NOT design-ready** |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐⭐ ADDENDUM — `ADR-0157` registration *(end-of-file; ⛔ L9 Count cell NOT edited)*
+
+| Field | Value |
+|---|---|
+| **ADR** | ⭐⭐ **[`ADR-0157`](ADR-0157-seat-cfg-seat-management-configuration-authorization-allocation.md)** — *`SEAT-CFG-*`: `TR-1`-only tenant authorization for 15, with `005`/`014` and `017` HELD* |
+| **Status** | ⭐⭐ **Accepted** — 2026-09-19 · **Rank 2** · `BC-25` *(owning)*, `BC-07` *(source)*, `BC-06` *(adjacent)* |
+| **Authority** | ⭐⭐ **Four decisions, verbatim** — `SE-1` *(Product + SECURITY PLATFORM)* · `SE-2` *(Authorization Owner)* · `SE-3` *(Product + `BC-06` Owner)* · `SE-4` *(Architecture Owner)* |
+| **⚠⚠ THE FIRST REGISTER THAT SPLITS FOUR WAYS** | ⭐ **A** routine tenant **15** · ⛔ **B** authorization-semantic **2** *(`005`, `014`)* · ⛔ **C** not `BC-25`-owned, value unset **1** *(`017`)* · ⚠ **D** scope caveat *(`SEAT-XC-022`)*. ⭐ **15 + 2 + 1 = 18**; ⛔ batching it as one would have been wrong on **three** counts |
+| **⭐⭐ `SE-1` — `TR-2` EXCLUDED, and the exclusion was VERIFIED** | ⭐ **`SEAT-PO-021`** *(**L2005**, FROZEN)* reads **Owner Y · Manager — · Reception — · Student —**; **`SEAT-BR-039`**: *"Manager **MUST NOT** hold the tenant-shaping operations, which remain **Owner-only**: … **configuration (`SEAT-PO-021`)**"*. ⚠⚠ **A REAL DIVERGENCE FROM `ADR-0156`**, where `TR-2` held `WRITE` over `SMCFG-*` — ⭐ the difference is **sourced**: `PRD-004` had no Owner-only rule, `PRD-007` states one. ⛔ **The `SMCFG` allocation was NOT copied** |
+| **⭐⭐ `READ` is NARROWER than elsewhere, and was decided SEPARATELY** | ⚠ `PRD-007` defines **no** configuration read operation *(`SEAT-PO-024` covers the seat map and metrics, ⛔ not the register)*. ⭐⭐ **`CNF-FR-081` prescribes how a read already held must be RENDERED — ⛔ it does not GRANT one.** ⭐ So **`READ` = `TR-1` only**, matching `WRITE`; ⛔ **`TR-2`/`TR-3` read is NOT allocated** — that would be derivation, barred by `AUTH-7.24` |
+| **⛔⛔ `SE-2` — 2 HELD, authorization-semantic** | ⭐ The `SEAT-PO-*` legend defines **`C`** as *"permitted **only where the named configurable grants it**"* — ⭐ **a `C` cell is an authorization conditional, not a preference**. **`SEAT-CFG-005`** *("**which roles** beyond Owner may override…"; `SEAT-PO-010` = `C`)* and **`SEAT-CFG-014`** *("Whether **Reception** may cancel…"; `SEAT-PO-007` = `C`)* **are** the grant. ⭐ Consistent with `ADR-0153`, which held `ATT-CFG-022`/`024` on this exact ground |
+| **⛔⛔ `SE-3` — `SEAT-CFG-017` HELD on three grounds** | ⛔ owner is **`BC-06` via `E-05`** — ⭐ the **only** one of 18 not owned by `BC-25` · ⛔ value *"**Unset in V1** — no event is emitted and **no value is substituted**"* · ⛔ **`SEAT-GAP-005` OPEN**. ⛔⛔ **The 90% figure was NOT applied as a fallback** — §27.1 forbids it in terms |
+| **⛔ `SE-4` — real tenant `WRITE`, ⛔ not ⚪ `N/A`** | ⛔⛔ **`ADR-0151` §3.5 NOT reused** — its ⚪ `N/A` rests on `CNF-FR-020`, which binds only platform-default values. ⭐ `SEAT-PO-021` **positively grants** Owner a change operation, so a runtime write **demonstrably exists** — ⛔ `N/A` would be **false** |
+| **⚠ `SEAT-XC-022` caveat honoured, ⛔ not flattened** | ⭐ *"tenant-scoped, **or branch-scoped where `BC-06` owns it**"* — ⭐⭐ its **sole referent is `SEAT-CFG-017`**, ⛔ **which is HELD**. ⭐ So all 15 allocated are `Tenant`, and ⛔ **no branch scope is converted to Tenant by inference** |
+| **⭐ `NOT COMMERCIAL` is MANDATED, not merely satisfied** | ⭐ **`SEAT-FR-279`**: *"The module **MUST NOT** display or store **any monetary value**…"*; `SEAT-FR-144`, `SEAT-XC-011`, and the `BC-05` edge measured *"**None.** No edge exists"*. ⛔ A commercial `SEAT-CFG-*` would **breach a frozen `MUST NOT`** |
+| **⛔ Supersedes** | ⛔⛔ **NOTHING** · ⚠ **`Count` cell at L9 NOT incremented** |
+| **⛔ Preserves** | ⛔ **`PRD-007`** (`03a8ba0a…`, FROZEN v1.1) · ⛔ `ADR-0151`…`ADR-0156` · ⛔ **the 104 inventory** |
+| **⛔ NOT done** | ⛔ **0** `TR-2`/`TR-3` read · ⛔ **0** `PR-n` authority · ⛔ **0** `TR-4`/`TR-5` authority · ⛔ `ICFG` not batched · ⛔ **0** `PERM-*` · **0** roles/actions/scopes · **0** frozen edits · **0** runtime code · ⚠⚠ **AUTHORIZED ≠ DESIGNED** |
+| **Coverage** | ⭐ **64 / 104 → 79 / 104** *(76.0%)*; `AUTHORIZED` band **41 → 56**. ⛔⛔ **D3 stays `PARTIAL`; 25 remain**; ⛔ **`DD-0007` is NOT design-ready** |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

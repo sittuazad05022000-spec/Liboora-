@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | ⭐ **v0.7** — ⭐⭐ **Authorization coverage 58 / 104 → 64 / 104** by recording `Accepted` **[`ADR-0156`](../../00-governance/adr/ADR-0156-smcfg-student-management-configuration-authorization-allocation.md)** *(6 `SMCFG-*`, **`Tenant`** scope — `WRITE` = `TR-1` + `TR-2`)*. ⭐⭐ **`AUTHORIZED` band 35 → 41.** ⭐⭐ **`DD7-GAP-005` CLOSED** — `SMCFG-3` is a **sourced alias** of `MM-CFG-008`; ⛔ **not merged**, ⛔ **inventory unchanged at 104**. ⛔⛔ **`SMCFG-5` HELD** *(`SM-GAP-2` — its **definition** is undecided)*. ⛔⛔ **The platform-default route was REFUSED** *(`SM-8.1`)*. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed** and **40** stay `NOT YET AUTHORIZED` *(prior: **v0.6** — coverage 49 → 58)* |
+| **Version** | ⭐ **v0.8** — ⭐⭐ **Authorization coverage 64 / 104 → 79 / 104** by recording `Accepted` **[`ADR-0157`](../../00-governance/adr/ADR-0157-seat-cfg-seat-management-configuration-authorization-allocation.md)** *(15 `SEAT-CFG-*`, **`Tenant`** — **`TR-1` ONLY**)*. ⭐⭐ **`AUTHORIZED` band 41 → 56.** ⚠️⚠️ **`TR-2` EXCLUDED** — a **sourced divergence** from `ADR-0156` *(`SEAT-PO-021` **—**; `SEAT-BR-039` "Owner-only")*. ⛔⛔ **3 HELD** — `SEAT-CFG-005`/`014` *(authorization-semantic)* and `SEAT-CFG-017` *(`BC-06`-owned, unset)*. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed** and **25** stay `NOT YET AUTHORIZED` *(prior: **v0.7** — coverage 58 → 64)* |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
@@ -138,14 +138,14 @@ taken from existing practice, not chosen.
 ⭐ Per README §2B.3, all five declarations are stated. ⭐ **Four are `PASS`.**
 ⚠️⚠️ **Declaration 3 is `PARTIAL` and is reported as such — ⛔ NOT rounded to
 PASS**: `ADR-0151` *(22)*, `ADR-0153` *(17)* and `ADR-0154` *(10)* cover
-**64 of 104**, and ⛔ the other **40 remain `NOT YET AUTHORIZED`**.
+**79 of 104**, and ⛔ the other **25 remain `NOT YET AUTHORIZED`**.
 
 | # | Declaration | Value | Verdict |
 |---|---|---|---|
 | **1** | **Target App** | ⭐⭐ **A JUSTIFIED TWO-APP SET** *(README §2B.3 D1: "APP 1, APP 2, APP 3, **or an explicit, justified set**")* — ⭐ **APP 2 — Library App** for `TR-1`/`TR-2`/`TR-3` *(read **and** write)*; ⭐ **APP 3 — Platform Admin** for `PR-1`/`PR-2` *(**READ-ONLY**)*. ⛔ **APP 1 = 0 surfaces.** ⛔ **APP 3 = 0 *writable* surfaces** — `Accepted` **`ADR-0154`** `D-2`/`D-4`, §5.3 | ⭐ **PASS** |
 | **2** | **Target Roles** | ⭐ `TR-1` Owner · `TR-2` Manager · `TR-3` Reception — all `PRD-001` v2.0 §2.4. ⛔ `TR-4`/`TR-5` **excluded**, §5.2 | ⭐ **PASS** |
-| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** *(22)* **+ ⭐ `ADR-0153` §2.3** *(17 `ATT-CFG-*`)* **+ ⭐ `ADR-0154` §2.5** *(10 `CFG-*`, **READ-only** to `PR-1`/`PR-2`)* **+ ⭐⭐ `ADR-0155` §2.5** *(9 `SCFG-*`, **READ-only** to `PR-1`/`PR-2`)* **+ ⭐⭐ `ADR-0156` §2.5** *(6 `SMCFG-*`, **`Tenant`** — `WRITE` `TR-1`+`TR-2`)* — the operation×role sources. ⚠️ **PARTIAL: 49 of 104 parameters**; ⛔ the other **55 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
-| **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10 + 17 + ⭐ 6** · `Library` **8** · `Platform default` **4 + 10 + ⭐ 9** (`ADR-0151` §2.3; `ADR-0153` §2.3; `ADR-0154` §2.5; ⭐⭐ `ADR-0155` §2.5 *(`SID-5.45`)*; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
+| **3** | **Permission Scope** | ⭐ **`ADR-0151` §2.3** *(22)* **+ ⭐ `ADR-0153` §2.3** *(17 `ATT-CFG-*`)* **+ ⭐ `ADR-0154` §2.5** *(10 `CFG-*`, **READ-only** to `PR-1`/`PR-2`)* **+ ⭐⭐ `ADR-0155` §2.5** *(9 `SCFG-*`, **READ-only** to `PR-1`/`PR-2`)* **+ ⭐⭐ `ADR-0156` §2.5** *(6 `SMCFG-*`, **`Tenant`** — `WRITE` `TR-1`+`TR-2`)* **+ ⭐⭐ `ADR-0157` §2.5** *(15 `SEAT-CFG-*`, **`Tenant`** — **`TR-1` ONLY**)* — the operation×role sources. ⚠️ **PARTIAL: 49 of 104 parameters**; ⛔ the other **55 are NOT authorized** and ⛔ **MUST NOT** be rendered | ⚠️ **PARTIAL** |
+| **4** | **Tenant / Library / Platform scope** | ⭐ `Tenant` **10 + 17 + 6 + ⭐ 15** · `Library` **8** · `Platform default` **4 + 10 + ⭐ 9** (`ADR-0151` §2.3; `ADR-0153` §2.3; `ADR-0154` §2.5; ⭐⭐ `ADR-0155` §2.5 *(`SID-5.45`)*; `PRD-023` §3.1 `CNF-FR-009`). ⛔ Cross-tenant impossible — `CNF-INV-003`/`004` | ⭐ **PASS** |
 | **5** | **Cross-App dependencies** | ⭐⭐ **STILL ONE — DECLARED, SOURCED AND ONE-DIRECTIONAL.** ⭐⭐ **`ADR-0155` ADDS PARAMETERS TO THE EXISTING EDGE; ⛔ IT ADDS NO NEW EDGE.** The **10** `CFG-*` **+ ⭐ 9** `SCFG-*` platform-default parameters *(**19** total)* are **read** in **two apps**: **APP 2** *(`TR-n`, as resolved effective values)* and **APP 3** *(`PR-1`/`PR-2`, read-only — `ADR-0154` `D-2`/`D-3`; ⭐⭐ `ADR-0155` `D-1`/`D-2`)*. ⛔ **No app writes them** (`CNF-FR-020`; ⭐ for `SCFG-*`, `ADR-0155` `D-4`); ⛔ **no navigation between the two surfaces**; ⛔ APP 1 = 0 (§5.2). ⭐ `E-19`/`E-22` remain **bounded-context** edges, ⛔ not app boundaries (`DD-0001` §4.0.4) — §5.4 | ⭐ **PASS** |
 
 | App | In scope? | Roles | Code home |
@@ -500,15 +500,15 @@ source and MUST NOT be rendered by any surface this document describes.**
 
 | Band | Count | Label | Meaning |
 |---|---:|---|---|
-| ⭐ **Authorized** | ⭐⭐ **41** | `AUTHORIZED` | A complete role×action×scope treatment **and** a write path exists — **18** by `ADR-0151`, ⭐ **17** by `ADR-0153`, ⭐⭐ **6** by `ADR-0156` *(`SMCFG-*`, `Tenant`)* |
+| ⭐ **Authorized** | ⭐⭐ **56** | `AUTHORIZED` | A complete role×action×scope treatment **and** a write path exists — **18** by `ADR-0151`, ⭐ **17** by `ADR-0153`, ⭐⭐ **6** by `ADR-0156` *(`SMCFG-*`, `Tenant`)*, ⭐⭐ **15** by `ADR-0157` *(`SEAT-CFG-*`, `Tenant`, **`TR-1` only**)* |
 | ⭐ **Platform default** | ⭐ **23** | `PLATFORM DEFAULT` | Role×action×scope decided, but `CNF-FR-020` makes them **unwritable by any actor** — **4** by `ADR-0151` *(`LCFG-*`)*, ⭐ **10** by `ADR-0154` *(`CFG-*`)* · ⭐⭐ **9** by `ADR-0155` *(`SCFG-*`, read-only to `PR-1`/`PR-2`)* |
-| ⛔ **Not authorized** | ⚠️ **40** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
+| ⛔ **Not authorized** | ⚠️ **25** | `NOT YET AUTHORIZED` | ⛔ **No** operation×role source. ⛔ Inventoried only |
 | | **104** | | |
 
 ⭐ **18 + 4 = 22** — the `ADR-0151` subset. ⭐ **+ 17** — the `ADR-0153` `ATT-CFG-*`
 subset. ⭐ **+ 10** — the `ADR-0154` `CFG-*` subset. ⭐⭐ **+ 9** — the `ADR-0155`
-`SCFG-*` subset. ⭐⭐ **+ 6** — the `ADR-0156` `SMCFG-*` subset. ⭐ **41 + 23 = 64
-authorized; 64 + 40 = 104.**
+`SCFG-*` subset. ⭐⭐ **+ 6** — the `ADR-0156` `SMCFG-*` subset. ⭐⭐ **+ 15** — the `ADR-0157`
+`SEAT-CFG-*` subset. ⭐ **56 + 23 = 79 authorized; 79 + 25 = 104.**
 
 ⚠️⚠️ **AT v0.6 THE `AUTHORIZED` BAND DID NOT MOVE** — all **9** `SCFG-*` were
 `Platform default`, ⛔ none gaining a write path. ⭐⭐ **AT v0.7 IT DOES MOVE,
@@ -717,34 +717,69 @@ write path is created**; `MM-BR-026` would forbid one.
 | ⛔ **`SMCFG-5`** | ⚠️⚠️ **Its DEFINITION is undecided, not merely its authority.** `SM-GAP-2` is **OPEN in every document that mentions it** — `PRD-004` **L1168** *"a **placeholder pending a decision**"* · `PRD-004_TRACEABILITY` **L187** *"**undecided**"* · the independent review *"**Remain a gap**"* and *"a configurable **should not publish a default** for a parameter the document says is [undecided]"* · `DD-0002` **L158** *"**no form**"* — and it appears in **ZERO ADRs**. ⛔ **Authority MUST NOT be allocated over an undefined parameter** *(`SM-3`)* | **Product Owner** |
 
 
-#### 6.3.7 ⛔ NOT YET AUTHORIZED — `SEAT-CFG-001`…`018` *(`PRD-007` / `BC-04`)*
+#### 6.3.7 ⭐⭐ PARTLY AUTHORIZED — `SEAT-CFG-001`…`018` *(`PRD-007` / `BC-07`)*
 
-⚠️ **Two rows below are themselves authorization-shaped** — `SEAT-CFG-005`
-*"which roles beyond Owner may override"* and `SEAT-CFG-014` *"whether Reception
-may cancel another student's reservation"*. ⛔ They remain **NOT YET AUTHORIZED**;
-⛔ a configuration parameter that *grants* authority cannot be self-authorizing.
-Recorded as **`DD7-GAP-006`**.
+⭐⭐ **15 of 18 are AUTHORIZED at `Tenant` scope by `Accepted` `ADR-0157`;
+⛔⛔ 3 are HELD.**
 
-| ID | Name | Scope | Auth | Comm | Evidence | Design |
-|---|---|---|---|---|---|---|
-| `SEAT-CFG-001` | Tenant label for `Zone` | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-002` | Effective `seatQuota` when `E-02` omits | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-003` | Whether `Inactive` blocks acquisition | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-004` | Release reason list | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-005` | **Override grant — roles beyond Owner** | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed — ⛔ **`DD7-GAP-006`** |
-| `SEAT-CFG-006` | Max concurrent `Pending` seat-change requests | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-007` | Decision deadline for `Pending` | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-008` | Student self-booking enabled | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-009` | Behaviour when window exceeds membership | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-010` | Booking mode | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-011` | Reservation → allocation conversion trigger | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-012` | No-show count suspending self-booking | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-013` | Self-booking suspension duration | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-014` | **Whether Reception may cancel a reservation** | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed — ⛔ **`DD7-GAP-006`** |
-| `SEAT-CFG-015` | Default reservation hold duration | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-016` | Max concurrent active reservations / student | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-017` | Occupancy % emitting `SEAT-EVT-004` | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
-| `SEAT-CFG-018` | *Expiring soon* filter horizon | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-007` §27.1 | ⛔ Not designed |
+⚠️⚠️ **THIS REGISTER SPLITS FOUR WAYS — ⛔ IT WAS NOT BATCHED.** ⭐ **A** routine
+tenant **15** · ⛔ **B** authorization-semantic **2** · ⛔ **C** not `BC-25`-owned
+and unset **1** · ⚠️ **D** the `SEAT-XC-022` scope caveat.
+
+⚠️⚠️ **`TR-2` IS EXCLUDED HERE — A REAL DIVERGENCE FROM `ADR-0156`.** ⭐
+**`SEAT-PO-021`** *(**L2005**, FROZEN)* reads **Owner Y · Manager — · Reception — ·
+Student —**, and **`SEAT-BR-039`** states *"Manager **MUST NOT** hold the
+tenant-shaping operations, which remain **Owner-only**: … **configuration
+(`SEAT-PO-021`)**"*. ⛔ **The `SMCFG` `TR-1`+`TR-2` allocation was NOT copied.**
+
+⭐⭐ **`READ` IS `TR-1` ONLY, AND WAS DECIDED SEPARATELY** — ⚠️ `PRD-007` defines
+**no** configuration read operation *(`SEAT-PO-024` covers the seat map and
+metrics, ⛔ not the register)*. ⭐ **`CNF-FR-081` prescribes how a read already
+held must be RENDERED — ⛔ it does not GRANT one** — so ⛔ **`TR-2`/`TR-3` read
+is NOT allocated** *(`AUTH-7.24`)*.
+
+⭐ **`NOT COMMERCIAL` is MANDATED** — **`SEAT-FR-279`**: *"The module **MUST
+NOT** display or store **any monetary value**"*.
+
+| ID | Name | Scope | Auth | Comm | `TR-1` W | `TR-2` W | `TR-3` W | `TR-1` R | `TR-2`/`3` R | Evidence | Design |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `SEAT-CFG-001` | Tenant label for `Zone` | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-002` | Effective `seatQuota` when `E-02` omits it | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-003` | Whether `Inactive` blocks acquisition | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-004` | Release reason list | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-006` | Max concurrent `Pending` seat-change requests | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-007` | Decision deadline for `Pending` expiry | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-008` | Student self-booking enabled | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-009` | Behaviour when window exceeds `validUntil` | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-010` | Booking mode | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-011` | Reservation → allocation trigger | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-012` | No-show count suspending self-booking | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-013` | Self-booking suspension duration | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-015` | Default reservation hold duration | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-016` | Max concurrent active reservations | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| `SEAT-CFG-018` | *Expiring soon* filter horizon | `Tenant` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⛔ | ⛔ | ✅ | ⛔ | `ADR-0157` §2.5 | ⛔ Not designed |
+| ⛔ **`SEAT-CFG-005`** | **Override grant** — which roles may override | `Tenant` | ⛔⛔ **HELD** | — | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ `ADR-0157` `D-6` · `SE-2` | ⛔ Not designed |
+| ⛔ **`SEAT-CFG-014`** | Whether Reception may cancel a reservation | `Tenant` | ⛔⛔ **HELD** | — | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ `ADR-0157` `D-6` · `SE-2` | ⛔ Not designed |
+| ⛔ **`SEAT-CFG-017`** | Occupancy % emitting `SEAT-EVT-004` | ⚠️ **`BC-06` / branch** | ⛔⛔ **HELD** | — | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ | ⛔ `ADR-0157` `D-7` · `SE-3` | ⛔ Not designed |
+
+##### 6.3.7a ⛔⛔ The 3 HELD — why each is NOT authorized
+
+| ID | Why it is held | Owner |
+|---|---|---|
+| ⛔ **`SEAT-CFG-005`** | ⚠⚠ **AUTHORIZATION-SEMANTIC** — **L1906**: *"**Override grant** — **which roles** beyond Owner may override a bounded staff limit"*, domain *"Subset of {Manager} added to Owner"*; **L2024**: *"Manager's lock override (`SEAT-PO-010`) is **conditional on `SEAT-CFG-005`**"*. ⭐ The `SEAT-PO-*` legend defines **`C`** as *"permitted **only where the named configurable grants it**"* — ⭐ **this parameter IS the grant**. ⭐ Held with `ATT-CFG-022`/`024` *(`ADR-0153` precedent)* | **Authorization Owner** |
+| ⛔ **`SEAT-CFG-014`** | ⚠⚠ **AUTHORIZATION-SEMANTIC** — **L1915**: *"Whether **Reception** may cancel another student's reservation"*; `SEAT-PO-007` = **`C (SEAT-CFG-014)`**; `SEAT-AC-080` — *"Denied"* where unset | **Authorization Owner** |
+| ⛔ **`SEAT-CFG-017`** | ⚠⚠ **THREE INDEPENDENT GROUNDS** — ⛔ owner is **`BC-06` via `E-05`**, ⭐ the **only** one of 18 not owned by `BC-25` · ⛔ value is *"**Unset in V1** — no event is emitted and **no value is substituted**"* · ⛔ **`SEAT-GAP-005` is OPEN** *("a **proposed** addition to the `E-05` contract")*. ⛔⛔ **The 90% figure was NOT applied as a fallback** — §27.1 forbids it in terms | **Product Owner** + **`BC-06` Owner** |
+
+##### 6.3.7b ⚠️ The `SEAT-XC-022` scope caveat — honoured, ⛔ NOT flattened
+
+⭐ **`SEAT-XC-022`** *(**L1946**, FROZEN)*: *"Every configurable above is
+**tenant-scoped, or branch-scoped where `BC-06` owns it**"*.
+
+⭐⭐ **Its SOLE referent is `SEAT-CFG-017`** — the only `BC-06`-owned entry —
+⛔ **and that parameter is HELD**. ⭐ Therefore all **15** allocated parameters
+are `Tenant`, and ⛔ **no branch scope is converted to `Tenant` by inference**:
+⭐ the one parameter that could raise the question is **not allocated at all**.
+
 
 #### 6.3.8 ⭐ PARTLY AUTHORIZED — `ATT-CFG-001`…`024` *(`PRD-006` / `BC-06`)*
 
@@ -806,17 +841,18 @@ distributed-ownership reading in **`DD7-GAP-003`** (§22).
 | ⭐ `PLATFORM DEFAULT` *(read-only by `CNF-FR-020`)* — ⭐ `ADR-0154` `CFG-*` | **10** | ⚠️ **Read allocated to `PR-1`/`PR-2`; ⛔ 0 write affordance; ⛔ not designed** |
 | ⭐⭐ `PLATFORM DEFAULT` *(read-only)* — ⭐ `ADR-0155` `SCFG-*` | ⭐ **9** | ⚠️ **Read allocated to `PR-1`/`PR-2`; ⛔ 0 write affordance; ⛔ not designed** |
 | ⭐⭐ `AUTHORIZED` *(writable, role-allocated)* — ⭐ `ADR-0156` `SMCFG-*` | ⭐ **6** | ⛔ **NO — authorized, not designed** |
-| ⛔ `NOT YET AUTHORIZED` | ⚠️ **40** | ⛔ **NO** |
-| **Total** | **104** | ⭐ **64 of 104 = 61.5% authorization coverage** |
+| ⭐⭐ `AUTHORIZED` *(writable, role-allocated)* — ⭐ `ADR-0157` `SEAT-CFG-*` | ⭐ **15** | ⛔ **NO — authorized, not designed** |
+| ⛔ `NOT YET AUTHORIZED` | ⚠️ **25** | ⛔ **NO** |
+| **Total** | **104** | ⭐ **79 of 104 = 76.0% authorization coverage** |
 
-⛔⛔ **61.5% is published as measured.** ⛔ It is not rounded, not described as
-"most of the important ones", and ⛔ the 40 are **not** presented as authorized
+⛔⛔ **76.0% is published as measured.** ⛔ It is not rounded, not described as
+"most of the important ones", and ⛔ the 25 are **not** presented as authorized
 merely because they are inventoried. ⚠️ **Authorization coverage is NOT design
 coverage** — ⭐ **22** parameters are designed here, ⛔ not 49.
 
 ⚠️⚠️ **The 55 reconcile exactly:** `ICFG` **10** + `SCFG` **11** + `SMCFG` **7**
-+ `SEAT-CFG` **18** + ⭐⭐ held `SMCFG-5` **1** + held `ATT-CFG` **7** + held `CFG-10`/`CFG-12` **2**
-+ ⭐⭐ held `SCFG-2`/`SCFG-4` **2** = **40** *(⭐ `SCFG` fell **11 → 2** via `ADR-0155`; ⭐⭐ `SMCFG` fell **7 → 1** via `ADR-0156`)*.
++ ⭐⭐ held `SEAT-CFG` **3** + held `SMCFG-5` **1** + held `ATT-CFG` **7** + held `CFG-10`/`CFG-12` **2**
++ ⭐⭐ held `SCFG-2`/`SCFG-4` **2** = **25** *(⭐ `SCFG` **11 → 2** via `ADR-0155`; ⭐ `SMCFG` **7 → 1** via `ADR-0156`; ⭐⭐ `SEAT-CFG` **18 → 3** via `ADR-0157`)*.
 ⛔⛔ **`ICFG-1`…`10` are NOT covered by `ADR-0154`** — ⭐ measured structurally
 identical to `CFG-*`, ⚠️ **but the B2 Security decision expressly forbids
 extension by analogy** (`ADR-0154` §7).
@@ -1414,7 +1450,7 @@ is that ADR, and it did not exist until after v0.1 was committed.
 | Concurrency behaviour | ⛔ **`DD7-GAP-011`** | — | Journey 8 | ⛔ **Open Product Decision** |
 | `C-4` change-history readers | ⛔ **`DD7-GAP-008`** | — | `C-4` | ⛔ **Open Product Decision** |
 | Branch / user scope surfaces | `CNF-GAP-003`, `CNF-FR-011` | — | ⛔ Not designed | ⭐ **Future / V2** |
-| ⚠️ The other **40** parameters *(was **46** at v0.6 — ⭐ **6** `SMCFG-*` left this row via `ADR-0156`)* | ⛔ No operation×role source | — | ⛔ Not designed | ⭐ **Future / V2** |
+| ⚠️ The other **25** parameters *(was **40** at v0.7 — ⭐ **15** `SEAT-CFG-*` left this row via `ADR-0157`)* | ⛔ No operation×role source | — | ⛔ Not designed | ⭐ **Future / V2** |
 | ⭐ The **10** `CFG-*` authorized by `ADR-0154` | ⭐ Authorized `READ` = `PR-1` + `PR-2` — ⛔ but surface `C-5` is **not designed**; ⛔ all 12 `WRITE` cells ⚪ `N/A` | — | ⛔ Not designed **here** | ⭐ **Future** |
 | ⭐⭐ The **9** `SCFG-*` authorized by `ADR-0155` | ⭐ Authorized `READ` = `PR-1` + `PR-2`, scope **sourced** from `SID-5.45` — ⛔ but surface `C-5` is **not designed**; ⛔ all 11 `WRITE` cells ⚪ `N/A` | — | ⛔ Not designed **here** | ⭐ **Future** |
 | ⛔⛔ `SCFG-2` and `SCFG-4` | ⛔ **HELD** — `SCFG-2` reviewer **undefined** *(Authorization Owner)*; `SCFG-4` **retention**, held with `CFG-10` *(Privacy Owner)* | — | ⛔ Not designed | ⛔ **Open Decision** |
@@ -1480,7 +1516,7 @@ not design** — new blocker **6**:
 ⚠️⚠️ **Neither clearing D5 nor authorizing 10 `CFG-*` opens the gate, and
 ⛔ neither must be read as doing so.** ⚠️ **FOUR** blockers stand — **3**, **4**,
 **5** and the **new 6** — and ⚠️ **Declaration 3 remains `PARTIAL` at
-64 / 104** — ⛔ **40 parameters are NOT authorized and MUST NOT be prototyped**.
+79 / 104** — ⛔ **25 parameters are NOT authorized and MUST NOT be prototyped**.
 ⚠️⚠️ ⭐ **`C-5` is the sharpest case**: it is **authorized** yet ⛔ **not
 designed**, so ⛔ it **MUST NOT be prototyped either**.
 
@@ -1494,7 +1530,7 @@ designed**, so ⛔ it **MUST NOT be prototyped either**.
 |---|---|
 | Surfaces specified | ⭐ **3 of 5** (`C-1`, `C-2`, `C-3`); ⛔ `C-4` BLOCKED; ⚠️ **`C-5` AUTHORIZED but NOT DESIGNED** |
 | Parameters designed | ⭐ **18 editable + 4 read-only = 22**; ⛔ **82 not designed** *(⚠️⚠️ incl. the **17 authorized** `ATT-CFG-*` and the **10 authorized** `CFG-*` — ⛔⛔ **AUTHORIZED ≠ DESIGNED**; `DD7-GAP-003` open)* |
-| Authorization coverage | ⚠️ **64 / 104 = 61.5%** — ⭐ **22** `ADR-0151` + ⭐ **17** `ADR-0153` + ⭐ **10** `ADR-0154` + ⭐ **9** `ADR-0155` + ⭐⭐ **6** `ADR-0156` |
+| Authorization coverage | ⚠️ **79 / 104 = 76.0%** — ⭐ **22** `ADR-0151` + **17** `ADR-0153` + **10** `ADR-0154` + **9** `ADR-0155` + **6** `ADR-0156` + ⭐⭐ **15** `ADR-0157` |
 | §2B declarations | ⭐ D1 **PASS** · ⭐ D2 **PASS** · ⚠️ **D3 `PARTIAL`** · ⭐ D4 **PASS** · ⭐ D5 **PASS** |
 | App-Boundary QA | ⭐⭐ **13 / 13 PASS**, 0 GAP |
 | New `PERM-*` / roles / actions / scopes | ⛔ **0 / 0 / 0 / 0** |
@@ -1508,7 +1544,7 @@ coverage, ⛔ **it does not remove the blocker**.
 ⛔ `ADR-0151` *(22)*, `ADR-0153` *(17)* and `ADR-0154` *(10)* are the **only**
 operation×role sources for any `BC-25` parameter and together they cover
 **49 of 104**. ⛔ The
-other **40 remain `NOT YET AUTHORIZED`** — ⛔ no role, ⛔ no action class, ⛔ no
+other **25 remain `NOT YET AUTHORIZED`** — ⛔ no role, ⛔ no action class, ⛔ no
 scope, ⛔ no `PERM-*`. ⭐ Under README §2B.5 an unsourced declaration is not
 design-ready, ⭐ and **`PARTIAL` is disclosed exactly as measured**, ⛔ never
 rounded to `PASS`. ⭐ **This document is the classification.**
@@ -1598,6 +1634,7 @@ both at **V2**, `PRD-023` §0.3)*.
 
 | Version | Date | Change |
 |---|---|---|
+| ⭐⭐ **v0.8** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE 64 / 104 → 79 / 104**, recording `Accepted` **[`ADR-0157`](../../00-governance/adr/ADR-0157-seat-cfg-seat-management-configuration-authorization-allocation.md)**. ⭐ **15 `SEAT-CFG-*` AUTHORIZED at `Tenant`** — `001`, `002`, `003`, `004`, `006`…`013`, `015`, `016`, `018`: **`WRITE` = `TR-1` ✅ ONLY**, **`READ` = `TR-1` ✅ ONLY**, **`NOT COMMERCIAL`**. ⭐⭐ **`AUTHORIZED` band 41 → 56.** ⚠️⚠️ **THE REGISTER SPLIT FOUR WAYS AND WAS NOT BATCHED** — **A** routine **15** · **B** authorization-semantic **2** · **C** non-`BC-25`/unset **1** · **D** the `SEAT-XC-022` caveat; ⭐ **15 + 2 + 1 = 18**. ⚠️⚠️ **`TR-2` IS EXCLUDED — A REAL, SOURCED DIVERGENCE FROM `ADR-0156`**, where `TR-2` held `WRITE` over `SMCFG-*`. ⭐ **`SEAT-PO-021`** *(**L2005**, FROZEN)* reads **Owner Y · Manager — · Reception — · Student —**, and **`SEAT-BR-039`** states *"Manager **MUST NOT** hold the tenant-shaping operations, which remain **Owner-only**: … **configuration (`SEAT-PO-021`)**"*. ⭐ `PRD-004` carried no such rule; `PRD-007` does — ⛔ **the `SMCFG` allocation was NOT copied**. ⭐⭐ **`READ` WAS DECIDED SEPARATELY AND IS NARROWER THAN ANYWHERE ELSE** — ⚠️ `PRD-007` defines **no** configuration read operation *(`SEAT-PO-024` covers the seat map, card, timeline and metrics, ⛔ not the register)*. ⭐⭐ **`CNF-FR-081` prescribes how a read ALREADY HELD must be RENDERED — ⛔ it does not GRANT one** — so `READ` is **`TR-1` only**, matching `WRITE`, and ⛔ **`TR-2`/`TR-3` read is NOT allocated** *(that would be derivation, barred by `AUTH-7.24`)*. ⭐ ⛔ **No `TR-4`/`TR-5` authority** — `SEAT-PO-021` marks both **—**. ⭐ **`NOT COMMERCIAL` IS MANDATED, ⛔ NOT MERELY SATISFIED** — **`SEAT-FR-279`**: *"The module **MUST NOT** display or store **any monetary value**: no fee, price, plan amount, due…"*, with `SEAT-FR-144`, `SEAT-XC-011` and a `BC-05` edge measured *"**None.** No edge exists"*; ⛔ a commercial `SEAT-CFG-*` would **breach a frozen `MUST NOT`**. ⛔⛔ **`ADR-0151` §3.5’s ⚪ `N/A` WAS NOT REUSED** *(`SE-4`)* — it rests on `CNF-FR-020`, binding only **platform-default** values; ⭐ `SEAT-PO-021` **positively grants** Owner a change operation, so a runtime write **demonstrably exists** and ⛔ `N/A` would be **false**. ⛔ Nor a blanket `DENY`. ⛔⛔ **3 HELD.** ⛔ **`SEAT-CFG-005`** *(**"Override grant** — **which roles** beyond Owner may override…"; `SEAT-PO-010` = **`C`**)* and ⛔ **`SEAT-CFG-014`** *("Whether **Reception** may cancel another student’s reservation"; `SEAT-PO-007` = **`C`**)* are **AUTHORIZATION-SEMANTIC** — ⭐ the `SEAT-PO-*` legend defines **`C`** as *"permitted **only where the named configurable grants it**"*, so ⭐ **these parameters ARE the grant**; ⭐ held with `ATT-CFG-022`/`024` on the **`ADR-0153`** precedent *(**Authorization Owner**)*. ⛔ **`SEAT-CFG-017`** is held on **three** grounds — owner is **`BC-06` via `E-05`** *(the only one of 18 not owned by `BC-25`)*, value is *"**Unset in V1** — no event is emitted and **no value is substituted**"*, and **`SEAT-GAP-005` is OPEN**; ⛔⛔ **the 90% figure was NOT applied as a fallback**, §27.1 forbidding it in terms. ⚠️ **THE `SEAT-XC-022` CAVEAT WAS HONOURED, ⛔ NOT FLATTENED** — *"tenant-scoped, **or branch-scoped where `BC-06` owns it**"*; ⭐⭐ its **sole referent is `SEAT-CFG-017`**, ⛔ **which is HELD**, so ⛔ **no branch scope is converted to `Tenant` by inference**. ⭐ **D4 gains 15 at `Tenant`.** ⭐ **D5 UNAFFECTED** — **APP 2** tenant parameters, ⛔ no app and no cross-app edge added; ⭐ **QA holds 13/13**; ⛔ **surface `C-5` unchanged at 19**. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed**; **25 remain**, reconciling as **10** `ICFG-*` + **7** `ATT-CFG-*` + **3** `SEAT-CFG-*` + **2** `CFG-*` + **2** `SCFG-*` + **1** `SMCFG-*` = **25**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⚠️⚠️ **AUTHORIZED ≠ DESIGNED** — Figma blockers stay at **4**, surfaces **3 of 5**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** **`PRD-007`** *(FROZEN v1.1, `03a8ba0a`)* · `PRD-004` · `PRD-005` · `PRD-023` · `ADR-0151`…`ADR-0156` · the **104**-parameter inventory. ⛔ **0** `PERM-*` · **0** roles, action classes or scopes · ⛔ **0** `PR-n` authority · **0** frozen edits · **0** runtime code. |
 | ⭐⭐ **v0.7** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE 58 / 104 → 64 / 104**, recording `Accepted` **[`ADR-0156`](../../00-governance/adr/ADR-0156-smcfg-student-management-configuration-authorization-allocation.md)**. ⭐ **6 `SMCFG-*` AUTHORIZED at `Tenant` scope** — `SMCFG-1`, `2`, `3`, `4`, `6`, `7`: **`WRITE` = `TR-1` ✅ + `TR-2` ✅, `TR-3` ⛔**; **`READ` = `TR-1`/`TR-2`/`TR-3` ✅**; **`NOT COMMERCIAL`**. ⭐⭐ **THE `AUTHORIZED` BAND MOVES 35 → 41** — ⚠️ the **first band movement since `ADR-0153`**, because ⭐ unlike the v0.6 `SCFG-*` these carry a **real tenant write path**; ⛔ the `PLATFORM DEFAULT` band is **unchanged at 23** and ⛔ the two are **not merged**. ⛔⛔ **THE PLATFORM-DEFAULT ROUTE WAS EXPRESSLY REFUSED** — `ADR-0154`/`ADR-0155` both rested on `Platform default`, but **`SM-8.1`** holds *"Every query and command **MUST** be **tenant-scoped**… a tenant-less store access **MUST** be refused"*. ⭐ That is the **`Tenant`** band, where `AUTH-2.5`/`AUTH-7.13`/`AUTH-7.61` **ARE** engaged — ⛔ **no band, `READ` or `WRITE` inheritance**. ⛔⛔ **`ADR-0151` §3.5's ⚪ `N/A` WAS NOT REUSED** *(`SM-4`)* — it rests on **`CNF-FR-020`**, which binds only **platform-default** values and ⛔ **does not reach `Tenant` scope**; ⛔ nor was a blanket `DENY` applied. ⭐ A real tenant `WRITE` exists and was **allocated**. ⭐ **`SM-1` ANSWERED (A) TENANT ROLES `TR-n`** — ⛔ not (B) `PR-n`, ⛔ not (C) both: the owning source names `PR-1`/`PR-2` **ZERO** times. ⭐ Evidence is **`PRD-023` §9** quoting FROZEN `PRD-001` §2 — ⭐ the **same evidence base** `ADR-0151` used for `MM-CFG-*`/`LCFG-*` and `ADR-0153` for `ATT-CFG-*`, ⭐ making this the **fourth application of a settled route**, ⛔ not a new one. ⭐ **`TR-2` HOLDS `WRITE`, AND THAT IS CONSISTENT, ⛔ NOT AN EXPANSION** — its only bar is *"cannot alter **commercial** configuration"*, a restriction **by subject, not scope** (`PRD-023` §9); ⭐ all 6 are `NOT COMMERCIAL`, so ⛔ the bar is **not triggered**. ⭐⭐ **`DD7-GAP-005` IS CLOSED** — `SM-2` answered **(B) TWO DISTINCT REGISTER ENTRIES**. ⭐⭐ **The FROZEN text already settled it and was READ, ⛔ not invented**: **`MM-BR-026`** (*"`MM-CFG-008` **MUST** be the **single threshold**… so the reminder and the list can never disagree"*), `PRD-005` **L1356** anticipating `PRD-004` **by name** (*"**Sharing one configurable** keeps the Directory… consistent"*), and **`LMD-26`** (*"its threshold **MUST** be `SMCFG-3`"*). ⭐ **Conceptually ONE value; as register entries TWO IDs, both retained; ONE authority, already allocated to `MM-CFG-008` by `ADR-0151` §2.3** — ⛔ **cited, not re-decided**. ⚠️ **`SMCFG-3`'s `WRITE` is DERIVED**, landing on `MM-CFG-008` via the `BC-02` projection; ⛔ **no second write path**. ⛔⛔ **MERGING WAS REFUSED** — it would **delete an inventory ID** *(104 → 103)*, which no decision authorizes, and ⛔ **orphan a FROZEN `MUST`** (`LMD-26` binds the Directory to `SMCFG-3` **by name**). ⭐⭐ **THE 104 INVENTORY IS UNCHANGED.** ⛔⛔ **`SMCFG-5` IS HELD** — ⚠️⚠️ **its DEFINITION is undecided, not merely its authority**: `SM-GAP-2` is **OPEN in every document that mentions it** *(`PRD-004` **L1168** "placeholder pending a decision"; `PRD-004_TRACEABILITY` **L187** "undecided"; the independent review "Remain a gap"; `DD-0002` "no form")* and appears in **ZERO ADRs**. ⛔ Authority **MUST NOT** be allocated over an undefined parameter. ⭐ **D4 gains 6 at `Tenant`.** ⭐ **D5 UNAFFECTED** — these are **APP 2** tenant parameters, ⛔ adding no app and no cross-app edge; ⭐ **QA holds 13/13**. ⛔ **Surface `C-5` unchanged at 19** — ⛔ the `SMCFG-*` are **not** APP 3 parameters. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed**; **40 remain**, reconciling as **10** `ICFG-*` + **18** `SEAT-CFG-*` + **7** `ATT-CFG-*` + **2** `CFG-*` + **2** `SCFG-*` + **1** `SMCFG-*` = **40**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⚠️⚠️ **AUTHORIZED ≠ DESIGNED** — ⛔ the 6 are **not designed here**, so Figma blockers stay at **4** and surfaces at **3 of 5**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** **`PRD-004`** *(FROZEN, `93322b23`)* · **`PRD-005`** · `ADR-0151` · `ADR-0152` · `ADR-0153` · `ADR-0154` · `ADR-0155` · `PRD-023` · the **104**-parameter inventory. ⛔ **0** `PERM-*` · **0** roles, action classes or scopes minted · ⛔⛔ **0 platform-role authority over tenant configuration** *(a distinct question, ⛔ not reached)* · **0** frozen edits · **0** runtime code. |
 | ⭐⭐ **v0.6** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE 49 / 104 → 58 / 104**, recording `Accepted` **[`ADR-0155`](../../00-governance/adr/ADR-0155-scfg-student-identity-configuration-authorization-allocation.md)** — a further act on the **PLATFORM DEFAULT** band. ⭐ **9 `SCFG-*` parameters AUTHORIZED** — `SCFG-1`, `3`, `5`, `6`, `7`, `8`, `9`, `10`, `11` — **`READ` = `PR-1` + `PR-2`**, **`NOT COMMERCIAL`**, **Scope = `Platform default`**. ⭐⭐ **THE `AUTHORIZED` BAND DID NOT MOVE** — it stays at **35**; the `PLATFORM DEFAULT` band goes **14 → 23**, ⛔ the two are **not merged** and ⛔ not one of the 9 gains a write path. ⭐⭐ **SCOPE WAS SOURCED, ⛔ NOT CHOSEN** — **`SID-5.45`**: *"Every value above **SHALL** be platform-wide. **None SHALL be organisation-configurable**"*, reinforced by **`SID-4.49`** *("**SHALL NOT** consume `TenantContext`")*. ⚠️⚠️ **A REAL GAP WAS FOUND AND REPORTED RATHER THAN CLOSED BY INFERENCE** — the band matched `ADR-0154` exactly, ⛔ **but the owning source names `PR-1`/`PR-2` ZERO times**, using only `TR-1`…`TR-5`. ⭐ Carrying the `ADR-0154` allocation across would have been **derivation, not decision**, barred by **`CNF-BR-010`** and **`AUTH-7.24`**. ⭐⭐ **A BAND IS NOT A DECISION** — four decisions were **sought and obtained**: `S-1` *(Product Owner + SECURITY PLATFORM)*, `S-2` *(Privacy Owner)*, `S-3` *(Authorization Owner)*, `S-4` *(Architecture Owner)*. ⚪ **ALL 11 `WRITE` CELLS ARE `N/A`, ⛔ NOT `DENY`** — `S-4`, on the **`ADR-0151` §3.5** precedent; ⛔ `DENY` would misrepresent `N/A` as a **runtime permission**, which `S-4` forbids. ⭐ **THE `NOT COMMERCIAL` CONDITION WAS TESTED, ⛔ NOT ASSUMED** — `S-1` made it conditional *("unless separate authoritative evidence requires otherwise")*; measurement found **4** commercial-adjacent hits, ⭐ **every one** concerning `BC-02` plans / `BC-05` finance **read into** a composed profile — ⛔ **none of the 9 is itself commercial**. ⛔⛔ **2 OF THE 11 ARE HELD, ⛔ NOT AUTHORIZED** — **`SCFG-2`** *(the owning source says removal *"requires review"* ⛔ **but never says by whom**; ⛔ the reviewer **MUST NOT** be inferred from naming, ownership, hierarchy or UI visibility — **Authorization Owner**)* and **`SCFG-4`** *(**retention**, 24 months — DPDP-adjacent and ⭐ **the same question as `CFG-10`**, which was already held; ⭐ holding one and batching the other would be **incoherent**, so the two are held **together as one determination** — **Privacy Owner**)*. ⭐ **`SID-5.41` / `SID-5.44` ARE WRITE-CONSTRAINTS AND ARE NOT BREACHED** by a read-only allocation — ⛔ **and that reasoning is NOT used to imply the allocation**, which rests solely on `S-1`. ⭐ The same treatment as the `PRD-023` scope-1 analysis at v0.5. ⭐⭐ **`ADR-0155` SUPERSEDES NOTHING** — in whole or in part; the `SCFG-*` were an **absence** of authority, not a contrary decision, and `ADR-0151` §7 **anticipated** this act, so ⛔ the `ADR-INDEX` **Count cell is untouched**. ⭐ **D1 and D2 UNCHANGED.** ⭐⭐ **D5 IS STILL `PASS` AT EXACTLY ONE DEPENDENCY** — ⛔ `ADR-0155` **adds parameters to the existing edge, it does not add an edge**; the population of the APP 2 ↔ APP 3 read-only dependency moves **10 → 19**. ⭐ **QA holds 13/13.** ⚠️⚠️ **SURFACE `C-5` GREW BUT WAS NOT DESIGNED** — its population is now **19**; ⛔ **AUTHORIZED ≠ DESIGNED**, so ⚠️ **blocker 6 GREW** and Figma blockers stay at **4** open, surfaces **3 of 5**. ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed**; **46 remain `NOT YET AUTHORIZED`**, reconciling as **10** `ICFG-*` + **7** `SMCFG-*` + **18** `SEAT-CFG-*` + **7** `ATT-CFG-*` + **2** `CFG-*` + **2** `SCFG-*` = **46**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔ **`CNF-GAP-002` and `CNF-GAP-007` both remain OPEN at Stage 6.** ⛔⛔ **PRESERVED BYTE-UNCHANGED:** **`Student_Identity_PRD_v1`** *(Official baseline)* · `ADR-0151` · `ADR-0152` · `ADR-0153` · `ADR-0154` · `PRD-006` · `PRD-023` · `AUTH-7.22` · the **104**-parameter inventory. ⛔ **0** `PERM-*` · **0** roles, action classes or scopes minted · ⛔⛔ **0 tenant-role authority created** *(`S-1` explicit)* · **0** frozen documents modified · **0** lines of runtime code. |
 | ⭐⭐ **v0.5** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE 39 / 104 → 49 / 104**, recording `Accepted` **[`ADR-0154`](../../00-governance/adr/ADR-0154-app-3-read-only-bc-25-configuration-surface-and-cfg-platform-default-read-allocation.md)** — the successor act `ADR-0151` §7 anticipated, taken on the **PLATFORM DEFAULT** band. ⭐ **10 `CFG-*` parameters AUTHORIZED** — `CFG-1`…`CFG-9` and `CFG-11` — **`READ` = `PR-1` Platform Administrator + `PR-2` Platform Support**, **`NOT COMMERCIAL`**, **Scope = `Platform default`**. ⭐⭐ **THE BAND IS `PLATFORM DEFAULT`, ⛔ NOT A NEW BAND AND ⛔ NOT MERGED INTO `Tenant` OR `Library`** — the band count moves **4 → 14** (§6.2), ⛔ the other two bands are byte-unchanged at **35** authorized. ⭐⭐ **ALL 12 `WRITE` CELLS ARE ⚪ `N/A`, ⛔ NOT ⛔ `DENY`** — on the **`ADR-0151` §3.5** precedent for platform-default parameters; ⭐ a `WRITE` decision is therefore **not consumed, not derived and not implied** here. ⭐⭐ **`READ` WAS DECIDED, ⛔ NOT DERIVED** (`CNF-BR-010`; `AUTH-7.24` *"Read MUST NOT imply any other action"*; `AUTH-7.28` no hierarchy). ⭐⭐ **THE `PRD-023` SCOPE-1 PROHIBITIONS ARE WRITE-ONLY AND ARE THEREFORE NOT BREACHED** — `CNF-FR-020` reads *"SHALL NOT be **writable** at runtime by any actor, including a platform role"*, and `CNF-AC-011` / `CNF-FR-028` are to the same effect; ⭐ a **read-only** surface breaches none of the three. ⛔ **No scope-1 rule was weakened, reinterpreted or amended.** ⭐⭐ **`ADR-0152` IS SUPERSEDED `IN PART and IN EFFECT ONLY`** — its §7 *surface* limb and §8.5, in **exactly two places** (`ADR-0154` §4.3); ⛔ `ADR-0152` was **NOT EDITED**, ⛔ **retains `Accepted`**, and ⛔ the `ADR-INDEX` **Count cell was NOT incremented** — the four worked precedents being `ADR-0130`→`ADR-0046` *(controlling)*, `ADR-0136`, `ADR-0137`, `ADR-0138`. ⚠️⚠️ **A PRIOR FINDING OF THIS ASSISTANT IS RETRACTED** — the claim that partial supersession had **no precedent** was **wrong**, its root cause being a misreading of the index Count cell *(which records whole-document supersession only)*; ⭐ the retraction is recorded at `ADR-0154` §4.1 and in the index addendum, and the `A-5` gate is **withdrawn**. ⭐⭐ **D1 RESTATED** — from a single app to a **justified two-app set**, **APP 2 + APP 3 (read-only)**, which README §2B.3 D1 expressly permits *("APP 1, APP 2, APP 3, **or an explicit, justified set**")*. ⚠️⚠️ **D5's v0.3 `PASS` COULD NOT SURVIVE AND WAS NOT RE-WORDED** — ⛔ the v0.3 **measured negative** *("APP 3 = 0")* is **VOID**, falsified **by construction** by this very act; ⭐ D5 is **re-earned in the opposite form** at the new **§5.4.5** as **ONE declared, sourced, one-directional, read-only** dependency — README §2B.3 D5's failure mode being an ***undeclared*** jump, ⭐ a **declared** one passes. ⭐ **QA HELD AT 13/13** (§5.5) — with **check 7** re-argued from **`PRD-023` L316** *("`CFG-1`…`CFG-12`… are **not** Settings — no library sets its own OTP quota")*, which places the `CFG-*` at **platform level** so that `AUTH-2.5` / `AUTH-7.13` / `AUTH-7.61` are **not engaged**, and **check 11** re-earned as a declared positive. ⭐ **`DD7-AC-020` SPLIT** — ⛔ its **write** clauses stand byte-intact; ⭐ only the read limb is qualified. ⭐ **NEW SURFACE `C-5`** at §11.1 — the APP 3 read-only surface, ⚠️⚠️ **AUTHORIZED ≠ DESIGNED**: ⛔ it is **not designed here**, so Figma blockers move **5 → 6** and surfaces are **3 of 5** *(prior: 3 of 4)*. ⛔⛔ **2 OF THE 12 ARE HELD, ⛔ NOT AUTHORIZED** — **`CFG-10`** *(DPDP-adjacent; **Privacy Owner** required)* and **`CFG-12`** *(**self-referential** — it bears on `PR-2`'s own standing, so `PR-2` read of it cannot be settled by the same act; **Authorization Owner** required)*. ⛔⛔ **ICFG IS EXPRESSLY NOT AUTHORIZED BY THIS ACT** — ⛔ the 10 `ICFG-*` parameters were **NOT batched in**; ⭐ they require **their own** Product Owner **and** SECURITY PLATFORM decisions, `INV-SEC-018` holding them *"not overridable by any library role, including `TR-1` Owner"* (`ADR-0154` §7). ⚠️⚠️ **D3 REMAINS `PARTIAL`** — ⛔ **104/104 is NOT claimed**; **55 remain `NOT YET AUTHORIZED`**, reconciling as **10** `ICFG-*` + **11** `SCFG-*` + **7** `SMCFG-*` + **18** `SEAT-CFG-*` + **7** `ATT-CFG-*` + **2** held `CFG-*`; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔ **`CNF-GAP-002` and `CNF-GAP-007` both remain OPEN at Stage 6.** ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `ADR-0151` · `ADR-0152` · `ADR-0153` · `PRD-006` · `PRD-023` · `AUTH-7.22` · the **104**-parameter inventory · **D2** and **D4**'s totals · §7–§10 and §12–§21 and §28–§29. ⛔ **0** `PERM-*` · **0** roles, action classes or scopes minted · **0** frozen documents modified · **0** lines of runtime code. |

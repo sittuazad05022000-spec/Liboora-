@@ -1473,3 +1473,26 @@ anywhere in the Status cell; the **leading-token** instrument every prior pass u
 | ⛔ **Preserves** | ⛔ `ADR-0137` · `ADR-0151`…`ADR-0159` · `LEGAL_RISK_REGISTER` · `DD-0007` · `DP-0001` §5A *(byte-unchanged; §5B is a pure append)* · every frozen PRD · ⛔ **the 104 inventory** |
 | ⛔ **NOT done** | ⛔ **0** parameters authorized · **0** `PERM-*` · **0** roles/actions/scopes *(⛔ **`Branch` NOT constituted**)* · **0** holders appointed · **0** personal names · ⛔ **`Legal Counsel` NOT constituted** · ⛔ `LR-01` **not closed or narrowed** · ⛔ `O-2`…`O-7`, `ATT-GAP-012`, `ATT-GAP-014`, `SM-GAP-2`, `SEAT-GAP-005`, `CNF-GAP-002`, `CNF-GAP-007` **all OPEN** · ⛔ `DP-0001` stays **OPEN** with **0** authority responses · **0** frozen edits · **0** runtime code |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐⭐ ADDENDUM — `ADR-0161` registration *(end-of-file; ⛔ L9 Count cell NOT edited)*
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0161`](ADR-0161-dp-0001-blocker-resolution-pass-b1-b9-corrected-b3-b4-narrowed-six-blockers-preserved.md) — **`DP-0001` blocker-resolution pass: `B-1` and `B-9` WITHDRAWN as errors, `B-3`/`B-4` narrowed, six blockers preserved** |
+| **Status** | ⭐⭐ **Accepted** — 2026-09-19 |
+| **Authority** | ⭐ **Architecture Owner** *(**L85**, **L284**)* **+ Governance Owner** *(**L418**)*, one-act conferral, ⛔ reverting on completion (`ADR-0033` §7.1). ⚠️ One principal — ⛔ **no independent review claimed** |
+| ⛔⛔ **What it AUTHORIZES** | ⛔⛔ **ZERO.** ⭐ Coverage **UNCHANGED at 79 / 104**; ⛔ **D3 `PARTIAL`**; ⛔⛔ **`DD-0007` NOT design-ready** |
+| ⚠️⚠️ **THE HEADLINE IS TWO RETRACTIONS OF THIS CHAIN'S OWN ERRORS** | ⛔ **NOT two closures.** ⭐ Blockers **10 → 8**, ⛔ **0 parameters released** |
+| ⭐⭐ **`B-1` WITHDRAWN** | ⭐ `ADR-0160` claimed Group 1 needed *"an appointment"* because the `Authorization Owner` is **VACANT** — ⛔⛔ **category error**. Measured **76** *"one-act conferral"* + **19** direct-conferral variants; **0** offices with a named holder *(§7 rule 4 forbids it)*; ⭐⭐ `PRD_OWNERSHIP_MODEL` **§12.1** shows a **VACANT** Governance Owner **registering six prefixes** — *"filled **for this act only** by direct conferral"*. ⭐ **Vacancy is the NORMAL state.** ⭐ The real bar is preserved as **`B-1′`**: ⛔ *whether a configuration write may **confer or remove a role capability** at all* |
+| ⭐⭐ **`B-9` WITHDRAWN** | ⭐ `ADR-0160` asserted *"`Branch` is NOT a constituted scope class"* from its **absence in `ADR-0151`…`0157`**; ⛔⛔ **FROZEN `PRD-023` §3.1 L377** defines *"platform default → tenant → library → **branch** → user"*, with `ARCHITECTURE_ALIGNMENT` **L473**, **L308** and `CNF-AC-012`. ⭐⭐ **The error was inferring NON-EXISTENCE from NON-USE** — ⛔ `SEAT-CFG-017` stays **HELD**; only a **phantom** prerequisite is removed |
+| ⭐ **`B-3`/`B-4` NARROWED by CITATION** | ⭐⭐ `Accepted` **`ADR-0154` §7** had **already** determined **Scope = `Platform default`** *(**10 of 10** in the §4 env table **L806-815**)* and **`WRITE` = none storable** *(`CNF-FR-028`; *"tenant-settable"* = **0**)* ⇒ ⚪ **`N/A`, ⛔ not `DENY`**. ⛔⛔ **All 10 STAY HELD** — `READ` and Commercial at **zero**, `CNF-BR-010` independence, and B2's express *"**do NOT automatically apply**"* |
+| ⛔ **Six preserved, each RE-TESTED** | `B-2` *(reviewer unnamed)* · `B-5` *(Group 3 vs `LR-01`)* · `B-6` · `B-7` *(`SM-GAP-2`, **0** ADRs)* · `B-8` *(`SEAT-FR-267` needs **Stage 3**)* · `B-10` *(**186** occurrences, ⛔ none a resolution)* |
+| ⛔⛔ **`B-6` is the critical path and it LEAVES this repository** | ⭐ *"Legal Owner"* = **0** repo-wide; `Accepted` **`ADR-0137`**: ⛔ *"Does **not** constitute **Legal Counsel** as an office"*. ⛔⛔ Constituting it would **overturn an `Accepted` ADR by implication**; ⭐ `LR-01` shows the missing input is an **external legal determination** — **6 of the 25** sit behind it |
+| ⛔⛔ **Seven moves REFUSED** | incl. ⛔ treating `B-1`'s withdrawal as unblocking Group 1 *(**removing a wrong reason supplies no right one**)*; ⛔ allocating `ICFG` `READ` = `N/A` *"by symmetry"* *(**`CNF-BR-010` forbids exactly this**; `N/A` rests on a **write-only** rule)*; ⛔ re-routing Group 3 to escape `LR-01` *(**evasion, not resolution**)* |
+| ⛔ **`ADR-0160`** | ⛔⛔ **NOT edited, NOT restatused, NOT superseded** — ⭐ stays `Accepted` and **byte-unchanged**; corrections recorded in `ADR-0161`, per **L207** *("An ADR supersedes; it does not delete")* |
+| ⛔ **`DD-0007`** | ⛔ **NOT edited** — impact **NIL** *(D1–D5 all unchanged)*; routed as **`ADR-0161-F-1`** |
+| ⛔ **Supersedes** | ⛔⛔ **NOTHING** · ⚠️ **`Count` cell at L9 NOT incremented** |
+| ⛔ **NOT done** | ⛔ **0** parameters · **0** `PERM-*` · **0** roles/actions/scopes *(⭐ `Branch` **pre-existed**)* · **0** holders · **0** personal names · ⛔ **`Legal Counsel` NOT constituted** · ⛔ `LR-01` **not closed** · ⛔ `DP-0001` stays **OPEN** with **0** authority responses · **0** frozen edits · **0** runtime code · ⭐ **79 + 25 = 104** exact |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |

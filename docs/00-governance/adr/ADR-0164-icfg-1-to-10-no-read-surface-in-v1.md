@@ -291,7 +291,48 @@ which is why it survives rules that would defeat every read allocation attempted
 > | Independent review | `________` |
 > | Follow-on | `DD-0007` §6.5 / §6.2 update — **UX Architecture Owner**; `ADR-INDEX` registration — **Governance Owner** |
 
-⛔⛔ **I have not filled this block, and I am not entitled to.** `DESIGN_GOVERNANCE.md`
+### 10.1 ⭐⭐ Two steps, not one — ⚠️ acceptance is **incomplete** if only §10 is filled
+
+⚠️⚠️ **A defect in the first draft of this block, found on review and corrected here:**
+⭐ filling §10 alone would leave the **header Status cell (L5)** still reading
+`Proposed`, ⛔ producing an ADR that contradicts itself. ⭐ **Both must change in the
+same act:**
+
+| Step | Location | Change |
+|---|---|---|
+| **1** | ⭐ **Header `Status` cell, L5** | `⛔⛔ **Proposed** — not binding…` → ⭐ `**Accepted** — YYYY-MM-DD` |
+| **2** | ⭐ **This block (§10)** | Fill every `________` |
+
+⛔ `ADR-INDEX.md` **L206**: *"**Never edit an Accepted ADR's decision text**"* — ⭐ so
+§3's decision text must be settled **before** step 1, ⛔ not after.
+
+### 10.2 ⭐ The conferral, recorded **verbatim** — ⛔ the slot the precedent requires
+
+⭐ Every prior authorization act in this chain records its conferral **verbatim**, not
+paraphrased — `ADR-0162` does so at its §2. ⭐⭐ **That slot was missing from this ADR
+and is supplied here, empty:**
+
+> ⛔ **VERBATIM CONFERRAL — to be pasted by the deciding authority:**
+>
+> ```
+> ____________________________________________________________________
+> ____________________________________________________________________
+> ```
+>
+> ⚠️ If the conferral is exercised by **one principal across several offices**, that
+> fact **MUST** be recorded here, and ⛔ **no independent review may be claimed** —
+> the disclosure `ADR-0162` and `ADR-0159` both make.
+
+### 10.3 ⭐ If the decision is **Rejected** or **Amended**
+
+⭐ **Rejected** — ⭐ record the reason in §10; ⛔ **the ten stay HELD**; ⭐ `DD-0007`
+unchanged at **85 / 104** and **19**; ⭐ `B-3′` stays **OPEN**; ⛔ **nothing else moves**.
+
+⭐ **Amended** *(e.g. `ICFG-8`/`ICFG-9` treated separately from the other eight)* —
+⭐ state the split explicitly; ⚠️ **the resulting coverage figure will NOT be 95 / 104**
+and ⛔ **must be re-derived**, ⛔ not assumed from §8.
+
+⛔⛔ **I have not filled any of these, and I am not entitled to.** `DESIGN_GOVERNANCE.md`
 L10 and `PRD_OWNERSHIP_MODEL` §2 both separate the author from the authority.
 
 ---

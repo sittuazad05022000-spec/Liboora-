@@ -1662,3 +1662,75 @@ text."*** ⛔ **`ADR-0164` is byte-unchanged by this act.**
 | ⚠️ **L9 Count cell** | ⛔ **Deliberately NOT updated** — ⭐ it carries a mechanically re-derived tally *(118 accepted / 13 proposed / 134 files)*; re-deriving it is a **separate measurement act** over every ADR file. ⭐ `ADR-0163` and `ADR-0164` took the same position. ⭐⭐ **Flagged as a known, deliberate omission rather than silently left stale** |
 
 ⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum records that `ADR-0165` and `ADR-0166` are `Accepted`; ⛔ it does **not** re-decide them, widen them, or endorse their reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ **Both ADRs are byte-unchanged by this act.**
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0167`, `ADR-0168`, `ADR-0169`, `ADR-0170` registered (2026-09-19)
+
+⭐ Registered together because they are **one causal chain**, decided by **three different offices** in sequence. ⛔ **They are NOT one decision**: separate conferrals/exercises, separate subjects, separate ADRs. ⭐⭐ Together they close the V1 public seat-availability question opened by `LIB-14B.12`.
+
+| # | ADR | Office | Subject | Status |
+|---|---|---|---|---|
+| 1 | [`ADR-0167`](ADR-0167-e35-bc-04-public-seat-availability-projection-edge-v1.md) | ⭐ **Architecture Owner** | The `BC-04` → public-projection **gap**, and edge **`E-35`** declared | ⭐ **Accepted** 2026-09-19 |
+| 2 | [`ADR-0168`](ADR-0168-v1-public-seat-availability-thresholds-product-owner-decision.md) | ⭐ **Product Owner** | **Thresholds** — `<80` / `80–<100` / `=100` | ⭐ **Accepted** 2026-09-19 |
+| 3 | [`ADR-0169`](ADR-0169-seat-availability-denominator-and-zero-capacity-product-owner-decisions.md) | ⭐ **Product Owner** | **Denominator** = configured seat count; **`C = 0` ⇒ `Full`** | ⭐ **Accepted** 2026-09-19 |
+| 4 | [`ADR-0170`](ADR-0170-e35-registered-seating-availability-state-changed-bc-map-v1-19.md) | ⭐ **Architecture Owner** | **`E-35` registered** in the BC Map at **v1.19**; event **`SEAT-EVT-005`** minted | ⭐ **Accepted** 2026-09-19 |
+
+### ⭐ What the chain establishes
+
+| Field | Value |
+|---|---|
+| **The problem** | ⭐⭐ **A V1 `MUST` had no lawful data path.** `LIB-14B.12` mandates a coarse public indicator *(*"Available, Limited, Full"*)*, 14B **L92** sources it from `BC-04`, and `LIB-14B.9` requires it to arrive **by event** — ⛔ but `BC-04` was measured the source of **ZERO** edges, with **no** public-facing consumer of any `BC-04` event |
+| **The resolution** | ⭐ **`E-35`** `BC-04 Seating → BC-23 Search Indexing`, `PL`, Event, **V1**, payload ⭐⭐ **`{libraryId, availabilityState}` and nothing else** |
+| **The event** | ⭐ **`SEAT-EVT-005`** `seating.AvailabilityStateChanged` — ⭐ the fifth `BC-04` event; ⭐⭐ **emitted on state TRANSITION only**, which is a **privacy property**: ⛔ a per-allocation event would let an observer **counting events reconstruct the occupancy count** |
+| **The rule** | ⭐ `C = 0` ⇒ **`Full`** *(by rule, evaluated first)* · `A/C < 80%` ⇒ `Available` · `80% ≤ A/C < 100%` ⇒ `Limited Availability` · `A/C = 100%` ⇒ `Full`; ⭐ `A` = active allocations, `C` = **configured seat count** |
+| **The derivation** | ⭐⭐ **Allocation ÷ configured capacity** — ⛔⛔ **NEVER** attendance, presence, or the `E-08`-fed live occupancy figure *(`LIB-14B.14`)* |
+| **Corroboration found, not assumed** | ⭐ FROZEN **`SEAT-FR-245`** — *"**Allocation rate and occupancy rate MUST be presented as two distinct figures**"*, with `SEAT-AC-173` *(70 allocated / 40 checked in → **70% and 40%**)*; ⭐ **`LIB-10.5`** — *"**`BC-04` MUST be treated as authoritative for operations**"*, ⭐ and `LIB-10.4`'s rationale *"**The planning figure stays here; operations trust `BC-04`**"* |
+
+### ⭐⭐ Three findings worth preserving in the register
+
+| Finding | Detail |
+|---|---|
+| ⭐⭐ **The gap was established by MEASUREMENT before anything was authorized** | `ADR-0167`'s conferral said *"if **warranted**"*; a programmatic parse of all **26** §7 edge rows returned ⛔ **`BC-04` as SOURCE = ZERO**. ⭐ Had an outbound path existed, the correct answer would have been **no edge** |
+| ⭐⭐ **Extension was tested FIRST and refused** | ⭐ Widening `E-21`'s source cell — the `ADR-0093`/`ADR-0095` one-cell route — ⛔ would convert *"`*Created/Updated/Deleted` → index"* into a live derived-state stream: ⭐⭐ **a contract change disguised as a cell edit**, and it would make the two-field payload boundary **unstateable** |
+| ⭐⭐⭐ **The frozen-register procedure went the OTHER way from the obvious reading** | `SEAT-FR-206` holds the `BC-04` event set *"**fixed by BC Map §9**"* and that *"adding an event **requires an ADR**"* — ⭐ so `PRD-007` **transcribes** a Rank-4 register rather than owning it, and the closure names ⭐⭐ **exactly one instrument: an ADR**. ⛔⛔ **FROZEN `PRD-007` was therefore NOT amended**, on `PRD_LIFECYCLE` **L177** and the **`ADR-0096`** precedent *(a new event minted for a **FROZEN** context's producer by BC Map append alone)* |
+
+### ⛔ Identifier hygiene
+
+| Check | Result |
+|---|---|
+| ADR numbers | ⭐ `0167`–`0170`, each **re-measured immediately before drafting**; `0150`–`0170` **contiguous**; ⛔ **no number reused** *(Process rule 2)* |
+| ⭐ **`E-35`** | ⭐⭐ Measured free — its **3** prior repo-wide occurrences were **freeness probes or express non-allocations** *(BC Map **L1421**, **L1482** *"`E-35` is NOT allocated"*, `DD-0004` **L2845**)* |
+| ⛔ **`E-31`** | ⛔⛔ **NOT taken despite being numerically lower** — ⭐ **RESERVED** for `PRD-021C`/`TSF-GAP-009`; ⭐ sequential past a reservation is the **`E-28`-past-vacant-`E-27`** precedent |
+| ⛔ **`E-27`** | ⛔ Permanently vacant *(`ADR-0033`)* |
+| ⭐ **`SEAT-EVT-005`** | ⭐ Measured **0** repo-wide before minting; `001`…`004` contiguous; ⭐ convention `<Context>.<Aggregate><PastTenseVerb>` satisfied |
+
+### ⚠️⚠️ Three defects DISCLOSED by this chain, ⛔ none closed
+
+| Defect | Routed to |
+|---|---|
+| ⭐⭐ **`GAP-SEAT-EVT005-TRANSCRIPTION`** — FROZEN `PRD-007` §22.1 lists **four** events; BC Map §9 now lists **five**. ⭐ A **documentation lag, ⛔ not a contradiction**, because `SEAT-FR-206` **defers** to BC Map rather than asserting a count. ⭐ `TRACEABILITY_MATRIX` **L404** carries the same delegated figure | ⛔ **`PRD-007` owner** *(Product Owner + Library Domain)* |
+| ⚠️ **BC Map L10's edge tally left stale** — reads *"Edges: 28"*; ⭐ it is **cited by line in 3 places** and was **already stale** before this pass *(`E-30`…`E-34` did not update it either)*. ⭐ Flagged in the **L6** version cell rather than silently left | ⛔ **Architecture Owner** |
+| ⚠️ **`DD-0007` §6.3.3a contradicts §6.5 row 7** on `CFG-12`'s routing *(carried forward from the `ADR-0165` addendum)* | ⛔ **UX Architecture Owner** |
+
+### ⛔ What the chain did NOT do
+
+⛔⛔ **0** FROZEN or approved product requirements modified — ⭐ `PRD-SEAT-MANAGEMENT.md`, `Library_PRD_v1.md`, `14B-Public-Library-Preview.md` and `TRACEABILITY_MATRIX.md` **byte-unchanged** · ⛔ **0** `PERM-*` *(`AUTH-7.22` **CLOSED at ZERO**)* · ⛔ **0** roles, offices, action classes or scope classes · ⛔ **0** contexts, aggregates or invariants *(**31**, 23 in V1)* · ⛔ **0** UI, surface, schema or runtime code — ⭐⭐ *"**a registered edge is not an implementation**"* *(`ADR-0146` §24.3)* · ⛔⛔ **Public Live Occupancy stays V2** *(`LIB-14B.13`, `LIB-24.2`, `SEAT-XC-009`/`020`, `ARCHITECTURE_RULINGS.md` §6)*; ⛔ `LIB-24.2`'s privacy review **not performed, satisfied or pre-empted**; ⛔ `SEAT-GAP-014` **OPEN** · ⛔ **`SEAT-CFG-017` stays HELD** and `SEAT-EVT-004` stays *"Unset in V1"*, `SEAT-GAP-005` **OPEN** — ⭐ the **80%** and the configurable **90%** are **unrelated numbers** *(different input, mechanism, consumers, owner and tier)* · ⛔ `BC-25` configuration coverage unchanged at **95 / 104**, **9** held.
+
+### ⭐ Downstream
+
+| Artifact | State |
+|---|---|
+| `LIBOORA_BOUNDED_CONTEXT_MAP.md` | ⭐ **v1.18 → v1.19** *(§25 appended by `ADR-0170`)*; ⛔ **§7, §8, §9 byte-unchanged** |
+| `DOCUMENTATION_BASELINE.md` §3 | ⭐ Row updated *(§7 rules 2–3)*; ⛔⛔ **no identifier re-issue** — rule 4's Rank 1–3 limb unmet ⇒ **`BASELINE-2026-09-11-B` STANDS** |
+| Remaining before implementation | ⭐ **UX Architecture Owner** *(design the surface)* → Technical *(implement)*. ⛔ **Nothing architectural or product-side remains** |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Citation cost | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+| Conferrals | ⭐ `ADR-0167` and `ADR-0170` each under a **fresh one-act Architecture Owner conferral**, ⛔ **both reverted on completion**; ⭐ `ADR-0168`/`0169` were **direct Product Owner exercises**. ⛔ **No conferral was reused** |
+| ⚠️ **L9 Count cell** | ⛔ **Deliberately NOT updated** — ⭐ it carries a mechanically re-derived tally *(118 accepted / 13 proposed / 134 files)*; re-deriving it is a **separate measurement act** over every ADR file, ⛔ and the registering instruction expressly directed *"do not re-derive or alter historical ADR counts unless the repository procedure explicitly requires it"*. ⭐ `ADR-0163`, `ADR-0164` and the `ADR-0165`/`0166` addendum took the same position. ⭐⭐ **Flagged as a known, deliberate omission rather than silently left stale** |
+
+⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum records that `ADR-0167`, `ADR-0168`, `ADR-0169` and `ADR-0170` are `Accepted`; ⛔ it does **not** re-decide them, widen them, or endorse their reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ **All four ADRs are byte-unchanged by this act.**

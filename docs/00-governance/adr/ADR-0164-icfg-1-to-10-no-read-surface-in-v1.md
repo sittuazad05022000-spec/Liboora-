@@ -138,6 +138,50 @@ conferral is only meaningful if the offices differ."*
 ⭐⭐ **So the product input answers "is there a surface?" — ⛔ it does not answer "who may
 read?", and it is NOT recorded here as having done so.**
 
+### 4.1 ⭐⭐ The product confirmation, recorded **verbatim** — 2026-09-19
+
+⭐ The human principal, exercising **Product Owner** input, confirmed the following.
+⭐ Recorded **verbatim**, ⛔ not paraphrased, per the practice `ADR-0162` §2 and
+`ADR-0159` both follow:
+
+> *"Authorization decision:*
+> *OUTCOME B — NO READ SURFACE IN V1.*
+>
+> *I confirm this as my decision input for the Authorization Owner process.*
+>
+> *Proceed only according to the established Authorization Owner conferral and ADR
+> acceptance procedure.*
+>
+> *Do not self-approve.*
+> *Do not assume authority from this message alone.*
+> *Do not modify DD-0007 yet.*
+> *Do not create PERM-\*.*
+> *Do not close ICFG-1…10 until ADR-0164 is formally accepted through the required
+> authority process."*
+
+### 4.2 ⛔⛔ What this confirmation is — and what it expressly is **NOT**
+
+⚠️⚠️ **This was TESTED against the conferral standard, ⛔ not assumed either way.**
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Is it a **Product Owner input**? | ⭐⭐ **YES** — and it is now the recorded position | *"I confirm this as my **decision input**"* |
+| Is it a **one-act conferral** of the Authorization Owner office? | ⛔⛔ **NO — expressly declined** | *"**Do not assume authority from this message alone**"*; *"Proceed **only** according to the established … conferral and ADR acceptance procedure"* |
+| Does it make `ADR-0164` `Accepted`? | ⛔⛔ **NO** | *"**Do not self-approve**"*; the header remains **`Proposed`** |
+| Does it close `ICFG-1`…`10`? | ⛔⛔ **NO** | *"**Do not close ICFG-1…10 until ADR-0164 is formally accepted**"* |
+
+⭐⭐ **The distinction that governs this section.** `ADR-0162`'s conferral reads *"**A
+one-act conferral of the human principal of this engagement**"* — ⭐ language that
+**grants** an office's exercise. ⛔ This message does the opposite: it **withholds** that
+grant in terms, and routes the decision back to the established procedure.
+
+⭐⭐ **Therefore the contributing-office column of §6 is now SATISFIED for Product Owner,
+and the deciding column is UNCHANGED and still EMPTY.** ⛔ §10 stays **UNCOMPLETED**.
+
+⚠️ **One consequence worth stating for the eventual decider:** ⭐ the Product Owner limb
+of `B-3′` is no longer outstanding. ⛔ **The Authorization Owner limb is untouched**, and
+it is the limb that closes the hold.
+
 ---
 
 ## 5. ⭐ Security input — ⚠️ `ICFG-8` and `ICFG-9` distinguished

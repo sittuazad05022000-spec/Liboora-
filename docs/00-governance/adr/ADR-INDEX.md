@@ -1607,3 +1607,58 @@ only; ⛔ **not counted in the ADR register**, ⛔ no ADR number, ⛔ **decides 
 that `ADR-0164` is `Accepted`; ⛔ it does **not** re-decide it, widen it, or endorse its
 reasoning — ⭐ **`ADR-INDEX.md` Process rule 2: *"Never edit an Accepted ADR's decision
 text."*** ⛔ **`ADR-0164` is byte-unchanged by this act.**
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0165` and `ADR-0166` registered (2026-09-19)
+
+⭐ Registered together because they were decided together — ⭐⭐ the **two** internally-decidable holds `ADR-0158` **`O-7`** routed as one item. ⛔ **They are NOT one decision**: separate conferrals, separate grounds, separate ADRs.
+
+| Field | `ADR-0165` | `ADR-0166` |
+|---|---|---|
+| **ADR** | [`ADR-0165`](ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md) — `CFG-12` `READ` remains **HELD** | [`ADR-0166`](ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md) — `SCFG-2` review authority **not identifiable** |
+| **Status** | ⭐ **Accepted** — 2026-09-19 · Rank 2 · ⛔ Supersedes **NOTHING** | ⭐ **Accepted** — 2026-09-19 · Rank 2 · ⛔ Supersedes **NOTHING** |
+| **Origin** | `DP-0004` **`A-3`** *(= `B-1″`)* | `DP-0004` **`A-2`** *(= `B-2`)* |
+| **Outcome** | ⛔ **HOLD** — ⛔ **no role receives `READ`** *(not `PR-1`, not `PR-2`, not both)* | ⛔ **HOLD** — outcome **(c)**; ⛔ reviewer **NONE IDENTIFIABLE**, source conferring it **NONE EXISTS** |
+| **Ground** | ⭐⭐ **Self-reference NOT discharged** — `CFG-12` bounds `PR-2`'s **own** elevation ceiling *(`AUTH-7.19`)*; a positive read ground would be needed and the sources supply ⛔ **ZERO** | ⭐⭐ **The authority does not exist to be found** — the obligation is stated in **one line** and ⛔ **names no actor**; `ADR-0155` `S-3` forbids inferring one |
+| **Authority** | ⭐ Authorization Owner *(§16.1)*, fresh one-act conferral verbatim at **§9.1**, reverting on completion *(`ADR-0033` §7.1)* · ⛔ **no independent review claimed** | ⭐ Authorization Owner *(§16.1; `ADR-0155` `S-3`)*, fresh one-act conferral verbatim at **§9.1**, reverting on completion · ⛔ **no independent review claimed** |
+| ⭐⭐ **The conferrals differed** | ⭐ Pre-supplied the outcome — *"Decision: HOLD"* | ⭐⭐ **Delegated the CHOICE** — *"**Decide** … using only the permitted existing outcomes"*; ⭐ `HOLD` was **reached by searching and failing**, ⛔ not by instruction |
+| ⭐ **Evidence correction** | ⚠️⚠️ **`DP-0004` / `ADR-0163` §5.1 say 8 citations; re-measured = 12** — ⭐ four further enforcement rules found *(`AUTH-8.96`, `BR-8.33`, `XC-8.26`, `AC-8.29`)*. ⭐⭐ **Finding STRENGTHENED: 12 of 12 enforcement, 0 read grants** | ⭐⭐ **Five candidates tested and each refused** — `PR-1` · the `ADR-0155` band · `CONFIGURATION_GUIDE` §5 · `PRD-023` reviewers · ⭐⭐ **`BC-13` Trust & Safety**, refused on its **own exclusion** *(`TSF-XC-001`; `SCFG` = **0** in `PRD-020`)* |
+| ⛔ **Alternatives refused** | ⛔ `PR-1`+`PR-2` · ⛔ `PR-1` only *(the `XC-2.5` hook — already refused at `ADR-0163` §5.1)* · ⛔⛔ ⚪ `N/A` **would be FALSE** — a read is **conceivable**, merely ungranted | ⛔ **(a)** name an office · ⛔ **(b)** name a role — ⭐ both need a **source conferring it**, and ⛔ none exists. ⛔ `TR-1`…`TR-5` barred at the threshold by `AUTH-7.14` + `SID-5.45` |
+| ⚠️ **`ADR-0164` analogy** | ⛔ **Seen and NOT applied** — not an `A-3` outcome; no PO input conferred; ⛔ the band argument in its **sixth** form | ⛔ **Seen and NOT applied** — ⭐ the frozen text *"removing an entry **requires review**"* **contemplates removal** |
+| **Coverage** | ⭐ **95 / 104** — ⛔ **unchanged** · held ⛔ **9** | ⭐ **95 / 104** — ⛔ **unchanged** · held ⛔ **9** |
+| **Downstream** | ⭐⭐ **NIL** — `HOLD` moves nothing, so ⛔ **`DD-0007` v1.1 is NOT stale and NO reconciliation is required** | ⭐⭐ **NIL** — same |
+| **Not created** | ⛔ **0** `PERM-*` · 0 roles · 0 offices · 0 action classes · 0 scopes · 0 frozen edits | ⛔ **0** `PERM-*` · 0 roles · 0 offices · ⛔⛔ **the *"review"* act is NOT constituted** · 0 scopes · 0 frozen edits |
+
+### ⭐ What the two acts discharge
+
+| Item | State |
+|---|---|
+| `DP-0004` **`A-3`** · **`A-2`** | ⭐ **Both DISCHARGED** |
+| `DP-0004` `A-1`, `A-4`, Part B | ⛔ **OPEN** |
+| ⭐⭐ `ADR-0158` **`O-7`** | ⭐⭐ **FULLY DISCHARGED** — ⭐ both limbs |
+| `ADR-0155` **`O-1`** | ⭐ **DISCHARGED** on its second limb *("or keep it HELD")* |
+| Remaining holds | ⛔ **9** — ⭐ **2 now DETERMINED**, ⛔ **6 externally gated by `LR-01`** *(PERMANENTLY OPEN)*, ⛔ **1** `SEAT-CFG-017` |
+
+⭐⭐ **A hold that has been ruled on is not the same as a hold awaiting a ruling.** ⛔ The **count** did not move; ⭐ the **character** of two of the nine did — from *"awaiting an authority"* to *"an authority has determined."*
+
+### ⚠️⚠️ Two defects DISCLOSED by these ADRs, ⛔ neither closed
+
+| Defect | Routed to |
+|---|---|
+| ⭐⭐ **A frozen specification imposes an obligation no existing authority can discharge** — `Student_Identity_PRD_v1` **L1336** requires a *"review"* that ⛔ **nobody is competent to perform** | ⛔ **`PRD-003` / Student Identity owner** *(amend to name an existing office/role)* **or** **Architecture Owner** *(constitute an action class, `ADR-0132` §7)* — ⛔ **both outside the Authorization Owner's competence** |
+| ⚠️ **`DD-0007` §6.3.3a contradicts §6.5 row 7** on `CFG-12`'s routing — *"Authorization Owner **+ Security + Legal**"* vs *"Authorization Owner"* alone; ⛔ **two of those three cannot act and the third does not exist** | ⛔ **UX Architecture Owner** *(document correction)* |
+
+⭐ Also carried forward, ⛔ unrepaired: the `ADR-0155` `D-4` / §2.5 `WRITE` inconsistency *(Architecture Owner, `ADR-0162` §8)*; and ⚠️ the **8 → 12** citation-count correction recorded at `ADR-0165` §4.2 rather than by editing the `OPEN` `DP-0004`.
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Numbers | ⭐ `0165`, `0166` — ⭐ each re-measured **immediately before drafting**; `0150`–`0166` **contiguous**, ⛔ **no number reused** *(Process rule 2)* |
+| Both conferrals | ⛔⛔ **REVERTED ON COMPLETION** — ⭐ any further authorization act needs a **new** one |
+| Conferrals reused | ⛔ **NONE** — `ADR-0162` §2, `ADR-0164` §10.2 and `ADR-0165` §9.1 all spent |
+| Citation cost | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+| ⚠️ **L9 Count cell** | ⛔ **Deliberately NOT updated** — ⭐ it carries a mechanically re-derived tally *(118 accepted / 13 proposed / 134 files)*; re-deriving it is a **separate measurement act** over every ADR file. ⭐ `ADR-0163` and `ADR-0164` took the same position. ⭐⭐ **Flagged as a known, deliberate omission rather than silently left stale** |
+
+⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum records that `ADR-0165` and `ADR-0166` are `Accepted`; ⛔ it does **not** re-decide them, widen them, or endorse their reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ **Both ADRs are byte-unchanged by this act.**

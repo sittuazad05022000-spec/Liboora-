@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | ⭐ **v1.18** — ⭐⭐ **appends §24, registering edge `E-34` `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 Google federated-identity (OIDC) assertion-validation path**, admitted by `ADR-0146` `AO-2`. ⭐ It **EXECUTES `A-7`**, which `Accepted` `ADR-0129` **L79** decided and **L83** expressly declined to allocate. **Edges: 32** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + `E-32` (§20.1) + `E-33` (§19.1) + **`E-34`** (**§24.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and absent; ⛔ **`E-35` NOT allocated**. ⛔⛔ **`E-33` is BYTE-UNCHANGED — L1108 md5-verified identical — and `ADR-0128` is NOT reopened.** **Context count remains 31 (23 in V1)**; no aggregate, member, event or invariant changed *(prior: v1.17)* |
+| **Version** | ⭐ **v1.19** — ⭐⭐ **appends §25, registering edge `E-35` `BC-04 Seating` → `BC-23 Search Indexing` (`PL`, Event, **V1**) and the fifth `BC-04` event **`SEAT-EVT-005` `seating.AvailabilityStateChanged`**, payload exactly `{libraryId, availabilityState}`, as the V1 public seat-availability path required by `LIB-14B.12`** — by `Accepted` [`ADR-0170`](../00-governance/adr/ADR-0170-e35-registered-seating-availability-state-changed-bc-map-v1-19.md). ⛔ **§7, §8 and §9 byte-unchanged**; ⛔ **no FROZEN artefact edited**; ⛔ contexts remain **31** (23 in V1). ⚠️ **L10's edge tally is NOT updated** — it is cited by line and was already stale before this pass; see **§25.4** | ⭐ Previously: **v1.18** — appended §24, edge `E-34` `BC-18` → `BC-31` (Google federated identity, `ADR-0146`) |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 ⭐ **v1.13 appends §19**, declaring **`E-33`** `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 OTP / possession-challenge transport**, admitted by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) under a **joint Architecture Owner + Product Owner** one-act conferral — again **appended, not inserted**. ⭐ It **ratifies a route the module manifest has declared since `a2caa22`** (`tool/module_dependencies.yaml` **L437–439**, *"the single sanctioned bypass of `platform/communication`, for possession challenge delivery only"*), rather than creating one. **Edges: 30** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-33`** (**§19.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` reserved** for `PRD-021C`/`TSF-GAP-009` and **`E-32`** allocated to `BC-22 → BC-31` by `ADR-0127` but **NOT yet minted here** — neither appears in this file. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed ⭐ **v1.14 appends §20**, registering **`E-32`** `BC-22 Notification Delivery` → `BC-31 Integration` (`CF`, Sync port, **V1**, **Push/FCM egress only**) — the **M2 execution** of the allocation `Accepted` [`ADR-0127`](../00-governance/adr/ADR-0127-r1-e-32-bc-22-to-bc-31-push-fcm.md) approved and expressly **deferred to M2**; again **appended, not inserted**. ⭐ It **registers an identifier for an already-authoritative contract** — Rank-1 `MASTER_PRD` **L229** (*"Push notifications | `BC-22` **via `BC-31`** … FCM (V1)"*) and `PRD-010` **`NTF-FR-031`** — and creates no capability. **Edges: 31** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-32`** (**§20.1**) + `E-33` (§19.1); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and **absent from this file**. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed |
@@ -1499,3 +1499,65 @@ add **no line**. **L1108** is verified byte-identical before and after this act.
 STANDS**. ⭐ §7 **rule 2** (version + changelog in the same commit) and **rule 3** (declaration updated in the same
 commit) **are both discharged in this commit**, which is the obligation `ADR-0128` §8 previously recorded as
 satisfied when it was not.
+
+---
+
+## 25. ⭐⭐ `ADR-0170` Extension — the V1 public seat-availability edge `E-35` (V1)
+
+⭐ Registered by `Accepted` [`ADR-0170`](../00-governance/adr/ADR-0170-e35-registered-seating-availability-state-changed-bc-map-v1-19.md), completing the architecture approved at `Accepted` [`ADR-0167`](../00-governance/adr/ADR-0167-e35-bc-04-public-seat-availability-projection-edge-v1.md). ⛔ **Appended, not inserted** — §7, §8 and §9 are **byte-unchanged**.
+
+### 25.1 ⭐ The edge
+
+| Edge | Source | Target | Pattern | Mechanism | Tier | Payload |
+|---|---|---|---|---|---|---|
+| ⭐⭐ **`E-35`** | **`BC-04` Seating** | **`BC-23` Search Indexing** | `PL` | Event | **V1** | ⭐⭐ **`{libraryId, availabilityState}`** — see **§25.3** |
+
+⭐ **Why it exists.** `Library_PRD_v1.md` §14B **L92** requires the public preview to publish *"**Aggregate** public seat information"* sourced from `BC-04`, and **`LIB-14B.9`** requires the projection to be *"built from **events** emitted by the owning contexts"*. ⛔ Before this edge, **`BC-04` was the source of ZERO edges** and no public-facing context consumed any `BC-04` event — so the mandatory **`LIB-14B.12`** indicator had no lawful data path *(`ADR-0167` §3)*.
+
+### 25.2 ⭐ The event — the fifth `BC-04` event
+
+| Producer | Event | Primary consumers | Purpose |
+|---|---|---|---|
+| **BC-04** | ⭐⭐ **`seating.AvailabilityStateChanged`** | ⭐ **BC-23** | Public availability projection (§14B) |
+
+⭐ Identifier **`SEAT-EVT-005`** — ⭐ measured **0** occurrences repository-wide before minting; `SEAT-EVT-001`…`004` contiguous. ⭐ Convention `<Context>.<Aggregate><PastTenseVerb>` satisfied.
+
+⭐⭐ **Authority:** **`SEAT-FR-206`** holds the `BC-04` event set *"**exactly** the following, **fixed by BC Map §9**. The set is **closed**; **adding an event requires an ADR**."* ⭐ This section is that addition, and **`ADR-0170`** is that ADR.
+
+⭐⭐ **Emission is TRANSITION-triggered** — the event fires **only when the public state label changes** between `Available`, `Limited Availability` and `Full`. ⛔ **NOT** on every allocation or release. ⭐ This is a **privacy property**: an event per allocation would let an observer counting events reconstruct the occupancy count, defeating §25.3 by inference.
+
+### 25.3 ⛔⛔ The payload boundary — this IS the privacy control
+
+⭐ `E-35` **MUST** carry exactly two fields:
+
+| Field | Meaning |
+|---|---|
+| `libraryId` | Which library the state describes |
+| `availabilityState` | ⭐ A **closed enumeration of exactly three values** — `Available` · `Limited Availability` · `Full` |
+
+⛔⛔ **`E-35` MUST NOT carry, in any form, encoded or derived:** any occupancy **count** · any **percentage** or ratio · any **free-seat count** · any **seat identifier**, number, floor, zone or category · any **per-seat status, history or timing** · any **attendance datum**, presence, absence or arrival time · any **`PersonId`**, `StudentRecordId`, account or device identifier · any **state-change timestamp** beyond ordinary envelope metadata.
+
+⭐⭐ **The two-field payload is not a summary of a richer event — it is the whole event.** ⛔ A count that is rounded or bucketed at the consumer is **still a count crossing the boundary**. ⭐ `ID-2`, `ID-3` and `X-05` are **preserved**; ⛔ **no context gains an exemption**.
+
+⭐ **Derivation** *(fixed by `ADR-0167` `D-4` and `ADR-0168`/`ADR-0169`, recorded here for completeness, ⛔ not re-decided)*: the state is computed **inside `BC-04`** from **active allocations ÷ configured seat count** — ⛔⛔ **never** from attendance, presence, or the `E-08`-fed live occupancy figure *(`LIB-14B.14`)*.
+
+### 25.4 ⚠️ A transcription lag, DISCLOSED and deliberately NOT repaired
+
+⚠️⚠️ **FROZEN `PRD-SEAT-MANAGEMENT.md` §22.1 lists FOUR events; this register now lists FIVE.**
+
+⭐ This is a **documentation lag, ⛔ not a contradiction** — **`SEAT-FR-206`** **defers** to this register *("fixed by BC Map §9")* rather than asserting a count independently. ⛔ `PRD-007` is **byte-unchanged**, because `PRD_LIFECYCLE` **L177** holds that *"**A frozen PRD is never silently modified.** Not for an obvious correction, and **not for one that is certainly right**"*, and ⭐ the `ADR-0096` precedent minted a new event for a **FROZEN** context's producer by BC Map append alone, recording ⛔ *"does **not** edit any FROZEN artefact"*.
+
+⭐ Registered as **`GAP-SEAT-EVT005-TRANSCRIPTION`**, routed to the **`PRD-007` owner** *(Product Owner + Library Domain)*. ⭐ `TRACEABILITY_MATRIX.md` **L404** carries the same delegated figure and is likewise **not amended** — `PRD_LIFECYCLE` §4 step 6 is conditional on an identifier changing, and ⛔ no `PRD-007` identifier did.
+
+### 25.5 ⛔ What this section does NOT do
+
+- ⛔⛔ **Amends no FROZEN or approved product requirement** — `PRD-SEAT-MANAGEMENT.md`, `Library_PRD_v1.md` and `14B-Public-Library-Preview.md` are **byte-unchanged**
+- ⛔ **Mints no other edge** — ⛔ **`E-27`** stays permanently vacant *(`ADR-0033`; "numbers are never reused")*; ⛔ **`E-31`** stays **reserved** for `PRD-021C`/`TSF-GAP-009`; ⛔ **`E-36` is NOT allocated**
+- ⛔ **Mints no other event** — ⛔ **`SEAT-EVT-004`** `seating.OccupancyThresholdCrossed` remains *"**Unset in V1** — no event is emitted and no value is substituted"*, and ⛔ **`SEAT-CFG-017` remains HELD** with `SEAT-GAP-005` **OPEN**
+- ⛔⛔ **Does NOT deliver Public Live Occupancy**, which stays **V2** *(`LIB-14B.13`, `LIB-24.2`, `SEAT-XC-009`, `SEAT-XC-020`, `ARCHITECTURE_RULINGS.md` §6)*; ⛔ `LIB-24.2`'s privacy review is **not performed, satisfied or pre-empted**; ⛔ `SEAT-GAP-014` stays **OPEN**
+- ⛔ **No context, aggregate, member or invariant** added, removed or altered — **31** contexts (23 in V1)
+- ⛔ **No role, permission, `PERM-*`, action class or scope class** — `AUTH-7.22` stays **CLOSED at ZERO**
+- ⛔ **No threshold changed** — `ADR-0168`/`ADR-0169` are preserved exactly
+- ⭐⭐ **A registered edge is NOT an implementation** *(`ADR-0146` §24.3)* — ⛔ no UI, no surface, no code, no schema is authorised by this section
+
+⚠ **Baseline:** this file is **Rank 4**, so its version change does ⛔ **not** trigger `DOCUMENTATION_BASELINE.md` §7 **rule 4** — and ⛔ **no Rank 1–3 document changes version in this commit**, so **`BASELINE-2026-09-11-B` STANDS**. ⭐ §7 **rule 2** (version + changelog in the same commit) and **rule 3** (declaration updated in the same commit) **are both discharged in this commit**.

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | ⛔⛔ **Proposed** — not binding. *(`ADR-INDEX.md` status vocabulary: "Under consideration; not binding")* ⚠️⚠️ **READY FOR AUTHORITY REVIEW — ⛔ NOT ACCEPTED, ⛔ NOT SELF-APPROVED** |
+| **Status** | ⭐⭐ **Accepted** — **2026-09-19**, under the one-act conferral recorded **verbatim** at **§10.2**. ⛔ **Reverting on completion** *(`ADR-0033` §7.1)*. ⚠️⚠️ **NO INDEPENDENT REVIEW CLAIMED** — all offices exercised by one principal |
 | **Rank** | 2 — Architecture Decision Record |
 | **Date prepared** | 2026-09-19 |
 | **Bounded context** | `BC-25` Configuration *(owning)*; `BC-18` Identity & Access *(authorization semantics)*; Invitation Security *(source)* |
@@ -175,12 +175,17 @@ one-act conferral of the human principal of this engagement**"* — ⭐ language
 **grants** an office's exercise. ⛔ This message does the opposite: it **withholds** that
 grant in terms, and routes the decision back to the established procedure.
 
-⭐⭐ **Therefore the contributing-office column of §6 is now SATISFIED for Product Owner,
-and the deciding column is UNCHANGED and still EMPTY.** ⛔ §10 stays **UNCOMPLETED**.
+⭐⭐ **Therefore the contributing-office column of §6 was SATISFIED for Product Owner by
+this message, and the deciding column remained EMPTY at that moment.** ⛔ §10 stayed
+**UNCOMPLETED**.
 
-⚠️ **One consequence worth stating for the eventual decider:** ⭐ the Product Owner limb
-of `B-3′` is no longer outstanding. ⛔ **The Authorization Owner limb is untouched**, and
-it is the limb that closes the hold.
+⚠️⚠️ **Superseded in fact on 2026-09-19 — recorded, ⛔ not rewritten.** ⭐ A **separate
+and later** instrument — the first-person conferral at **§10.2** — supplied the
+**Authorization Owner** limb, and §10 is now **COMPLETED**. ⭐⭐ **This section is left
+standing as written because it proves the two instruments were distinct**: ⭐ the
+Product-Owner message said *"Do not assume authority from this message alone"*; ⭐ the
+conferral said *"I confer."* ⛔ **Collapsing them retrospectively would destroy the
+evidence that they were never collapsed.**
 
 ---
 
@@ -261,7 +266,7 @@ identifies the **existing** mechanism and leaves its exercise to the human princ
 | The other 9 holds move | ⛔ **NO** — ⭐ 4 Face + 2 retention + `SEAT-CFG-017` + `CFG-12` + `SCFG-2` all untouched |
 | `LR-01`-gated holds move | ⛔ **NO** — `LR-01` stays **PERMANENTLY OPEN** |
 | `DD-0007` becomes design-ready | ⛔⛔ **NO** — Figma blockers stay **4** |
-| ⭐ **This ADR is Accepted** | ⛔⛔ **NO — `Proposed`. ⛔ It is NOT self-approved** |
+| ⭐ **This ADR is Accepted** | ⭐⭐ **YES — as of 2026-09-19**, under the conferral at **§10.2**. ⛔ **It was NOT self-approved**: the conferral is the human principal's act, recorded verbatim, and ⛔ **no independent review is claimed** |
 
 ---
 
@@ -324,16 +329,16 @@ which is why it survives rules that would defeat every read allocation attempted
 
 ## 10. ⛔ Acceptance block — to be completed by the deciding authority
 
-> ⛔⛔ **UNCOMPLETED. ⛔ This ADR is `Proposed`.**
+> ⭐⭐ **COMPLETED — 2026-09-19.**
 >
 > | Field | Value |
 > |---|---|
-> | Status | `________` *(Accepted / Rejected / Amended)* |
-> | Date | `________` |
-> | Authority instrument | `________` *(one-act conferral, `ADR-0033` §7.1 — reverting on completion)* |
-> | Offices exercised | Authorization Owner *(deciding)*; Product Owner, Security Owner *(contributing)* |
-> | Independent review | `________` |
-> | Follow-on | `DD-0007` §6.5 / §6.2 update — **UX Architecture Owner**; `ADR-INDEX` registration — **Governance Owner** |
+> | Status | ⭐⭐ **Accepted** |
+> | Date | **2026-09-19** |
+> | Authority instrument | ⭐⭐ **A one-act conferral of the human principal of this engagement**, recorded **verbatim** at **§10.2**. ⛔ **Reverting on completion** *(`ADR-0033` §7.1: "a conferral for one act is not a standing licence")* |
+> | Offices exercised | ⭐ **Authorization Owner** *(deciding — `PRD_OWNERSHIP_MODEL` §16.1, `ADR-0159`)*; **Product Owner** *(contributing — §4.1)*; **Security Owner** *(contributing — §5)* |
+> | Independent review | ⛔⛔ **NONE CLAIMED.** ⚠️ All three offices exercised by **one principal**, disclosed in the conferral itself |
+> | Follow-on | ⛔ **NOT performed here:** `DD-0007` §6.5 / §6.2 update — **UX Architecture Owner**; `ADR-INDEX` registration — **Governance Owner** |
 
 ### 10.1 ⭐⭐ Two steps, not one — ⚠️ acceptance is **incomplete** if only §10 is filled
 
@@ -353,19 +358,45 @@ same act:**
 ### 10.2 ⭐ The conferral, recorded **verbatim** — ⛔ the slot the precedent requires
 
 ⭐ Every prior authorization act in this chain records its conferral **verbatim**, not
-paraphrased — `ADR-0162` does so at its §2. ⭐⭐ **That slot was missing from this ADR
-and is supplied here, empty:**
+paraphrased — `ADR-0162` does so at its §2. ⭐⭐ **The conferral supplied on 2026-09-19
+is recorded below, WORD FOR WORD:**
 
-> ⛔ **VERBATIM CONFERRAL — to be pasted by the deciding authority:**
+> ⭐⭐ **VERBATIM CONFERRAL — human principal of this engagement, 2026-09-19:**
 >
 > ```
-> ____________________________________________________________________
-> ____________________________________________________________________
+> "I confer the Authorization Owner office on this engagement for the single act
+> of deciding ADR-0164 — to Accept, Reject or Amend it. This conferral is limited
+> to that one act and reverts on completion. I am concurrently exercising Product
+> Owner and Security Owner input, and no independent review is claimed."
 > ```
->
-> ⚠️ If the conferral is exercised by **one principal across several offices**, that
-> fact **MUST** be recorded here, and ⛔ **no independent review may be claimed** —
-> the disclosure `ADR-0162` and `ADR-0159` both make.
+
+#### ⭐ Validity, tested against `ADR-0080` **L7** · `ADR-0106` · `ADR-0033` §7.1
+
+| # | Required element | Supplied? | The words relied on |
+|---|---|---|---|
+| 1 | ⭐ Direct **first-person** grant | ⭐ **YES** | *"**I confer**…"* |
+| 2 | ⭐ Names the office conferred | ⭐ **YES** | *"the **Authorization Owner** office"* |
+| 3 | ⭐ Scoped to a **single act** | ⭐ **YES** | *"for the **single act of deciding ADR-0164**"* |
+| 4 | ⭐ Decision scope stated | ⭐ **YES** | *"to **Accept, Reject or Amend** it"* |
+| 5 | ⭐⭐ **One-act, reverting** *(`ADR-0033` §7.1)* | ⭐ **YES** | *"**limited to that one act and reverts on completion**"* |
+| 6 | ⚠️ Concurrent-office disclosure *(`ADR-0162`, `ADR-0159` precedent)* | ⭐ **YES** | *"**concurrently exercising Product Owner and Security Owner input, and no independent review is claimed**"* |
+
+⭐⭐ **6 / 6.** ⭐ The conferring authority is the **human principal of this engagement** —
+⭐ `ADR-0080` **L7** *("direct conferral from the human principal")*, which `ADR-0106`
+calls *"the **only** authority competent to fill this office."*
+
+⚠️⚠️ **Three things this conferral is NOT, recorded so the limits survive the act:**
+⛔ **Not** a standing licence — `ADR-0033` §7.1, and the text says so itself.
+⛔ **Not** the spent `ADR-0162` §2 `B-3` conferral, which reverted on completion and was
+discharged **negatively** *(its §11 preserved these ten holds)* — ⭐ **this is fresh
+text**.
+⛔ **Not** the Product Owner input at §4.1 — ⭐ that message expressly said *"Do not
+assume authority from this message alone."* ⭐⭐ **This one says "I confer." The
+difference is the whole point.**
+
+⚠️⚠️ ⛔ **NO INDEPENDENT REVIEW IS CLAIMED.** ⭐ One principal exercises the deciding
+office **and** both contributing offices. ⭐ That is lawful on the `ADR-0162` / `ADR-0159`
+precedent, ⛔ **but it is a disclosure, not a strength**, and it is recorded as such.
 
 ### 10.3 ⭐ If the decision is **Rejected** or **Amended**
 
@@ -376,10 +407,37 @@ unchanged at **85 / 104** and **19**; ⭐ `B-3′` stays **OPEN**; ⛔ **nothing
 ⭐ state the split explicitly; ⚠️ **the resulting coverage figure will NOT be 95 / 104**
 and ⛔ **must be re-derived**, ⛔ not assumed from §8.
 
-⛔⛔ **I have not filled any of these, and I am not entitled to.** `DESIGN_GOVERNANCE.md`
-L10 and `PRD_OWNERSHIP_MODEL` §2 both separate the author from the authority.
+⭐⭐ **§10 was completed on 2026-09-19 under the conferral recorded verbatim at §10.2 —
+⛔ NOT by the author's own authority.** ⭐ `DESIGN_GOVERNANCE.md` L10 and
+`PRD_OWNERSHIP_MODEL` §2 separate the author from the authority; ⭐ the conferral supplied
+that authority, and ⛔ **it reverted on completion of this single act.**
 
 ---
 
-⭐⭐ **`ICFG-1` … `ICFG-10` REMAIN HELD pending formal acceptance. Coverage stays
-85 / 104; held stays 19.**
+## 11. ⭐⭐ Status after acceptance — ⚠️ what has and has **not** changed
+
+⭐⭐ **`ADR-0164` is `Accepted`. The authorization question for `ICFG-1` … `ICFG-10` is
+DECIDED: Outcome B — no read surface in V1.**
+
+⚠️⚠️ **But the register has NOT yet moved, and that gap is deliberate:**
+
+| Artifact | State **now** | Why |
+|---|---|---|
+| ⭐ `ADR-0164` | ⭐⭐ **`Accepted`** | This act |
+| ⚠️ `DD-0007` | ⛔ **v1.0 · 85 / 104 · 19 held — UNCHANGED** | ⭐⭐ Amending it is the **UX Architecture Owner's** act — ⛔ **outside this conferral**, which was *"for the **single act of deciding `ADR-0164`**"* |
+| ⚠️ `ICFG-1`…`10` register row | ⛔ **still listed HELD** | ⭐ Same reason: the **decision** exists; the **register entry** follows by another office's act |
+| ⚠️ `ADR-INDEX` | ⛔ **not registered** | ⭐ A **Governance Owner** act *(`PRD_OWNERSHIP_MODEL` L418)* |
+
+⭐⭐ **The honest position: authorization coverage is now DECIDED at 95 / 104, while
+`DD-0007` still RECORDS 85 / 104 — and will until its owner acts.** ⭐ `DD-0007`'s own
+header settles which governs meanwhile: ⛔ *"the **ranked** document wins and this Design
+Doc is the defect"* — ⭐ and **this Rank-2 ADR is the ranked document**.
+
+⛔⛔ **Unchanged by this acceptance:** ⛔ **D3 stays `PARTIAL`** · ⛔ **`DD-0007` is still
+NOT design-ready** · ⛔ **Figma blockers stay 4**, surfaces **3 of 5**, surface `C-5`
+stays **19** · ⛔ the other **9** holds untouched, **6** still gated by **`LR-01`**
+*(PERMANENTLY OPEN)* · ⛔ **0 `PERM-*`** — `AUTH-7.22` stays **closed at zero** · ⛔ **0**
+roles, action classes or scopes · ⛔⛔ **0 READ granted to anyone**.
+
+⭐ **The conferral has reverted on completion.** ⛔ Any further authorization act requires
+a **new** conferral.

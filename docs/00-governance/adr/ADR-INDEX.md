@@ -1580,3 +1580,30 @@ only; ⛔ **not counted in the ADR register**, ⛔ no ADR number, ⛔ **decides 
 | **Gates** | ⭐ D1/D2/D5 unchanged · ⭐ D4 **PASS** *(⛔ no new scope class)* · ⚠️ **D3 `PARTIAL` 85/104** · ⛔⛔ **`DD-0007` NOT design-ready** |
 | ⛔ **Not created** | **0** `PERM-*` · **0** roles/actions/scopes · **0** offices · **0** edges *(⛔ `E-05` unchanged)* · **0** retention periods · **0** legal conclusions · **0** frozen edits · **0** `DD-0007` edits · **0** runtime code |
 | **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔ **L9 not edited** |
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0164` registered (2026-09-19)
+
+| Field | Value |
+|---|---|
+| **ADR** | ⭐⭐ **[`ADR-0164`](./ADR-0164-icfg-1-to-10-no-read-surface-in-v1.md)** — `ICFG-1` … `ICFG-10` have **no READ surface in V1** |
+| **Status** | ⭐⭐ **Accepted** — **2026-09-19** · **Rank 2** · **Supersedes** ⛔ **NOTHING** |
+| **Decision subject** | ⭐ **Outcome B** — ⛔ no V1 application, admin or user surface is authorized to READ or display `ICFG-1`…`ICFG-10`; ⭐ internal enforcement continues unchanged |
+| ⭐⭐ **Authority** | ⭐ **Authorization Owner** *(deciding — `PRD_OWNERSHIP_MODEL` §16.1, constituted by `Accepted` `ADR-0159`)*; **Product Owner** and **Security Owner** *(contributing)*. ⭐ Exercised under **a fresh one-act conferral of the human principal**, recorded **verbatim** at `ADR-0164` **§10.2**, ⛔ **reverting on completion** *(`ADR-0033` §7.1)* |
+| ⚠️⚠️ **Independent review** | ⛔⛔ **NONE CLAIMED** — ⭐ one principal exercised the deciding office **and** both contributing offices; ⭐ disclosed in the conferral itself |
+| ⭐⭐ **The `ADR-0162` conferral was NOT reused** | ⭐ It had **reverted on completion** and was discharged **negatively** *(its §11 preserved these ten holds)*. ⭐ A **fresh** first-person conferral was required, requested and supplied |
+| **Coverage** | ⭐⭐ **85 / 104 → 95 / 104** *(91.3%)* · ⛔ **held 19 → 9** |
+| ⭐⭐ **Disposed, ⛔ NOT allocated** | ⭐⭐ **The ten left the held register by DETERMINATION.** ⛔⛔ **No role received READ** — ⛔ not `TR-1`…`TR-5`, ⛔ not `PR-1`/`PR-2`, ⛔ not the Security Owner. ⭐ **A parameter can leave the register by being decided, ⛔ not only by being granted** |
+| ⚠️ **`ICFG-8` / `ICFG-9` distinguished** | ⭐ Exposure risk is **not uniform**: §9 **L449** of the owning source holds *"**`ICFG-8` at 20/hour is what makes 40-bit `IT-3` entropy safe in practice**"*, and `ICFG-9` discloses the throttle threshold. ⭐ Any future exposure proposal **MUST re-review these two separately** |
+| ⚠️⚠️ **Band argument refused a FIFTH time** | ⭐ With scope fixed at `Platform default` by `ADR-0163` §3, the *"scope resolved ⇒ copy the `CFG-*` READ"* move was available again and ⛔ **refused**: ⭐ *a shared scope is not a shared decision* *(`AUTH-7.24`, `AUTH-7.28`)* |
+| **Downstream** | ⭐ `DD-0007` reconciled **v1.0 → v1.1** by the **UX Architecture Owner** — ⭐ **95 / 104**, register **9**, new `NO READ SURFACE (V1)` band of **10**, inventory **104** re-verified |
+| **Gates** | ⭐ D1/D2/D4/D5 unchanged · ⚠️⚠️ **D3 remains `PARTIAL`** *(95 / 104)* — ⛔⛔ **it does NOT become `PASS`** · ⛔⛔ **`DD-0007` remains NOT design-ready** *(Figma blockers stay **4**, surfaces **3 of 5**, `C-5` **19**)* |
+| ⛔ **9 holds untouched** | **4** Face *(`ATT-CFG-013`/`014`/`015`/`016`)* + **2** retention *(`CFG-10`, `SCFG-4`)* + `SEAT-CFG-017` + `CFG-12` + `SCFG-2`. ⛔⛔ **6 of the 9 remain externally gated by `LR-01`**, **PERMANENTLY OPEN** |
+| ⛔ **Not created** | **0** `PERM-*` *(`AUTH-7.22` stays **closed at zero**)* · **0** roles, action classes or scopes · **0** offices · **0** edges · **0** legal conclusions · **0** frozen edits · **0** runtime code |
+| **Citation cost** | ⭐⭐ **ZERO** — end-of-file addendum; ⛔⛔ **L9 NOT edited**, ⛔ no historical entry altered, ⛔ no ordering or ranking semantics changed |
+
+⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum records
+that `ADR-0164` is `Accepted`; ⛔ it does **not** re-decide it, widen it, or endorse its
+reasoning — ⭐ **`ADR-INDEX.md` Process rule 2: *"Never edit an Accepted ADR's decision
+text."*** ⛔ **`ADR-0164` is byte-unchanged by this act.**

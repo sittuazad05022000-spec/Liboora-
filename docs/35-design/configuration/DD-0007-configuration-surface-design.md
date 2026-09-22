@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Design Doc** | `DD-0007` |
-| **Version** | ⭐⭐ **v1.1** — ⭐⭐ **COVERAGE RECONCILED 85 / 104 → 95 / 104**, applying `Accepted` **[`ADR-0164`](../../00-governance/adr/ADR-0164-icfg-1-to-10-no-read-surface-in-v1.md)** *(Outcome B — `ICFG-1`…`10` have **NO READ SURFACE IN V1**)*. ⛔⛔ **THIS DOCUMENT DECIDES NOTHING** — ⭐ the disposition was made by a Rank-2 ADR under a one-act conferral; ⭐ this v1.1 applies it. ⛔⛔ **HELD 19 → 9.** ⛔⛔ **NO role received READ; NO `PERM-*` exists.** ⚠️⚠️ **D3 REMAINS `PARTIAL`**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY** — ⛔ Figma blockers stay **4**, surfaces **3 of 5**, `C-5` **19** *(prior: **v1.0** — 79 → 85)* |
+| **Version** | ⭐⭐ **v1.2** — ⭐⭐ **CURRENCY RECONCILIATION ONLY.** ⛔⛔ **COVERAGE UNCHANGED at 95 / 104; HELD UNCHANGED at 9.** ⭐ Records `Accepted` **[`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md)** *(`CFG-12` `READ` **remains HELD** — determination)* and `Accepted` **[`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md)** *(`SCFG-2` review authority **NOT IDENTIFIABLE**, outcome **(c)** — **remains HELD**)*, which this document previously cited **0** times. ⭐⭐ **BOTH QUESTIONS ARE NOW ANSWERED; ⛔ BOTH PARAMETERS REMAIN HELD** — ⛔ **0 authorized, 0 closed, 0 `READ`/`WRITE` allocated, NO `PERM-*`.** ⭐ Also corrects the `LR-01` gate split **6 → 5 + 1** *(`ATT-CFG-014` is outside V1 by `D-3a`, not externally gated)* and the §6.3.3a routing limb, ⭐ both **required by ranked sources**, ⛔ neither invented. ⛔⛔ **THIS DOCUMENT DECIDES NOTHING.** ⚠️⚠️ **D3 REMAINS `PARTIAL`**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY** — ⛔ Figma blockers stay **4**, surfaces **3 of 5**, `C-5` **19**. ⭐ Previously: **v1.1** — 85 → 95 *(`ADR-0164`)*; **v1.0** — 79 → 85 |
 | **Status** | ⛔ **`PROPOSED`** — awaiting approval. ⛔ **NOT approved, NOT frozen, NOT authoritative.** ⛔ This document does **not** claim its own status |
 | **Rank** | ⛔⛔ **UNRANKED.** Where this disagrees with any ranked document, **the ranked document wins and this Design Doc is the defect** |
 | **Bounded context** | **`BC-25` Configuration** `[GENERIC]` — **FOUNDATIONAL** band (BC Map **L271**), **V1** |
@@ -502,7 +502,7 @@ source and MUST NOT be rendered by any surface this document describes.**
 |---|---:|---|---|
 | ⭐ **Authorized** | ⭐⭐ **56** | `AUTHORIZED` | A complete role×action×scope treatment **and** a write path exists — **18** by `ADR-0151`, ⭐ **17** by `ADR-0153`, ⭐⭐ **6** by `ADR-0156` *(`SMCFG-*`, `Tenant`)*, ⭐⭐ **15** by `ADR-0157` *(`SEAT-CFG-*`, `Tenant`, **`TR-1` only**)* |
 | ⭐ **Platform default** | ⭐ **23** | `PLATFORM DEFAULT` | Role×action×scope decided, but `CNF-FR-020` makes them **unwritable by any actor** — **4** by `ADR-0151` *(`LCFG-*`)*, ⭐ **10** by `ADR-0154` *(`CFG-*`)* · ⭐⭐ **9** by `ADR-0155` *(`SCFG-*`, read-only to `PR-1`/`PR-2`)* |
-| ⛔ **Not authorized** | ⚠️ **9** *(was **19** at v1.0)* | `HELD` | ⭐⭐ **All 9 carry a DOCUMENTED REASON and a NAMED OWNER** *(§6.5)* — ⛔ but **0** are authorized. ⚠️ **6 of the 9 are externally gated by `LR-01`** |
+| ⛔ **Not authorized** | ⚠️ **9** *(was **19** at v1.0; ⭐⭐ **unchanged at v1.2**)* | `HELD` | ⭐⭐ **All 9 carry a DOCUMENTED REASON and a NAMED OWNER** *(§6.5)* — ⛔ but **0** are authorized. ⚠️ **5 of the 9 are externally gated by `LR-01`**; ⭐ `ATT-CFG-014` is outside V1 by `D-3a` *(Face = V3)*; ⭐⭐ **`CFG-12` and `SCFG-2` are DETERMINED and STILL HELD** *(`ADR-0165`, `ADR-0166`)*; ⛔ `SEAT-CFG-017`'s **definition** is open |
 | | **104** | | |
 
 ⭐ **18 + 4 = 22** — the `ADR-0151` subset. ⭐ **+ 17** — the `ADR-0153` `ATT-CFG-*`
@@ -603,7 +603,7 @@ hierarchy allowed a tenant override *"a library could raise its own OTP quota"*.
 | `CFG-9` | Pending-verification retention | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
 | ⛔ `CFG-10` | Soft-deleted account retention | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | ⛔ | ⚪ **N/A** | Guide §2 | ⛔ Not designed |
 | `CFG-11` | Account-claim failures before lock | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0154` §2.5 | ⛔ Not designed |
-| ⛔ `CFG-12` | Platform Support elevated-access max duration | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | ⛔ | ⚪ **N/A** | Guide §2 | ⛔ Not designed |
+| ⛔ `CFG-12` | Platform Support elevated-access max duration | `OPEN` | ⛔⛔ **HELD — ⭐ by DETERMINATION** *(`ADR-0165`)* | `OPEN` | ⛔ **HELD** | ⚪ **N/A** | Guide §2 · ⭐⭐ [`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md) | ⛔ Not designed |
 
 ⭐ **Counts verified: 10 AUTHORIZED · 2 HELD · 12 total.** ⭐ `CFG-5` and `CFG-6`
 remain **one parameter each** despite carrying two value limbs — ⛔ **0 new
@@ -614,10 +614,32 @@ identifiers**, inventory unchanged at **104** (`ADR-0154` §2.7).
 | Parameter | Reason held | Required authority |
 |---|---|---|
 | ⛔ **`CFG-10`** Soft-deleted account retention | ⚠️ **DPDP erasure obligation** — Guide §2: *"defensible as erasure under DPDP"* | **Legal + Security** |
-| ⛔ **`CFG-12`** Platform Support elevated-access duration | ⛔⛔ **AUTHORIZATION-SEMANTIC** — it bounds **`PR-2`'s own elevation ceiling** (`AUTH-7.19`, `XC-2.5`); ⚠️ a `PR-2` read of it is **self-referential** | **Authorization Owner + Security + Legal** |
+| ⛔ **`CFG-12`** Platform Support elevated-access duration | ⛔⛔ **AUTHORIZATION-SEMANTIC** — it bounds **`PR-2`'s own elevation ceiling** (`AUTH-7.19`, `XC-2.5`); ⚠️ a `PR-2` read of it is **self-referential**. ⭐⭐ **DETERMINED and STILL HELD** — [`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md) | ⭐⭐ **Authorization Owner** *(sole — `ADR-0165`)* |
 
 ⭐⭐ **`CFG-12` is held even though the ten beside it were allowed.** ⛔ Adjacency
 is not a reason — the `ATT-CFG-022`/`024` pattern (`ADR-0153` §5).
+
+⭐⭐ **`CFG-12` `READ` IS NOW DETERMINED, AND THE DETERMINATION IS *HELD*.**
+`Accepted` [`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md)
+records that the **Authorization Owner** tested the self-reference concern and
+found it ⛔ **not discharged**. ⭐⭐ **So this row is no longer an open question
+awaiting that office — ⛔ it is the recorded OUTCOME of that office's act.**
+⛔⛔ **Do NOT re-refer `CFG-12` `READ` to the Authorization Owner:** a fresh
+conferral to re-decide it would reverse a Rank-2 `Accepted` ADR.
+
+⚠️ **The routing in the right-hand column is corrected here, ⛔ not chosen.**
+`ADR-0165`'s header records **Deciding authority = Authorization Owner** and
+⛔⛔ **Contributing offices = *"NONE… no Product Owner or Security Owner input is
+claimed, exercised or recorded"***. ⭐ The earlier *"+ Security + Legal"* limb is
+therefore **superseded in fact** by the Rank-2 record, and ⭐ this is the
+`35-design/README.md` §1 rank rule operating as designed: ⛔ where a Design Doc
+disagrees with a ranked document, **the ranked document wins and the Design Doc
+is the defect.** ⛔ **No new authority is invented, added or re-routed.**
+
+⚠️ **What `ADR-0165` expressly did NOT decide, preserved unchanged here:**
+⛔ `CFG-12`'s **scope** *(stays `OPEN`)* · ⛔ its **commercial** classification
+*(stays `OPEN`)* · ⛔ its **`WRITE`** *(stays ⚪ `N/A`, `ADR-0154` `D-4`)* ·
+⛔ its **value / default / range** *(the Guide §2 bound, **1 h**, is untouched)*.
 
 #### 6.3.4 ⭐⭐ DISPOSED — NO READ SURFACE (V1) — `ICFG-1`…`ICFG-10` *(Invitation Security Spec)*
 
@@ -651,7 +673,7 @@ is not a reason — the `ATT-CFG-022`/`024` pattern (`ADR-0153` §5).
 | ID | Name | Scope | Auth | Comm | `READ` `PR-1`+`PR-2` | `WRITE` | Evidence | Design |
 |---|---|---|---|---|---|---|---|---|
 | `SCFG-1` | Username length | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0155` §2.5 | ⛔ Not designed |
-| ⛔ **`SCFG-2`** | Reserved-username list | `Platform default` | ⛔⛔ **HELD** | — | ⛔ **HELD** | ⛔ **HELD** | ⛔ `ADR-0155` `D-6` · `S-3` | ⛔ Not designed |
+| ⛔ **`SCFG-2`** | Reserved-username list | `Platform default` | ⛔⛔ **HELD** | — | ⛔ **HELD** | ⛔ **HELD** | ⛔ `ADR-0155` `D-6` · `S-3` · ⭐⭐ [`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md) *(outcome **(c)**)* | ⛔ Not designed |
 | `SCFG-3` | Username rename cooldown | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0155` §2.5 | ⛔ Not designed |
 | ⛔ **`SCFG-4`** | Username-history retention | `Platform default` | ⛔⛔ **HELD** | — | ⛔ **HELD** | ⛔ **HELD** | ⛔ `ADR-0155` `D-5` · `S-2` | ⛔ Not designed |
 | `SCFG-5` | Released-username hold period | `Platform default` | ⭐ **AUTHORIZED** | NOT COMMERCIAL | ✅ | ⚪ **N/A** | `ADR-0155` §2.5 | ⛔ Not designed |
@@ -666,8 +688,38 @@ is not a reason — the `ATT-CFG-022`/`024` pattern (`ADR-0153` §5).
 
 | ID | Why it is held | Owner |
 |---|---|---|
-| ⛔ **`SCFG-2`** | ⚠️ The owning source says *"removing an entry **requires review**"* — ⛔ **but never says by whom**. ⭐ An undefined reviewer is an **authorization gap**, ⛔ not a configuration detail. ⛔⛔ The reviewer **MUST NOT** be inferred from `TR-1`/`TR-2`/`PR-1`/`PR-2` naming, ownership, hierarchy or UI visibility *(`S-3`)* | **Authorization Owner** |
+| ⛔ **`SCFG-2`** | ⚠️ The owning source says *"removing an entry **requires review**"* — ⛔ **but never says by whom**. ⭐ An undefined reviewer is an **authorization gap**, ⛔ not a configuration detail. ⛔⛔ The reviewer **MUST NOT** be inferred from `TR-1`/`TR-2`/`PR-1`/`PR-2` naming, ownership, hierarchy or UI visibility *(`S-3`)*. ⭐⭐ **DETERMINED and STILL HELD** — [`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md), outcome **(c)**: the review authority is ⛔⛔ **NOT IDENTIFIABLE** from any authoritative source | ⭐ **Authorization Owner** *(question answered — §6.3.5b)* |
 | ⛔ **`SCFG-4`** | ⚠️ A **retention period** *(24 months)* — **DPDP-adjacent**, and ⭐ the **same question as `CFG-10`**, which `ADR-0154` already held. ⭐ Holding `CFG-10` and batching `SCFG-4` would be **incoherent**; ⭐ the two are held **together as one determination** *(`S-2`)* | **Privacy Owner** |
+
+##### 6.3.5b ⭐⭐ `SCFG-2` — the review-authority question is ANSWERED; ⛔ the parameter stays HELD
+
+⭐⭐ **`Accepted` [`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md)
+closed the question, ⛔ not the parameter.** ⭐ The **Authorization Owner**
+determined under `DP-0004` `A-2` **outcome (c)** that the *"review"* authority is
+⛔⛔ **NOT IDENTIFIABLE** from any authoritative source — ⭐ five candidate offices
+were tested and each refused on its own source text.
+
+⭐⭐ **The distinction this document must not blur:**
+
+| | Before `ADR-0166` | ⭐ After `ADR-0166` |
+|---|---|---|
+| The **question** *"who reviews?"* | ⛔ **OPEN** | ⭐⭐ **CLOSED — answered "no identifiable office"** |
+| The **parameter** `SCFG-2` | ⛔ **HELD** | ⛔⛔ **STILL HELD — unchanged** |
+
+⛔⛔ **`SCFG-2` therefore remains one of the 9, and the count does NOT move.**
+⭐ `ADR-0166` §289: ⛔ **no action class was created**, so the *"review"* act
+*"remains an **obligation without an authority**."* ⛔⛔ **NO `PERM-*` was
+created — `AUTH-7.22` remains CLOSED AT ZERO** *(§288)*.
+
+⛔⛔ **Do NOT route `SCFG-2` to a reachable office to make it actionable.**
+⭐ `ADR-0166` already tested and refused that path; ⛔ re-routing it here would be
+resolving authority **by inference** — the precise act `S-3` prohibits.
+
+⚠️ **What `ADR-0166` expressly did NOT decide, preserved unchanged here:**
+⛔ `SCFG-2`'s **`READ`** *(remains **HELD** on `ADR-0155` §2.5)* · ⛔ its
+**`WRITE`** · ⛔ its **scope** *(already `Platform default`, ⛔ not re-decided)* ·
+⛔ its **commercial** classification · ⛔ its **value** · ⛔ the `ADR-0155`
+`D-4`/§2.5 `WRITE` inconsistency, which ⛔ **stays open and is not repaired here**.
 
 
 #### 6.3.6 ⭐⭐ PARTLY AUTHORIZED — `SMCFG-1`…`SMCFG-7` *(`PRD-004` / `BC-01`)*
@@ -837,7 +889,7 @@ distributed-ownership reading in **`DD7-GAP-003`** (§22).
 | `ATT-CFG-023` | Correction window | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 | `ATT-CFG-024` | Parent attendance visibility | `OPEN` | ⛔ **NOT YET AUTHORIZED** | `OPEN` | `PRD-006` §16.3 | ⛔ Not designed *(`DD-0003` `S-L8`)* |
 
-### 6.5 ⛔⛔ THE HOLD REGISTER — ⭐ **9 held at v1.1**, each with a reason and a named owner
+### 6.5 ⛔⛔ THE HOLD REGISTER — ⭐ **9 held at v1.1, ⭐⭐ UNCHANGED at v1.2**, each with a reason and a named owner
 
 ⭐⭐ **Recorded by `Accepted` `ADR-0158`, which authorizes NOTHING.** ⛔ Coverage
 moved by **zero**; ⭐ what changed is that **every** unauthorized parameter now
@@ -851,7 +903,7 @@ has a **stated reason** and a **named owner**. ⛔⛔ **104/104 was NOT forced.*
 | ~~4~~ | ⭐ ~~Invitation security~~ — ⭐⭐ **RESOLVED at v1.1: NO READ SURFACE (V1)** | ~~`ICFG-1`…`10`~~ | ⭐ **0** | ⭐⭐ **LEFT THIS REGISTER** — disposed by `Accepted` **[`ADR-0164`](../../00-governance/adr/ADR-0164-icfg-1-to-10-no-read-surface-in-v1.md)** *(Outcome B)*: ⛔ **no V1 surface may READ or display these values**; ⭐ internal enforcement continues unchanged. ⛔⛔ **NO role received READ** and ⛔ **no `PERM-*` was created** — ⭐ the hold is discharged **by determination, ⛔ not by allocation** | — |
 | 5 | ⛔ **Retention / DPDP** | `CFG-10`, `SCFG-4` | **2** | ⭐ **One question, held together** | **Privacy Owner** |
 | 6 | ⛔ **Definition undecided** | ~~`SMCFG-5`~~, `SEAT-CFG-017` | ⭐ **1** *(was 2)* | ⛔ **`SEAT-GAP-005` remains OPEN** — ⚠⚠ the **definition**, not merely the authority, is open; ⭐ owner is **`BC-06` via `E-05`**, value *"Unset in V1"*. ⭐⭐ **`SMCFG-5` left this register** — authorized by `Accepted` **`ADR-0162`**, its allocation **audited and UPHELD** by `ADR-0163` §2 | **PO** *(+ **`BC-06` Owner**)* |
-| 7 | ⛔ **Authorization — other** | `CFG-12`, `SCFG-2` | **2** | ⛔ `CFG-12` **self-referential** *(bears on `PR-2`'s own standing)*; ⛔ `SCFG-2`'s reviewer **undefined** | **Authorization Owner** |
+| 7 | ⛔ **Authorization — other** — ⭐⭐ **BOTH NOW DETERMINED; ⛔ BOTH STILL HELD** | `CFG-12`, `SCFG-2` | **2** | ⭐⭐ **Each question has been ANSWERED by an `Accepted` Rank-2 ADR, and each answer was *HELD*.** ⛔ `CFG-12` `READ` — self-reference concern **tested and NOT discharged**, [`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md). ⛔ `SCFG-2` — the reviewer is ⛔⛔ **NOT IDENTIFIABLE** from any authoritative source, [`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md) outcome **(c)**. ⛔⛔ **Neither ADR authorized anything**, so ⭐ both stay in this register — ⛔ but **NOT** as items awaiting the same decision | ⭐ **Authorization Owner** *(acts **complete**; ⛔ **do not re-refer** — §6.3.3a, §6.3.5b)* |
 | | | **TOTAL** | ⭐⭐ **9** *(was **19** at v1.0, **25** at v0.9)* | | |
 
 ⭐⭐ **95 authorized + 9 held = 104.** ⛔ No parameter is unaccounted, and ⛔ **none
@@ -868,9 +920,28 @@ narrowed by this v1.1 reconciliation** — ⭐ v1.1 applies a **decision taken e
 READ**, ⛔ **no `PERM-*` exists**, and ⭐ internal enforcement is unchanged. ⭐⭐ **A
 parameter can leave the held register by being decided, ⛔ not only by being granted.**
 
-⚠️ **6 of the remaining 9 are EXTERNALLY GATED** by **`LR-01`** — ⛔ **PERMANENTLY
-OPEN**, closable only by a qualified Indian advocate, court or DPB: the **4** Face
-parameters *(via `ATT-GAP-014`)* and the **2** retention parameters.
+⚠️ **5 of the remaining 9 are EXTERNALLY GATED** by **`LR-01`** — ⛔ **PERMANENTLY
+OPEN**, closable only by a qualified Indian advocate, court or DPB: **3** Face
+parameters *(`ATT-CFG-013`/`015`/`016`, via `ATT-GAP-014`)* and the **2**
+retention parameters *(`CFG-10`, `SCFG-4`)*.
+
+⚠️⚠️ **The gate split is corrected from "6" to "5 + 1", ⛔ and the count of 9 does
+NOT move.** ⭐ **`ATT-CFG-014` is gated by a PRODUCT SCOPE decision already taken,
+⛔ not by `LR-01`**: `PRD-006` **L1761** records it as *"**Not in V1** — `D-3a`,
+Face = **V3**"*, and **L1799**–**L1801** that it *"**owes no V1 value**… **This is
+not an unresolved default; it is a setting that does not exist**"* in V1.
+⭐ §6.5 row 1 already said `014` is *"separately **outside V1**"* — ⛔ so this
+corrects an **internal inconsistency in this document**, and ⭐ the reading now
+matches the ranked source.
+
+⭐⭐ **Why the distinction matters even though the total is unchanged:** ⛔ if
+`LR-01` were ever discharged, `ATT-CFG-014` would **still not** become
+V1-authorizable, because `D-3a` places Face in **V3**. ⚠️ Treating it as
+`LR-01`-gated would imply a sequencing that does not exist.
+
+⭐ **`CFG-12` and `SCFG-2` are NOT externally gated** — ⭐ both are internally
+**determined and held** *(`ADR-0165`, `ADR-0166`)*; ⛔ and `SEAT-CFG-017` is
+neither, its **definition** being open *(`SEAT-GAP-005`)*.
 
 #### 6.5a ⭐⭐ A `PR-1`/`PR-2` `ICFG` allocation was CONSIDERED and REFUSED
 
@@ -1511,7 +1582,7 @@ is that ADR, and it did not exist until after v0.1 was committed.
 | ⚠️ The other **9** parameters *(was **19** at v1.0 — ⭐⭐ **10** `ICFG-*` left this row via `ADR-0164`)* | ⛔ No operation×role source | — | ⛔ Not designed | ⭐ **Future / V2** |
 | ⭐ The **10** `CFG-*` authorized by `ADR-0154` | ⭐ Authorized `READ` = `PR-1` + `PR-2` — ⛔ but surface `C-5` is **not designed**; ⛔ all 12 `WRITE` cells ⚪ `N/A` | — | ⛔ Not designed **here** | ⭐ **Future** |
 | ⭐⭐ The **9** `SCFG-*` authorized by `ADR-0155` | ⭐ Authorized `READ` = `PR-1` + `PR-2`, scope **sourced** from `SID-5.45` — ⛔ but surface `C-5` is **not designed**; ⛔ all 11 `WRITE` cells ⚪ `N/A` | — | ⛔ Not designed **here** | ⭐ **Future** |
-| ⛔⛔ `SCFG-2` and `SCFG-4` | ⛔ **HELD** — `SCFG-2` reviewer **undefined** *(Authorization Owner)*; `SCFG-4` **retention**, held with `CFG-10` *(Privacy Owner)* | — | ⛔ Not designed | ⛔ **Open Decision** |
+| ⛔⛔ `SCFG-2` and `SCFG-4` | ⛔ **HELD** — ⭐⭐ `SCFG-2`'s reviewer determined ⛔ **NOT IDENTIFIABLE** *(`ADR-0166`, outcome **(c)** — ⭐ question closed, ⛔ parameter still held)*; `SCFG-4` **retention**, held with `CFG-10` *(Privacy Owner)* | — | ⛔ Not designed | ⛔ **HELD** — ⭐ `SCFG-2` **determined**; ⛔ `SCFG-4` **Open Decision** |
 | ⭐ The 17 `ATT-CFG-*` authorized by `ADR-0153` | ⭐ Authorized — ⛔ but `DD7-GAP-003` open; `DD-0003` `S-L8` renders them as a `BC-06` surface | — | ⛔ Not designed **here** | ⭐ **Future** |
 | Second locale | `LCFG-2` — *"Only locale with complete strings at V1"* | — | ⛔ Not designed | ⭐ **Future / V2** |
 
@@ -1692,6 +1763,7 @@ both at **V2**, `PRD-023` §0.3)*.
 
 | Version | Date | Change |
 |---|---|---|
+| ⭐⭐ **v1.2** | 2026-09-19 | ⭐⭐ **CURRENCY RECONCILIATION ONLY — ⛔ COVERAGE UNCHANGED at 95 / 104, HELD UNCHANGED at 9.** ⭐⭐ **Records two `Accepted` Rank-2 ADRs this document previously cited ZERO times**, a currency defect identified by [`DDR-0024`](../../design/design-decisions/DDR-0024-dd-0007-nine-hold-readiness-triage.md): ⭐ **[`ADR-0165`](../../00-governance/adr/ADR-0165-cfg-12-read-remains-held-authorization-owner-determination.md)** — the **Authorization Owner** tested `CFG-12`'s self-reference concern and found it ⛔ **NOT discharged**, so `READ` ⛔⛔ **remains HELD by DETERMINATION**; ⭐ **[`ADR-0166`](../../00-governance/adr/ADR-0166-scfg-2-review-authority-not-identifiable-parameter-remains-held.md)** — `SCFG-2`'s *"review"* authority is ⛔⛔ **NOT IDENTIFIABLE from any authoritative source** *(outcome **(c)**; five candidate offices tested and each refused on its own source text)*, so the parameter ⛔ **remains HELD**. ⭐⭐ **THE CRITICAL DISTINCTION THIS VERSION RECORDS: the QUESTIONS are now CLOSED; the PARAMETERS remain HELD** — ⛔ neither ADR authorized anything, so ⭐⭐ **the count stays 9 and 95 / 104 does not move**. ⭐ §6.5 row 7's stale reasons *("self-referential"… "reviewer **undefined**")* are replaced with the recorded **outcomes**, because ⚠️⚠️ **a reader of the old text would have re-referred both to the Authorization Owner — which would reverse a Rank-2 `Accepted` ADR**. ⭐ New **§6.3.5b** states the closed-question / held-parameter split explicitly. ⭐ **Two corrections, each REQUIRED by a ranked source and ⛔ neither invented:** ⭐⭐ the §6.3.3a routing limb *"+ Security + Legal"* is dropped because `ADR-0165`'s header records **Deciding authority = Authorization Owner** and ⛔ **Contributing offices = "NONE… no Product Owner or Security Owner input is claimed, exercised or recorded"** — ⭐ the `35-design/README.md` §1 rank rule operating as designed; and ⭐⭐ the `LR-01` gate split **6 → 5 + 1**, because `PRD-006` **L1761**/**L1799** place `ATT-CFG-014` outside V1 by **`D-3a` (Face = V3)** — *"**not an unresolved default; it is a setting that does not exist**"* — ⛔ so it is **product-scope gated, not externally gated**, which ⭐ §6.5 row 1 already said and ⭐ resolves an **internal inconsistency**. ⚠️ **Count effect of both corrections: NIL** — ⭐ they matter for **sequencing** *(if `LR-01` were discharged, `014` would **still** not be V1-authorizable)*. ⛔⛔ **WHAT EACH ADR EXPRESSLY DID NOT DECIDE IS PRESERVED VERBATIM** — `CFG-12`'s scope *(`OPEN`)*, commercial classification *(`OPEN`)*, `WRITE` *(⚪ `N/A`)* and value; `SCFG-2`'s `READ`, `WRITE`, scope, commercial classification, value, and the `ADR-0155` `D-4`/§2.5 `WRITE` inconsistency *(⛔ **still open, NOT repaired**)*. ⛔ **0 holds closed** · ⛔ **0 `READ`/`WRITE` allocated** · ⛔ **0 `PERM-*`, roles, scopes or action classes** *(`AUTH-7.22` **closed at zero**)* · ⛔ **0 Product / Architecture / Authorization / Legal / Privacy / Security decisions taken** · ⛔ **`SEAT-CFG-017` NOT resolved** · ⛔ **all 5 external/legal holds preserved exactly** · ⛔ **0 PRDs, 0 ADRs, 0 architecture files touched** · ⛔ **0 surfaces designed or redesigned** · ⛔ **0 code**. ⚠️⚠️ **DESIGN-READINESS VERDICT DELIBERATELY UNCHANGED — ⛔ `DD-0007` REMAINS NOT DESIGN-READY.** ⭐ `DDR-0024` measured that ⛔ **none of the 9 holds is a binding readiness blocker**, so ⛔⛔ **currency is NOT readiness**: the binding blockers remain **`C-4`'s missing authorization source**, **`C-5`'s unauthorized app**, **3 of 5** surfaces, **13** `DD7-GAP-*`, `DBT-001` and `DD7-GAP-009`. ⭐ **Figma blockers stay 4.** |
 | ⭐⭐ **v1.1** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE RECONCILED 85 / 104 → 95 / 104**, applying `Accepted` **[`ADR-0164`](../../00-governance/adr/ADR-0164-icfg-1-to-10-no-read-surface-in-v1.md)** — ⭐ **Outcome B: `ICFG-1`…`10` have NO READ SURFACE IN V1**. ⛔⛔ **THIS DOCUMENT AUTHORIZES AND DECIDES NOTHING.** ⭐⭐ **It applies a determination made elsewhere, by a Rank-2 ADR, under a one-act conferral of the human principal recorded verbatim at `ADR-0164` §10.2 and REVERTING ON COMPLETION** *(`ADR-0033` §7.1)*; ⚠️ **no independent review was claimed** — one principal exercised Authorization Owner *(deciding)* plus Product Owner and Security Owner *(contributing)*. ⭐⭐ **THE TEN LEFT THE HELD REGISTER BY DETERMINATION, ⛔ NOT BY ALLOCATION** — ⛔⛔ **no role received READ** *(not `TR-1`…`TR-5`, not `PR-1`/`PR-2`, not the Security Owner)*, ⛔⛔ **no `PERM-*` was created** *(`AUTH-7.22` stays **closed at zero**)*, ⛔ **no role, action class or scope** was minted, and ⭐ **internal enforcement continues unchanged** — `INVITATION_SECURITY_SPECIFICATION` §4/§6/§9 TTLs, caps, rate limits and throttles are untouched. ⭐ **§6.5 row 4 struck (10 → 0); register TOTAL 19 → 9; §6.2 gains a `NO READ SURFACE (V1)` band of 10; band total re-verified at exactly 104** *(18+17+4+10+9+6+15+5+1+10+9)*. ⚠️⚠️ **THE 9 REMAINING HOLDS ARE UNTOUCHED, each keeping its documented reason and named owner** — **4** Face *(`ATT-CFG-013`/`014`/`015`/`016`)* + **2** retention *(`CFG-10`, `SCFG-4`)* + **1** `SEAT-CFG-017` + **1** `CFG-12` + **1** `SCFG-2` = **9**; ⛔⛔ **6 of the 9 remain EXTERNALLY GATED by `LR-01`**, which is **PERMANENTLY OPEN** and closable only by a qualified Indian advocate, court or DPB — `ATT-GAP-012`/`ATT-GAP-014` stay **OPEN** and `ATT-FR-064` still holds face verification *"**not authorised to be built**"*. ⛔⛔ **THE RESOLVED `ICFG` SCOPE WAS NOT USED AS AUTHORIZATION** — `ADR-0163` §3 fixed scope at `Platform default`, but the *"scope resolved ⇒ copy the `CFG-*` read"* move was **REFUSED a fifth time**: ⭐ *a shared scope is not a shared decision* *(`AUTH-7.24`, `AUTH-7.28`)*. ⭐ **D3 REMAINS `PARTIAL`** *(95 / 104)* — ⛔⛔ **it does NOT become `PASS`**; ⭐ **D1 / D2 / D4 / D5 UNCHANGED**; ⭐ **QA holds 13 / 13**. ⚠️⚠️ **AUTHORIZED ≠ DESIGNED, and DISPOSED ≠ DESIGNED** — ⛔ **surface `C-5` unchanged at 19**, ⛔ **Figma blockers stay 4**, ⛔ **surfaces stay 3 of 5**, ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**: blockers **3** and **4** *(`DD7-GAP-007`, `DD7-GAP-009`)* are **design-system** questions, ⛔ untouched by any `BC-25` authorization act. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `ADR-0164` · `ADR-INDEX` *(registration is a **Governance Owner** act, ⛔ not performed here)* · every frozen PRD · `INVITATION_SECURITY_SPECIFICATION` · the **104**-parameter inventory. ⛔ **0** decisions taken *by this document* · **0** `PERM-*` · **0** roles/actions/scopes · **0** frozen edits · **0** runtime code. |
 | ⭐⭐ **v1.0** | 2026-09-19 | ⭐⭐ **AUTHORIZATION COVERAGE RECONCILED 79 / 104 → 85 / 104**, recording `Accepted` **[`ADR-0162`](../../00-governance/adr/ADR-0162-bc-25-closure-pass-six-authorized-three-own-errors-corrected-nineteen-held.md)** and executing the pre-computed update path prescribed at `Accepted` **[`ADR-0163`](../../00-governance/adr/ADR-0163-smcfg-5-audit-upheld-icfg-scope-resolved-dd-0007-update-path-and-final-blocker-disposition.md)** **§4.4**, under the Founder/Product Authority direction recorded at **`DDR-0019`**. ⛔⛔ **THIS DOCUMENT AUTHORIZES NOTHING.** ⭐⭐ **It corrects a STALE COUNT — the six parameters were authorized elsewhere, by an `Accepted` ADR, and this v1.0 merely stops `DD-0007` from understating the record.** ⭐ The six: **`ATT-CFG-022`**, **`ATT-CFG-023`**, **`ATT-CFG-024`** *(`Tenant`; `WRITE` `TR-1`; `READ` `TR-1`+`TR-2`+`TR-3`; `NOT COMMERCIAL`)* · **`SEAT-CFG-005`**, **`SEAT-CFG-014`** *(`Tenant`; `WRITE`/`READ` **`TR-1` ONLY**; ⭐ `NOT COMMERCIAL` **mandated** by `SEAT-FR-279`)* · **`SMCFG-5`** *(`Tenant`; ⭐ its allocation **independently AUDITED and UPHELD** at `ADR-0163` §2, on `ADR-0156` **`O-1`** — *"Resolve `SM-GAP-2`, **THEN ALLOCATE** `SMCFG-5`"*)*. ⭐⭐ **§6.5 hold register 25 → 19; §6.2 band table `NOT YET AUTHORIZED` 25 → 19; band total re-verified at exactly 104.** ⚠️⚠️ **ALL 19 REMAINING PARAMETERS STAY HELD, each retaining its documented reason and named owner** — **4** Face *(`ATT-CFG-013`/`014`/`015`/`016`)* + **10** `ICFG-1`…`10` + **2** retention *(`CFG-10`, `SCFG-4`)* + **1** `SEAT-CFG-017` + **1** `CFG-12` + **1** `SCFG-2` = **19**. ⛔⛔ **THE `ICFG` SCOPE RESOLUTION WAS NOT USED AS AUTHORIZATION.** ⭐ `ADR-0163` §3 resolved `ICFG-1`…`10` scope to **`Platform default`** on `CNF-FR-026` + `CNF-FR-003` + `CNF-FR-028`, and measured *"per library"* to be the **counting unit of the value, ⛔ not a scope**. ⭐⭐ **`READ` REMAINS HELD ON ALL TEN** — a word-anchored sweep across both owning sources returned **0** read statements, and ⛔ **the tempting "scope resolved ⇒ copy the `CFG-*` read allocation" move was REFUSED a fourth time**: ⭐ *a shared scope is not a shared decision* *(`AUTH-7.24`, `AUTH-7.28`)*. ⛔ **`SEAT-CFG-017` stays held** on three grounds *(owner is **`BC-06` via `E-05`**, value *"Unset in V1"*, `SEAT-GAP-005` **OPEN**)*; ⛔ **`CFG-12` stays held** *(self-referential — bears on `PR-2`'s own standing)*; ⛔ **`SCFG-2` stays held** *(reviewer named **nowhere**)*. ⛔⛔ **`CFG-10`, `SCFG-4` and the 4 Face parameters remain EXTERNALLY GATED** by **`LR-01`**, which is ⛔⛔ **PERMANENTLY OPEN** and closable *only* by a qualified Indian advocate, court or DPB — ⛔ **not** by any Product, Domain, Architecture, Technical, Privacy or Governance Owner; `ATT-GAP-012` and `ATT-GAP-014` both stay **OPEN**, and `ATT-FR-064` still holds face verification *"**not authorised to be built**"*. ⭐ **D3 REMAINS `PARTIAL`** *(85 / 104)* — ⛔⛔ **it does NOT become `PASS`**; ⭐ **D1 / D2 / D4 / D5 UNCHANGED** *(D4 gains 6 at `Tenant`; ⛔ **no new scope class**)*; ⭐ **QA holds 13 / 13**. ⚠️⚠️ **AUTHORIZED ≠ DESIGNED** — ⛔ **surface `C-5` unchanged at 19** *(the six are **APP 2 tenant** parameters, ⛔ not APP 3 platform-default)*; ⛔ **Figma blockers stay at 4**; ⛔ **surfaces stay 3 of 5**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** every frozen PRD · `ADR-0151`…`ADR-0163` · the **104**-parameter inventory · all design-system documents. ⛔ **0** parameters authorized *by this act* · **0** `PERM-*` · **0** roles, action classes or scopes · **0** gaps closed · **0** frozen edits · **0** runtime code. |
 | ⭐⭐ **v0.9** | 2026-09-19 | ⛔⛔ **COVERAGE IS UNCHANGED AT 79 / 104, AND THAT IS THE CORRECT OUTCOME.** Recording `Accepted` **[`ADR-0158`](../../00-governance/adr/ADR-0158-security-owner-designation-and-phase-7-disposition-of-the-25-remaining-bc-25-parameters.md)**, ⛔ **which authorizes ZERO parameters — deliberately**. ⛔⛔ **104/104 WAS NOT FORCED.** ⭐⭐ **`R-1` — SECURITY PLATFORM is designated "Security Owner"** for `ADR-0153`/`ADR-0021`, ⛔ **limited to security review and decision**. ⭐ This constitutes an office that **did not exist**: `PRD_OWNERSHIP_MODEL` §2.2 lists only **four** *(Product, Domain, Architecture, Technical — **L83-86**)* and **`grep -c "security owner"` returned `0`**, so the owner `ADR-0153` named for 4 Face parameters was **unreachable**. ⛔⛔ **THE LIMITS ARE LOAD-BEARING** — the office has ⛔ **no** product, architecture, tenant, implementation or **PERMISSION** authority, and ⛔ is **NOT a runtime role**: `AUTH` ch.07 stays closed at **two** platform and **five** library roles, **0** `PERM-*`. ⚠️⚠️ **The permission exclusion means `R-1` does NOT unblock the 5 authorization-semantic parameters** — ⛔ **a security office is not an authorization office**. ⛔⛔ **ALL 25 REMAINING PARAMETERS ARE HELD**, ⭐ now each with a **documented reason** and a **named owner** *(new **§6.5** hold register)*: **4** Face + **5** authorization-semantic + **10** `ICFG` + **2** retention + **2** definition-undecided + **2** authorization-other = **25**. ⭐⭐ **`R-2`’s CONDITIONAL WAS TESTED, ⛔ NOT ASSUMED — AND IT FAILED.** ⭐ Measurement found `ATT-CFG-013` *(Enabled)*, `015` *(Enabled)* and `016` *(Disabled)* **DO carry V1 defaults and allowed domains** (§16.3a). ⛔⛔ **But a default value is not V1 authorization** — **`ATT-FR-064`**: *"Until `ATT-GAP-012` and `ATT-GAP-014` are **both** answered… **face verification MUST NOT be implemented**. The mode is specified; it is **not authorised to be built**"*, and **both gaps are OPEN** *(no context claims biometrics; no retention/deletion path)*. ⭐ Allocating authority over settings of an **unbuildable mode would be authorization theatre**, and `PRD-006` calls the underlying risk *"a **legal exposure**, not a scheduling detail"*. ⛔ `014` is separately outside V1 *(`D-3a`, Face = **V3**; both columns read "Not in V1")*. ⭐⭐ **`R-4` — `ICFG-1`…`10` AUDITED INDEPENDENTLY AND HELD.** ⭐ **Sufficient:** inventory *(10, contiguous, "Approved — authoritative")*, values *(all 10 defaults + ranges; `INV-13`…`INV-16`)*, commercial *(NOT COMMERCIAL)*. ⛔ **Insufficient:** **no `READ` statement anywhere** · **no `WRITE` role** *(only `INV-SEC-018`’s prohibition, "not overridable by any library role, including `TR-1` Owner")* · **ambiguous scope** *(`ICFG-5`/`6`/`7` say "per library" yet **L806** gives `ICFG-1` per-environment values, while the `LCFG-*` per-library carve-out at **L829** names **no** `ICFG-*`)* · **`PR-1`/`PR-2` = ZERO** *(`TR-1`×6, `TR-2`×6, `TR-3`×3)*. ⭐⭐ **A `PR-n` `ICFG` ALLOCATION WAS CONSIDERED AND REFUSED** *(new **§6.5a**)* — ⚠️ the tempting argument being that the register is *"security-owned"*, that `INV-SEC-018` denies **every** library role, and that `ICFG-10` reads *"**Matches `CFG-4`**"* — a parameter already allocated to `PR-1`+`PR-2`. ⛔⛔ **Refused on three grounds:** (1) *"security-owned"* names a **reviewing office**, ⛔ not a runtime reader — and `R-1` **expressly denied it permission authority**; (2) **a denial of `TR-n` is not a grant to `PR-n`** *(`AUTH-7.28`)*; (3) ⭐ *"Matches `CFG-4`"* is a **VALUE rationale, ⛔ not an authority statement** — ⚠️⚠️ **precisely the `SCFG` error refused at `ADR-0155`: a shared band, or here a shared value, is not a shared decision**. ⛔ **`R-3`/`R-5`/`R-6`/`R-7`** — the other 11 confirmed still open and HELD, owners named. ⭐ **D1, D2, D4, D5 UNCHANGED** — ⛔ no parameter moved band, app or scope; ⭐ **QA holds 13/13**; ⛔ surface `C-5` unchanged at **19**; ⛔ **Figma blockers stay at 4**, surfaces **3 of 5**. ⚠️⚠️ **D3 REMAINS `PARTIAL` at 79 / 104** — ⛔ **104/104 is NOT claimed**; ⛔⛔ **`DD-0007` REMAINS NOT DESIGN-READY**. ⛔ `ATT-GAP-012`, `ATT-GAP-014`, `SM-GAP-2`, `SEAT-GAP-005`, `CNF-GAP-002` and `CNF-GAP-007` **all remain OPEN**. ⛔⛔ **PRESERVED BYTE-UNCHANGED:** `PRD-006` · `PRD-007` · `INVITATION_SECURITY_SPECIFICATION` · `CONFIGURATION_GUIDE` · **`PRD_OWNERSHIP_MODEL`** *(⚠️ recording the office **there** is `O-1`, a **Governance Owner** act)* · `ADR-0151`…`ADR-0157` · the **104**-parameter inventory. ⛔ **0** parameters authorized · **0** `PERM-*` · **0** roles, action classes or scopes · **0** frozen edits · **0** runtime code. |

@@ -1734,3 +1734,33 @@ text."*** ⛔ **`ADR-0164` is byte-unchanged by this act.**
 | ⚠️ **L9 Count cell** | ⛔ **Deliberately NOT updated** — ⭐ it carries a mechanically re-derived tally *(118 accepted / 13 proposed / 134 files)*; re-deriving it is a **separate measurement act** over every ADR file, ⛔ and the registering instruction expressly directed *"do not re-derive or alter historical ADR counts unless the repository procedure explicitly requires it"*. ⭐ `ADR-0163`, `ADR-0164` and the `ADR-0165`/`0166` addendum took the same position. ⭐⭐ **Flagged as a known, deliberate omission rather than silently left stale** |
 
 ⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum records that `ADR-0167`, `ADR-0168`, `ADR-0169` and `ADR-0170` are `Accepted`; ⛔ it does **not** re-decide them, widen them, or endorse their reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ **All four ADRs are byte-unchanged by this act.**
+
+---
+
+## ⭐⭐ End-of-file addendum — `ADR-0171` registered (2026-09-23)
+
+⭐ Registered as a **status act**, not a re-decision. `ADR-0171` is an `Accepted`
+Rank-2 determination made by the joint **Authorization Owner** and **`BC-24`
+Owner**: **no V1 READ surface exists for `BC-24` configuration audit entries**.
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0171`](ADR-0171-no-v1-read-surface-for-bc-24-configuration-audit-entries.md) |
+| **Status** | ⭐⭐ **Accepted** — 2026-09-19 · **Supersedes NOTHING** |
+| **Subject** | `DD7-GAP-008` / `C-4`: **NO V1 READ SURFACE** for `BC-24` configuration audit entries; no tenant role receives `READ`, and no `PERM-*` is created |
+| **Authority** | ⭐⭐ Joint **Authorization Owner** + **`PRD-016` / `BC-24` Owner**; no independent review claimed |
+| **Downstream** | ⭐ `DD-0007` currency reconciliation **v1.2 → v1.3**; coverage remains **95 / 104**, holds remain **9**, `C-5` remains **19 AUTHORIZED / NOT DESIGNED** |
+| **Preserved** | ⛔ `ADR-0171` decision text is byte-unchanged; ⛔ no PRD, permission, role, action class, scope class or runtime code is created |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Number | ⭐ `ADR-0171` is the next unregistered ADR; no number reused |
+| Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit historical entries or the L9 count cell |
+| Status act | ⛔ Registration does not ratify, widen or re-decide the Accepted ADR |
+
+⚠️⚠️ **Registration is a status act, ⛔ not a ratification.** ⭐ This addendum
+records that `ADR-0171` is `Accepted`; ⛔ it does **not** re-decide it, widen it,
+or endorse its reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's
+decision text."*** ⛔ **`ADR-0171` is byte-unchanged by this act.**

@@ -3,21 +3,25 @@
 
   CONTEXT-LOSS RECOVERY / CONTINUITY ARTEFACT.
 
-  Status        : DRAFT — v0.1
+  Status        : DRAFT — v0.2
   Freeze status : NOT FROZEN. NOT FINAL. NOT APPROVED. NOT BASELINED.
   Lifecycle     : No stage advanced. Stage 3 is NOT CONFERRED. The 7-stage
                   finalisation and freeze happen only after A1-A8 are all
                   complete (A1 L15, A2 L223). A5-A8 do not exist.
-  Scope status  : THE SCOPE ALLOCATION OF THIS PART IS ITSELF OPEN.
-                  No repository document states what Part A4 covers. This part
-                  is scoped to the measured residue of BC-15 that A2 explicitly
-                  excludes (LCF-XC-007, A2 L459). Whether that residue is A4 is
-                  a PRODUCT OWNER decision, recorded as LCG-GAP-001 /
-                  LCG-DEC-001. Until it is taken, this document is a CANDIDATE
-                  scope, not an allocated one.
-  Namespace     : LCG-* — PROPOSED, not registered. Collision-checked
-                  (measured: 0 occurrences repo-wide). Registration is a
-                  Governance Owner act (ADR-0080 section 5) — LCG-GAP-002.
+  Scope status  : ✅ ALLOCATED by `Accepted` ADR-0085 §2.1 (2026-09-01):
+                  Part A4 is the Community & Groups foundation and remains a
+                  part of PRD-021A, not a standalone PRD. LCG-GAP-001
+                  CLOSED. LCG-DEC-001 CLOSED by ADR-0083 PO-3.
+  CommunityId   : ✅ PUBLISHED by `Accepted` ADR-0085 §3 (BC Map §16
+                  CID-1…CID-6): communityId is the stable, immutable,
+                  BC-15-minted scoping identifier. LCG-GAP-006 CLOSED.
+                  LCG-ADR-003 CLOSED.
+  A1/BC-13 gate : ✅ ADR-0172 (Product Owner, 2026-09-25) makes LCG-AC-014
+                  WRITABLE: when the A1 and BC-13 gates pass and an immutable
+                  communityId resolves, group creation proceeds and
+                  atomically creates an ACTIVE group scoped to that resolved
+                  communityId; the creator receives OWNER membership.
+  Namespace     : LCG-* — ✅ REGISTERED by ADR-0083 §6. LCG-GAP-002 CLOSED.
 
   This part does NOT:
     - create a bounded context (count remains 31 / 23 in V1)
@@ -33,11 +37,18 @@
 
 ## Community Groups, Group Membership & Community Roles
 
-### Specification v0.1 — DRAFT
+### Specification v0.2 — DRAFT
 
-> ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT ALLOCATED.** Committed for
-> context-loss recovery and continuity only. The scope allocation of this part
-> is an **OPEN Product Owner decision** (§31 `LCG-GAP-001`).
+> ⚠ **DRAFT — NOT FROZEN, NOT FINAL, NOT BASELINED.** ✅ **SCOPE ALLOCATED** by
+> `Accepted` **`ADR-0085` §2.1** (2026-09-01): Part A4 is the Community &
+> Groups foundation, a part of `PRD-021A`, not a standalone PRD.
+> ✅ **`communityId` PUBLISHED** by `Accepted` **`ADR-0085` §3** (BC Map §16
+> `CID-1`…`CID-6`). ✅ **`LCG-AC-014` NOW WRITABLE** by **`ADR-0172`**
+> (Product Owner, 2026-09-25): the positive path — when the A1 and `BC-13`
+> gates pass and an immutable `communityId` resolves, group creation proceeds
+> and atomically creates an `ACTIVE` group scoped to that resolved
+> `communityId`; the creator receives `OWNER` membership. ⛔ **0 criteria
+> recorded as passing.**
 
 ---
 
@@ -46,16 +57,39 @@
 | Field | Value |
 |---|---|
 | **Part** | A4 — Community Groups, Group Membership & Community Roles |
-| **Version** | v0.1 — first draft. Supersedes nothing |
-| **Status** | **DRAFT — not baselined, not approved, not frozen.** Scope allocation OPEN |
+| **Version** | **v0.2** — amends v0.1 in-place. Supersedes v0.1, retained in git history |
+| **Status** | **DRAFT — not baselined, not approved, not frozen.** ✅ Scope allocation **CLOSED** by `Accepted` `ADR-0085` §2.1 · ✅ `communityId` **CLOSED** by `Accepted` `ADR-0085` §3 · ✅ `LCG-AC-014` **WRITABLE** by `ADR-0172` |
 | **Predecessors** | A1 v0.2, A2 v0.8, A3 v0.6 — consumed as published, **not amended** |
 | **Classification** | ⏸ **NOT DETERMINED HERE.** Candidate: specification of `BC-15`'s non-post aggregates. Assignment is an Architecture Owner act — §31 `LCG-GAP-003` |
 | **Bounded context** | **None created.** Context count remains **31 (23 in V1)** — BC Map L147 |
 | **Target release band** | **V2**, inherited: BC Map **L119** (`BC-15` = V2), **L147** (V2 set includes `BC-15`), `MASTER_PRD.md` **L92** `MP-SCOPE-04`. This part ships no earlier than `BC-15` |
-| **Identifier namespace** | `LCG-*` — ⏸ **PROPOSED.** Collision-checked: **0** occurrences repo-wide. ⛔ Registration is a Governance Owner act (`ADR-0080` §5) — `LCG-GAP-002` |
+| **Identifier namespace** | `LCG-*` — ✅ **REGISTERED** by `ADR-0083` §6 · `LCG-GAP-002` **CLOSED** |
 | **Frozen documents amended** | **Zero** |
 | **ACCEPTED ADRs overridden** | **Zero** |
 | **New contexts / edges / events / roles / permissions** | **Zero of each.** Four are *required* and raised as ADR requirements (§32) |
+
+### 0.1 ⭐ v0.2 amendment record — what changed and what did not
+
+> ⚠ **v0.2 amends v0.1 in-place.** No duplicate file is created. All Stage 3,
+> Stage 4, Stage 6 and Stage 7 records that anchored v0.1's hash
+> `95af7e30a58cbc37…` are **preserved byte-unchanged** — they are historical
+> records and are not rewritten by this amendment.
+>
+> | Changed in v0.2 | Basis |
+> |---|---|
+> | §31 `LCG-GAP-001` — **CLOSED** | `Accepted` **`ADR-0085` §2.1** — *"No document allocates scope to Part A4"* is now **false** |
+> | §31 `LCG-GAP-006` — **CLOSED** | `Accepted` **`ADR-0085` §3 / `LCG-ADR-003`** — `communityId` published, BC Map §16 `CID-1`…`CID-6` |
+> | §30 `LCG-AC-014` — ⏸ **UNWRITABLE → ✅ NOW WRITABLE** | **`ADR-0172`** — positive path: when the A1 and `BC-13` gates pass and an immutable `communityId` resolves, group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership |
+> | §32 `LCG-ADR-003` — ✅ **CLOSED** | `Accepted` **`ADR-0085` §3** |
+> | §31 `LCG-GAP-002` — ✅ **CLOSED** | `ADR-0083` §6 registered the `LCG-` prefix |
+>
+> | Preserved, NOT repaired | Reason |
+> |---|---|
+> | All `LCG-GAP-003`, `004`, `005`, `007`…`014` | ⛔ **OPEN** — named owners, not closed by `ADR-0085` or `ADR-0172` |
+> | `LCG-DEC-005b` | ⛔ **OPEN** — Product Owner; name uniqueness not ruled |
+> | `LCG-DEC-006` restoration clause | ⛔ **OPEN** — Product Owner |
+> | `LCG-ADR-002` | ⛔ **OPEN** — `BC-15` still sources **zero** edges |
+> | `LCG-AC-017`, `LCG-AC-018` | ⏸ **DEFERRED** — `LCG-GAP-005` / `integration_test/` absent |
 
 ### 0.1 Normative language
 
@@ -240,7 +274,7 @@ Authority: BC Map **L212**.
 | `groupMembershipId` | Identifier | Mandatory, immutable |
 | `groupId` | Identifier | Mandatory, immutable |
 | `personId` | Identifier | Mandatory, immutable. `BC-10`'s identifier, consumed opaquely |
-| `communityRole` | `CommunityRole` | Mandatory. ⏸ Value set OPEN — `LCG-DEC-003` |
+| `communityRole` | `CommunityRole` | Mandatory. ✅ **CLOSED — 2026-08-31 (PO-4).** Value set is `OWNER`, `MODERATOR`, `MEMBER`; ranking `OWNER > MODERATOR > MEMBER`; ⛔ no other role. *(Prior text retained verbatim: ⏸ Value set OPEN — `LCG-DEC-003`)* |
 | `state` | Enum | `ACTIVE`, `REVOKED` |
 | `joinedAt` / `revokedAt` | Timestamp | `revokedAt` null iff `state = ACTIVE` |
 
@@ -266,20 +300,27 @@ participation. Evaluation order is fixed by `LCG-FR-012`.
 `AccessRole`, and **no** capability outside `BC-15`. Authority: `AUTH-7.22`
 closes the permission catalogue; **0** `PERM-*` exist.
 
-### 4.4 ⏸ BLOCKED — the community scoping key
+### 4.4 ✅ UNBLOCKED — the community scoping key (v0.2)
 
 `LCG-FR-001` | Every `CommunityGroup` SHALL be scoped to exactly one community,
 and the scope SHALL be immutable after creation.
 
-⏸ **BLOCKED.** A2 §20.2 models community scope as `communityId`, and `ACCEPTED`
-`ADR-0078` §2.1 confirms `BC-15` carries no `tenantId`. But **no published
-contract defines how a `communityId` is minted or resolved** — A1 owns a
-*derived* predicate and no aggregate (`AR-1`), and A2 mints posts, not
-communities. → `LCG-GAP-006`, **OPEN**. Decision owner: **Architecture Owner**.
+✅ **UNBLOCKED — 2026-09-01 by `Accepted` `ADR-0085` §3.** `communityId` is
+**published** as `BC-15`'s stable, immutable, `BC-15`-minted scoping
+identifier (BC Map §16 `CID-1`…`CID-6`). `LCG-GAP-006` is **CLOSED**.
+`LCG-ADR-003` is **CLOSED**. ⛔ **The `ADR-0085` contract is byte-unchanged
+by this part and by `ADR-0172`.**
 
-`LCG-INV-007` | Until `LCG-GAP-006` is closed, group creation SHALL be treated as
-**blocked**, in the same shape A2 `LCF-FR-043` uses for `LCF-ADR-002`. This
-clause invents no rule; it states the consequence of the scoping key's absence.
+`LCG-INV-007` | ✅ **SATISFIED — 2026-09-25 by `ADR-0172`.** The positive
+path is recorded: **when the A1 and `BC-13` gates pass and an immutable
+`communityId` resolves, group creation proceeds and atomically creates an
+`ACTIVE` group scoped to that resolved `communityId`; the creator receives
+`OWNER` membership in the created group.** This clause is **retained, not
+deleted** — it correctly recorded the blocked state while `LCG-GAP-006` was
+open. *(Prior text retained verbatim: ⏸ **BLOCKED.** Until `LCG-GAP-006` is
+closed, group creation SHALL be treated as **blocked**, in the same shape A2
+`LCF-FR-043` uses for `LCF-ADR-002`. This clause invents no rule; it states
+the consequence of the scoping key's absence.)*
 
 ---
 
@@ -290,9 +331,9 @@ clause invents no rule; it states the consequence of the scoping key's absence.
 `LCG-FR-002` | A group SHALL be created only by a caller whom A1's predicate
 admits to the target community.
 
-`LCG-FR-003` | The creator SHALL receive a `GroupMembership` in the highest
-available `CommunityRole` at creation time. ⏸ Which value that is depends on
-`LCG-DEC-003`.
+`LCG-FR-003` | The creator SHALL receive a `GroupMembership` in `OWNER` at
+creation time. ✅ **DECIDED — 2026-09-25 by `ADR-0172`:** the creator
+receives `OWNER` membership in the created group. `LCG-DEC-003` is CLOSED.
 
 `LCG-FR-004` | Group creation SHALL be **rejected** if A1's predicate denies the
 caller, if the community scope cannot be resolved (`LCG-GAP-006`), or if
@@ -390,9 +431,9 @@ consume it. → `LCG-GAP-007`, **OPEN**, owner **A2 author**.
 ```
 Caller → [A1 predicate] → deny? ⇒ REJECT (LCG-FR-004)
        → [BC-13 hard filter] → in force? ⇒ REJECT
-       → [resolve communityId] → ⏸ BLOCKED (LCG-GAP-006) ⇒ REJECT
-       → create CommunityGroup(ACTIVE)
-       → create GroupMembership(creator, highest role) ⏸ (LCG-DEC-003)
+       → [resolve communityId] → ✅ RESOLVED (LCG-GAP-006 CLOSED by ADR-0085 §3)
+       → create CommunityGroup(ACTIVE, communityId) atomically
+       → create GroupMembership(creator, OWNER) ✅ (ADR-0172)
        → emit GroupCreated ✅ UNBLOCKED (LCG-ADR-002 CLOSED, ADR-0084)
 ```
 
@@ -464,7 +505,9 @@ uniqueness constraint on (`groupId`, `personId`, `state=ACTIVE`).
 `BC-10` owns erasure; no contract published. → `LCG-GAP-009`.
 
 `LCG-EC-007` | Community itself is dissolved → ⏸ undefined, because no
-community aggregate is specified (`LCG-GAP-006`).
+community aggregate is specified *(prior text: `LCG-GAP-006`, now CLOSED by
+`ADR-0085` §3 — the `communityId` scoping key is published, but the community
+aggregate's lifecycle is not yet specified by any part)*.
 
 `LCG-EC-008` | Group name collides within a community → ⏸ whether names are
 unique is **OPEN**, `LCG-DEC-005`.
@@ -602,32 +645,32 @@ are `BC-25` values — `LCG-GAP-005`.
 
 ## 30. Acceptance criteria
 
-✅ **Registered prefix status:** ⏸ `LCG-` is **PROPOSED, not registered**
-(`LCG-GAP-002`). ⛔ The criteria below are **UNRATIFIED** and **none** is
-claimed to pass. No criterion is recorded as verified.
+✅ **Registered prefix status:** ✅ `LCG-` is **REGISTERED** by `ADR-0083` §6
+(`LCG-GAP-002` **CLOSED**). ⛔ The criteria below are **UNRATIFIED** and **none**
+is claimed to pass. No criterion is recorded as verified.
 
 | ID | Criterion | Writability |
 |---|---|---|
-`LCG-AC-001` | Given a caller A1's predicate denies, when a join is attempted, then it is rejected at step 1 (`LCG-FR-012`) | Verifiable |
-`LCG-AC-002` | Given an in-force `BC-13` action, when a join is attempted, then it is rejected at step 2 (`LCG-FR-012`) | Verifiable |
-`LCG-AC-003` | Given an `ARCHIVED` group, when a join is attempted, then it is rejected at step 3 (`LCG-FR-012`) | Verifiable |
-`LCG-AC-004` | Given an existing `ACTIVE` membership, when a join is attempted, then it is rejected as duplicate (`LCG-FR-011`) | Verifiable |
-`LCG-AC-005` | Given a leave, when it completes, then `state=REVOKED` and the record still exists (`LCG-FR-013`) | Verifiable |
-`LCG-AC-006` | Given a revoked membership, when re-join occurs, then a **new** record is created (`LCG-FR-014`) | Verifiable |
-`LCG-AC-007` | Given any `CommunityRole`, when platform permission is checked, then no `PERM-*` is granted (`LCG-FR-024`) | Verifiable |
-`LCG-AC-008` | Given a denied caller, when a group is queried, then absence and denial are indistinguishable (`LCG-SEC-003`) | Verifiable |
-`LCG-AC-009` | Given the A1 predicate is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-001`) | Verifiable |
-`LCG-AC-010` | Given the `BC-13` feed is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-002`) | Verifiable |
-`LCG-AC-011` | Given group creation, when it completes, then group + owner membership are atomic (`LCG-FS-005`) | Verifiable |
-`LCG-AC-012` | Given `isGroupMember`, when called, then the response contains no post content, member list or count (`LCG-FR-021`) | Verifiable |
-`LCG-AC-013` | Given any group operation, when it completes, then no cross-community result is observable (`LCG-SEC-005`) | Verifiable |
-⏸ `LCG-AC-014` | Given a group creation, when the community scope is resolved, then … (`LCG-INV-007`) | ⛔ **UNWRITABLE** — `LCG-GAP-006` |
+`LCG-AC-001` | Given a caller A1's predicate denies, when a join is attempted, then it is rejected at step 1 (`LCG-FR-012`) | ✅ **Verifiable — gates published by `ADR-0085` / `ADR-0172`** |
+`LCG-AC-002` | Given an in-force `BC-13` action, when a join is attempted, then it is rejected at step 2 (`LCG-FR-012`) | ✅ **Verifiable** |
+`LCG-AC-003` | Given an `ARCHIVED` group, when a join is attempted, then it is rejected at step 3 (`LCG-FR-012`) | ✅ **Verifiable** |
+`LCG-AC-004` | Given an existing `ACTIVE` membership, when a join is attempted, then it is rejected as duplicate (`LCG-FR-011`) | ✅ **Verifiable** |
+`LCG-AC-005` | Given a leave, when it completes, then `state=REVOKED` and the record still exists (`LCG-FR-013`) | ✅ **Verifiable** |
+`LCG-AC-006` | Given a revoked membership, when re-join occurs, then a **new** record is created (`LCG-FR-014`) | ✅ **Verifiable** |
+`LCG-AC-007` | Given any `CommunityRole`, when platform permission is checked, then no `PERM-*` is granted (`LCG-FR-024`) | ✅ **Verifiable** |
+`LCG-AC-008` | Given a denied caller, when a group is queried, then absence and denial are indistinguishable (`LCG-SEC-003`) | ✅ **Verifiable** |
+`LCG-AC-009` | Given the A1 predicate is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-001`) | ✅ **Verifiable** |
+`LCG-AC-010` | Given the `BC-13` feed is unavailable, when a join is attempted, then it fails **closed** (`LCG-FS-002`) | ✅ **Verifiable** |
+`LCG-AC-011` | Given group creation, when it completes, then group + owner membership are atomic (`LCG-FS-005`) | ✅ **Verifiable** |
+`LCG-AC-012` | Given `isGroupMember`, when called, then the response contains no post content, member list or count (`LCG-FR-021`) | ✅ **Verifiable** |
+`LCG-AC-013` | Given any group operation, when it completes, then no cross-community result is observable (`LCG-SEC-005`) | ✅ **Verifiable** |
+✅ `LCG-AC-014` | Given a group creation **where the A1 and `BC-13` gates pass and an immutable `communityId` resolves**, then **group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership in the created group** (`LCG-INV-007`, `LCG-FS-005`, **`ADR-0172`**) | ✅ **NOW WRITABLE — 2026-09-25 by `ADR-0172`.** ⭐ `LCG-GAP-006` CLOSED by `ADR-0085` §3; the positive path is **recorded, not re-derived**. ⚠ **NOT recorded as passing** — the test still has to be written and run |
 ✅ `LCG-AC-015` | Given a role change by an owner, when it completes, then the target member holds exactly one of `OWNER`, `MODERATOR`, `MEMBER` and the change is rejected if the value is outside that closed set (`LCG-FR-016`) | ✅ **NOW WRITABLE — 2026-08-31.** The role set is closed by **PO-4** (`OWNER` > `MODERATOR` > `MEMBER`); `LCG-DEC-003` is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run |
 ✅ `LCG-AC-016` | Given the last owner attempts to leave or is banned, when the operation is evaluated, then it is **BLOCKED** and the community retains at least one `OWNER`; no member is promoted implicitly (`LCG-FR-015`) | ✅ **NOW WRITABLE — 2026-08-31.** Last-owner policy closed by **PO-6**: block, never auto-promote; `LCG-DEC-006`'s first clause is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run. ⚠ The restoration half of `LCG-DEC-006` stays OPEN and no criterion is claimed for it |
 ⏸ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected (`LCG-FR-005`) | ⏸ **DEFERRED** — no value, `LCG-GAP-005` |
 ⏸ `LCG-AC-018` | Cross-community isolation asserted per query in integration (`LCG-SEC-005`) | ⏸ **DEFERRED** — `integration_test/` does **not** exist (measured at authoring time: `ls -d integration_test` → *No such file or directory*). Same condition as A2 `LCF-AC-035` / `LCF-GAP-011` |
 
-**18 criteria — 13 verifiable · 3 unwritable · 2 deferred.** ⛔ **0 passing.**
+**18 criteria — 16 verifiable · 0 unwritable · 2 deferred.** ⛔ **0 passing.**
 
 ---
 
@@ -635,20 +678,20 @@ claimed to pass. No criterion is recorded as verified.
 
 | ID | Gap | Owner | State |
 |---|---|---|---|
-`LCG-GAP-001` | ⭐ **No document allocates scope to Part A4.** This part's entire scope is a candidate | **Product Owner** | ⛔ **OPEN — blocks everything** |
-`LCG-GAP-002` | `LCG-` prefix not registered (`ADR-0080` §5 registers only `LCF-`, `LCR-`) | **Governance Owner** — ⛔ **VACANT**, `ADR-0080` **L85** | ⛔ OPEN |
-`LCG-GAP-003` | Classification of this part (capability vs. context specification) not assigned | **Architecture Owner** | ⛔ OPEN |
-`LCG-GAP-004` | `StudySession` (BC Map **L207**) claimed by no part | **Product Owner** | ⛔ OPEN |
-`LCG-GAP-005` | Name bounds, description bounds, group/membership caps | `BC-25` / `PRD-023` | ⛔ OPEN |
-`LCG-GAP-006` | ⭐ No published contract mints or resolves `communityId` | **Architecture Owner** | ⛔ **OPEN — blocks group creation** |
-`LCG-GAP-007` | Whether A2 posts can be group-scoped at all | **A2 author** | ⛔ OPEN |
-`LCG-GAP-008` | Whether a platform permission is needed to gate group creation | Auth PRD owner + Governance | ⛔ OPEN |
-`LCG-GAP-009` | `BC-10` erasure/anonymisation contract | `BC-10` owner | ⛔ OPEN |
+`LCG-GAP-001` | ⭐ **No document allocates scope to Part A4.** This part's entire scope is a candidate | **Product Owner** | ✅ **CLOSED — 2026-09-01 by `Accepted` `ADR-0085` §2.1.** The predicate *"No document allocates scope to Part A4"* is now **false**: `ADR-0085` allocates A4 to the Community & Groups foundation on Product Owner authority. A4 remains a part of `PRD-021A`, not a standalone PRD. *(Prior text retained verbatim: ⛔ **OPEN — blocks everything**)* |
+`LCG-GAP-002` | `LCG-` prefix not registered (`ADR-0080` §5 registers only `LCF-`, `LCR-`) | **Governance Owner** | ✅ **CLOSED — 2026-08-31 by `ADR-0083` §6**, which registered the `LCG-` prefix. *(Prior text retained verbatim: ⛔ OPEN · Governance Owner ⛔ VACANT)* |
+`LCG-GAP-003` | Classification of this part (capability vs. context specification) not assigned | **Architecture Owner** | ⛔ **OPEN** |
+`LCG-GAP-004` | `StudySession` (BC Map **L207**) claimed by no part | **Product Owner** | ⛔ **OPEN** |
+`LCG-GAP-005` | Name bounds, description bounds, group/membership caps | `BC-25` / `PRD-023` | ⛔ **OPEN** |
+`LCG-GAP-006` | ⭐ No published contract mints or resolves `communityId` | **Architecture Owner** | ✅ **CLOSED — 2026-09-01 by `Accepted` `ADR-0085` §3 / `LCG-ADR-003`.** BC Map §16 `CID-1`…`CID-6` publishes `communityId` as the stable, immutable, `BC-15`-minted, non-tenant-derived scoping identifier. *(Prior text retained verbatim: ⛔ **OPEN — blocks group creation**)* |
+`LCG-GAP-007` | Whether A2 posts can be group-scoped at all | **A2 author** | ⛔ **OPEN** |
+`LCG-GAP-008` | Whether a platform permission is needed to gate group creation | Auth PRD owner + Governance | ⛔ **OPEN** |
+`LCG-GAP-009` | `BC-10` erasure/anonymisation contract | `BC-10` owner | ⛔ **OPEN** |
 `LCG-GAP-010` | Latency/throughput budgets; concurrent-write ordering guarantees | PO + AO | ⏸ DEFERRED |
-`LCG-GAP-011` | Minor-inclusive privacy review for any wider group visibility | Privacy authority | ⛔ OPEN |
-`LCG-GAP-012` | Retention period for `REVOKED` memberships | `BC-25` + privacy | ⛔ OPEN |
-`LCG-GAP-013` | Audit sink contract (`BC-24` / `PRD-016` FROZEN) | `BC-24` owner | ⛔ OPEN |
-`LCG-GAP-014` | `integration_test/` does not exist | Pre-existing repository condition (A2 `LCF-GAP-011`) | ⛔ OPEN |
+`LCG-GAP-011` | Minor-inclusive privacy review for any wider group visibility | Privacy authority | ⛔ **OPEN** |
+`LCG-GAP-012` | Retention period for `REVOKED` memberships | `BC-25` + privacy | ⛔ **OPEN** |
+`LCG-GAP-013` | Audit sink contract (`BC-24` / `PRD-016` FROZEN) | `BC-24` owner | ⛔ **OPEN** |
+`LCG-GAP-014` | `integration_test/` does not exist | Pre-existing repository condition (A2 `LCF-GAP-011`) | ⛔ **OPEN** |
 
 ---
 
@@ -672,7 +715,7 @@ claimed to pass. No criterion is recorded as verified.
 |---|---|---|
 `LCG-ADR-001` | An ADR classifying this part and assigning (or withholding) `BC-15` specification authority | ✅ **SATISFIED — 2026-08-31 by `ADR-0083`** (`Accepted`). Classification settled by **PO-3** (A4 is a part of `PRD-021A`); `BC-15` aggregate registration performed by **AO-8** in BC Map **§15.5** by append, leaving §8 byte-unchanged. *(Prior status retained verbatim: **Required, `Proposed`**)* |
 `LCG-ADR-002` | An ADR registering any `BC-15`-sourced event (`GroupCreated`, `GroupMembershipGranted`/`Revoked`). ⛔ BC Map §7 sources **no** edge from `BC-15`; BC Map **L292** applies | ✅✅ **CLOSED — 2026-08-31 by `ACCEPTED` [`ADR-0084`](../../00-governance/adr/ADR-0084-bc15-outbound-carriers-measured-option-b-selected.md) — AND THE PREMISE OF THIS ROW WAS ITSELF MEASURED WRONG.** ⭐⭐⭐ **The requirement is discharged because no such ADR is needed, not because one was written.** Publishing a domain event is governed by BC Map **§9 "Published Language — Event Surface"**, whose §9.1 contract is Transactional Outbox + at-least-once + per-aggregate ordering. **§7 governs synchronous boundary crossings** — its own preamble at **L292** says *"Every edge that **crosses a context boundary**"*. ⭐⭐ **Proof that §9 is independent of §7, measured on the live document, three times over:** `BC-11` publishes to **`BC-26`** (**L430**) with no §7 edge to it (`BC-11`'s only outbound edge is `E-16` → `BC-12`); `BC-03` publishes to **`BC-13`** (**L417**) with no §7 edge to it; `BC-12` publishes to **`BC-13`** (**L431**) with no §7 edge to it. If §7 governed event publication, all three frozen rows would be violations. They are not. ⭐ **And the earlier claim that `BC-15` sources ZERO edges was an INSTRUMENT ERROR** — the scan read the edge table's column 2 (the edge **id**) as the source cell; §7 puts the source in column 3. Re-measured: **five** edges have a wildcard source — `E-17` *"All write paths"*, and `E-18`/`E-19`/`E-20`/`E-23` *"All contexts"* — and *"All contexts"* includes `BC-15`. The audit carrier is **`E-20`** (BC Map **L329**) and the notification-fact carrier is **`E-23`** (**L332**), which is the identical reasoning A7 **L167** was **conferred Stage 3 on**. ⛔ **What is NOT authorised:** no `LCG-EVT-*` identifier is minted, **no BC Map §9 producer row is added** (these events have no named domain consumer, so a Rank 4 amendment would be gratuitous — the same restraint `PRD-017` **R-6** exercised), and **§7 is byte-unchanged**. ⚠ **Only this marker clears.** `LCG-DEC-003`, `LCG-DEC-006` and `LCG-GAP-006` are untouched and the flows in §6 still carry their ⏸ markers
-`LCG-ADR-003` | An ADR minting or resolving the `communityId` scoping key (`LCG-GAP-006`) | **Required, `Proposed`** |
+`LCG-ADR-003` | An ADR minting or resolving the `communityId` scoping key (`LCG-GAP-006`) | ✅ **CLOSED — 2026-09-01 by `Accepted` [`ADR-0085`](../../00-governance/adr/ADR-0085-communityid-scoping-identifier-published.md) §3.** BC Map §16 `CID-1`…`CID-6` publishes `communityId`. *(Prior status retained verbatim: **Required, `Proposed`**)* |
 `LCG-ADR-004` | An ADR **is not required** for consuming `E-14` — the edge already exists (BC Map **L318**, **L433**) and `BC-15` is already a declared consumer | **Not required** |
 
 `LCG-FR-026` | ADR numbers SHALL be allocated by the Governance Owner. This
@@ -688,9 +731,9 @@ self-accepted.
 
 | ID | Risk | Severity | Mitigation / owner |
 |---|---|---|---|
-`LCG-RSK-001` | `LCG-DEC-001` allocates this residue elsewhere, voiding this part | **High** | `LCG-INV-001` makes withdrawal, not amendment, the response |
+`LCG-RSK-001` | `LCG-DEC-001` allocates this residue elsewhere, voiding this part | **RESOLVED** | ✅ **CLOSED — 2026-09-01 by `ADR-0085` §2.1**: A4 is allocated to the Community & Groups foundation, a part of `PRD-021A`, not a standalone PRD |
 `LCG-RSK-002` | This part is mistaken for a placeholder for A5–A8 | Medium | `LCG-INV-003`, `LCG-XC-016` |
-`LCG-RSK-003` | `communityId` is never specified, permanently blocking creation | **High** | `LCG-INV-007` blocks rather than defaults |
+`LCG-RSK-003` | `communityId` is never specified, permanently blocking creation | **RESOLVED** | ✅ **CLOSED — 2026-09-01 by `ADR-0085` §3.** `communityId` is published; `LCG-GAP-006` is **CLOSED** |
 `LCG-RSK-004` | `CommunityRole` is conflated with `AccessRole` in implementation | **High** | `LCG-INV-004`, `LCG-INV-006`, `LCG-AC-007`; BC Map **L212** |
 `LCG-RSK-005` | Group membership is treated as a substitute for library membership | **High** | `LCG-BR-001`, §4.3, `LCG-DEP-006` |
 `LCG-RSK-006` | A new `BC-02 → BC-15` edge is added as a shortcut past A1 | Medium | `LCG-DEP-006` records the affirmative reason not to; BC Map **L292** |
@@ -751,16 +794,17 @@ A3 v0.6 §5 (**L413**, **L432**) | `P0-5` correction; deferred-custody clause |
 `LCG-RSK-*` | 10 | `001`–`010` |
 
 **Total: 148 identifiers across 15 registers.** All ranges contiguous
-(`PRD_LIFECYCLE.md` §5 rule 4). ⏸ The `LCG-` **prefix** is **PROPOSED, not
-registered** (`LCG-GAP-002`); the identifiers it labels are **UNRATIFIED**.
+(`PRD_LIFECYCLE.md` §5 rule 4). ✅ The `LCG-` **prefix** is **REGISTERED** by
+`ADR-0083` §6 (`LCG-GAP-002` **CLOSED**); the identifiers it labels are
+**UNRATIFIED** — ⛔ no criterion is recorded as passing.
 
-⛔ **Lifecycle status:** No stage advanced. Stage 3 **NOT CONFERRED**. **NOT
-READY. NOT FROZEN.** `LCG-DEC-001` is open, so even this part's *existence as
-A4* is unconfirmed.
+✅ **Lifecycle status:** No stage advanced. Stage 3 **NOT CONFERRED**. **NOT
+READY. NOT FROZEN.** `LCG-DEC-001` is **CLOSED** by `ADR-0083` **PO-3** and
+`ADR-0085` **§2.1** — this part's existence as A4 is **confirmed**.
 
 ---
 
 | Field | Value |
 |---|---|
-| **Version** | v0.1 |
-| **Determination** | **DRAFT — candidate scope, not allocated.** 14 gaps open, 6 decisions required, 3 ADRs required, 0 acceptance criteria passing |
+| **Version** | **v0.2** |
+| **Determination** | **DRAFT — scope allocated, `communityId` published, `LCG-AC-014` writable.** 10 gaps open · 1 deferred, 4 decisions open, 0 ADRs remaining, 16 criteria verifiable · 2 deferred · 0 passing |

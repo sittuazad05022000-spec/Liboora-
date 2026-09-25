@@ -13,7 +13,7 @@
 | **Stage** | **6 of 9.** ⛔ **Stage 7 is not entered. Stage 8 is not started. No code is written by this document** |
 | **Status of this document** | **Unranked.** Not admitted to `DOCUMENTATION_BASELINE.md` |
 | **Authority** | **Implementation lead** (`PRD_LIFECYCLE.md` **L280**), conferred by the human principal for this act only — `ADR-0033` **L169**: *"A conferral for one act is not a standing licence"* |
-| **Version** | v1.0 · 2026-09-01 |
+| **Version** | **v1.1** · 2026-09-25 · ⚠ **Reconciliation pass** — `LCG-GAP-001` / `LCG-GAP-006` **CLOSED** by `ADR-0085` §2.1/§3; `LCG-AC-014` **NOW WRITABLE** by `ADR-0172`. A4 tasks `IMPL-1532`…`1537` and cross-part A4 clauses in `IMPL-1568`/`1569` reconciled to name the still-open gaps, not the closed ones. **0 minted, 0 amended, 0 frozen documents touched** |
 
 ---
 
@@ -171,7 +171,7 @@ honestly claim:
 | **A1** Foundation | 84 | 60 | **12** | `IMPL-1500`…`1511` |
 | **A2** Feed & content | 123 | 36 | **12** | `IMPL-1512`…`1523` |
 | **A3** Ranking | 116 | 22 | **8** | `IMPL-1524`…`1531` |
-| **A4** Groups & roles | 28 | 18 | **6** | `IMPL-1532`…`1537` — ⛔ all `BLOCKED` |
+| **A4** Groups & roles | 28 | 18 | **6** | `IMPL-1532`…`1537` — ⛔ all `BLOCKED` *(reconciled v0.2: `LCG-GAP-001`/`006` CLOSED by `ADR-0085`; residual `LCG-GAP-005`/`009`/`013` open)* |
 | **A5** Official comms | 133 | 21 | **10** | `IMPL-1538`…`1547` |
 | **A6** Safety & moderation | 78 | 20 | **7** | `IMPL-1548`…`1554` |
 | **A7** Notifications | 76 | 21 | **5** | `IMPL-1555`…`1559` |
@@ -240,29 +240,39 @@ the capability it orders."* Every task here is therefore blocked on A2's surface
 | `IMPL-1530` | The ranking signals, with no fabricated signal admitted | `LCR-FR-002`, `LCR-RS-001` | P2 | — | `IMPL-1524` |
 | `IMPL-1531` | A3 acceptance harness — the 22 `LCR-AC-*` criteria | `LCR-AC-001`, `LCR-FND-001`, `LCR-API-001` | P3 | — | `IMPL-1524`…`IMPL-1530` |
 
-### 4.4 ⛔ A4 — Groups and roles (`IMPL-1532`…`IMPL-1537`) — **ALL BLOCKED**
+### 4.4 ⛔ A4 — Groups and roles (`IMPL-1532`…`IMPL-1537`) — **RECONCILED v0.2**
 
-⛔⛔ **Every task in this section is `BLOCKED` and carries no schedulable
-priority.** A4's **L638** records `LCG-GAP-001` as *"⛔ **OPEN — blocks
-everything**"* and its **L643** records `LCG-GAP-006` as *"⛔ **OPEN — blocks
-group creation**"*. `LCG-INV-007` requires that group creation be **rejected**
-until the latter closes, and `LCG-AC-014` is marked *"⛔ **UNWRITABLE**"* in the
-subject itself.
+⭐ **Reconciliation, 2026-09-25.** A4 v0.2 (in-place amendment of v0.1) records three
+closures: **`LCG-GAP-001` CLOSED** by `Accepted` `ADR-0085` §2.1, **`LCG-GAP-006` CLOSED**
+by `Accepted` `ADR-0085` §3 / `LCG-ADR-003`, and **`LCG-AC-014` NOW WRITABLE** by
+`ADR-0172` (Product Owner, 2026-09-25): when the A1 and `BC-13` gates pass and an
+immutable `communityId` resolves, group creation proceeds and atomically creates an
+`ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER`
+membership in the created group.
 
-⭐ **These six numbers are allocated anyway, deliberately.** Withholding them
-would make the range non-contiguous and would hide the fact that A4 has scoped
-work waiting on a decision. Allocating them with `Blocked by` populated records
-both the work and the blocker. **`P` reads `⛔` — not a number — because a
-priority implies schedulability, and these are not schedulable.**
+⚠ **What this reconciliation does NOT do.** It does **not** make the six A4 tasks
+schedulable. The tasks remain **`BLOCKED`** on the **open `LCG-GAP-*` items that still
+stand** — `LCG-GAP-003`, `004`, `005`, `007`…`014` — and on the **`LCG-DEC-005b`** /
+**`LCG-DEC-006` restoration** clauses. `IMPL-1537`'s scope changes from *"17 of 18
+`LCG-AC-*`"* to *"18 of 18 `LCG-AC-*`"* — the harness is **now writable**, but no
+criterion is **recorded as passing** (⛔ 0 passing, A4 §30). The `Blocked by` cells are
+**reconciled to name the still-open gap**, not the closed one.
+
+⭐ **Prior text retained verbatim:** ⛔⛔ **Every task in this section is `BLOCKED` and
+carries no schedulable priority.** A4's **L638** records `LCG-GAP-001` as *"⛔ **OPEN —
+blocks everything**"* and its **L643** records `LCG-GAP-006` as *"⛔ **OPEN — blocks
+group creation**"*. `LCG-INV-007` requires that group creation be **rejected** until
+the latter closes, and `LCG-AC-014` is marked *"⛔ **UNWRITABLE**"* in the subject
+itself. *(Prior text superseded by ADR-0085 §2.1/§3 and ADR-0172.)*
 
 | Task | Work | Traces to | P | Blocks | Blocked by |
 |---|---|---|---|---|---|
-| `IMPL-1532` | Group aggregate and lifecycle | `LCG-FR-001`, `LCG-INV-007` | ⛔ | `IMPL-1533`…`IMPL-1537` | **`LCG-GAP-001`**, **`LCG-GAP-006`** |
-| `IMPL-1533` | Group creation, rejecting while the community scope is unresolvable | `LCG-FR-010`, `LCG-INV-007`, `LCG-FS-001` | ⛔ | — | **`LCG-GAP-006`**, `IMPL-1532` |
-| `IMPL-1534` | Role assignment within a group | `LCG-FR-001`, `LCG-SEC-001` | ⛔ | — | **`LCG-GAP-001`**, `IMPL-1532` |
-| `IMPL-1535` | Group event publication over the `ADR-0084` Option B carrier | `LCG-DEP-001` | ⛔ | — | **`LCG-GAP-001`**, `IMPL-1532` |
-| `IMPL-1536` | The declared edge cases and fail-safe behaviours | `LCG-EC-001`, `LCG-FS-001` | ⛔ | — | `IMPL-1532` |
-| `IMPL-1537` | A4 acceptance harness — 17 of 18 `LCG-AC-*`; `LCG-AC-014` is unwritable | `LCG-AC-001` | ⛔ | — | `IMPL-1532`…`IMPL-1536` |
+| `IMPL-1532` | Group aggregate and lifecycle | `LCG-FR-001`, `LCG-INV-007` | ⛔ | `IMPL-1533`…`IMPL-1537` | **`LCG-GAP-005`** *(cap value, `BC-25`)*, **`LCG-GAP-009`** *(erasure contract)*, **`LCG-GAP-013`** *(audit sink)* — ⛔ `LCG-GAP-001` and `LCG-GAP-006` **CLOSED** by `ADR-0085` §2.1/§3 |
+| `IMPL-1533` | Group creation, rejecting while the community scope is unresolvable; **when the A1 and `BC-13` gates pass and an immutable `communityId` resolves, proceed and atomically create an `ACTIVE` group + `OWNER` membership** (`ADR-0172`) | `LCG-FR-010`, `LCG-INV-007`, `LCG-FS-001`, **`LCG-AC-014`** | ⛔ | — | **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** — ⛔ `LCG-GAP-006` **CLOSED** by `ADR-0085` §3 |
+| `IMPL-1534` | Role assignment within a group; creator receives `OWNER` at creation (`ADR-0172`) | `LCG-FR-001`, `LCG-SEC-001`, **`LCG-FR-003`** | ⛔ | — | **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** — ⛔ `LCG-GAP-001` **CLOSED** by `ADR-0085` §2.1 |
+| `IMPL-1535` | Group event publication over the `ADR-0084` Option B carrier | `LCG-DEP-001`, `LCG-ADR-002` | ⛔ | — | **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** — ⛔ `LCG-GAP-001` **CLOSED** by `ADR-0085` §2.1 |
+| `IMPL-1536` | The declared edge cases and fail-safe behaviours | `LCG-EC-001`, `LCG-FS-001`, **`LCG-FS-004`** *(community scope unresolvable — now a rejection path, not a block)* | ⛔ | — | **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** |
+| `IMPL-1537` | A4 acceptance harness — **18 of 18 `LCG-AC-*`** *(v0.1: 17 of 18; `LCG-AC-014` now writable by `ADR-0172`)*; ⛔ 0 recorded as passing | `LCG-AC-001`, **`LCG-AC-014`** | ⛔ | — | `IMPL-1532`…`IMPL-1536`, **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** |
 
 ### 4.5 A5 — Official library communication (`IMPL-1538`…`IMPL-1547`)
 
@@ -334,10 +344,18 @@ which holds whichever way the conflict is later ruled.
 
 ### 4.9 Cross-part (`IMPL-1568`…`IMPL-1569`)
 
+⭐ **Reconciliation, 2026-09-25 (A4 portions only).** A4 v0.2 records `LCG-GAP-001`
+**CLOSED** (`ADR-0085` §2.1) and `LCG-GAP-006` **CLOSED** (`ADR-0085` §3 /
+`LCG-ADR-003`). `LCG-AC-014` is **now writable** by `ADR-0172`. The A4 clause of
+these two cross-part tasks is therefore **reachable** on the `LCG-GAP-001` /
+`LCG-GAP-006` grounds, but remains **partial** on the still-open `LCG-GAP-*` items
+(`005`, `009`, `013`, …) and on `LCG-AC-017` / `LCG-AC-018` (deferred). The
+`Blocked by` cells are **reconciled to name the still-open gap**, not the closed one.
+
 | Task | Work | Traces to | P | Blocks | Blocked by |
 |---|---|---|---|---|---|
-| `IMPL-1568` | Cross-part constraint enforcement across all eight parts. ⚠ **Its A4 clause is unreachable while A4's scope is open** — the task is completable for seven parts and **partial** for the eighth | `LCM-XC-001`, `LCF-XC-001`, `LCR-XC-001`, `LCG-XC-001`, `LCO-XC-001`, `LCT-XC-001` | P1 (⛔ partial) | — | `IMPL-1512`, `IMPL-1560`, ⛔ **`LCG-GAP-001`** *(A4 clause only)* |
-| `IMPL-1569` | ⭐ **Sweep task** — the acceptance criteria no other task names by identifier. See §5.2. ⚠ **Cannot reach `LCG-AC-014`, which A4 marks `UNWRITABLE`** | `LCM-AC-001`, `LCF-AC-001`, `LCR-AC-001`, `LCG-AC-001`, `LCO-AC-001`, `LCS-AC-001`, `LCN-AC-001`, `LCT-AC-001` | P2 (⛔ partial) | — | all of `IMPL-1500`…`IMPL-1568`, ⛔ **`LCG-GAP-001`** *(A4 clause only)* |
+| `IMPL-1568` | Cross-part constraint enforcement across all eight parts. ⚠ **Its A4 clause is now reachable on `LCG-GAP-001` / `LCG-GAP-006` grounds** *(v0.2 reconciliation)* — the task is completable for eight parts on those two grounds and **partial** on the still-open `LCG-GAP-005`, `009`, `013` and deferred `LCG-AC-017` / `018` | `LCM-XC-001`, `LCF-XC-001`, `LCR-XC-001`, `LCG-XC-001`, `LCO-XC-001`, `LCT-XC-001` | P1 (⛔ partial) | — | `IMPL-1512`, `IMPL-1560`, ⛔ **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** *(A4 clause only — ⛔ `LCG-GAP-001` / `LCG-GAP-006` **CLOSED** by `ADR-0085` §2.1/§3)* |
+| `IMPL-1569` | ⭐ **Sweep task** — the acceptance criteria no other task names by identifier. See §5.2. ⚠ **`LCG-AC-014` is now writable** *(v0.2 reconciliation, `ADR-0172`)* — the sweep reaches 18 of 18 `LCG-AC-*`, but **0 criteria are recorded as passing**; the A4 clause remains **partial** on `LCG-GAP-005`, `009`, `013` and deferred `LCG-AC-017` / `018` | `LCM-AC-001`, `LCF-AC-001`, `LCR-AC-001`, `LCG-AC-001`, `LCO-AC-001`, `LCS-AC-001`, `LCN-AC-001`, `LCT-AC-001` | P2 (⛔ partial) | — | all of `IMPL-1500`…`IMPL-1568`, ⛔ **`LCG-GAP-005`**, **`LCG-GAP-009`**, **`LCG-GAP-013`** *(A4 clause only — ⛔ `LCG-GAP-001` / `LCG-GAP-006` **CLOSED** by `ADR-0085` §2.1/§3)* |
 
 ---
 
@@ -410,10 +428,10 @@ cannot be checked SHALL be treated as unmet"* — and left as existing open work
 
 | # | Defect | Nature |
 |---|---|---|
-| **`K-1`** | ⛔ **6 of 70 tasks (8.6%) are unschedulable** — all of A4 — because `LCG-GAP-001` blocks its entire scope. A range in which one part cannot start is a defect of the **specification**, surfaced here rather than hidden by omitting A4 | subject, disclosed |
+| **`K-1`** | ⛔ **6 of 70 tasks (8.6%) are unschedulable** — all of A4. ⚠ **Reconciled v0.2 (2026-09-25):** the original two blockers `LCG-GAP-001` and `LCG-GAP-006` are **CLOSED** by `ADR-0085` §2.1/§3; the tasks remain `BLOCKED` on the residual still-open items `LCG-GAP-005`, `009`, `013` and deferred `LCG-AC-017`/`018` | subject, reconciled |
 | **`K-2`** | **551 of 757 requirements have no acceptance criterion**, so no task can prove them. Inherited from §2P.2, not created here | subject, disclosed |
 | **`K-3`** | Requirement coverage by task row is low by construction — 70 tasks against 757 requirements. Group tasks and `IMPL-1569` carry the remainder, which is weaker than per-requirement tasks and is said so | this document |
-| **`K-4`** | ⚠ **`LCG-AC-014` is `UNWRITABLE` in the subject itself**, so `IMPL-1537` can only ever discharge 17 of A4's 18 criteria. Writing a criterion to fill it is a Product Owner act | subject, disclosed |
+| **`K-4`** | ⚠ **`LCG-AC-014` was `UNWRITABLE` in the v0.1 subject**, so `IMPL-1537` could only discharge 17 of A4's 18 criteria. ✅ **Reconciled v0.2 (2026-09-25): `LCG-AC-014` is NOW WRITABLE by `ADR-0172`** — when the A1 and `BC-13` gates pass and an immutable `communityId` resolves, group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership. ⛔ **0 criteria are recorded as passing** — the test still has to be written and run | subject, reconciled |
 | **`K-5`** | ⚠ **This document has no mechanically-verified predecessor for a multi-part Stage 6.** Every prior task document has exactly one source PRD; this one has eight, so "the PRD defines it" becomes "some part defines it" — the instrument therefore resolves each token against the **union** of the eight, which is weaker than per-part resolution and is a disclosed limit, not a claim | this document, disclosed |
 | **`K-6`** | ⛔⛔ **This document's own §7 row 10 wrote out the two ADR-drift gap numbers, which no subject defines — so the gate reported this document as MINTING them.** The row's purpose was to *disclose* the drift, and disclosure by reproducing the token is exactly what makes a Stage 6 document look like an identifier's definition site. **The instrument caught it; the author did not.** Corrected to name both by position. ⭐ **This is `J-1a` recurring one stage later**: at Stage 5 the same mistake was made in the section disclosing phantoms, and here it was made in the row disclosing drift — the identical failure shape in a document written by an author who had just recorded `J-1a` | this document, repaired |
 | **`K-7`** | ⛔ **The A7 prohibition paragraph wrote a withdrawn event number to say it must never be implemented**, and the gate correctly read that as a Stage 6 document citing a withdrawn identifier. A prohibition that reproduces the forbidden token defeats every `grep`-based check that looks for it. Corrected to name the four withdrawn events by **event name** instead | this document, repaired |
@@ -427,8 +445,8 @@ cannot be checked SHALL be treated as unmet"* — and left as existing open work
 
 | # | Act | Owner | State |
 |---|---|---|---|
-| 1 | Close `LCG-GAP-001` (A4 scope) | **Product Owner** | ⛔ Not performed. It blocks 6 tasks and is left open |
-| 2 | Close `LCG-GAP-006` (`communityId`) | **Architecture Owner** | ⛔ Not performed |
+| 1 | Close `LCG-GAP-001` (A4 scope) | **Product Owner** | ✅ **CLOSED by `ADR-0085` §2.1** — *this document did not perform it; it was closed by an ADR on Product Owner authority* |
+| 2 | Close `LCG-GAP-006` (`communityId`) | **Architecture Owner** | ✅ **CLOSED by `ADR-0085` §3 / `LCG-ADR-003`** — *this document did not perform it; it was closed by an ADR on Architecture Owner authority* |
 | 3 | Resolve `LCT-CONF-001` (7 events vs 6) | **Architecture Owner** | ⛔ Not performed. `IMPL-1556` is written to hold either way |
 | 4 | Move `PRD-021A` out of `PLANNED` in `PRD_REGISTRY.md` | **Governance Owner** | ⛔ Not performed |
 | 5 | Confer `READY`, rank, or freeze; write a baseline row | **Governance Owner** | ⛔ Not performed. **Stage 7 is not entered** |
@@ -446,7 +464,7 @@ cannot be checked SHALL be treated as unmet"* — and left as existing open work
 |---|---|
 | Range allocated | `IMPL-1500`…`IMPL-1569` — **70**, contiguous, one row each |
 | Growth reserve | `IMPL-1570`…`IMPL-1599` — **30**, reserved, not allocated |
-| Tasks blocked by an open gap | **6** — all of A4 |
+| **Tasks blocked by an open gap** | **6** — all of A4 · ⚠ **Reconciled v0.2 (2026-09-25):** `LCG-GAP-001` / `LCG-GAP-006` **CLOSED** by `ADR-0085` §2.1/§3; tasks remain `BLOCKED` on residual `LCG-GAP-005`, `009`, `013` and deferred `LCG-AC-017`/`018` |
 | Identifiers minted by this document | **0** |
 | Acceptance criteria proven | **0 of 233** — Stage 8/9 work |
 | Subjects modified | **0** — eight sha256 unchanged |
@@ -461,3 +479,4 @@ cannot be checked SHALL be treated as unmet"* — and left as existing open work
 | Version | Date | Change |
 |---|---|---|
 | **v1.0** | 2026-09-01 | Initial allocation. **`IMPL-1500`…`1569`** established as next free by three independent routes and **`IMPL-1570`…`1599`** reserved for growth. **70 tasks across A1–A8 plus 2 cross-part**, every row carrying `Priority`/`Blocks`/`Blocked by` and tracing to identifiers the eight subjects actually define — **0 minted**. ⛔ **All 6 A4 tasks allocated `BLOCKED`** on `LCG-GAP-001`/`LCG-GAP-006` rather than omitted or given a priority they cannot have. ⛔ **A7's 4 withdrawn events are cited by no task**; `IMPL-1556` written to satisfy `LCT-CONF-001` either way. ⛔ **No code written** — Stage 6 and Stage 8 are different stages (§2.4). Five defects disclosed (`K-1`…`K-5`), of which two are inherited from the subjects and three belong to this document. `PRD-020`'s `IMPL-1450`…`1499` reserve deliberately **not** consumed (§3.3) |
+| **v1.1** | **2026-09-25** | ⭐ **Reconciliation pass** — **no identifiers minted, no task numbers re-assigned, no frozen document touched.** `LCG-GAP-001` **CLOSED** by `Accepted` `ADR-0085` §2.1 (A4 scope allocated to the Community & Groups foundation, a part of `PRD-021A`, not a standalone PRD); `LCG-GAP-006` **CLOSED** by `Accepted` `ADR-0085` §3 / `LCG-ADR-003` (BC Map §16 `CID-1`…`CID-6` publishes `communityId` as the stable, immutable, `BC-15`-minted scoping identifier). `LCG-AC-014` **NOW WRITABLE** by **`ADR-0172`** (Product Owner, 2026-09-25): *when the A1 and `BC-13` gates pass and an immutable `communityId` resolves, group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership in the created group.* ⚠ **The six A4 tasks remain `BLOCKED`** — the `Blocked by` cells are reconciled to name the **still-open** `LCG-GAP-005`, `009`, `013` and deferred `LCG-AC-017`/`018`, **not** the now-closed `LCG-GAP-001`/`006`. `IMPL-1537`'s scope changes from *"17 of 18"* to *"18 of 18 `LCG-AC-*`"* — the harness is **now writable**, but **0 criteria are recorded as passing**. `K-1` and `K-4` reconciled accordingly. §7 rows 1–2 updated to record the ADR closure. §8 measurement updated. **`PRD-021A` A4 v0.2 amendment (in-place) is a separate, named, Product Owner act — this document records the reconciliation, not the amendment** |

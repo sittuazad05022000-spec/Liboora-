@@ -82,13 +82,14 @@
 > | §30 `LCG-AC-014` — ⏸ **UNWRITABLE → ✅ NOW WRITABLE** | **`ADR-0172`** — positive path: when the A1 and `BC-13` gates pass and an immutable `communityId` resolves, group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership |
 > | §32 `LCG-ADR-003` — ✅ **CLOSED** | `Accepted` **`ADR-0085` §3** |
 > | §31 `LCG-GAP-002` — ✅ **CLOSED** | `ADR-0083` §6 registered the `LCG-` prefix |
+> | §0.1 `LCG-ADR-002` row — ⛔ **OPEN → ✅ CLOSED** | Stale v0.1 summary corrected to reflect the §32 determination: `LCG-ADR-002` was **CLOSED by `ACCEPTED` `ADR-0084`** (event publication governed by BC Map **§9** event surface, not §7; audit carrier **`E-20`**, notification carrier **`E-23`**). No new decision — §32 cell is byte-unchanged |
 >
 > | Preserved, NOT repaired | Reason |
 > |---|---|
 > | All `LCG-GAP-003`, `004`, `005`, `007`…`014` | ⛔ **OPEN** — named owners, not closed by `ADR-0085` or `ADR-0172` |
 > | `LCG-DEC-005b` | ⛔ **OPEN** — Product Owner; name uniqueness not ruled |
 > | `LCG-DEC-006` restoration clause | ⛔ **OPEN** — Product Owner |
-> | `LCG-ADR-002` | ⛔ **OPEN** — `BC-15` still sources **zero** edges |
+> | `LCG-ADR-002` | ✅ **CLOSED — 2026-08-31 by `ACCEPTED` `ADR-0084`.** Event publication is governed by BC Map §9 (event surface), not §7 (synchronous edges); audit carrier `E-20`, notification carrier `E-23` |
 > | `LCG-AC-017`, `LCG-AC-018` | ⏸ **DEFERRED** — `LCG-GAP-005` / `integration_test/` absent |
 
 ### 0.1 Normative language
@@ -808,3 +809,9 @@ READY. NOT FROZEN.** `LCG-DEC-001` is **CLOSED** by `ADR-0083` **PO-3** and
 |---|---|
 | **Version** | **v0.2** |
 | **Determination** | **DRAFT — scope allocated, `communityId` published, `LCG-AC-014` writable.** 10 gaps open · 1 deferred, 4 decisions open, 0 ADRs remaining, 16 criteria verifiable · 2 deferred · 0 passing |
+
+### Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| **v0.2** | 2026-09-25 | Amended in-place per `ADR-0172` and the v0.1 → v0.2 reconciliation pass: `LCG-AC-014` recorded writable (§30); `LCG-GAP-001` / `006` / `002` reconciled CLOSED (§31); `LCG-ADR-003` CLOSED (§32). §0.1 *"Preserved, NOT repaired"* table row for **`LCG-ADR-002` corrected** — it had been carried verbatim from v0.1 and read *"⛔ OPEN — `BC-15` still sources zero edges"*, contradicting §32's own determination that `LCG-ADR-002` was **CLOSED 2026-08-31 by `ACCEPTED` `ADR-0084`** (event publication governed by BC Map §9, not §7; carriers `E-20` / `E-23`). This is a clarifying-wording correction to the §0.1 summary table only; ⛔ **no decision text, requirement, gap, criterion, ADR, registry status or lifecycle stage is changed by this clarification**; ⛔ 0 acceptance criteria recorded as passing; ⛔ Stage 8 NOT entered; ⛔ no file under `lib/`, `test/`, `tool/`, `packages/` or `web/` touched |

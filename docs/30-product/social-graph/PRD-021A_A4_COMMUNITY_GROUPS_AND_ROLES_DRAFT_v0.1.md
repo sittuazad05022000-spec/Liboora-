@@ -58,7 +58,7 @@
 |---|---|
 | **Part** | A4 — Community Groups, Group Membership & Community Roles |
 | **Version** | **v0.2** — amends v0.1 in-place. Supersedes v0.1, retained in git history |
-| **Status** | **DRAFT — not baselined, not approved, not frozen.** ✅ Scope allocation **CLOSED** by `Accepted` `ADR-0085` §2.1 · ✅ `communityId` **CLOSED** by `Accepted` `ADR-0085` §3 · ✅ `LCG-AC-014` **WRITABLE** by `ADR-0172` |
+| **Status** | **DRAFT — not baselined, not approved, not frozen.** ✅ Scope allocation **CLOSED** by `Accepted` `ADR-0085` §2.1 · ✅ `communityId` **CLOSED** by `Accepted` `ADR-0085` §3 · ✅ `LCG-AC-014` **WRITABLE** by `ADR-0172` · ✅ **`LCG-GAP-005` CLOSED** by `Accepted` `ADR-0173` §3 (name/description bounds, 100 groups/community, 50 memberships/group, platform-fixed V1) · ⛔ `LCG-DEC-005b` **remains OPEN** |
 | **Predecessors** | A1 v0.2, A2 v0.8, A3 v0.6 — consumed as published, **not amended** |
 | **Classification** | ⏸ **NOT DETERMINED HERE.** Candidate: specification of `BC-15`'s non-post aggregates. Assignment is an Architecture Owner act — §31 `LCG-GAP-003` |
 | **Bounded context** | **None created.** Context count remains **31 (23 in V1)** — BC Map L147 |
@@ -83,14 +83,15 @@
 > | §32 `LCG-ADR-003` — ✅ **CLOSED** | `Accepted` **`ADR-0085` §3** |
 > | §31 `LCG-GAP-002` — ✅ **CLOSED** | `ADR-0083` §6 registered the `LCG-` prefix |
 > | §0.1 `LCG-ADR-002` row — ⛔ **OPEN → ✅ CLOSED** | Stale v0.1 summary corrected to reflect the §32 determination: `LCG-ADR-002` was **CLOSED by `ACCEPTED` `ADR-0084`** (event publication governed by BC Map **§9** event surface, not §7; audit carrier **`E-20`**, notification carrier **`E-23`**). No new decision — §32 cell is byte-unchanged |
+> | §3.1 `name` / `description` field bounds · §5.1 `LCG-FR-005` · §30 `LCG-NFR-004` · §30 `LCG-AC-017` — ⏸ **DEFERRED → ✅ UNBLOCKED / NOW WRITABLE** · §31 `LCG-GAP-005` — ⛔ **OPEN → ✅ CLOSED** | **`Accepted` `ADR-0173` §3** (Product Owner, 2026-09-25): `Group.name` max **50 Unicode code points** (allow-list `L*`/`Nd`/`U+0020`/exactly 7 punctuation chars `- _ . & ' ( )`, rejection-only, no stripping/substitution/normalization, ≥1 non-space char, no leading/trailing spaces, consecutive internal spaces permitted) · `Group.description` max **500 Unicode code points**, otherwise free text · **100 groups per community** · **50 `ACTIVE` memberships per group** · caps platform-fixed V1, ⛔ NOT tenant-configurable · ⛔ **`LCG-DEC-005b` NOT decided** · ⛔ `PRD-023` byte-unchanged · ⛔ 0 criteria recorded as passing · ⛔ Stage 8 NOT entered |
 >
 > | Preserved, NOT repaired | Reason |
 > |---|---|
-> | All `LCG-GAP-003`, `004`, `005`, `007`…`014` | ⛔ **OPEN** — named owners, not closed by `ADR-0085` or `ADR-0172` |
+> | All `LCG-GAP-003`, `004`, `007`…`014` | ⛔ **OPEN** — named owners, not closed by `ADR-0085` or `ADR-0172` · ⭐ `LCG-GAP-005` **CLOSED** by `Accepted` **`ADR-0173`** (values published: 50 cp name / allow-list / 500 cp description / 100 groups / 50 memberships) |
 > | `LCG-DEC-005b` | ⛔ **OPEN** — Product Owner; name uniqueness not ruled |
 > | `LCG-DEC-006` restoration clause | ⛔ **OPEN** — Product Owner |
 > | `LCG-ADR-002` | ✅ **CLOSED — 2026-08-31 by `ACCEPTED` `ADR-0084`.** Event publication is governed by BC Map §9 (event surface), not §7 (synchronous edges); audit carrier `E-20`, notification carrier `E-23` |
-> | `LCG-AC-017`, `LCG-AC-018` | ⏸ **DEFERRED** — `LCG-GAP-005` / `integration_test/` absent |
+> | `LCG-AC-017` | ✅ **NOW WRITABLE — 2026-09-25 by `Accepted` `ADR-0173` §3** (cap = 100) — ⚠ **NOT recorded as passing** · `LCG-AC-018` | ⏸ **DEFERRED** — `integration_test/` absent |
 
 ### 0.1 Normative language
 
@@ -261,8 +262,8 @@ Authority: BC Map **L212**.
 |---|---|---|
 | `groupId` | Identifier | Mandatory, immutable, `BC-15`-minted |
 | `communityId` | Identifier | Mandatory, immutable. Scoping key — see §4.4 |
-| `name` | Text | Mandatory. ⏸ Bounds deferred to `BC-25` — `LCG-GAP-005` |
-| `description` | Text | Optional. ⏸ Bounds deferred — `LCG-GAP-005` |
+| `name` | Text | Mandatory. ✅ **Bounds CLOSED 2026-09-25 by `Accepted` [`ADR-0173`](../../../../00-governance/adr/ADR-0173-lcg-gap-005-group-name-description-and-cap-values-platform-fixed-v1.md) §3: maximum **50 Unicode code points** (not UTF-8 bytes, not UTF-16 code units). **Allow-list, deny-by-default:** Unicode category **`L*`** (`Ll`, `Lu`, `Lt`, `Lm`, `Lo`) · Unicode category **`Nd`** (decimal digits) · ASCII space **`U+0020`** · **exactly these 7 punctuation characters: `-` `_` `.` `&` `'` `(` `)`.** **Validation: rejection-only** — any character outside the allow-list **SHALL cause rejection**; ⛔ no stripping, no substitution, no Unicode normalization (NFC/NFD/NFKC/NFKD) before validation; **at least one** allowed character that is not `U+0020` **SHALL** be present; **leading or trailing `U+0020` SHALL be rejected**; consecutive internal `U+0020` permitted *(prior: ⏸ Bounds deferred to `BC-25` — `LCG-GAP-005`)* |
+| `description` | Text | Optional. ✅ **Bounds CLOSED 2026-09-25 by `Accepted` `ADR-0173` §3: maximum **500 Unicode code points**; ⛔ **otherwise free text** — no allow-list, no character-set restriction beyond the length cap *(prior: ⏸ Bounds deferred — `LCG-GAP-005`)* |
 | `visibility` | Enum | ✅ **ENUMERATED and CLOSED, 2026-08-31**: **`PUBLIC`**, **`PRIVATE`** (Product Owner ruling **PO-5**). `PUBLIC` is discoverable under the existing discovery rules; `PRIVATE` requires membership or otherwise authorised access. ⛔ **No additional visibility state SHALL be invented** — the ruling states *"Do not invent additional visibility states"*, so there is no `UNLISTED`, `HIDDEN`, `SECRET` or `INVITE_ONLY`. ⚠ **`LCG-DEC-005` is only HALF closed by this**: its second clause — *whether group names are unique per community* — was **not** ruled on and is now tracked as **`LCG-DEC-005b`**, still **OPEN**, Product Owner. *(Prior text retained verbatim: ⏸ **NOT ENUMERATED.** `LCG-DEC-005`, OPEN)* |
 | `lifecycleState` | Enum | `ACTIVE`, `ARCHIVED` — §5.2 |
 | `createdAt` | Timestamp | Mandatory, immutable |
@@ -340,9 +341,7 @@ receives `OWNER` membership in the created group. `LCG-DEC-003` is CLOSED.
 caller, if the community scope cannot be resolved (`LCG-GAP-006`), or if
 `BC-13` has issued an in-force enforcement action against the caller.
 
-`LCG-FR-005` | ⏸ **BLOCKED.** A per-community cap on group count SHALL be
-enforced. The **value** is a `BC-25` concern (`PRD-023`); this part declares the
-shape and assigns no number. → `LCG-GAP-005`.
+`LCG-FR-005` | ✅ **UNBLOCKED 2026-09-25 by `Accepted` `ADR-0173` §3: the per-community cap on group count is **100**, platform-fixed for V1, ⛔ NOT tenant-configurable.** A per-community cap on group count SHALL be enforced at **100**; the value is published by `ADR-0173` and bound by `BC-25`'s `E-19`/`LCFG-*` resolution machinery *(prior: ⏸ **BLOCKED.** The value is a `BC-25` concern (`PRD-023`); this part declares the shape and assigns no number. → `LCG-GAP-005`)*.
 
 ### 5.2 Group lifecycle
 
@@ -639,8 +638,7 @@ A3 `LCR-GAP-010`. → `LCG-GAP-010`.
 `LCG-NFR-003` | The predicate SHALL be safe to call per-post without implying a
 caching contract. Caching is an implementation concern, not specified here.
 
-`LCG-NFR-004` | ⏸ **DEFERRED.** Group-count and membership-count scale bounds
-are `BC-25` values — `LCG-GAP-005`.
+`LCG-NFR-004` | ✅ **UNBLOCKED 2026-09-25 by `Accepted` `ADR-0173` §3: group-count scale bound = **100** per community; membership-count scale bound = **50** `ACTIVE` memberships per group; both platform-fixed V1, ⛔ NOT tenant-configurable.** *(prior: ⏸ **DEFERRED.** Group-count and membership-count scale bounds are `BC-25` values — `LCG-GAP-005`)*.
 
 ---
 
@@ -668,10 +666,10 @@ is claimed to pass. No criterion is recorded as verified.
 ✅ `LCG-AC-014` | Given a group creation **where the A1 and `BC-13` gates pass and an immutable `communityId` resolves**, then **group creation proceeds and atomically creates an `ACTIVE` group scoped to that resolved `communityId`; the creator receives `OWNER` membership in the created group** (`LCG-INV-007`, `LCG-FS-005`, **`ADR-0172`**) | ✅ **NOW WRITABLE — 2026-09-25 by `ADR-0172`.** ⭐ `LCG-GAP-006` CLOSED by `ADR-0085` §3; the positive path is **recorded, not re-derived**. ⚠ **NOT recorded as passing** — the test still has to be written and run |
 ✅ `LCG-AC-015` | Given a role change by an owner, when it completes, then the target member holds exactly one of `OWNER`, `MODERATOR`, `MEMBER` and the change is rejected if the value is outside that closed set (`LCG-FR-016`) | ✅ **NOW WRITABLE — 2026-08-31.** The role set is closed by **PO-4** (`OWNER` > `MODERATOR` > `MEMBER`); `LCG-DEC-003` is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run |
 ✅ `LCG-AC-016` | Given the last owner attempts to leave or is banned, when the operation is evaluated, then it is **BLOCKED** and the community retains at least one `OWNER`; no member is promoted implicitly (`LCG-FR-015`) | ✅ **NOW WRITABLE — 2026-08-31.** Last-owner policy closed by **PO-6**: block, never auto-promote; `LCG-DEC-006`'s first clause is CLOSED. ⚠ **NOT recorded as passing** — the test still has to be written and run. ⚠ The restoration half of `LCG-DEC-006` stays OPEN and no criterion is claimed for it |
-⏸ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected (`LCG-FR-005`) | ⏸ **DEFERRED** — no value, `LCG-GAP-005` |
+✅ `LCG-AC-017` | Given the group cap is reached, when creation is attempted, then it is rejected (`LCG-FR-005`) | ✅ **NOW WRITABLE — 2026-09-25 by `Accepted` `ADR-0173` §3: the cap is **100 groups per community**, platform-fixed V1.** ⚠ **NOT recorded as passing** — the test still has to be written and run *(prior: ⏸ **DEFERRED** — no value, `LCG-GAP-005`)* |
 ⏸ `LCG-AC-018` | Cross-community isolation asserted per query in integration (`LCG-SEC-005`) | ⏸ **DEFERRED** — `integration_test/` does **not** exist (measured at authoring time: `ls -d integration_test` → *No such file or directory*). Same condition as A2 `LCF-AC-035` / `LCF-GAP-011` |
 
-**18 criteria — 16 verifiable · 0 unwritable · 2 deferred.** ⛔ **0 passing.**
+**18 criteria — 17 verifiable · 0 unwritable · 1 deferred.** ⛔ **0 passing.**
 
 ---
 
@@ -683,7 +681,7 @@ is claimed to pass. No criterion is recorded as verified.
 `LCG-GAP-002` | `LCG-` prefix not registered (`ADR-0080` §5 registers only `LCF-`, `LCR-`) | **Governance Owner** | ✅ **CLOSED — 2026-08-31 by `ADR-0083` §6**, which registered the `LCG-` prefix. *(Prior text retained verbatim: ⛔ OPEN · Governance Owner ⛔ VACANT)* |
 `LCG-GAP-003` | Classification of this part (capability vs. context specification) not assigned | **Architecture Owner** | ⛔ **OPEN** |
 `LCG-GAP-004` | `StudySession` (BC Map **L207**) claimed by no part | **Product Owner** | ⛔ **OPEN** |
-`LCG-GAP-005` | Name bounds, description bounds, group/membership caps | `BC-25` / `PRD-023` | ⛔ **OPEN** |
+`LCG-GAP-005` | Name bounds, description bounds, group/membership caps | `BC-25` / `PRD-023` | ✅ **CLOSED 2026-09-25 by `Accepted` [`ADR-0173`](../../../../00-governance/adr/ADR-0173-lcg-gap-005-group-name-description-and-cap-values-platform-fixed-v1.md) §3** — `Group.name` max **50 Unicode code points** (allow-list `L*`/`Nd`/`U+0020`/7 punctuation chars, rejection-only, no normalization, min 1 non-space char, no leading/trailing spaces, consecutive internal spaces permitted) · `Group.description` max **500 Unicode code points**, free text · **100 groups per community** · **50 `ACTIVE` memberships per group** · items 3–4 platform-fixed V1, ⛔ NOT tenant-configurable · ⛔ `LCG-DEC-005b` **NOT decided** *(prior: ⛔ **OPEN**)* |
 `LCG-GAP-006` | ⭐ No published contract mints or resolves `communityId` | **Architecture Owner** | ✅ **CLOSED — 2026-09-01 by `Accepted` `ADR-0085` §3 / `LCG-ADR-003`.** BC Map §16 `CID-1`…`CID-6` publishes `communityId` as the stable, immutable, `BC-15`-minted, non-tenant-derived scoping identifier. *(Prior text retained verbatim: ⛔ **OPEN — blocks group creation**)* |
 `LCG-GAP-007` | Whether A2 posts can be group-scoped at all | **A2 author** | ⛔ **OPEN** |
 `LCG-GAP-008` | Whether a platform permission is needed to gate group creation | Auth PRD owner + Governance | ⛔ **OPEN** |
@@ -808,10 +806,10 @@ READY. NOT FROZEN.** `LCG-DEC-001` is **CLOSED** by `ADR-0083` **PO-3** and
 | Field | Value |
 |---|---|
 | **Version** | **v0.2** |
-| **Determination** | **DRAFT — scope allocated, `communityId` published, `LCG-AC-014` writable.** 10 gaps open · 1 deferred, 4 decisions open, 0 ADRs remaining, 16 criteria verifiable · 2 deferred · 0 passing |
+| **Determination** | **DRAFT — scope allocated, `communityId` published, `LCG-AC-014` writable, `LCG-GAP-005` CLOSED.** 9 gaps open · 1 deferred, 4 decisions open, 0 ADRs remaining, 17 criteria verifiable · 1 deferred · 0 passing |
 
 ### Changelog
 
 | Version | Date | Change |
 |---|---|---|
-| **v0.2** | 2026-09-25 | Amended in-place per `ADR-0172` and the v0.1 → v0.2 reconciliation pass: `LCG-AC-014` recorded writable (§30); `LCG-GAP-001` / `006` / `002` reconciled CLOSED (§31); `LCG-ADR-003` CLOSED (§32). §0.1 *"Preserved, NOT repaired"* table row for **`LCG-ADR-002` corrected** — it had been carried verbatim from v0.1 and read *"⛔ OPEN — `BC-15` still sources zero edges"*, contradicting §32's own determination that `LCG-ADR-002` was **CLOSED 2026-08-31 by `ACCEPTED` `ADR-0084`** (event publication governed by BC Map §9, not §7; carriers `E-20` / `E-23`). This is a clarifying-wording correction to the §0.1 summary table only; ⛔ **no decision text, requirement, gap, criterion, ADR, registry status or lifecycle stage is changed by this clarification**; ⛔ 0 acceptance criteria recorded as passing; ⛔ Stage 8 NOT entered; ⛔ no file under `lib/`, `test/`, `tool/`, `packages/` or `web/` touched |
+| **v0.2** | 2026-09-25 | Amended in-place per `ADR-0172` and the v0.1 → v0.2 reconciliation pass: `LCG-AC-014` recorded writable (§30); `LCG-GAP-001` / `006` / `002` reconciled CLOSED (§31); `LCG-ADR-003` CLOSED (§32). §0.1 *"Preserved, NOT repaired"* table row for **`LCG-ADR-002` corrected** — it had been carried verbatim from v0.1 and read *"⛔ OPEN — `BC-15` still sources zero edges"*, contradicting §32's own determination that `LCG-ADR-002` was **CLOSED 2026-08-31 by `ACCEPTED` `ADR-0084`** (event publication governed by BC Map §9, not §7; carriers `E-20` / `E-23`). This is a clarifying-wording correction to the §0.1 summary table only; ⛔ **no decision text, requirement, gap, criterion, ADR, registry status or lifecycle stage is changed by this clarification**; ⛔ 0 acceptance criteria recorded as passing; ⛔ Stage 8 NOT entered; ⛔ no file under `lib/`, `test/`, `tool/`, `packages/` or `web/` touched · **`LCG-GAP-005` CLOSED by `Accepted` `ADR-0173` §3** (Product Owner, 2026-09-25): §3.1 `name`/`description` field bounds stated (50 / 500 Unicode code points, `name` allow-list `L*`/`Nd`/`U+0020`/exactly 7 punctuation chars `- _ . & ' ( )`, rejection-only, no normalization, ≥1 non-space char, no leading/trailing spaces, consecutive internal spaces permitted; `description` free text); `LCG-FR-005` unblocked (cap = 100 groups/community); `LCG-NFR-004` unblocked (100 groups, 50 `ACTIVE` memberships, platform-fixed V1, ⛔ NOT tenant-configurable); `LCG-AC-017` → ✅ NOW WRITABLE (⚠ NOT recorded as passing); §31 `LCG-GAP-005` row → ✅ CLOSED. ⛔ **`LCG-DEC-005b` NOT decided** — name uniqueness per community remains separately OPEN · ⛔ `PRD-023` byte-unchanged · ⛔ 0 criteria recorded as passing · ⛔ Stage 8 NOT entered · ⛔ `LCG-GAP-009`/`011`/`012`/`013`/`014` remain OPEN · ⛔ no file under `lib/`, `test/`, `tool/`, `packages/` or `web/` touched |

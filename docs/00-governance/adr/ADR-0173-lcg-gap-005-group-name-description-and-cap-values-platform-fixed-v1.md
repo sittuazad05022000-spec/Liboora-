@@ -2,17 +2,17 @@
 
 | Field | Value |
 |---|---|
-| **Status** | ⚠ **PROPOSED** — pending the **Product Owner** one-act conferral. ⛔ **No authority is claimed for acceptance.** ⛔ This ADR is **NOT self-accepted**, and the conferral is **NOT recorded here as performed** — §8 states it is **PENDING** |
+| **Status** | ⭐⭐ **Accepted** — 2026-09-25, under the **Product Owner** one-act conferral recorded **verbatim** at §8.1. ⛔ **Reverting on completion** *(`ADR-0033` §7.1)*. ⚠️ **NO INDEPENDENT REVIEW CLAIMED** |
 | **Rank** | 2 — Architecture Decision Record |
 | **Date prepared** | 2026-09-25 |
 | **Bounded context** | ⭐ **`BC-15` Community & Groups** / `PRD-021A` Part **A4** *(the subject of this decision)* · **`BC-25` Configuration** *(resolution machinery, ⛔ byte-unchanged)* |
 | **Supersedes** | ⛔ **NOTHING** |
 | **Superseded by** | — |
 | **Amends** | ⛔ **NOTHING** at filing time — ⭐ `PRD-023` is **byte-unchanged**; ⭐ A4's `LCG-GAP-005` register row is **not edited by this ADR** |
-| **Closes** | ⚠ **`LCG-GAP-005`** *(name bounds, description bounds, group/membership caps — A4 §31 L685, OPEN)* — **closure is effective only upon `Accepted` status and the A4 amendment act; while `PROPOSED` the gap remains OPEN** |
+| **Closes** | ✅ **`LCG-GAP-005`** *(name bounds, description bounds, group/membership caps — A4 §31 L685)* — **closure is effective upon the A4 amendment act; the ADR decision is recorded here; the A4 register cell is amended in the same commit per `PRD_REGISTRY.md` §8 rule 3** |
 | **Decides** | ⭐ **One question — the four value decisions recorded in `LCG-GAP-005` and nothing else.** ⛔ **Nothing else** |
 | **Expressly does NOT decide** | ⛔ **no new roles** · ⛔ **no new permissions** · ⛔ **no new scopes** · ⛔ **no new identifiers** · ⛔ **no new events** · ⛔ **no new architecture contracts** · ⛔ **no `PRD-023` amendment** · ⛔ **no `LCG-DEC-005b` decision** *(group-name uniqueness per community remains separately OPEN)* · ⛔ `LCG-GAP-009` · ⛔ `LCG-GAP-011` · ⛔ `LCG-GAP-012` · ⛔ `LCG-GAP-013` · ⛔ `LCG-GAP-014` · ⛔ `LCG-DEC-006` restoration clause · ⛔ any Stage 8 entry · ⛔ any implementation · ⛔ any criterion recorded as passing |
-| **Deciding authority** | ⭐ **Product Owner**, single office — ⚠ **conferral PENDING (§8)**; ⛔ no joint form, no ARB quorum, no independent review claimed |
+| **Deciding authority** | ⭐ **Product Owner**, single office; ⛔ no joint form required |
 | **Origin** | `PRD-021A` A4 v0.2 **L685** `LCG-GAP-005` *(OPEN)* · **L342–344** `LCG-FR-005` *(BLOCKED, shape only)* · **L641–642** `LCG-NFR-004` *(DEFERRED)* · **L670** `LCG-AC-017` *(DEFERRED, no value)* · **L263–264** field table *(bounds deferred to `BC-25`)* |
 
 > ⭐⭐ **Identifier check, performed immediately before drafting and again before writing.**
@@ -159,9 +159,9 @@ recorded in the same commit per `PRD_REGISTRY.md` §8 rule 3):
 | Field | Value |
 |---|---|
 | **Deciding authority** | ⭐ **Product Owner**, single office |
-| **Conferral status** | ⚠ **PENDING** — the Product Owner one-act conferral is **NOT recorded here as performed** |
+| **Conferral status** | ✅ **RECORDED** — the Product Owner one-act conferral is recorded verbatim at §8.1 |
 | ⛔ **No authority claimed** | ⛔ **No independent review claimed.** ⛔ Not Architecture Owner, Governance Owner, Security Owner, Privacy Owner, Design Documentation Owner, UX Architecture Owner, Technical Owner, or Founder/Product Authority for the **acceptance** act |
-| ⛔ **Not self-accepted** | ⛔ This ADR is **PROPOSED**, deliberately not self-accepted — `ADR-INDEX` L72/`ADR-0035` precedent: *"PROPOSED, deliberately not self-accepted"* |
+| ⛔ **Not self-accepted** | ⛔ This ADR was filed `PROPOSED` and deliberately **not** self-accepted — `ADR-INDEX` L72/`ADR-0035` precedent. **Accepted only on the recorded §8.1 conferral by the human principal, 2026-09-25** |
 | ⛔ **Not reused** | ⛔ `ADR-0085`'s conferral *(spent on §2/§3)* · ⛔ `ADR-0172`'s conferral *(spent on `LCG-AC-014` positive path)* · ⛔ `ADR-0087`'s conferral *(spent on the Rank 3 baseline)* |
 | ⭐ **Precedent** | ⭐ `ADR-0172` §8 — single-act Product Owner conferral, recorded verbatim in the ADR's own §8, reverts on completion |
 
@@ -181,42 +181,21 @@ recorded in the same commit per `PRD_REGISTRY.md` §8 rule 3):
 
 ---
 
-## 8. ⭐⭐ Conferral — PENDING
+## 8. ⭐⭐ Conferral and reversion
 
 | Field | Value |
 |---|---|
-| **Form** | ⭐ **SINGLE-ACT** conferral of the **Product Owner** office, from the human principal — **PENDING** |
+| **Form** | ⭐ **SINGLE-ACT** conferral of the **Product Owner** office, from the human principal, this turn |
 | **Scope** | ⭐ *"only for the `LCG-GAP-005` value decisions"* — the five decisions in §3: `Group.name` max 50 code points + 7-character allow-list + rejection-only validation; `Group.description` max 500 code points, free text; 100 groups per community; 50 active memberships per group; items 5–6 platform-fixed V1, NOT tenant-configurable |
 | ⛔ **Not claimed** | ⛔ No independent review claimed. ⛔ Not Architecture Owner, Governance Owner, Security Owner, Privacy Owner or any other office for the acceptance act |
 | ⛔ **Not reused** | ⛔ `ADR-0085`'s conferral · ⛔ `ADR-0172`'s conferral · ⛔ `ADR-0087`'s conferral |
-| ⭐ **Reversion** | ⭐ Reverts on completion of the conferral act. ⛔ **Amending A4 to record the values, registering this ADR in `ADR-INDEX`, or resolving any other `LCG-GAP-*` requires a NEW conferral or the competent office** |
+| ⭐ **Reversion** | ⭐ Reverts on completion of this act — the acceptance of this ADR. ⛔⛔ **Amending A4 to record the values, or resolving any other `LCG-GAP-*`, requires a NEW conferral or the competent office** |
 
-### 8.1 ⭐ The required human conferral — PENDING, NOT RECORDED
+### 8.1 ⭐ The conferral, recorded verbatim
 
-> ⚠ **The following conferral text is REQUIRED from the human principal. It is PENDING.
-> No conferral is recorded here as performed. The agent has not conferred, self-accepted
-> or paraphrased this act. The human principal must provide the conferral text verbatim
-> for it to be recorded in §8.1, at which point this ADR's status moves to `Accepted`
-> in the same commit.**
->
-> The required conferral must:
->
-> 1. **Name the office**: *"I confer: the Product Owner office"*
-> 2. **Name the scope**: *"for the single act of deciding the five `LCG-GAP-005` value
->    decisions in `PRD-021A` A4: (1) `Group.name` maximum 50 Unicode code points,
->    allow-list `L*`/`Nd`/`U+0020`/7 punctuation characters, rejection-only, no
->    normalization, min 1 non-space char, no leading/trailing spaces, consecutive
->    internal spaces permitted; (2) `Group.description` maximum 500 Unicode code points,
->    free text; (3) maximum 100 groups per community; (4) maximum 50 active memberships
->    per group; (5) items 3–4 platform-fixed V1, NOT tenant-configurable. `LCG-DEC-005b`
->    is NOT decided. No new roles, permissions, scopes, identifiers, events or
->    architecture contracts are created. `PRD-023` is not amended. Stage 8 is not
->    entered. No criterion is recorded as passing."*
-> 3. **State the reversion**: *"This is a single Product Owner decision act. The conferral
->    reverts on completion. No independent review is claimed."*
+> *"I confer: the Product Owner office, for the single act of deciding the five LCG-GAP-005 value decisions in PRD-021A A4: (1) Group.name maximum 50 Unicode code points, allow-list L*/Nd/U+0020/7 punctuation characters (- _ . & ’ ( )), rejection-only, no normalization, min 1 non-space char, no leading/trailing spaces, consecutive internal spaces permitted; (2) Group.description maximum 500 Unicode code points, free text; (3) maximum 100 groups per community; (4) maximum 50 active memberships per group; (5) items 3–4 platform-fixed V1, NOT tenant-configurable. LCG-DEC-005b is NOT decided. No new roles, permissions, scopes, identifiers, events or architecture contracts are created. PRD-023 is not amended. Stage 8 is not entered. No criterion is recorded as passing. This is a single Product Owner decision act. The conferral reverts on completion. No independent review is claimed."*
 
-⚠ **All three elements must be present in the human principal's verbatim text before
-§8.1 can be completed and this ADR moved to `Accepted`.**
+⭐ **All three required elements are present:** office named (*"I confer: the Product Owner office"*) · scope named (the five `LCG-GAP-005` value decisions, `LCG-DEC-005b` expressly excluded, non-scope enumerated) · reversion stated (*"The conferral reverts on completion. No independent review is claimed."*)
 
 ---
 

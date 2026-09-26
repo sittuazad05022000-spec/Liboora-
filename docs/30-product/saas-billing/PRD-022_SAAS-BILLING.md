@@ -45,7 +45,8 @@ governance findings all terminated here** and could not be resolved anywhere els
 | `SAAS-XC-*` | Explicit exclusion — what this module MUST NOT do | **15** | `SAAS-XC-001` … `SAAS-XC-015` |
 | `SAAS-AC-*` | Acceptance criterion | **31** | `SAAS-AC-001` … `SAAS-AC-031` |
 | `SAAS-GAP-*` | Governance gap / open question — **not a requirement** | **7** | `SAAS-GAP-001` … `SAAS-GAP-007` |
-| **Total** | | **102** | |
+| `SAAS-CFG-*` | Configurable parameter — ⭐ **DECLARED 2026-09-25 under [`DP-0008`](../../00-governance/decisions/DP-0008-configuration-owner-decision-saas-gap-002-d4-identifier-allocation-route.md) (Configuration Owner, Route A)** | **3** | `SAAS-CFG-001` … `SAAS-CFG-003` (⚠ **identifiers not yet allocated** — allocation is `CONFIGURATION_GUIDE.md` §5 act (c), pending) |
+| **Total** | | **105** | |
 
 **Obligation-bearing** = 28 + 13 + 8 + 15 = **64**. `SAAS-AC-*` are *verified by* tests and `SAAS-GAP-*` are *open
 questions*; neither is an obligation, on the same principle `PRD-006` §0.3 applies to its own acceptance and
@@ -59,6 +60,16 @@ register would be the wrong direction, so the citation was rephrased instead.)*
 > therefore **declares which values are configurable and at what scope**, and creates **no** `CFG-*`, `LCFG-*`,
 > `ICFG-*` or new configuration identifier of its own. Allocating identifiers in those closed registers is the
 > owning PRD's act, not this one's — recorded as `SAAS-GAP-002`.
+>
+> ⭐ **Register DECLARED 2026-09-25 under [`DP-0008`](../../00-governance/decisions/DP-0008-configuration-owner-decision-saas-gap-002-d4-identifier-allocation-route.md) (Configuration Owner, Route A):** this document now declares a **new `SAAS-CFG-*` register** — the owning-PRD-declares-its-register pattern of the `FIL-CFG-*`/`ADR-0057` precedent — with its **three members published up front** (per `PRD_LIFECYCLE.md` L82 rule 2–3), each with its `DP-0007`-decided range/default and platform scope (`PR-1`-mutable, per `SAAS-AC-005`):
+>
+> | Member | Parameter | Range (per `DP-0007`) | Default | Scope | Mutability |
+> |---|---|---|---|---|---|
+> | `SAAS-CFG-001`* | Platform Charge rate | **1%–5%** | **3%** | platform | `PR-1` only (`SAAS-AC-005`) |
+> | `SAAS-CFG-002`* | SaaS free-trial duration | **7–30 days** | **14 days** | platform | `PR-1` only |
+> | `SAAS-CFG-003`* | Billing due day | **closed set {10, 15, 25}** | **the 15th** | platform | `PR-1` only |
+>
+> ⚠ ***Identifier labels `SAAS-CFG-001`/`002`/`003` are the register's published range slots only — the identifiers are NOT yet allocated.* `CONFIGURATION_GUIDE.md` §5 L863: *"Adding a parameter — a **PRD amendment** — the specification declares what is configurable, this guide does not."* The allocation is act **(c)** of the `DP-0008` §4 sequence, performed by the Configuration Owner / guide owner **after** this declaration; until then the `SAAS-CFG-*` members are **declared, not allocated**. ⛔ **No value, range, default or scope was re-decided here** — all three are consumed verbatim from `DP-0007`. ⛔ **`PRD-023`'s `CNF-CFG-*` register remains 0** (`ADR-0017` L132: *"PRD-023 owns the resolution machinery, not the value list"* — the new register is admitted to that machinery **by reference**, not by a `PRD-023` amendment).
 
 ### 0.3 Normative language
 
@@ -717,7 +728,7 @@ a **platform-level** value; both attempts fail closed.
 | **Question** | What are the minimum/maximum ranges for the Platform Charge rate and the free-trial duration, and under which register are their parameter identifiers allocated? |
 | **Measured** | `CONFIGURATION_GUIDE.md` v1.1 governs **35** parameters (`CFG-1`…`12`, `LCFG-1`…`13`, `ICFG-1`…`10`) and holds **no** Platform Charge rate and **no** trial duration. §5: *"Adding a parameter — a **PRD amendment**"*, and this document supplies that amendment for **what** is configurable, not for the identifier |
 | **Classification** | **REQUIRES PRODUCT OWNER** (ranges) + **`BC-25`/`PRD-023`** (identifier allocation) |
-| **Status** | ⭐ **RANGES LIMB DECIDED 2026-09-25 — recorded in [`DP-0007`](../../00-governance/decisions/DP-0007-product-owner-decision-saas-gap-002-configurable-ranges.md) (Product Owner): Platform Charge rate range **1%–5%** (default 3% unchanged) · free-trial duration range **7–30 days** (default 14 days unchanged) · billing due day **closed set {10, 15, 25}** (default the 15th unchanged, set stated CLOSED). ⚠ **IDENTIFIER-ALLOCATION LIMB REMAINS OPEN** — the `BC-25`/`PRD-023` owner act (D-4, the *"PRD amendment"* route of `CONFIGURATION_GUIDE.md` §5 L863) is **explicitly excluded from the `DP-0007` approval** and is a separate office's act; ⛔ **0 identifiers allocated here.** |
+| **Status** | ⭐ **RANGES LIMB DECIDED 2026-09-25 — recorded in [`DP-0007`](../../00-governance/decisions/DP-0007-product-owner-decision-saas-gap-002-configurable-ranges.md) (Product Owner): Platform Charge rate range **1%–5%** (default 3% unchanged) · free-trial duration range **7–30 days** (default 14 days unchanged) · billing due day **closed set {10, 15, 25}** (default the 15th unchanged, set stated CLOSED). ⭐ **REGISTER DECLARED 2026-09-25 — recorded in [`DP-0008`](../../00-governance/decisions/DP-0008-configuration-owner-decision-saas-gap-002-d4-identifier-allocation-route.md) (Configuration Owner, Route A): new `SAAS-CFG-*` register, 3 members published up front at §0.2 (rate / trial / due-day, with `DP-0007` ranges and defaults), admitted to `PRD-023`'s resolution machinery by reference; ⛔ `CNF-CFG-*` remains 0; no ADR, no `PRD-023` amendment.** ⚠ **IDENTIFIER-ALLOCATION LIMB STILL OPEN** — act **(c)** of the `DP-0008` §4 sequence (`CONFIGURATION_GUIDE.md` §5 amendment, Configuration Owner / guide owner) is **pending**; ⛔ **0 identifiers allocated.** |
 | **Blocks** | ⚠ **Partially** — the ranges limb no longer blocks (the three configurables now each have a default and a range, satisfying `PRD_LIFECYCLE.md` L114); the **identifier-allocation limb still blocks Stage 4 and Freeze** until the `BC-25`/`PRD-023` owner performs D-4 |
 | **What was NOT invented** | No range, no default minimum or maximum *(v0.1-era statement, retained — superseded by the `DP-0007` ranges at the Status row above)*; no `CFG-*`/`LCFG-*`/`ICFG-*` identifier and no new configuration register — **still true, D-4 unperformed** |
 

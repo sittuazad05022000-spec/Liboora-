@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Bounded Context Map |
-| **Version** | ⭐ **v1.19** — ⭐⭐ **appends §25, registering edge `E-35` `BC-04 Seating` → `BC-23 Search Indexing` (`PL`, Event, **V1**) and the fifth `BC-04` event **`SEAT-EVT-005` `seating.AvailabilityStateChanged`**, payload exactly `{libraryId, availabilityState}`, as the V1 public seat-availability path required by `LIB-14B.12`** — by `Accepted` [`ADR-0170`](../00-governance/adr/ADR-0170-e35-registered-seating-availability-state-changed-bc-map-v1-19.md). ⛔ **§7, §8 and §9 byte-unchanged**; ⛔ **no FROZEN artefact edited**; ⛔ contexts remain **31** (23 in V1). ⚠️ **L10's edge tally is NOT updated** — it is cited by line and was already stale before this pass; see **§25.4** | ⭐ Previously: **v1.18** — appended §24, edge `E-34` `BC-18` → `BC-31` (Google federated identity, `ADR-0146`) |
+| **Version** | ⭐ **v1.20** — ⭐⭐ **§8 single-cell amendment: `TenantTrialState` added as a `BC-19` `Tenant`-aggregate member with its survival invariant** — by the `ADR-0096` single-cell append instrument, applied to the **L381 cell content only** (member column + invariant column of the existing BC-19 row, **appended within the row**, no line inserted, no line shifted). ⛔ **§7 and §9 byte-unchanged** · ⛔ **no edge added (`E-35` is the current max; `E-27` vacant) and no context added or reclassified — count remains 31 (23 in V1)** · ⛔ **no FROZEN artefact edited** · ⛔ **no `SAAS-*` / `SAAS-CFG-*` identifier minted** — `TenantTrialState` is a BC-19 tenant-domain fact · ⛔ `PRD-022`, `PRD-013`, `PRD-001`, `PRD-008` byte-unchanged | ⭐ Previously: **v1.19** — appended §25, edge `E-35` `BC-04 Seating` → `BC-23 Search Indexing` (`PL`, Event, **V1**) and the fifth `BC-04` event **`SEAT-EVT-005` `seating.AvailabilityStateChanged`**, payload `{libraryId, availabilityState}`, as the V1 public seat-availability path required by `LIB-14B.12` — by `Accepted` [`ADR-0170`](../00-governance/adr/ADR-0170-e35-registered-seating-availability-state-changed-bc-map-v1-19.md). ⛔ §7, §8 and §9 byte-unchanged |
 | **Status** | Draft for Architecture Review Board sign-off |
 | **Derived from** | `LIBOORA_ENTERPRISE_ARCHITECTURE.md` v2.0 (commit `aba0831`) |
 | **Last Updated** | 2026-08-20 ⭐ **v1.13 appends §19**, declaring **`E-33`** `BC-18 Identity & Access` → `BC-31 Integration` (`CF`, Sync port, **V1**) as the **V1 OTP / possession-challenge transport**, admitted by `Accepted` [`ADR-0128`](../00-governance/adr/ADR-0128-r3-bc-18-to-bc-31-v1-otp-transport-edge-e-33.md) under a **joint Architecture Owner + Product Owner** one-act conferral — again **appended, not inserted**. ⭐ It **ratifies a route the module manifest has declared since `a2caa22`** (`tool/module_dependencies.yaml` **L437–439**, *"the single sanctioned bypass of `platform/communication`, for possession challenge delivery only"*), rather than creating one. **Edges: 30** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-33`** (**§19.1**); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` reserved** for `PRD-021C`/`TSF-GAP-009` and **`E-32`** allocated to `BC-22 → BC-31` by `ADR-0127` but **NOT yet minted here** — neither appears in this file. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed ⭐ **v1.14 appends §20**, registering **`E-32`** `BC-22 Notification Delivery` → `BC-31 Integration` (`CF`, Sync port, **V1**, **Push/FCM egress only**) — the **M2 execution** of the allocation `Accepted` [`ADR-0127`](../00-governance/adr/ADR-0127-r1-e-32-bc-22-to-bc-31-push-fcm.md) approved and expressly **deferred to M2**; again **appended, not inserted**. ⭐ It **registers an identifier for an already-authoritative contract** — Rank-1 `MASTER_PRD` **L229** (*"Push notifications | `BC-22` **via `BC-31`** … FCM (V1)"*) and `PRD-010` **`NTF-FR-031`** — and creates no capability. **Edges: 31** — `E-01`…`E-26` (§7) + `E-28`, `E-29` (§15.1) + `E-30` (§17.1) + **`E-32`** (**§20.1**) + `E-33` (§19.1); ⛔ `E-27` **still** permanently vacant; ⛔ **`E-31` still reserved** for `PRD-021C`/`TSF-GAP-009` and **absent from this file**. **Context count remains 31 (23 in V1)**; no aggregate, member or invariant changed |
@@ -378,7 +378,7 @@ One row per aggregate. **The aggregate is the transaction boundary** — one agg
 | BC-12 Messaging | `Conversation` | `Message`, `DeliveryReceipt`, `RetentionPolicy` | Participants must satisfy `canMessage` at send time; message immutable after delivery; retention purge is irreversible and audited |
 | BC-13 Trust & Safety | `ModerationCase` | `AbuseReport`, `EnforcementAction`, `StrikeRecord`, `Appeal` | Every enforcement action has a case, an actor and a reason; strikes escalate deterministically; appeal cannot be decided by the enforcing actor |
 | BC-18 Identity & Access | `Account` · `AccessPolicy` | `Credential`, `AuthSession`, `Device`, `ConsentRecord` | One active credential set per account; OTP single-use with TTL; session revocation is immediate and global; minor guardian consent precedes social activation |
-| BC-19 Tenancy | `Tenant` | `TenantTier`, `Quota`, `ResidencyRegion`, `TenantLifecycleState` | Tenant ID immutable; suspended tenant rejects all writes; residency region immutable after first write |
+| BC-19 Tenancy | `Tenant` | `TenantTier`, `Quota`, `ResidencyRegion`, `TenantLifecycleState`, `TenantTrialState` | Tenant ID immutable; suspended tenant rejects all writes; residency region immutable after first write; `TenantTrialState` = CONSUMED survives Suspend, Archive, Restore and the `CFG-10` account-erasure window without reset or refund — evaluated solely on the immutable `Tenant ID` + `TenantTrialState` (no fingerprinting, device, contact or account-recovery matching); true tenant erasure / new `Tenant ID` behaviour is V2, out of this act |
 | BC-20 Subscription & Billing | `Subscription` · `SubscriptionInvoice` | `SubscriptionPlan`, `PaymentAttempt`, `DunningState` | One active subscription per tenant; **payment idempotent by gateway reference**; invoice immutable once finalised; entitlement change emitted on every state transition |
 | BC-21 Entitlement | `EntitlementSet` *(per tenant, read-optimised)* | `FeatureGate`, `UsageCounter`, `Limit` | Derived state only — **never** hand-edited; recomputable from Subscription events (rebuild-from-events must yield identical output) |
 | BC-24 Audit Trail | `AuditEntry` | `Actor`, `Action`, `Target`, `TenantContext` | **Append-only, no update or delete path exists in code**; entry carries the tenant and actor of record; legal hold blocks purge |
@@ -1559,5 +1559,66 @@ satisfied when it was not.
 - ⛔ **No role, permission, `PERM-*`, action class or scope class** — `AUTH-7.22` stays **CLOSED at ZERO**
 - ⛔ **No threshold changed** — `ADR-0168`/`ADR-0169` are preserved exactly
 - ⭐⭐ **A registered edge is NOT an implementation** *(`ADR-0146` §24.3)* — ⛔ no UI, no surface, no code, no schema is authorised by this section
+
+⚠ **Baseline:** this file is **Rank 4**, so its version change does ⛔ **not** trigger `DOCUMENTATION_BASELINE.md` §7 **rule 4** — and ⛔ **no Rank 1–3 document changes version in this commit**, so **`BASELINE-2026-09-11-B` STANDS**. ⭐ §7 **rule 2** (version + changelog in the same commit) and **rule 3** (declaration updated in the same commit) **are both discharged in this commit**.
+
+---
+
+## 26. ⭐ `DP-0009` Changelog entry — v1.20: `TenantTrialState` added as a `BC-19` `Tenant`-aggregate member (single-cell §8 amendment)
+
+> ⚠⚠ **THIS SECTION IS THIS FILE's v1.20 CHANGELOG ENTRY.** It is recorded here, **at end of file**, and ⛔ **NOT as a
+> row in the `## Changelog` table above** — the same append discipline §21, §22, §23 and §24 established, and for the
+> identical measured reason: a newest-first row would land at **L613** and shift ten live citations, including ⭐⭐
+> **L1108, which is cited by `Accepted` [`ADR-0129`](../00-governance/adr/ADR-0129-google-sign-in-v1-primary-authentication-mobile-otp-v2.md) L79** — an
+> edit `ADR-INDEX` **L206** forbids. ⭐ **Appending here shifts ZERO citations** — [`ADR-0079`](../00-governance/adr/ADR-0079-ea-v2.3-capability-enumeration-addenda.md) §8.5 **Option A**, and the
+> `ADR-INDEX` end-of-file addendum precedent (`ADR-0125`…`ADR-0128`, `ADR-0131`, `ADR-0132`). ⭐ The header
+> `Version` cell reads **v1.20**, so the current version is unambiguous.
+
+### 26.1 What this version does — ONE single-cell amendment to §8 L381
+
+**The existing `BC-19` row at §8 L381 has two of its cells extended — appended within the existing row, no line inserted, no line shifted.** All other rows in §8 are byte-identical.
+
+| Cell | Change |
+|---|---|
+| **Member column (L381)** | `TenantTrialState` — **added** as a fifth member of the `Tenant` aggregate: `` `TenantTier`, `Quota`, `ResidencyRegion`, `TenantLifecycleState`, `TenantTrialState` `` |
+| **Invariant column (L381)** | Survival invariant **appended**: *`TenantTrialState` = CONSUMED survives Suspend, Archive, Restore and the `CFG-10` account-erasure window without reset or refund — evaluated solely on the immutable `Tenant ID` + `TenantTrialState` (no fingerprinting, device, contact or account-recovery matching); true tenant erasure / new `Tenant ID` behaviour is V2, out of this act* |
+
+**What the fact means:**
+- `TenantTrialState` = CONSUMED means the `Tenant` identified by the immutable `Tenant ID` has **consumed its one platform trial**.
+- Trial eligibility is evaluated **solely** on the immutable `Tenant ID` + `TenantTrialState` — no fingerprinting, no device matching, no contact matching, no account-recovery matching.
+- `SAAS-AC-003` ("a library that has consumed a trial and is deleted and recreated does not receive a second trial") is now directly testable: the test sets up a `Tenant ID` with `TenantTrialState = CONSUMED`, runs the delete→recreate state path, and asserts trial refusal.
+
+**What the survival invariant compels across the four C-states:**
+- **Suspend** — survives, unchanged (`LIB-8.4`: "Suspension MUST NOT delete, alter or invalidate any business record" — trial consumption *is* a business record)
+- **Archive** — survives, unchanged (`LIB-8.8`: `Archive` is the terminal V1 state; an archived tenant that consumed a trial still reads CONSUMED — the trial is not refunded on archive)
+- **Restore** — survives, **without reset** (`LIB-8.5`: `Restore` returns the tenant to *Suspended*, never directly to Active; the trial state is not reset by restore)
+- **`CFG-10` account-erasure window** — `CFG-10` is an **account-level** (Authentication `BC-18`) retention parameter, not a `BC-19` tenant-domain fact; **permanent deletion is out of V1 scope** (`LIB-8.8`), so there is **no V1 erasure path that reaches the `Tenant` aggregate** — `TenantTrialState` is erasure-immune in V1 by construction
+
+⚠ **True tenant erasure / new-`Tenant-ID` behaviour is explicitly OUTSIDE this V1 act** — if a permanent tenant-deletion path is ever introduced in V2, the survival of `TenantTrialState` across *true* erasure is a V2 decision, not a V1 gap.
+
+### 26.2 ⛔ What this version does NOT do
+
+- ⛔ **Mints no edge** — ⛔ **`E-27`** stays permanently vacant (*`ADR-0033`*; "numbers are never reused"); `E-35` remains the highest allocated edge
+- ⛔ **Mints no event** — no `tenancy.*` or any other event added or renamed
+- ⛔ **Mints no `SAAS-*` or `SAAS-CFG-*` identifier** — `TenantTrialState` is a BC-19 tenant-domain fact, **not** a SaaS-billing identifier; the `SAAS-*` register count is **unchanged at 105**
+- ⛔ **Adds, removes or alters no context** — count remains **31** (23 in V1)
+- ⛔ **Adds, removes or alters no aggregate** — only a **member** is added to the existing `Tenant` aggregate
+- ⛔ **Amends no frozen PRD** — `Library_PRD_v1.md`, `PRD-022`, `PRD-013`, `PRD-001`, `PRD-008`, `Authentication_PRD_v2.md` are **byte-unchanged**
+- ⛔ **Changes no code, test, checker or module manifest** — **0** files under `lib/`, `test/`, `tool/`, `packages/`
+- ⛔ **Confers no lifecycle stage** and authorises no implementation
+- ⛔ **Does NOT close `SAAS-GAP-005` in `PRD-022` §12** — that is **act (c)**, a `PRD-022` subject-amendment act, **not performed by this commit**
+- ⛔ **Does NOT reconcile `PRD-013` `TEN-GAP-003`** — that is **act (d)**, a `PRD-013` owner act, **not performed by this commit**
+
+### 26.3 Authority and precedent
+
+`Accepted` [`ADR-0096`](../00-governance/adr/ADR-0096-profile-view-fact-produced-by-bc-19-over-new-edge-e-30.md) §9 (header L9): *"by APPEND as new §17, the `ADR-0079` §8.5 Option A method that `ADR-0083` (§15) and `ADR-0085` (§16) both used."* ⭐ This v1.20 act follows the **same single-cell append instrument** for its §8 L381 amendment — modifying the existing BC-19 row's member and invariant cells **in place**, with **0 line-shifts** and **0 citation invalidation**.
+
+The decision is recorded in `DP-0009` (Architecture Owner decision record, `SAAS-GAP-005`). ⛔ This commit **performs only act (b)** — the single-cell BC Map §8 publication. Acts (c) and (d) remain pending.
+
+### 26.4 ⛔ What this section does NOT do — reiterated
+
+See §26.2 above. The invariant states `TenantTrialState = CONSUMED` survives Suspend/Archive/Restore and the `CFG-10` window. ⛔ **No V2 true-erasure survival rule is decided here** — clause C's V2 note defers it. ⛔ **No `SAAS-*` identifier is minted.** ⛔ **`PRD-022` §12 `SAAS-GAP-005` cell is NOT updated** — it remains OPEN pending act (c).
+
+---
 
 ⚠ **Baseline:** this file is **Rank 4**, so its version change does ⛔ **not** trigger `DOCUMENTATION_BASELINE.md` §7 **rule 4** — and ⛔ **no Rank 1–3 document changes version in this commit**, so **`BASELINE-2026-09-11-B` STANDS**. ⭐ §7 **rule 2** (version + changelog in the same commit) and **rule 3** (declaration updated in the same commit) **are both discharged in this commit**.

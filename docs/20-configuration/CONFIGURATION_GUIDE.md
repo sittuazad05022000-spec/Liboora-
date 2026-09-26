@@ -2,19 +2,21 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Normative for operations |
-| **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-20** |
-| **Governs** | `CFG-1` … `CFG-12` (Authentication PRD v2.0 §E) · **`LCFG-1` … `LCFG-13`** (Library PRD v1.0 §16.1, §14B.9) · **`ICFG-1` … `ICFG-10`** (Invitation Security Specification §11) · **ten of the fifteen `FIL-CFG-*` media-processing slots** (`PRD-017` §8.5, via `ADR-0057`) |
+| **Date** | 2026-08-02 · extended 2026-08-03 · **extended 2026-08-20** · **extended 2026-09-25** |
+| **Governs** | `CFG-1` … `CFG-12` (Authentication PRD v2.0 §E) · **`LCFG-1` … `LCFG-13`** (Library PRD v1.0 §16.1, §14B.9) · **`ICFG-1` … `ICFG-10`** (Invitation Security Specification §11) · **ten of the fifteen `FIL-CFG-*` media-processing slots** (`PRD-017` §8.5, via `ADR-0057`) · **three `SAAS-CFG-*` SaaS-billing slots** (`PRD-022` §0.2, via `DP-0008` Route A) |
 | **Authority** | Subordinate to the PRDs. This guide sets values **within** the envelope they define; it cannot change the envelope |
 
 ---
 
 ## 1. How to read this guide
 
-The PRDs declare **fifty** configurable parameters — twelve authentication (`CFG-*`), thirteen library
-(`LCFG-*`), ten invitation (`ICFG-*`) and fifteen File & Media (`FIL-CFG-*`, `PRD-017` §8.5). This guide supplies
-values for **forty-five** of them: §2C.11 records the five it deliberately leaves unset and why. Configurable means: the value can change per environment or per deployment
+The PRDs declare **fifty-three** configurable parameters — twelve authentication (`CFG-*`), thirteen library
+(`LCFG-*`), ten invitation (`ICFG-*`), fifteen File & Media (`FIL-CFG-*`, `PRD-017` §8.5) and three SaaS Billing
+(`SAAS-CFG-*`, `PRD-022` §0.2, via `DP-0008` Route A). This guide supplies
+values for **forty-eight** of them: §2C.11 records the five `FIL-CFG-*` it deliberately leaves unset and why.
+Configurable means: the value can change per environment or per deployment
 **without changing the specification, the architecture, or any interface**.
 
 This guide gives, for each parameter:
@@ -727,6 +729,97 @@ identifier for it, because the register belongs to a FROZEN document.
 
 ---
 
+## 2D. SaaS Billing parameter register — the `SAAS-CFG-*` values
+
+Declared by [`PRD-022_SAAS-BILLING.md`](../30-product/saas-billing/PRD-022_SAAS-BILLING.md) §0.2, which publishes
+**three** `SAAS-CFG-*` slots under the Route-A register established by
+[`DP-0008`](../00-governance/decisions/DP-0008-configuration-owner-decision-saas-gap-002-d4-identifier-allocation-route.md)
+(Configuration Owner decision record; `FIL-CFG-*`/`ADR-0057` owning-PRD-declares-its-register precedent).
+This section supplies values for **all three** slots. Authority: the values are **consumed verbatim** from
+[`DP-0007`](../00-governance/decisions/DP-0007-product-owner-decision-saas-gap-002-configurable-ranges.md)
+(Product Owner decision record); ⛔ **no value, range or default was re-decided or invented here** — the `FIL-CFG-*`
+discipline of *"values are attributed, not derived"* applies in full.
+
+**Owner: Configuration Owner.** Every value is platform-scoped and `PR-1`-mutable only (`SAAS-AC-005`); no tenant,
+library or user actor may change any `SAAS-CFG-*` value. `PRD-023`'s `CNF-CFG-*` register **remains 0** — the
+register is admitted to the `BC-25` resolution machinery by reference (`ADR-0017` §3.1 item 6), not by a
+`PRD-023` amendment. ⛔ No `PRD-023` amendment, no ADR.
+
+### 2D.1 Platform Charge rate
+
+| | |
+|---|---|
+| **Slot** | `SAAS-CFG-001` (`SAAS-FR-001`) |
+| **Default** | **3%** |
+| **Range** | **1% – 5%** |
+| **Unit** | percentage of confirmed `BC-05` collection amount |
+| **Scope** | platform (scope 1) |
+| **Owner** | Configuration Owner; `PR-1`-mutable only |
+| **Provenance** | Product Owner, 2026-09-25, via `DP-0007` D-1 · register route via `DP-0008` |
+
+**Rationale.** The default 3% reproduces the §7B load-test arithmetic in `PRD-022` (₹50,000 collected →
+₹150 accrual at 3% — `SAAS-AC-006`). The range floor of 1% keeps the charge commercially meaningful; the ceiling
+of 5% bounds the per-collection amount to at most ₹25 per ₹500, keeping the platform fee inside a band the §7B
+load tests were worked to. A value outside 1–5% routes to §5's *"An ADR"* path (L862).
+
+### 2D.2 SaaS free-trial duration
+
+| | |
+|---|---|
+| **Slot** | `SAAS-CFG-002` (`SAAS-FR-017`) |
+| **Default** | **14 days** |
+| **Range** | **7 – 30 days** |
+| **Unit** | calendar days |
+| **Scope** | platform (scope 1) |
+| **Owner** | Configuration Owner; `PR-1`-mutable only |
+| **Provenance** | Product Owner, 2026-09-25, via `DP-0007` D-2 · register route via `DP-0008` |
+
+**Rationale.** The default 14 days is the v0.3-ratified value. The 7-day floor keeps the trial a meaningful
+evaluation window; the 30-day ceiling caps free-usage exposure at one calendar month. A change to the default
+**MUST NOT** retroactively alter an in-progress or completed trial period (`SAAS-BR-009`, the third application of
+frozen `MM-FR-064`'s principle). A value outside 7–30 days routes to §5's *"An ADR"* path.
+
+### 2D.3 Billing due day
+
+| | |
+|---|---|
+| **Slot** | `SAAS-CFG-003` (`SAAS-FR-022`) |
+| **Default** | **the 15th** |
+| **Permitted set** | **closed: {10, 15, 25}** — any value other than 10, 15 or 25 is invalid |
+| **Unit** | calendar day of month (1-indexed) |
+| **Scope** | platform (scope 1) |
+| **Owner** | Configuration Owner; `PR-1`-mutable only |
+| **Provenance** | Product Owner, 2026-09-25, via `DP-0007` D-3 (closed set, set stated CLOSED) · register route via `DP-0008` |
+
+**Rationale.** The closed set {10, 15, 25} contains **no day above 28**, so every permitted value occurs in
+**every month including February** — this is what resolved `SAAS-GAP-007` by elimination (`DP-0007`): no
+early-close or roll-forward rule is required for 29/30/31 because no 29/30/31 is permitted. The default 15th is
+the v0.3-ratified value. A due-day change **MUST NOT** alter any already-generated statement's due date or
+billing-period assignment (`SAAS-FR-023`/`024`). A configured value other than 10, 15 or 25 routes to §5's
+*"An ADR"* path.
+
+### 2D.4 Allocation summary and invariants
+
+| Slot | Parameter | Default | Range / set | §5 out-of-range route |
+|---|---|---|---|---|
+| `SAAS-CFG-001` | Platform Charge rate | 3% | 1% – 5% | An ADR |
+| `SAAS-CFG-002` | SaaS free-trial duration | 14 days | 7 – 30 days | An ADR |
+| `SAAS-CFG-003` | Billing due day | the 15th | closed {10, 15, 25} | An ADR |
+
+⭐ **No cross-parameter invariants among the three `SAAS-CFG-*` values** — each is independently bounded and
+independently owned; §3's invariant table is **unchanged** by this allocation (no new `INV-*` row added).
+⛔ **No new identifier beyond `SAAS-CFG-001`/`002`/`003`** was minted. ⛔ **No existing `CFG-*`/`LCFG-*`/`ICFG-*`/
+`FIL-CFG-*` value was changed.** ⛔ **`PRD-023` (FROZEN) byte-unchanged; `CNF-CFG-*` remains 0.**
+
+> **§5 change-control note (L863):** *"Adding a parameter — a **PRD amendment** — the specification declares what is
+> configurable, this guide does not."* That amendment was performed by `PRD-022` v0.4.3 (§0.2 register declaration
+> + `SAAS-FR-001`/`017`/`022` parameter declarations, under `DP-0008` acts (a) + (b)). This §2D allocation is the
+> guide's corresponding act (c): it supplies values **for what the specification declared**, and declares nothing
+> new. ⚠ **`SAAS-GAP-002`'s D-4 limb is NOT closed by this allocation alone** — the §12 closure record in
+> `PRD-022` (act (d)) is a separate act, not performed here.
+
+---
+
 ## 3. Cross-parameter invariants
 
 These must be **validated at application startup**. A violation is a fatal configuration error — fail fast and
@@ -922,7 +1015,10 @@ closes `FIL-GAP-014`) · [`ADR-0056`](../00-governance/adr/ADR-0056-file-media-v
 §3.5, §6 (why the values were owed rather than invented) ·
 [`ADR-0021`](../00-governance/adr/ADR-0021-attendance-management-configurable-defaults.md) §4 / D-1 (the four
 routes for an unsupplied value; route 1 is the one taken) · `MASTER_PRD.md` §25 `MP-NFR-01`…`12` (**no media or
-processing budget** — re-measured, the reason `B-4` stands)
+processing budget** — re-measured, the reason `B-4` stands) ·
+[`PRD-022_SAAS-BILLING.md`](../30-product/saas-billing/PRD-022_SAAS-BILLING.md) §0.2 (the three `SAAS-CFG-*`
+slots, Route A per [`DP-0008`](../00-governance/decisions/DP-0008-configuration-owner-decision-saas-gap-002-d4-identifier-allocation-route.md);
+values from [`DP-0007`](../00-governance/decisions/DP-0007-product-owner-decision-saas-gap-002-configurable-ranges.md))
 
 ---
 
@@ -930,6 +1026,7 @@ processing budget** — re-measured, the reason `B-4` stands)
 
 | Version | Date | Change |
 |---|---|---|
+| **v1.3** | 2026-09-25 | **Added §2D, the SaaS Billing register**, supplying values for **all three** `SAAS-CFG-*` slots declared by `PRD-022` §0.2 under `DP-0008` Route A (`SAAS-CFG-001` rate 3% · 1–5% · `SAAS-CFG-002` trial 14 days · 7–30 days · `SAAS-CFG-003` due day the 15th · closed {10, 15, 25}). Authority: the values are **consumed verbatim from `DP-0007`** (Product Owner decision record); ⛔ **no value, range or default was re-decided or invented** — the `FIL-CFG-*` *"values are attributed, not derived"* discipline applies. Parameter count **50 → 53 declared, 45 → 48 supplied** (recomputed: the three `SAAS-CFG-*` slots are all supplied; no `FIL-CFG-*` unset slot changed). ⛔ **No `CFG-*`/`LCFG-*`/`ICFG-*`/`FIL-CFG-*` value changed.** ⛔ **No new `INV-*` invariant** — the three `SAAS-CFG-*` values are independently bounded. ⛔ **`PRD-023` (FROZEN) byte-unchanged; `CNF-CFG-*` remains 0.** ⚠ **`SAAS-GAP-002`'s D-4 limb is NOT closed by this allocation** — the §12 closure record in `PRD-022` (act (d), `DP-0008` §4) is a separate act, not performed here. **No commit, no push** — this amendment is uncommitted in the working tree. |
 | **v1.2** | 2026-08-20 | **Added §2C, the File & Media media-processing register**, supplying values for **ten** of the fifteen `FIL-CFG-*` slots `PRD-017` §8.5 declares. Authority: `ACCEPTED` [`ADR-0057`](../00-governance/adr/ADR-0057-media-processing-configurable-values.md), which **closes `FIL-GAP-014`** by recording **Product-Owner-supplied** values under the `ADR-0021` D-1 **route 1** pattern (*"owner supplies values"*). `ADR-0056` §6 had rejected **inventing** these numbers; that rejection stands — what changed is that an authority competent to supply them did so, which is exactly the condition `ADR-0021` identified as missing (*"no new authority has arrived"*). Values are **attributed, not derived**. Added invariants **`INV-17`…`INV-22`**, twelve environment-profile rows, seven observability rows, six entries to the **"What is NOT configurable"** table, and §2C.0 stating the governing principle. Parameter count **35 → 50 declared, 45 supplied** — recomputed mechanically, not incremented. **No `CFG-*`, `LCFG-*` or `ICFG-*` value changed.** ⚠ **Three parts of the owner's baseline were REFUSED, and the refusals are the evidence the baseline was not treated as authority over the specification.** (1) Its **three** quality tiers do not match FROZEN `FIL-FR-084`'s **two** content classes, so the text-heavy band is expressed as a sub-profile **92 above the 88 floor** — which §8.5 explicitly licenses (*"configuration may raise it, never lower it"*) — rather than by minting a third class. (2) Its *"max long edge 2560"* was **NOT** written into the `FIL-CFG-011` slot, which `FIL-FR-085`(c) defines as a **minimum**; doing so would have made a ceiling act as a floor and **enlarged small originals in breach of `FIL-FR-086`**. Separated into **1600 px min** (§2C.2) and **2560 px max** (§2C.3), with **`INV-18`** enforcing the ordering so a deployment cannot repeat the confusion. (3) Its *"upload timeout ~60 s"* has **no declared slot** and **none was created**: §5 of this guide says adding a parameter *"is a **PRD amendment** — the specification declares what is configurable, this guide does not"*, so the finding is **referred to the `PRD-017` owner** in §2C.11 with **no identifier minted**, because that register belongs to a FROZEN document. ⛔ **`FIL-CFG-006` retention is left WITHOUT a value** — `MP-NFR-10` assigns it to SECURITY + DATA Governance and it is a **legal** determination; being handed nine values does not license inventing a tenth. `FIL-GAP-008` stays **OPEN**, and `FIL-FR-052` makes its absence a **startup refusal** rather than a silent zero. ⛔ **`FIL-CFG-001`/`002`/`003`/`008` are left unset** because they are per-purpose structures and no purpose register exists; a half-written allow-list would fail closed undiagnosably. ⚠ **No chroma-subsampling parameter was created** and the prohibition was added to §1 instead — it is the single most effective way to shrink an image and the single most destructive thing that can be done to handwriting, so exposing it as a dial would let a bandwidth-motivated deployment silently defeat the §2C.1 floor. ⚠ **`INV-22` is the first invariant in this guide that guards a prohibition rather than a consistency**, forbidding any video or audio encoding in the §2C.4 allow-list, because `FIL-GAP-016` records that V1 video was **requested and refused** and a configuration change must not achieve what an ADR was refused. ⚠ **The media-quality rows deliberately do NOT relax in development** (§4 rule 5) — relaxing a readability floor locally would make development the one environment where the guarantee does not hold, so a developer would never see what a student sees. Only timeouts and the abuse control relax, and the scan's fail-closed behaviour cannot relax because it is not a value. **This guide remains Rank 7 and no baseline identifier is issued**; `BASELINE-2026-08-20-C` stands. **No PRD amended — `PRD-017` is byte-identical. No checker modified. No code, schema or SQL.** |
 | **v1.1** | 2026-08-03 | Added the Library register `LCFG-1`…`LCFG-13` (§2A) and the invitation register `ICFG-1`…`ICFG-10` (§2B), with expanded reasoning for the seven that carry security weight. Added invariants `INV-10`…`INV-16`. Extended §1 "not configurable" with invitation entropy, the closed `IT-*` set, the closed `PO-1`…`PO-12` list and the public field allow-list. Added environment profiles and observability rules for the new parameters. **No `CFG-*` value changed.** |
 | v1.0 | 2026-08-02 | Created. `CFG-1`…`CFG-12` with ranges, rationale, invariants `INV-1`…`INV-9`, profiles and observability. Six values reset to standards-anchored defaults. Closes audit finding `G-3`. |

@@ -33,3 +33,9 @@ ios/.symlinks/
 # Logs
 *.log
 Authentication_PRD.zip
+
+# Next.js / Node build artifacts
+.next/
+node_modules/
+package-lock.json
+next-env.d.ts

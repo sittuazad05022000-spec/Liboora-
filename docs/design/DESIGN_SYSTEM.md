@@ -17,22 +17,23 @@ The system is layered: foundations → tokens → primitives → components → 
 
 | Foundation | Decision status | Direction |
 |---|---|---|
-| Color | RECOMMENDED | Semantic roles first: surface, text, border, action, focus, success, warning, danger, information. Never use color alone to communicate state. |
-| Typography | RECOMMENDED | Use a readable sans-serif family with clear numeral forms, hierarchy, and stable wrapping on small screens. Exact family and licensed source are TO BE DECIDED. |
-| Spacing | RECOMMENDED | Use a consistent base spacing scale and generous grouping; exact token values are TO BE DECIDED in Figma after visual review. |
+| Color | ⭐ **DECIDED** (`DDR-0001` `APPROVED`; aligned by [`DDR-0027`](design-decisions/DDR-0027-dbt-001-b1-liblspace-ratification-and-foundation-alignment.md)) | Semantic roles first: surface, text, border, action, focus, success, warning, danger, information. Never use color alone to communicate state. ⭐ **Decided values** (`DDR-0001` L35): *amended* — `accent-ink` `#92400E` (text/icons) · `accent-fill` `#F5A524` (fills only, paired with `textPrimary`) · `text-muted` `#5F6585` (replaces `#6B7194`) · `border/decorative` `#E3E6F0` · `border/control` `#7F87A6`; *unchanged* — `brand`, `brandDark`, `success`, `warning`, `danger`, `info`, `textPrimary`. ⚠️ **Documented as decided values, ⛔ NOT claimed implemented in `theme.dart`** — 3 conformance deltas (`accent-ink`, `text-muted`→`#5F6585`, `border/control`) are **separate implementation work** |
+| Typography | ⚠️ **PARTIAL — requirement `DECIDED` (`DDR-0002` `APPROVED`); family still `TO BE DECIDED`** | Use a readable sans-serif family with clear numeral forms, hierarchy, and stable wrapping on small screens. ⭐ V1 **MUST** support Indic/Devanagari (`DDR-0002` requirement, `APPROVED`); the specific family + licensed source remain **TO BE DECIDED** — ⛔ no family is selected here. |
+| Spacing | ⭐ **RATIFIED** ([`DDR-0027`](design-decisions/DDR-0027-dbt-001-b1-liblspace-ratification-and-foundation-alignment.md) — Design System Owner) | ⭐ **Ratified `LiblSpace` scale (6 steps, adopts the shipped values — 0 implementation delta):** `xs` 4 · `sm` 8 · `md` 12 · `lg` 16 · `xl` 24 · `xxl` 32 *(evidence: `lib/app/shared/theme.dart` L29–35; values **recorded, not invented**)*. Consistent base scale and generous grouping. |
 | Radius | RECOMMENDED | Moderate, consistent radii; avoid pill-shaped everything. |
 | Elevation | RECOMMENDED | Small number of semantic levels for grouping and priority, not decoration. |
 | Iconography | RECOMMENDED | Familiar, simple, legible icons with labels where ambiguity exists. |
 | Illustration | CONFIRMED | About 10% premium 3D-style illustration; compress, lazy-load, and keep the functional UI 2D-first. |
 | Motion | RECOMMENDED | Short, purposeful transitions with reduced-motion alternatives; no motion required to understand a task. |
 
-### 2.1 ⚠️ Recorded finding — these values are declared undecided while code defines them
+### 2.1 ⚠️ Recorded finding — resolved by limb; two open items remain
 
-`lib/app/shared/theme.dart` already defines a colour set (`LiblColors`, **12** constants) and a spacing scale (`LiblSpace`, **6** steps), and `theme.dart` predates this document by two days. The table above nonetheless records those foundations as `TO BE DECIDED`.
+`lib/app/shared/theme.dart` already defined a colour set (`LiblColors`, **12** constants) and a spacing scale (`LiblSpace`, **6** steps), and `theme.dart` (2026-09-07) predates this document (2026-09-09). The debt that this divergence created is recorded as [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001`. ⭐ **The colour and spacing limbs of `DBT-001` are now decided**: the colour row above is aligned to `APPROVED` `DDR-0001`, and the spacing scale is **ratified** by the Design System Owner's act at [`DDR-0027`](design-decisions/DDR-0027-dbt-001-b1-liblspace-ratification-and-foundation-alignment.md) — so the `TO BE DECIDED` state no longer applies to colour or spacing values. ⛔ **No silent fix**: both limbs were closed only by the owning office's decision (the `DESIGN_DEBT.md` §3 rule 5 act), never by side-effect editing.
 
-⛔ **This note does not adopt, approve or ratify those values as design tokens.** Doing so is the **Design System Owner's** act and it has not been taken; recording a code default as design authority by side effect is exactly what [Design Change Management](DESIGN_CHANGE_MANAGEMENT.md) §1 class `D2` requires an approval path for.
+⚠️ **Two open items remain, deliberately preserved rather than smoothed over:**
 
-The divergence — and the absence of any radius, elevation or type token class against §2's own foundation list — is recorded as [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` and `DBT-005`, routed to the Design System Owner. The as-built inventory is recorded as `DIT-001` in [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md), whose status is `CONFLICT`.
+1. ⛔ **Typography family — still `TO BE DECIDED`** under [`DDR-0002`](design-decisions/DDR-0001-to-0009-founder-product-authority-decisions.md) *(requirement `APPROVED`; family not selected)*. No family or licence is chosen here.
+2. ⛔ **Implementation conformance + token classes — still open.** `theme.dart`'s shipped `text-muted` (`#6B7194`) is **not** `DDR-0001`'s decided `#5F6585`; `accent-ink` and `border/control` are decided but not yet present in code. These deltas are **separate implementation work** that no design decision authorizes or defers. The absence of any radius, elevation or type token class against §2's own foundation list remains recorded as `DBT-001`/`DBT-005` in [`DESIGN_DEBT.md`](DESIGN_DEBT.md) (`DBT-005` stays ⛔ OPEN), routed to the Design System Owner; the as-built inventory is recorded as `DIT-001` in [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md), whose status is `CONFLICT`.
 
 ## 3. Component contract
 

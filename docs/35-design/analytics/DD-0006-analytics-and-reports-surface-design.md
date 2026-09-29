@@ -754,7 +754,7 @@ Analytics (TR-4, self)                 Analytics (tenantWide)
 | ⛔⛔ **BLOCKED** | **3** | `A3`, `B4`, `B5` |
 
 ⭐⭐ **1 of 10 fully designable.** ⛔ That figure is low, and it is the honest
-consequence of **F-1** — ⛔ *no semantic layer exists*, so 7 surfaces can be
+consequence of **F-1** — ⛔ *no semantic layer exists*, so 6 surfaces can be
 drawn but not populated.
 
 ---

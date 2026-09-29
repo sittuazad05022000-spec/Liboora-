@@ -208,7 +208,7 @@ what has a surface**. See §9.
 
 | `BC-26` V1 capability | Has a surface? | Where |
 |---|---|---|
-| Reception / Manager / Owner decision surfaces | ⭐ **YES** | `B1`, `B2`, `B3` |
+| Manager / Owner decision surfaces | ⭐ **YES** | `B2`, `B3` *(B1 re-homed to the module-12 composition — `DDR-0026`)* |
 | Student presence & consistency (`self`) | ⭐ **YES** | `A1`, `A2`, `A4` |
 | `AnalyticalReport` | ⚠️ **PARTIAL** | `B5` |
 | Authorized export + audit fact | ⚠️ **PARTIAL** | `B6` |
@@ -261,17 +261,18 @@ applied to every staff surface**, using a two-question instrument:
 
 | Candidate surface | Q1 | Q2 | Classification |
 |---|---|---|---|
-| Reception "who is inside now" readout | ⛔ NO — reads certified values | ⚠️ **YES** | ⛔⛔ **DASHBOARD SCOPE** — see `B1` note |
+| Reception "who is inside now" readout | ⛔ NO — reads certified values | ⚠️ **YES** | ⛔⛔ **DASHBOARD COMPOSITION** — module-12; settled by `DDR-0026` |
 | Manager attention queue | ⛔ NO | ⛔ **NO** — it is an *analysis* surface with drill-down (`ANL-FR-028`) | ⭐ **`BC-26`** |
 | Owner trend surface | ⛔ NO | ⛔ **NO** — trend analysis over periods | ⭐ **`BC-26`** |
 | Student Today | ⛔ NO | ⚠️ **PARTLY** | ⚠️ **`BC-26` read surface** — §9.1 |
 | `AnalyticalReport` | ⛔ NO | ⛔ NO | ⭐ **`BC-26`** (`ANL-FR-030`) |
 
-⭐⭐ **The result changed the inventory.** `B1` Reception is retained but
-explicitly marked ⚠️ **DASHBOARD-ADJACENT**: `insideNow` and `seatsOccupied` are
-tiles for *situational awareness*, which BC Map **L84** assigns to a
-**composition**, not a context. ⛔ Renaming a dashboard "Reception Analytics"
-would be the exact defect the brief names. → `DD6-TBD-006`.
+⭐⭐ **The result changed the inventory.** `B1` Reception is **re-homed to the
+module-12 Reception Dashboard composition** (`DDR-0026`): `insideNow` and
+`seatsOccupied` are tiles for *situational awareness*, which BC Map **L84**
+assigns to a **composition**, not a context. ⛔ Renaming a dashboard "Reception
+Analytics" would be the exact defect the brief names. `BC-26` **certifies** the
+values; the composition **presents** them. `DD6-TBD-006` closed — `DDR-0026`.
 
 ---
 
@@ -509,7 +510,7 @@ visibility"*).
 | **`A2`** Student Progress | ⭐ **self** | ⛔ **NO** | ⛔ NO | ⛔ NO | ⛔ NO | `self` |
 | **`A3`** Student Motivation | ⚠️ **self** | ⛔ **NO** | ⛔ NO | ⛔ NO | ⛔ NO | `self` |
 | **`A4`** Student Detail *(own history + own dues)* | ⭐ **self** | ⛔ **NO** | ⛔ NO | ⛔ NO | ⛔ NO | `self` |
-| **`B1`** Reception Now ⚠️ *dashboard-adjacent* | ⛔ NO | ⛔ NO | ⭐ **YES** | ⭐ YES | ⭐ YES | `tenantWide` |
+| **`B1`** Reception Now · *module-12 composition presentation* (`DDR-0026`) | ⛔ NO | ⛔ NO | ⭐ **YES** | ⭐ YES | ⭐ YES | `tenantWide` |
 | **`B2`** Manager Attention | ⛔ NO | ⛔ NO | ⛔⛔ **NO** | ⭐ **YES** | ⭐ YES | `tenantWide` |
 | **`B3`** Owner Trends | ⛔ NO | ⛔ NO | ⛔⛔ **NO** | ⚠️ **TBD** | ⭐ **YES** | `tenantWide` |
 | **`B4`** Metric Detail / drill-down | ⛔ NO | ⛔ NO | ⛔ NO | ⭐ YES | ⭐ YES | `tenantWide` |
@@ -568,7 +569,7 @@ says so; the code is the defect.**
 
 ## 9. Surface Inventory — recalculated from `PRD-009`
 
-⭐ IDs `A1`…`A4` (APP 1) and `B1`…`B7` (APP 2) are **local to this document**.
+⭐ IDs `A1`…`A4` (APP 1) and `B1`…`B7` (APP 2) are **local to this document**. ⚠️ `B1` is re-homed to the module-12 composition (`DDR-0026`); its ID is retained here for traceability.
 ⛔ They are **not** requirement identifiers and create nothing.
 
 ⛔⛔ **This inventory is recalculated from `PRD-009`, NOT copied from the
@@ -645,7 +646,7 @@ Analysis**.
 
 | ID | Surface | Role focus | Status | Content *(PRD §18–21)* |
 |---|---|---|---|---|
-| **`B1`** | **Reception Now** ⚠️ *dashboard-adjacent* | `TR-3` | ⚠️ **PARTIALLY DESIGNABLE** | *"Who is inside now · seats free · today's check-ins · dues-on-arrival flag"* |
+| **`B1`** | **Reception Now** — **module-12 composition presentation** (`DDR-0026`) | `TR-3` | ⚠️ **Re-homed out of the `BC-26` inventory** | *"Who is inside now · seats free · today's check-ins · dues-on-arrival flag" — values `BC-26`-certified; tile presented by the module-12 composition (no aggregate, no invariant, no PRD)* |
 | **`B2`** | **Manager Attention** | `TR-2` | ⚠️ **PARTIALLY DESIGNABLE** | *"Today's occupancy · threshold breaches · expiring memberships · overdue dues · attendance anomalies"* |
 | **`B3`** | **Owner Trends** | `TR-1` | ⚠️ **PARTIALLY DESIGNABLE** | *"Occupancy trend · student-fee collections vs dues · membership growth/expiry · enrolment trend · AI cost"* |
 | **`B4`** | **Metric Detail / drill-down** | `TR-2`, `TR-1` | ⛔⛔ **BLOCKED** | ⭐ Required by `ANL-FR-028` — *"name the metric, the threshold crossed **and the drill-down path**"* |
@@ -717,7 +718,7 @@ requirement.**
 APP 1 — Student (PRD §15)              APP 2 — Staff (ANL-FR-027)
 ─────────────────────────              ──────────────────────────
 Analytics (TR-4, self)                 Analytics (tenantWide)
-├── A1  Today                          ├── STATUS      → B1 / B3 headline
+├── A1  Today                          ├── STATUS      → B3 headline *(B1 → module-12 composition, `DDR-0026`)*
 ├── A2  Progress                       ├── ATTENTION   → B2 queue
 ├── A3  Motivation      ⛔ BLOCKED      ├── ACTION      → B2 item → B4  ⛔ BLOCKED
 └── A4  Detail                         └── ANALYSIS    → B3 trends
@@ -739,20 +740,20 @@ Analytics (TR-4, self)                 Analytics (tenantWide)
 | App | Surfaces | Count |
 |---|---|---|
 | ⭐ **APP 1** | `A1`, `A2`, `A3`, `A4` | **4** |
-| ⭐ **APP 2** | `B1`, `B2`, `B3`, `B4`, `B5`, `B6`, `B7` | **7** |
+| ⭐ **APP 2** | `B2`, `B3`, `B4`, `B5`, `B6`, `B7` | **6** *(B1 re-homed to the module-12 composition — `DDR-0026`)* |
 | ⛔⛔ **APP 3** | ⛔ none | **0** |
 
-⭐ **11 surfaces · 11 assigned · 0 unassigned.**
+⭐ **10 surfaces · 10 assigned · 0 unassigned.** *(B1 re-homed to the module-12 composition, out of the `BC-26` inventory — `DDR-0026`)*
 
 ### 9.7 ⭐ Designability summary
 
 | Class | Count | Surfaces |
 |---|---|---|
 | ⭐⭐ **DESIGNABLE NOW** | **1** | `B7` |
-| ⚠️ **PARTIALLY DESIGNABLE** *(layout/states yes, values no)* | **7** | `A1`, `A2`, `A4`, `B1`, `B2`, `B3`, `B6` |
+| ⚠️ **PARTIALLY DESIGNABLE** *(layout/states yes, values no)* | **6** | `A1`, `A2`, `A4`, `B2`, `B3`, `B6` *(B1 re-homed — `DDR-0026`)* |
 | ⛔⛔ **BLOCKED** | **3** | `A3`, `B4`, `B5` |
 
-⭐⭐ **1 of 11 fully designable.** ⛔ That figure is low, and it is the honest
+⭐⭐ **1 of 10 fully designable.** ⛔ That figure is low, and it is the honest
 consequence of **F-1** — ⛔ *no semantic layer exists*, so 7 surfaces can be
 drawn but not populated.
 
@@ -1100,7 +1101,7 @@ be labelled as attendance, so that gaming it gains nothing but honesty."*
 
 ### 13.5 ⚠️⚠️ The dignity case the PRD does not name, and I will not resolve
 
-⚠️ `B1` Reception includes a **"dues-on-arrival flag"** (`PRD-009` §21).
+⚠️ `B1` Reception includes a **"dues-on-arrival flag"** (`PRD-009` §21). ⚠️ B1 is presented by the module-12 composition (`DDR-0026`); the flag's value remains `BC-26`-certified.
 
 ⛔⛔ **Reception is a physical counter, and a student checking in is standing in
 front of it, possibly in a queue.** ⚠️ An overdue-dues flag rendered
@@ -1195,7 +1196,7 @@ fails it is removed rather than decorated:
 
 | # | Visualization | Surface | Purpose | Source metric | Mobile behaviour | ⭐ Accessible equivalent |
 |---|---|---|---|---|---|---|
-| **`V1`** | ⭐ **Stat card** *(single value + freshness)* | `A1`, `B1`, `B7` | *"What is true right now?"* | ⚠️ 1 per card | ⭐ Full width; stacks | ⭐ **Native** — it **is** text |
+| **`V1`** | ⭐ **Stat card** *(single value + freshness)* | `A1`, `B7` *(B1 → module-12 composition, `DDR-0026`)* | *"What is true right now?"* | ⚠️ 1 per card | ⭐ Full width; stacks | ⭐ **Native** — it **is** text |
 | **`V2`** | ⭐ **Line chart** — presence over 7/30 days | `A2`, `B3` | *"Is the trend rising or falling?"* | ⚠️ Uncertified *(cand. 1–4)* | ⭐ Full width, fixed height; ⛔ no pinch-zoom-only | ⭐⭐ **Data table** (`ANL-FR-042`) |
 | **`V3`** | ⭐ **Horizontal bar** — attention items by severity | `B2` | *"What needs attention first?"* | ⚠️ Uncertified *(cand. 5–9, 12)* | ⭐ Horizontal bars stack vertically — ⭐ the mobile-correct orientation | ⭐ **Ordered list** with values |
 | **`V4`** | ⭐ **Delta indicator** *(value + signed change + period label)* | `B3`, `B7` | *"Better or worse than last period?"* | ⭐⭐ `ProfileViews` **certified** for `B7` | ⭐ Inline with the value | ⭐ Signed text + **named period** |
@@ -1679,7 +1680,7 @@ that is **open at Rank 4** — ⭐ and it strengthens, rather than weakens, the
 | `DD6-TBD-003` | ⚠️ What is an *"attendance anomaly"*? | Product Owner |
 | `DD6-TBD-004` | ⛔ Touch-target minimum | Design |
 | `DD6-TBD-005` | ⚠️⚠️ **Visual treatment of a restated value** *(`ANL-FR-052` requires visibility, ⛔ defines none)* | Design + Product Owner |
-| `DD6-TBD-006` | ⚠️⚠️ **Is `B1` Reception a `BC-26` surface or dashboard scope?** | Product Owner + Architecture Owner |
+| `DD6-TBD-006` | ⭐ **RESOLVED (2026-09-28, `DDR-0026` §6 — Product Owner + Architecture Owner conferred; authority instrument recorded verbatim in the `DDR-0026` header):** B1 "Reception Now" is **re-scoped out of the `BC-26` surface inventory** and re-homed to the **module-12 Reception Dashboard composition**. `BC-26` continues to **own and certify** the underlying metrics and their definitions (`MP-GBR-36`; `ADR-0147`). The composition **presents** those certified values and **owns no aggregate, no invariant and no PRD** (`LIBOORA_BOUNDED_CONTEXT_MAP.md` L84; `MASTER_PRD.md` L164/L173; `PRD_REGISTRY.md` L387). No bounded context, aggregate, invariant, `PERM-*`, PRD or identifier is created or minted. **No implementation is authorized.** `DD-0006` remains `PROPOSED` / `UNRANKED`. | `DDR-0026` |
 | `DD6-TBD-007` | ⚠️ Is tenant-scoped AI cost an Owner-visible metric? | Product Owner |
 | `DD6-TBD-008` | ⚠️⚠️ **Prominence/discretion of a dues flag at a public counter** | Product Owner + Privacy |
 | `DD6-TBD-009` | ⚠️ Is a 0-row export a success or an error? | Product Owner |
@@ -1800,7 +1801,7 @@ reported rather than reconciled away.
 
 | Cause | Effect |
 |---|---|
-| ⭐ The audit counted **candidate** surfaces, including several that §4.3's **dashboard test** then reclassified | ⛔ −0 *(only `B1` flagged, ⭐ retained with a TBD)* |
+| ⭐ The audit counted **candidate** surfaces, including several that §4.3's **dashboard test** then reclassified | ⛔ −0 *(B1 flagged and re-homed to the module-12 composition — `DDR-0026`; `DD6-TBD-006` closed)* |
 | ⭐⭐ **Backend capabilities were counted as surfaces** — the semantic layer, projections and the query port have **no UI** | ⛔ **−3** |
 | ⭐⭐ **Parent surfaces were counted** — ⛔ now **EXCLUDED** by `ANL-OBD-004` | ⛔ **−1** |
 
@@ -1888,7 +1889,7 @@ role, name a backend, add a bounded context, or change BC ownership."*
 
 | Dimension | Verdict |
 |---|---|
-| Surface inventory | ⭐ **COMPLETE** — 11 surfaces, ⭐ recalculated from `PRD-009`, ⭐ 11/11 assigned to an app and roles |
+| Surface inventory | ⭐ **COMPLETE** — 10 surfaces *(B1 re-homed to the module-12 composition — `DDR-0026`)*, ⭐ recalculated from `PRD-009`, ⭐ 10/10 assigned to an app and roles |
 | Information architecture | ⭐ **COMPLETE** — 2 mandated orders, ⛔ never merged |
 | State model | ⭐⭐ **COMPLETE** — 11 states, ⭐ 7 of them non-value, ⛔ none renders zero |
 | Role & permission model | ⚠️ **STRUCTURAL ONLY** — ⛔⛔ `ANL-OBD-003` **OPEN** |
@@ -1908,7 +1909,7 @@ role, name a backend, add a bounded context, or change BC ownership."*
 ⭐ Those three read **READY WITH EXPLICIT DESIGN GAPS** because ⭐ the **majority**
 of their surfaces were designable now *(23/32, 28/29, 10/16)*.
 
-⛔⛔ **Here it is 1 of 11**, and the cause is a single architectural fact:
+⛔⛔ **Here it is 1 of 10**, and the cause is a single architectural fact:
 ⛔⛔ **F-1 — the semantic layer `MP-GBR-36` mandates does not exist.**
 
 ⭐⭐ **"DESIGNED WITH EXPLICIT BLOCKERS" is therefore the honest classification.**
@@ -1966,4 +1967,5 @@ out, rather than filling them.
 
 | Version | Date | Change |
 |---|---|---|
+| **v0.2** | 2026-09-28 | ⭐⭐ **`DD6-TBD-006` RESOLVED — `DDR-0026` v0.2 CONFIRMED / CONFERRED (Product Owner + Architecture Owner, both conferrals recorded at `DDR-0026` §6).** B1 "Reception Now" **re-homed out of the `BC-26` surface inventory** to the **module-12 Reception Dashboard composition** — a presentation composition that owns no aggregate, no invariant and no PRD (`LIBOORA_BOUNDED_CONTEXT_MAP.md` L84; `MASTER_PRD.md` L164/L173; `PRD-009` NG-2/L179; `PRD_REGISTRY.md` L387). ⭐ `BC-26` **data ownership unchanged** — `insideNow`, `seatsOccupied`, today's check-ins and the dues-on-arrival flag remain `BC-26` CertifiedMetrics (`MP-GBR-36`; `ADR-0147`). Alignment applied in place at: §4.1 (L211), §4.3 note + classification table (L264–274), role matrix (L512), ID note (L571), §9.2 inventory (L648), §9.4/§9.6 counts (L742–752, **11 → 10 surfaces; 1-of-11 → 1-of-10**), IA diagram (L720), dues-flag note (L1103), `V1` stat-card row (L1198), §24.1/§24.2 (L1887–1914), reconciliation row (L1803) and the `DD6-TBD-006` closure (L1682). ⛔ 0 new identifiers · ⛔ no `DD-0010` · ⛔ no dashboard PRD · ⛔ 0 code · ⛔ no commit/push by this act · ⛔ `F-1`/`F-2`/`F-3`, `ANL-GAP-*`, `ANL-OBD-*`, `DD6-GAP-*` and the 5 Figma blockers **all preserved unchanged** (they block values/design, not placement) · `DD-0006` remains **`PROPOSED` / `UNRANKED`** · **no implementation authorized** (`DESIGN_GOVERNANCE.md` §3 rule 5) | Conferral follow-through per `DDR-0026` §4/§5; precedent: `ADR-0147` verbatim recording of the authority instrument |
 | **v0.1** | 2026-09-15 | ⭐⭐ **Created** as the `BC-26` Analytics & Reports surface design, after the **BC-26 Design Readiness Audit** *(verdict **REQUIRED WITH EXPLICIT DESIGN GAPS**)* and an accepted **design-scope expansion** governance check. ⭐ **`analytics/` is the SEVENTH context directory** in `docs/35-design/`, created **at the moment this document was written** exactly as README §2 prescribes. ⭐⭐ **The governing discovery of this pass is `ADR-0097`** *(Rank 2, Accepted)*: **`ProfileViews` is the ONLY `CertifiedMetric` defined anywhere in the repository**, and **`UniqueViewers` is expressly NOT certified with 8 mandatory absence rules** — which makes **`B7` the only DESIGNABLE-NOW surface** of eleven. ⭐ **11 surfaces** `A1`…`A4` · `B1`…`B7` *(⭐ 1 designable · ⚠️ 7 partial · ⛔ 3 blocked)*, **11 states** *(⭐ **7** of them non-value, and ⛔ **not one may render zero**)*, **6 visualizations** *(⛔ 8 rejected with authority)*, **1 certified metric + 13 uncertified candidates**, **0 report instances**, an **11×5 structural** role matrix and **10** cross-context ownership rows. ⛔⛔ **`TR-5` Parent is EXCLUDED — 0 surfaces — a deliberate divergence from `DD-0003` and `DD-0005`**, because `ANL-OBD-004` states a decision is **REQUIRED before any guardian-facing analytic ships**. ⚠️ **App-Boundary QA is reported as 12 of 13 with 1 GAP, NOT rounded to 13/13**, because ⛔ `PRD-009` carries **no closed permission matrix** and `ANL-OBD-003` owns it. ⭐⭐ **A SECOND conflict was measured during authoring and is disclosed rather than absorbed: `GAP-BCMAP-BC26-EDGES`** — BC Map §9 records `BC-26` as consumer of ~**20** events for which §7 declares **no edge**, which independently confirms the `B7`-only verdict since `E-30` is the only declared inbound edge. ⛔⛔ **Both conflicts are PRESERVED in the four-part structure and NEITHER is resolved.** ⭐ **25 of 25 `ANL-GAP-*`, F-1/F-2/F-3, `ANL-AL-B1` and 9 of 9 `ANL-OBD-*` preserved OPEN; 12 of 12 `ANL-XC-*` preserved.** ⭐ **5 new gaps** `DD6-GAP-001`…`005` *(4 BLOCKING, each only its named subset)* and **11 TBDs** each with a named owner. ⭐ **All 20 expert perspectives reviewed, with 5 REFUSALS recorded** — including ⛔ declining to choose an Indian digit-grouping convention, ⛔ declining a contrast ratio, and ⛔ rejecting a forecast chart as an explicit non-requirement. ⭐ **UI/UX Pro Max @ `15de38f`: 10 ADOPT · 3 ADAPT · 9 REJECT · 5 TBD** — ⛔ every charting **library** recommendation rejected as JavaScript. ⭐ **7 implementation deviations recorded, 0 fixed** — including ⛔⛔ a stale *"R5 / BC-22"* module header and ⛔⛔ **`_feed`/`_attendanceDays` not tenant-partitioned** against `ANL-INV-006` and BC Map **L490**. ⭐ **2D 6 / 2.5D 1 / 3D 0.** ⛔⛔ **`MeterBar` PROHIBITED** — the third consecutive Design Doc to prohibit it, for a third distinct reason. ⛔⛔ **Figma gate NOT OPEN — 5 hard blockers.** ⭐ **0 unsupported decisions · 0 fabricated product identifiers.** ⛔ **0 bytes of any PRD, ADR, architecture document, manifest, `lib/` or `test/` file changed; no commit, no push.** ⭐ Verdict: ⚠️ **DESIGNED WITH EXPLICIT BLOCKERS** |

@@ -9,13 +9,14 @@
 | Field | Value |
 |---|---|
 | **Register** | ⭐ Filed under [`README.md`](README.md) §2 template and §4 filing rules · global identifier `DDR-0026` (`DDR-0025` is the last registered — *never reused, never reassigned*) |
-| ⭐⭐ **Status** | ⭐⭐ **PROPOSED — NOT CONFERRED** · ⛔ **0 of 2 required conferrals recorded** · the decision below is the prepared wording only |
+| ⭐⭐ **Status** | ⭐⭐ **CONFIRMED / CONFERRED — 2 of 2 conferrals recorded at §6** · B1 = module-12 Reception Dashboard composition · `DD6-TBD-006` RESOLVED per §5 closure text |
 | **Date (proposal)** | 2026-09-28 |
 | **Proposing role** | UX Architecture Owner (audit role) — ⚠️ a *recorder*, ⛔ not one of the two roles this decision requires |
 | ⭐⭐ **Required approvers** | ⭐⭐ **Product Owner** + **Architecture Owner** — named by `DD-0006` `DD6-TBD-006` (`DD-0006` **L1682**) · ⛔ the question is *not* in the UX Architecture Owner's lane, and the record does not claim it was decided otherwise |
 | **Scope** | Surface-placement ruling for `B1` "Reception Now" (`DD-0006` §9.2 **L648**): `BC-26` Analytics surface **or** module-12 Reception Dashboard composition |
+| ⭐⭐ **Authority instrument** | ⭐ Recorded **verbatim in this header**, on the [`ADR-0147`](../../00-governance/adr/ADR-0147-twelve-dashboardmetrics-counters-certified-anl-obd-001-resolved.md) precedent *(whose cited `PRD-021C_OWNER_DECISION_FORM.md` §5 was itself a blank template; the operative authority was the principal's quoted instruction)*: *"DDR-0026 has now received valid Product Owner and Architecture Owner conferrals. B1 'Reception Now' = Reception Dashboard (module-12) presentation composition, NOT a BC-26 surface. Preserve: BC-26 owns/certifies the underlying metrics; Reception Dashboard presents those certified values; dashboard owns no aggregate/invariant and has no PRD; DD-0010 is NOT required; no implementation authorization."* |
 | **Change class** | ⭐ Experience/ownership clarification only · ⛔ **no** requirement, permission, BC, backend, contract, role, scope or identifier change |
-| ⛔ **What this record does NOT do** | ⛔ Does **not** confer the decision (0 of 2 approvals) · ⛔ does **not** resolve `DD6-TBD-006` (resolution = a `RESOLVED` entry appended to this record **after** both conferrals) · ⛔ does **not** create `DD-0010` · ⛔ does **not** create a dashboard PRD · ⛔ mints **no** `PERM-*`, role, aggregate, invariant, context or identifier · ⛔ authorizes **no** implementation *(`DESIGN_GOVERNANCE.md` §3 rule 5: design decisions never approve implementation)* · ⛔ changes `DD-0006` status — it remains **`PROPOSED` / `UNRANKED`** |
+| ⛔ **What this record does NOT do** | ⛔ Does **not** create `DD-0010` · ⛔ does **not** create a dashboard PRD · ⛔ mints **no** `PERM-*`, role, aggregate, invariant, context or identifier · ⛔ authorizes **no** implementation *(`DESIGN_GOVERNANCE.md` §3 rule 5: design decisions never approve implementation)* · ⛔ changes `DD-0006` status — it remains **`PROPOSED` / `UNRANKED`** · ⛔ does **not** modify implementation code |
 
 ---
 
@@ -87,7 +88,7 @@ state the composition rule** — this decision *applies* it; it does not amend a
 
 ## 5. Closure text (insert at `DD-0006` L1682, only after both conferrals below are recorded)
 
-> `DD6-TBD-006` — **RESOLVED** (`[DATE]`, conferral recorded at `DDR-0026` §6): B1
+> `DD6-TBD-006` — **RESOLVED** (2026-09-28, conferral recorded at `DDR-0026` §6): B1
 > "Reception Now" is **re-scoped out of the `BC-26` surface inventory** and re-homed to
 > the **module-12 Reception Dashboard composition**. `BC-26` continues to **own and
 > certify** the underlying metrics and their definitions (`MP-GBR-36`; `ADR-0147`). The
@@ -97,18 +98,21 @@ state the composition rule** — this decision *applies* it; it does not amend a
 > identifier is created or minted. **No implementation is authorized.** `DD-0006` remains
 > `PROPOSED` / `UNRANKED`.
 
-## 6. Approval slots — ⛔ 0 of 2 conferred as of recording
+## 6. Approval slots — ⭐⭐ 2 of 2 CONFERRED
 
 | # | Required conferral | Required evidence (`DESIGN_OWNERSHIP.md` §3: role, decision, date; no personal names) | Status |
 |---|---|---|---|
-| 1 | **Product Owner** — *"B1 is a module-12 Reception Dashboard composition surface; the composition presents `BC-26` certified values and owns no aggregate/invariant; no dashboard PRD is created"* | `[PRODUCT OWNER]` · conferral date `[DATE]` · role-only naming | ⛔ **NOT RECORDED** |
-| 2 | **Architecture Owner** — *"B1 is placed as a presentation composition, not a `BC-26` context surface; no aggregate, invariant or identifier is minted; `DD-0006` is aligned per §4 only"* | `[ARCHITECTURE OWNER]` · conferral date `[DATE]` · role-only naming | ⛔ **NOT RECORDED** |
+| 1 | **Product Owner** — *"B1 is a module-12 Reception Dashboard composition surface; the composition presents `BC-26` certified values and owns no aggregate/invariant; no dashboard PRD is created"* | ⭐ **`Product Owner`** · conferral date **2026-09-28** · role-only naming — authority instrument recorded verbatim in the header (see `Authority instrument` row, `ADR-0147` precedent) | ⭐ **CONFERRED** |
+| 2 | **Architecture Owner** — *"B1 is placed as a presentation composition, not a `BC-26` context surface; no aggregate, invariant or identifier is minted; `DD-0006` is aligned per §4 only"* | ⭐ **`Architecture Owner`** · conferral date **2026-09-28** · role-only naming — authority instrument recorded verbatim in the header | ⭐ **CONFERRED** |
 
 **Conferment rule (repository precedent):** a conferral is performed *by the role holder
 and recorded in the instrument that exercises it* (`PRD-009_STAGE4_CONFERRAL.md` §44.6;
-`ADR-0060` L212). ⛔ **This record will NOT be marked `RESOLVED` and `DD-0006` will NOT be
-edited until both rows above carry recorded conferrals.** A directive to "assume
-approval" is an instruction to *try*, not the act itself.
+`ADR-0060` L212; the `ADR-0147`/`ADR-0097` precedent: when the role-holder form is a
+blank template, *"the operative authority was the principal's quoted instruction"* —
+recorded verbatim in this header). ⭐ Both conferrals are now **recorded** in §6; the
+§4 alignment of `DD-0006` and the §5 closure text were performed on 2026-09-28 as the
+follow-through of this confirmed record. ⛔ The principal's instruction **confers the
+decision**; it **does not** authorize implementation (§7 rule 5) and mints no identifier.
 
 ## 7. Non-consequences (explicit)
 
@@ -126,4 +130,5 @@ approval" is an instruction to *try*, not the act itself.
 
 | Version | Date | Change | Rationale |
 |---|---|---|---|
+| **v0.2** | 2026-09-28 | ⭐⭐ **CONFIRMED / CONFERRED — 2 of 2.** Product Owner + Architecture Owner conferrals **recorded in §6**; authority instrument recorded verbatim in the header on the `ADR-0147` precedent *(principal's quoted instruction; no personal names, no invented dates — recording date = session date 2026-09-28; role-only naming per `PRD_OWNERSHIP_MODEL` §7 rule 4)*. ⭐ `DD6-TBD-006` **RESOLVED** via the §5 closure text; `DD-0006` aligned in place at §4's nine touch-points (B1 re-homed to the module-12 composition; counts recounted; all B1 references consistent; `F-1`/blocker lists unchanged — they block **values**, not placement). ⛔ 0 new identifiers · ⛔ no `DD-0010` · ⛔ no dashboard PRD · ⛔ 0 code · ⛔ no commit/push by this act · `DD-0006` remains **`PROPOSED` / `UNRANKED`** | The conferral follow-through instructed by the principal; the `ADR-0147`/`ADR-0097` precedent governs verbatim recording of a principal instruction where the role-holder form is a template |
 | **v0.1** | 2026-09-28 | ⭐ **Created as `PROPOSED`.** Decision wording for `DD6-TBD-006` prepared at the UX Architecture Owner's audit role: Option B (module-12 Reception Dashboard composition) evidenced at §3. ⛔ **0 of 2 required conferrals (Product Owner, Architecture Owner) are recorded** — §6 slots open. ⛔ `DD-0006` **NOT edited** pending both conferrals. ⛔ 0 identifiers, 0 PRD/ADR/BC-Map edits, 0 code, 0 commits by this act | Records the prepared ruling without conferring it — the `ADR-0060`/`PRD-009_STAGE4_CONFERRAL` precedent bars recording a conferral that has not been performed by the role holder |

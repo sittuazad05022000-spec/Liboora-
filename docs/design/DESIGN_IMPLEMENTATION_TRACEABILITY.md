@@ -115,12 +115,12 @@ the untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRAC
 
 | Trace ID | PRD requirement | Design artifact | Surface | Implementation | QA evidence | Status | Owner |
 |---|---|---|---|---|---|---|---|
-| `DIT-009` | ⭐ **`PRD-005` §20 — 13 UI/UX rows** (`FROZEN` v1.4) | ⭐ [`../35-design/membership/DD-0001-membership-management-surface-design.md`](../35-design/membership/DD-0001-membership-management-surface-design.md) | 13 `BC-02` membership surfaces `S-1`…`S-13`, 6 states each (`DD-0001` **v0.2**) | ⚠️ `IMPL-409`/`432`/`433`/`434`/`436` — **all 5 blocked** by `ADR-0012` §3.4 | 15 membership test files *(domain-level; ⛔ **0** surface tests)* | ⛔ **BLOCKED** | UX Architecture Owner |
+| `DIT-009` | ⭐ **`PRD-005` §20 — 13 UI/UX rows** (`PRD-MEMBERSHIP-MANAGEMENT.md` L1436, FROZEN v1.4; source recorded by `DD-0001` §5) | ⭐ [`../35-design/membership/DD-0001-membership-management-surface-design.md`](../35-design/membership/DD-0001-membership-management-surface-design.md) | 13 `BC-02` membership surfaces `S-1`…`S-13`, 6 states each (`DD-0001` **v0.2**) | ⚠️ `IMPL-409`/`432`/`433`/`434`/`436` — **all 5 blocked** by `ADR-0012` §3.4 | 15 membership test files *(domain-level; ⛔ **0** surface tests)* | ⛔ **BLOCKED** | UX Architecture Owner |
 
-⭐⭐ **This is the first row in this register carrying a PRD requirement
-link**, which `DIT-OD-001` recorded as measured at **0**. ⛔ It does **not**
-discharge `DIT-OD-001`: one of nine rows now carries an upstream link, and
-the other eight still do not.
+⭐⭐ **This is the first supplemental row in this register carrying a PRD
+requirement link.** The eight-row base register remains **0/8** linked; including
+this supplemental row, the combined count is **1/9**. ⛔ It does **not**
+discharge `DIT-OD-001`, whose scope is the base register.
 
 ⚠️ It is `BLOCKED` rather than `PARTIAL` for a measured reason — **every**
 `app`-module task in `PRD-005`'s register is one of the five `ADR-0012` §3.4
@@ -166,7 +166,7 @@ design decision.
 
 | ID | Item | Owner | Status |
 |---|---|---|---|
-| `DIT-OD-001` | **0 of 8** rows carry a PRD requirement link. Which frozen requirements govern the implemented staff/student surfaces? | PRD→Design Traceability Owner | ⛔ OPEN |
+| `DIT-OD-001` | **0 of 8 base-register** rows carry a PRD requirement link; supplemental `DIT-009` makes **1/9** including that row. Which frozen requirements govern the other base-register surfaces? | PRD→Design Traceability Owner | ⛔ OPEN |
 | `DIT-OD-002` | Under the recorded Option C boundary, map each candidate surface to an applicable approved/frozen V1 PRD, requirement, or established role/workflow; identify unsupported surfaces as unresolved/deferred/removed. Current evidence: 5 proposed discovery/booking families, an inherited dashboard composition, Community `TO BE DECIDED`, and 11 observed implementation screens. | UX Architecture Owner with PRD→Design Traceability Owner; escalate source conflict to Founder/Product Authority | ⛔ OPEN — per-surface authority mapping and traceability incomplete; scope direction itself is decided |
 | `DIT-OD-003` | `DIT-007`: accessibility is fully specified and **measurably unimplemented** (0 semantics, 0 assertions) | Accessibility Owner | ⛔ OPEN |
 | `DIT-OD-004` | QA evidence exists for **1 of 8** rows. What evidence does [`DESIGN_QA.md`](DESIGN_QA.md) §2 require before a row may read `COMPLETE`? | Design QA Owner | ⛔ OPEN |
@@ -189,3 +189,37 @@ This is a product-scope boundary, not implementation approval. Existing `DIT-005
 `DIT-006`, and `DIT-008` observations remain evidence of the current divergence until
 the UX Architecture Owner completes the reconciliation. `DIT-OD-002` therefore remains
 OPEN, and no G1 pass is implied.
+
+### 8.1 Per-surface evidence status
+
+The Option C boundary sets the reconciliation rule, but does not itself make any
+surface approved. Statuses below remain `UNRESOLVED` where exact requirement mapping is
+not recorded. Community is `DEFERRED` for V1 per `MASTER_PRD.md` §32 (Community is V2),
+with the separate PRD-021A source-status conflict still open (`PRD_DESIGN_TRACEABILITY.md`
+C-001). No implemented screen is promoted to V1 scope by observation alone.
+
+| Surface | Authority evidence (not automatic approval) | Status | Required trace / G1 impact |
+|---|---|---|---|
+| Discover/Search | Master PRD lists Search as a V1 essential; PRD-021C C2 lifecycle/freeze conflict remains in PRD traceability C-002 | **UNRESOLVED** | Resolve source status and map exact requirement/states; G1 blocker |
+| Library Profile | PRD-021C C3 appears in traceability but its component-file/freeze status conflict remains | **UNRESOLVED** | Map permitted profile fields to authoritative requirement; G1 blocker |
+| Availability | PRD-007 freeze records are cited for seat authority; PRD-021C C4 carries status conflict | **UNRESOLVED** | Map each claim/state to exact seat requirement; G1 blocker |
+| Shift/Seat selection | PRD-007 is cited as authority; implementation filename is not proof of designed equivalence | **UNRESOLVED** | Link states to exact requirement; G1 blocker |
+| Booking outcome | Existing booking authority is referenced in `USER_FLOWS.md`; exact state-to-requirement mapping absent | **UNRESOLVED** | Identify authoritative requirement for each outcome state; G1 blocker |
+| Operational Dashboard | Master PRD lists Owner, Manager, Reception dashboards as V1 compositions; SCREEN_ARCHITECTURE calls the family inherited | **UNRESOLVED per role/screen** | Map each retained role surface to exact V1 requirement; G1 blocker |
+| Community | Master PRD §32 places Community in V2; PRD-021A source-status conflict remains open | **DEFERRED from V1 pending source-authority resolution** | No V1 public/community behavior or permission inferred |
+| `ops_page.dart` | Master PRD role/module descriptions are candidate context only | **UNRESOLVED** | Map actual workflow to exact V1 requirement or defer/remove; G1 blocker |
+| `reception_desk.dart` | Master PRD describes Reception responsibilities but does not establish this file's requirements | **UNRESOLVED** | Map actual workflows to exact V1 requirement; G1 blocker |
+| `money_page.dart` | Revenue & Finance V1 / PRD-008 are candidate sources | **UNRESOLVED** | Map actual behaviors to exact PRD-008 requirements; G1 blocker |
+| `overview_page.dart` | V1 dashboards exist as compositions in Master PRD; this screen's role is not established | **UNRESOLVED** | Establish role/content source; G1 blocker |
+| `seat_map_page.dart` | Seat Management V1 / PRD-007 are candidate sources | **UNRESOLVED** | Do not infer equivalence; map exact behavior; G1 blocker |
+| `students_page.dart` | Student Management V1 / PRD-004 are candidate sources | **UNRESOLVED** | Map operations to exact frozen requirement; G1 blocker |
+| `staff_app_shell.dart` | Master PRD lists Staff & Shift as V2; shell may host V1 routes, not verified | **UNRESOLVED** | Map each route separately; do not infer scope from shell; G1 blocker |
+| `parent_dashboard.dart` | Master PRD lists Parent Portal as V1 composition | **UNRESOLVED** | Map displayed facts/actions to exact requirement and guardian scope; G1 blocker |
+| `student_dashboard.dart` | Student Management is V1; this alone does not authorize all dashboard content | **UNRESOLVED** | Map each displayed fact/action to exact requirement; G1 blocker |
+| `student_app_shell.dart` | No shell-specific V1 requirement mapped in register | **UNRESOLVED** | Map each route to a V1 source or defer/remove; G1 blocker |
+| `student_subject.dart` | No exact authoritative screen mapping recorded | **UNRESOLVED** | Identify applicable requirement or leave deferred/unresolved; G1 blocker |
+
+`DIT-009` remains a separate supplemental membership feature row linked to frozen
+`PRD-005` §20 and `DD-0001`. Its listed implementation tasks are blocked by `ADR-0012`
+§3.4; the listed membership tests are domain-level, with zero surface tests. It does
+not resolve V1 scope for the operational screen inventory.

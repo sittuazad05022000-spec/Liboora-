@@ -34,3 +34,21 @@ This register carries the **upstream** half of the chain — requirement to desi
 
 - **CONFLICT C-001:** PRD-021A status differs between locked baseline/ADR references and current A1/blocker language. Escalate to Governance Owner and Founder/Product Authority; do not modify either source.
 - **CONFLICT C-002:** PRD-021C component files retain draft headers while the C0–C8 freeze record and baseline declare the package frozen/baselined. Use the higher-order baseline for authority and mark behavior not explicit in a frozen record as TO BE DECIDED.
+
+## 5. DBT-006 V1 scope reconciliation
+
+**Founder/Product Authority decision — OPTION C (2026-09-30):** Neither the proposed
+discovery-to-booking screen families nor the implemented staff/student screen set is
+independently authoritative for V1. The authoritative scope must be reconciled from
+approved/frozen V1 PRDs and the established product role structure.
+
+The retained scope must cover the applicable Student/Parent discovery, library
+selection, availability, seat/shift selection, and booking/outcome journeys, together
+with Reception, Manager, and Owner operational workflows defined by V1 PRDs. Existing
+implementation and proposed design surfaces are not automatic authority. Every retained
+surface requires a source link to a V1 PRD, approved requirement, or established
+role/workflow; unsupported surfaces remain unresolved, deferred, or are removed from V1
+design scope. Frozen PRDs and ADRs are not amended by this record.
+
+This decision establishes product scope only. It does not approve implementation,
+backend behavior, permissions, undocumented features, G1, or `DBT-006` closure.

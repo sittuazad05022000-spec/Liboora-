@@ -35,3 +35,21 @@ Search or Nearby → Results → Library Profile → Availability → Shift or S
 ## 4. Flow quality checks
 
 Every flow must answer: where did the user enter, what is known, what may be stale, what is the primary action, what can fail, how does the user recover, and which source owns the outcome?
+
+## 5. V1 scope reconciliation — Founder/Product Authority decision
+
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither the seven proposed
+discovery-to-booking families nor the currently implemented staff/student screens is
+independently authoritative for V1. The V1 experience scope must be reconciled from
+approved/frozen V1 PRDs and the established product role structure.
+
+The reconciliation must cover both (a) core Student/Parent journeys — discovery,
+library selection, availability, seat/shift selection, and booking/outcome — and (b)
+core Reception, Manager, and Owner operational journeys already defined by V1 PRDs.
+Existing implementation is not automatically approved scope; proposed surfaces are not
+automatically approved scope. Every retained surface requires a trace to an applicable
+V1 PRD, approved product requirement, or established role/workflow. Unsupported
+surfaces remain unresolved, deferred, or are removed from V1 design scope.
+
+This is a product-scope decision only. It does not approve implementation, backend
+behavior, permissions, undocumented features, or G1, and it does not close `DBT-006`.

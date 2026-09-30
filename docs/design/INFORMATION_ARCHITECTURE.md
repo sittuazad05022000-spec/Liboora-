@@ -38,3 +38,18 @@ Search is the first path for local discovery. Search, nearby, filters, profile f
 ## 5. Content model
 
 Each content block is tagged in design with its source owner, freshness expectation, visibility rule if specified, and fallback state. Where the source does not define a visibility rule, the block is TO BE DECIDED—not assumed public.
+
+## 6. V1 scope reconciliation — Founder/Product Authority decision
+
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither the proposed discovery-to-
+booking screen families nor the implemented staff/student screen set is independently
+authoritative. V1 grouping must be reconciled from approved/frozen V1 PRDs and the
+established product role structure.
+
+The reconciliation covers Student/Parent discovery, library selection, availability,
+seat/shift selection, and booking/outcome journeys, plus Reception, Manager, and Owner
+operational workflows defined by V1 PRDs. Implementation and proposed design surfaces
+are evidence to reconcile, not automatic approval. Each retained group must trace to a
+V1 PRD, approved requirement, or established role/workflow; otherwise it remains
+unresolved or deferred. This decision does not define permissions, backend behavior, or
+G1 approval.

@@ -31,8 +31,23 @@ staff and student operational surfaces with no design artifact. Recorded as
 [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md)
 and as [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-006`.
 
-⛔ **Not reconciled here** — which set governs is a product-scope question for
-the Founder/Product Authority.
+## 1.2 V1 scope reconciliation — Founder/Product Authority decision
+
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither this proposed seven-family
+screen set nor the currently implemented staff/student screen set is independently
+authoritative for V1. The authoritative V1 experience scope must be reconciled from
+approved/frozen V1 PRDs and the established product role structure.
+
+The reconciliation covers Student/Parent discovery, library selection, availability,
+seat/shift selection, and booking/outcome surfaces, and Reception, Manager, and Owner
+operational workflows defined by V1 PRDs. Existing implementation is not automatically
+approved; proposed surfaces are not automatically approved. Each retained screen must
+trace to an applicable V1 PRD, approved product requirement, or established
+role/workflow. Unsupported screens remain unresolved, deferred, or are removed from the
+V1 design scope.
+
+This is product scope only. It does not approve implementation, backend behavior,
+permissions, undocumented features, or G1, and it does not close `DBT-006`.
 
 Per-screen specifications use
 [`templates/SCREEN_SPEC_TEMPLATE.md`](templates/SCREEN_SPEC_TEMPLATE.md).

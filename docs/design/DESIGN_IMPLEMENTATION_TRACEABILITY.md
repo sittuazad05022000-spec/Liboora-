@@ -169,3 +169,22 @@ design decision.
 | `DIT-OD-002` | The **5** designed screen families in `SCREEN_ARCHITECTURE.md` §1 have no implementation; the **11** implemented screens have no design artifact. Which direction reconciles? | Founder/Product Authority, with UX Architecture Owner | ⛔ OPEN — ⚠️ a **product scope** question, not a documentation one |
 | `DIT-OD-003` | `DIT-007`: accessibility is fully specified and **measurably unimplemented** (0 semantics, 0 assertions) | Accessibility Owner | ⛔ OPEN |
 | `DIT-OD-004` | QA evidence exists for **1 of 8** rows. What evidence does [`DESIGN_QA.md`](DESIGN_QA.md) §2 require before a row may read `COMPLETE`? | Design QA Owner | ⛔ OPEN |
+
+## 8. DBT-006 scope boundary and reconciliation requirement
+
+**Founder/Product Authority decision — OPTION C (2026-09-30):** Neither the proposed
+screen families nor the currently implemented staff/student screens is independently
+authoritative for V1. Reconciliation must use approved/frozen V1 PRDs and the established
+product role structure.
+
+The implementation register must not infer authority from filenames or existing code.
+For every retained surface, the PRD→Design and Design→Implementation rows must identify
+an applicable V1 PRD, approved requirement, or established role/workflow. This includes
+Student/Parent discovery-to-booking journeys and Reception, Manager, and Owner
+operational workflows. Surfaces without that authority remain unresolved or deferred,
+or are removed from V1 design scope.
+
+This is a product-scope boundary, not implementation approval. Existing `DIT-005`,
+`DIT-006`, and `DIT-008` observations remain evidence of the current divergence until
+the UX Architecture Owner completes the reconciliation. `DIT-OD-002` therefore remains
+OPEN, and no G1 pass is implied.

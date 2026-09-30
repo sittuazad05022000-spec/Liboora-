@@ -35,7 +35,7 @@
 
 | Requirement | Source | How `400/500/600/700` satisfies it |
 |---|---|---|
-| Weights must exist on **both** `Noto Sans` and `Noto Sans Devanagari` | `DDR-0029` (family decision) + `DDR-0002` L58 ("companion permitted **only if x-height and weight are verified to match**") | The Noto Sans family (Latin) ships `Regular`/`Medium`/`SemiBold`/`Bold` (400/500/600/700) in its standard Google Fonts variable axis; Noto Sans Devanagari ships the **same four named weights** (400/500/600/700) — ⚠️ **attestation**: the owner confirms this matching; the repo contains no Noto font assets, so in-repo verification of the font files is not possible (see §5 Limitation) |
+| Weights must exist on **both** `Noto Sans` and `Noto Sans Devanagari` | `DDR-0029` (family decision) + `DDR-0002` L58 ("companion permitted **only if x-height and weight are verified to match**") | The V1 decision remains `400`/`500`/`600`/`700`; however, this repository does **not** verify that those weights are available on both faces or that their x-height/weight matching requirement is satisfied. The repo contains no Noto font assets, so availability and cross-face matching remain **externally unverified implementation/conformance prerequisites** (see §5 Limitation) |
 | Indic/Devanagari rendering requirement | `DDR-0002` `APPROVED` (V1 **MUST** support Indic/Devanagari) | `Noto Sans Devanagari` carries the Devanagari glyphs; `400/500/600/700` is the full named-weight set available on that face |
 | 200% text-scale survival + 4.5:1 contrast | `DDR-0004` `APPROVED` | Weight choice does not affect text-scaling or contrast (contrast is colour-driven); `400–700` is compatible with all `DDR-0004` constraints |
 | Consistent with Liboora's premium, minimal, accessible design language | `DESIGN_FOUNDATION.md` L31 ("premium through hierarchy, spacing, typography… not through visual weight"), L50 (excludes "excessive… ornamental gradients") | A 4-step ladder (`400/500/600/700`) provides hierarchy without heavy weights; `800+` is excluded to keep the system minimal |
@@ -45,7 +45,7 @@
 
 ## 3. Constraints this decision is subject to (recorded, not re-decided)
 
-- ⭐ **`DDR-0002`**: the selected weights must be verified present and x-height-matched on **both** `Noto Sans` and `Noto Sans Devanagari` — satisfied by the owner's attestation (§5).
+- ⭐ **`DDR-0002`**: the selected weights must be verified present and x-height-matched on **both** `Noto Sans` and `Noto Sans Devanagari` — this requirement remains an **externally unverified implementation/conformance prerequisite**; no owner attestation is claimed by this record (§5).
 - ⭐ **`DDR-0004`** (`APPROVED`): 4.5:1 contrast (colour, not weight) and 200% text-scale survival are **not affected** by the weight choice; all four weights are compatible.
 - ⭐ **`DDR-0029`**: the weight set applies to the decided family (`Noto Sans` + `Noto Sans Devanagari` / SIL OFL).
 - ⭐ **`DDR-0031`**: sizes + line-heights are already decided; this record adds the **weights** dimension to complete the type-token set.
@@ -61,7 +61,7 @@
 
 ## 5. Limitation (stated, not hidden)
 
-⚠️ **Noto font weight-axis availability on both faces is NOT verifiable in-repo** — no Noto `.ttf`/`.otf` assets or `pubspec.yaml` font declarations exist in the repository. The Design System Owner **attests** that `400/500/600/700` exist on both `Noto Sans` (Latin) and `Noto Sans Devanagari`, satisfying `DDR-0002`'s matched-x-height/weight requirement. This attestation is the authority for the decision; a future engineering task (font bundling under `DDR-0006`'s size budget) will verify it in code.
+⚠️ **Noto font weight-axis availability on both faces is NOT verifiable in-repo** — no Noto `.ttf`/`.otf` assets or `pubspec.yaml` font declarations exist in the repository. The decided V1 weight set remains `400`/`500`/`600`/`700`, with `800+` excluded from V1, but this record does **not** claim that those weights are available on both faces or that matched x-height/weight conformance has been verified. Availability and cross-face matching remain **externally unverified implementation/conformance prerequisites** for future font bundling and conformance work under `DDR-0006`'s size budget.
 
 ## 6. Non-consequences (explicit)
 

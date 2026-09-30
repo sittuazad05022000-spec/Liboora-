@@ -20,20 +20,20 @@
 
 | Group | Design meaning | Source guardrail | Status |
 |---|---|---|---|
-| Discover | Candidate grouping for discovery/search | C2 / BC-23 are source candidates; lifecycle/source conflict recorded in `PRD_DESIGN_TRACEABILITY.md` | **UNRESOLVED for V1** |
-| Library | Candidate grouping for profile facts | C3 composition candidate; source-status conflict remains | **UNRESOLVED for V1** |
-| Study access | Candidate grouping for availability and seat/shift selection | BC-04 / PRD-007 authority candidate; exact screen mapping incomplete | **UNRESOLVED for V1** |
-| My participation | Candidate grouping for membership/attendance-derived information | Applicable PRDs and visibility rules must be identified; no new permission | **UNRESOLVED for V1** |
-| Operations | Inherited grouping of existing Library Management responsibilities | Master PRD role/module structure is source context; per-screen requirement mappings absent | **INHERITED grouping; surfaces UNRESOLVED** |
-| Community | No V1 grouping approved | Master PRD §32 places Community in V2; PRD-021A status conflict remains open | **DEFERRED from V1; conflict carried** |
+| Discover | Public library search and nearby discovery | Frozen Library PRD §§14A.3–.4, `14B` `LIB-14B.2`–`.6`; Master PRD §8 module 19 | **RETAINED — V1, source-bounded** |
+| Library | Public library profile and approved public facts | Frozen Library PRD §14A.5 and `14B` `LIB-14B.7`–`.10` | **RETAINED — V1, allow-list only** |
+| Study access | Aggregate public availability; authenticated student seat viewing/booking follows BC-04 | Frozen `14B` `LIB-14B.11`–`.14`; frozen PRD-007 `SEAT-FR-076`–`.086` | **RETAINED — V1, audience-bounded** |
+| My participation | Student management, parent portal, attendance and fee compositions from their own authorities | Master PRD §8 modules 3–5, 8–9; frozen PRD-004/006; PRD-008 remains DRAFT | **RETAINED — V1 compositions; source status preserved** |
+| Operations | Owner, Manager and Reception dashboard compositions; role-specific workflows remain owned by their source PRDs | Master PRD §8 modules 10–12; PRD-007, PRD-006 and PRD-008 as applicable | **RETAINED — composition only; no inferred widget set** |
+| Community | No V1 information group | Master PRD §5.2 `MP-SCOPE-04` and §8 V2 roadmap | **DEFERRED — V2** |
 
 ## 3. Navigation model
 
-Navigation hierarchy and labels are **UNRESOLVED** pending the per-surface V1 PRD/role mapping. The principles in this section are design guidance, not a decided V1 navigation model. Any later proposal must map destinations to approved V1 journeys and established roles; a backend entity or existing implementation alone does not authorize a destination.
+No V1 navigation hierarchy or labels are established by the cited sources, so they remain **TO BE DECIDED**. The permitted destination groups are limited to the retained groups in §2 and each destination must respect its audience and source boundary. Explicitly deferred screens (`ops_page.dart`, `overview_page.dart`, `staff_app_shell.dart`, `student_app_shell.dart`, `student_subject.dart`) and Community are not V1 destinations. A backend entity or implementation file alone does not authorize one.
 
 ## 4. Findability rules
 
-Search is the first path for local discovery. Search, nearby, filters, profile facts, availability, shift/seat choice, and booking initiation must not appear as duplicate parallel systems.
+Public Search/Nearby is the entry to Library discovery under frozen Library PRD §14A.4. Results and profiles expose only the §14A.5 allow-list. Public seat information is aggregate/coarse only (`LIB-14B.11`–`.14`); seat selection and booking require the protected-operation boundary and follow PRD-007. Do not create duplicate discovery, seat, or booking authorities.
 
 ## 5. Content model
 
@@ -41,15 +41,12 @@ Each content block is tagged in design with its source owner, freshness expectat
 
 ## 6. V1 scope reconciliation — Founder/Product Authority decision
 
-**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither the proposed discovery-to-
-booking screen families nor the implemented staff/student screen set is independently
-authoritative. V1 grouping must be reconciled from approved/frozen V1 PRDs and the
-established product role structure.
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30), RECONCILED:** The V1 group boundary
+and source-bounded retained groups are recorded in §2. Neither draft screen proposals
+nor observed files independently authorize scope.
 
-The reconciliation covers Student/Parent discovery, library selection, availability,
-seat/shift selection, and booking/outcome journeys, plus Reception, Manager, and Owner
-operational workflows defined by V1 PRDs. Implementation and proposed design surfaces
-are evidence to reconcile, not automatic approval. Each retained group must trace to a
-V1 PRD, approved requirement, or established role/workflow; otherwise it remains
-unresolved or deferred. This decision does not define permissions, backend behavior, or
-G1 approval.
+The retained boundary includes public discovery/profile under frozen Library PRD,
+private student seat/booking under frozen PRD-007, the V1 Student/Parent and operational
+compositions in Master PRD §8, and only source-backed facts within each. Community and
+unsupported screen files are deferred. Navigation labels remain undecided; this does not
+define permissions, backend behavior, implementation approval, or a separate G1 act.

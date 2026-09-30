@@ -11,46 +11,49 @@
 
 ## 1. Library discovery to booking
 
-**INHERITED sequence skeleton; V1 surface scope UNRESOLVED under Option C.**
+**V1 retained, source-bounded flow:** public discovery/profile under frozen Library
+PRD §§14A–14B; authenticated booking/seat operations under frozen PRD-007.
 
 Search or Nearby → Results → Library Profile → Availability → Shift or Seat → Booking Initiation → Outcome.
 
 | Stage | Required design evidence | Source / status |
 |---|---|---|
-| Search or Nearby | Candidate flow stage; query, location, loading, no-result, stale, error, and offline states are design requirements only, not approval of a V1 surface | PRD-021C C2 / BC-23 are cited in `PRD_DESIGN_TRACEABILITY.md` with source-status conflict; V1 mapping **UNRESOLVED** |
-| Results | Candidate flow stage; identity, public facts, filter state, and return path require source mapping | C2 composition candidate; exact frozen V1 requirement **UNRESOLVED** |
-| Library Profile | Candidate flow stage; profile facts/actions require source mapping | PRD-021C C3 status conflict; fields and V1 mapping **UNRESOLVED** |
-| Availability | Candidate flow stage; freshness and capacity only when source-backed | PRD-007 is authority candidate; PRD-021C C4 conflict remains; per-state mapping **UNRESOLVED** |
-| Shift or Seat | Candidate flow stage; selection/conflict handling only as defined by authority | PRD-007 / BC-04 authority candidate; screen-family-to-implementation mapping **UNRESOLVED** |
-| Booking Initiation | Candidate flow stage; review/outcome states are not independently approved here | Existing booking authority candidate; exact V1 screen/state mapping **UNRESOLVED** |
+| Search or Nearby | Public search by name/city/locality/PIN; nearby and distance sort when location permission is available | Frozen Library PRD §14A.4 `LIB-DISC-003`, `.013`; `14B` `LIB-14B.2`–`.6`. C2 is a draft, not the authority |
+| Results | Show only public, approved library facts; private/unavailable records remain non-discoverable | Frozen Library PRD §§14A.5–.6; `14B` `LIB-14B.7`–`.10`, `.23`–`.25` |
+| Library Profile | Public profile uses only §14A.5 allow-list and owner projections; protected actions remain gated | Frozen Library PRD §14A.5; `14B` `LIB-14B.7`–`.10`, `.26`–`.29` |
+| Availability | Public view exposes aggregate capacity and a coarse qualitative availability indicator only; no live occupancy, precise free-seat count or per-seat state | Frozen `14B` `LIB-14B.11`–`.14`; authenticated student availability per frozen PRD-007 `SEAT-FR-076`, `.079` |
+| Shift or Seat | Seat choice and eligibility follow the frozen BC-04 requirements; do not expose another student's allocation | Frozen PRD-007 `SEAT-FR-076`–`.084`; public restrictions in `LIB-14B.11`–`.14` |
+| Booking Initiation | Booking is protected; PRD-007 controls self-booking, tenant mode and result semantics. Tenant default is disabled | Frozen PRD-007 `SEAT-FR-076`–`.086`; frozen Library `14B` `PO-4` / `LIB-14B.27` |
+| Outcome | Render only the owning booking operation's actual result; do not add C4 draft-only outcome states | Frozen PRD-007 §12 and its closed booking/reservation rules; C4 remains Stage 2 draft |
 
 ## 2. Staff operational flow
 
-**INHERITED role/workflow categories; per-surface V1 mapping UNRESOLVED:** enrollment, membership, attendance, seating, reception, and finance remain owned by their existing product sources. This document does not approve the currently implemented screens, specify new permissions, or combine those systems. Each retained workflow must be traced to an exact applicable V1 PRD requirement.
+**V1 source-bounded operations:** Master PRD §8 modules 3–12 establishes Student Management, Parent Portal, Seat Management, Attendance, Revenue & Finance, and Owner/Manager/Reception dashboard compositions. Frozen PRD-004, PRD-006, PRD-007 and role/access sources govern their own behavior. PRD-008 is still DRAFT; its requirements are not represented as frozen. This flow does not approve any screen file or combine systems. `ops_page.dart`, `overview_page.dart`, `staff_app_shell.dart`, `student_app_shell.dart`, and `student_subject.dart` are explicitly deferred in V1 because no authoritative V1 screen/workflow mapping was found.
 
 ## 3. Membership-derived participation flow
 
-**CONFLICT / TO BE DECIDED:** A1 contains draft community foundation rules and explicitly says it owns no persisted state, permission, authority, or public surface, while higher-order baseline records reference PRD-021A. Design may represent a private, membership-derived read surface only after source authority confirms the applicable baseline and visibility rule.
+**DEFERRED — V2:** Master PRD §5.2 `MP-SCOPE-04` and §8 V2 roadmap place Community & Groups in V2. The PRD-021A status conflict does not alter that explicit V1 exclusion. No community participation flow is included in V1.
 
 ## 4. Flow quality checks
 
-Every flow must answer: where did the user enter, what is known, what may be stale, what is the primary action, what can fail, how does the user recover, and which source owns the outcome? For G1, each stage also requires an authoritative V1 source link and explicit `PROPOSED`, `INHERITED`, `UNRESOLVED`, or `DEFERRED` disposition. The present flows are not complete for G1 while those per-surface links remain open.
+Every retained flow stage cites its source and marks boundaries where the source does not authorize a behavior. Candidate states from draft PRD-021C are not inherited as requirements. Exact screen implementations and QA remain outside this scope reconciliation.
 
 ## 5. V1 scope reconciliation — Founder/Product Authority decision
 
-**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither the seven proposed
-screen families (five discovery/booking families, the inherited Operational Dashboard,
-and Community) nor the currently implemented staff/student screens is
-independently authoritative for V1. The V1 experience scope must be reconciled from
-approved/frozen V1 PRDs and the established product role structure.
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30), RECONCILED:** Neither the seven
+proposed screen families nor the observed implementation inventory independently
+defines V1. The retained and deferred surface mapping is recorded in
+`DESIGN_IMPLEMENTATION_TRACEABILITY.md` §8.1 using approved/frozen V1 PRDs and the
+established product role structure.
 
 The reconciliation must cover both (a) core Student/Parent journeys — discovery,
 library selection, availability, seat/shift selection, and booking/outcome — and (b)
 core Reception, Manager, and Owner operational journeys already defined by V1 PRDs.
 Existing implementation is not automatically approved scope; proposed surfaces are not
-automatically approved scope. Every retained surface requires a trace to an applicable
-V1 PRD, approved product requirement, or established role/workflow. Unsupported
-surfaces remain unresolved, deferred, or are removed from V1 design scope.
+automatically approved scope. Retained source-bounded flows are bounded by their cited
+requirements; Community and unsupported screens are deferred from V1. No behavior from
+draft-only requirements is promoted to approved scope.
 
-This is a product-scope decision only. It does not approve implementation, backend
-behavior, permissions, undocumented features, or G1, and it does not close `DBT-006`.
+This is a product-scope reconciliation only. It does not approve implementation,
+backend behavior, permissions, undocumented features, QA, or constitute a separate G1
+gate-owner act.

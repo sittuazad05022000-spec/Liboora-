@@ -66,7 +66,7 @@ verified.
 
 ## 4. Register
 
-⚠️ **Every base-register row below remains partial or otherwise incomplete.**
+⚠️ **Base-register rows record traceability, not implementation or QA approval.**
 The proposed screen inventory contains **7** items ([`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md)
 §1): **5** proposed discovery/booking families (Discover/Search, Library
 Profile, Availability, Shift/Seat selection, Booking outcome), one inherited
@@ -83,12 +83,12 @@ them, and does not assert that any of them was designed.
 |---|---|---|---|---|---|---|---|
 | `DIT-001` | `NONE OBSERVED` | `NONE OBSERVED` — ⚠️ `DESIGN_SYSTEM.md` §2 declares these values `TO BE DECIDED` while the code defines them; see [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` | Design tokens — colour and spacing | `lib/app/shared/theme.dart` — `LiblColors` (**12** colour constants), `LiblSpace` (**6** spacing steps) | `NONE OBSERVED` | **CONFLICT** | Design System Owner |
 | `DIT-002` | `NONE OBSERVED` | `NONE OBSERVED` | Shared component set | `lib/app/shared/widgets/common.dart` — **7** widgets: `MetricTile`, `SectionHeader`, `Pill`, `Monogram`, `EmptyState`, `PanelCard`, `MeterBar` | `NONE OBSERVED` | PARTIAL | Component Architecture Owner |
-| `DIT-003` | `NONE OBSERVED` | `NONE OBSERVED` | Sign-in surface | `lib/app/shared/login_screen.dart` | `test/widget_test.dart` — *"app renders the login screen on first frame"* | PARTIAL | UX Architecture Owner |
+| `DIT-003` | `PRD-001` — Authentication, V1 (Master PRD §8 module 1) | `SCREEN_ARCHITECTURE.md` §2 (shared entry/recovery anatomy) | Sign-in surface | `lib/app/shared/login_screen.dart` | `test/widget_test.dart` — *"app renders the login screen on first frame"* | PARTIAL | UX Architecture Owner |
 | `DIT-004` | `NONE OBSERVED` | `NONE OBSERVED` | Application chrome and branch switcher | `lib/app/shared/app_chrome.dart`, `lib/app/shared/account_sheet.dart` | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
-| `DIT-005` | `NONE OBSERVED` | `SCREEN_ARCHITECTURE.md` §1 *"Operational dashboard"* — ⚠️ family only, no per-screen spec | Staff operational screens | `lib/app/staff/` — **7** screens (`ops_page`, `reception_desk`, `money_page`, `overview_page`, `seat_map_page`, `students_page`, `staff_app_shell`) | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
-| `DIT-006` | `NONE OBSERVED` | `NONE OBSERVED` | Student and parent surfaces | `lib/app/student/` — **4** files (`student_dashboard`, `parent_dashboard`, `student_app_shell`, `student_subject`) | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
+| `DIT-005` | `MASTER_PRD.md` §8 modules 7, 8, 9, 10–12 (V1 role/module authority); `PRD-SEAT-MANAGEMENT.md` `SEAT-FR-004`, `055`, `059`, `062` (frozen V1 seat operations); `PRD-006` attendance requirements; `PRD-008` `FEE-FR-022`, `053`–`055` (Revenue & Finance is V1 but source remains DRAFT; not freeze authority) | `SCREEN_ARCHITECTURE.md` §1; `USER_FLOWS.md` §2 | Staff operational inventory; see §8.1 dispositions before treating any named file as retained | `lib/app/staff/` — **7** observed screens | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
+| `DIT-006` | `MASTER_PRD.md` §8 modules 3–5 (V1); frozen `Student_Management_PRD_v1.md` §5 `LMD-1`–`LMD-31`, `SM-*` requirements; Parent Portal is a V1 composition over `BC-01`, `BC-03`, `BC-05` | `SCREEN_ARCHITECTURE.md` §1; `INFORMATION_ARCHITECTURE.md` §2; `USER_FLOWS.md` §2 | Student/parent inventory; see §8.1 dispositions; module-level authority does not approve unspecified dashboard content | `lib/app/student/` — **4** observed files | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
 | `DIT-007` | `NONE OBSERVED` | [`ACCESSIBILITY.md`](ACCESSIBILITY.md) §2 — **9** required checks | All surfaces | `NONE OBSERVED` — measured: **0** occurrences of `Semantics`, `semanticsLabel`, `meetsGuideline` or `textScaleFactor` under `lib/` | `NONE OBSERVED` — **0** accessibility assertions under `test/` | **NOT STARTED** | Accessibility Owner |
-| `DIT-008` | `NONE OBSERVED` | [`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md) §1 — Discover/Search, Library Profile, Availability, Shift/Seat, Booking outcome | **5** designed screen families | `NONE OBSERVED` — no discovery, profile, availability or booking screen exists under `lib/app/` | `NONE OBSERVED` | **NOT STARTED** | UX Architecture Owner |
+| `DIT-008` | Frozen `Library_PRD_v1.md` §§14A.3–14A.5 and `14B-Public-Library-Preview.md` `LIB-14B.2`, `.7`–`.14` (public discovery/profile and aggregate-only public seat facts); frozen `PRD-SEAT-MANAGEMENT.md` `SEAT-FR-004`, `.076`–`.086` (private student self-booking, default-disabled); `MASTER_PRD.md` §8 module 19 | [`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md) §1; `USER_FLOWS.md` §1; `INFORMATION_ARCHITECTURE.md` §2 | Five designed families: Discover/Search, Library Profile, Availability, Shift/Seat, Booking outcome | `NONE OBSERVED` — no discovery/profile/booking screen exists under `lib/app/` | `NONE OBSERVED` | **NOT STARTED** | UX Architecture Owner |
 
 ### 4.1 What the register measures
 
@@ -99,17 +99,15 @@ them, and does not assert that any of them was designed.
 | `PARTIAL` | **5** |
 | `NOT STARTED` | **2** |
 | `CONFLICT` | **1** |
-| Base-register rows with a PRD requirement link | **0 of 8** |
-| Including supplemental `DIT-009` | **1 of 9** rows have a PRD requirement link (`DIT-009` → `PRD-005` §20) |
+| Base-register rows with a PRD requirement link | **4 of 8** (`DIT-003`, `DIT-005`, `DIT-006`, `DIT-008`) |
+| Including supplemental `DIT-009` | **5 of 9** rows have a PRD requirement link (`DIT-009` → `PRD-005` §20) |
 | Base-register rows with any QA evidence | **1 of 8** |
 | Supplemental `DIT-009` QA | 15 membership test files are listed as domain-level evidence; **0 surface tests** — not counted as surface QA |
 
-⚠️ **The base register's 0/8 remains important.** The supplemental `DIT-009`
-feature-level row is separate: its `PRD-005` §20 link is supported by the
-frozen PRD and `DD-0001`, but it does not identify requirements for the other
-eight base rows or discharge `DIT-OD-001`. Inventing those mappings would be
-the untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md)
-§3 exists to reject.
+The four linked rows cite the existing V1 sources at module/requirement scope;
+they do not imply every observed file or design state is retained. Rows without
+a supported upstream source remain `NONE OBSERVED`. Supplemental `DIT-009`
+is distinct and does not authorize the unrelated dashboard inventory.
 
 ### 4.2 ⭐ First feature-level design row
 
@@ -117,9 +115,8 @@ the untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRAC
 |---|---|---|---|---|---|---|---|
 | `DIT-009` | ⭐ **`PRD-005` §20 — 13 UI/UX rows** (`PRD-MEMBERSHIP-MANAGEMENT.md` L1436, FROZEN v1.4; source recorded by `DD-0001` §5) | ⭐ [`../35-design/membership/DD-0001-membership-management-surface-design.md`](../35-design/membership/DD-0001-membership-management-surface-design.md) | 13 `BC-02` membership surfaces `S-1`…`S-13`, 6 states each (`DD-0001` **v0.2**) | ⚠️ `IMPL-409`/`432`/`433`/`434`/`436` — **all 5 blocked** by `ADR-0012` §3.4 | 15 membership test files *(domain-level; ⛔ **0** surface tests)* | ⛔ **BLOCKED** | UX Architecture Owner |
 
-⭐⭐ **This is the first supplemental row in this register carrying a PRD
-requirement link.** The eight-row base register remains **0/8** linked; including
-this supplemental row, the combined count is **1/9**. ⛔ It does **not**
+⭐⭐ The base register has **4/8** linked rows; including this supplemental row,
+the combined count is **5/9**. ⛔ It does **not**
 discharge `DIT-OD-001`, whose scope is the base register.
 
 ⚠️ It is `BLOCKED` rather than `PARTIAL` for a measured reason — **every**
@@ -166,8 +163,8 @@ design decision.
 
 | ID | Item | Owner | Status |
 |---|---|---|---|
-| `DIT-OD-001` | **Evidence inventory complete; authority mapping gap remains.** The base register has **0/8** PRD-linked rows; supplemental `DIT-009` makes **1/9**, without mapping the other base surfaces. The frozen requirement for each retained base surface must be identified by the PRD→Design Traceability Owner; do not infer mappings from filenames or implementation. | PRD→Design Traceability Owner | ⛔ OPEN — mappings not evidenced |
-| `DIT-OD-002` | **Per-surface evidence register recorded in §8.1.** It inventories five proposed discovery/booking families, the inherited Operational Dashboard composition, Community, and 11 observed implementation screens. Exact authoritative V1 mapping is still absent for the UNRESOLVED rows; Community is DEFERRED; PRD-021A/021C conflicts require source-authority disposition. | UX Architecture Owner with PRD→Design Traceability Owner; escalate source conflict to Founder/Product Authority | ⛔ OPEN — evidence inventory exists, per-surface scope/trace decisions remain incomplete |
+| `DIT-OD-001` | **Authority mapping completed at the level supported by existing artifacts** in §8.1: the four supported base links are recorded and unsupported inventory items are explicitly deferred. Draft PRD requirements are not represented as approved authority. | PRD→Design Traceability Owner | ✅ CLOSED — base rows linked where supported; unsupported surfaces dispositioned |
+| `DIT-OD-002` | **V1 surface reconciliation recorded in §8.1.** Master PRD, frozen Library/Student/Seat sources and registered role compositions define retained scope; Staff & Shift and Community are V2; unsupported observed screens are deferred. | UX Architecture Owner with PRD→Design Traceability Owner | ✅ CLOSED — all listed surfaces mapped or explicitly deferred |
 | `DIT-OD-003` | **Accessibility evidence gap:** `DIT-007` records 0 occurrences of `Semantics`, `semanticsLabel`, `meetsGuideline`, or `textScaleFactor` under `lib/`, and 0 accessibility assertions under `test/`. Record implementation/QA evidence when supplied; do not infer compliance from the requirements document. | Accessibility Owner | ⛔ OPEN — evidence absent |
 | `DIT-OD-004` | **Surface QA evidence gap:** the base register has evidence for **1/8** rows only; supplemental `DIT-009` lists 15 domain-level membership test files but **0 surface tests**. Apply [`DESIGN_QA.md`](DESIGN_QA.md) §2 criteria and attach surface-specific evidence before any row is marked `COMPLETE`. | Design QA Owner | ⛔ OPEN — evidence absent for remaining rows |
 
@@ -175,8 +172,8 @@ design decision.
 
 **Founder/Product Authority decision — OPTION C (2026-09-30):** Neither the proposed
 screen families nor the currently implemented staff/student screens is independently
-authoritative for V1. Reconciliation must use approved/frozen V1 PRDs and the established
-product role structure.
+authoritative for V1. Reconciliation uses approved/frozen V1 PRDs and the established
+product role structure, as mapped below.
 
 The implementation register must not infer authority from filenames or existing code.
 For every retained surface, the PRD→Design and Design→Implementation rows must identify
@@ -185,39 +182,40 @@ Student/Parent discovery-to-booking journeys and Reception, Manager, and Owner
 operational workflows. Surfaces without that authority remain unresolved or deferred,
 or are removed from V1 design scope.
 
-This is a product-scope boundary, not implementation approval. Existing `DIT-005`,
-`DIT-006`, and `DIT-008` observations remain evidence of the current divergence until
-the UX Architecture Owner completes the reconciliation. `DIT-OD-002` therefore remains
-OPEN, and no G1 pass is implied.
+This is a product-scope boundary, not implementation approval. The mapping below
+resolves the documentation reconciliation only; it does not approve implementation,
+QA, or constitute the separate G1 gate-owner act.
 
 ### 8.1 Per-surface evidence status
 
-The Option C boundary sets the reconciliation rule, but does not itself make any
-surface approved. Statuses below remain `UNRESOLVED` where exact requirement mapping is
-not recorded. Community is `DEFERRED` for V1 per `MASTER_PRD.md` §32 (Community is V2),
-with the separate PRD-021A source-status conflict still open (`PRD_DESIGN_TRACEABILITY.md`
-C-001). No implemented screen is promoted to V1 scope by observation alone.
+`RETAINED — SOURCE-BOUNDED` means the V1 surface/workflow exists in authoritative
+scope; it does not approve every state, field, permission, implementation file, or
+screen composition. `DEFERRED` means no V1 surface is authorized. The PRD-021A
+status conflict is immaterial to V1 disposition because Master PRD §5.2 / MP-SCOPE-04
+explicitly place Community in V2.
 
 | Surface | Authority evidence (not automatic approval) | Status | Required trace / G1 impact |
 |---|---|---|---|
-| Discover/Search | Master PRD lists Search as a V1 essential; PRD-021C C2 lifecycle/freeze conflict remains in PRD traceability C-002 | **UNRESOLVED** | Resolve source status and map exact requirement/states; G1 blocker |
-| Library Profile | PRD-021C C3 appears in traceability but its component-file/freeze status conflict remains | **UNRESOLVED** | Map permitted profile fields to authoritative requirement; G1 blocker |
-| Availability | PRD-007 freeze records are cited for seat authority; PRD-021C C4 carries status conflict | **UNRESOLVED** | Map each claim/state to exact seat requirement; G1 blocker |
-| Shift/Seat selection | PRD-007 is cited as authority; implementation filename is not proof of designed equivalence | **UNRESOLVED** | Link states to exact requirement; G1 blocker |
-| Booking outcome | Existing booking authority is referenced in `USER_FLOWS.md`; exact state-to-requirement mapping absent | **UNRESOLVED** | Identify authoritative requirement for each outcome state; G1 blocker |
-| Operational Dashboard | Master PRD lists Owner, Manager, Reception dashboards as V1 compositions; SCREEN_ARCHITECTURE calls the family inherited | **UNRESOLVED per role/screen** | Map each retained role surface to exact V1 requirement; G1 blocker |
-| Community | Master PRD §32 places Community in V2; PRD-021A source-status conflict remains open | **DEFERRED from V1 pending source-authority resolution** | No V1 public/community behavior or permission inferred |
-| `ops_page.dart` | Master PRD role/module descriptions are candidate context only | **UNRESOLVED** | Map actual workflow to exact V1 requirement or defer/remove; G1 blocker |
-| `reception_desk.dart` | Master PRD describes Reception responsibilities but does not establish this file's requirements | **UNRESOLVED** | Map actual workflows to exact V1 requirement; G1 blocker |
-| `money_page.dart` | Revenue & Finance V1 / PRD-008 are candidate sources | **UNRESOLVED** | Map actual behaviors to exact PRD-008 requirements; G1 blocker |
-| `overview_page.dart` | V1 dashboards exist as compositions in Master PRD; this screen's role is not established | **UNRESOLVED** | Establish role/content source; G1 blocker |
-| `seat_map_page.dart` | Seat Management V1 / PRD-007 are candidate sources | **UNRESOLVED** | Do not infer equivalence; map exact behavior; G1 blocker |
-| `students_page.dart` | Student Management V1 / PRD-004 are candidate sources | **UNRESOLVED** | Map operations to exact frozen requirement; G1 blocker |
-| `staff_app_shell.dart` | Master PRD lists Staff & Shift as V2; shell may host V1 routes, not verified | **UNRESOLVED** | Map each route separately; do not infer scope from shell; G1 blocker |
-| `parent_dashboard.dart` | Master PRD lists Parent Portal as V1 composition | **UNRESOLVED** | Map displayed facts/actions to exact requirement and guardian scope; G1 blocker |
-| `student_dashboard.dart` | Student Management is V1; this alone does not authorize all dashboard content | **UNRESOLVED** | Map each displayed fact/action to exact requirement; G1 blocker |
-| `student_app_shell.dart` | No shell-specific V1 requirement mapped in register | **UNRESOLVED** | Map each route to a V1 source or defer/remove; G1 blocker |
-| `student_subject.dart` | No exact authoritative screen mapping recorded | **UNRESOLVED** | Identify applicable requirement or leave deferred/unresolved; G1 blocker |
+| Discover/Search | `MASTER_PRD.md` §8 module 19; frozen Library PRD §14A.3–.4; `14B` §§14B.2–.4; discovery contract `Library_PRD_v1.md` §14A | **RETAINED — SOURCE-BOUNDED** | Public search/location discovery; do not inherit draft-only C2 states or ranking behavior |
+| Library Profile | `MASTER_PRD.md` §8 module 19; frozen Library PRD §14A.5 and 14B.7–.10; protected/public field boundary | **RETAINED — SOURCE-BOUNDED** | Only the §14A.5 allow-list and `14B` projection/ownership rules |
+| Availability | Frozen `PRD-SEAT-MANAGEMENT.md` `SEAT-FR-076`, `.079`; frozen `14B` `LIB-14B.11`–`.14` | **RETAINED — SOURCE-BOUNDED** | Student private availability may follow PRD-007; public exposure is aggregate/coarse only; live occupancy V2 |
+| Shift/Seat selection | Frozen `PRD-SEAT-MANAGEMENT.md` `SEAT-FR-004`, `.076`–`.086`; `MASTER_PRD.md` §8 module 7 | **RETAINED — SOURCE-BOUNDED** | Student self-booking, tenant setting default disabled; no public per-seat state |
+| Booking outcome | Frozen `PRD-SEAT-MANAGEMENT.md` §§11–12 (`SEAT-FR-076`–`.086`); frozen Library PRD 14A.3/14B.27 `PO-4` | **RETAINED — SOURCE-BOUNDED** | Outcomes only from the owning BC-04 booking modes/results; no new states from draft C4 |
+| Operational Dashboard — Owner | `MASTER_PRD.md` §8 module 10; composition over read models | **RETAINED — COMPOSITION ONLY** | V1 family exists; do not infer per-widget requirements from the family listing |
+| Operational Dashboard — Manager | `MASTER_PRD.md` §8 module 11; composition over read models | **RETAINED — COMPOSITION ONLY** | V1 family exists; role permissions remain in authoritative access requirements |
+| Operational Dashboard — Reception | `MASTER_PRD.md` §8 module 12; frozen PRD-007 staff operations; PRD-006 attendance; PRD-008 finance requirements (PRD-008 itself remains DRAFT) | **RETAINED — COMPOSITION ONLY** | Composition only; do not imply all finance requirements are frozen or approve a widget set |
+| Community | `MASTER_PRD.md` §5.2 `MP-SCOPE-04` and §8 V2 roadmap | **DEFERRED — V2** | PRD-021A status conflict cannot override explicit V2 scope; no V1 community surface |
+| `ops_page.dart` | No exact V1 screen/workflow mapping evidenced by named role/module source | **DEFERRED — unsupported screen** | Keep as observed implementation only; no V1 design authorization |
+| `reception_desk.dart` | Reception Dashboard V1 composition; frozen PRD-007 `SEAT-FR-055`, `.059`, `.062`; PRD-006 attendance; PRD-008 `FEE-FR-022` (draft requirements not freeze authority) | **RETAINED — SOURCE-BOUNDED** | Map only named Reception workflows; no blanket approval of file contents |
+| `money_page.dart` | Master PRD §8 module 9; PRD-008 `FEE-FR-022`, `.053`–`.055` | **RETAINED — SOURCE-BOUNDED / PRD-008 DRAFT** | Finance is in V1; exact behaviors remain governed by PRD-008's actual lifecycle status, not promoted here |
+| `overview_page.dart` | No source maps this implementation screen to a named role composition | **DEFERRED — unsupported screen** | V1 dashboard family does not establish this file's role or content |
+| `seat_map_page.dart` | Master PRD §8 module 7; frozen PRD-007 `SEAT-FR-004`, `.039`, `.055`–`.079` | **RETAINED — SOURCE-BOUNDED** | Seat operations and visibility only as specified by PRD-007; filename alone is not proof of conformance |
+| `students_page.dart` | Master PRD §8 module 4; frozen `Student_Management_PRD_v1.md` `SM-*`; `LMD-*` if member directory composition | **RETAINED — SOURCE-BOUNDED** | Student/member operations only within PRD-004 scope |
+| `staff_app_shell.dart` | `MASTER_PRD.md` §5.2 `MP-SCOPE-01` places Staff & Shift in V2 | **DEFERRED — V2 shell** | Does not authorize V1 routes; V1 screens retain separate mappings above |
+| `parent_dashboard.dart` | `MASTER_PRD.md` §8 module 5; composition over BC-01, BC-03, BC-05; guarded-student access constrained by frozen PRD-004 / `FEE-FR-055` | **RETAINED — COMPOSITION ONLY** | Only source-backed guardian/student facts; no additional guardian scope inferred |
+| `student_dashboard.dart` | `MASTER_PRD.md` §8 module 4; frozen PRD-004; personal Dashboard is protected operation `LIB-14B.27` `PO-6` | **RETAINED — SOURCE-BOUNDED** | Only authenticated student's source-backed Student Management facts/actions |
+| `student_app_shell.dart` | No exact shell-specific V1 requirement or destination mapping observed | **DEFERRED — unsupported shell** | Does not promote any route to V1 |
+| `student_subject.dart` | No exact V1 requirement/source mapping observed | **DEFERRED — unsupported screen** | No V1 subject surface inferred from file observation |
 
 `DIT-009` remains a separate supplemental membership feature row linked to frozen
 `PRD-005` §20 and `DD-0001`. Its listed implementation tasks are blocked by `ADR-0012`

@@ -56,7 +56,7 @@ Three constraints, each from an existing source:
 |---|---|---|
 | Authentication PRD — Security & Privacy | `docs/30-product/authentication/prd-v2/08-Security-and-Privacy.md` — §8.4 Privacy Principles, §8.5 Sensitive Data Protection, §8.6 Threat Scenarios (**9** scenarios), §8.8 Privacy Business Rules | ⚠️ **Version caveat:** the baseline records Authentication PRD **v3.0** as current, but `prd-v3/` contains only `00-Cover-and-Control.md`; the substantive chapter exists only under `prd-v2/`. ⛔ **Not resolved here** — see `SPX-GAP-008` |
 | Privacy Owner role | `docs/00-governance/adr/ADR-0077-privacy-owner-role-derived-from-existing-rules.md` | `Accepted`; ⚠️ holder **VACANT** |
-| Community safety & privacy | `docs/30-product/social-graph/PRD-021A_A6_COMMUNITY_SAFETY_PRIVACY_MODERATION_DRAFT_v0.1.md` | `DRAFT` — ⚠️ and `PRD-021A` carries the `C-001` conflict already recorded in [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md) §4 |
+| Community safety & privacy | `docs/30-product/social-graph/PRD-021A_A6_COMMUNITY_SAFETY_PRIVACY_MODERATION_DRAFT_v0.1.md` | `DRAFT` — ⚠️ The source-status `C-001` that once flagged `PRD-021A` is now **RESOLVED** by source precedence (`Accepted` [`ADR-0087`](../../00-governance/adr/ADR-0087-prd-021a-library-community-a1-a8-rank-3-baseline.md), Rank 3, Stage 7 closed). A6 *itself* remains `DRAFT` on the admission record; Community stays **DEFERRED** to V2 per `MASTER_PRD.md` §32 |
 | `ConsentRecord` | `LIBOORA_BOUNDED_CONTEXT_MAP.md` §8 — a declared `BC-18` value object | Rank 4 |
 | Security/implementation release | `docs/00-governance/SEC-1_A-9_IMPLEMENTATION_RELEASE_BC-18.md` | Unranked record |
 
@@ -72,7 +72,7 @@ Three constraints, each from an existing source:
 | `SPX-GAP-006` | **No permission-denied UX model.** [`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md) §1 lists a `permission-denied` state "where source defines it", but ⛔ **no artifact defines what it shows** — whether a denied capability is hidden or visible-and-disabled is a **security-relevant** choice, since hiding versus disabling discloses different information | `SCREEN_ARCHITECTURE.md` §1; role model in code (`PolicyDecisionPoint`) | Security Platform + UX Architecture Owner | ⛔ OPEN |
 | `SPX-GAP-007` | **No tenant-isolation UX.** Tenant partitioning is enforced in code and tested, and a branch/tenant switcher exists (`account_sheet.dart`). ⛔ **No design artifact states how the active tenant is made unambiguous** — a user acting in the wrong tenant is a cross-tenant data event, so this is a **security** concern, not merely a labelling one | BC Map `BC-19` invariants; `test/widget_test.dart` tenant-isolation group | Security Platform + UX Architecture Owner | ⛔ OPEN |
 | `SPX-GAP-008` | **Source-version ambiguity.** The security/privacy chapter this register depends on exists only under `prd-v2/` while the baseline names **v3.0** as current. ⛔ **Not repaired here**: reconciling a frozen PRD's version is a Governance Owner act | `DOCUMENTATION_BASELINE.md`; `prd-v3/` contents | **Governance Owner** | ⛔ OPEN |
-| `SPX-GAP-009` | **Community privacy is blocked upstream.** `PRD-021A` A6 covers safety/privacy/moderation but is `DRAFT`, and its status is the subject of conflict `C-001`. ⛔ **No community privacy UX may be designed** until governance reconciles that record | `PRD_DESIGN_TRACEABILITY.md` §4 `C-001` | Governance Owner, then Founder/Product Authority | ⛔ OPEN — ⚠️ **blocked, not merely unassigned** |
+| `SPX-GAP-009` | **Community privacy is blocked upstream.** The source-status `C-001` is now **RESOLVED** (`Accepted` ADR-0087), but A6 remains `DRAFT` on the admission record and Community is **DEFERRED** to V2 per `MASTER_PRD.md` §32. ⛔ **No community privacy UX may be designed** until the V2 deferral is reviewed by governance | `MASTER_PRD.md` §32 (V2 deferral); `PRD_DESIGN_TRACEABILITY.md` §4 `C-001` (resolved) | Governance Owner, then Founder/Product Authority | ⛔ OPEN — ⚠️ **blocked, not merely unassigned** |
 
 ### 4.1 Register measures
 
@@ -82,7 +82,7 @@ Three constraints, each from an existing source:
 | Resolved | **0** |
 | Blocked on the **VACANT** Privacy Owner | **3** (`001`, `002`, `003`) |
 | Requiring Security Platform | **4** (`003`, `004`, `006`, `007`) |
-| Blocked upstream by `C-001` | **1** (`009`) |
+| Blocked upstream by V2 deferral (ex-`C-001`, now source-status resolved) | **1** (`009`) |
 | Governance-owned | **1** (`008`) |
 
 ## 5. Interim design rule

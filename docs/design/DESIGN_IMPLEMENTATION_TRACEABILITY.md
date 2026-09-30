@@ -167,7 +167,7 @@ design decision.
 | ID | Item | Owner | Status |
 |---|---|---|---|
 | `DIT-OD-001` | **Evidence inventory complete; authority mapping gap remains.** The base register has **0/8** PRD-linked rows; supplemental `DIT-009` makes **1/9**, without mapping the other base surfaces. The frozen requirement for each retained base surface must be identified by the PRD→Design Traceability Owner; do not infer mappings from filenames or implementation. | PRD→Design Traceability Owner | ⛔ OPEN — mappings not evidenced |
-| `DIT-OD-002` | **Per-surface evidence register recorded in §8.1.** It inventories five proposed discovery/booking families, the inherited Operational Dashboard composition, Community, and 11 observed implementation screens. Exact authoritative V1 mapping is still absent for the UNRESOLVED rows; Community is DEFERRED; PRD-021A/021C conflicts require source-authority disposition. | UX Architecture Owner with PRD→Design Traceability Owner; escalate source conflict to Founder/Product Authority | ⛔ OPEN — evidence inventory exists, per-surface scope/trace decisions remain incomplete |
+| `DIT-OD-002` | **Per-surface evidence register recorded in §8.1.** It inventories five proposed discovery/booking families, the inherited Operational Dashboard composition, Community, and 11 observed implementation screens. Exact authoritative V1 mapping is still absent for the UNRESOLVED rows; Community is DEFERRED to V2 per `MASTER_PRD.md` §32; the PRD-021A/021C source-status conflicts `C-001`/`C-002` are now RESOLVED by source precedence (`Accepted` ADR-0087 / ADR-0098), leaving only the per-surface V1 requirement mapping and traceability. | UX Architecture Owner with PRD→Design Traceability Owner; escalate source conflict to Founder/Product Authority | ⛔ OPEN — evidence inventory exists, per-surface scope/trace decisions remain incomplete |
 | `DIT-OD-003` | **Accessibility evidence gap:** `DIT-007` records 0 occurrences of `Semantics`, `semanticsLabel`, `meetsGuideline`, or `textScaleFactor` under `lib/`, and 0 accessibility assertions under `test/`. Record implementation/QA evidence when supplied; do not infer compliance from the requirements document. | Accessibility Owner | ⛔ OPEN — evidence absent |
 | `DIT-OD-004` | **Surface QA evidence gap:** the base register has evidence for **1/8** rows only; supplemental `DIT-009` lists 15 domain-level membership test files but **0 surface tests**. Apply [`DESIGN_QA.md`](DESIGN_QA.md) §2 criteria and attach surface-specific evidence before any row is marked `COMPLETE`. | Design QA Owner | ⛔ OPEN — evidence absent for remaining rows |
 
@@ -188,25 +188,31 @@ or are removed from V1 design scope.
 This is a product-scope boundary, not implementation approval. Existing `DIT-005`,
 `DIT-006`, and `DIT-008` observations remain evidence of the current divergence until
 the UX Architecture Owner completes the reconciliation. `DIT-OD-002` therefore remains
-OPEN, and no G1 pass is implied.
+OPEN (per-surface V1 requirement mapping not yet evidenced), and no G1 pass is implied.
+The source-status resolutions `C-001` (ADR-0087) and `C-002` (ADR-0098) affect the
+upstream requirement source only; they do not supply the per-surface mapping evidence
+that `DIT-OD-001` / `DIT-OD-002` require, and they do not pass `G1` or close `DBT-008`.
 
 ### 8.1 Per-surface evidence status
 
 The Option C boundary sets the reconciliation rule, but does not itself make any
 surface approved. Statuses below remain `UNRESOLVED` where exact requirement mapping is
 not recorded. Community is `DEFERRED` for V1 per `MASTER_PRD.md` §32 (Community is V2),
-with the separate PRD-021A source-status conflict still open (`PRD_DESIGN_TRACEABILITY.md`
-C-001). No implemented screen is promoted to V1 scope by observation alone.
+with the PRD-021A source-status conflict `C-001` now **RESOLVED by source
+precedence** (`Accepted` ADR-0087, Rank 3, Stage 7 closed; see
+`PRD_DESIGN_TRACEABILITY.md` §4). No implemented screen is promoted to V1 scope
+by observation alone, and this resolution does **not** close `DIT-OD-001` /
+`DIT-OD-002` or pass `G1` — the per-surface V1 requirement mapping remains open.
 
 | Surface | Authority evidence (not automatic approval) | Status | Required trace / G1 impact |
 |---|---|---|---|
-| Discover/Search | Master PRD lists Search as a V1 essential; PRD-021C C2 lifecycle/freeze conflict remains in PRD traceability C-002 | **UNRESOLVED** | Resolve source status and map exact requirement/states; G1 blocker |
-| Library Profile | PRD-021C C3 appears in traceability but its component-file/freeze status conflict remains | **UNRESOLVED** | Map permitted profile fields to authoritative requirement; G1 blocker |
-| Availability | PRD-007 freeze records are cited for seat authority; PRD-021C C4 carries status conflict | **UNRESOLVED** | Map each claim/state to exact seat requirement; G1 blocker |
+| Discover/Search | Master PRD lists Search as a V1 essential; C-002 source-status resolved by `Accepted` ADR-0098 (Rank 3, Stage 7 `PASS`) | **UNRESOLVED** | Source-status resolved; exact per-surface requirement mapping still required (`DIT-OD-002`); G1 blocker |
+| Library Profile | PRD-021C C3 is inside the `FROZEN` / `BASELINED` Rank 3 C0–C8 package (`Accepted` ADR-0098); C-002 source-status resolved | **UNRESOLVED** | Map permitted profile fields to the authoritative requirement (`DIT-OD-002`); G1 blocker |
+| Availability | PRD-007 freeze records and BC-04 remain the higher-order seat authority; C4 sits inside the `FROZEN` / `BASELINED` Rank 3 C0–C8 package (`Accepted` ADR-0098); C-002 source-status resolved | **UNRESOLVED** | Map each claim/state to the exact seat requirement (`DIT-OD-002`); G1 blocker |
 | Shift/Seat selection | PRD-007 is cited as authority; implementation filename is not proof of designed equivalence | **UNRESOLVED** | Link states to exact requirement; G1 blocker |
 | Booking outcome | Existing booking authority is referenced in `USER_FLOWS.md`; exact state-to-requirement mapping absent | **UNRESOLVED** | Identify authoritative requirement for each outcome state; G1 blocker |
 | Operational Dashboard | Master PRD lists Owner, Manager, Reception dashboards as V1 compositions; SCREEN_ARCHITECTURE calls the family inherited | **UNRESOLVED per role/screen** | Map each retained role surface to exact V1 requirement; G1 blocker |
-| Community | Master PRD §32 places Community in V2; PRD-021A source-status conflict remains open | **DEFERRED from V1 pending source-authority resolution** | No V1 public/community behavior or permission inferred |
+| Community | Master PRD §32 places Community in V2; C-001 source-status resolved by `Accepted` ADR-0087 (Rank 3, Stage 7 closed); deferral now rests on V2 scope, not source-status | **DEFERRED from V1** | No V1 public/community behavior or permission inferred; per-surface mapping open (`DIT-OD-001`/`DIT-OD-002`) |
 | `ops_page.dart` | Master PRD role/module descriptions are candidate context only | **UNRESOLVED** | Map actual workflow to exact V1 requirement or defer/remove; G1 blocker |
 | `reception_desk.dart` | Master PRD describes Reception responsibilities but does not establish this file's requirements | **UNRESOLVED** | Map actual workflows to exact V1 requirement; G1 blocker |
 | `money_page.dart` | Revenue & Finance V1 / PRD-008 are candidate sources | **UNRESOLVED** | Map actual behaviors to exact PRD-008 requirements; G1 blocker |

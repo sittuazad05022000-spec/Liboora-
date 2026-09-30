@@ -66,15 +66,14 @@ verified.
 
 ## 4. Register
 
-⚠️ **Every row below is `PARTIAL`, and that is the measured truth rather
-than an omission.** The repository contains an implemented Flutter
-application *and* a design foundation that were produced independently: the
-design documents name **7** screen families
-([`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md) §1) built around library
-discovery and booking, while the shipped application implements staff and
-student operations. **No design artifact in this repository was written
-against the screens that exist**, so no row can honestly claim a complete
-design-to-code link yet.
+⚠️ **Every base-register row below remains partial or otherwise incomplete.**
+The proposed screen inventory contains **7** items ([`SCREEN_ARCHITECTURE.md`](SCREEN_ARCHITECTURE.md)
+§1): **5** proposed discovery/booking families (Discover/Search, Library
+Profile, Availability, Shift/Seat selection, Booking outcome), one inherited
+Operational Dashboard composition, and one Community surface marked
+`TO BE DECIDED`. The shipped application separately contains **11** observed
+staff/student operational screens. These inventories were produced
+independently; no complete design-to-code link is implied.
 
 Rows are recorded for the implemented surfaces because they are **observable
 facts** that a future design pass will need. Recording them does not approve
@@ -100,14 +99,16 @@ them, and does not assert that any of them was designed.
 | `PARTIAL` | **5** |
 | `NOT STARTED` | **2** |
 | `CONFLICT` | **1** |
-| Rows with a PRD requirement link | **0** |
-| Rows with any QA evidence | **1** of 8 |
+| Base-register rows with a PRD requirement link | **0 of 8** |
+| Including supplemental `DIT-009` | **1 of 9** rows have a PRD requirement link (`DIT-009` → `PRD-005` §20) |
+| Base-register rows with any QA evidence | **1 of 8** |
+| Supplemental `DIT-009` QA | 15 membership test files are listed as domain-level evidence; **0 surface tests** — not counted as surface QA |
 
-⚠️ **The `0` in "rows with a PRD requirement link" is the most important
-number here.** It is not laziness: establishing which frozen requirement
-governs an already-built screen is a **product judgement** belonging to the
-PRD→Design Traceability Owner, and inventing the mapping would be the
-untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md)
+⚠️ **The base register's 0/8 remains important.** The supplemental `DIT-009`
+feature-level row is separate: its `PRD-005` §20 link is supported by the
+frozen PRD and `DD-0001`, but it does not identify requirements for the other
+eight base rows or discharge `DIT-OD-001`. Inventing those mappings would be
+the untraceable design claim that [`PRD_DESIGN_TRACEABILITY.md`](PRD_DESIGN_TRACEABILITY.md)
 §3 exists to reject.
 
 ### 4.2 ⭐ First feature-level design row
@@ -166,7 +167,7 @@ design decision.
 | ID | Item | Owner | Status |
 |---|---|---|---|
 | `DIT-OD-001` | **0 of 8** rows carry a PRD requirement link. Which frozen requirements govern the implemented staff/student surfaces? | PRD→Design Traceability Owner | ⛔ OPEN |
-| `DIT-OD-002` | The **5** designed screen families in `SCREEN_ARCHITECTURE.md` §1 have no implementation; the **11** implemented screens have no design artifact. Which direction reconciles? | Founder/Product Authority, with UX Architecture Owner | ⛔ OPEN — ⚠️ a **product scope** question, not a documentation one |
+| `DIT-OD-002` | Under the recorded Option C boundary, map each candidate surface to an applicable approved/frozen V1 PRD, requirement, or established role/workflow; identify unsupported surfaces as unresolved/deferred/removed. Current evidence: 5 proposed discovery/booking families, an inherited dashboard composition, Community `TO BE DECIDED`, and 11 observed implementation screens. | UX Architecture Owner with PRD→Design Traceability Owner; escalate source conflict to Founder/Product Authority | ⛔ OPEN — per-surface authority mapping and traceability incomplete; scope direction itself is decided |
 | `DIT-OD-003` | `DIT-007`: accessibility is fully specified and **measurably unimplemented** (0 semantics, 0 assertions) | Accessibility Owner | ⛔ OPEN |
 | `DIT-OD-004` | QA evidence exists for **1 of 8** rows. What evidence does [`DESIGN_QA.md`](DESIGN_QA.md) §2 require before a row may read `COMPLETE`? | Design QA Owner | ⛔ OPEN |
 

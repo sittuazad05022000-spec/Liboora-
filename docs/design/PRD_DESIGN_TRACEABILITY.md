@@ -28,7 +28,7 @@ The locked Documentation Baseline, accepted ADRs, frozen PRDs, architecture maps
 
 A row is complete when it has a source path, source status, design consequence, design status, owner, and open question if any. A design artifact with no row is not handoff-ready.
 
-This register carries the **upstream** half of the chain — requirement to design treatment. The **downstream** half — design artifact to screen, implementation and QA evidence — is [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md). ⚠️ That register currently holds **0** rows with a PRD requirement link, and closing that gap (`DIT-OD-001`) is this document's owner's act, not a documentation fix.
+This register carries the **upstream** half of the chain — requirement to design treatment. The **downstream** half — design artifact to screen, implementation and QA evidence — is [Design to Implementation Traceability](DESIGN_IMPLEMENTATION_TRACEABILITY.md). Its base register has **0 of 8** rows with a PRD requirement link. The supplemental `DIT-009` feature-level row in §4.2 links to frozen `PRD-005` §20, so the combined count is **1 of 9**; that supplemental link does not resolve which frozen requirement governs the other eight base rows. Closing that base-register gap (`DIT-OD-001`) remains the traceability owner's act, not a documentation-only inference.
 
 ## 4. Conflict register
 

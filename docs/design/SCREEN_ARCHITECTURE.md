@@ -13,13 +13,13 @@
 
 | Screen family | Purpose | Required states | Ownership guardrail | Status |
 |---|---|---|---|---|
-| Discover / Search | Start local library discovery | loading, results, no results, filter empty, error, offline/stale | C2 consumes BC-23; no duplicate search or ranking | PROPOSED |
-| Library Profile | Show one library’s public profile | loading, complete, partial, unavailable, error | C3 owns composition only | PROPOSED |
-| Availability | Show source-backed availability | loading, fresh, stale, unavailable, error | No client promise of real-time state | PROPOSED |
-| Shift / Seat selection | Present an existing selection choice | loading, selected, conflict, unavailable, retry | Seat and booking authority remain inherited | PROPOSED |
-| Booking outcome | Explain initiation result | success, pending, conflict, declined, retryable failure, offline | No duplicate booking authority | PROPOSED |
-| Operational dashboard | Support existing staff workflows | loading, empty, partial, error, permission-denied where source defines it | No new role or permission | INHERITED composition |
-| Community surface | Reserved for approved community scope | all states must follow approved source rules | A1 status conflict blocks unsupported claims | TO BE DECIDED |
+| Discover / Search | Public library discovery/search | Public results, no results, unavailable/private indistinguishable response; other transient states only when defined by source | Frozen Library PRD §14A.4 and `14B` `LIB-14B.2`–`.6`, `.23`–`.25`; no draft C2 ranking behavior | RETAINED — V1, source-bounded |
+| Library Profile | Show the public Library PRD §14A.5 allow-list | Available public projection or same anti-enumeration response for inaccessible records | Frozen `14B` `LIB-14B.7`–`.10`, `.22`–`.25`; no C3-only field/state | RETAINED — V1, allow-list only |
+| Availability | Public aggregate availability; private student availability in protected seat flow | Public aggregate/coarse status only; no per-seat identity, exact free count, live occupancy or attendance-derived state | Frozen `14B` `LIB-14B.11`–`.14`; private seat availability `SEAT-FR-076`, `.079` | RETAINED — V1, audience-bounded |
+| Shift / Seat selection | Student self-booking/selection under BC-04 | Only PRD-007-defined eligibility, selection and rejection outcomes | Frozen PRD-007 `SEAT-FR-076`–`.086`; tenant default disabled; no public per-seat state | RETAINED — V1, protected operation |
+| Booking outcome | Explain the result of the owning seat-booking operation | Only PRD-007 booking-mode outcomes (Direct, HoldThenConfirm, ApprovalRequired) and specified rejection; no offline booking claim | Frozen PRD-007 `SEAT-FR-085`–`.086`; frozen Library `14B` `PO-4` | RETAINED — V1, source-bounded |
+| Operational dashboard | Owner, Manager and Reception read compositions | Loading/empty/error only as applicable to source-backed projections; permission-denied only where source defines it | Master PRD §8 modules 10–12; no invented role, permission or widget | RETAINED — V1 composition only |
+| Community surface | No V1 screen | Not applicable | Master PRD §5.2 `MP-SCOPE-04` and §8 place Community in V2 | DEFERRED — V2 |
 
 ### 1.1 ⚠️ These families are specified, not built
 
@@ -33,23 +33,23 @@ and as [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-006`.
 
 ## 1.2 V1 scope reconciliation — Founder/Product Authority decision
 
-**PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither this proposed seven-family
-screen set nor the currently implemented staff/student screen set is independently
-authoritative for V1. The authoritative V1 experience scope must be reconciled from
-approved/frozen V1 PRDs and the established product role structure.
+**PRODUCT SCOPE DECISION — OPTION C (2026-09-30), RECONCILED:** The seven-family
+inventory is disposed by source in §1 and `DESIGN_IMPLEMENTATION_TRACEABILITY.md`
+§8.1; implementation observation alone remains non-authoritative.
 
-The reconciliation covers Student/Parent discovery, library selection, availability,
-seat/shift selection, and booking/outcome surfaces, and Reception, Manager, and Owner
-operational workflows defined by V1 PRDs. Existing implementation is not automatically
-approved; proposed surfaces are not automatically approved. Each retained screen must
-trace to an applicable V1 PRD, approved product requirement, or established
-role/workflow. Unsupported screens remain unresolved, deferred, or are removed from the
-V1 design scope.
+Retained surfaces are bounded by the specific sources in §1. Student/Parent discovery
+uses frozen Library public-discovery requirements; seat availability and booking use
+frozen PRD-007; role dashboards are compositions established by Master PRD §8, with no
+inferred widget set. Unsupported implementation screens and Community are deferred from
+V1. PRD-021C C2/C3/C4 draft-only states are not adopted as requirements.
 
-This is product scope only. It does not approve implementation, backend behavior,
-permissions, undocumented features, or G1, and it does not close `DBT-006`.
+This is product scope reconciliation only. It does not approve implementation, backend
+behavior, permissions, undocumented features, QA, or a separate G1 gate-owner act.
 
-Under Option C, the current inventory is descriptive, not an authoritative V1 screen list: the five discovery/booking families remain **UNRESOLVED for V1** pending source mapping; the Operational Dashboard is an inherited composition but each role-specific screen remains **UNRESOLVED**; Community is **DEFERRED from V1** per Master PRD §32, with PRD-021A conflict carried. Required states in the table are candidate design requirements and do not approve a surface or state without an applicable source trace. Per-screen specifications use
+Under Option C, the inventory is descriptive. The five discovery/booking families and
+the dashboard composition are retained only within the exact cited source boundaries;
+Community is **DEFERRED — V2** by Master PRD §5.2/§8. PRD-021A's status conflict does
+not alter that scope. Draft-only states are excluded. Per-screen specifications use
 [`templates/SCREEN_SPEC_TEMPLATE.md`](templates/SCREEN_SPEC_TEMPLATE.md).
 
 ## 2. Screen anatomy

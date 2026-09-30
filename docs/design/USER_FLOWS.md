@@ -28,7 +28,7 @@ Search or Nearby → Results → Library Profile → Availability → Shift or S
 
 ## 2. Staff operational flow
 
-**V1 source-bounded operations:** Master PRD §8 modules 3–12 establishes Student Management, Parent Portal, Seat Management, Attendance, Revenue & Finance, and Owner/Manager/Reception dashboard compositions. Frozen PRD-004, PRD-006, PRD-007 and role/access sources govern their own behavior. PRD-008 is still DRAFT; its requirements are not represented as frozen. This flow does not approve any screen file or combine systems. `ops_page.dart`, `overview_page.dart`, `staff_app_shell.dart`, `student_app_shell.dart`, and `student_subject.dart` are explicitly deferred in V1 because no authoritative V1 screen/workflow mapping was found.
+**V1 source-bounded operations:** Master PRD §8 modules 3–12 establishes Student Management, Parent Portal, Seat Management, Attendance, Revenue & Finance, and Owner/Manager/Reception dashboard compositions. Frozen PRD-004, PRD-006, PRD-007 and role/access sources govern their own behavior. PRD-008 is still DRAFT; its requirements are not represented as frozen. This flow does not approve any screen file or combine systems. Observed files without exact source mapping are deferred as listed in `DESIGN_IMPLEMENTATION_TRACEABILITY.md` §8.1.
 
 ## 3. Membership-derived participation flow
 

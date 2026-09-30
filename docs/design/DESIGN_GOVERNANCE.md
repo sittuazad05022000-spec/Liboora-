@@ -46,8 +46,9 @@ Design governance keeps experience decisions aligned with frozen product and arc
 | G4 Design QA | Evidence covers visual, interaction, accessibility, responsive, and constrained-network behavior | PROPOSED | Design QA Owner |
 | G5 Change | Version, impact, decision record, and approvals are recorded | PROPOSED | Design Governance Owner |
 
-⚠️ **Gate status, measured:** **0** of gates `G0`–`G5` has been recorded as
-passed, and **0** design decisions are `APPROVED`
+⚠️ **Gate status, measured:** **1 of 6** gates has been recorded as passed —
+`G0` is **PASSED / CONFIRMED** in [`G0_SOURCE_AUDIT_RECORD_2026-09-30.md`](G0_SOURCE_AUDIT_RECORD_2026-09-30.md);
+`G1`–`G5` remain unrecorded — and **0** design decisions are `APPROVED`
 ([`design-decisions/README.md`](design-decisions/README.md) §3). Recorded as
 [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-008`.
 

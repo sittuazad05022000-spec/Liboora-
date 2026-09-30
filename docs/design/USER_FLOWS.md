@@ -39,7 +39,8 @@ Every flow must answer: where did the user enter, what is known, what may be sta
 ## 5. V1 scope reconciliation — Founder/Product Authority decision
 
 **PRODUCT SCOPE DECISION — OPTION C (2026-09-30):** Neither the seven proposed
-discovery-to-booking families nor the currently implemented staff/student screens is
+screen families (five discovery/booking families, the inherited Operational Dashboard,
+and Community) nor the currently implemented staff/student screens is
 independently authoritative for V1. The V1 experience scope must be reconciled from
 approved/frozen V1 PRDs and the established product role structure.
 

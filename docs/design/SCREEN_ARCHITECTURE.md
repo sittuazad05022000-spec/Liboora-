@@ -49,7 +49,7 @@ V1 design scope.
 This is product scope only. It does not approve implementation, backend behavior,
 permissions, undocumented features, or G1, and it does not close `DBT-006`.
 
-Per-screen specifications use
+Under Option C, the current inventory is descriptive, not an authoritative V1 screen list: the five discovery/booking families remain **UNRESOLVED for V1** pending source mapping; the Operational Dashboard is an inherited composition but each role-specific screen remains **UNRESOLVED**; Community is **DEFERRED from V1** per Master PRD §32, with PRD-021A conflict carried. Required states in the table are candidate design requirements and do not approve a surface or state without an applicable source trace. Per-screen specifications use
 [`templates/SCREEN_SPEC_TEMPLATE.md`](templates/SCREEN_SPEC_TEMPLATE.md).
 
 ## 2. Screen anatomy

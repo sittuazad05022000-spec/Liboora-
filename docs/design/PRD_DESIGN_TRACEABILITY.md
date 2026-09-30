@@ -52,3 +52,19 @@ design scope. Frozen PRDs and ADRs are not amended by this record.
 
 This decision establishes product scope only. It does not approve implementation,
 backend behavior, permissions, undocumented features, G1, or `DBT-006` closure.
+
+### 5.1 Per-surface source disposition for G1
+
+The traceability matrix above records the current source conflicts and candidates;
+it does not constitute a complete screen-level V1 map. Under Option C:
+
+| Surface group | Existing source evidence | Current disposition |
+|---|---|---|
+| Discovery/search and profile | PRD-021C C2/C3 + ADR-0094/0095–0097; lifecycle/component status conflict C-002 remains recorded | **UNRESOLVED** — use no surface as approved V1 until conflict is resolved by source authority and exact requirement is mapped |
+| Availability, seat/shift, booking | PRD-007 freeze records and BC-04 authority; PRD-021C C4 source has draft/status conflict | **UNRESOLVED** — PRD-007 is the authority candidate; exact design-state mapping remains required |
+| Student/Parent participation | Master PRD identifies V1 roles/modules; individual display/actions still require source-level mapping and guardian scope | **UNRESOLVED per surface** |
+| Reception/Manager/Owner operations | Master PRD defines roles, responsibilities, and V1 dashboard compositions; this does not map each implementation screen | **UNRESOLVED per screen/workflow** |
+| Community | Master PRD §32 lists Community as V2; PRD-021A baseline/A1 status conflict C-001 remains | **DEFERRED from V1; conflict carried** |
+
+Accordingly, G1 traceability is still incomplete. No proposed family or observed
+implementation surface is promoted to approved V1 scope by this table.

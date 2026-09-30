@@ -20,16 +20,16 @@
 
 | Group | Design meaning | Source guardrail | Status |
 |---|---|---|---|
-| Discover | Find and compare libraries through the existing discovery surface | C2 / BC-23 authority | PROPOSED |
-| Library | View a library profile and its available public facts | C3 composition only | PROPOSED |
-| Study access | Select an existing shift or seat and initiate the applicable flow | BC-04 / PRD-007 authority | PROPOSED |
-| My participation | Show a user’s existing membership-derived or attendance-related information where a source permits it | Existing PRDs only; no new permission | PROPOSED |
-| Operations | Existing staff workflows for enrollment, membership, attendance, seating, reception, and finance | Library Management ownership | INHERITED grouping |
-| Community | Reserved for approved, source-backed community surfaces | PRD-021A status conflict remains open | TO BE DECIDED |
+| Discover | Candidate grouping for discovery/search | C2 / BC-23 are source candidates; lifecycle/source conflict recorded in `PRD_DESIGN_TRACEABILITY.md` | **UNRESOLVED for V1** |
+| Library | Candidate grouping for profile facts | C3 composition candidate; source-status conflict remains | **UNRESOLVED for V1** |
+| Study access | Candidate grouping for availability and seat/shift selection | BC-04 / PRD-007 authority candidate; exact screen mapping incomplete | **UNRESOLVED for V1** |
+| My participation | Candidate grouping for membership/attendance-derived information | Applicable PRDs and visibility rules must be identified; no new permission | **UNRESOLVED for V1** |
+| Operations | Inherited grouping of existing Library Management responsibilities | Master PRD role/module structure is source context; per-screen requirement mappings absent | **INHERITED grouping; surfaces UNRESOLVED** |
+| Community | No V1 grouping approved | Master PRD §32 places Community in V2; PRD-021A status conflict remains open | **DEFERRED from V1; conflict carried** |
 
 ## 3. Navigation model
 
-Primary navigation should expose a small number of stable destinations. Secondary navigation handles filters, profile detail, operational subareas, and settings only where the source product permits them. A screen is not added merely because a backend entity exists.
+Navigation hierarchy and labels are **UNRESOLVED** pending the per-surface V1 PRD/role mapping. The principles in this section are design guidance, not a decided V1 navigation model. Any later proposal must map destinations to approved V1 journeys and established roles; a backend entity or existing implementation alone does not authorize a destination.
 
 ## 4. Findability rules
 

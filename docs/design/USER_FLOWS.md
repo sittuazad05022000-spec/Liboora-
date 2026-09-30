@@ -11,22 +11,22 @@
 
 ## 1. Library discovery to booking
 
-**CONFIRMED / INHERITED:**
+**INHERITED sequence skeleton; V1 surface scope UNRESOLVED under Option C.**
 
 Search or Nearby → Results → Library Profile → Availability → Shift or Seat → Booking Initiation → Outcome.
 
 | Stage | Required design evidence | Source / status |
 |---|---|---|
-| Search or Nearby | Query, location or nearby entry, loading, no-result, stale, error, and offline states | C2 / BC-23; source authority is INHERITED |
-| Results | Clear result identity, relevant public facts, filter state, and return path | C2 composition; no new rank or index |
-| Library Profile | Profile facts, trust cues, available actions, and limits of public data | C3 composition; no field ownership |
-| Availability | Freshness indication and capacity/availability state when supplied | C4 and existing seat authority |
-| Shift or Seat | Existing source-backed selection and conflict handling | PRD-007 / BC-04 authority |
-| Booking Initiation | Review, submit, pending, success, conflict, and retry states | Existing booking authority; no duplicate lock |
+| Search or Nearby | Candidate flow stage; query, location, loading, no-result, stale, error, and offline states are design requirements only, not approval of a V1 surface | PRD-021C C2 / BC-23 are cited in `PRD_DESIGN_TRACEABILITY.md` with source-status conflict; V1 mapping **UNRESOLVED** |
+| Results | Candidate flow stage; identity, public facts, filter state, and return path require source mapping | C2 composition candidate; exact frozen V1 requirement **UNRESOLVED** |
+| Library Profile | Candidate flow stage; profile facts/actions require source mapping | PRD-021C C3 status conflict; fields and V1 mapping **UNRESOLVED** |
+| Availability | Candidate flow stage; freshness and capacity only when source-backed | PRD-007 is authority candidate; PRD-021C C4 conflict remains; per-state mapping **UNRESOLVED** |
+| Shift or Seat | Candidate flow stage; selection/conflict handling only as defined by authority | PRD-007 / BC-04 authority candidate; screen-family-to-implementation mapping **UNRESOLVED** |
+| Booking Initiation | Candidate flow stage; review/outcome states are not independently approved here | Existing booking authority candidate; exact V1 screen/state mapping **UNRESOLVED** |
 
 ## 2. Staff operational flow
 
-**INHERITED:** staff workflows remain organized by existing Library Management responsibilities: enrollment, membership, attendance, seating, reception, and finance. This document does not specify new staff permissions or combine those systems.
+**INHERITED role/workflow categories; per-surface V1 mapping UNRESOLVED:** enrollment, membership, attendance, seating, reception, and finance remain owned by their existing product sources. This document does not approve the currently implemented screens, specify new permissions, or combine those systems. Each retained workflow must be traced to an exact applicable V1 PRD requirement.
 
 ## 3. Membership-derived participation flow
 
@@ -34,7 +34,7 @@ Search or Nearby → Results → Library Profile → Availability → Shift or S
 
 ## 4. Flow quality checks
 
-Every flow must answer: where did the user enter, what is known, what may be stale, what is the primary action, what can fail, how does the user recover, and which source owns the outcome?
+Every flow must answer: where did the user enter, what is known, what may be stale, what is the primary action, what can fail, how does the user recover, and which source owns the outcome? For G1, each stage also requires an authoritative V1 source link and explicit `PROPOSED`, `INHERITED`, `UNRESOLVED`, or `DEFERRED` disposition. The present flows are not complete for G1 while those per-surface links remain open.
 
 ## 5. V1 scope reconciliation — Founder/Product Authority decision
 

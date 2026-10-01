@@ -288,7 +288,7 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | **7** | **Status** | ⛔ **BLOCKED — last in sequence** |
 | **8** | **Dependency** | ⛔ `CP-B1`…`B4`, `CP-C`, `CP-D`, `CP-I`, and gates `G0`→`G2`→`G3` |
 
-### ⭐ The `G5` checklist — ⛔ **0 of 11 items satisfied today**
+### ⭐ The `G5` checklist — ⛔ **4 of 11 items satisfied today** *(items 1, 7, 10, 11)* · prior tally retained: ⛔ **0 of 11**
 
 | # | Required before `G5` | Status |
 |---|---|---|
@@ -298,11 +298,11 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | 4 | `CP-B3` Colour + radius ratified; 14/18 deprecated | ⛔ **NO** |
 | 5 | `CP-B4` Spacing + elevation decided | ⛔ **NO** |
 | 6 | `CP-C` `ACCESSIBILITY.md` amended | ⛔ **NO** |
-| 7 | `CP-D` Responsive artifact created | ⛔ **NO** |
+| 7 | `CP-D` Responsive artifact created | ⭐ **YES** — `RESPONSIVE_DESIGN.md` v0.1 **APPROVED** 2026-10-01 (Responsive Design Owner; [`RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md`](RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md); `DESIGN_DEBT.md` `DBT-002` CLOSED/RESOLVED); prior state retained: ⛔ **NO** |
 | 8 | `CP-E` `NFR Budgets (V1)` created | ⛔ **NO** |
 | 9 | `CP-I` `DDR-0009` version defect cured | ⛔ **NO** |
-| 10 | Gates `G0`–`G4` recorded | ⛔ **NO — 0 of 6** |
-| 11 | `DBT-001`/`002`/`005` closable | ⛔ **NO** |
+| 10 | Gates `G0`–`G4` recorded | ⭐ **YES** — `DESIGN_GOVERNANCE.md` §4: **5 of 6** gates recorded (`G0`…`G4` each **PASSED / CONFIRMED**, with on-disk records `G0_SOURCE_AUDIT_RECORD_2026-09-30.md`, `G1_…_2026-10-01.md`, `G2_…_2026-10-01.md`, `G3_…_2026-10-01.md`, `G4_DESIGN_QA_RECORD_2026-10-01.md`); ⛔ `G5` remains **PROPOSED / unrecorded** · prior state retained: ⛔ **NO — 0 of 6** |
+| 11 | `DBT-001`/`002`/`005` closable | ⭐ **YES** — `DESIGN_DEBT.md`: `DBT-001` **RESOLVED** (colour `DDR-0001` · spacing `DDR-0027` · typeface `DDR-0029`; code conformance remains separate engineering work) · `DBT-002` **CLOSED / RESOLVED** (`RESPONSIVE_DESIGN.md` v0.1 APPROVED + `DDR-0004`/`0005`) · `DBT-005` **RESOLVED** (radius/elevation `DDR-0028` · sizes `DDR-0031` · weights `DDR-0032`); prior state retained: ⛔ **NO** |
 
 ---
 

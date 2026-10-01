@@ -62,10 +62,11 @@ Read in this order for orientation.
 | 9 | [`VISUAL_LANGUAGE.md`](VISUAL_LANGUAGE.md) | The 2.5D direction, colour/type/depth/motion posture |
 | 10 | [`ACCESSIBILITY.md`](ACCESSIBILITY.md) | Required checks, content rules, exception discipline |
 | 11 | [`PERFORMANCE.md`](PERFORMANCE.md) | Design-side asset, network and motion posture |
-| 12 | [`FIGMA_FOUNDATION.md`](FIGMA_FOUNDATION.md) | File structure, naming, libraries, variables |
-| 13 | [`DESIGN_ENGINEERING_HANDOFF.md`](DESIGN_ENGINEERING_HANDOFF.md) | Handoff package and readiness |
-| 14 | [`DESIGN_QA.md`](DESIGN_QA.md) | The design acceptance gate and its evidence |
-| 15 | [`DESIGN_CHANGE_MANAGEMENT.md`](DESIGN_CHANGE_MANAGEMENT.md) | Change classes `D1`–`D5`, versioning, rollback |
+| 12 | [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) | Window-class layout rules and per-class adaptation (proposed; `DDR-0005` authority) |
+| 13 | [`FIGMA_FOUNDATION.md`](FIGMA_FOUNDATION.md) | File structure, naming, libraries, variables |
+| 14 | [`DESIGN_ENGINEERING_HANDOFF.md`](DESIGN_ENGINEERING_HANDOFF.md) | Handoff package and readiness |
+| 15 | [`DESIGN_QA.md`](DESIGN_QA.md) | The design acceptance gate and its evidence |
+| 16 | [`DESIGN_CHANGE_MANAGEMENT.md`](DESIGN_CHANGE_MANAGEMENT.md) | Change classes `D1`–`D5`, versioning, rollback |
 
 ## 4. Registers
 

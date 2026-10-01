@@ -81,7 +81,7 @@ them, and does not assert that any of them was designed.
 
 | Trace ID | PRD requirement | Design artifact | Surface | Implementation | QA evidence | Status | Owner |
 |---|---|---|---|---|---|---|---|
-| `DIT-001` | `NONE OBSERVED` | `NONE OBSERVED` — ⚠️ `DESIGN_SYSTEM.md` §2 declares these values `TO BE DECIDED` while the code defines them; see [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` | Design tokens — colour and spacing | `lib/app/shared/theme.dart` — `LiblColors` (**12** colour constants), `LiblSpace` (**6** spacing steps) | `NONE OBSERVED` | **CONFLICT** | Design System Owner |
+| `DIT-001` | `NONE OBSERVED` | ⭐ **Restated:** [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` is **RESOLVED at value level** using only genuine existing DDR records — colour ⭐ `DDR-0001` · spacing ⭐ `DDR-0027` · typeface family + licence ⭐ `DDR-0029` (all under `design-decisions/`; register row states `RESOLVED`). ⛔ **Code conformance remains separate engineering work** — decided values are not yet proven against `lib/app/shared/theme.dart`, and no QA evidence is claimed here | Design tokens — colour and spacing | `lib/app/shared/theme.dart` — `LiblColors` (**12** colour constants), `LiblSpace` (**6** spacing steps) | `NONE OBSERVED` | PARTIAL | Design System Owner |
 | `DIT-002` | `NONE OBSERVED` | `NONE OBSERVED` | Shared component set | `lib/app/shared/widgets/common.dart` — **7** widgets: `MetricTile`, `SectionHeader`, `Pill`, `Monogram`, `EmptyState`, `PanelCard`, `MeterBar` | `NONE OBSERVED` | PARTIAL | Component Architecture Owner |
 | `DIT-003` | `PRD-001` — Authentication, V1 (Master PRD §8 module 1) | `SCREEN_ARCHITECTURE.md` §2 (shared entry/recovery anatomy) | Sign-in surface | `lib/app/shared/login_screen.dart` | `test/widget_test.dart` — *"app renders the login screen on first frame"* | PARTIAL | UX Architecture Owner |
 | `DIT-004` | `NONE OBSERVED` | `NONE OBSERVED` | Application chrome and branch switcher | `lib/app/shared/app_chrome.dart`, `lib/app/shared/account_sheet.dart` | `NONE OBSERVED` | PARTIAL | UX Architecture Owner |
@@ -96,9 +96,9 @@ them, and does not assert that any of them was designed.
 |---|---|
 | Rows | **8** |
 | `COMPLETE` | **0** |
-| `PARTIAL` | **5** |
+| `PARTIAL` | **6** *(was 5; `DIT-001` restated — `DBT-001` RESOLVED at value level, `CONFLICT` basis no longer standing; code conformance remains separate engineering work)* |
 | `NOT STARTED` | **2** |
-| `CONFLICT` | **1** |
+| `CONFLICT` | **0** *(was 1; `DIT-001` restated per `DBT-001` register row)* |
 | Base-register rows with a PRD requirement link | **4 of 8** (`DIT-003`, `DIT-005`, `DIT-006`, `DIT-008`) |
 | Including supplemental `DIT-009` | **5 of 9** rows have a PRD requirement link (`DIT-009` → `PRD-005` §20) |
 | Base-register rows with any QA evidence | **1 of 8** |
@@ -167,6 +167,69 @@ design decision.
 | `DIT-OD-002` | **DBT-006 V1 surface reconciliation recorded in §8.1.** Master PRD, frozen Library/Student/Seat sources and registered role compositions define retained scope; Staff & Shift and Community are V2; unsupported observed screens are deferred. | UX Architecture Owner with PRD→Design Traceability Owner | ✅ CLOSED — all listed surfaces mapped or explicitly deferred |
 | `DIT-OD-003` | **Accessibility evidence gap:** `DIT-007` records 0 occurrences of `Semantics`, `semanticsLabel`, `meetsGuideline`, or `textScaleFactor` under `lib/`, and 0 accessibility assertions under `test/`. Record implementation/QA evidence when supplied; do not infer compliance from the requirements document. | Accessibility Owner | ⛔ OPEN — evidence absent |
 | `DIT-OD-004` | **Surface QA evidence gap:** the base register has evidence for **1/8** rows only; supplemental `DIT-009` lists 15 domain-level membership test files but **0 surface tests**. Apply [`DESIGN_QA.md`](DESIGN_QA.md) §2 criteria and attach surface-specific evidence before any row is marked `COMPLETE`. | Design QA Owner | ⛔ OPEN — evidence absent for remaining rows |
+
+### 7.1 ⭐ G3 decision forms — base-register PRD-link rows (`DIT-001`, `DIT-002`, `DIT-004`, `DIT-007`)
+
+Each unlinked base-register row below is closed **only by one of two forms**;
+any other text is an invention and is barred by §3 (`NONE OBSERVED` is a
+finding, not a placeholder). ⭐ **Forms exercised and recorded below — the
+A1–A4 rulings of the G3 owner-decision stage, 2026-10-01.** ⛔ **`DIT-OD-001`
+remains ⛔ OPEN** — the recorded rulings disposition the four rows; the
+item's formal resolution is a separate named act. Base-register traceability
+**stays at 4/8** — form (b) rulings add **no new PRD requirement links**.
+
+| Row | Form (a) — cited PRD requirement | Form (b) — no PRD requirement governs the surface | Status here |
+|---|---|---|---|
+| `DIT-001` | A genuine PRD requirement identifier + path naming the token values this surface must honour | ⛔ No PRD requirement governs the observed `theme.dart` values + applicable owner authority: Design System Owner act against [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-001` (RESOLVED at value level by `DDR-0001`/`DDR-0027`/`DDR-0029`); code conformance remains separate engineering work | ⭐ **FORM (b) RECORDED** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A1), recorded by PRD→Design Traceability Owner against the Design System Owner authority basis · Prior status retained verbatim: ⛔ undecided — neither form recorded · ⛔ no PRD requirement link added; traceability stays 4/8 |
+| `DIT-002` | A genuine PRD requirement identifier + path naming the shared component set | ⛔ No PRD requirement governs the 7 shared widgets + applicable owner authority: Component Architecture Owner | ⭐ **FORM (b) RECORDED** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A2), recorded by Component Architecture Owner · Prior status retained verbatim: ⛔ undecided — neither form recorded · ⛔ no PRD requirement link added |
+| `DIT-004` | A genuine PRD requirement identifier + path naming app chrome / branch switching | ⛔ No PRD requirement governs the chrome/branch surfaces + applicable owner authority: UX Architecture Owner | ⭐ **FORM (b) RECORDED** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A3), recorded by UX Architecture Owner · Prior status retained verbatim: ⛔ undecided — neither form recorded · ⛔ no PRD requirement link added |
+| `DIT-007` | A genuine PRD requirement identifier + path naming the 9 accessibility checks | ⛔ No PRD requirement governs accessibility beyond [`ACCESSIBILITY.md`](ACCESSIBILITY.md) §2 (a design foundation, ⛔ not a PRD) + applicable owner authority: Accessibility Owner | ⭐ **FORM (b) RECORDED** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A4), recorded by Accessibility Owner with PRD→Design Traceability Owner · Prior status retained verbatim: ⛔ undecided — neither form recorded · ⛔ no PRD requirement link added |
+
+### 7.2 ⭐ G3 decision forms — evidence carry-forward items (`DIT-OD-003`, `DIT-OD-004`)
+
+Each carry-forward item is closed **only by one of two forms**:
+
+| Item | Form (a) — G3-required evidence | Form (b) — G4 carry-forward | Status here |
+|---|---|---|---|
+| `DIT-OD-003` | A named accessibility test or dated review record proving `DIT-007`'s 0-occurrence measurement no longer holds | Carry-forward to G4: the gap remains recorded as evidence-absent; G4 evidence collection performs the closure, ⛔ not G3 | ⭐ **ACCEPTED AS G4 CARRY-FORWARD** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A6) · **Still ⛔ OPEN** — acceptance of the carry-forward is ⛔ not closure; G4 evidence collection performs it · Prior status retained verbatim: ⛔ OPEN — carried forward to G4; no G3-required evidence supplied |
+| `DIT-OD-004` | A surface-specific test/review record per the remaining 7/8 base rows (or `DIT-009` surface tests) under [`DESIGN_QA.md`](DESIGN_QA.md) §2 | Carry-forward to G4: `DIT-OD-004` stays evidence-absent at G3; surface QA evidence is G4's measurement | ⭐ **ACCEPTED AS G4 CARRY-FORWARD** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A6) · **Still ⛔ OPEN** — acceptance of the carry-forward is ⛔ not closure · Prior status retained verbatim: ⛔ OPEN — carried forward to G4; no G3-required evidence supplied |
+
+### 7.3 ⭐ Figma decision form
+
+Every row's Design-artifact cell admits **only one of two forms** for the
+design source of a surface:
+
+| Form | What it records | Status here |
+|---|---|---|
+| (a) A **canonical Figma file** | An existing, referenced Figma file/frame + owner record for it | ⛔ **NOT USED — no canonical Figma file is observed or asserted anywhere in this register** |
+| (b) An **artifact-reference branch** | A repository artifact path (a `docs/design/` or `docs/35-design/` document) as the design source | ⭐ **CONFIRMED AS OPERATIVE G3 DESIGN SOURCE** — G3 owner-decision stage, 2026-10-01 · Decision source: explicit G3 owner authorization (A5) · rationale recorded: no canonical Figma file currently exists in this repository (repo-wide: 0 Figma file/frame/URL; `DESIGN_QA.md` §1 Handoff's "Figma artifact is canonical, versioned, and linked" is therefore satisfied by the artifact-reference branch, not by a Figma artifact) · all design-artifact links in this register point to `docs/design/` or `docs/35-design/` documents · prior status retained verbatim: ✅ In use for all rows that carry a design-artifact link (`SCREEN_ARCHITECTURE.md`, `USER_FLOWS.md`, `ACCESSIBILITY.md`, `DD-0001`) |
+
+⛔ **No Figma file, frame, page or link is invented by this pass** — and ⛔ none is
+created by the A5 confirmation either; branch (a) becomes operative only if and
+when a canonical Figma file is registered by the Figma Design Owner (`DESIGN_OWNERSHIP.md`).
+
+### 7.4 Engineering-scope carry-forward record
+
+⛔ **Recorded as an Engineering-scope carry-forward, not a design decision:**
+
+`IMPL-4xx` (the `PRD-005` `BC-02` surface tasks `IMPL-409`/`432`/`433`/`434`/`436`,
+supplemental row `DIT-009`) are **BLOCKED** by [`ADR-0012`](../00-governance/adr/ADR-0012-scaffold-port-inversion-debt.md)
+§3.4, whose `app -> domain/library` sites are *"deliberately left failing"*
+until `TASK-D10` lands — and `TASK-D10` in turn is gated by `IMPL-020`
+(SMS / DLT delivery; `docs/40-implementation/DEVELOPER_HANDOFF.md` L234:
+*"Blocks `TASK-D10`, blocks everything"*).
+
+| Link | Evidence | Scope |
+|---|---|---|
+| `IMPL-4xx` BLOCKED | `DIT-009` row (this register); `PRD-005_IMPLEMENTATION_TASKS.md` §5.1 wave-1 tasks | ⛔ Engineering — ⛔ no design unblocks them |
+| `ADR-0012` §3.4 | `Accepted` ADR: the 9 boundary sites are *"not waived"*; closure "Closes with `TASK-D10`" | ⛔ Engineering — boundary-debt instrument |
+| `TASK-D10` | `DEVELOPER_HANDOFF.md` L234: P0; demo-surface removal | ⛔ Engineering — P0 release blocker |
+| `IMPL-020` | `AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` Block 1 — OTP delivery; external telecom lead time | ⛔ Engineering + external dependency |
+
+This record **carries the chain forward, changes no ADR, and decides
+nothing**. G3 remains **UNPASSED**; gate count remains **3 of 6**
+(`G0`, `G1`, `G2` recorded per [`DESIGN_GOVERNANCE.md`](DESIGN_GOVERNANCE.md) §4);
+no G3 gate record is created by this pass.
 
 ## 8. DBT-006 scope boundary and reconciliation requirement
 

@@ -2792,8 +2792,8 @@ finding(s) across 12 edge(s)` — ⭐ **unchanged**.
 
 | # | Blocker | Owner |
 |---|---|---|
-| 1 | ⚪ **`DBT-001` token values** — ⛔ a prototype cannot render 4 state colours without them | Design Owner |
-| 2 | ⚪ **The accessibility standard** — ⛔ unratified | Product/Design Owner |
+| 1 | ⚠️ **STALE at value level** — ⚪ **`DBT-001` token values**: `DESIGN_DEBT.md` §2 records `DBT-001` `RESOLVED` at value level (colour `DDR-0001` · spacing `DDR-0027` · typeface family + licence `DDR-0029`; `DBT-005` also `RESOLVED` via `DDR-0028`/`DDR-0031`/`DDR-0032`). The *"cannot render 4 state colours"* basis no longer stands **at value level**; ⛔ code conformance remains separate engineering work — no token conformance is claimed | Design System Owner |
+| 2 | ⚠️ **STALE at value level** — ⚪ **the accessibility standard**: `docs/design/ACCESSIBILITY.md` L10 now adopts `DDR-0004` `APPROVED` 2026-09-19 (WCAG 2.1 AA — contrast 4.5:1 / 3:1, ≥48×48dp targets, functional at 200% text scale). The design standard is no longer unratified; only the **legal** compliance standard remains `TO BE DECIDED` (outside design authority; Founder/Product Authority confirms scope) | Accessibility Owner |
 | 3 | ⛔⛔ **`ATT-GAP-002a`** — ⭐ a Seat Card prototype would have to either show states the system cannot compute, or silently omit 2 renderings `PRD-006` requires. ⛔ **Both are wrong** | Architecture Owner |
 | 4 | ⚪ **`DD3-GAP-001`/`002`** — ⛔ a prototype needs **sentences**, and the label authority is undecided | Product Owner |
 

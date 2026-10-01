@@ -1150,18 +1150,18 @@ path** — surfaces can be specified and prototyped while the seam is resolved.
 |---|---|---|---|
 | `DD-0001-GAP-001` | App-level navigation placement of the context root | Information Architecture Owner → Founder/Product Authority | ⛔ OPEN |
 | `DD-0001-GAP-002` | ⭐ **Loading/empty patterns now specified as design (§7.2/§7.3)**; ⛔ product copy for each empty state undecided | UX Architecture Owner | ⚠️ **PARTIALLY ADDRESSED** — copy open |
-| `DD-0001-GAP-003` | Accessibility target standard `TO BE DECIDED` — blocks all numeric thresholds | Accessibility Owner → Founder/Product Authority | ⛔ **BLOCKED** upstream |
-| `DD-0001-GAP-004` | ⛔ **0 breakpoints exist** (`DBT-002`) | Responsive Design Owner | ⛔ **BLOCKED** upstream |
+| `DD-0001-GAP-003` | Accessibility target standard `TO BE DECIDED` — blocks all numeric thresholds | Accessibility Owner → Founder/Product Authority | ⚠️ **STALE** — the design standard is decided: `docs/design/ACCESSIBILITY.md` L10 adopts `DDR-0004` `APPROVED` 2026-09-19 (WCAG 2.1 AA — contrast 4.5:1 / 3:1, functional at 200% text scale). Only the **legal** compliance standard remains `TO BE DECIDED` (outside design authority; Founder/Product Authority confirms scope) |
+| `DD-0001-GAP-004` | ⛔ **0 breakpoints exist** (`DBT-002`) | Responsive Design Owner | ⚠️ **STALE** — `DBT-002` is `CLOSED / RESOLVED` in `DESIGN_DEBT.md` §2: `RESPONSIVE_DESIGN.md` v0.1 `APPROVED` 2026-10-01 (Responsive Design Owner; D-1…D-4 recorded); breakpoint classes per `DDR-0005` (`<600dp` compact · `600–904dp` medium · `≥905dp` expanded) |
 | `DD-0001-GAP-005` | Permission-denied: hidden vs visible-and-disabled — **security-relevant** | Security Platform + UX Architecture Owner | ⛔ OPEN |
-| `DD-0001-GAP-006` | Token authority contested (`DBT-001`); no radius/elevation/type class (`DBT-005`) | Design System Owner | ⛔ OPEN |
-| `DD-0001-GAP-007` | All 5 `BC-02` surface tasks blocked (§17.1) | Architecture Owner | ⛔ OPEN |
+| `DD-0001-GAP-006` | Token authority contested (`DBT-001`); no radius/elevation/type class (`DBT-005`) | Design System Owner | ⚠️ **STALE at value level** — `DESIGN_DEBT.md` §2: `DBT-001` `RESOLVED` (colour `DDR-0001` · spacing `DDR-0027` · typeface family + licence `DDR-0029`) and `DBT-005` `RESOLVED` (radius/elevation `DDR-0028` · sizes `DDR-0031` · weights `DDR-0032`). ⛔ **Code conformance remains separate engineering work** — decided values are not yet proven against `lib/` |
+| `DD-0001-GAP-007` | All 5 `BC-02` surface tasks blocked (§17.1) | Architecture Owner | ⚠️ **CARRY-FORWARD — Engineering scope** — the 5 `BC-02` surface tasks remain blocked by `ADR-0012` §3.4 (the `app → domain/library` sites are *"deliberately left failing"* until `TASK-D10` lands, and `TASK-D10` is gated by `IMPL-020` SMS/DLT delivery; recorded as Engineering-scope carry-forward in `DESIGN_IMPLEMENTATION_TRACEABILITY.md` §7.4). ⛔ No design decision is made by this restate |
 | `DD-0001-GAP-008` | **10 `MM-GAP-*` open**, incl. `MM-GAP-008` (single-day plans **blocking**) | Product Owner | ⛔ OPEN — carried |
 | `DD-0001-GAP-009` | `reception_desk.dart` / `student_dashboard.dart` render membership data but were built with no design artifact; ⛔ §20 conformance **not asserted** | Design QA Owner | ⛔ OPEN |
 | ⭐ `DD-0001-GAP-010` | Student-motivation features (exam-schedule awareness, study nudges, discounts, referrals) — ⛔ **no `PRD-005` requirement exists**; ⛔ not designed | Product Owner | ⛔ OPEN |
 | ⭐ `DD-0001-GAP-011` | Whether 3D may extend beyond the single §8.6 asset | UI/Visual Design Owner | ⛔ OPEN |
 | ⭐ `DD-0001-GAP-012` | **6 new components (§9.2) require Design System Owner approval** — ⛔ not granted here | Design System Owner | ⛔ OPEN |
 
-**12 gaps · 0 resolved · 2 blocked upstream · 1 partially addressed**
+**12 gaps · 0 resolved · 3 stale (`GAP-003`, `GAP-004`, `GAP-006` — decided values now exist: `DDR-0004`/`RESPONSIVE_DESIGN.md`/`DBT-001`+`DBT-005` resolution) · 1 carry-forward — Engineering scope (`GAP-007`: `IMPL-4xx` BLOCKED → `ADR-0012` §3.4 → `TASK-D10` ← `IMPL-020`) · 1 partially addressed · ⛔ 8 rows remain open as recorded**
 
 ---
 

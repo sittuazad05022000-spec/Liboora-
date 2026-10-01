@@ -2472,8 +2472,8 @@ of `Semantics`, `semanticsLabel`, `meetsGuideline` or `textScaleFactor` under
 
 | ID | Item | Status |
 |---|---|---|
-| `DD4-TBD-001` | Contrast ratios for 4 `SeatState` chips, 4 presence states, lock badge, overstay badge | ⚠️ **UNRATIFIED** — Design Owner |
-| `DD4-TBD-002` | ⭐ The accessibility **standard** itself | ⚠️ *"TO BE DECIDED"* — Accessibility Owner |
+| `DD4-TBD-001` | Contrast ratios for 4 `SeatState` chips, 4 presence states, lock badge, overstay badge | ⚠️ **STALE at value level** — the contrast ratios now rest on decided values: `DESIGN_DEBT.md` §2 `DBT-001`/`DBT-005` `RESOLVED` (`DDR-0001` colour · `DDR-0027` spacing · `DDR-0028` radius/elevation · `DDR-0029`/`DDR-0031`/`DDR-0032` type) with the WCAG 2.1 AA ratios of `DDR-0004` `APPROVED` (`ACCESSIBILITY.md` L10). ⛔ Ratification of these specific state-chip values against that scale is not claimed; ⛔ code conformance remains separate engineering work — Design Owner |
+| `DD4-TBD-002` | ⭐ The accessibility **standard** itself | ⚠️ **STALE** — `docs/design/ACCESSIBILITY.md` L10 now adopts `DDR-0004` `APPROVED` 2026-09-19 (WCAG 2.1 AA — contrast 4.5:1 / 3:1, ≥48×48dp targets, functional at 200% text scale); the design standard is no longer `TO BE DECIDED` — only the **legal** compliance standard remains (outside design authority; Founder/Product Authority confirms scope) — Accessibility Owner |
 | `DD4-TBD-003` | Screen-reader semantics for a **2D spatial seat map** | ⚠️ **TBD** |
 | `DD4-TBD-004` | ⭐ Touch-target size on a dense grid vs `SEAT-NFR-005`'s 50×100 bound | ⚠️ **UNRATIFIED DESIGN VALUE / VALIDATION REQUIRED** |
 | `DD4-TBD-005` | Reduced-motion behaviour for `L3` drag | ⚠️ **TBD** |
@@ -2948,8 +2948,8 @@ so would extend a closed list `SEAT-FR-216` fixes.
 
 | ID | Question | Owner |
 |---|---|---|
-| `DD4-TBD-001` | Token values for 4 state chips + 4 presence states + 2 badges | Design Owner |
-| `DD4-TBD-002` | ⭐ The accessibility standard — *"TO BE DECIDED"* | Accessibility Owner |
+| `DD4-TBD-001` | Token values for 4 state chips + 4 presence states + 2 badges | ⚠️ **STALE at value level** — decided values now exist (`DESIGN_DEBT.md` §2: `DBT-001`/`DBT-005` `RESOLVED` via `DDR-0001`/`DDR-0027`/`DDR-0028`/`DDR-0029`/`DDR-0031`/`DDR-0032`); the specific chip values still await Design Owner ratification against that scale · Design Owner |
+| `DD4-TBD-002` | ⭐ The accessibility standard — *"TO BE DECIDED"* | ⚠️ **STALE** — the design standard is decided: `ACCESSIBILITY.md` L10 adopts `DDR-0004` `APPROVED` (WCAG 2.1 AA); only the legal compliance standard remains `TO BE DECIDED` (outside design authority) · Accessibility Owner |
 | `DD4-TBD-003` | Screen-reader semantics for a **2D spatial** seat map | Design Owner |
 | `DD4-TBD-004` | ⭐ Touch-target size on a dense grid | Design Owner |
 | `DD4-TBD-005` | Reduced-motion behaviour for `L3` drag | Design Owner |

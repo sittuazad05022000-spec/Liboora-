@@ -7,7 +7,7 @@
 |---|---|
 | Status | RECOMMENDED — accessibility foundation pending formal approval and validation |
 | Owner | Accessibility Owner |
-| Target | TO BE DECIDED — use applicable product and legal standard after Founder/Product Authority confirms scope |
+| Target | Design standard: **WCAG 2.1 AA** ratios as adopted by `DDR-0004` (`APPROVED` 2026-09-19 — contrast 4.5:1 / 3:1; functional at 200% text scale). A legal or product compliance standard remains **TO BE DECIDED** — it is outside design authority; Founder/Product Authority confirms scope |
 
 ## 1. Accessibility commitment
 
@@ -23,7 +23,31 @@ Accessibility is a design and QA requirement across structure, content, input, s
 - Errors identify the problem and the next safe recovery action without exposing internal identifiers.
 - Loading, empty, offline, stale, and unavailable states are perceivable without motion.
 - Reduced motion removes nonessential transitions and parallax-like effects.
-- Touch targets and spacing are large enough for reliable use; exact minimum values are TO BE DECIDED against the selected standard.
+- Touch targets and spacing are large enough for reliable use. ⭐ **Minimum values are DECIDED** — `DDR-0004` `APPROVED` (2026-09-19): **≥48×48dp** touch targets · **≥8dp** target spacing (full floor recorded in §2.1).
+
+## 2.1 ⭐ Accessibility minimums — DECIDED (`DDR-0004` `APPROVED`)
+
+The following values are **APPROVED** (Founder/Product Authority, 2026-09-19) and govern this
+foundation as a floor for **all apps, no exceptions**. They are design minimums — ⛔ they are
+*not* a claim of implementation or QA evidence (see §3 and `DIT-007`); the Accessibility
+Owner's formal adoption act into this document is **not yet recorded**.
+
+| Minimum | Value | Authority |
+|---|---|---|
+| Touch target | **≥ 48×48dp** | `DDR-0004` `APPROVED` |
+| Target spacing | **≥ 8dp** between adjacent targets | `DDR-0004` `APPROVED` |
+| Text contrast | **4.5:1** normal text | `DDR-0004` `APPROVED` |
+| Large-text / non-text contrast | **3:1** | `DDR-0004` `APPROVED` |
+| Visible focus | **2dp** indicator, **never removed** | `DDR-0004` `APPROVED` |
+| Text scaling | Functional at **200%** | `DDR-0004` `APPROVED` |
+| Status signalling | Every status carries **icon + text**; ⛔ never colour alone | `DDR-0004` `APPROVED` |
+| Reduced motion | Honoured, with a **static final state** | `DDR-0004` `APPROVED` |
+
+Consequence on record (`DDR-0004` consequences, ACCEPTED): the 48dp floor costs vertical
+space ⇒ fewer rows per screen; the denser **36px** data row is permitted **only** on
+pointer-only **≥ 905dp**. The driver for the icon+text rule: `success` and `warning` share
+luminance (5.02 / 4.73), so colour alone can never carry status. Review trigger: WCAG
+version change; any request for a sub-48dp control.
 
 ## 3. Content and localization
 

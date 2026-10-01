@@ -46,7 +46,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 |---|---|---|---|---|
 | **1** | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01; prior ⚠️ **MISSING EVIDENCE** retained) | ⭐ `FA-GAP-010` (unblocked — ⛔ still OPEN), and validates `FA-GAP-002` |
 | **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **READY** | ⭐ All 2.5D/3D specification |
-| **3** | `FA-GAP-003` Typography | **Design System Owner** | ⚠️ **MISSING EVIDENCE** *(§4.3 — one probe)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
+| **3** | `FA-GAP-003` Typography | **Design System Owner** | ⛔ **BLOCKED / UNVERIFIED** *(§4.3 — probe not executable: no Android API-26 target-class rendering environment; ⛔ no rendering PASS; `DDR-0034`'s profile is not Devanagari evidence; `DDR-0012` stays free; re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment; prior state retained: ⚠️ **MISSING EVIDENCE**)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
 | **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **READY** | ⭐ `G2` |
 | **6** | `FA-GAP-007` Responsive artifact | **Responsive Design Owner** | ⭐ **READY** | ⭐ `DBT-002`, `G3` |
@@ -286,7 +286,7 @@ outcome; adopting them *by default* is not.**
 | **4. Missing** | ⛔⛔ **ONE probe — and it is small, specific and cheap.** ⭐ **Whether the V1 target Android platform font stack renders Devanagari reliably on the target device class.** ⚠️ It *usually* does — ⭐ **but "usually" is not the "guarantee" `DDR-0002` requires**, and ⭐ the answer decides between two very different outcomes: ⭐ **(i)** declare an explicit fallback chain *(near-zero app-size cost)*, or ⭐ **(ii)** bundle a subsetted Devanagari face *(app-size cost on low-end Android)*. ⚠️ **That cost is governed by `FA-GAP-009`** |
 | **5. Artifact(s) to amend** | ⭐ `DESIGN_SYSTEM.md` **L21** · `VISUAL_LANGUAGE.md` §4 · `MASTER` L181; ⭐ then `pubspec.yaml` + `theme.dart` **(Technical Owner)** |
 | **6. Blocks FINAL APPROVAL?** | ⭐⭐ **YES** — ⭐ typography is a named foundation, and ⭐⭐ **an APPROVED requirement is currently unsatisfied** |
-| ⚠️ **Verdict** | ⚠️ **MISSING EVIDENCE** — ⭐ **one probe away from READY** |
+| ⚠️ **Verdict** | ⛔ **BLOCKED / UNVERIFIED** — the one probe is **not executable in the available environments** (no Android API-26 target-class rendering environment, 2026-10-01) · ⛔ **no rendering PASS established** · ⛔ `DDR-0034` (device profile) **does not constitute Devanagari rendering evidence** · ⛔ **`DDR-0012` must not be created until an actual probe result exists** · ⭐ **re-trigger:** a valid API-26 rendering target matching the `DDR-0034` V1 class (2 GB + 720×1600, primarily 4G), or an explicitly owner-accepted equivalent test environment · prior state retained verbatim: ⚠️ **MISSING EVIDENCE** — ⭐ **one probe away from READY** |
 
 ⛔⛔ **No font is selected here.** ⭐ Three independent bars: `DDR-0002` expressly reserved
 it *("the final family is NOT selected here")*; `DESIGN_DEBT.md` rule 5; `DESIGN_GOVERNANCE.md`
@@ -380,7 +380,7 @@ it should be **requested first** even though it is needed **last**.
 |---|---|---|---|
 | `FA-GAP-001` `DDR-0009` version | Founder/Product Authority | ⭐ **READY** | ⚠️ **YES** *(formal)* |
 | `FA-GAP-002` 3D ratio conflict | Design System Owner | ⭐ **READY** | ⭐⭐ **YES** |
-| `FA-GAP-003` Typography | Design System Owner | ⚠️ **MISSING** | ⭐⭐ **YES** |
+| `FA-GAP-003` Typography | Design System Owner | ⛔ **BLOCKED / UNVERIFIED** | ⭐⭐ **YES** |
 | `FA-GAP-004a` Radius | Design System Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-004b` Colour | Design System Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-004c` Spacing + elevation | Design System Owner | ⚠️ **MISSING** | ⭐⭐ **YES** |
@@ -393,7 +393,7 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **PARTIAL → device profile met; `FA-GAP-010` still OPEN** |
 | `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⚠️ **MISSING** | ⚠️ **PARTIAL** |
 
-⭐ **14 rows — ⭐ 9 READY · ⚠️ 4 MISSING EVIDENCE · ⚠️ 1 SEQUENCED.**
+⭐ **14 rows — ⭐ 9 READY · ⚠️ 2 MISSING EVIDENCE *(FA-GAP-004c, FA-GAP-010)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 1 RESOLVED *(FA-GAP-009, via `DDR-0034`)*.** *(prior state retained: ⚠️ 4 MISSING EVIDENCE — `FA-GAP-003` and `FA-GAP-009` have since moved out of that bucket.)*
 ⭐ **Blocking FINAL: 11 · ⛔ Not blocking: 2 · ⚠️ Partial: 2.**
 
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine

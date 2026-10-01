@@ -86,7 +86,7 @@ an unexamined assumption.
 | **4** | **Options** *(⭐ carried verbatim from `DDR-0002` — ⛔ none added, none preferred)* | ⭐ **Noto Sans + Noto Sans Devanagari** *(SIL OFL — the only candidate satisfying the pairing criterion **by construction**)* · ⚠️ **Inter + a separate Devanagari companion** — ⭐ permitted **only** if x-height and weight are **verified** to match · ⚠️ **Lexend** — ⛔ Devanagari coverage **unverified** · ⛔ **Inter alone — DISQUALIFIED** *(no Devanagari)* |
 | **5** | **Consequences** | ⭐ **Bundling** guarantees rendering but costs app size on low-end Android — ⭐ mitigable by **subsetting**; ⚠️ the acceptable size is governed by **`CP-A`** · ⭐ **Declaring a fallback chain** costs almost nothing but ⛔ **guarantees less** · ⭐ Numeral disambiguation *(`0/O`, `1/l/I`)* remains a selection criterion for seat and enrollment numbers |
 | **6** | **Approval record location** | ⭐ **New `DDR-0012`** *(`design-decisions/README.md` §4 — ⭐ verified free: **0** repo-wide occurrences)*; ⭐ then `DESIGN_SYSTEM.md` **L21**, `VISUAL_LANGUAGE.md` §4, `MASTER` L181 |
-| **7** | **Status** | ⚠️ **EVIDENCE REQUIRED** — ⭐ **one probe away** |
+| **7** | **Status** | ⛔ **BLOCKED / UNVERIFIED** — the Devanagari guarantee probe is **not executable in the available environments: no Android API-26 target-class rendering environment exists** (no Flutter/Dart toolchain, no Android SDK/emulator, no connected device at probe time, 2026-10-01). ⛔ **No rendering PASS has been established** — ⛔ the probe result is *unmeasured*, and *"usually renders"* is ⛔ not the guarantee `DDR-0002` requires. ⛔ `DDR-0034` establishes the **target device profile only** — it **does not constitute Devanagari rendering evidence**. ⛔ **`DDR-0012` must NOT be created until an actual probe result exists** (it remains reserved-and-free). ⭐ **Re-trigger:** availability of a valid Android API-26 rendering target matching the `DDR-0034` V1 class (2 GB + 720×1600, primarily 4G), **or** an explicitly owner-accepted equivalent test environment under the repository's governance rules. ⭐ **Owner (per this package's existing CP-B1 convention, field 1):** Design System Owner (probe result) → Technical Owner (bundle-vs-fallback implementation); Design Governance Owner (licence). Prior state retained verbatim: ⚠️ **EVIDENCE REQUIRED** — ⭐ **one probe away** |
 | **8** | **Dependency** | ⚠️ **Partially on `CP-A`** — ⭐ the **family** can be chosen now; ⛔ the **bundle-vs-fallback** decision needs the device profile |
 
 ⚠️⚠️ **The one missing probe, stated exactly:** ⭐ *does the confirmed V1 Android platform
@@ -385,7 +385,7 @@ anything.**
 | Pack | Missing evidence — ⭐ stated exactly | Who can produce it |
 |---|---|---|
 | **`CP-A`** | ⭐ **RESOLVED** — the V1 device profile numbers are now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) · prior measurement retained: **16** *"Technical Owner"* hits, ⛔ **0** were a profile decision | ⭐⭐ **Technical Owner** |
-| **`CP-B1`** | ⭐ **One probe** — does the confirmed V1 Android font stack **guarantee** Devanagari on the target class? ⚠️ Sharpened by §A.4: the answer may differ between **Android 7.0** and **8.0** | Design System + Technical Owner |
+| **`CP-B1`** | ⛔ **BLOCKED / UNVERIFIED** — the one probe ("does the confirmed V1 Android font stack **guarantee** Devanagari on the target class?") is **not executable in the available environments** (no Android API-26 target-class rendering environment at probe time, 2026-10-01) · ⛔ no rendering PASS established; ⛔ `DDR-0034`'s device profile is **not** Devanagari rendering evidence; ⛔ `DDR-0012` stays **reserved-and-free until an actual probe result exists** · ⭐ re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment · prior state retained: ⚠️ Sharpened by §A.4: the answer may differ between **Android 7.0** and **8.0** | Design System + Technical Owner |
 | **`CP-B4`** | ⭐⭐ **A review, not a measurement** — the 6 `LiblSpace` steps have **never been before an authority** *(0 DDR mentions)* | Design System Owner |
 | **`CP-E`** | ⭐ **The `NFR Budgets (V1)` document itself** — the device profile it was gated on is now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (prior state retained: *"a budget without a target class is arithmetic without units"*) · ⛔ **remains OPEN** — not created by this act | Technical Owner → Governance + Perf Owner |
 
@@ -415,7 +415,7 @@ anything.**
 |---|---|
 | ⛔ **FINAL APPROVAL READY** | ⛔⛔ **0** |
 | ⭐ **HUMAN ACTION REQUIRED** | ⭐ **8** |
-| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **4** |
+| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **2** *(CP-B4, CP-E — `CP-A` is RESOLVED via `DDR-0034` and `CP-B1` is BLOCKED / UNVERIFIED; only `CP-B4` + `CP-E` remain in this bucket)* |
 | ⛔ **EXTERNALLY BLOCKED** | ⛔ **3** |
 | ⛔ **OUTSIDE DESIGN SCOPE** | ⛔ **7** |
 

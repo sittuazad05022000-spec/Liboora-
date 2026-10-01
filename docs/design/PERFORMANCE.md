@@ -7,7 +7,7 @@
 |---|---|
 | Status | RECOMMENDED — design-side performance guidance; numeric budgets are TO BE DECIDED |
 | Owner | Design Performance Owner |
-| Constraints | CONFIRMED — low-end Android, low/intermittent network, mobile-first |
+| Constraints | CONFIRMED — low-end Android, low/intermittent network, mobile-first · ⭐ **Official V1 target device profile confirmed by the Technical Owner** at [`design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (2026-10-01) — Android 8.0 / API 26 · 2 GB + 720×1600 reference class · intermittent/degraded connectivity, primarily 4G · ⛔ numeric SLOs remain `TO BE DECIDED` (`NFR Budgets (V1)` is a separate act) |
 
 ## 1. Performance posture
 

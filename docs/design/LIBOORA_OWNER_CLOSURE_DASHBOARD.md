@@ -78,9 +78,9 @@ argument fails there.** ⭐ **4 documents** must be amended, including `DESIGN_F
 | **Owner** | ⭐⭐ **Technical Owner** — ⛔ **not** the Design Performance Owner, who *"**Cannot** set backend SLOs or claim measured performance"* |
 | **Decision required** | ⭐ State **(a)** minimum Android API · **(b)** reference RAM + screen · **(c)** network assumption |
 | **Evidence available** | ⭐ **Directional only** — `MP-CON-12` *"India-first … network-unreliable"*; `PERFORMANCE.md` L10 *"low-end Android"*. ⭐⭐ **Plus one measured fact: as-built floor is API 24 (Android 7.0)** — `build.gradle.kts:27` → Flutter default `'24'`, **no project override** |
-| **Missing** | ⛔⛔ **The numbers.** ⭐ Measured: **16** *"Technical Owner"* hits repo-wide, ⛔ **0** are a profile decision |
+| **Missing** | ⭐ **RESOLVED** — the profile numbers were confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) · prior state retained: ⛔⛔ **The numbers.** ⭐ Measured: **16** *"Technical Owner"* hits repo-wide, ⛔ **0** were a profile decision |
 | **Dependency** | ⛔ **NONE inbound** — ⭐⭐ **start first, longest lead time** |
-| **Reserved DDR** | ⭐ A Technical Owner record → `PERFORMANCE.md` L10 |
+| **Reserved DDR** | ⭐ Created: [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) → `PERFORMANCE.md` L10 updated to reference it · ⛔ `CP-B1` probe and `FA-GAP-010`/`NFR Budgets` remain **OPEN** |
 | **Blocks FINAL?** | ⚠️ **PARTIAL** — ⛔ blocks `CP-E`, ⚠️ conditions `CP-B1`; ⭐ **does NOT block `CP-B2′`, `B3`, `B4`, `C`, `D`, `F`** |
 
 ⚠️⚠️ **The design inference (API 26) was *stricter* than the build permits.** ⭐ The app

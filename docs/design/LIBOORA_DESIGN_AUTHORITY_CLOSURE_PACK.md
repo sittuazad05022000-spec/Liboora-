@@ -47,7 +47,7 @@ process permits it."* ⭐ I tested it properly and **it does not.** See §9.
 | **4** | **Options** | ⭐ **(i) Ratify the as-built floor** *(API 24)* · ⭐ **(ii) Raise the floor** *(e.g. API 26, matching the design inference)* · ⭐ **(iii) State a different profile entirely.** ⛔ **This pack expresses no preference** |
 | **5** | **Consequences** | ⭐ A **weaker** confirmed profile ⇒ the ≤5% 3D budget **must shrink** *(`DDR-0006`)* and font **bundling** becomes costlier · ⭐ A **stronger** profile ⇒ budget may grow · ⛔ **No profile ⇒ `NFR Budgets (V1)` cannot be written and no numeric SLO may be published** |
 | **6** | **Approval record location** | ⭐ An authorized **Technical Owner** record; ⭐ then `PERFORMANCE.md` **L10** *(Design Performance Owner)*; ⭐ then a **new** `NFR Budgets (V1)` |
-| **7** | **Status** | ⚠️ **EVIDENCE REQUIRED** |
+| **7** | **Status** | ⭐ **RESOLVED** — confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01: API 26 · 2 GB + 720×1600 · intermittent/degraded, primarily 4G) · prior state retained: ⚠️ **EVIDENCE REQUIRED** · ⛔ `CP-B1` probe and `CP-E`/`FA-GAP-010` `NFR Budgets` remain **OPEN** (unblocked, not closed) |
 | **8** | **Dependency** | ⛔ **None inbound.** ⭐⭐ **Blocks `CP-E` entirely and `CP-B` partially. Longest lead time — request first** |
 
 ### ⭐⭐ A.4 — A measured fact the Technical Owner does not yet have
@@ -292,7 +292,7 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 
 | # | Required before `G5` | Status |
 |---|---|---|
-| 1 | `CP-A` V1 device profile confirmed | ⛔ **NO** |
+| 1 | `CP-A` V1 device profile confirmed | ⭐ **YES** — confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01); prior state retained: ⛔ **NO** |
 | 2 | `CP-B1` Typeface selected + Indic guarantee closed | ⛔ **NO** |
 | 3 | `CP-B2` Layer ratios reconciled **(both limbs, 4 documents)** | ⛔ **NO** |
 | 4 | `CP-B3` Colour + radius ratified; 14/18 deprecated | ⛔ **NO** |
@@ -384,10 +384,10 @@ anything.**
 
 | Pack | Missing evidence — ⭐ stated exactly | Who can produce it |
 |---|---|---|
-| **`CP-A`** | ⭐⭐ **The V1 device profile numbers** — minSdk, reference RAM/screen, network assumption. ⭐ Measured: **16** *"Technical Owner"* hits, ⛔ **0** are a profile decision | ⭐⭐ **Technical Owner** |
+| **`CP-A`** | ⭐ **RESOLVED** — the V1 device profile numbers are now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) · prior measurement retained: **16** *"Technical Owner"* hits, ⛔ **0** were a profile decision | ⭐⭐ **Technical Owner** |
 | **`CP-B1`** | ⭐ **One probe** — does the confirmed V1 Android font stack **guarantee** Devanagari on the target class? ⚠️ Sharpened by §A.4: the answer may differ between **Android 7.0** and **8.0** | Design System + Technical Owner |
 | **`CP-B4`** | ⭐⭐ **A review, not a measurement** — the 6 `LiblSpace` steps have **never been before an authority** *(0 DDR mentions)* | Design System Owner |
-| **`CP-E`** | ⭐ **The device profile** — ⛔ a budget without a target class is arithmetic without units | Technical Owner → Governance + Perf Owner |
+| **`CP-E`** | ⭐ **The `NFR Budgets (V1)` document itself** — the device profile it was gated on is now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (prior state retained: *"a budget without a target class is arithmetic without units"*) · ⛔ **remains OPEN** — not created by this act | Technical Owner → Governance + Perf Owner |
 
 ### 14.4 ⛔ EXTERNALLY BLOCKED
 

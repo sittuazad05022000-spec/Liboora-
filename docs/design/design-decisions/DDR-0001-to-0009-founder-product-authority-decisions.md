@@ -115,14 +115,14 @@ engineering task**, ⛔ **not performed here.**
 | Field | Value |
 |---|---|
 | **Status** | ⚠️⚠️ **PROPOSED — provisional target, ⛔ NOT an approved device profile** |
-| **Date** | 2026-09-19 · **Owner** Design Performance Owner · **Approver** ⛔ **PENDING — Technical Owner** |
+| **Date** | 2026-09-19 · **Owner** Design Performance Owner · **Approver** ⭐ **RESOLVED by [`DDR-0034`](DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01)** — the official V1 device profile is now confirmed; prior state retained verbatim: ⛔ **PENDING — Technical Owner** (this record's provisional cluster remains history, ⛔ not evidence) |
 | **Scope** | Performance floor — all apps |
 | **Source references** | `LIBOORA_HUMAN_DECISION_SHEET.md` D-6 · `MP-CON-12` · `PERFORMANCE.md` L8 · `MASTER_PRD` L663 · `MP-DEP-08` |
 | **Decision** | ⭐⭐ **The inferred profile — Android 8.0 (API 26) / 2 GB RAM / 720×1600 / intermittent 3G — is ⛔ EXPRESSLY NOT APPROVED AS FACT.** ⭐ It is adopted **only as a conservative performance target** for design work, ⛔ **until the Technical Owner confirms the official V1 device profile** |
 | **Alternatives** | ⛔ Approving the inference as fact — **rejected by the authority**, ⭐ correctly: it was an inference from `MP-CON-12`'s India-first posture, ⛔ **not a repository fact** · ⛔ Proceeding with no target — rejected: the 2.5D/3D budget would be unenforceable |
 | **Consequences** | ⭐⭐ **Design may proceed** against a conservative target · ⛔⛔ **No numeric SLO may be published as authoritative** — `NFR Budgets (V1)` still does not exist *(`DD7-GAP-009` remains **OPEN**)* · ⭐ `DDR-0010`'s 2.5D/3D budget is **validated against this provisional target only** · ⚠️ If the confirmed profile is **weaker**, the 3D budget must shrink; ⭐ if **stronger**, it may grow |
-| **Open questions** | ⭐⭐ **Confirm the official V1 device profile — Technical Owner** · ⭐ Then create **`NFR Budgets (V1)`** with numeric SLOs — **Governance Owner + Design Performance Owner** |
-| **Review trigger** | ⭐ Technical Owner confirmation; any measured frame drop on the target class |
+| **Open questions** | ⭐⭐ Confirm the official V1 device profile — Technical Owner — ⭐ **RESOLVED by [`DDR-0034`](DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (2026-10-01)** · ⭐ Then create **`NFR Budgets (V1)`** with numeric SLOs — **Governance Owner + Design Performance Owner** (⛔ still **OPEN** — `FA-GAP-010`; `DDR-0034` unblocks but does not close it) |
+| **Review trigger** | ⭐ Technical Owner confirmation *(satisfied — `DDR-0034`)*; any measured frame drop on the target class |
 
 ---
 
@@ -220,7 +220,7 @@ engineering task**, ⛔ **not performed here.**
 | `DDR-0003` | Radius 8/12/16 | ⭐ **APPROVED** |
 | `DDR-0004` | Accessibility minimums | ⭐ **APPROVED** |
 | `DDR-0005` | Breakpoints 600/905dp | ⭐ **APPROVED** |
-| `DDR-0006` | V1 performance target | ⚠️ **PROVISIONAL** — ⛔ pending Technical Owner |
+| `DDR-0006` | V1 performance target | ⚠️ **PROVISIONAL** — ⛔ pending Technical Owner → ⭐ **confirmed by [`DDR-0034`](DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (2026-10-01)**; this record's provisional cluster is retained as history only |
 | `DDR-0007` | Dark mode out of V1 | ⭐ **APPROVED** |
 | `DDR-0008` | `C-4` removed from V1 | ⭐ **APPROVED** *(condition tested)* |
 | `DDR-0009` | System adoption | ⭐ **APPROVED** |

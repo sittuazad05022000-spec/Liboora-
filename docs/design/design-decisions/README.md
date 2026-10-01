@@ -37,6 +37,10 @@ Copy this structure for each approved or unresolved design decision:
 
 No design decision has been marked APPROVED by this foundation alone. Initial entries remain in the foundation documents as PROPOSED, RECOMMENDED, INHERITED, TO BE DECIDED, or CONFLICT until the named authority approves them.
 
+| ID | Title | Status | Approver role | Date | File |
+|---|---|---|---|---|---|
+| `DDR-0034` | `CP-A` / `FA-GAP-009`: V1 device profile confirmed by the Technical Owner | **ACCEPTED** | Technical Owner | 2026-10-01 | [`DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md`](DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) |
+
 ## 4. Filing rules
 
 Use a stable numeric ID, never reuse an ID, keep one decision per record, link the affected design artifacts, and add the record to this register. Do not use a DDR to disguise a product or architecture decision.

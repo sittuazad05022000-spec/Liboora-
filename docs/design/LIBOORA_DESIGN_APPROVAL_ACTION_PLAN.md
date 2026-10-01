@@ -44,7 +44,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 
 | Rank | Blocker | Owner | Verdict | Unblocks |
 |---|---|---|---|---|
-| **1** | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⚠️ **MISSING EVIDENCE** | ⭐ `FA-GAP-010`, and validates `FA-GAP-002` |
+| **1** | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01; prior ⚠️ **MISSING EVIDENCE** retained) | ⭐ `FA-GAP-010` (unblocked — ⛔ still OPEN), and validates `FA-GAP-002` |
 | **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **READY** | ⭐ All 2.5D/3D specification |
 | **3** | `FA-GAP-003` Typography | **Design System Owner** | ⚠️ **MISSING EVIDENCE** *(§4.3 — one probe)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
@@ -241,7 +241,7 @@ to **guess**. ⭐ For each, this section states **precisely what would make it r
 | **4. Missing** | ⛔⛔ **The numbers.** ⭐ Measured: **16** occurrences of *"Technical Owner"* across `docs/`, of which ⛔ **ZERO** are a device-profile decision — **10** are the design records *asking* for it, **6** are role definitions. ⭐ `Android 8.0 / 2 GB / 720×1600 / 3G` is an **inference from `MP-CON-12`**, ⛔ **not a repository fact** |
 | **5. Artifact(s) to amend** | ⭐ `PERFORMANCE.md` **L10** *(Constraints)*; ⭐ then a **NEW** `NFR Budgets (V1)` |
 | **6. Blocks FINAL APPROVAL?** | ⚠️⚠️ **PARTIALLY — and this is the most useful line in the plan.** ⛔ It blocks **numeric SLOs** *(`FA-GAP-010`)* and **final validation** of the 3D budget. ⭐⭐ It does **NOT** block colour, radius, typography-family selection, accessibility minimums, breakpoints, dark mode or `C-4` — ⭐ **7 of 13 blockers are independent of it** |
-| ⚠️ **Verdict** | ⚠️ **MISSING EVIDENCE** |
+| ⚠️ **Verdict** | ⭐ **RESOLVED by [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md)** (Technical Owner, 2026-10-01) — the *"a Technical Owner statement naming minSdkVersion, a reference device class and a network assumption"* test is met · prior state retained: ⚠️ **MISSING EVIDENCE** · ⛔ `FA-GAP-010` (`NFR Budgets`) remains **OPEN** — `DDR-0034` unblocks it, does not close it · ⛔ `CP-B1` Devanagari probe remains **OPEN** |
 
 ⭐ **What would make it ready:** ⭐ a Technical Owner statement naming **minSdkVersion**, a
 **reference device class** (RAM + resolution) and a **network assumption**. ⭐ Nothing more.
@@ -355,13 +355,13 @@ amount of design work clears either.**
   ├── FA-GAP-008  DD-0007 refresh ............. UX Architecture Owner    ⭐ READY
   ├── FA-GAP-001  DDR-0009 version ............ Founder/Product Auth.    ⭐ READY
   ├── G0          Record source audit ......... Design Doc Owner         ⭐ READY
-  └── FA-GAP-009  V1 DEVICE PROFILE ........... ⭐⭐ TECHNICAL OWNER      ⚠️ MISSING
-           │                                        (longest lead time — start first)
-  WAVE 2 — unlocked by Wave 1
-  ├── FA-GAP-004c Spacing + elevation ......... Design System Owner   ⚠️ needs review
-  ├── FA-GAP-003  Typography .................. Design System Owner   ⚠️ needs 1 probe
-  │                                              (probe cost depends on FA-GAP-009)
-  └── FA-GAP-010  NFR Budgets (V1) ............ Governance + Perf     ⚠️ needs 009
+   └── FA-GAP-009  V1 DEVICE PROFILE ........... ⭐⭐ TECHNICAL OWNER      ⭐ RESOLVED — `DDR-0034`
+            │                                        (profile confirmed 2026-10-01; prior ⚠️ MISSING retained)
+   WAVE 2 — unlocked by Wave 1
+   ├── FA-GAP-004c Spacing + elevation ......... Design System Owner   ⚠️ needs review
+   ├── FA-GAP-003  Typography .................. Design System Owner   ⚠️ needs 1 probe
+   │                                              (probe cost now governed by confirmed class — `DDR-0034`)
+   └── FA-GAP-010  NFR Budgets (V1) ............ Governance + Perf     ⚠️ OPEN — profile now available (`DDR-0034`); SLOs still separate act
   WAVE 3 — gates, strictly sequential
   └── G2 ──▶ G3 ──▶ G5          (G1 gated on DBT-006; G4 gated on DBT-004)
   WAVE 4
@@ -390,7 +390,7 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-006` Gates `G0`–`G5` | Six offices | ⚠️ **SEQUENCED** | ⭐⭐ **YES** |
 | `FA-GAP-007` Responsive artifact | Responsive Design Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-008` `DD-0007` refresh | UX Architecture Owner | ⭐ **READY** | ⛔ **NO** |
-| `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⚠️ **MISSING** | ⚠️ **PARTIAL** |
+| `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **PARTIAL → device profile met; `FA-GAP-010` still OPEN** |
 | `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⚠️ **MISSING** | ⚠️ **PARTIAL** |
 
 ⭐ **14 rows — ⭐ 9 READY · ⚠️ 4 MISSING EVIDENCE · ⚠️ 1 SEQUENCED.**

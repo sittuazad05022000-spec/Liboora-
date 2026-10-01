@@ -62,7 +62,7 @@ Read in this order for orientation.
 | 9 | [`VISUAL_LANGUAGE.md`](VISUAL_LANGUAGE.md) | The 2.5D direction, colour/type/depth/motion posture |
 | 10 | [`ACCESSIBILITY.md`](ACCESSIBILITY.md) | Required checks, content rules, exception discipline |
 | 11 | [`PERFORMANCE.md`](PERFORMANCE.md) | Design-side asset, network and motion posture |
-| 12 | [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) | Window-class layout rules and per-class adaptation (proposed; `DDR-0005` authority) |
+| 12 | [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) | Window-class layout rules and per-class adaptation (`DDR-0005` authority; APPROVED v0.1, 2026-10-01 — [`RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md`](RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md)) |
 | 13 | [`FIGMA_FOUNDATION.md`](FIGMA_FOUNDATION.md) | File structure, naming, libraries, variables |
 | 14 | [`DESIGN_ENGINEERING_HANDOFF.md`](DESIGN_ENGINEERING_HANDOFF.md) | Handoff package and readiness |
 | 15 | [`DESIGN_QA.md`](DESIGN_QA.md) | The design acceptance gate and its evidence |
@@ -108,7 +108,7 @@ approved, implemented or verified. Every foundation document is still
 | Navigation & flows | `USER_FLOWS.md`, `INFORMATION_ARCHITECTURE.md` §3 | Documented |
 | Screen architecture | `SCREEN_ARCHITECTURE.md` | Documented |
 | Feature-level design | [`../35-design/`](../35-design/README.md) | ⭐ **1** Design Doc — [`DD-0001`](../35-design/membership/DD-0001-membership-management-surface-design.md) (`BC-02`); the other 5 contexts have no surface requirements to design from — see [`../35-design/README.md`](../35-design/README.md) §2.2 |
-| Responsive behaviour | scattered across 5 documents | ⚠️ **No owning document** — `DBT-002` |
+| Responsive behaviour | [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) | Documented; ⭐ **APPROVED** v0.1 (2026-10-01, Responsive Design Owner) — `DBT-002` closed |
 | Figma workflow | `FIGMA_FOUNDATION.md` | Documented |
 | Governance & ownership | `DESIGN_GOVERNANCE.md`, `DESIGN_OWNERSHIP.md` | Documented |
 | Change management | `DESIGN_CHANGE_MANAGEMENT.md` | Documented |

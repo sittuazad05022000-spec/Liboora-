@@ -38,12 +38,13 @@ The system is layered: foundations → tokens → primitives → components → 
 ## 3. Component contract
 
 ⭐ **Responsive foundation:** the breakpoint and layout-adaptation specification now
-exists at [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) — ⭐ **PROPOSED** (drafted
-2026-10-01; carrying `DDR-0005`'s APPROVED window classes `< 600dp` · `600–904dp` ·
-`≥ 905dp` and `DDR-0004`'s APPROVED density rules; **Responsive Design Owner approval
-not recorded**). Governs the *responsive behavior* items of the component contract
-below; the debt is [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-002` (still OPEN pending
-the owner's act).
+exists at [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) — ⭐ **APPROVED** v0.1
+(2026-10-01, Responsive Design Owner; D-1…D-4 recorded;
+[`RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md`](RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md));
+carrying `DDR-0005`'s APPROVED window classes `< 600dp` · `600–904dp` · `≥ 905dp` and
+`DDR-0004`'s APPROVED density rules. Governs the *responsive behavior* items of the
+component contract below; [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-002` is **CLOSED**
+by that owner act.
 
 Use [`templates/COMPONENT_SPEC_TEMPLATE.md`](templates/COMPONENT_SPEC_TEMPLATE.md), whose headings are exactly the eleven items below.
 

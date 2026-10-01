@@ -102,7 +102,7 @@ larger base. ⛔ **This is a deliberate, recorded deviation from the skill.**
 |---|---|---|
 | Surface treatment | ⭐ **Flat + hairline border + one soft shadow level.** ⛔ No glass, no neon, no 3D chrome | PROPOSED |
 | Depth | ⭐ Borders first, elevation second | PROPOSED |
-| Illustration | ⭐ ~10% premium 3D, **empty states only**; functional UI stays 2D | ⭐ **INHERITED** — `DESIGN_SYSTEM.md` §2 marks this **CONFIRMED** |
+| Illustration | ⭐ **≤5%** premium 3D *(canonical — reconciled at `design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md`; prior `~10%` retained)*, **empty states only**; functional UI stays 2D | ⭐ **INHERITED** — `DESIGN_SYSTEM.md` §2 now reads **CANONICAL ≤5%** (`DDR-0013`) |
 | Density | ⭐ Comfortable-dense: dense grids, generous **touch** targets | PROPOSED |
 
 ---
@@ -323,7 +323,7 @@ recorded, LIBOORA/Flutter preserved.**
 | Skeletons | ⭐ **Reserve exact final space** — ⛔ zero layout shift | skill priority 3 (CLS) |
 | Images | ⭐ Lazy-load; ⭐ compress; ⭐ **fixed aspect box** before load | skill priority 3 |
 | Blur | ⛔⛔ **Zero backdrop blur in operational surfaces** | Low-end GPU |
-| 3D / illustration | ⭐ Empty states only; ⭐ ~10% of surface; lazy | `DESIGN_SYSTEM.md` §2 CONFIRMED |
+| 3D / illustration | ⭐ Empty states only; ⭐ **≤5%** of surface *(canonical — `DDR-0013`; prior `~10%` retained)*; lazy | `DESIGN_SYSTEM.md` §2 — CANONICAL ≤5% (`DDR-0013`) |
 | Lists | ⭐ **Virtualised/builder** beyond one screenful | Memory on low-end |
 | Offline | ⭐ Cached read + **explicit staleness stamp** | Brief |
 

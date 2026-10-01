@@ -12,8 +12,8 @@
 ## 1. Visual ratio
 
 - **About 70% clean 2D:** typography, surfaces, cards, lists, controls, and direct information hierarchy.
-- **About 20% subtle depth:** restrained elevation, grouped surfaces, soft but readable separation, and focused emphasis.
-- **About 10% premium 3D-style illustration:** selected brand, onboarding, education, or empty-state moments only.
+- **About 25% subtle depth** *(canonical — reconciled at [`design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md); prior value `20%` retained)*: restrained elevation, grouped surfaces, soft but readable separation, and focused emphasis.
+- **About ≤5% premium 3D-style illustration** *(canonical — `DDR-0013`; prior value `~10%` retained)*: selected brand, onboarding, education, or empty-state moments only (the four permitted 3D moments per `DDR-0010` are unchanged).
 
 These percentages are a visual decision, not a measurement requirement. **Status: CONFIRMED direction; exact implementation mix is RECOMMENDED.**
 

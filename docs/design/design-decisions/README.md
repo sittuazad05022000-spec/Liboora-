@@ -40,6 +40,7 @@ No design decision has been marked APPROVED by this foundation alone. Initial en
 | ID | Title | Status | Approver role | Date | File |
 |---|---|---|---|---|---|
 | `DDR-0034` | `CP-A` / `FA-GAP-009`: V1 device profile confirmed by the Technical Owner | **ACCEPTED** | Technical Owner | 2026-10-01 | [`DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md`](DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) |
+| `DDR-0013` | `CP-B2` / `FA-GAP-002`: canonical layer ratio reconciled to 70% 2D / 25% 2.5D / ≤5% 3D | **ACCEPTED** | Design System Owner (with Design Vision Owner) | 2026-10-01 | [`DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md`](DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) |
 
 ## 4. Filing rules
 

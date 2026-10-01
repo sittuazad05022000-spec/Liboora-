@@ -7,7 +7,7 @@
 |---|---|
 | Status | PROPOSED — design foundation awaiting Founder/Product Authority approval |
 | Source of truth | Locked repository PRD, architecture, ADR, and developer documentation |
-| Visual direction | CONFIRMED — lightweight premium 2.5D: about 70% clean 2D, 20% subtle depth, 10% premium 3D-style illustration |
+| Visual direction | ⭐ **CANONICAL LAYER RATIO RECONCILED** at [`design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) (2026-10-01, Design System + Vision Owner): **70% clean 2D · 25% subtle depth · ≤5% premium 3D-style illustration** · prior CONFIRMED value retained: *about 70% clean 2D, 20% subtle depth, 10% premium 3D* |
 | Delivery posture | RECOMMENDED — mobile-first, accessible, low-end Android and low/intermittent network aware |
 
 ## 1. Purpose

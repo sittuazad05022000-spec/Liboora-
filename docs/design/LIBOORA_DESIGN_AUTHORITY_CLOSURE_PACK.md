@@ -111,7 +111,7 @@ having been observed.**
 | **4** | **Options** | ⭐ **(i)** Adopt `70/25/≤5` and amend all four documents · ⭐ **(ii)** Retain `70/20/10` and amend `DDR-0010` · ⭐ **(iii)** A third reconciled triple. ⛔⛔ **This pack expresses NO preference** *(`DESIGN_GOVERNANCE.md` §3 rule 4)* |
 | **5** | **Consequences** | ⭐ Governs every 2.5D and 3D surface, the four permitted 3D moments, and the asset pipeline · ⚠️ The ≤5% figure is presently validated only against `DDR-0006`'s **provisional** target |
 | **6** | **Approval record location** | ⭐ **New `DDR-0013`**; ⭐ then **4 documents** — `VISUAL_LANGUAGE.md` §1 · `DESIGN_FOUNDATION.md` **L10** · `DESIGN_SYSTEM.md` §2 · `MASTER` L105 |
-| **7** | **Status** | ⭐ **HUMAN ACTION REQUIRED** — ⭐ **READY** |
+| **7** | **Status** | ⭐ **RECONCILED** — canonical `70/25/≤5` recorded at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) (Design System + Vision Owner, 2026-10-01); the 4 live documents are amended · ⛔ prior state retained: ⭐ **HUMAN ACTION REQUIRED** — ⭐ **READY** |
 | **8** | **Dependency** | ⛔ **None.** ⭐ Can be decided today |
 
 ⚠️⚠️ **Both limbs, measured — ⛔ `DDR-0010` recorded only the first:**
@@ -288,13 +288,13 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | **7** | **Status** | ⛔ **BLOCKED — last in sequence** |
 | **8** | **Dependency** | ⛔ `CP-B1`…`B4`, `CP-C`, `CP-D`, `CP-I`, and gates `G0`→`G2`→`G3` |
 
-### ⭐ The `G5` checklist — ⛔ **4 of 11 items satisfied today** *(items 1, 7, 10, 11)* · prior tally retained: ⛔ **0 of 11**
+### ⭐ The `G5` checklist — ⛔ **5 of 11 items satisfied today** *(items 1, 3, 7, 10, 11)* · prior tally retained: ⛔ **4 of 11** *(items 1, 7, 10, 11)*
 
 | # | Required before `G5` | Status |
 |---|---|---|
 | 1 | `CP-A` V1 device profile confirmed | ⭐ **YES** — confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01); prior state retained: ⛔ **NO** |
 | 2 | `CP-B1` Typeface selected + Indic guarantee closed | ⛔ **NO** |
-| 3 | `CP-B2` Layer ratios reconciled **(both limbs, 4 documents)** | ⛔ **NO** |
+| 3 | `CP-B2` Layer ratios reconciled **(both limbs, 4 documents)** | ⭐ **YES** — reconciled at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) (canonical `70/25/≤5`, both limbs; the 4 live documents amended; `DDR-0010` historical text preserved); prior state retained: ⛔ **NO** |
 | 4 | `CP-B3` Colour + radius ratified; 14/18 deprecated | ⛔ **NO** |
 | 5 | `CP-B4` Spacing + elevation decided | ⛔ **NO** |
 | 6 | `CP-C` `ACCESSIBILITY.md` amended | ⛔ **NO** |
@@ -368,7 +368,7 @@ row is **due for review**. ⛔ **Due for review is not closed.**
 
 | Pack | Action | Owner | Blocks FINAL? |
 |---|---|---|---|
-| **`CP-B2`** | ⭐⭐ Reconcile layer ratios — **both limbs, 4 documents** | Design System Owner | ⭐⭐ **YES** |
+| **`CP-B2`** | ⭐⭐ Reconcile layer ratios — **both limbs, 4 documents** · ⭐ **RECONCILED** at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) (canonical `70/25/≤5`, 2026-10-01) — this pack row now tracked as resolved; prior state retained | Design System Owner | ⭐ **NO longer** (reconciled; was ⭐⭐ YES) |
 | **`CP-B3`** | Ratify colour + radius; deprecate 14/18 | Design System Owner | ⭐ **YES** |
 | **`CP-C`** | Amend `ACCESSIBILITY.md` L10 + L26 | Accessibility Owner | ⭐ **YES** |
 | **`CP-D`** | **Create** the responsive artifact | Responsive Design Owner | ⭐ **YES** |
@@ -414,7 +414,7 @@ anything.**
 | Category | Count |
 |---|---|
 | ⛔ **FINAL APPROVAL READY** | ⛔⛔ **0** |
-| ⭐ **HUMAN ACTION REQUIRED** | ⭐ **8** |
+| ⭐ **HUMAN ACTION REQUIRED** | ⭐ **7** *(was 8 — `CP-B2` moved to **resolved** at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md), 2026-10-01; prior count 8 retained)* |
 | ⚠️ **EVIDENCE REQUIRED** | ⚠️ **2** *(CP-B4, CP-E — `CP-A` is RESOLVED via `DDR-0034` and `CP-B1` is BLOCKED / UNVERIFIED; only `CP-B4` + `CP-E` remain in this bucket)* |
 | ⛔ **EXTERNALLY BLOCKED** | ⛔ **3** |
 | ⛔ **OUTSIDE DESIGN SCOPE** | ⛔ **7** |

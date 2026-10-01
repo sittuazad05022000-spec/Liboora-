@@ -16,7 +16,7 @@
 | **Author** | AI, as Design Documentation Author *(`DESIGN_GOVERNANCE.md` §5 — ⛔ *"Cannot approve business scope or resolve source conflicts"*)* |
 | **Source** | [`LIBOORA_DESIGN_SYSTEM_FINAL_AUDIT.md`](LIBOORA_DESIGN_SYSTEM_FINAL_AUDIT.md) · [`DDR-0001…0011`](design-decisions/DDR-0001-to-0009-founder-product-authority-decisions.md) |
 | **Purpose** | ⭐ Give each named office **exactly** what it needs to act — and state honestly where the evidence is **not yet sufficient to act at all** |
-| ⭐⭐ **Headline** | ⭐ **10 of 13 blockers are READY FOR OWNER ACTION** · ⚠️ **3 are MISSING EVIDENCE** |
+| ⭐⭐ **Headline** | ⭐ **10 of 13 blockers are READY FOR OWNER ACTION** · ⚠️ **3 are MISSING EVIDENCE** · ⭐ **since `DDR-0013` (2026-10-01): `FA-GAP-002` is RESOLVED** (prior headline retained; see the reconciled tally at the summary table below) |
 
 ---
 
@@ -45,7 +45,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 | Rank | Blocker | Owner | Verdict | Unblocks |
 |---|---|---|---|---|
 | **1** | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01; prior ⚠️ **MISSING EVIDENCE** retained) | ⭐ `FA-GAP-010` (unblocked — ⛔ still OPEN), and validates `FA-GAP-002` |
-| **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **READY** | ⭐ All 2.5D/3D specification |
+| **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **RESOLVED — `DDR-0013`** (canonical `70/25/≤5`, both limbs, 4 docs amended, 2026-10-01; prior state retained: ⭐ **READY**) | ⭐ All 2.5D/3D specification |
 | **3** | `FA-GAP-003` Typography | **Design System Owner** | ⛔ **BLOCKED / UNVERIFIED** *(§4.3 — probe not executable: no Android API-26 target-class rendering environment; ⛔ no rendering PASS; `DDR-0034`'s profile is not Devanagari evidence; `DDR-0012` stays free; re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment; prior state retained: ⚠️ **MISSING EVIDENCE**)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
 | **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **READY** | ⭐ `G2` |
@@ -72,8 +72,8 @@ in parallel, without waiting for the Technical Owner.**
 | **3. Evidence available** | ⭐ **Complete.** `VISUAL_LANGUAGE.md` §1 = `70/20/10` **CONFIRMED** · `DESIGN_FOUNDATION.md` **L10** = `70/20/10` **CONFIRMED** · `DESIGN_SYSTEM.md` §2 = `~10%` **CONFIRMED** · `MASTER` L105 = `~10%` INHERITED · `DDR-0010` = `70/25/≤5` **APPROVED**. ⭐ Both sets sum to **100** |
 | **4. Missing** | ⛔ **Only the owner's decision.** ⛔ No new measurement is needed |
 | **5. Artifact(s) to amend** | ⭐ **4 documents** — `VISUAL_LANGUAGE.md` §1 · `DESIGN_FOUNDATION.md` **L10** · `DESIGN_SYSTEM.md` §2 *(Illustration row)* · `LIBOORA_MASTER_DESIGN_SYSTEM.md` L105 |
-| **6. Blocks FINAL APPROVAL?** | ⭐⭐ **YES** — an open `CONFLICT` cannot coexist with FINAL *(`DESIGN_GOVERNANCE.md` §2)* |
-| ⭐ **Verdict** | ⭐ **READY FOR OWNER ACTION** |
+| **6. Blocks FINAL APPROVAL?** | ⭐⭐ **YES** — an open `CONFLICT` cannot coexist with FINAL *(`DESIGN_GOVERNANCE.md` §2)* · ⛔ no longer applies — the conflict is reconciled (below) |
+| ⭐ **Verdict** | ⭐ **RESOLVED — [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md)** (Design System + Vision Owner, 2026-10-01: canonical `70/25/≤5`, both limbs, 4 documents amended; `DDR-0010` historical text preserved) · prior state retained verbatim: ⭐ **READY FOR OWNER ACTION** |
 
 ⚠️⚠️ **Two limbs — the second is the one that gets missed:**
 
@@ -345,7 +345,7 @@ amount of design work clears either.**
 
 ```
   WAVE 1 — today, in parallel, no dependencies
-  ├── FA-GAP-002  3D ratio conflict ........... Design System Owner      ⭐ READY
+  ├── FA-GAP-002  3D ratio conflict ........... Design System Owner      ⭐ RESOLVED — `DDR-0013`
   ├── FA-GAP-004a Radius ...................... Design System Owner      ⭐ READY
   ├── FA-GAP-004b Colour ...................... Design System Owner      ⭐ READY
   ├── FA-GAP-005a Accessibility ............... Accessibility Owner      ⭐ READY
@@ -379,7 +379,7 @@ it should be **requested first** even though it is needed **last**.
 | Blocker | Owner | Verdict | Blocks FINAL? |
 |---|---|---|---|
 | `FA-GAP-001` `DDR-0009` version | Founder/Product Authority | ⭐ **READY** | ⚠️ **YES** *(formal)* |
-| `FA-GAP-002` 3D ratio conflict | Design System Owner | ⭐ **READY** | ⭐⭐ **YES** |
+| `FA-GAP-002` 3D ratio conflict | Design System Owner | ⭐ **RESOLVED — `DDR-0013`** (2026-10-01; prior ⭐ **READY** retained) | ⭐ **NO longer** (reconciled; was ⭐⭐ YES) |
 | `FA-GAP-003` Typography | Design System Owner | ⛔ **BLOCKED / UNVERIFIED** | ⭐⭐ **YES** |
 | `FA-GAP-004a` Radius | Design System Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-004b` Colour | Design System Owner | ⭐ **READY** | ⭐ **YES** |
@@ -393,8 +393,8 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **PARTIAL → device profile met; `FA-GAP-010` still OPEN** |
 | `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⚠️ **MISSING** | ⚠️ **PARTIAL** |
 
-⭐ **14 rows — ⭐ 9 READY · ⚠️ 2 MISSING EVIDENCE *(FA-GAP-004c, FA-GAP-010)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 1 RESOLVED *(FA-GAP-009, via `DDR-0034`)*.** *(prior state retained: ⚠️ 4 MISSING EVIDENCE — `FA-GAP-003` and `FA-GAP-009` have since moved out of that bucket.)*
-⭐ **Blocking FINAL: 11 · ⛔ Not blocking: 2 · ⚠️ Partial: 2.**
+⭐ **14 rows — ⭐ 8 READY · ⚠️ 2 MISSING EVIDENCE *(FA-GAP-004c, FA-GAP-010)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 2 RESOLVED *(FA-GAP-002, via `DDR-0013`; FA-GAP-009, via `DDR-0034`)*.** *(prior state retained: ⭐ 9 READY · ⭐ 1 RESOLVED — `FA-GAP-002` moved to RESOLVED at `DDR-0013`.)*
+⭐ **Blocking FINAL: 10 · ⛔ Not blocking: 3 · ⚠️ Partial: 2.** *(`FA-GAP-002` no longer blocks FINAL — reconciled at `DDR-0013`.)*
 
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine
 blockers are waiting on a signature**, ⚠️ **three on a fact that does not exist yet**, and

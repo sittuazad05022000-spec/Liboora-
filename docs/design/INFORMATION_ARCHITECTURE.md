@@ -5,8 +5,8 @@
 
 | Field | Value |
 |---|---|
-| Status | PROPOSED — IA model for review |
-| Owner | Information Architecture Owner |
+| Status | **IA / navigation structure APPROVED** (G1, 2026-10-01) — [`G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md`](G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md); top-level **navigation labels remain TO BE DECIDED** (escalated to Founder/Product Authority) |
+| Owner | Information Architecture Owner (IA/navigation approver, `DESIGN_OWNERSHIP.md` L21) |
 | Boundary | Design grouping only; not a backend or bounded-context map |
 
 ## 1. IA principles
@@ -29,7 +29,7 @@
 
 ## 3. Navigation model
 
-No V1 navigation hierarchy or labels are established by the cited sources, so they remain **TO BE DECIDED**. The permitted destination groups are limited to the retained groups in §2 and each destination must respect its audience and source boundary. Explicitly deferred screens (`ops_page.dart`, `overview_page.dart`, `staff_app_shell.dart`, `student_app_shell.dart`, `student_subject.dart`) and Community are not V1 destinations. A backend entity or implementation file alone does not authorize one.
+No V1 navigation hierarchy or labels are established by the cited sources, so they remain **TO BE DECIDED**. The permitted destination groups are limited to the retained groups in §2 and each destination must respect its audience and source boundary. Explicitly deferred screens (`ops_page.dart`, `overview_page.dart`, `staff_app_shell.dart`, `student_app_shell.dart`, `student_subject.dart`) and Community are not V1 destinations. A backend entity or implementation file alone does not authorize one. ⭐ **Escalated 2026-10-01 (G1):** the top-level navigation-label decision is **escalated to Founder/Product Authority** (via the Information Architecture Owner → UX Architecture Owner route, `DESIGN_OWNERSHIP.md` L21 / L17) and is recorded as an open condition in [`G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md`](G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md); G1 is passed **with** the label decision outstanding, not resolved here.
 
 ## 4. Findability rules
 

@@ -5,7 +5,7 @@
 
 | Field | Value |
 |---|---|
-| Status | PROPOSED — screen inventory and composition rules |
+| Status | **APPROVED** (G1 experience architecture, 2026-10-01) — [`G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md`](G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md) |
 | Owner | UX Architecture Owner |
 | Screen rule | A screen is a composition surface, not a new system |
 

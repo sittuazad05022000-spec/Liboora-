@@ -5,7 +5,7 @@
 
 | Field | Value |
 |---|---|
-| Status | RECOMMENDED — accessibility foundation pending formal approval and validation |
+| Status | **APPROVED** — accessibility foundation formally adopted, 2026-10-01, Accessibility Owner; recorded in [`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md) |
 | Owner | Accessibility Owner |
 | Target | Design standard: **WCAG 2.1 AA** ratios as adopted by `DDR-0004` (`APPROVED` 2026-09-19 — contrast 4.5:1 / 3:1; functional at 200% text scale). A legal or product compliance standard remains **TO BE DECIDED** — it is outside design authority; Founder/Product Authority confirms scope |
 
@@ -29,8 +29,9 @@ Accessibility is a design and QA requirement across structure, content, input, s
 
 The following values are **APPROVED** (Founder/Product Authority, 2026-09-19) and govern this
 foundation as a floor for **all apps, no exceptions**. They are design minimums — ⛔ they are
-*not* a claim of implementation or QA evidence (see §3 and `DIT-007`); the Accessibility
-Owner's formal adoption act into this document is **not yet recorded**.
+*not* a claim of implementation or QA evidence (see §3 and `DIT-007`). The Accessibility
+Owner's formal adoption act into this document is **recorded 2026-10-01** in
+[`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md).
 
 | Minimum | Value | Authority |
 |---|---|---|

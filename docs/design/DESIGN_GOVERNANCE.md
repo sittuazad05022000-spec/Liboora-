@@ -41,15 +41,16 @@ Design governance keeps experience decisions aligned with frozen product and arc
 |---|---|---|---|
 | G0 Source audit | Relevant PRDs, freeze records, ADRs, architecture, and developer docs read | CONFIRMED | Design Documentation Owner; escalate source ambiguity to Design Governance Owner |
 | G1 Experience architecture | Flows, IA, navigation, screen states, and traceability exist | **PASSED / CONFIRMED** | UX Architecture Owner (with Information Architecture Owner for IA/navigation); escalate scope conflict to Founder/Product Authority |
-| G2 Foundation | Tokens, components, visual rules, accessibility, and performance guidance exist | PROPOSED | Design System Owner and Accessibility Owner |
+| G2 Foundation | Tokens, components, visual rules, accessibility, and performance guidance exist | **PASSED / CONFIRMED** | Design System Owner and Accessibility Owner |
 | G3 Handoff | Annotated specs, states, responsive behavior, and trace links are complete | PROPOSED | Design–Engineering Handoff Owner |
 | G4 Design QA | Evidence covers visual, interaction, accessibility, responsive, and constrained-network behavior | PROPOSED | Design QA Owner |
 | G5 Change | Version, impact, decision record, and approvals are recorded | PROPOSED | Design Governance Owner |
 
-⚠️ **Gate status, measured:** **2 of 6** gates have been recorded as passed —
+⚠️ **Gate status, measured:** **3 of 6** gates have been recorded as passed —
 `G0` is **PASSED / CONFIRMED** in [`G0_SOURCE_AUDIT_RECORD_2026-09-30.md`](G0_SOURCE_AUDIT_RECORD_2026-09-30.md),
-`G1` is **PASSED / CONFIRMED** in [`G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md`](G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md)
-— and `G2`–`G5` remain unrecorded. Recorded as
+`G1` is **PASSED / CONFIRMED** in [`G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md`](G1_EXPERIENCE_ARCHITECTURE_APPROVAL_RECORD_2026-10-01.md),
+`G2` is **PASSED / CONFIRMED** in [`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md)
+— and `G3`–`G5` remain unrecorded. Recorded as
 [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-008`.
 
 ## 5. AI governance

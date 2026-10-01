@@ -5,7 +5,7 @@
 
 | Field | Value |
 |---|---|
-| Status | PROPOSED — foundation rules awaiting approval |
+| Status | **APPROVED** — foundation rules, 2026-10-01, Design System Owner; recorded in [`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md) |
 | Owner | Design System Owner |
 | Implementation | Figma Foundation and approved engineering implementation |
 

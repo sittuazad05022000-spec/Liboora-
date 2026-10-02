@@ -288,19 +288,19 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | **7** | **Status** | ⛔ **BLOCKED — last in sequence** |
 | **8** | **Dependency** | ⛔ `CP-B1`…`B4`, `CP-C`, `CP-D`, `CP-I`, and gates `G0`→`G2`→`G3` |
 
-### ⭐ The `G5` checklist — ⛔ **6 of 11 items satisfied today** *(items 1, 3, 7, 8, 10, 11)* · prior tally retained: ⛔ **5 of 11** *(items 1, 3, 7, 10, 11)*
+### ⭐ The `G5` checklist — ⛔ **10 of 11 items satisfied today** *(items 1, 3, 4, 5, 6, 7, 8, 9, 10, 11)* · **sole open item: `#2` `CP-B1`** *(BLOCKED / UNVERIFIED — the Devanagari guarantee probe requires a real Android API-26 target-class rendering environment; `DDR-0012` must not be created until an actual probe result exists)* · prior tally retained: ⛔ **6 of 11** *(items 1, 3, 7, 8, 10, 11)*
 
 | # | Required before `G5` | Status |
 |---|---|---|
 | 1 | `CP-A` V1 device profile confirmed | ⭐ **YES** — confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01); prior state retained: ⛔ **NO** |
 | 2 | `CP-B1` Typeface selected + Indic guarantee closed | ⛔ **NO** |
 | 3 | `CP-B2` Layer ratios reconciled **(both limbs, 4 documents)** | ⭐ **YES** — reconciled at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md) (canonical `70/25/≤5`, both limbs; the 4 live documents amended; `DDR-0010` historical text preserved); prior state retained: ⛔ **NO** |
-| 4 | `CP-B3` Colour + radius ratified; 14/18 deprecated | ⛔ **NO** |
-| 5 | `CP-B4` Spacing + elevation decided | ⛔ **NO** |
-| 6 | `CP-C` `ACCESSIBILITY.md` amended | ⛔ **NO** |
+| 4 | `CP-B3` Colour + radius ratified; 14/18 deprecated | ⭐ **YES** — colour+radius **DECIDED**: `DESIGN_SYSTEM.md` §2 colour row **DECIDED** (`DDR-0001` `APPROVED`, aligned by `DDR-0027`), radius row **DECIDED** (`DDR-0003` `APPROVED`; `LiblRadius` scale ratified by `DDR-0028`), ⭐ **`14`/`18` RETIRED** in `DDR-0028` · prior state retained: ⛔ **NO** |
+| 5 | `CP-B4` Spacing + elevation decided | ⭐ **YES** — spacing **RATIFIED** (`DDR-0027`, 6-step `LiblSpace` adopted from shipped values) · elevation **DECIDED** (`DDR-0028`, 3-level semantic scale) · sizes+line-heights `DDR-0031` · weights `DDR-0032`; `DESIGN_SYSTEM.md` §2 rows DECIDED/RATIFIED · prior state retained: ⛔ **NO** |
+| 6 | `CP-C` `ACCESSIBILITY.md` amended | ⭐ **YES** *(design-authority amendment)* — `ACCESSIBILITY.md` L10 now names **WCAG 2.1 AA via `DDR-0004`** (`APPROVED` 2026-09-19), §2.1 minimums **DECIDED** (`DDR-0004`: ≥48×48dp · ≥8dp · 4.5:1/3:1); adoption/approval recorded in [`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md) §3 · ⚠️ the **legal** compliance standard (L10) remains `TO BE DECIDED` — outside design authority, Founder/Product Authority; that legal decision is **NOT** marked resolved by this item · prior state retained: ⛔ **NO** |
 | 7 | `CP-D` Responsive artifact created | ⭐ **YES** — `RESPONSIVE_DESIGN.md` v0.1 **APPROVED** 2026-10-01 (Responsive Design Owner; [`RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md`](RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md); `DESIGN_DEBT.md` `DBT-002` CLOSED/RESOLVED); prior state retained: ⛔ **NO** |
 | 8 | `CP-E` `NFR Budgets (V1)` created | ⭐ **YES** — created and **DECIDED** at [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md) (2026-10-01 owner decision: 5 budgets — image ≤200 KB · font ≤400 KB/≤4 faces · animation 0/150/200/300 ms · screen data ≤50 KB · TTI 16 ms frame + <100 ms; measured against `DDR-0034`); prior state retained: ⛔ **NO** |
-| 9 | `CP-I` `DDR-0009` version defect cured | ⛔ **NO** |
+| 9 | `CP-I` `DDR-0009` version defect cured | ⭐ **YES** — cured by [`DDR-0017`](design-decisions/DDR-0017-to-0020-founder-product-authority-closure-decisions.md) (`APPROVED`), which binds the approved design direction to `v0.1` — supplying the version element `DDR-0009` omitted · prior state retained: ⛔ **NO** |
 | 10 | Gates `G0`–`G4` recorded | ⭐ **YES** — `DESIGN_GOVERNANCE.md` §4: **5 of 6** gates recorded (`G0`…`G4` each **PASSED / CONFIRMED**, with on-disk records `G0_SOURCE_AUDIT_RECORD_2026-09-30.md`, `G1_…_2026-10-01.md`, `G2_…_2026-10-01.md`, `G3_…_2026-10-01.md`, `G4_DESIGN_QA_RECORD_2026-10-01.md`); ⛔ `G5` remains **PROPOSED / unrecorded** · prior state retained: ⛔ **NO — 0 of 6** |
 | 11 | `DBT-001`/`002`/`005` closable | ⭐ **YES** — `DESIGN_DEBT.md`: `DBT-001` **RESOLVED** (colour `DDR-0001` · spacing `DDR-0027` · typeface `DDR-0029`; code conformance remains separate engineering work) · `DBT-002` **CLOSED / RESOLVED** (`RESPONSIVE_DESIGN.md` v0.1 APPROVED + `DDR-0004`/`0005`) · `DBT-005` **RESOLVED** (radius/elevation `DDR-0028` · sizes `DDR-0031` · weights `DDR-0032`); prior state retained: ⛔ **NO** |
 
@@ -386,7 +386,7 @@ anything.**
 |---|---|---|
 | **`CP-A`** | ⭐ **RESOLVED** — the V1 device profile numbers are now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) · prior measurement retained: **16** *"Technical Owner"* hits, ⛔ **0** were a profile decision | ⭐⭐ **Technical Owner** |
 | **`CP-B1`** | ⛔ **BLOCKED / UNVERIFIED** — the one probe ("does the confirmed V1 Android font stack **guarantee** Devanagari on the target class?") is **not executable in the available environments** (no Android API-26 target-class rendering environment at probe time, 2026-10-01) · ⛔ no rendering PASS established; ⛔ `DDR-0034`'s device profile is **not** Devanagari rendering evidence; ⛔ `DDR-0012` stays **reserved-and-free until an actual probe result exists** · ⭐ re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment · prior state retained: ⚠️ Sharpened by §A.4: the answer may differ between **Android 7.0** and **8.0** | Design System + Technical Owner |
-| **`CP-B4`** | ⭐⭐ **A review, not a measurement** — the 6 `LiblSpace` steps have **never been before an authority** *(0 DDR mentions)* | Design System Owner |
+| **`CP-B4`** | ⭐⭐ **RESOLVED** — spacing **ratified** at [`DDR-0027`](design-decisions/DDR-0027-dbt-001-b1-liblspace-ratification-and-foundation-alignment.md) (6-step `LiblSpace` adopted from shipped values — *the authority the prior row found missing*) · elevation **decided** at [`DDR-0028`](design-decisions/DDR-0028-dbt-005-radius-elevation-token-scales-decided.md) (3-level semantic scale) · sizes+line-heights `DDR-0031` · weights `DDR-0032`; `DESIGN_SYSTEM.md` §2 rows DECIDED/RATIFIED · prior state retained: ⭐⭐ *"A review, not a measurement — the 6 `LiblSpace` steps have never been before an authority (0 DDR mentions)"* *(stale since `DDR-0027`)* | Design System Owner |
 | **`CP-E`** | ⭐⭐ **RESOLVED** — the `NFR Budgets (V1)` document now exists and is **DECIDED** at [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md) (2026-10-01 owner decision: 5 hard ceilings/targets measured against `DDR-0034`; the device profile it was gated on was confirmed at `DDR-0034`; prior state retained: *"a budget without a target class is arithmetic without units" · remains OPEN — not created by this act") | Technical Owner → Governance + Perf Owner |
 
 ### 14.4 ⛔ EXTERNALLY BLOCKED
@@ -415,7 +415,7 @@ anything.**
 |---|---|
 | ⛔ **FINAL APPROVAL READY** | ⛔⛔ **0** |
 | ⭐ **HUMAN ACTION REQUIRED** | ⭐ **7** *(was 8 — `CP-B2` moved to **resolved** at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md), 2026-10-01; prior count 8 retained)* |
-| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **1** *(CP-B4 only — `CP-A` is RESOLVED via `DDR-0034`, `CP-B1` is BLOCKED / UNVERIFIED, and `CP-E` is now RESOLVED via `NFR_BUDGETS_V1` (2026-10-01); prior count 2 retained: CP-B4 + CP-E)* |
+| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **0** *(no open evidence-required package remains: `CP-A` RESOLVED via `DDR-0034`, `CP-B4` now RESOLVED via `DDR-0027`/`DDR-0028`/`DDR-0031`/`DDR-0032`, `CP-E` RESOLVED via `NFR_BUDGETS_V1`; the sole remaining design blocker `CP-B1` is **BLOCKED / UNVERIFIED** — a device dependency tracked under §14.4 **EXTERNALLY BLOCKED**, not this evidence bucket; prior count 1 retained: CP-B4)* |
 | ⛔ **EXTERNALLY BLOCKED** | ⛔ **3** |
 | ⛔ **OUTSIDE DESIGN SCOPE** | ⛔ **7** |
 

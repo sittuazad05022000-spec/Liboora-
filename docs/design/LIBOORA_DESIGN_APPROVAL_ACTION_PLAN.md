@@ -48,7 +48,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 | **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **RESOLVED — `DDR-0013`** (canonical `70/25/≤5`, both limbs, 4 docs amended, 2026-10-01; prior state retained: ⭐ **READY**) | ⭐ All 2.5D/3D specification |
 | **3** | `FA-GAP-003` Typography | **Design System Owner** | ⛔ **BLOCKED / UNVERIFIED** *(§4.3 — probe not executable: no Android API-26 target-class rendering environment; ⛔ no rendering PASS; `DDR-0034`'s profile is not Devanagari evidence; `DDR-0012` stays free; re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment; prior state retained: ⚠️ **MISSING EVIDENCE**)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
-| **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **READY** | ⭐ `G2` |
+| **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **DECIDED — `DDR-0004` + `G2_FOUNDATION_APPROVAL_RECORD` §3** (2026-10-01 reconciliation: amendment already made, `ACCESSIBILITY.md` L10/§2.1; prior state retained: ⭐ **READY**) · ⚠️ legal standard still `TO BE DECIDED` | ⭐ `G2` |
 | **6** | `FA-GAP-007` Responsive artifact | **Responsive Design Owner** | ⭐ **READY** | ⭐ `DBT-002`, `G3` |
 | **7** | `FA-GAP-010` V1 numeric SLOs | **Governance + Design Performance Owner** | ⭐ **RESOLVED — `NFR_BUDGETS_V1.md`** (2026-10-01 owner decision: 5 budgets DECIDED, measured against `DDR-0034`; prior state retained: ⚠️ **MISSING EVIDENCE**) | ⭐ `DD7-GAP-009` (satisfied) |
 | **8** | `FA-GAP-001` `DDR-0009` version defect | **Founder/Product Authority** | ⭐ **READY** | ⭐ Approval integrity |
@@ -101,7 +101,7 @@ depth limb and cannot justify proceeding on the ratios as a whole.
 | **4. Missing** | ⛔ **Only the owner's amendment.** ⚠️ ⭐ **One dependency to disclose, not a blocker:** the *"selected standard"* in `ACCESSIBILITY.md` L10 — `DDR-0004` adopts **WCAG 2.1 AA** ratios but ⛔ does not name a legal/product standard. ⭐ The owner may name WCAG 2.1 AA as the **design** standard; ⛔ a **legal** standard is outside design authority |
 | **5. Artifact(s) to amend** | ⭐ `ACCESSIBILITY.md` **L10** *(Target)* and **L26** *(touch minimums)* |
 | **6. Blocks FINAL APPROVAL?** | ⭐ **YES** — gate `G2` requires the Accessibility Owner |
-| ⭐ **Verdict** | ⭐ **READY FOR OWNER ACTION** |
+| ⭐ **Verdict** | ⭐ **DECIDED** — `ACCESSIBILITY.md` L10/§2.1 **amended**: WCAG 2.1 AA via `DDR-0004` (`APPROVED` 2026-09-19), minimums DECIDED (≥48×48dp · ≥8dp · 4.5:1/3:1); adoption/approval recorded in [`G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md`](G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md) §3 · ⚠️ the **legal** compliance standard (L10) remains `TO BE DECIDED` (Founder/Product Authority — ⛔ not marked resolved) · ⛔ not a new decision — the amendment was already made · prior state retained verbatim: ⭐ **READY FOR OWNER ACTION** |
 
 ⚠️ **Disclosed, not repaired:** `DIT-007` measures **0** occurrences of `Semantics`,
 `semanticsLabel` or `textScaleFactor` under `lib/`, and **0** accessibility assertions
@@ -180,7 +180,7 @@ returns and the reader question reopens.**
 | **4. Missing** | ⛔ **Only ratification** |
 | **5. Artifact(s) to amend** | ⭐ `DESIGN_SYSTEM.md` §2 *(Color row)* · `VISUAL_LANGUAGE.md` §3 · `MASTER` L148–149 |
 | **6. Blocks FINAL APPROVAL?** | ⭐ **YES** — part of `G2` |
-| ⭐ **Verdict** | ⭐ **READY FOR OWNER ACTION** |
+| ⭐ **Verdict** | ⭐ **DECIDED** — colour **DECIDED** in `DESIGN_SYSTEM.md` §2 (`DDR-0001` `APPROVED`, aligned by `DDR-0027`); radius **DECIDED** (`DDR-0003` `APPROVED`; `DDR-0028`), `14`/`18` RETIRED · ⛔ not new decisions — this section's §1 "Action required" (ratify into the token table) is satisfied by the recorded decisions · prior state retained verbatim: ⭐ **READY FOR OWNER ACTION** |
 
 ⚠️⚠️ ⛔ **Ratifying the colours does NOT close `DBT-001`** — ⭐ that row has a **second
 limb** *(spacing)*, unaddressed. See §4.2.
@@ -261,7 +261,7 @@ conservative design target**; ⛔ **no numeric SLO may be published as authorita
 | **4. Missing** | ⛔⛔ **A decision — and it must not be a rubber stamp.** ⭐ Measured: across all **11** DDRs, `LiblSpace` appears **0** times and the only *"spacing"* hit is `DDR-0004`'s **≥8dp target spacing** — ⭐ an **accessibility minimum**, ⛔ **not a token scale.** ⭐⭐ **The spacing limb has never been before an authority** |
 | **5. Artifact(s) to amend** | ⭐ `DESIGN_SYSTEM.md` **L22** *(Spacing)* and **L24** *(Elevation)*; ⭐ then `DESIGN_DEBT.md` `DBT-001` / `DBT-005` |
 | **6. Blocks FINAL APPROVAL?** | ⭐⭐ **YES** — ⭐ `DESIGN_SYSTEM.md` §2 names spacing and elevation as **foundations**; ⛔ a foundation reading `TO BE DECIDED` cannot be FINAL |
-| ⚠️ **Verdict** | ⚠️ **MISSING EVIDENCE** *(⭐ the **radius** limb is ready — §3.6)* |
+| ⚠️ **Verdict** | ⭐ **DECIDED** — spacing **RATIFIED** at [`DDR-0027`](design-decisions/DDR-0027-dbt-001-b1-liblspace-ratification-and-foundation-alignment.md) (6-step `LiblSpace` adopted from shipped values — a Design System Owner act, ⛔ not the "silent rubber-stamp" §4.2 warns against) · elevation **DECIDED** at [`DDR-0028`](design-decisions/DDR-0028-dbt-005-radius-elevation-token-scales-decided.md) (3-level semantic scale); `DESIGN_SYSTEM.md` §2 L22/L24 now DECIDED/RATIFIED · ⛔ not new decisions — the decisions were already taken and recorded · prior state retained verbatim: ⚠️ **MISSING EVIDENCE** *(⭐ the **radius** limb is ready — §3.6; ⚠️ the "0 DDR mentions / never before an authority" measurement is stale since `DDR-0027`/`DDR-0028`)* |
 
 ⚠️⚠️ **The trap, stated plainly.** ⭐ It is tempting to write `LiblSpace`'s six values into
 `DESIGN_SYSTEM.md` and call the row closed. ⛔ **That is the precise act `DESIGN_DEBT.md`
@@ -347,8 +347,8 @@ amount of design work clears either.**
   WAVE 1 — today, in parallel, no dependencies
   ├── FA-GAP-002  3D ratio conflict ........... Design System Owner      ⭐ RESOLVED — `DDR-0013`
   ├── FA-GAP-004a Radius ...................... Design System Owner      ⭐ READY
-  ├── FA-GAP-004b Colour ...................... Design System Owner      ⭐ READY
-  ├── FA-GAP-005a Accessibility ............... Accessibility Owner      ⭐ READY
+  ├── FA-GAP-004b Colour ...................... Design System Owner      ⭐ DECIDED — `DDR-0001`/`0003`/`0027`/`0028`
+  ├── FA-GAP-005a Accessibility ............... Accessibility Owner      ⭐ DECIDED — `DDR-0004`
   ├── FA-GAP-007  Responsive artifact ......... Responsive Design Owner  ⭐ READY
   ├── FA-GAP-005b Master staleness ............ Vision + UX Arch Owner   ⭐ READY
   ├── FA-GAP-005c Register corrections ........ Doc + Governance Owner   ⭐ READY
@@ -358,7 +358,7 @@ amount of design work clears either.**
    └── FA-GAP-009  V1 DEVICE PROFILE ........... ⭐⭐ TECHNICAL OWNER      ⭐ RESOLVED — `DDR-0034`
             │                                        (profile confirmed 2026-10-01; prior ⚠️ MISSING retained)
    WAVE 2 — unlocked by Wave 1
-   ├── FA-GAP-004c Spacing + elevation ......... Design System Owner   ⚠️ needs review
+    ├── FA-GAP-004c Spacing + elevation ......... Design System Owner   ⭐ DECIDED — `DDR-0027`/`0028`
    ├── FA-GAP-003  Typography .................. Design System Owner   ⚠️ needs 1 probe
    │                                              (probe cost now governed by confirmed class — `DDR-0034`)
     └── FA-GAP-010  NFR Budgets (V1) ............ Governance + Perf     ⭐ RESOLVED — `NFR_BUDGETS_V1`
@@ -383,9 +383,9 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-002` 3D ratio conflict | Design System Owner | ⭐ **RESOLVED — `DDR-0013`** (2026-10-01; prior ⭐ **READY** retained) | ⭐ **NO longer** (reconciled; was ⭐⭐ YES) |
 | `FA-GAP-003` Typography | Design System Owner | ⛔ **BLOCKED / UNVERIFIED** | ⭐⭐ **YES** |
 | `FA-GAP-004a` Radius | Design System Owner | ⭐ **READY** | ⭐ **YES** |
-| `FA-GAP-004b` Colour | Design System Owner | ⭐ **READY** | ⭐ **YES** |
-| `FA-GAP-004c` Spacing + elevation | Design System Owner | ⚠️ **MISSING** | ⭐⭐ **YES** |
-| `FA-GAP-005a` Accessibility | Accessibility Owner | ⭐ **READY** | ⭐ **YES** |
+| `FA-GAP-004b` Colour | Design System Owner | ⭐ **DECIDED** — colour **DECIDED** in `DESIGN_SYSTEM.md` §2 (`DDR-0001` `APPROVED`, aligned by `DDR-0027`); ⛔ not a new decision, only the recorded ratification · prior state retained: ⭐ **READY** | ⭐ **NO longer** (decided; was ⭐ YES) |
+| `FA-GAP-004c` Spacing + elevation | Design System Owner | ⭐ **DECIDED** — spacing **RATIFIED** (`DDR-0027`), elevation **DECIDED** (`DDR-0028`), sizes+line-heights `DDR-0031`, weights `DDR-0032`; `DESIGN_SYSTEM.md` §2 rows DECIDED/RATIFIED; ⛔ not new decisions · prior state retained: ⚠️ **MISSING** | ⭐ **NO longer** (decided; was ⭐⭐ YES) |
+| `FA-GAP-005a` Accessibility | Accessibility Owner | ⭐ **DECIDED** — `ACCESSIBILITY.md` L10/§2.1 amended: WCAG 2.1 AA via `DDR-0004` (`APPROVED` 2026-09-19), minimums DECIDED (≥48×48dp · ≥8dp · 4.5:1/3:1), adoption/approval recorded in `G2_FOUNDATION_APPROVAL_RECORD_2026-10-01.md` §3; ⚠️ the **legal** compliance standard remains `TO BE DECIDED` (Founder/Product Authority — ⛔ not marked resolved) · prior state retained: ⭐ **READY** | ⭐ **NO longer** (decided; was ⭐ YES) |
 | `FA-GAP-005b` Master staleness | Vision + UX Arch Owner | ⭐ **READY** | ⚠️ **YES** |
 | `FA-GAP-005c` Register corrections | Doc + Governance Owner | ⭐ **READY** | ⛔ **NO** |
 | `FA-GAP-006` Gates `G0`–`G5` | Six offices | ⚠️ **SEQUENCED** | ⭐⭐ **YES** |
@@ -394,8 +394,8 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **FULLY MET** — device profile confirmed; `FA-GAP-010` now also RESOLVED (`NFR_BUDGETS_V1`) · prior state retained: ⚠️ PARTIAL → device profile met; `FA-GAP-010` still OPEN |
 | `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⭐ **RESOLVED — `NFR_BUDGETS_V1`** (2026-10-01; prior ⚠️ **MISSING** retained) | ⭐ **NO longer** (decided; was ⚠️ PARTIAL) |
 
-⭐ **14 rows — ⭐ 8 READY · ⚠️ 1 MISSING EVIDENCE *(FA-GAP-004c)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 3 RESOLVED *(FA-GAP-002, via `DDR-0013`; FA-GAP-009, via `DDR-0034`; FA-GAP-010, via `NFR_BUDGETS_V1`)*.** *(prior state retained: ⭐ 8 READY · ⚠️ 2 MISSING EVIDENCE — `FA-GAP-010` moved to RESOLVED at `NFR_BUDGETS_V1`, 2026-10-01.)*
-⭐ **Blocking FINAL: 9 · ⛔ Not blocking: 3 · ⚠️ Partial: 1.** *(`FA-GAP-010` no longer blocks FINAL — the 5 NFR budgets are DECIDED at `NFR_BUDGETS_V1` (2026-10-01).)*
+⭐ **14 rows — ⭐ 6 READY · ⚠️ 0 MISSING EVIDENCE · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 6 RESOLVED / DECIDED *(FA-GAP-002, via `DDR-0013`; FA-GAP-004b, via `DDR-0001`/`0003`/`0027`/`0028`; FA-GAP-004c, via `DDR-0027`/`0028`/`0031`/`0032`; FA-GAP-005a, via `DDR-0004` + `G2_FOUNDATION_APPROVAL_RECORD` §3; FA-GAP-009, via `DDR-0034`; FA-GAP-010, via `NFR_BUDGETS_V1`)*.** *(prior state retained: ⭐ 8 READY · ⚠️ 1 MISSING EVIDENCE *(FA-GAP-004c)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED · ⭐ 3 RESOLVED — `FA-GAP-004b`/`004c`/`005a` moved to DECIDED via the already-recorded decision records, 2026-10-01.)*
+⭐ **Blocking FINAL: 6 · ⛔ Not blocking: 8 · ⚠️ Partial: 0.** *(counted from the "Blocks FINAL?" column: blocking = `001`, `003`, `004a`, `005b`, `006`, `007` · not blocking = `002`, `004b`, `004c`, `005a`, `005c`, `008`, `009` (met), `010`. `FA-GAP-004b`/`004c`/`005a` no longer block FINAL — their design decisions are already recorded at `DDR-0001`/`0003`/`0004`/`0027`/`0028`/`0031`/`0032` + `G2_FOUNDATION_APPROVAL_RECORD` §3.)*
 
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine
 blockers are waiting on a signature**, ⚠️ **three on a fact that does not exist yet**, and

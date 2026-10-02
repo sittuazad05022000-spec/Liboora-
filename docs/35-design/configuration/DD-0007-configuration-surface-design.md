@@ -1316,7 +1316,7 @@ routes the question.
 | Inherited-vs-override not conveyed by colour alone | ⭐ `Pill` carries **text** (*"Inherited from Platform default"*), ⛔ not a tint | **`CNF-FR-076`** — *"**SHALL NOT** be visually identical"*; colour-only would fail for colour-blind users |
 | Range announced before entry | Helper text, ⛔ not a tooltip | **`CNF-FR-080`** |
 | Focus order follows reading order | Category → row → control | `MP-NFR-08` |
-| Touch targets | ⚠️ **OPEN — no authoritative minimum exists** | ⛔ `NFR Budgets (V1)` absent → `DD7-GAP-009` |
+| Touch targets | ⚠️ **OPEN — no authoritative minimum exists** | ⭐ `DD7-GAP-009` **RESOLVED** — `NFR Budgets (V1)` now exists and is DECIDED ([`docs/design/NFR_BUDGETS_V1.md`](../../docs/design/NFR_BUDGETS_V1.md), 2026-10-01; prior state retained: ⛔ `NFR Budgets (V1)` absent) — ⛔ the touch-target *minimum itself* is an accessibility value (`DDR-0004` / `ACCESSIBILITY.md` §2.1), not an NFR budget, and remains OPEN pending the Accessibility Owner |
 
 ⛔ **No contrast ratio, target size or timing value is asserted.** ⚠️ `DD-0006`
 set the precedent of **declining** to name a contrast ratio; ⭐ the same refusal
@@ -1514,7 +1514,7 @@ outcome when the frozen source is silent on a real scenario.
 | ⚠️ **`DD7-GAP-006`** | **`SEAT-CFG-005` and `SEAT-CFG-014` are authorization-shaped parameters** — *"which roles beyond Owner may override"*, *"whether Reception may cancel"*. ⛔ A parameter that grants authority cannot be self-authorizing | ⛔ No — both `NOT YET AUTHORIZED` | Authorization (`BC-18`) Owner + PO | Rank 2 ADR |
 | ⚠️ **`DD7-GAP-007`** | **The UI Design System does not exist as a document**, yet `MP-NFR-06`/`MP-NFR-08` name it owner and §10.1 requests 3 components from it | ⚠️ Blocks token-level design | Governance Owner | Create the Rank-1 artefact |
 | ⭐ **`DD7-GAP-008`** | **Surface `C-4` Change history has no authorized reader.** `CNF-BR-006` routes history to the audit trail; `CNF-XC-010` bars `BC-25` from a query surface; ⛔ no source allocates staff read on `BC-24` configuration entries. ⭐ **C-4 is disposed as NO V1 READ SURFACE by `Accepted` `ADR-0171`.** | ⭐ **RESOLVED — NO V1 READ SURFACE** | — | ⭐ `ADR-0171` |
-| ⚠️ **`DD7-GAP-009`** | **No authoritative NFR budget exists** — `NFR Budgets (V1)` absent (`PRD-023` §14.1; `MASTER_PRD` L663). ⛔ No breakpoint, target size, contrast ratio or latency may be asserted | ⚠️ Blocks measurable AC | Governance Owner | Create the document |
+| ⚠️ **`DD7-GAP-009`** | **No authoritative NFR budget exists** — `NFR Budgets (V1)` absent (`PRD-023` §14.1; `MASTER_PRD` L663). ⛔ No breakpoint, target size, contrast ratio or latency may be asserted | ⚠️ Blocks measurable AC | Governance Owner | ⭐ **RESOLVED** — `NFR Budgets (V1)` now created and **DECIDED** at [`docs/design/NFR_BUDGETS_V1.md`](../../docs/design/NFR_BUDGETS_V1.md) (2026-10-01 owner decision: image ≤200 KB · font ≤400 KB/≤4 faces · animation 0/150/200/300 ms · screen data ≤50 KB · TTI 16 ms frame + <100 ms; measured against `DDR-0034`); the document-existence blocker is cleared · prior state retained verbatim: ⚠️ Blocks measurable AC |
 | ⚠️ **`DD7-GAP-010`** | **Lowering a cap below existing usage is unspecified** — `LCFG-7`, `LCFG-8`, `LCFG-9`, `LCFG-10`. ⛔ `CNF-XC-001` bars `BC-25` from interpreting them | ⛔ No — rows render | `PRD-002` + `PRD-007` Owners | PRD clarification |
 | ⛔ **`DD7-GAP-011`** | **No concurrency / staleness rule for configuration writes.** Measured **0** occurrences of `etag`, `version conflict`, `concurrent write` in `PRD-023` | ⭐ **BLOCKING journey 8** | Architecture Owner + `PRD-023` Owner | `PRD-023` v0.2 or Rank 2 ADR |
 | ⚠️ **`DD7-GAP-012`** | **No idempotency / replay rule for configuration writes** | ⛔ No | Security + Architecture Owner | Recommendation to route |
@@ -1618,7 +1618,7 @@ of **59**.
 | `DD7-AC-018` | Layout is portrait-optimised and does not reflow on validation | `MP-NFR-06`, `CNF-FR-082` |
 | `DD7-AC-019` | ⛔ **No** `PERM-*`, role, action class or scope class is introduced by any surface | `AUTH-7.22`, `ADR-0132` |
 | `DD7-AC-020` | ⛔⛔ **No** APP 3 **write** path, platform-admin **write API**, editable control or override store exists · ⭐ **A READ-ONLY APP 3 surface IS permitted** *(`ADR-0154` `D-2`)*, and ⛔ **it offers 0 write affordance** | `CNF-FR-020`, `CNF-AC-011`, `AUTH-2.9`; ⭐ **`ADR-0152`** §7 **limb 3** *(preserved)*; ⭐⭐ **`ADR-0154`** `D-2`, `D-4` |
-| ⚠️ `DD7-AC-021` | **Performance / latency budget** | ⛔ **OPEN — `DD7-GAP-009`.** ⛔ No authoritative budget exists; ⛔ no number invented |
+| ⚠️ `DD7-AC-021` | **Performance / latency budget** | ⭐ **`DD7-GAP-009` RESOLVED** — an authoritative budget now exists and is **DECIDED** at [`docs/design/NFR_BUDGETS_V1.md`](../../docs/design/NFR_BUDGETS_V1.md) (2026-10-01); prior state retained verbatim: ⛔ **OPEN — `DD7-GAP-009`. ⛔ No authoritative budget exists; ⛔ no number invented** · the latency figure for this surface is the TTI budget (16 ms frame / <100 ms ack; networked screens bounded by P7 `≤2 s`, `ADR-0100` §3.3), ⛔ no number was invented by this reconciliation |
 | ⚠️ `DD7-AC-022` | **Contrast ratio / touch-target minimum** | ⛔ **OPEN — `DD7-GAP-007`/`009`.** Owner = UI Design System, which does not exist |
 
 ⭐ **20 stated · ⛔ 2 deliberately OPEN.** ⛔ Inventing numbers for the last two

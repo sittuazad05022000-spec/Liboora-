@@ -221,7 +221,7 @@ design authority — ⛔ and this pack does not make one.
 | **4** | **Options** | ⛔⛔ **NONE PROPOSED.** ⭐ A numeric SLO invented by design would be exactly the fabrication this pack exists to prevent |
 | **5** | **Consequences** | ⛔ Until it exists, **no numeric SLO may be published as authoritative** and ⭐ the ≤5% 3D budget stays **unvalidated against a confirmed target** |
 | **6** | **Approval record location** | ⭐ **New `NFR Budgets (V1)`**; ⭐ then `PERFORMANCE.md` **L8** and **§5** |
-| **7** | **Status** | ⚠️ **EVIDENCE REQUIRED** |
+| **7** | **Status** | ⭐ **RESOLVED** — the five V1 NFR budgets are **DECIDED** at [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md) (2026-10-01 owner decision: Governance Owner + Design Performance Owner, Engineering input acknowledged; measured against `DDR-0034`) · prior state retained: ⚠️ **EVIDENCE REQUIRED** |
 | **8** | **Dependency** | ⛔⛔ **STRICTLY downstream of `CP-A`.** ⭐ A budget without a target device class is **arithmetic without units** |
 
 ---
@@ -288,7 +288,7 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | **7** | **Status** | ⛔ **BLOCKED — last in sequence** |
 | **8** | **Dependency** | ⛔ `CP-B1`…`B4`, `CP-C`, `CP-D`, `CP-I`, and gates `G0`→`G2`→`G3` |
 
-### ⭐ The `G5` checklist — ⛔ **5 of 11 items satisfied today** *(items 1, 3, 7, 10, 11)* · prior tally retained: ⛔ **4 of 11** *(items 1, 7, 10, 11)*
+### ⭐ The `G5` checklist — ⛔ **6 of 11 items satisfied today** *(items 1, 3, 7, 8, 10, 11)* · prior tally retained: ⛔ **5 of 11** *(items 1, 3, 7, 10, 11)*
 
 | # | Required before `G5` | Status |
 |---|---|---|
@@ -299,7 +299,7 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | 5 | `CP-B4` Spacing + elevation decided | ⛔ **NO** |
 | 6 | `CP-C` `ACCESSIBILITY.md` amended | ⛔ **NO** |
 | 7 | `CP-D` Responsive artifact created | ⭐ **YES** — `RESPONSIVE_DESIGN.md` v0.1 **APPROVED** 2026-10-01 (Responsive Design Owner; [`RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md`](RESPONSIVE_DESIGN_APPROVAL_RECORD_2026-10-01.md); `DESIGN_DEBT.md` `DBT-002` CLOSED/RESOLVED); prior state retained: ⛔ **NO** |
-| 8 | `CP-E` `NFR Budgets (V1)` created | ⛔ **NO** |
+| 8 | `CP-E` `NFR Budgets (V1)` created | ⭐ **YES** — created and **DECIDED** at [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md) (2026-10-01 owner decision: 5 budgets — image ≤200 KB · font ≤400 KB/≤4 faces · animation 0/150/200/300 ms · screen data ≤50 KB · TTI 16 ms frame + <100 ms; measured against `DDR-0034`); prior state retained: ⛔ **NO** |
 | 9 | `CP-I` `DDR-0009` version defect cured | ⛔ **NO** |
 | 10 | Gates `G0`–`G4` recorded | ⭐ **YES** — `DESIGN_GOVERNANCE.md` §4: **5 of 6** gates recorded (`G0`…`G4` each **PASSED / CONFIRMED**, with on-disk records `G0_SOURCE_AUDIT_RECORD_2026-09-30.md`, `G1_…_2026-10-01.md`, `G2_…_2026-10-01.md`, `G3_…_2026-10-01.md`, `G4_DESIGN_QA_RECORD_2026-10-01.md`); ⛔ `G5` remains **PROPOSED / unrecorded** · prior state retained: ⛔ **NO — 0 of 6** |
 | 11 | `DBT-001`/`002`/`005` closable | ⭐ **YES** — `DESIGN_DEBT.md`: `DBT-001` **RESOLVED** (colour `DDR-0001` · spacing `DDR-0027` · typeface `DDR-0029`; code conformance remains separate engineering work) · `DBT-002` **CLOSED / RESOLVED** (`RESPONSIVE_DESIGN.md` v0.1 APPROVED + `DDR-0004`/`0005`) · `DBT-005` **RESOLVED** (radius/elevation `DDR-0028` · sizes `DDR-0031` · weights `DDR-0032`); prior state retained: ⛔ **NO** |
@@ -387,7 +387,7 @@ anything.**
 | **`CP-A`** | ⭐ **RESOLVED** — the V1 device profile numbers are now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (Technical Owner, 2026-10-01) · prior measurement retained: **16** *"Technical Owner"* hits, ⛔ **0** were a profile decision | ⭐⭐ **Technical Owner** |
 | **`CP-B1`** | ⛔ **BLOCKED / UNVERIFIED** — the one probe ("does the confirmed V1 Android font stack **guarantee** Devanagari on the target class?") is **not executable in the available environments** (no Android API-26 target-class rendering environment at probe time, 2026-10-01) · ⛔ no rendering PASS established; ⛔ `DDR-0034`'s device profile is **not** Devanagari rendering evidence; ⛔ `DDR-0012` stays **reserved-and-free until an actual probe result exists** · ⭐ re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment · prior state retained: ⚠️ Sharpened by §A.4: the answer may differ between **Android 7.0** and **8.0** | Design System + Technical Owner |
 | **`CP-B4`** | ⭐⭐ **A review, not a measurement** — the 6 `LiblSpace` steps have **never been before an authority** *(0 DDR mentions)* | Design System Owner |
-| **`CP-E`** | ⭐ **The `NFR Budgets (V1)` document itself** — the device profile it was gated on is now confirmed at [`DDR-0034`](design-decisions/DDR-0034-cp-a-v1-device-profile-confirmed-by-technical-owner.md) (prior state retained: *"a budget without a target class is arithmetic without units"*) · ⛔ **remains OPEN** — not created by this act | Technical Owner → Governance + Perf Owner |
+| **`CP-E`** | ⭐⭐ **RESOLVED** — the `NFR Budgets (V1)` document now exists and is **DECIDED** at [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md) (2026-10-01 owner decision: 5 hard ceilings/targets measured against `DDR-0034`; the device profile it was gated on was confirmed at `DDR-0034`; prior state retained: *"a budget without a target class is arithmetic without units" · remains OPEN — not created by this act") | Technical Owner → Governance + Perf Owner |
 
 ### 14.4 ⛔ EXTERNALLY BLOCKED
 
@@ -415,7 +415,7 @@ anything.**
 |---|---|
 | ⛔ **FINAL APPROVAL READY** | ⛔⛔ **0** |
 | ⭐ **HUMAN ACTION REQUIRED** | ⭐ **7** *(was 8 — `CP-B2` moved to **resolved** at [`DDR-0013`](design-decisions/DDR-0013-cp-b2-layer-ratio-reconciled-70-25-5.md), 2026-10-01; prior count 8 retained)* |
-| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **2** *(CP-B4, CP-E — `CP-A` is RESOLVED via `DDR-0034` and `CP-B1` is BLOCKED / UNVERIFIED; only `CP-B4` + `CP-E` remain in this bucket)* |
+| ⚠️ **EVIDENCE REQUIRED** | ⚠️ **1** *(CP-B4 only — `CP-A` is RESOLVED via `DDR-0034`, `CP-B1` is BLOCKED / UNVERIFIED, and `CP-E` is now RESOLVED via `NFR_BUDGETS_V1` (2026-10-01); prior count 2 retained: CP-B4 + CP-E)* |
 | ⛔ **EXTERNALLY BLOCKED** | ⛔ **3** |
 | ⛔ **OUTSIDE DESIGN SCOPE** | ⛔ **7** |
 

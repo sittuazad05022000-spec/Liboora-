@@ -50,7 +50,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
 | **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **READY** | ⭐ `G2` |
 | **6** | `FA-GAP-007` Responsive artifact | **Responsive Design Owner** | ⭐ **READY** | ⭐ `DBT-002`, `G3` |
-| **7** | `FA-GAP-010` V1 numeric SLOs | **Governance + Design Performance Owner** | ⚠️ **MISSING EVIDENCE** | ⭐ `DD7-GAP-009` |
+| **7** | `FA-GAP-010` V1 numeric SLOs | **Governance + Design Performance Owner** | ⭐ **RESOLVED — `NFR_BUDGETS_V1.md`** (2026-10-01 owner decision: 5 budgets DECIDED, measured against `DDR-0034`; prior state retained: ⚠️ **MISSING EVIDENCE**) | ⭐ `DD7-GAP-009` (satisfied) |
 | **8** | `FA-GAP-001` `DDR-0009` version defect | **Founder/Product Authority** | ⭐ **READY** | ⭐ Approval integrity |
 | **9** | `FA-GAP-008` `DD-0007` refresh | **UX Architecture Owner** | ⭐ **READY** | ⭐ `DD-0007` readiness |
 | **10** | `FA-GAP-006` Gates `G0`–`G5` | ⭐ Six offices | ⚠️ **SEQUENCED** — §5 | ⭐⭐ **FINAL APPROVAL itself** |
@@ -310,7 +310,7 @@ chosen"*, and it is why this blocker ranks **3**.
 | **4. Missing** | ⛔⛔ **The device profile** *(`FA-GAP-009`)*. ⭐ A budget without a target class is arithmetic without units. ⭐ `MASTER_PRD` L663 — *"Targets are deliberately not set here; they belong to … **NFR Budgets**"*; `ADR-0100` L185 — *"There is **no** Enterprise Architecture NFR Budgets document"*; EA L339–344 is *"headings with zero values"* |
 | **5. Artifact(s) to amend** | ⭐ **NEW** `NFR Budgets (V1)`; ⭐ then `PERFORMANCE.md` L8 and §5 |
 | **6. Blocks FINAL APPROVAL?** | ⚠️ **PARTIALLY** — ⛔ blocks `DD7-GAP-009` and final validation of the ≤5% 3D budget. ⭐ Does **not** block the token, a11y or responsive foundations |
-| ⚠️ **Verdict** | ⚠️ **MISSING EVIDENCE** — ⛔ **strictly downstream of `FA-GAP-009`** |
+| ⚠️ **Verdict** | ⭐ **RESOLVED — [`NFR_BUDGETS_V1.md`](NFR_BUDGETS_V1.md)** (2026-10-01 owner decision: the five V1 budgets DECIDED — image ≤200 KB · font ≤400 KB/≤4 faces · animation 0/150/200/300 ms · screen data ≤50 KB · TTI 16 ms frame + <100 ms — all measured against `DDR-0034`; `PERFORMANCE.md` L8/§5 moved to DECIDED; P7 `≤2 s/≤5 s` remains the separate BC-23 server/API latency, ⛔ not redefined as TTI) · prior state retained verbatim: ⚠️ **MISSING EVIDENCE** — ⛔ strictly downstream of `FA-GAP-009` |
 
 ---
 
@@ -361,7 +361,8 @@ amount of design work clears either.**
    ├── FA-GAP-004c Spacing + elevation ......... Design System Owner   ⚠️ needs review
    ├── FA-GAP-003  Typography .................. Design System Owner   ⚠️ needs 1 probe
    │                                              (probe cost now governed by confirmed class — `DDR-0034`)
-   └── FA-GAP-010  NFR Budgets (V1) ............ Governance + Perf     ⚠️ OPEN — profile now available (`DDR-0034`); SLOs still separate act
+    └── FA-GAP-010  NFR Budgets (V1) ............ Governance + Perf     ⭐ RESOLVED — `NFR_BUDGETS_V1`
+           │                                        (5 budgets DECIDED 2026-10-01, measured against `DDR-0034`; prior ⚠️ OPEN retained)
   WAVE 3 — gates, strictly sequential
   └── G2 ──▶ G3 ──▶ G5          (G1 gated on DBT-006; G4 gated on DBT-004)
   WAVE 4
@@ -390,11 +391,11 @@ it should be **requested first** even though it is needed **last**.
 | `FA-GAP-006` Gates `G0`–`G5` | Six offices | ⚠️ **SEQUENCED** | ⭐⭐ **YES** |
 | `FA-GAP-007` Responsive artifact | Responsive Design Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-008` `DD-0007` refresh | UX Architecture Owner | ⭐ **READY** | ⛔ **NO** |
-| `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **PARTIAL → device profile met; `FA-GAP-010` still OPEN** |
-| `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⚠️ **MISSING** | ⚠️ **PARTIAL** |
+| `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01) | ⚠️ **FULLY MET** — device profile confirmed; `FA-GAP-010` now also RESOLVED (`NFR_BUDGETS_V1`) · prior state retained: ⚠️ PARTIAL → device profile met; `FA-GAP-010` still OPEN |
+| `FA-GAP-010` V1 numeric SLOs | Governance + Perf Owner | ⭐ **RESOLVED — `NFR_BUDGETS_V1`** (2026-10-01; prior ⚠️ **MISSING** retained) | ⭐ **NO longer** (decided; was ⚠️ PARTIAL) |
 
-⭐ **14 rows — ⭐ 8 READY · ⚠️ 2 MISSING EVIDENCE *(FA-GAP-004c, FA-GAP-010)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 2 RESOLVED *(FA-GAP-002, via `DDR-0013`; FA-GAP-009, via `DDR-0034`)*.** *(prior state retained: ⭐ 9 READY · ⭐ 1 RESOLVED — `FA-GAP-002` moved to RESOLVED at `DDR-0013`.)*
-⭐ **Blocking FINAL: 10 · ⛔ Not blocking: 3 · ⚠️ Partial: 2.** *(`FA-GAP-002` no longer blocks FINAL — reconciled at `DDR-0013`.)*
+⭐ **14 rows — ⭐ 8 READY · ⚠️ 1 MISSING EVIDENCE *(FA-GAP-004c)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 3 RESOLVED *(FA-GAP-002, via `DDR-0013`; FA-GAP-009, via `DDR-0034`; FA-GAP-010, via `NFR_BUDGETS_V1`)*.** *(prior state retained: ⭐ 8 READY · ⚠️ 2 MISSING EVIDENCE — `FA-GAP-010` moved to RESOLVED at `NFR_BUDGETS_V1`, 2026-10-01.)*
+⭐ **Blocking FINAL: 9 · ⛔ Not blocking: 3 · ⚠️ Partial: 1.** *(`FA-GAP-010` no longer blocks FINAL — the 5 NFR budgets are DECIDED at `NFR_BUDGETS_V1` (2026-10-01).)*
 
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine
 blockers are waiting on a signature**, ⚠️ **three on a fact that does not exist yet**, and

@@ -153,7 +153,7 @@ undeclared platform fallback.
 | **Missing** | ⛔⛔ **11 preconditions — 0 satisfied** |
 | **Dependency** | ⛔ **Everything.** ⭐ Terminal act |
 | **Reserved DDR** | ⭐ A `G5` change record under `DESIGN_CHANGE_MANAGEMENT.md` §4 |
-| **Blocks FINAL?** | ⭐⭐ **YES — it IS the final approval** |
+| **Blocks FINAL?** | ⭐⭐ **YES — it IS the final approval** · ⭐ **`G5` closure deferred to V2** at [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) *(Option A, 2026-10-03 — `CP-B1`/M1 remains the blocking open item, `BLOCKED / UNVERIFIED`; not recorded as passed/closed in V1; the `DDR-0002` V1 Indic/Devanagari requirement remains in force)* |
 
 ---
 

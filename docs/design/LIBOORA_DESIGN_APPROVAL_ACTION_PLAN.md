@@ -397,6 +397,15 @@ it should be **requested first** even though it is needed **last**.
 ⭐ **14 rows — ⭐ 6 READY · ⚠️ 0 MISSING EVIDENCE · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED *(FA-GAP-003)* · ⭐ 6 RESOLVED / DECIDED *(FA-GAP-002, via `DDR-0013`; FA-GAP-004b, via `DDR-0001`/`0003`/`0027`/`0028`; FA-GAP-004c, via `DDR-0027`/`0028`/`0031`/`0032`; FA-GAP-005a, via `DDR-0004` + `G2_FOUNDATION_APPROVAL_RECORD` §3; FA-GAP-009, via `DDR-0034`; FA-GAP-010, via `NFR_BUDGETS_V1`)*.** *(prior state retained: ⭐ 8 READY · ⚠️ 1 MISSING EVIDENCE *(FA-GAP-004c)* · ⚠️ 1 SEQUENCED · ⛔ 1 BLOCKED / UNVERIFIED · ⭐ 3 RESOLVED — `FA-GAP-004b`/`004c`/`005a` moved to DECIDED via the already-recorded decision records, 2026-10-01.)*
 ⭐ **Blocking FINAL: 6 · ⛔ Not blocking: 8 · ⚠️ Partial: 0.** *(counted from the "Blocks FINAL?" column: blocking = `001`, `003`, `004a`, `005b`, `006`, `007` · not blocking = `002`, `004b`, `004c`, `005a`, `005c`, `008`, `009` (met), `010`. `FA-GAP-004b`/`004c`/`005a` no longer block FINAL — their design decisions are already recorded at `DDR-0001`/`0003`/`0004`/`0027`/`0028`/`0031`/`0032` + `G2_FOUNDATION_APPROVAL_RECORD` §3.)*
 
+⭐ **`G5` deferral note — `DDR-0035` (Option A, 2026-10-03):** the `G5` Change / final-closure
+act is **deferred to V2** and is **not** passed or closed. This is a governance routing
+record only, with **no change to the tally above**: `FA-GAP-003` remains **⛔ BLOCKED /
+UNVERIFIED** and `FA-GAP-006` remains **⚠️ SEQUENCED**; `DBT-008` stays **`OPEN`**; the
+`CP-B1`/M1 Devanagari rendering evidence stays **pending/unverified**; `DDR-0012` stays
+**reserved-and-free**; and the `DDR-0002` V1 Indic/Devanagari requirement **remains in force**
+(D5 = NO V1 SCOPE CUT). All counts, verdicts and prior-state retentions on the rows above are
+unchanged. See [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md).
+
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine
 blockers are waiting on a signature**, ⚠️ **three on a fact that does not exist yet**, and
 ⭐ **one on the other two finishing.**

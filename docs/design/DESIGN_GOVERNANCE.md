@@ -55,6 +55,14 @@ Design governance keeps experience decisions aligned with frozen product and arc
 — and `G5` remains unrecorded. Recorded as
 [`DESIGN_DEBT.md`](DESIGN_DEBT.md) `DBT-008`.
 
+⭐ **`G5` routing — `DDR-0035` (Option A, 2026-10-03):** `G5` (Change / final closure) is
+**deferred to V2**. It is **not** passed or closed, and remains **`PROPOSED`** *(`G5` row
+above). `G0`–`G4` remain recorded as above. The deferral is a governance routing act only —
+the `CP-B1`/`FA-GAP-003` Devanagari rendering evidence remains **pending/unverified**,
+`DBT-008` remains **`OPEN`**, `DDR-0012` remains **reserved-and-free**, and the
+`DDR-0002` V1 Indic/Devanagari requirement **remains in force** (D5 = NO V1 SCOPE CUT). See
+[`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md).
+
 ## 5. AI governance
 
 | Actor | Role | Authority boundary | Status |

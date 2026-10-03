@@ -285,7 +285,7 @@ actionable** — ⭐ the practice `DESIGN_OWNERSHIP.md` §1.1 expressly warns ag
 | **4** | **Options** | ⛔ **None available today** |
 | **5** | **Consequences** | ⭐ `G5` is what converts a set of owner decisions into an **approved design system** |
 | **6** | **Approval record location** | ⭐ A `G5` change record under `DESIGN_CHANGE_MANAGEMENT.md` §4 |
-| **7** | **Status** | ⛔ **BLOCKED — last in sequence** |
+| **7** | **Status** | ⛔ **BLOCKED — last in sequence** · ⭐ **`G5` closure deferred to V2** at [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) *(Option A, 2026-10-03 — routing only; `CP-B1`/M1 remains the sole open item #2, `BLOCKED / UNVERIFIED`; `DDR-0012` stays reserved-and-free; the `DDR-0002` V1 Indic/Devanagari requirement remains in force; ⛔ `G5` not passed/closed)* |
 | **8** | **Dependency** | ⛔ `CP-B1`…`B4`, `CP-C`, `CP-D`, `CP-I`, and gates `G0`→`G2`→`G3` |
 
 ### ⭐ The `G5` checklist — ⛔ **10 of 11 items satisfied today** *(items 1, 3, 4, 5, 6, 7, 8, 9, 10, 11)* · **sole open item: `#2` `CP-B1`** *(BLOCKED / UNVERIFIED — the Devanagari guarantee probe requires a real Android API-26 target-class rendering environment; `DDR-0012` must not be created until an actual probe result exists)* · prior tally retained: ⛔ **6 of 11** *(items 1, 3, 7, 8, 10, 11)*

@@ -63,6 +63,14 @@ the `CP-B1`/`FA-GAP-003` Devanagari rendering evidence remains **pending/unverif
 `DDR-0002` V1 Indic/Devanagari requirement **remains in force** (D5 = NO V1 SCOPE CUT). See
 [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md).
 
+⭐ **`CP-B1` / M1 routing — `DDR-0036` (2026-10-03):** the M1 Devanagari rendering-guarantee
+**verification** (execution, evidence capture, and the dependent `DDR-0012` filing) is
+**deferred to V2**. ⛔ No M1 result is asserted; `CP-B1` / `FA-GAP-003` remain
+**⛔ BLOCKED / UNVERIFIED**; `DDR-0012` remains **reserved-and-free**; and the
+`DDR-0002` V1 Indic/Devanagari requirement **remains fully in force** (D5 = NO V1 SCOPE
+CUT). This is consistent with the `G5` deferral in `DDR-0035` (which `G5`'s open item #2
+depends on). See [`DDR-0036`](design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md).
+
 ## 5. AI governance
 
 | Actor | Role | Authority boundary | Status |

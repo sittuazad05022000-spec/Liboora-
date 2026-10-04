@@ -46,7 +46,7 @@ office named already exists in `DESIGN_OWNERSHIP.md` §1 or `PRD_OWNERSHIP_MODEL
 |---|---|---|---|---|
 | **1** | `FA-GAP-009` V1 device profile | ⭐⭐ **Technical Owner** | ⭐ **RESOLVED — `DDR-0034`** (2026-10-01; prior ⚠️ **MISSING EVIDENCE** retained) | ⭐ `FA-GAP-010` (unblocked — ⛔ still OPEN), and validates `FA-GAP-002` |
 | **2** | `FA-GAP-002` 3D layer-ratio conflict | **Design System Owner** | ⭐ **RESOLVED — `DDR-0013`** (canonical `70/25/≤5`, both limbs, 4 docs amended, 2026-10-01; prior state retained: ⭐ **READY**) | ⭐ All 2.5D/3D specification |
-| **3** | `FA-GAP-003` Typography | **Design System Owner** | ⛔ **BLOCKED / UNVERIFIED** *(§4.3 — probe not executable: no Android API-26 target-class rendering environment; ⛔ no rendering PASS; `DDR-0034`'s profile is not Devanagari evidence; `DDR-0012` stays free; re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment; prior state retained: ⚠️ **MISSING EVIDENCE**)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
+| **3** | `FA-GAP-003` Typography | **Design System Owner** | ⛔ **BLOCKED / UNVERIFIED** *(§4.3 — probe not executable: no Android API-26 target-class rendering environment; ⛔ no rendering PASS; `DDR-0034`'s profile is not Devanagari evidence; `DDR-0012` stays free; re-trigger: a valid API-26 rendering target matching the `DDR-0034` class, or an owner-accepted equivalent environment; ⭐ M1 verification deferred to V2 per `DDR-0036` (2026-10-03); prior state retained: ⚠️ **MISSING EVIDENCE**)* | ⭐⭐ `DDR-0002`'s Indic guarantee |
 | **4** | `FA-GAP-004` Token reconciliation | **Design System Owner** | ⚠️ **PART READY / PART MISSING** | ⭐ `DBT-001`, `DBT-005`, `G2` |
 | **5** | `FA-GAP-005a` Accessibility amendments | **Accessibility Owner** | ⭐ **DECIDED — `DDR-0004` + `G2_FOUNDATION_APPROVAL_RECORD` §3** (2026-10-01 reconciliation: amendment already made, `ACCESSIBILITY.md` L10/§2.1; prior state retained: ⭐ **READY**) · ⚠️ legal standard still `TO BE DECIDED` | ⭐ `G2` |
 | **6** | `FA-GAP-007` Responsive artifact | **Responsive Design Owner** | ⭐ **READY** | ⭐ `DBT-002`, `G3` |
@@ -276,7 +276,7 @@ outcome; adopting them *by default* is not.**
 
 ---
 
-### 4.3 `FA-GAP-003` — Typography ⭐⭐ *(the one with a live, unmet requirement)*
+### 4.3 `FA-GAP-003` — Typography ⭐⭐ *(the one with a live, unmet requirement · M1 verification deferred to V2 at `DDR-0036`; ⛔ `BLOCKED / UNVERIFIED` verdict unchanged; `DDR-0002` V1 requirement in force)*
 
 | Field | Content |
 |---|---|
@@ -381,7 +381,7 @@ it should be **requested first** even though it is needed **last**.
 |---|---|---|---|
 | `FA-GAP-001` `DDR-0009` version | Founder/Product Authority | ⭐ **READY** | ⚠️ **YES** *(formal)* |
 | `FA-GAP-002` 3D ratio conflict | Design System Owner | ⭐ **RESOLVED — `DDR-0013`** (2026-10-01; prior ⭐ **READY** retained) | ⭐ **NO longer** (reconciled; was ⭐⭐ YES) |
-| `FA-GAP-003` Typography | Design System Owner | ⛔ **BLOCKED / UNVERIFIED** | ⭐⭐ **YES** |
+| `FA-GAP-003` Typography | Design System Owner | ⛔ **BLOCKED / UNVERIFIED** *(M1 verification + `DDR-0012` filing deferred to V2 at `DDR-0036`; verdict unchanged; `DDR-0012` stays reserved-and-free)* | ⭐⭐ **YES** |
 | `FA-GAP-004a` Radius | Design System Owner | ⭐ **READY** | ⭐ **YES** |
 | `FA-GAP-004b` Colour | Design System Owner | ⭐ **DECIDED** — colour **DECIDED** in `DESIGN_SYSTEM.md` §2 (`DDR-0001` `APPROVED`, aligned by `DDR-0027`); ⛔ not a new decision, only the recorded ratification · prior state retained: ⭐ **READY** | ⭐ **NO longer** (decided; was ⭐ YES) |
 | `FA-GAP-004c` Spacing + elevation | Design System Owner | ⭐ **DECIDED** — spacing **RATIFIED** (`DDR-0027`), elevation **DECIDED** (`DDR-0028`), sizes+line-heights `DDR-0031`, weights `DDR-0032`; `DESIGN_SYSTEM.md` §2 rows DECIDED/RATIFIED; ⛔ not new decisions · prior state retained: ⚠️ **MISSING** | ⭐ **NO longer** (decided; was ⭐⭐ YES) |
@@ -405,6 +405,15 @@ UNVERIFIED** and `FA-GAP-006` remains **⚠️ SEQUENCED**; `DBT-008` stays **`O
 **reserved-and-free**; and the `DDR-0002` V1 Indic/Devanagari requirement **remains in force**
 (D5 = NO V1 SCOPE CUT). All counts, verdicts and prior-state retentions on the rows above are
 unchanged. See [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md).
+
+⭐ **`CP-B1` / M1 deferral note — `DDR-0036` (2026-10-03):** the M1 Devanagari
+rendering-guarantee verification (execution, evidence capture, and the dependent `DDR-0012`
+filing) is **deferred to V2**. This is a governance routing record only, with **no change to
+the tally above**: `FA-GAP-003` remains **⛔ BLOCKED / UNVERIFIED**; no M1 result is asserted;
+`DBT-008` stays **`OPEN`**; `DDR-0012` stays **reserved-and-free**; and the `DDR-0002` V1
+Indic/Devanagari requirement **remains fully in force** (D5 = NO V1 SCOPE CUT). All counts,
+verdicts and prior-state retentions on the rows above are unchanged. See
+[`DDR-0036`](design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md).
 
 ⭐⭐ **The honest headline:** ⛔ nothing is blocked on missing **design work**. ⭐ **Nine
 blockers are waiting on a signature**, ⚠️ **three on a fact that does not exist yet**, and

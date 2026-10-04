@@ -114,8 +114,8 @@ legitimate; adopting them by default is not.**
 | **Evidence available** | ⭐ Requirement **APPROVED** — *"MUST **guarantee** proper Indic rendering."* ⭐ Shortlist: **Noto Sans + Noto Sans Devanagari** *(matched pair by construction)* · ⚠️ Inter + companion *(only if x-height/weight verified)* · ⚠️ Lexend *(unverified)* · ⛔ **Inter alone disqualified**. ⭐⭐ **As-built: `theme.dart:49` = `Roboto`, 0 font assets, 0 `fontFamilyFallback`, 0 mentions in `docs/design/`** |
 | **Missing** | ⛔ **One probe** — does the confirmed V1 Android font stack **guarantee** Devanagari on the target class? ⚠️ The answer may differ between **Android 7.0** and **8.0** |
 | **Dependency** | ⚠️ **On `CP-A`** — ⭐ the **family** can be chosen now; ⛔ **bundle-vs-fallback** needs the device profile |
-| **Reserved DDR** | ⭐ **`DDR-0012`** |
-| **Blocks FINAL?** | ⭐⭐ **YES** |
+| **Reserved DDR** | ⭐ **`DDR-0012`** *(remains reserved-and-free; M1 verification deferred to V2 per `DDR-0036`)* |
+| **Blocks FINAL?** | ⭐⭐ **YES** *(M1 execution + evidence capture + the dependent `DDR-0012` authority act are **deferred to V2** at [`DDR-0036`](design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md), 2026-10-03 — routing only; ⛔ no M1 result asserted; `FA-GAP-003` stays `BLOCKED / UNVERIFIED`; the `DDR-0002` V1 Indic/Devanagari requirement remains fully in force; D5 = NO V1 SCOPE CUT)* |
 
 ⚠️⚠️ ⛔ **The protection you approved does not exist yet.** ⭐ A student seeing their own
 name as `□□□` is presently prevented by **nothing in the repository** — only by an
@@ -153,7 +153,7 @@ undeclared platform fallback.
 | **Missing** | ⛔⛔ **11 preconditions — 0 satisfied** |
 | **Dependency** | ⛔ **Everything.** ⭐ Terminal act |
 | **Reserved DDR** | ⭐ A `G5` change record under `DESIGN_CHANGE_MANAGEMENT.md` §4 |
-| **Blocks FINAL?** | ⭐⭐ **YES — it IS the final approval** · ⭐ **`G5` closure deferred to V2** at [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) *(Option A, 2026-10-03 — `CP-B1`/M1 remains the blocking open item, `BLOCKED / UNVERIFIED`; not recorded as passed/closed in V1; the `DDR-0002` V1 Indic/Devanagari requirement remains in force)* |
+| **Blocks FINAL?** | ⭐⭐ **YES — it IS the final approval** · ⭐ **`G5` closure deferred to V2** at [`DDR-0035`](design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) *(Option A, 2026-10-03 — `CP-B1`/M1 remains the blocking open item, `BLOCKED / UNVERIFIED`; not recorded as passed/closed in V1; the `DDR-0002` V1 Indic/Devanagari requirement remains in force)* · ⭐ **`CP-B1`/M1 verification also deferred to V2** at [`DDR-0036`](design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md) *(2026-10-03 — no M1 result asserted; `DDR-0012` stays reserved-and-free)* |
 
 ---
 

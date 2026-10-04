@@ -11,7 +11,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | ⚠️ **PREPARED — EXECUTION PENDING** · ⛔ all result cells intentionally empty · ⛔ no PASS/FAIL/BLOCKED asserted |
+| **Status** | ⚠️ **PREPARED — EXECUTION PENDING** · ⛔ all result cells intentionally empty · ⛔ no PASS/FAIL/BLOCKED asserted · ⭐ **M1 execution scheduled to V2** at [`design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md`](design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md) *(2026-10-03 — governance routing only; this record still asserts no result; `FA-GAP-003` remains `BLOCKED / UNVERIFIED`; `DDR-0012` remains reserved-and-free; the `DDR-0002` V1 requirement remains fully in force)* |
 | **Prepared** | 2026-10-03 · Design Documentation Owner (preparation only — the *decider* is the Design System Owner per `DEVANAGARI_RENDERING_PROBE.md` §1) |
 | **Governing spec** | [`DEVANAGARI_RENDERING_PROBE.md`](DEVANAGARI_RENDERING_PROBE.md) §1–§6 · [`templates/DEVANAGARI_RENDERING_EVIDENCE_TEMPLATE.md`](templates/DEVANAGARI_RENDERING_EVIDENCE_TEMPLATE.md) |
 | **Admitted environment** | [`CP-B1_EQUIVALENT_TARGET_PROPOSED_ACCEPTANCE.md`](CP-B1_EQUIVALENT_TARGET_PROPOSED_ACCEPTANCE.md) — KVM-less API-26 x86_64 AOSP AVD, **ACCEPTED** by both office slots 2026-10-02, scoped to the §2 glyph/rendering-guarantee evidence only |

@@ -165,7 +165,7 @@ dark mode, `flutter 3.44.x` version-gating against Liboora's 3.35.4 pin).
 
 - **`DBT-001` — OPEN:** colour/spacing/typography token values exist in `theme.dart` but are not ratified in `DESIGN_SYSTEM.md`. DD-0009 names token references as intent only; 0 values adopted.
 - **`DBT-005` — OPEN:** radius used in code but not tokenised (no `LiblRadius` class; 7 `BorderRadius.circular` calls, 3 values). No radius specified in C-5.
-- **`DBT-008` — OPEN:** `G0`–`G4` recorded/PASSED (2026-09-30 / 2026-10-01), `G5` unrecorded and **deferred to V2** per [`DDR-0035`](docs/design/design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) (Option A); `CP-B1`/M1 rendering evidence remains pending/unverified; the `DDR-0002` V1 Indic/Devanagari requirement remains in force.
+- **`DBT-008` — OPEN:** `G0`–`G4` recorded/PASSED (2026-09-30 / 2026-10-01), `G5` unrecorded and **deferred to V2** per [`DDR-0035`](docs/design/design-decisions/DDR-0035-g5-closure-deferred-to-v2-option-a.md) (Option A); `CP-B1`/M1 rendering evidence remains pending/unverified with M1 verification **also deferred to V2** per [`DDR-0036`](docs/design/design-decisions/DDR-0036-cp-b1-m1-verification-deferred-to-v2.md); the `DDR-0002` V1 Indic/Devanagari requirement remains in force.
 - `CNF-XC-016` prohibits this module from defining design tokens; the owner is
   the UI Design System, which does not yet exist as a document. DD-0009 makes no
   unauthorized design-system decisions.

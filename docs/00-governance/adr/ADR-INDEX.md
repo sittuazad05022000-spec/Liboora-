@@ -1830,3 +1830,32 @@ records that `ADR-0173` is `Accepted`; ⛔ it does **not** re-decide it, widen i
 or endorse its reasoning — ⭐ **Process rule 2: *"Never edit an Accepted ADR's
 decision text."*** ⛔ **`ADR-0173` is byte-unchanged by this act** (this addendum
 records its status; the ADR file's own bytes are not edited by the registration).
+
+---
+
+## ⭐ End-of-file addendum — `ADR-0174` registered **PROPOSED / PENDING** (2026-10-06)
+
+⭐ Registered as a **status act** (draft filing), not an acceptance. `ADR-0174` is a
+**PROPOSED** Rank-2 determination whose **acceptance is PENDING and unrecorded** by the
+**Product Owner + Architecture Owner + ARB**; **no ARB concurrence is fabricated.** The
+record narrows `BC-23` V1 script scope to **English/Latin** and defers **Hindi/Devanagari**
+to V2, superseding — for V1 only, ADR files byte-unchanged — the accepted Hindi limbs of
+`ADR-0099` `C-8`, `ADR-0100` §223–225, `ADR-0101` `D-10`, and `ADR-0103` `C-8`/Supplement B.
+Paired with `DDR-0037` (design-layer D5 supersession of `DDR-0002`).
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0174`](ADR-0174-bc-23-v1-script-scope-narrowed-to-latin-hindi-deferred-to-v2.md) |
+| **Status** | ⛔ **PROPOSED / PENDING** — drafted 2026-10-06; **acceptance PENDING, unrecorded** · **Supersedes-for-V1 (limb):** `ADR-0099` `C-8`, `ADR-0100` §223–225, `ADR-0101` `D-10`, `ADR-0103` `C-8`/Supp B *(files byte-unchanged)* |
+| **Subject** | `BC-23` V1 canonical script set narrowed to **English/Latin**; **Hindi/Devanagari → V2** (scheduled, not waived); `SRCHPO-1` value change only — `SRCH-FR-024`/`N1–N6` limbs textually unchanged |
+| **Authority** | ⭐ **Product Owner + Architecture Owner + ARB** — ⛔ **concurrence PENDING / UNRECORDED; not fabricated** |
+| **Downstream** | ⭐ The `PRD-015` v0.2 seven-step route (incl. `SUPPLEMENT_D`) is **staged and held** — it becomes effective **only upon Acceptance + ARB concurrence**; while `ADR-0174` is PROPOSED the frozen `PRD-015` v0.1 / `SRCHPO-1` remain the two-set and are byte-unchanged |
+| **Preserved** | ⛔ `PRD-003`, `MASTER_PRD`, `PRD-015` (v0.1), and the four accepted ADR files are **byte-unchanged** · ⛔ **0** new roles, permissions, scopes, identifiers, events, or architecture contracts · ⛔ `G5` stays **PROPOSED / V2-deferred** · `DBT-008` stays **OPEN** · `CP-B1`/`FA-GAP-003` stay **BLOCKED / UNVERIFIED** · **no M1 PASS/FAIL asserted** · `DDR-0012` stays **reserved-and-free** |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Number | ⭐ `ADR-0174` is the next unregistered ADR; no number reused |
+| Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit historical entries or the L9 count cell |
+| Status act | ⛔ Registration records the **PROPOSED** status; ⛔ it does **not** ratify, accept, widen, or re-decide the ADR — the acceptance, ARB concurrence, and held `PRD-015` v0.2 seven-step route are **separate, later named acts** |

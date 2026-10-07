@@ -1859,3 +1859,35 @@ Paired with `DDR-0037` (design-layer D5 supersession of `DDR-0002`).
 | Number | ⭐ `ADR-0174` is the next unregistered ADR; no number reused |
 | Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit historical entries or the L9 count cell |
 | Status act | ⛔ Registration records the **PROPOSED** status; ⛔ it does **not** ratify, accept, widen, or re-decide the ADR — the acceptance, ARB concurrence, and held `PRD-015` v0.2 seven-step route are **separate, later named acts** |
+
+---
+
+## ⭐ End-of-file addendum — `ADR-0174` registered **ACCEPTED** (2026-10-07)
+
+⭐ Registered as a **status act**, not a re-decision. `ADR-0174` is now `Accepted`
+(2026-10-07) under three one-act conferrals — **Product Owner, Architecture Owner, and
+ARB** — recorded verbatim at `ADR-0174` §8.1. All three offices were exercised by one
+principal; ⛔ **no independent review, no ARB quorum, no external audit is claimed**
+(`ADR-0146`/`ADR-0103` disclosure form); each conferral **reverts on completion**
+(`ADR-0033` §7.1). The acceptance narrows `BC-23` V1 script scope to **English/Latin**,
+defers **Hindi/Devanagari** to V2 (scheduled, not waived), and limb-supersedes — for V1
+only, ADR files byte-unchanged — `ADR-0099` `C-8`, `ADR-0100` §223–225, `ADR-0101` `D-10`,
+and `ADR-0103` `C-8`/Supp B. Paired with `DDR-0037` (design-layer D5 supersession of
+`DDR-0002`, ACCEPTED 2026-10-07).
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0174`](ADR-0174-bc-23-v1-script-scope-narrowed-to-latin-hindi-deferred-to-v2.md) |
+| **Status** | ⭐⭐ **Accepted** — 2026-10-07, under the Product Owner + Architecture Owner + ARB one-act conferrals recorded verbatim at `ADR-0174` §8.1 · **Supersedes-for-V1 (limb):** `ADR-0099` `C-8`, `ADR-0100` §223–225, `ADR-0101` `D-10`, `ADR-0103` `C-8`/Supp B *(files byte-unchanged)* |
+| **Subject** | `BC-23` V1 canonical script set narrowed to **English/Latin**; **Hindi/Devanagari → V2** (scheduled, not waived); `SRCHPO-1` value change only — `SRCH-FR-024`/`N1–N6` limbs textually unchanged |
+| **Authority** | ⭐ **Product Owner + Architecture Owner + ARB** — one-act conferrals **recorded verbatim at §8.1** (2026-10-07; one-principal form; ⛔ no independent review / ARB quorum / external audit claimed; reverts on completion per `ADR-0033` §7.1) |
+| **Downstream** | ⭐ The `PRD-015` v0.2 seven-step route (incl. `SUPPLEMENT_D`) is now **actionable** — it is a **separate, later named act** NOT performed by this acceptance; the frozen `PRD-015` v0.1 / `SRCHPO-1` remain byte-unchanged until that route is filed |
+| **Preserved** | ⛔ `PRD-003`, `MASTER_PRD`, `PRD-015` (v0.1), and the four superseded ADR files are **byte-unchanged** · ⛔ **0** new roles, permissions, scopes, identifiers, events, or architecture contracts · ⛔ `G5` stays **PROPOSED / V2-deferred** · `DBT-008` stays **OPEN** · `CP-B1`/`FA-GAP-003` stay **BLOCKED / UNVERIFIED** · **no M1 PASS/FAIL asserted** · `DDR-0012` stays **reserved-and-free** · `DDR-0038` **not created** |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Number | ⭐ `ADR-0174` is the next unregistered ADR; no number reused |
+| Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit the PROPOSED addendum above or the L9 count cell |
+| Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at §8.1); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ `ADR-0174`'s §1–§5 decision text is byte-preserved by this act; only the §8/§8.1 conferral record and the status cells above were changed by the acceptance act |

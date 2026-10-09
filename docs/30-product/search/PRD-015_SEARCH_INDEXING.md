@@ -8,7 +8,7 @@
 | **Bounded Context** | **`BC-23` Search Indexing** |
 | **Classification** | `[GENERIC]` — platform search capability |
 | **Release** | **V1** |
-| **Version** | **v0.1 — DRAFT** |
+| **Version** | **v0.2 — DRAFT** |
 | **Status** | **`DRAFT`** — Stage 2 of [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md). ⛔ **NOT approved. NOT architecture-reviewed. NOT requirements-reviewed. NOT frozen. NOT baselined. No rank held.** Status is *conferred* by the register, never claimed by a document about itself |
 | **Date** | 2026-09-03 |
 | **Baseline** | Written **against** `BASELINE-2026-09-03-A`. ⛔ **Not admitted to it.** |
@@ -434,7 +434,7 @@ term at the EXACT tier (§18); nothing is loosened, so nothing irrelevant is adm
 ⚠ **Scope constraint (not a decision):** the *set of languages and scripts* whose diacritic and separator rules
 apply is not stated by any repository authority. The **behaviour** above is required; the **language/script
 inventory** is `SRCH-GAP-007`, owner **Product Owner** (which markets V1 serves) with **Architecture Owner**
-(analyzer configuration). ⛔ No inventory is asserted here.
+(analyzer configuration). ⛔ No inventory is asserted here. **V1 script scope is English/Latin only**; Hindi (Devanagari) is scheduled to V2 (not waived) by `ADR-0174` / `ADR-0175`.
 
 ---
 
@@ -1418,9 +1418,10 @@ no task is assigned, no estimate is given, and no item below may be read as auth
 | Version | Date | Change | Authority |
 |---|---|---|---|
 | v0.1 | 2026-09-03 | Initial Stage-2 draft. Authored strictly inside the `ADR-0094` §2 rule 4 carve-out; discharges `LSD-FR-008` (§37) and records `XPC-OD-009` as `SRCH-GAP-004` (§31, §42). ⛔ No §14A text restated; no registry or baseline row changed; no stage beyond 2 claimed | `ADR-0094` §2 rule 4; `LSD-FR-008`; `ADR-0098` **L221** |
+| ⭐ **v0.2** | **2026-10-09** | ⭐⭐ **Step 3 of the ADR-0175 seven-step route performed.** `SRCHPO-1` V1 canonical supported languages/scripts narrowed from exactly two (English/Latin + Hindi/Devanagari) **to exactly one (English/Latin only)**. Hindi (Devanagari) is **removed from the V1 closed set and scheduled to V2 (not waived)**. §16 N3/N4 scope constraint updated with the V1 English/Latin-only scope and the V2 scheduling note. Version bumped v0.1→v0.2 per PRD_LIFECYCLE.md §4 Step 3 | `ADR-0174`; `ADR-0175` §10.2; `SRCHPO-1` (PRD-015_PO_DECISION_RESOLUTION_RECORD.md L57) |
 
 ---
 
-**END OF `PRD-015` v0.1 — DRAFT.**
+**END OF `PRD-015` v0.2 — DRAFT.**
 ⛔ **Status not conferred. Not reviewed. Not frozen. Not baselined. No rank held.**
 Nine gaps are open and owned (§42). Freeze is conferred, not claimed.

@@ -1891,3 +1891,34 @@ and `ADR-0103` `C-8`/Supp B. Paired with `DDR-0037` (design-layer D5 supersessio
 | Number | ⭐ `ADR-0174` is the next unregistered ADR; no number reused |
 | Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit the PROPOSED addendum above or the L9 count cell |
 | Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at §8.1); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ `ADR-0174`'s §1–§5 decision text is byte-preserved by this act; only the §8/§8.1 conferral record and the status cells above were changed by the acceptance act |
+
+## ⭐ End-of-file addendum — `ADR-0175` registered **ACCEPTED** (2026-10-09)
+
+⭐ Registered as a **status act**, not a re-decision. `ADR-0175` is now `Accepted`
+(2026-10-09) as **Step 1** of the authorised **`PRD-015` v0.2 seven-step amendment route**
+under three one-act conferrals — **Product Owner, Architecture Owner, and ARB** — recorded
+verbatim at `ADR-0175` §8.1. All three offices were exercised by one principal; ⛔ **no
+independent review, no ARB quorum, no external audit is claimed** (`ADR-0103`/`ADR-0146`
+disclosure form); each conferral **reverts on completion** (`ADR-0033` §7.1). The acceptance
+proposes the `SRCHPO-1` V1 value narrowing to **English/Latin only** with Hindi/Devanagari
+scheduled to V2 (scheduled, not waived); it does **not** amend the frozen `PRD-015` v0.1
+(which remains byte-unchanged), does **not** close `SRCH-GAP-002`/`SRCH-GAP-007`, does
+**not** confer Stage 3, and does **not** create `SUPPLEMENT_D`. Steps 3–7 of the route are
+**separate, later named acts** and are **NOT** performed by this acceptance.
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0175`](ADR-0175-prd-015-v0.2-amendment-step-1-srchpo-1-value-narrowing.md) |
+| **Status** | ⭐⭐ **Accepted** — 2026-10-09, under the Product Owner + Architecture Owner + ARB one-act conferrals recorded verbatim at `ADR-0175` §8.1 · `SRCHPO-1` V1 value narrowed to **English/Latin only**; Hindi/Devanagari scheduled to V2 (scheduled, not waived); no new `SRCHPO-*` identifier · `SRCH-FR-024`/`N1–N6` limbs textually unchanged |
+| **Subject** | **Step 1** of the authorised `PRD-015` v0.2 seven-step amendment route; `SRCHPO-1` V1 canonical script set narrowed to **English/Latin only**; **Hindi/Devanagari → V2** (scheduled, not waived); no new `SRCHPO-*`; no unrelated scope or permissions |
+| **Authority** | ⭐ **Product Owner + Architecture Owner + ARB** — one-act conferrals **recorded verbatim at §8.1** (2026-10-09; one-principal form; ⛔ no independent review / ARB quorum / external audit claimed; reverts on completion per `ADR-0033` §7.1) |
+| **Downstream** | ⭐ The `PRD-015` v0.2 seven-step route (incl. `SUPPLEMENT_D`) is now **actionable** — it is a **separate, later named act** NOT performed by this acceptance; the frozen `PRD-015` v0.1 / `SRCHPO-1` remain byte-unchanged until Steps 3–4 are performed |
+| **Preserved** | ⛔ `PRD-003`, `MASTER_PRD`, `PRD-015` (v0.1), `ADR-0099`/`ADR-0100`/`ADR-0101`/`ADR-0103`, `DDR-0037`, `DDR-0002` — all **byte-unchanged** · ⛔ `SRCH-GAP-002`/`SRCH-GAP-007` remain **OPEN** · ⛔ **0** new roles, permissions, scopes, identifiers, events, or architecture contracts · ⛔ `G5` stays **PROPOSED / V2-deferred** · `DBT-008` stays **OPEN** · ⛔ no criterion recorded as passing · `DDR-0012` stays **reserved-and-free** · `DDR-0038` **not created** · `SUPPLEMENT_D` **not created** |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Number | ⭐ `ADR-0175` is the next unregistered ADR; no number reused, reserved or renumbered |
+| Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit historical entries or the L9 count cell |
+| Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at §8.1); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ `ADR-0175`'s §1–§3 decision text is byte-preserved by this act; only the §8/§8.1 conferral record and the status cells above were changed by the acceptance act

@@ -9,7 +9,7 @@
 | **Baseline** | Written against `BASELINE-2026-08-04-E`. **Not admitted to it** |
 | **Purpose** | [`PRD_LIFECYCLE.md`](../../00-governance/prd-ecosystem/PRD_LIFECYCLE.md) **Stage 6** gate — allocate an `IMPL-*` range and record a task document in which every task traces back to requirements |
 | **Implementation state** | ⛔ **NOTHING IN THIS DOCUMENT IS IMPLEMENTED.** Zero files under `lib/` were created or modified. No development has started |
-| **Source of truth** | `PRD-006` v1.4 **DRAFT**. Where this file disagrees with it, **the PRD is right and this file is a defect** |
+| **Source of truth** | `PRD-006` v1.9 **FROZEN**. Where this file disagrees with it, **the PRD is right and this file is a defect** |
 | **Stage** | Stage 6 of 9. `PRD-006` remains **`DRAFT`** with **⚠️ CONDITIONAL** Stage 3 and Stage 4 verdicts; this document does **not** freeze it, does **not** upgrade either verdict, and does **not** advance the registry |
 
 ---

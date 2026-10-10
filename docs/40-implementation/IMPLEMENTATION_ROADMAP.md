@@ -466,6 +466,28 @@ product must not affect the existence, validity or usability of any identity.** 
 
 ---
 
+## 10C. Phase 10 — Attendance (`BC-03`)
+
+**Backlog recorded 2026-10; tasks not yet allocated.** The `IMPL-600` … `IMPL-699` band is reserved as
+*"Attendance / integration backlogs"* by `PRD-016_IMPLEMENTATION_TASKS.md`'s range table; a `PRD-006` task file exists at [`PRD-006_IMPLEMENTATION_TASKS.md`](./attendance-management/PRD-006_IMPLEMENTATION_TASKS.md) (`IMPL-600`…`IMPL-679`); the S1–S8 slices below are not yet allocated to concrete numbers in that file:
+
+| Slice | Scope (source-cited) | Status |
+|---|---|---|
+| S1 — V1 attendance mode boundary | `PRD-006` v1.9 V1 modes: Fixed QR · Dynamic QR · Fixed QR + Wi-Fi · Fixed QR + GPS · Manual (staff-attested) · additive Wi-Fi Presence — independent alternatives; Face = V3 (`ATT-GAP-015`); RFID out of V1 (`ATT-XC-010`) | ⬜ Recorded (Product Owner decision via `USER_FLOWS.md` §8) — task allocation pending within `IMPL-600…699` |
+| S2 — occupancy-ledger aggregate guard | `LIB-14B.11`–`.14` aggregate-only occupancy; same-surface `DENIED`/`UNAVAILABLE` per `USER_FLOWS.md` §8/§9; no per-seat occupancy state | ⬜ Recorded — task allocation pending |
+| S3 — Manual staff-attested `AttendanceDay` | Reception confirms eligibility against the existing roster; `AttendanceDay` emitted on manual confirmation (`PRD-006` §6/§13); no validation display state beyond same-surface guidance (`USER_FLOWS.md` §9) | ⬜ Recorded — task allocation pending |
+| S4 — Fixed QR | Authenticated student scans the fixed library QR (`PRD-006` §8); `AttendanceDay` emitted on a valid scan; same-surface `DENIED` per `USER_FLOWS.md` §9; aggregate boundary `LIB-14B.11`–`.14` preserved | ⬜ Recorded — task allocation pending within `IMPL-600…699` |
+| S5 — Dynamic QR | Authenticated student scans the rotating library QR (`PRD-006` §9); `AttendanceDay` emitted on a currently-valid code; freshness bounded only by the already-decided `ATT-CFG-005`/`ATT-CFG-006` (PRD-006 §16.3); same-surface `DENIED` per `USER_FLOWS.md` §9; `LIB-14B.11`–`.14` boundary preserved | ⬜ Recorded — task allocation pending within `IMPL-600…699` |
+| S6 — Fixed QR + Wi-Fi | Authenticated student's fixed-QR scan + existing network-present signal (`PRD-006` §10) → `AttendanceDay`; same-surface `DENIED`/`UNAVAILABLE` per `USER_FLOWS.md` §9; preserves `LIB-14B.11`–`.14` aggregate boundary and existing `SPX-GAP-003`/`ROB` privacy deferral | ⬜ Recorded — task allocation pending within `IMPL-600…699` |
+| S7 — Fixed QR + GPS | Authenticated student's fixed-QR scan + existing GPS validation (`PRD-006` §11) → `AttendanceDay`; inside configured radius succeeds, outside/no-signal `DENIED`, native mismatch `UNAVAILABLE`; preserves existing `ATT-CFG-011`/`ATT-CFG-012` ranges and `LIB-14B.11`–`.14` aggregate boundary | ⬜ Recorded — task allocation pending within `IMPL-600…699` |
+| S8 — Additive Wi-Fi Presence | Existing additive Wi-Fi-presence signal (`PRD-006` §10A) → `AttendanceDay`; kept distinct from the `FIXED_QR_WIFI` mode; preserves `LIB-14B.11`–`.14` aggregate boundary | ⬜ Recorded — task allocation pending within `IMPL-600…699` |
+
+**This is a scope record, not a phase.** The S1–S5 slices fix what is already authorized; acceptance criteria
+come from `PRD-006`'s existing registers, not from this roadmap. The `Q-04`/`MP-DEP-07` baseline (interim policy
+`RET-01`…`RET-13`) is preserved unchanged.
+
+---
+
 ## 11. Dependency graph
 
 ```

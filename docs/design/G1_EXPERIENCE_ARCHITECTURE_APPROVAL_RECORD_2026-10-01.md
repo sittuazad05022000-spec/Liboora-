@@ -24,7 +24,7 @@
 
 | G1 required evidence (`DESIGN_GOVERNANCE.md` §4 L43) | Location | State |
 |---|---|---|
-| Flows | `USER_FLOWS.md` §1–§2 | present, V1 source-bounded |
+| Flows | `USER_FLOWS.md` §1 (+ §1 preserved note) — §2 current-students & occupancy | present, V1 source-bounded |
 | Information architecture | `INFORMATION_ARCHITECTURE.md` §2 | present, RETAINED/DEFERRED source-bounded groups |
 | Navigation structure / boundaries | `INFORMATION_ARCHITECTURE.md` §3 L32 | present (boundary recorded; labels TO BE DECIDED → escalated) |
 | Screen / state coverage | `SCREEN_ARCHITECTURE.md` §1 | present, 7 families source-bounded |

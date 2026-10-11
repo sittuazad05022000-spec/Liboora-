@@ -226,7 +226,7 @@ works.
 | `40-implementation/IMPLEMENTATION_ROADMAP.md` | v1.0 | Sequenced work |
 | `40-implementation/AUTHENTICATION_IMPLEMENTATION_CHECKLIST.md` | v1.0 | Per-requirement checklist |
 | `40-implementation/TASK-D10-remove-demo-surfaces.md` | v1.0 | Release-blocking task |
-| `40-implementation/DEFINITION_OF_DONE.md` | v1.1 | Merge and release gates. Extended to Library Management; the stale `AR-4` *"do not invent"* row replaced |
+| `40-implementation/DEFINITION_OF_DONE.md` | **v1.3** *(**v1.2 → v1.3 in the same commit as this row's update** — see the file's `| **Version** | **v1.3** |` header, which keeps the `v1.3` change-history row's `v1.3` advance as a same-commit restoration — per §7 rule 3, the declaration must match its subject; §7 rule 4 does **not** re-issue the `Baseline` identifier for a **Rank 5** gate-doc change)* | Merge and release gates. Extended to Library Management; the stale `AR-4` *"do not invent"* row replaced — **now includes the `ADOPT-WITH-ADAPTATION` implementation workflow (§7) per `Accepted` `ADR-0177`** |
 | `40-implementation/TRACEABILITY_MATRIX.md` | **v1.1** | Requirement → artefact mapping |
 | `40-implementation/LIBRARY_IMPLEMENTATION_TASKS.md` | **v1.0** | `IMPL-100`…`IMPL-127` with acceptance criteria and checklists |
 | `40-implementation/STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md` | **v1.0** | `IMPL-200`…`IMPL-226` with acceptance criteria and checklists |

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.2 |
+| **Version** | **v1.3** |
 | **Status** | Binding on all merges and releases |
 | **Date** | 2026-08-04 |
 | **Baseline** | BASELINE-2026-08-04 |
@@ -218,3 +218,38 @@ Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Librar
 | **v1.2** | **2026-08-04** | **Extended to cover Student Identity.** Gate 1 gains eight identity security checks — Private by default, never-public fields never indexed, no `StudentRecordId`/`tenantId`, no credential, date of birth never public *"including as an age"*, Trust & Safety restricted to the public projection, no organisation role mutating global state — and three specification checks: the `SXC-*` exclusion register, the four newly closed registers (`SPO-*`, `SEV-*`, `SID-AC-*`), and an explicit *"no new role name"* rule. The `PO-n` / `SPO-n` prefix hazard is recorded. *"Never done"* gains **nine** rows, one of which (**account without identity**) *inverts* a rule that held before `ADR-0011`; that inversion is stated in the row rather than left implicit. Baseline advanced to `BASELINE-2026-08-04`; ADR range to `ADR-0011`; Master PRD reference to v1.7. **No existing gate was weakened or removed.** |
 | v1.0 | 2026-08-02 | Created. Three gates, authored against the authentication baseline. |
 | **v1.1** | **2026-08-03** | **Extended to cover Library Management.** Gate 1 gains six Library security checks, the exclusion-register check and the closed-register check; the traceability prefix list is extended to the seven Library prefixes; the *"Never done"* table gains eight Library rows and the stale `AR-4` *"do not invent"* row is **replaced** — the deferral was lifted, so the rule is now *"do not deviate"*. Baseline reference advanced to `BASELINE-2026-08-03`; ADR range to `ADR-0010`. **No existing gate was weakened or removed.** |
+| **v1.3** | **2026-10-26** | **Records the adopted implementation workflow (ADOPT-WITH-ADAPTATION).** Adopts `GSD Core`'s slice → contract → thin-implementation → test loop as **methodology/reference only**; Liboora `PRD-*` (FROZEN via `DOCUMENTATION_BASELINE.md`), ADR/DDR-governance, BC-aggregate catalogue, ERDs and `IMPLEMENTATION_ROADMAP.md` §11 remain **sole source** of requirements. Records the 8-step workflow (slice by aggregate/BC/invariant; contract from `ATT-*` registers; ports/fakes first; thin implementation; invariant tests; evidence-bound acceptance; dependency-safe order; governance as gate) **without creating new requirements/tasks**, without deciding any `ATT-GAP-*`, without Face/RFID in V1, and without reopening `Q-04`/`MP-DEP-07`. **No existing gate was weakened or removed.** |
+
+---
+
+## 7. Implementation workflow — required for every implementation task
+
+This section is the **required implementation workflow** for every `IMPL-*` and `TASK-D10` task. It is the Liboora adaptation of `GSD Core`'s slice → contract → thin-implementation → test loop. `GSD Core` is **methodology/reference only** — Liboora's repository (`PRD-*`, ADR/DDR-governance, BC aggregates, ERDs, roadmap/traceability) remains the **sole source** of requirements. Every line below is traceable to an existing FROZEN/Liboora-governed artifact; Liboora requirements listed are sourced from the same artifacts as the rest of this document.
+
+### 7.1 Required workflow (8 steps)
+
+| Step | Required workflow | Authority that governs it |
+|---|---|---|
+| 1 | **Slice by aggregate / bounded context / invariant** — NOT by UI/API | BC Map §8 (one aggregate, one transaction — no exceptions); `LIBOORA_DATA_MODEL_ERD.md` / `ATTENDANCE_ERD.md`; aggregate sizing notes (`ATT-BR-003`/`SID-4.11`) |
+| 2 | **Derive the implementation contract** from the authoritative Liboora registers, FROZEN PRDs, ADRs/DDRs, and existing architecture decisions | `PRD-006` v1.9 `ATT-*` registers, `FROZEN` Library §§14A–14B · `LIB-14B.*` · `SID-*`/`SPO-*`/`SEV-*`, BC-Map `E-*` edges, `ATTENDANCE_ERD.md` §3 invariants, `LIBOORA_DATA_MODEL_ERD.md` §3 |
+| 3 | **Establish ports/interfaces and fakes/test boundaries first** where appropriate | BC-Map port pattern (`E-19` configuration, `E-17`/`E-18` identity, `E-02` membership-projection, `E-24`/`BC-30` offline-sync mechanism) — `BC-30` executes, `BC-03` owns policy (`ADR-0114`) |
+| 4 | **Implement thinly:** one authorized aggregate/boundary at a time, with a single clear transaction boundary where applicable | `ATT-BR-003` (one `AttendanceDay`, one DB transaction); `IMPL-*` dependency graph (`IMPLEMENTATION_ROADMAP.md` §11) |
+| 5 | **Add boundary and invariant tests** | `DEFINITION_OF_DONE.md` items 1–4 (`dart format --set-exit-if-changed .`, `flutter analyze`, `check_module_boundaries`, `architecture` tests); `ATT-NFR-010`/`SID-4.56` (rule unverified = unmet) |
+| 6 | **Produce evidence that binds the relevant acceptance criteria/invariants to the running implementation/tests** | `IMPL-600`…`679` task-document linkage `ATT-*` → test; criteria `ATT-AC-*` are **verified** by tests, not asserted (`ATT-NFR-010`); ERD-boundary note §4.1 (`LIB-14B.11–.14`) |
+| 7 | **Respect the existing dependency graph** and implement in dependency-safe order | `IMPLEMENTATION_ROADMAP.md` §11 (critical paths `600→…→679`, `200→…→226` strictly ordered); `PRD-006_IMPLEMENTATION_TASKS.md` §4 (`IMPL-600` is the sole root, `IMPL-679` is the sole leaf) |
+| 8 | **Treat governance as a gate/constraint, not as a product feature** | `Gate 3` (release) / `ADR-0001` boundaries; `Q-04`/`MP-DEP-07` interim-policy already absorbed and is not a product dependency; implementation never invents governance |
+
+### 7.2 Required workflow — Liboora adaptations
+
+The adaptations below clarify where Liboora's governance remains authoritative and where `GSD Core` is reference-only.
+
+| Adaptation | What GSD suggests | What Liboora requires |
+|---|---|---|
+| `GSD Core is reference only` | Planning/workflow patterns (`slice → contract → thin-implementation → test`) | Liboora `PRD-*` (FROZEN via `DOCUMENTATION_BASELINE.md`), ADR/DDR-governance, BC-aggregate catalogue, ERDs (`LIBOORA_DATA_MODEL_ERD.md` + `ATTENDANCE_ERD.md`), `IMPLEMENTATION_ROADMAP.md` §11, and `ATT-*` registers are **sole source** — `GSD` patterns are guidance for planning, never requirements |
+| `FROZEN vs DRAFT` | Any PRD may be implemented | `DRAFT ≠ FROZEN` — only `FROZEN` PRDs (`PRD-006 v1.9` via `ADR-0034`, Library PRD v1.0 via audit §2, Student Identity v1.0 via `ADR-0011`) and their admitted baseline rows are directly authoritative; `DRAFT` backlogs (`PRD-007`, `PRD-008`) remain planning sources, not implementation contracts |
+| `No blocked task to close gaps` | A blocked task closes its gap by correct delivery | `ATT-GAP-*` never closes by implementation choice — `PRD-006 §0.4` *"A gap resolved by implementation choice is not resolved — it is an undocumented architecture decision made by whoever happened to write the code first"* |
+| `No generic verification pipeline` | Generic `VerificationStrategy` would centralise verification signals | `ATT-XC-011` · `ATT-BR-004`/`005`/`006`/`007` — modes are **independent and each sufficient alone**; a shared pipeline creates the cross-mode coupling `ATT-BR-005` forbids (see `IMPL-611`) |
+| `No feature-flagged Face` | Ship Face hidden behind a toggle | `ATT-FR-064` blocks Face outright while `ATT-GAP-012`/`014`/`015` remain `OPEN`; `IMPL-639` implements the boundary (**the mode is observably unavailable**) |
+| `Face = V3` | Face as V1 | `EXCLUDED` per `D-3a` / `ATT-GAP-015` (ARB pending) · `ATT-XC-010`; seventh mode only via §7.1a |
+| `RFID / NFC / BLE out of V1` | Add an `RFID` mode | `EXCLUDED` per `ATT-XC-010` — V1 has six modes; seventh is a scope decision, not a task |
+| `Q-04 / MP-DEP-07` | Address retention as a transaction requirement | **DISCHARGED in effect** · `RET-01…RET-13` interim-policy in `BASELINE-2026-08-05-A` — not a product `ATT-*` boundary; implementation never invents retention |

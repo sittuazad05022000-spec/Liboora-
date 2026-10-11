@@ -1923,10 +1923,10 @@ scheduled to V2 (scheduled, not waived); it does **not** amend the frozen `PRD-0
 | Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit historical entries or the L9 count cell |
 | Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at §8.1); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ `ADR-0175`'s §1–§3 decision text is byte-preserved by this act; only the §8/§8.1 conferral record and the status cells above were changed by the acceptance act
 
-## ⭐ End-of-file addendum — `ADR-0177` registered **ACCEPTED** (2026-10-26)
+## ⭐ End-of-file addendum — `ADR-0177` registered **ACCEPTED** (2026-10-11)
 
 ⭐ Registered as a **status act**, not a re-decision. `ADR-0177` is now `Accepted`
-(2026-10-26) as the **standalone methodology-adoption act** for `DEFINITION_OF_DONE.md` §7
+(2026-10-11) as the **standalone methodology-adoption act** for `DEFINITION_OF_DONE.md` §7
 under the one-act Architecture Owner + Founder/Product Authority conferral recorded
 verbatim at `ADR-0177` §6 (one-principal form; ⛔ no independent review, ARB quorum,
 external audit, personal name, sign-off date, or Security review is asserted —
@@ -1952,7 +1952,7 @@ interim-policy (`RET-01…RET-13`) remains **DISCHARGED in effect** and carried 
 | Field | Value |
 |---|---|
 | **ADR** | [`ADR-0177`](ADR-0177-gsd-core-adopted-as-methodology-reference-only.md) |
-| **Status** | ⭐⭐ **Accepted** — 2026-10-26, by **Architecture Owner + Founder/Product Authority** one-act conferral recorded verbatim at `ADR-0177` §6 (one-principal form; ⛔ no ARB quorum attendee list, sign-off date, or Security review is asserted; the Office **reverts** on completion per `ADR-0033` §7.1) · `GSD Core`'s slice → contract → thin-implementation → test loop as **methodology/reference only** (35 lines: `v1.3` change-history row + `§7.1` + `§7.2`, committed in the **same commit** under the registered authorization); **Liboora `PRD-*` (FROZEN via `DOCUMENTATION_BASELINE.md`) remains the sole source of requirements** |
+| **Status** | ⭐⭐ **Accepted** — 2026-10-11, by **Architecture Owner + Founder/Product Authority** one-act conferral recorded verbatim at `ADR-0177` §6 (one-principal form; ⛔ no ARB quorum attendee list, sign-off date, or Security review is asserted; the Office **reverts** on completion per `ADR-0033` §7.1) · `GSD Core`'s slice → contract → thin-implementation → test loop as **methodology/reference only** (35 lines: `v1.3` change-history row + `§7.1` + `§7.2`, committed in the **same commit** under the registered authorization); **Liboora `PRD-*` (FROZEN via `DOCUMENTATION_BASELINE.md`) remains the sole source of requirements** |
 | **Subject** | `GSD Core` adopted as **methodology/reference only** — Liboora remains sole source of requirements |
 | **Authority** | ⭐ **Architecture Owner + Founder/Product Authority** — one-act conferral **recorded verbatim at §6** (one-principal form; ⛔ no ARB quorum / attendee list / sign-off date / Security review is asserted — `ADR-0103`/`ADR-0146` disclosure form) |
 | **Downstream** | `DEFINITION_OF_DONE.md` §7 (35 lines: `v1.3` change-history row + `§7.1` + `§7.2`) is **committed in the same commit** under the registered authorization — no separate decision on the workflow |

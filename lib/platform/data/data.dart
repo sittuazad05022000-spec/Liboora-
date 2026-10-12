@@ -150,6 +150,9 @@ final class TenantPartitionedStore<T> {
   /// True when this store writes through to durable storage.
   bool get isDurable => _durable != null;
 
+  /// Current tenant identifier for opaque cursor scoping (PG-3 tenancy check).
+  String get currentTenantId => _tenantContext.tenantId.value;
+
   Map<String, T> get _partition {
     // Throws TenantContextMissing if unset — fail loud, never default.
     final key = _tenantContext.tenantId.value;

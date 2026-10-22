@@ -110,3 +110,11 @@ jobs:
       # ── Gate 6 ────────────────────────────────────────────────────────
       - name: 6 · build verification
         run: flutter build web --release
+
+      # ── Gate 7 ────────────────────────────────────────────────────────
+      # Enforces ATT-GAP-017a (Product Owner, 2026-10-12): p95 < 300ms for
+      # IMPL-678 roster pagination. bench_p95.dart exits 1 when
+      # p95 >= 300_000 µs (Stopwatch.elapsedMicroseconds), failing this step.
+      - name: 7 · p95 benchmark (ATT-GAP-017a / IMPL-679)
+        run: dart run tool/bench_p95.dart
+        timeout-minutes: 10

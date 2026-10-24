@@ -82,6 +82,13 @@ final class InMemoryStudentRepository implements StudentRepository {
   // Sorted keys for each tenant for O(log n) cursor seeking.
   final Map<String, List<_StudentOrderKey>> _orderedKeys = {};
   // Server-side opaque cursor registry: token → anchor (tenant + composite key).
+  //
+  // Lifecycle: one entry is added per issued cursor (see [_issueCursor]) and is
+  // never removed while this repository instance lives; entries are instance
+  // scoped, not shared. As written, the map therefore grows unboundedly with the
+  // number of cursors issued during the instance's lifetime. Retention/eviction
+  // is a deliberate future policy decision — no TTL, expiry or cleanup is
+  // implemented here.
   final Map<String, _CursorEntry> _cursorRegistry = {};
 
   @override

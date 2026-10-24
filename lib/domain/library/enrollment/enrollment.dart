@@ -22,6 +22,7 @@ abstract interface class StudentRepository {
   PaginatedStudents paginatedList({String? cursor});
   bool enrollmentNumberExists(String number);
   void save(StudentRecord s);
+  void verifyCursorTenant(String cursor);
 }
 
 final class PaginatedStudents {
@@ -76,7 +77,8 @@ final class InMemoryStudentRepository implements StudentRepository {
   // Per-tenant ordered index for TRUE bounded reads.
   // Maintained incrementally on [save]; no `all()` scan on paginated path.
   final Map<String, Map<String, _StudentOrderKey>> _idToKey = {};
-  final Map<String, SplayTreeMap<_StudentOrderKey, StudentRecord>> _ordered = {};
+  final Map<String, SplayTreeMap<_StudentOrderKey, StudentRecord>> _ordered =
+      {};
   // Sorted keys for each tenant for O(log n) cursor seeking.
   final Map<String, List<_StudentOrderKey>> _orderedKeys = {};
   // Server-side opaque cursor registry: token → anchor (tenant + composite key).
@@ -95,7 +97,6 @@ final class InMemoryStudentRepository implements StudentRepository {
   /// reset (PG-4). Bounded-read traverses the per-tenant ordered index;
   /// [cursor] is a server-side anchor handle, not an offset.
   PaginatedStudents paginatedList({String? cursor}) {
-    const pageSize = 20; // UNRATIFIED operational default (existing feed(limit:12) class; NOT a CFG-* / NFR)
     final tenant = _store.currentTenantId;
     final index = _ordered[tenant];
     // Lazy-sync on first paginated call for tenants seeded before this patch.
@@ -115,12 +116,13 @@ final class InMemoryStudentRepository implements StudentRepository {
     return _pageFrom(ordered, entry.anchorKey, keys);
   }
 
-PaginatedStudents _pageFrom(
+  PaginatedStudents _pageFrom(
     SplayTreeMap<_StudentOrderKey, StudentRecord> ordered,
     _StudentOrderKey? anchorKey,
     List<_StudentOrderKey> keys,
   ) {
-    const pageSize = 20;
+    const pageSize =
+        20; // UNRATIFIED operational default (existing feed(limit:12) class; NOT a CFG-* / NFR)
     final page = <StudentRecord>[];
     _StudentOrderKey? lastKey;
 
@@ -172,6 +174,7 @@ PaginatedStudents _pageFrom(
     return opaque;
   }
 
+  @override
   void verifyCursorTenant(String cursor) {
     final entry = _cursorRegistry[cursor];
     if (entry == null || entry.tenantId != _store.currentTenantId) {
@@ -188,9 +191,7 @@ PaginatedStudents _pageFrom(
       map[_compositeKey(s)] = s;
     }
     // SplayTreeMap maintains sorted order and enables O(log n) cursor seeking.
-    final sorted = SplayTreeMap<_StudentOrderKey, StudentRecord>.fromEntries(
-      map.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
-    );
+    final sorted = SplayTreeMap<_StudentOrderKey, StudentRecord>.of(map);
     _ordered[tenant] = sorted;
     // Maintain sorted keys array for O(log n) cursor seeking.
     _orderedKeys[tenant] = sorted.keys.toList();
@@ -205,10 +206,10 @@ PaginatedStudents _pageFrom(
   }
 
   _StudentOrderKey _compositeKey(StudentRecord s) => _StudentOrderKey(
-        fullName: s.fullName,
-        enrollmentNumber: s.enrollmentNumber,
-        studentId: s.id.value,
-      );
+    fullName: s.fullName,
+    enrollmentNumber: s.enrollmentNumber,
+    studentId: s.id.value,
+  );
 
   @override
   bool enrollmentNumberExists(String number) =>

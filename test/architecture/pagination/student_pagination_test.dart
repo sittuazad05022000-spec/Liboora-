@@ -12,21 +12,41 @@ final DateTime _day = DateTime.utc(2026, 8, 20);
 
 MutableTenantContext _contextIn(TenantId tenant, BranchId branch) {
   final ctx = MutableTenantContext();
-  ctx.enter(tenant: tenant, branch: branch, actor: 'test', correlationId: 'pagination-test');
+  ctx.enter(
+    tenant: tenant,
+    branch: branch,
+    actor: 'test',
+    correlationId: 'pagination-test',
+  );
   return ctx;
 }
 
-T _withTenant<T>(MutableTenantContext ctx, TenantId tenant, BranchId branch, T Function() action) {
+T _withTenant<T>(
+  MutableTenantContext ctx,
+  TenantId tenant,
+  BranchId branch,
+  T Function() action,
+) {
   final previousTenant = ctx.hasTenant ? ctx.tenantId : null;
   final previousBranch = ctx.hasTenant ? ctx.branchId : null;
-  ctx.enter(tenant: tenant, branch: branch, actor: 'test', correlationId: 'pagination-test');
+  ctx.enter(
+    tenant: tenant,
+    branch: branch,
+    actor: 'test',
+    correlationId: 'pagination-test',
+  );
   try {
     return action();
   } finally {
     if (previousTenant == null || previousBranch == null) {
       ctx.exit();
     } else {
-      ctx.enter(tenant: previousTenant, branch: previousBranch, actor: 'test', correlationId: 'pagination-test');
+      ctx.enter(
+        tenant: previousTenant,
+        branch: previousBranch,
+        actor: 'test',
+        correlationId: 'pagination-test',
+      );
     }
   }
 }
@@ -49,7 +69,9 @@ void main() {
   group('StudentPagination', () {
     test('first page returns ordered records', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       for (var i = 1; i <= 50; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
@@ -63,7 +85,9 @@ void main() {
 
     test('continuation returns next ordered page', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       for (var i = 1; i <= 50; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
@@ -73,9 +97,7 @@ void main() {
       final second = repo.paginatedList(cursor: first.nextCursor);
 
       expect(second.items.length, 20);
-      final expectedIds = [
-        for (var i = 1; i <= 50; i++) 'SR-$i',
-      ]..sort();
+      final expectedIds = [for (var i = 1; i <= 50; i++) 'SR-$i']..sort();
       expect(
         second.items.map((student) => student.id.value).toList(),
         expectedIds.sublist(20, 40),
@@ -84,7 +106,9 @@ void main() {
 
     test('full traversal returns all records exactly once', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       for (var i = 1; i <= 45; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
@@ -101,26 +125,33 @@ void main() {
       }
 
       expect(all.length, 45);
-      expect(all.map((s) => s.id.value).toSet(), length: 45);
+      expect(all.map((s) => s.id.value).toSet(), hasLength(45));
     });
 
-    test('tie-breaking by StudentRecordId when fullName and enrollmentNumber match', () {
-      final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+    test(
+      'tie-breaking by StudentRecordId when fullName and enrollmentNumber match',
+      () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+        );
 
-      repo.save(_student('A', enrollmentNumber: 'EN-1', fullName: 'Same'));
-      repo.save(_student('B', enrollmentNumber: 'EN-1', fullName: 'Same'));
-      repo.save(_student('C', enrollmentNumber: 'EN-1', fullName: 'Same'));
+        repo.save(_student('A', enrollmentNumber: 'EN-1', fullName: 'Same'));
+        repo.save(_student('B', enrollmentNumber: 'EN-1', fullName: 'Same'));
+        repo.save(_student('C', enrollmentNumber: 'EN-1', fullName: 'Same'));
 
-      final page = repo.paginatedList();
-      expect(page.items.length, 3);
-      expect(page.items[0].id.value, 'SR-A');
-      expect(page.items[2].id.value, 'SR-C');
-    });
+        final page = repo.paginatedList();
+        expect(page.items.length, 3);
+        expect(page.items[0].id.value, 'SR-A');
+        expect(page.items[2].id.value, 'SR-C');
+      },
+    );
 
     test('malformed cursor throws DomainError', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       expect(
         () => repo.paginatedList(cursor: 'invalid_token'),
@@ -130,7 +161,9 @@ void main() {
 
     test('unknown cursor throws DomainError', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       expect(
         () => repo.paginatedList(cursor: 'abc123'),
@@ -140,7 +173,9 @@ void main() {
 
     test('cross-tenant cursor rejection', () {
       final ctxA = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctxA));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctxA),
+      );
       for (var i = 1; i <= 21; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
       }
@@ -158,7 +193,9 @@ void main() {
 
     test('empty repository returns empty page', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       final result = repo.paginatedList();
       expect(result.items, isEmpty);
@@ -167,7 +204,9 @@ void main() {
 
     test('final page has no nextCursor', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       repo.save(_student('1', enrollmentNumber: 'EN-1'));
 
@@ -178,7 +217,9 @@ void main() {
 
     test('cursor with modified anchor throws DomainError', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       for (var i = 1; i <= 21; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
@@ -199,7 +240,9 @@ void main() {
 
     test('save updates ordering-key when enrollmentNumber changes', () {
       final ctx = _contextIn(_tenantA, _branchA);
-      final repo = InMemoryStudentRepository(TenantPartitionedStore<StudentRecord>(ctx));
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+      );
 
       final student = _student('ABC', enrollmentNumber: 'EN-001');
       repo.save(student);

@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | **Document** | Traceability entries for [`Student_Management_PRD_v1.md`](Student_Management_PRD_v1.md) (`PRD-004`) |
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Supporting record. **Not ranked**, therefore editable without an ADR |
-| **Date** | 2026-08-04 *(corrected same day by the `PRD-004` correction pass — findings `RF-04`, `RF-07`)* |
+| **Date** | 2026-08-04 *(corrected same day by the `PRD-004` correction pass — findings `RF-04`, `RF-07`)* · **v1.3 defect repair 2026-10-24** (`SMCFG-1`/`SMCFG-2`/`LCFG-5`) |
 | **Baseline** | `BASELINE-2026-08-04-B` |
 | **Purpose** | Phase 20 deliverable 4. Maps every `PRD-004` identifier group to its authoritative source, and records the prefix inventory destined for [`TRACEABILITY_MATRIX.md`](../../40-implementation/TRACEABILITY_MATRIX.md) §2C |
 | **Precedence** | Below every document it cites. Where this file disagrees with `PRD-004`, **`PRD-004` is right and this file is a defect** |
@@ -180,15 +180,15 @@ predicted these events before this PRD existed; the PRD did not invent them** �
 
 | ID | Parameter | Source | Default |
 |---|---|---|---|
-| `SMCFG-1` | Directory enabled | **`LCFG-5`** (consumed, not redefined) | **Disabled** (`AP-3`) |
-| `SMCFG-2` | Directory page size | `LMD-*` pagination | as declared §10.3 |
+| `SMCFG-1` | Directory default page size | `LMD-10` · §10.3 | **20** (range 5–50) |
+| `SMCFG-2` | Directory maximum page size | `LMD-10` · §10.3 | **50** (range 10–100) |
 | `SMCFG-3` | Near-expiry warning window | `BC-02` projection | as declared §10.3 |
 | `SMCFG-4` | Bulk operation cap | `LMD-30`, `LMD-31` | as declared §10.3 |
 | `SMCFG-5` | `enrollmentNumber` pattern | ⚠ **placeholder** — see `SM-GAP-2` | undecided |
 | `SMCFG-6` | Guardian-required age threshold | `SM-INV-4`, BC Map line 370 | 18 |
 | `SMCFG-7` | Document count limit | `SM-4.*` | as declared §10.3 |
 
-All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5`** — it *is* `LCFG-5`, consumed.
+All are read through `E-19` from `BC-25`. `SMCFG-1` and `SMCFG-2` are **not** `LCFG-5`: `LCFG-5` is the Member-Directory enable/disable gate (`LMD-4`, default **Disabled**), whereas `SMCFG-1`/`SMCFG-2` are the Directory page-size **default**/**maximum** (`LMD-10`).
 `SMCFG-5` is explicitly flagged as a placeholder rather than presented as a decision.
 
 ---
@@ -227,6 +227,7 @@ All are read through `E-19` from `BC-25`. **`SMCFG-1` does not duplicate `LCFG-5
 
 | Version | Date | Change |
 |---|---|---|
+| v1.3 | 2026-10-24 | **Defect repair — §5's configurable-parameter table mislabelled `SMCFG-1` and `SMCFG-2` and asserted a false alias.** It read *"`SMCFG-1` \| Directory enabled \| `LCFG-5`"* and *"`SMCFG-2` \| Directory page size"*, and §5's closing line asserted *"`SMCFG-1` **is** `LCFG-5`"*. Authoritative sources: FROZEN `PRD-004` §10.3 (**L1038**/**L1039**) and `Accepted` `ADR-0156` (**L206**/**L207**) — `SMCFG-1` = Directory **default** page size (**20**, range 5–50); `SMCFG-2` = Directory **maximum** page size (**50**, range 10–100); `LCFG-5` is the Member-Directory **enable/disable** gate (`LMD-4`, default **Disabled**), a **different** parameter. Corrected by amending *this* file, as the Precedence row above requires. ⛔ **No mapping, identifier, count or requirement was added, removed or re-pointed; ⛔ `SMCFG-6`/`SMCFG-7` were NOT changed (recorded separately as suspected further defects); ⛔ no PRD, ADR, task register, deviation record or code was touched.** |
 | v1.2 | 2026-08-04 | **Refreshed by the `PRD-004` final correction pass** (second-review finding `SR-01`). Registers updated to the post-correction reality: `SM-AC-n` **30 → 32** (`SM-AC-31`, `SM-AC-32` — the two guardian/DOB criteria, finding `SR-10`), `SM-GAP-n` **10 → 11** (`SM-GAP-11` — the BC Map §8-vs-§7 tension over `BC-26`, findings `SR-04`/`SR-05`), base total **248 → 251**, normative total **263 → 266**, and the executed-criteria disclosure from *"0 of 30"* to *"0 of 32"*. **No mapping was added, removed or re-pointed; no requirement was invented; the measured coverage figure remains computed by the script rather than asserted here.** |
 | v1.1 | 2026-08-04 | **Corrected by the `PRD-004` correction pass.** Three defects, all found by independent review, all resolved by correcting *this* file rather than the PRD — as the Precedence row above requires. (1) `RF-04`: §4 listed **nine** events, placed `StudentLinkedToPerson` at `SM-EV-4`, omitted the BC Map §8 `enrollment.` prefix, and collapsed five events into one untraceable summary row; it now reproduces `PRD-004` §7.4 exactly, with `SM-EV-10` and all ten names enumerated. (2) `RF-07`: the **"233 of 242, 96.3%"** coverage claim is **withdrawn** — it was inferred from a ten-row group table and therefore was never measured; §2 now states plainly that this document maps *groups*, and points to `PRD-004` §10.5.1 where the figure is computed per identifier by `tool/docs_check/prd004_traceability.py`. The computed figure is **lower** than the withdrawn claim. (3) Stale counts refreshed to the post-correction registers: **248** base identifiers (was 242) plus 15 sub-lettered clarifications, `SM-c.n` 105→107, `SM-EV-n` 9→10, `SM-AC-n` 28→30, `SM-GAP-n` 9→10, tasks `IMPL-300`…`IMPL-323`. **No requirement was invented and no count was padded**; every changed number is reproduced by the checker. |
 | v1.0 | 2026-08-04 | Created as Phase 20 deliverable 4. Records the ten new registers (**242** identifiers) as the payload for `TRACEABILITY_MATRIX.md` §2C, with a **zero-collision** result proved by quoted commands and three near-collisions documented — including `MP-SM-0n` in `MASTER_PRD.md`, confirmed a **true negative** by strict word-boundary grep rather than dismissed. Discloses that §0 of `PRD-004` first declared **118** `SM-c.n` (actual **105**, total **242** not 246) and that **the register was corrected rather than the chapters padded**. Maps all ten requirement groups, 3 ADRs, 9 events, 7 configurables to higher-ranked sources, and states that **0 of 28 acceptance criteria are currently executed**. |

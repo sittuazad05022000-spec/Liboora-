@@ -17,13 +17,14 @@ abstract interface class DirectoryConfig {
   /// `SMCFG-1` — Directory default page size.
   ///
   /// LMD-10: Default page size **MUST** be `SMCFG-1`.
-  /// Range: 5–50 (per `PRD-004` §10.3).
+  /// Required setting value: 20 (range 5–50).
   int get pageSizeDefault;
 
   /// `SMCFG-2` — Directory maximum page size.
   ///
   /// LMD-10: A request exceeding the maximum **MUST** be clamped, not rejected.
-  /// Range: 10–100 (per `PRD-004` §10.3).
+  /// Required setting value: 50 (range 10–100).
+  /// All page size requests are clamped to this value.
   int get pageSizeMax;
 }
 

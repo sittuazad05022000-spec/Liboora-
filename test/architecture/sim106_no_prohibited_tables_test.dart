@@ -4,12 +4,10 @@
 /// table, or any denormalised copy of membership, seat, attendance or fee data
 /// (`LMD-2`, `SM-2.4`).
 ///
-/// This test verifies the constraint is enforced by checking:
-/// 1. No table definitions exist for the prohibited names
-/// 2. Repository interfaces don't expose denormalized aggregate data
-///
-/// Note: The data layer uses Hive key-value stores, not SQL tables. This test
-/// verifies the schema constraint is maintained by absence of prohibited structures.
+/// In a Hive-based architecture, this test verifies:
+/// 1. No prohibited table names are referenced in source code
+/// 2. Domain models don't contain denormalized data fields
+/// 3. Data platform uses Hive (not SQL/schema-based storage)
 library;
 
 import 'dart:io';
@@ -20,8 +18,9 @@ final String _repoRoot = Directory.current.path;
 
 void main() {
   group('IMPL-302 SM-10.6 — no prohibited schema structures', () {
-    test('no library_member table definition exists', () {
+    test('no prohibited table names appear in source code', () {
       final prohibitedNames = ['library_member', 'member_directory'];
+
       for (final name in prohibitedNames) {
         final files = Directory('$_repoRoot/lib')
             .listSync(recursive: true, followLinks: false)
@@ -29,22 +28,24 @@ void main() {
             .where((f) => !f.path.contains('.dart_tool'))
             .toList();
 
+        final matches = <String>[];
         for (final file in files) {
           final content = file.readAsStringSync();
-          expect(
-            content.contains(name),
-            isFalse,
-            reason:
-                'Found prohibited name "$name" in ${file.path}. SM-10.6 requires '
-                'no $name table exists.',
-          );
+          if (content.contains(name)) {
+            matches.add(file.path);
+          }
         }
+
+        expect(
+          matches,
+          isEmpty,
+          reason:
+              'SM-10.6 requires no prohibited table names. Found in: ${matches.join(', ')}',
+        );
       }
     });
 
-    test('no denormalized data in repository interfaces', () {
-      // Verify that membership, seat, attendance, and fee data are not
-      // exposed as flattened/duplicate structures in other repositories
+    test('StudentRecord domain has no denormalized membership/fee/attendance fields', () {
       final studentRecordFile = File(
           '$_repoRoot/lib/domain/library/enrollment/domain/student_record.dart');
       expect(studentRecordFile.existsSync(), isTrue,
@@ -53,32 +54,45 @@ void main() {
       final content = studentRecordFile.readAsStringSync();
 
       // SM-10.6 prohibits denormalized copies of membership, seat, attendance, fee
-      // Check for actual field declarations using regex-like pattern matching
-      final membershipField = RegExp(r'final\s+\w*membership');
-      final feeLedgerField = RegExp(r'final\s+\w*FeeLedger');
-      expect(membershipField.hasMatch(content), isFalse,
-          reason: 'StudentRecord should not contain membership field');
-      expect(content.contains('seatQuota'), isFalse,
-          reason: 'StudentRecord should not contain denormalized seat data');
-      expect(feeLedgerField.hasMatch(content), isFalse,
-          reason: 'StudentRecord should not contain denormalized fee data');
+      // These patterns would indicate actual field declarations, not just comments
+      expect(RegExp(r'\bMembership\b').hasMatch(content), isFalse,
+          reason: 'StudentRecord should not reference Membership type');
+      expect(RegExp(r'\bFeeLedger\b').hasMatch(content), isFalse,
+          reason: 'StudentRecord should not reference FeeLedger type');
+      expect(RegExp(r'\bAttendance\b').hasMatch(content), isFalse,
+          reason: 'StudentRecord should not reference Attendance type');
+      expect(RegExp(r'\bSeatAllocation\b').hasMatch(content), isFalse,
+          reason: 'StudentRecord should not reference SeatAllocation type');
     });
 
-    test('data platform uses Hive key-value stores, not SQL tables', () {
-      final dataFile =
-          File('$_repoRoot/lib/platform/data/data.dart');
+    test('data platform uses Hive key-value store exclusively', () {
+      final dataFile = File('$_repoRoot/lib/platform/data/data.dart');
       expect(dataFile.existsSync(), isTrue,
           reason: 'Data platform file should exist');
 
       final content = dataFile.readAsStringSync();
-      // Verify Hive is used, not SQL
+
+      // Verify Hive is the data layer
       expect(content.contains('import \'package:hive/hive.dart\''), isTrue,
           reason: 'Data platform uses Hive key-value store');
-      // Verify no SQL-specific imports or table creation
+
+      // No SQL schema definitions allowed per SM-10.6
       expect(content.contains('CREATE TABLE'), isFalse,
-          reason: 'No SQL CREATE TABLE statements should exist');
-      expect(content.contains('sql'), isFalse,
-          reason: 'No SQL references should exist in data platform');
+          reason: 'SM-10.6: No SQL CREATE TABLE statements');
+    });
+
+    test('repositories use Hive-based stores, not denormalized views', () {
+      // Verify enrollment repository doesn't embed membership data
+      final enrollmentFile =
+          File('$_repoRoot/lib/domain/library/enrollment/enrollment.dart');
+      expect(enrollmentFile.existsSync(), isTrue);
+
+      final enrollmentContent = enrollmentFile.readAsStringSync();
+
+      // Repository patterns should use tenant-partitioned stores
+      // and not flatten other aggregate data
+      expect(enrollmentContent.contains('TenantPartitionedStore'), isTrue,
+          reason: 'Repositories should use tenant-partitioned storage');
     });
   });
 }

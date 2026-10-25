@@ -20,7 +20,9 @@ import 'domain/student_record.dart';
 abstract interface class StudentRepository {
   StudentRecord? byId(StudentRecordId id);
   List<StudentRecord> all();
-  PaginatedStudents paginatedList({String? cursor});
+  /// Paginated list of students.
+  /// [pageSize] — optional override per LMD-10; clamped to SMCFG-2 maximum.
+  PaginatedStudents paginatedList({String? cursor, int? pageSize});
   bool enrollmentNumberExists(String number);
   void save(StudentRecord s);
   void verifyCursorTenant(String cursor);

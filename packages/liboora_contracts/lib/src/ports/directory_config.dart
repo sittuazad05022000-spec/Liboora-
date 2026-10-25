@@ -26,6 +26,14 @@ abstract interface class DirectoryConfig {
   /// Required setting value: 50 (range 10–100).
   /// All page size requests are clamped to this value.
   int get pageSizeMax;
+
+  /// Clamps a requested page size to the allowed maximum per LMD-10.
+  ///
+  /// Per LMD-10: Values exceeding [pageSizeMax] (SMCFG-2) are clamped.
+  /// Values within valid range are passed through unchanged.
+  /// Note: Values below the SMCFG-1 minimum (5) are passed through unchanged
+  /// as no explicit requirement exists to modify them.
+  int clampPageSize(int requested);
 }
 
 /// Adapter carrying the `PRD-004` §10.3 defaults verbatim.
@@ -46,18 +54,17 @@ final class DefaultDirectoryConfig implements DirectoryConfig {
   @override
   final int pageSizeMax;
 
-/// Clamps a requested page size to the allowed maximum per LMD-10.
+  /// Clamps a requested page size to the allowed maximum per LMD-10.
   ///
   /// Per LMD-10: Values exceeding [pageSizeMax] (SMCFG-2) are clamped.
   /// Values within valid range are passed through unchanged.
   /// Note: Values below the SMCFG-1 minimum (5) are passed through unchanged
   /// as no explicit requirement exists to modify them.
+  @override
   int clampPageSize(int requested) {
     if (requested > pageSizeMax) {
       return pageSizeMax;
     }
     return requested;
-  }
-    return requested > pageSizeMax ? pageSizeMax : requested;
   }
 }

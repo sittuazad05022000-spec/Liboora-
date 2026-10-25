@@ -146,6 +146,7 @@ final class AppContainer {
   /// Port-typed so that when `BC-25` Configuration is implemented, replacing
   /// the default-carrying adapter stays a change to this file alone.
   final MembershipConfig membershipConfig;
+  final DirectoryConfig directoryConfig;
   final AnalyticsProjections analytics;
 
   // ── Domain repositories / read models ────────────────────────────
@@ -518,10 +519,6 @@ final class AppContainer {
         seatAllocationStore.restore() +
         ledgerStore.restore();
 
-    final students = InMemoryStudentRepository(
-    studentStore,
-    directoryConfig: directoryConfig,
-  );
     // IMPL-407: BC-25 Configuration has no implementation yet, so the port is
     // satisfied by the adapter carrying PRD-004 §10.3's published defaults.
     // Task document L128 requires exactly this — build against the port with
@@ -530,6 +527,10 @@ final class AppContainer {
 
     const directoryConfig = DefaultDirectoryConfig();
 
+    final students = InMemoryStudentRepository(
+      studentStore,
+      directoryConfig: directoryConfig,
+    );
     final memberships = InMemoryMembershipRepository(membershipStore);
     final membershipPlans = InMemoryMembershipPlanRepository(
       membershipPlanStore,

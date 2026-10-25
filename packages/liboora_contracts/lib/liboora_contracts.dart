@@ -32,3 +32,4 @@ export 'src/ports/person_identity_factory.dart';
 export 'src/ports/random_source.dart';
 export 'src/ports/telemetry.dart';
 export 'src/ports/tenant_context.dart';
+export 'src/ports/directory_config.dart';

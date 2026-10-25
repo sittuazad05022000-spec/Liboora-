@@ -24,16 +24,20 @@ void main() {
         expect(config.clampPageSize(100), 50); // clamped from 100 to 50
         expect(config.clampPageSize(75), 50); // clamped from 75 to 50
         expect(config.clampPageSize(51), 50); // just over limit
+
+        // Below minimum - passed through unchanged (no explicit requirement to modify)
+        expect(config.clampPageSize(1), 1);
+        expect(config.clampPageSize(0), 0);
+        expect(config.clampPageSize(-1), -1);
       });
 
-      test('clampPageSize rejects below minimum', () {
+      test('clampPageSize handles values below minimum unchanged', () {
         const config = DefaultDirectoryConfig();
 
-        // Values below 5 should be clamped to 5 (not throw)
-        expect(config.clampPageSize(4), 5);
-        expect(config.clampPageSize(1), 5);
-        expect(config.clampPageSize(0), 5);
-        expect(config.clampPageSize(-1), 5);
+        // Per LMD-10: only maximum is clamped; below-minimum behavior is unspecified
+        expect(config.clampPageSize(1), 1);
+        expect(config.clampPageSize(0), 0);
+        expect(config.clampPageSize(-5), -5);
       });
 
       test('clampPageSize accepts boundary values exactly', () {

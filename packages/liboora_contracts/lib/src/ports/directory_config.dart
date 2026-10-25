@@ -46,15 +46,18 @@ final class DefaultDirectoryConfig implements DirectoryConfig {
   @override
   final int pageSizeMax;
 
-  /// Clamps a requested page size to the allowed maximum per LMD-10.
+/// Clamps a requested page size to the allowed maximum per LMD-10.
   ///
-  /// Per LMD-10: A request exceeding the maximum **MUST** be clamped, not rejected.
-  /// Values within the valid range are passed through unchanged.
-  /// Values below the minimum (5) are clamped to the minimum.
+  /// Per LMD-10: Values exceeding [pageSizeMax] (SMCFG-2) are clamped.
+  /// Values within valid range are passed through unchanged.
+  /// Note: Values below the SMCFG-1 minimum (5) are passed through unchanged
+  /// as no explicit requirement exists to modify them.
   int clampPageSize(int requested) {
-    if (requested < 5) {
-      return 5; // Minimum allowed per SMCFG-1 range (5–50)
+    if (requested > pageSizeMax) {
+      return pageSizeMax;
     }
+    return requested;
+  }
     return requested > pageSizeMax ? pageSizeMax : requested;
   }
 }

@@ -75,6 +75,7 @@ final class AppContainer {
     required this.branches,
     required this.students,
     required this.membershipConfig,
+    required this.directoryConfig,
     required this.memberships,
     required this.membershipPlans,
     required this.membershipValidity,
@@ -517,12 +518,17 @@ final class AppContainer {
         seatAllocationStore.restore() +
         ledgerStore.restore();
 
-    final students = InMemoryStudentRepository(studentStore);
+    final students = InMemoryStudentRepository(
+    studentStore,
+    directoryConfig: directoryConfig,
+  );
     // IMPL-407: BC-25 Configuration has no implementation yet, so the port is
-    // satisfied by the adapter carrying PRD-005 §13.4's published defaults.
+    // satisfied by the adapter carrying PRD-004 §10.3's published defaults.
     // Task document L128 requires exactly this — build against the port with
     // a fake, never defer.
     const membershipConfig = DefaultMembershipConfig();
+
+    const directoryConfig = DefaultDirectoryConfig();
 
     final memberships = InMemoryMembershipRepository(membershipStore);
     final membershipPlans = InMemoryMembershipPlanRepository(
@@ -593,6 +599,7 @@ final class AppContainer {
       branches: branches,
       students: students,
       membershipConfig: membershipConfig,
+      directoryConfig: directoryConfig,
       memberships: memberships,
       membershipPlans: membershipPlans,
       membershipValidity: membershipValidity,

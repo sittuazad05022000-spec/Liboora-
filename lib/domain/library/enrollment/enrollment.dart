@@ -1,4 +1,5 @@
 /// **BC-01 Enrollment** — public barrel.
+/// BC-01 Enrollment — public barrel.
 library;
 
 export 'domain/student_record.dart';
@@ -69,8 +70,10 @@ final class _StudentOrderKey implements Comparable<_StudentOrderKey> {
 }
 
 final class InMemoryStudentRepository implements StudentRepository {
-  InMemoryStudentRepository(this._store);
+  InMemoryStudentRepository(this._store, {DirectoryConfig? directoryConfig})
+      : _config = directoryConfig ?? const DefaultDirectoryConfig();
   final TenantPartitionedStore<StudentRecord> _store;
+  final DirectoryConfig _config;
 
   static final Random _secureRandom = Random.secure();
 
@@ -103,15 +106,20 @@ final class InMemoryStudentRepository implements StudentRepository {
   /// it as opaque (PG-2); malformed input is a domain error not a silent
   /// reset (PG-4). Bounded-read traverses the per-tenant ordered index;
   /// [cursor] is a server-side anchor handle, not an offset.
-  PaginatedStudents paginatedList({String? cursor}) {
+  /// [pageSize] — the number of records to return; if null, uses [SMCFG-1]
+  /// default (20). Any value exceeding [SMCFG-2] maximum (50) is **clamped**
+  /// per LMD-10.
+  PaginatedStudents paginatedList({String? cursor, int? pageSize}) {
     final tenant = _store.currentTenantId;
     final index = _ordered[tenant];
     // Lazy-sync on first paginated call for tenants seeded before this patch.
     if (index == null || index.length != _store.count) _rebuildOrdered(tenant);
     final ordered = _ordered[tenant]!;
     final keys = _orderedKeys[tenant]!;
+    // Clamp to default if not provided, then enforce maximum per LMD-10.
+    final clampedSize = _config.clampPageSize(pageSize ?? _config.pageSizeDefault);
     if (cursor == null) {
-      return _pageFrom(ordered, null, keys);
+      return _pageFrom(ordered, null, keys, clampedSize);
     }
     final entry = _cursorRegistry[cursor];
     if (entry == null || entry.tenantId != tenant) {
@@ -120,16 +128,14 @@ final class InMemoryStudentRepository implements StudentRepository {
         'Invalid cursor.',
       );
     }
-    return _pageFrom(ordered, entry.anchorKey, keys);
+    return _pageFrom(ordered, entry.anchorKey, keys, clampedSize);
   }
 
   PaginatedStudents _pageFrom(
     SplayTreeMap<_StudentOrderKey, StudentRecord> ordered,
     _StudentOrderKey? anchorKey,
-    List<_StudentOrderKey> keys,
-  ) {
-    const pageSize =
-        20; // UNRATIFIED operational default (existing feed(limit:12) class; NOT a CFG-* / NFR)
+    List<_StudentOrderKey> keys, [int pageSize = 20,
+  ]) {
     final page = <StudentRecord>[];
     _StudentOrderKey? lastKey;
 

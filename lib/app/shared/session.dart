@@ -316,8 +316,11 @@ final class SessionController extends ChangeNotifier {
   /// Paginated roster for PG-1..PG-4. Client treats [cursor] as opaque (PG-2);
   /// server generates it (PG-1). Malformed cursor → DomainError; never silent
   /// reset (PG-4). Existing [students] is preserved for non-paginated consumers.
-  PaginatedStudents studentsPage({String? cursor}) =>
-      container.students.paginatedList(cursor: cursor);
+  ///
+  /// [pageSize] — optional override per LMD-10; values exceeding [SMCFG-2] maximum
+  /// are clamped, not rejected. Null uses [SMCFG-1] default.
+  PaginatedStudents studentsPage({String? cursor, int? pageSize}) =>
+      container.students.paginatedList(cursor: cursor, pageSize: pageSize);
 
   StudentRecord? studentById(StudentRecordId id) => container.students.byId(id);
 

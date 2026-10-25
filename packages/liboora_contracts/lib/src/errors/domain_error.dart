@@ -24,6 +24,7 @@ enum DomainErrorCode {
 
   // ── Enrollment (BC-01) ──────────────────────────────────
   duplicateEnrollmentNumber,
+  personAlreadyEnrolled,
   guardianRequiredForMinor,
   contactChannelRequired,
   cannotArchiveWithOpenDues,
@@ -304,6 +305,7 @@ extension DomainErrorCodeProjection on DomainErrorCode {
     DomainErrorCode.receiptImmutable => ExternalOutcome.xNotPermitted,
 
     DomainErrorCode.duplicateEnrollmentNumber ||
+    DomainErrorCode.personAlreadyEnrolled ||
     DomainErrorCode.guardianRequiredForMinor ||
     DomainErrorCode.contactChannelRequired ||
     DomainErrorCode.overlappingMembershipTerm ||

@@ -341,6 +341,26 @@ final class EnrollStudent {
       );
     }
 
+    // SM-10.2 (b): a person has at most ONE non-archived StudentRecord per
+    // tenant. The uniqueness is partial — an archived record must not block
+    // re-enrolment, but two live records would break the 1:1 (tenant, person)
+    // invariant (SM-INV-6). `all()` is tenant-scoped by the store, so this
+    // check is inherently tenant-isolated: the same person at another library
+    // yields a second record with the SAME PersonId (ID-5), never a conflict
+    // here.
+    final existing = repo.all().where((s) => s.personId == personId);
+    if (existing.isNotEmpty &&
+        existing.any((s) => s.status != EnrollmentStatus.archived)) {
+      throw DomainError(
+        DomainErrorCode.personAlreadyEnrolled,
+        '$fullName is already enrolled as ${existing.first.fullName}.',
+        context: {
+          'existingStudentRecordId': existing.first.id.value,
+          'existingStatus': existing.first.status.name,
+        },
+      );
+    }
+
     // Aggregate constructor enforces its own invariants — it will throw for
     // a minor without a guardian, or no contact channel.
     final student = StudentRecord(

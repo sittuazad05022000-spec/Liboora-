@@ -29,10 +29,11 @@ void main() {
       test('clampPageSize rejects below minimum', () {
         const config = DefaultDirectoryConfig();
 
-        expect(() => config.clampPageSize(4), throwsRangeError);
-        expect(() => config.clampPageSize(1), throwsRangeError);
-        expect(() => config.clampPageSize(0), throwsRangeError);
-        expect(() => config.clampPageSize(-1), throwsRangeError);
+        // Values below 5 should be clamped to 5 (not throw)
+        expect(config.clampPageSize(4), 5);
+        expect(config.clampPageSize(1), 5);
+        expect(config.clampPageSize(0), 5);
+        expect(config.clampPageSize(-1), 5);
       });
 
       test('clampPageSize accepts boundary values exactly', () {

@@ -48,14 +48,12 @@ final class DefaultDirectoryConfig implements DirectoryConfig {
 
   /// Clamps a requested page size to the allowed maximum per LMD-10.
   ///
-  /// Throws `RangeError` if [requested] is below the minimum (5).
-  /// Returns [pageSizeMax] if [requested] exceeds it.
-  /// Else returns [requested] unchanged.
+  /// Per LMD-10: A request exceeding the maximum **MUST** be clamped, not rejected.
+  /// Values within the valid range are passed through unchanged.
+  /// Values below the minimum (5) are clamped to the minimum.
   int clampPageSize(int requested) {
     if (requested < 5) {
-      throw RangeError(
-        'Page size $requested is below the minimum of 5',
-      );
+      return 5; // Minimum allowed per SMCFG-1 range (5–50)
     }
     return requested > pageSizeMax ? pageSizeMax : requested;
   }

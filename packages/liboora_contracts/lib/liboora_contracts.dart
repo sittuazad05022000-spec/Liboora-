@@ -21,6 +21,7 @@ export 'src/errors/domain_error.dart';
 export 'src/events/domain_event.dart';
 
 // ── Universal ports ──────────────────────────────────────────
+export 'src/ports/account_resolution.dart';
 export 'src/ports/clock.dart';
 export 'src/ports/durable_store.dart';
 export 'src/ports/file_access.dart';

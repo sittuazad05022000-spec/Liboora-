@@ -631,3 +631,29 @@ final class AuthService {
     return buffer.toString();
   }
 }
+
+/// E-11 Account resolution: resolves an AccountId to AccountInfo.
+///
+/// Implementation of the E-11 sync port. Resolves accounts by their
+/// globally-unique `AccountId`. Used by Enrollment to obtain a `PersonId`
+/// and tenant roles without creating accounts.
+final class AccountResolutionImpl implements AccountResolution {
+  AccountResolutionImpl(this._accounts);
+
+  final List<Account> _accounts;
+
+  @override
+  AccountInfo? byId(AccountId accountId) {
+    for (final a in _accounts) {
+      if (a.id == accountId) {
+        final rolesByTenant = <String, Set<String>>{};
+        for (final entry in a.roles.entries) {
+          rolesByTenant[entry.key] =
+              entry.value.map((r) => r.name).toSet();
+        }
+        return AccountInfo(personId: a.personId, rolesByTenant: rolesByTenant);
+      }
+    }
+    return null;
+  }
+}

@@ -141,7 +141,10 @@ void main() {
     test('archiving with a positive balance is refused', () {
       final rec = _build();
       expect(
-        () => rec.archive(outstandingBalance: Money.rupees(500)),
+        () => rec.archive(
+          outstandingBalance: Money.rupees(500),
+          at: DateTime.utc(2026, 2, 1, 10),
+        ),
         throwsA(
           isA<DomainError>().having(
             (e) => e.code,
@@ -153,12 +156,16 @@ void main() {
       // The refusal must leave the aggregate unchanged — a half-applied
       // transition is worse than a refused one.
       expect(rec.status, EnrollmentStatus.active);
+      expect(rec.archivedAt, isNull);
     });
 
     test('archiving with a zero balance succeeds', () {
       final rec = _build();
-      rec.archive(outstandingBalance: Money.zero);
+      final at = DateTime.utc(2026, 2, 1, 10);
+      rec.archive(outstandingBalance: Money.zero, at: at);
       expect(rec.status, EnrollmentStatus.archived);
+      // SM-10.4: the archive carries the timestamp.
+      expect(rec.archivedAt, at);
     });
 
     test('the balance is SUPPLIED, never read by this aggregate', () {
@@ -167,10 +174,14 @@ void main() {
       // number — there is no no-arg overload to fall back on.
       final rec = _build();
       expect(
-        () => rec.archive(outstandingBalance: Money.zero),
+        () => rec.archive(
+          outstandingBalance: Money.zero,
+          at: DateTime.utc(2026, 2, 1, 10),
+        ),
         returnsNormally,
       );
       expect(rec.status, EnrollmentStatus.archived);
+      expect(rec.archivedAt, isNotNull);
     });
   });
 }

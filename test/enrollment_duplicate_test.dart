@@ -116,7 +116,10 @@ void main() {
         dateOfBirth: DateTime.utc(1997, 5, 5),
         personId: personId,
       );
-      first.archive(outstandingBalance: Money.zero);
+      first.archive(
+        outstandingBalance: Money.zero,
+        at: c.clock.now(),
+      );
       c.students.save(first);
 
       // The archived record must not block a fresh enrolment (SM-10.2 (b)

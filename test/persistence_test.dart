@@ -137,6 +137,29 @@ void main() {
       expect(r.guardian, isNull);
       expect(r.photoRef, isNull);
       expect(r.status, EnrollmentStatus.active);
+      expect(r.archivedAt, isNull);
+    });
+
+    test('1/6 StudentRecord — an archived record keeps its archivedAt', () {
+      final archivedOn = DateTime.utc(2026, 5, 2, 14, 30);
+      final original = StudentRecord(
+        id: const StudentRecordId('sr_3'),
+        enrollmentNumber: 'EN-0003',
+        fullName: 'Archived Student',
+        phone: '9810000003',
+        dateOfBirth: DateTime.utc(1990, 1, 1),
+        enrolledOn: _t0,
+        personId: const PersonId('per_3'),
+        status: EnrollmentStatus.archived,
+        archivedAt: archivedOn,
+      );
+
+      final r = decodeStudentRecord(encodeStudentRecord(original));
+
+      // SM-10.4: the archive timestamp must survive the round trip, because
+      // restore ordering (SM-3.14a/b) is decided by archivedAt descending.
+      expect(r.status, EnrollmentStatus.archived);
+      expect(r.archivedAt, archivedOn);
     });
 
     test('2/6 Membership — snapshots survive, money keeps minor units', () {
@@ -771,6 +794,46 @@ void main() {
       expect(durable.readAll('student_records'), {'t_a::x': 'one'});
       expect(durable.readAll('memberships'), {'t_a::x': 'two'});
       expect(durable.readAll('fee_ledgers'), isEmpty);
+    });
+
+    test('an archived record retains its archivedAt through a write/restore '
+        'cycle', () {
+      // SM-10.4: archive is a status plus timestamp. It must not be the case
+      // that the timestamp lives only in memory — a restored archive must know
+      // when it happened, because SM-3.14a/b order restore targets by
+      // archivedAt descending.
+      final durable = InMemoryKeyValueStore();
+      final tenant = _FakeTenantContext();
+      final store = TenantPartitionedStore<StudentRecord>(
+        tenant,
+        durable: durable,
+        namespace: 'student_records',
+        encode: encodeStudentRecord,
+        decode: decodeStudentRecord,
+      );
+      final archivedOn = DateTime.utc(2026, 6, 1, 9, 30);
+
+      tenant.enter('t_a');
+      store.put('sr_1', record('sr_1', 'A')..archive(
+        outstandingBalance: Money.zero,
+        at: archivedOn,
+      ));
+
+      // "Restart": a fresh store over the same storage.
+      final second = _FakeTenantContext();
+      final reader = TenantPartitionedStore<StudentRecord>(
+        second,
+        durable: durable,
+        namespace: 'student_records',
+        encode: encodeStudentRecord,
+        decode: decodeStudentRecord,
+      );
+      expect(reader.restore(), 1);
+
+      second.enter('t_a');
+      final restored = reader.get('sr_1');
+      expect(restored!.status, EnrollmentStatus.archived);
+      expect(restored.archivedAt, archivedOn);
     });
   });
 

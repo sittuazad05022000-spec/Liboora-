@@ -109,6 +109,7 @@ String encodeStudentRecord(StudentRecord s) => jsonEncode({
   'enrolledOn': _date(s.enrolledOn),
   'personId': s.personId.value,
   'status': s.status.name,
+  'archivedAt': s.archivedAt == null ? null : _date(s.archivedAt!),
   'photoRef': s.photoRef?.value,
   'guardian': s.guardian == null
       ? null
@@ -135,6 +136,7 @@ StudentRecord decodeStudentRecord(String raw) {
     // constructor would have rejected.
     personId: PersonId(m['personId']! as String),
     status: _readEnum(EnrollmentStatus.values, m['status'], (e) => e.name),
+    archivedAt: _readDateOrNull(m['archivedAt']),
     photoRef: m['photoRef'] == null ? null : FileRef(m['photoRef']! as String),
     guardian: g == null
         ? null

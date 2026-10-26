@@ -39,6 +39,7 @@ final class StudentRecord {
     this.guardian,
     required this.personId,
     this.status = EnrollmentStatus.active,
+    this.archivedAt,
     this.photoRef,
   }) {
     _assertInvariants();
@@ -62,6 +63,14 @@ final class StudentRecord {
   final PersonId personId;
 
   EnrollmentStatus status;
+
+  /// When this record was archived — SM-10.4: *"Archive MUST be a status value
+  /// plus timestamp, not a row deletion."* Null while the record is anything
+  /// other than [EnrollmentStatus.archived]. Also the deterministic tiebreak
+  /// and restore target of `SM-3.14a` / `SM-3.14b`, which order by
+  /// `archivedAt` descending.
+  DateTime? archivedAt;
+
   FileRef? photoRef;
 
   int ageOn(DateTime when) {
@@ -113,7 +122,12 @@ final class StudentRecord {
   /// Invariant: cannot archive with an outstanding balance. The caller
   /// supplies the balance from BC-05 (edge E-09) — Enrollment does not read
   /// the fee ledger directly.
-  void archive({required Money outstandingBalance}) {
+  ///
+  /// [at] is the moment of archiving, supplied by the caller's Clock. SM-10.4
+  /// requires the archive to carry a timestamp, and `X-09` forbids
+  /// `DateTime.now()` in domain code, so the instant is injected rather than
+  /// read — the same reason [enrolledOn] is a constructor value.
+  void archive({required Money outstandingBalance, required DateTime at}) {
     if (outstandingBalance.isPositive) {
       throw DomainError(
         DomainErrorCode.cannotArchiveWithOpenDues,
@@ -122,5 +136,6 @@ final class StudentRecord {
       );
     }
     status = EnrollmentStatus.archived;
+    archivedAt = at;
   }
 }

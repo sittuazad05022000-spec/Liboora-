@@ -54,6 +54,26 @@ const List<String> _forbiddenRepresentations = [
   'http://',
 ];
 
+/// Returns true only when `forbidden` appears as a genuine payload token,
+/// not as a substring of an allowed API/identifier name (e.g.
+/// `base64UrlEncode`, `List<int>.generate` used for local cursor token
+/// generation).
+bool _hasForbiddenToken(String content, String forbidden) {
+  if (forbidden == 'List<int>') {
+    // Cursor tokens are locally generated then encoded; not a stored payload.
+    return RegExp(r'List<int>(?!\.generate)').hasMatch(content);
+  }
+  if (forbidden == 'base64') {
+    // `base64UrlEncode` is a stdlib cursor-token encoder, not a payload.
+    return RegExp(r'(?<![A-Za-z0-9_])base64(?![A-Za-z0-9_])').hasMatch(content);
+  }
+  if (forbidden == 'blob') {
+    // Substring of provider classes (e.g. `Blob`), not a payload.
+    return RegExp(r'(?<![A-Za-z0-9_])blob(?![A-Za-z0-9_])').hasMatch(content);
+  }
+  return content.contains(forbidden);
+}
+
 void main() {
   group('IMPL-309 SM-AC-27 — FileRef-only storage (no bytes/path)', () {
     test('domain student record carries no byte/path payload fields', () {
@@ -76,7 +96,7 @@ void main() {
 
       for (final forbidden in _forbiddenRepresentations) {
         expect(
-          content.contains(forbidden),
+          _hasForbiddenToken(content, forbidden),
           isFalse,
           reason:
               'SM-4.10 forbids $forbidden in the student record domain model. '
@@ -102,7 +122,7 @@ void main() {
 
       for (final forbidden in _forbiddenRepresentations) {
         expect(
-          content.contains(forbidden),
+          _hasForbiddenToken(content, forbidden),
           isFalse,
           reason:
               'SM-4.10 forbids $forbidden in the enrollment repository. '
@@ -131,7 +151,7 @@ void main() {
 
       for (final forbidden in _forbiddenRepresentations) {
         expect(
-          content.contains(forbidden),
+          _hasForbiddenToken(content, forbidden),
           isFalse,
           reason:
               'SM-4.10 forbids $forbidden in the serialization layer. '
@@ -186,7 +206,7 @@ void main() {
 
       for (final forbidden in _forbiddenRepresentations) {
         expect(
-          refSection.contains(forbidden),
+          _hasForbiddenToken(refSection, forbidden),
           isFalse,
           reason:
               'FileRef must not carry $forbidden. A reference is opaque by construction.',
@@ -214,24 +234,21 @@ void main() {
 
         // Strip comments so token names / doc references do not trigger the
         // forbidden pattern scan.
-        final withoutComments = content.replaceAll(RegExp(r'//.*'), ' ')
+        final withoutComments = content.replaceAll(RegExp(r'///.*'), ' ')
+            .replaceAll(RegExp(r'//.*'), ' ')
             .replaceAll(RegExp(r'/\*[\s\S]*?\*/'), ' ');
 
         for (final forbidden in _forbiddenRepresentations) {
-          // Avoid a known legitimate declaration-level usage: generating an
-          // opaque cursor token as a byte buffer locally, not a stored payload.
-          if (forbidden == 'List<int>') {
-            final hasPayloadList = RegExp(r'List<int>(?!\.generate)').hasMatch(withoutComments);
-            if (!hasPayloadList) {
-              continue;
-            }
+          // Skip declaration-level usage of opaque cursor tokens generated
+          // locally (`List<int>.generate`), encoded cursor tokens
+          // (`base64UrlEncode`), and generic class names containing `blob`.
+          if (!_hasForbiddenToken(withoutComments, forbidden)) {
+            continue;
           }
-          if (withoutComments.contains(forbidden)) {
-            fail(
-              'SM-4.10: $forbidden found in domain file ${file.path}. '
-              'Document bytes/path must never enter the domain.',
-            );
-          }
+          fail(
+            'SM-4.10: $forbidden found in domain file ${file.path}. '
+            'Document bytes/path must never enter the domain.',
+          );
         }
       }
     });

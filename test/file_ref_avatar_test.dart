@@ -4,6 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/app/shared/widgets/common.dart';
+import 'package:liboora/bootstrap/codecs.dart';
+import 'package:liboora/domain/library/enrollment/domain/student_record.dart';
 import 'package:liboora/platform/services/services.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
@@ -111,6 +113,39 @@ void main() {
 
       expect(find.text('IMAGE'), findsOneWidget);
     });
+
+    testWidgets('BC-29 outage renders monogram and does not break persistence',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: FileRefAvatar(
+              name: 'Ada Lovelace',
+              fileRef: 'photo-1',
+              resolver: _resolverBc29Outage,
+            ),
+          ),
+        ),
+      );
+      expect(find.text('AL'), findsOneWidget);
+    });
+  });
+
+  test('BC-29 outage does not break student-record encode/decode', () {
+    final studentRecord = StudentRecord(
+      id: const StudentRecordId('sr_test'),
+      enrollmentNumber: 'EN-9999',
+      fullName: 'Test Student',
+      phone: '9876543210',
+      dateOfBirth: DateTime.utc(2000, 1, 1),
+      enrolledOn: DateTime.utc(2025, 1, 1),
+      personId: const PersonId('per_test'),
+      photoRef: FileRef('photo-1'),
+    );
+    final encoded = encodeStudentRecord(studentRecord);
+    final decoded = decodeStudentRecord(encoded);
+    expect(decoded.photoRef, equals(FileRef('photo-1')));
+    expect(decoded.fullName, 'Test Student');
   });
 }
 
@@ -122,3 +157,6 @@ Widget _resolverThrowing(String refValue) =>
     throw const DomainError(DomainErrorCode.forbidden, 'Not permitted.');
 
 Widget _resolverSucceeding(String refValue) => const Text('IMAGE');
+
+Widget _resolverBc29Outage(String refValue) =>
+    throw const DomainError(DomainErrorCode.notFound, 'BC-29 unavailable.');

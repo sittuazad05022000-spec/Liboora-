@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **ADR** | `ADR-0178` |
-| **Status** | **Proposed** |
+| **Status** | **`Accepted`** — by a one-act, direct, explicit conferral of **Architecture Owner** authority by the human principal of this engagement, on the `ADR-0032` §5.2 / `ADR-0033` §7.2 precedent. Same disclosure: **no ARB quorum, attendee list, sign-off date or Security review is asserted**, and *a conferral for one act is not a standing licence* (`ADR-0033` §7.1) |
 | **Deciders** | **Architecture Owner** |
 | **Supersedes** | Nothing |
 | **Amends** | **No ranked document's content.** Proposal for future implementation |
@@ -95,3 +95,35 @@ How must authorization be arranged for profile photo storage that serves tenant-
 | Date | Change |
 |---|---|
 | 2026-10-27 | **Created `Proposed`**. Documents the authorization requirements for profile photo storage pending implementation. Does not amend any ranked document. |
+| 2026-10-27 | **Accepted** by a one-act, direct, explicit conferral of **Architecture Owner** authority by the human principal of this engagement — §8. No ranked document amended; `FIL-GAP-008`/`FIL-GAP-012` remain OPEN; no implementation authorized |
+
+---
+
+## 8. Acceptance record
+
+**Status moved `Proposed` → `Accepted` under the authority named in the Status row.**
+
+**Authority — recorded as it was given, verbatim:**
+
+> *"I, the human principal of this engagement, explicitly confer authority for the single act of accepting
+> ADR-0178, 'profile-photo-storage-authorization', under the Architecture Owner approval mechanism described in
+> ADR-0032 §5.2 and ADR-0033 §7.2. This is a one-act conferral limited exclusively to ADR-0178. It does not grant
+> standing authority for any other ADR or governance decision."*
+
+**Mechanism check:** `PRD_OWNERSHIP_MODEL.md` §5 (**L284**) — *"Only the Architecture Owner approves."* The
+approval is exercised here by the human principal under the one-act conferral pattern recorded at `ADR-0032` §5.2
+and `ADR-0033` §7.2.
+
+**Disclosure, per the convention:**
+
+| Not claimed |
+|---|
+| **No ARB quorum, attendee list, sign-off date or Security review is asserted** (`ADR-0032` §5.2 · `ADR-0033` §7.2 · `ADR-0046` L8) |
+| **No personal name is recorded** (`PRD_OWNERSHIP_MODEL.md` §7 rule 4) |
+| **A conferral for one act is not a standing licence** (`ADR-0033` §7.1) — this acceptance confers no standing authority |
+| **No implementation is authorized.** §5 stands: storage, retrieval, rendering, upload limits, retention and deletion are **not** licensed by this acceptance |
+
+**Acceptance rationale:** this ADR passes the acceptance test every accepted ADR here must pass — it contains **no
+question addressed to another authority**: every matter it does not decide (`FIL-GAP-008` retention/legal,
+`FIL-GAP-012` BC-12 sharing, upload/format/retention limits) is **named, given an owner and left OPEN**, and nothing
+is invented to close them. `FIL-GAP-008` **remains OPEN** pending the retention/legal determination.

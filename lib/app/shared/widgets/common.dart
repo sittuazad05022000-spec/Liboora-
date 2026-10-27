@@ -6,7 +6,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../theme.dart';
 
@@ -237,26 +236,22 @@ class Monogram extends StatelessWidget {
 
 /// Avatar boundary for an opaque E-22 file reference.
 ///
-/// The widget resolves the reference before handing it to an optional media
-/// renderer. Resolution failures are display-only failures: the surrounding
-/// record remains usable and the existing monogram is rendered instead.
+/// The resolver handles E-22 authorization and BC-29 outage internally.
+/// The widget itself is display-only: it renders [Monogram] if the resolver
+/// returns null or throws, and otherwise renders the widget returned by the resolver.
 class FileRefAvatar extends StatelessWidget {
   const FileRefAvatar({
     super.key,
     required this.name,
-    required this.fileAccess,
-    this.fileRef,
-    this.consumer = const BoundedContextId('BC-01'),
+    required this.fileRef,
+    required this.resolver,
     this.size = 40,
-    this.resolved,
   });
 
   final String name;
-  final FileAccess fileAccess;
-  final FileRef? fileRef;
-  final BoundedContextId consumer;
+  final String? fileRef;
+  final Widget? Function(String refValue) resolver;
   final double size;
-  final Widget Function(BuildContext context, FileRef ref)? resolved;
 
   @override
   Widget build(BuildContext context) {
@@ -264,13 +259,12 @@ class FileRefAvatar extends StatelessWidget {
     if (ref == null) return Monogram(name, size: size);
 
     try {
-      final resolvedRef = fileAccess.resolve(consumer, ref);
-      if (resolvedRef == null) return Monogram(name, size: size);
-      return resolved?.call(context, resolvedRef) ?? Monogram(name, size: size);
-    } on DomainError {
-      return Monogram(name, size: size);
+      final resolved = resolver(ref);
+      if (resolved == null) return Monogram(name, size: size);
+      return resolved;
     } catch (_) {
-      // A BC-29 adapter outage must not prevent the record screen from loading.
+      // Authorization failure (DomainError.forbidden), unknown ref,
+      // or BC-29 adapter outage — all render the placeholder.
       return Monogram(name, size: size);
     }
   }

@@ -1,3 +1,6 @@
+/// E-22 file access integration tests for IMPL-309, SM-4.11 / SM-4.12.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/app/shared/widgets/common.dart';
@@ -31,42 +34,91 @@ void main() {
         isNull,
       );
     });
+
+    test('permited consumer receives the reference for a seeded object', () {
+      final access = InProcessFileAccess();
+      final ref = FileRef('photo-seeded');
+      access.seed(ref);
+
+      expect(
+        access.resolve(const BoundedContextId('BC-01'), ref),
+        equals(ref),
+      );
+    });
   });
 
   group('FileRefAvatar', () {
-    testWidgets('renders the monogram when media resolution is unavailable',
-        (tester) async {
-      final access = _UnavailableFileAccess();
-
+    testWidgets('renders the monogram when fileRef is null', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: FileRefAvatar(
-            name: 'Ada Lovelace',
-            fileRef: FileRef('photo-1'),
-            fileAccess: access,
+        const MaterialApp(
+          home: Scaffold(
+            body: FileRefAvatar(
+              name: 'Ada Lovelace',
+              fileRef: null,
+              resolver: _dummyResolver,
+            ),
           ),
         ),
       );
 
       expect(find.text('AL'), findsOneWidget);
     });
+
+    testWidgets('renders the monogram when resolver returns null', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: FileRefAvatar(
+              name: 'Ada Lovelace',
+              fileRef: 'photo-missing',
+              resolver: _dummyResolverReturningNull,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('AL'), findsOneWidget);
+    });
+
+    testWidgets('renders the monogram when resolver throws', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: FileRefAvatar(
+              name: 'Ada Lovelace',
+              fileRef: 'photo-1',
+              resolver: _resolverThrowing,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('AL'), findsOneWidget);
+    });
+
+    testWidgets('renders resolved widget when resolver succeeds', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: FileRefAvatar(
+              name: 'Ada Lovelace',
+              fileRef: 'photo-1',
+              resolver: _resolverSucceeding,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('IMAGE'), findsOneWidget);
+    });
   });
 }
 
-final class _UnavailableFileAccess implements FileAccess {
-  @override
-  bool isPermittedConsumer(BoundedContextId context) => true;
+Widget _dummyResolver(String refValue) => const SizedBox.shrink();
 
-  @override
-  FileRef? resolve(BoundedContextId context, FileRef ref) {
-    throw const DomainError(DomainErrorCode.notFound, 'Unavailable.');
-  }
+Widget? _dummyResolverReturningNull(String refValue) => null;
 
-  @override
-  void grantRead(
-    BoundedContextId context,
-    FileRef ref, {
-    required PersonId recipient,
-    required EligibilityDecisionRef decision,
-  }) {}
-}
+Widget _resolverThrowing(String refValue) =>
+    throw const DomainError(DomainErrorCode.forbidden, 'Not permitted.');
+
+Widget _resolverSucceeding(String refValue) => const Text('IMAGE');

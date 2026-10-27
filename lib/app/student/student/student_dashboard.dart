@@ -65,8 +65,16 @@ class StudentTodayPage extends StatelessWidget {
                   children: [
                     FileRefAvatar(
                       name: student?.fullName ?? '?',
-                      fileRef: student?.photoRef,
-                      fileAccess: s.container.fileAccess,
+                      fileRef: student?.photoRef?.value,
+                      resolver: (refValue) {
+                        final ref = FileRef(refValue);
+                        final resolvedRef = s.container.fileAccess.resolve(
+                          const BoundedContextId('BC-01'),
+                          ref,
+                        );
+                        if (resolvedRef == null) return null;
+                        return Monogram(student?.fullName ?? '?', size: 48);
+                      },
                       size: 48,
                     ),
                     const SizedBox(width: LiblSpace.md),

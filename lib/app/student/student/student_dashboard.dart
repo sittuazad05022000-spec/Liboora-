@@ -63,7 +63,12 @@ class StudentTodayPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Monogram(student?.fullName ?? '?', size: 48),
+                    FileRefAvatar(
+                      name: student?.fullName ?? '?',
+                      fileRef: student?.photoRef,
+                      fileAccess: s.container.fileAccess,
+                      size: 48,
+                    ),
                     const SizedBox(width: LiblSpace.md),
                     Expanded(
                       child: Column(

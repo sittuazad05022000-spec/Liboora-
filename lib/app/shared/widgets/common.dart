@@ -6,6 +6,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../theme.dart';
 
@@ -231,6 +232,47 @@ class Monogram extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Avatar boundary for an opaque E-22 file reference.
+///
+/// The widget resolves the reference before handing it to an optional media
+/// renderer. Resolution failures are display-only failures: the surrounding
+/// record remains usable and the existing monogram is rendered instead.
+class FileRefAvatar extends StatelessWidget {
+  const FileRefAvatar({
+    super.key,
+    required this.name,
+    required this.fileAccess,
+    this.fileRef,
+    this.consumer = const BoundedContextId('BC-01'),
+    this.size = 40,
+    this.resolved,
+  });
+
+  final String name;
+  final FileAccess fileAccess;
+  final FileRef? fileRef;
+  final BoundedContextId consumer;
+  final double size;
+  final Widget Function(BuildContext context, FileRef ref)? resolved;
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = fileRef;
+    if (ref == null) return Monogram(name, size: size);
+
+    try {
+      final resolvedRef = fileAccess.resolve(consumer, ref);
+      if (resolvedRef == null) return Monogram(name, size: size);
+      return resolved?.call(context, resolvedRef) ?? Monogram(name, size: size);
+    } on DomainError {
+      return Monogram(name, size: size);
+    } catch (_) {
+      // A BC-29 adapter outage must not prevent the record screen from loading.
+      return Monogram(name, size: size);
+    }
   }
 }
 

@@ -108,9 +108,10 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
-      for (var i = 1; i <= 45; i++) {
+      for (var i = 1; i <= 50; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
       }
 

@@ -870,6 +870,7 @@ final class AppContainer {
       // same storage.
       sessionStore: sessionStore,
       accountStore: accountStore,
+      accountResolution: accountResolution,
       auth: AuthService(
         accounts,
         clock: clock,

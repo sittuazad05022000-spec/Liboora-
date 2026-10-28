@@ -33,7 +33,6 @@ AuthService _service({
   required List<Account> accounts,
   required FixedClock clock,
   List<int> random = const [1, 2, 3, 4, 5, 6],
-  bool peek = true,
   PersonIdentityFactory? identities,
   OtpDeliveryChannel? delivery,
 }) => AuthService(
@@ -43,7 +42,6 @@ AuthService _service({
   ids: SequentialIdGenerator(),
   identities: identities ?? _identityService(clock),
   delivery: delivery ?? _noDelivery,
-  challengePeekEnabled: peek,
 );
 
 /// The unconfigured transport, as a test fixture.
@@ -53,20 +51,15 @@ AuthService _service({
 /// `no_orphan_ports_test` forbids. Test sources are not subject to that rule.
 const OtpDeliveryChannel _noDelivery = UnconfiguredOtpDelivery();
 
-/// Records every delivery attempt so a test can assert on the transport
-/// without reaching into `AuthService`'s private challenge store.
-final class _RecordingDelivery implements OtpDeliveryChannel {
-  final List<({String phone, String code})> sent = [];
-
-  @override
-  bool get isConfigured => true;
-
-  @override
-  String get channelName => 'recording';
-
-  @override
-  void deliver({required String phone, required String code}) =>
-      sent.add((phone: phone, code: code));
+/// Extracts the last code delivered to a phone from a recording transport —
+/// the one observable place a real user can see their code. The code lives in
+/// the delivered message, never in any [AuthService] API: removing the old
+/// peek accessor guarantees there is no other way out.
+String _lastCodeTo(_RecordingDelivery delivery, String phone) {
+  return delivery.sent
+      .where((s) => s.phone == phone)
+      .last
+      .code;
 }
 
 /// Every account carries a `PersonId` — the field is non-nullable, so a

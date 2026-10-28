@@ -36,7 +36,6 @@ final class SessionController extends ChangeNotifier {
   AuthSession? _session;
   Account? _verifiedAccount;
   BranchId _branch = kDemoBranch;
-  String? _otpHint;
   String? _error;
 
   /// Re-establish a session persisted by a previous run, if it is still valid.
@@ -109,12 +108,11 @@ final class SessionController extends ChangeNotifier {
   void _expireSession() {
     _session = null;
     _verifiedAccount = null;
-    _otpHint = null;
+    _error = null;
     container.sessionStore.clear();
     container.leaveScope();
   }
 
-  String? get otpHint => _otpHint;
   String? get error => _error;
 
   /// Whether this deployment can deliver a possession challenge at all.
@@ -189,10 +187,6 @@ final class SessionController extends ChangeNotifier {
     _error = null;
     _verifiedAccount = null;
     container.auth.requestOtp(phone.trim());
-    // Null unless this is a debug wiring. Under AR-7 a challenge now exists for
-    // every requested number, so this hint is uniform too — it no longer
-    // discriminates registered from unregistered.
-    _otpHint = container.auth.debugPeekChallenge(phone.trim());
     notifyListeners();
   }
 
@@ -238,7 +232,6 @@ final class SessionController extends ChangeNotifier {
       // the two would breach the requirement that a successful verification be
       // distinguishable from a failed one.
       _verifiedAccount = account;
-      _otpHint = null;
       _error =
           'Number verified. This account is not a member of any library yet.';
       notifyListeners();
@@ -246,7 +239,6 @@ final class SessionController extends ChangeNotifier {
     }
 
     _session = s;
-    _otpHint = null;
 
     // Persist so the next launch can restore it (P1). Written only after a
     // session was actually ISSUED — never after mere OTP verification, which
@@ -266,7 +258,6 @@ final class SessionController extends ChangeNotifier {
   void signOut() {
     _session = null;
     _verifiedAccount = null;
-    _otpHint = null;
     _error = null;
 
     // AUTH-6.21 — termination must be immediate and IRREVERSIBLE, so the

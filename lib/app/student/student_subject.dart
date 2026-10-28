@@ -13,9 +13,10 @@
 /// architecture test `app_boundary_test.dart` caught it, which is what the test
 /// is for.
 ///
-/// ⭐ **Behaviour is unchanged.** Same lookups, same `null` for staff roles,
-/// same demo-guardian constant. Only the *location* moved, from shared code
-/// into the boundary that is the sole consumer.
+/// ⭐ **Behaviour is unchanged.** Same lookups, `null` for staff roles and for
+/// a parent with no link on record — the parent dashboard renders that state as
+/// "No child linked". Only the *location* moved, from shared code into the
+/// boundary that is the sole consumer.
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
@@ -23,18 +24,14 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 import '../../platform/identity/identity.dart';
 import '../shared/session.dart';
 
-/// Phone of the student this demo parent account is guardian to.
-///
-/// V1 has no Family Access context — the parent↔student link is a genuine gap
-/// (it belongs in a future BC, not in Identity and not in Enrollment). Hard-
-/// coding it here keeps the gap visible instead of inventing a wrong model.
-///
-/// ⚠ Moved verbatim from `app/shared/session.dart`. It is a **student-boundary**
-/// concern, so it belongs here; the gap it documents is untouched and still
-/// open.
-const String kDemoChildPhone = '9810000004';
-
 /// Resolves the student record a customer-facing session is *about*.
+///
+/// For a student, themselves; for a parent, the student they are linked to.
+/// The link is explicit (stored, keyed by the session holder's own authenticated
+/// phone) and never inferred — [kDemoChildPhone] was removed for exactly this
+/// reason. `null` for any other role — including staff, for whom the concept
+/// does not apply — and `null` for a parent with no link on record, which the
+/// parent dashboard renders as "No child linked".
 extension StudentSubject on SessionController {
   /// For a student, themselves; for a parent, their child. `null` for any
   /// other role — including staff, for whom the concept does not apply.
@@ -43,7 +40,7 @@ extension StudentSubject on SessionController {
     if (phone == null) return null;
     return switch (role) {
       AccessRole.student => container.studentAccountLinks[phone],
-      AccessRole.parent => container.studentAccountLinks[kDemoChildPhone],
+      AccessRole.parent => container.studentAccountLinks[phone],
       AccessRole.owner || AccessRole.manager || AccessRole.reception => null,
     };
   }

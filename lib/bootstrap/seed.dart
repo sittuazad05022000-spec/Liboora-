@@ -507,6 +507,14 @@ Future<void> _seedStudents(AppContainer c) async {
     records.add(student.id);
     c.studentAccountLinks[r.phone] = student.id;
 
+    // AC (D10-10): explicit parent → student link, keyed by the parent's own
+    // authenticated phone — the approved Option B model, not inferred. Sneha
+    // Verma (9810000004) is enrolled here; her registered parent, Suresh
+    // Verma (9810000005, account acc_parent), is linked to this record.
+    if (r.phone == '9810000004') {
+      c.studentAccountLinks['9810000005'] = student.id;
+    }
+
     final plan = _planFor(c, kDemoTenant, r.plan);
 
     // Membership starts staggered in the past so the dashboard shows a mix of

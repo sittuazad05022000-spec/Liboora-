@@ -384,13 +384,12 @@ final class AuthService {
     required PersonIdentityFactory identities,
     required OtpDeliveryChannel delivery,
     void Function(Account account)? onAccountChanged,
-    this.challengePeekEnabled = false,
   }) : _clock = clock,
-       _random = random,
-       _ids = ids,
-       _identities = identities,
-       _delivery = delivery,
-       _onAccountChanged = onAccountChanged;
+        _random = random,
+        _ids = ids,
+        _identities = identities,
+        _delivery = delivery,
+        _onAccountChanged = onAccountChanged;
 
   /// Adapter defaults. The normative bounds live in the locked challenge and
   /// lockout registers; these are the scaffold's configuration of them.
@@ -424,10 +423,6 @@ final class AuthService {
   /// (law **L2**) and a capability importing a domain module (law **L4**). The
   /// port inverts both.
   final PersonIdentityFactory _identities;
-
-  /// Debug affordance for a scaffold with no SMS gateway. Must be false in any
-  /// release wiring — a peek surface is a disclosure surface.
-  final bool challengePeekEnabled;
 
   /// Transport that actually carries the challenge to its subject.
   ///
@@ -507,11 +502,6 @@ final class AuthService {
     // line adds no observable difference between subjects (AR-7, F-02).
     _delivery.deliver(phone: phone, code: code);
   }
-
-  /// Debug-only retrieval of the issued code. Returns null unless the wiring
-  /// explicitly enabled it, and null for an unissued number either way.
-  String? debugPeekChallenge(String phone) =>
-      challengePeekEnabled ? _issued[phone]?.code : null;
 
   /// **Stage 1 — Authentication only** (AR-6).
   ///

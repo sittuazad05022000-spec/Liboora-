@@ -654,8 +654,6 @@ final class AppContainer {
           enabled: !const bool.fromEnvironment('dart.vm.product'),
           sink: debugPrint,
         ),
-        // Debug-only peek. False in any release build.
-        challengePeekEnabled: !const bool.fromEnvironment('dart.vm.product'),
       ),
       enrollStudent: EnrollStudent(
         repo: students,

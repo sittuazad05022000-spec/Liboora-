@@ -339,6 +339,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       final a = _student('1', enrollmentNumber: 'EN-100');

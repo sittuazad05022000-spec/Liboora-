@@ -29,7 +29,7 @@ class MoneyPage extends StatelessWidget {
     // All three sourced from the boundary — no direct domain access.
     final raisedAll = s.raisedAll;
     final receivedAll = s.receivedAll;
-    final receipts = s.receiptsAll();
+    final receipts = s.receiptsAll;
 
     final debtors = s.withOpenDues.toList()
       ..sort(

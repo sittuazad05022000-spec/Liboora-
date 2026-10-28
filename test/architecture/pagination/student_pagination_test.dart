@@ -127,8 +127,8 @@ void main() {
         cursor = page.nextCursor;
       }
 
-      expect(all.length, 45);
-      expect(all.map((s) => s.id.value).toSet(), hasLength(45));
+      expect(all.length, 50);
+      expect(all.map((s) => s.id.value).toSet(), hasLength(50));
     });
 
     test(

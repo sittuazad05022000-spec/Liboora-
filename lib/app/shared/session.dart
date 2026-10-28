@@ -347,6 +347,18 @@ final class SessionController extends ChangeNotifier {
 
   bool isInsideNow(StudentRecordId id) => container.library.isInsideNow(id);
 
+  /// The seat map (one [SeatOccupancyView] per labelled seat in this branch).
+  List<SeatOccupancyView> get seatMap => container.library.seatMap();
+
+  /// Summary counts for the occupancy meter.
+  ({int total, int occupied, int free}) get seatSummary =>
+      container.library.seatSummary();
+
+  /// Fraction of the currently-valid membership term elapsed (0.0–1.0),
+  /// for [StudentPlanPage]. Delegates to the boundary adapter.
+  double elapsedMembershipFraction(StudentRecordId id) =>
+      container.library.elapsedMembershipFraction(id);
+
   // ── Commands ────────────────────────────────────────────────────
 
   /// Wraps a use case so every failure becomes an operator-readable message

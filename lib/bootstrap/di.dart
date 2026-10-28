@@ -33,6 +33,7 @@ import 'clock.dart';
 import 'account_store.dart';
 import 'codecs.dart';
 import 'session_store.dart';
+import '../app/shared/library_boundary.dart';
 
 /// Branch display facts, flattened for the UI.
 ///
@@ -54,6 +55,229 @@ final class BranchView {
   final BranchId id;
   final String name;
   final String address;
+}
+
+/// The `app -> domain/library` port, implemented (TASK-D10 / ADR-0012 §3.4).
+///
+/// `app` declares `domain/library` under `ports:`, never `imports:` — the nine
+/// barrel imports the checker flagged were the last compile-time reaches of the
+/// UI into rank-8 aggregates. This adapter is the sanctioned replacement: the
+/// composition root is the one place permitted to know a port and its adapter,
+/// so every projection from `BC-01`..`BC-05` aggregates to the app-owned view
+/// records happens here, exactly as [provisionIdentityForEnrollment] and
+/// [branchViews] already do.
+///
+/// ⛔ It adds no behaviour and enforces no invariant: it copies display facts
+/// across the seam and forwards the two commands whose parameter types are
+/// domain-owned. Every business rule stays inside the domain use case.
+final class ContainerLibraryBoundary implements LibraryBoundary {
+  const ContainerLibraryBoundary(this._c);
+
+  final AppContainer _c;
+
+  DateTime get _today => _c.clock.today();
+
+  StudentView _studentView(StudentRecord r) => StudentView(
+        id: r.id,
+        fullName: r.fullName,
+        phone: r.phone,
+        enrollmentNumber: r.enrollmentNumber,
+        photoRef: r.photoRef,
+      );
+
+  /// Roster in the stable order the UI has always shown (MM-FR-030).
+  List<StudentView> _sorted() => _c.students.all()
+    ..sort(
+      (a, b) => a.fullName.compareTo(b.fullName),
+    );
+
+  static ReceiptView _receipt(Receipt r) => ReceiptView(
+        receiptNumber: r.receiptNumber,
+        amount: r.amount,
+        mode: PayInMode.values.byName(r.mode.name),
+        receivedOn: r.receivedOn,
+        collectedBy: r.collectedBy,
+      );
+
+  FeeLedgerView _ledgerView(FeeLedger l) => FeeLedgerView(
+        totalDue: l.totalDue,
+        totalReceived: l.totalReceived,
+        dues: [
+          for (final d in l.dues)
+            FeeDueView(
+              description: d.description,
+              dueOn: d.dueOn,
+              discount: d.discount,
+              netAmount: d.netAmount,
+            ),
+        ],
+        receipts: [for (final r in l.receipts) _receipt(r)],
+      );
+
+  SeatOccupancyView _occupancy(SeatOccupancy o) => SeatOccupancyView(
+        seatLabel: o.seat.label,
+        seatZone: o.seat.zone,
+        hasPowerSocket: o.seat.hasPowerSocket,
+        isOccupied: o.isOccupied,
+        studentName: o.studentName,
+        allocationId: o.allocation?.id,
+        allocatedOn: o.allocation?.allocatedOn,
+        untilEnd: o.allocation?.window.end,
+      );
+
+  @override
+  List<StudentView> roster() => [
+        for (final r in _sorted()) _studentView(r),
+      ];
+
+  @override
+  StudentPageView rosterPage({String? cursor, int? pageSize}) {
+    final page = _c.students.paginatedList(cursor: cursor, pageSize: pageSize);
+    return StudentPageView(
+      items: [for (final r in page.items) _studentView(r)],
+      nextCursor: page.nextCursor,
+    );
+  }
+
+  @override
+  StudentView? studentById(StudentRecordId id) {
+    final r = _c.students.byId(id);
+    return r == null ? null : _studentView(r);
+  }
+
+  @override
+  String nameOf(StudentRecordId id) =>
+      _c.students.byId(id)?.fullName ?? id.value;
+
+  @override
+  MembershipValidityView validityOf(StudentRecordId id) {
+    final v = _c.membershipValidity.forStudent(id, _today);
+    return MembershipValidityView(
+      isValid: v.isValid,
+      planName: v.planName,
+      validUntil: v.validUntil,
+      seatQuota: v.seatQuota,
+    );
+  }
+
+  @override
+  FeeLedgerView? ledgerOf(StudentRecordId id) {
+    final l = _c.ledgers.forStudent(id);
+    if (l == null) return null;
+    return _ledgerView(l);
+  }
+
+  @override
+  Money outstandingOf(StudentRecordId id) => _c.outstanding.forStudent(id);
+
+  @override
+  Money get totalOutstanding => _c.ledgers
+      .all()
+      .fold(Money.zero, (sum, l) => sum + l.balance);
+
+  @override
+  Money get raisedAll =>
+      _c.ledgers.all().fold(Money.zero, (sum, l) => sum + l.totalDue);
+
+  @override
+  Money get receivedAll =>
+      _c.ledgers.all().fold(Money.zero, (sum, l) => sum + l.totalReceived);
+
+  @override
+  List<ReceiptView> receiptsAll() {
+    final out = <ReceiptView>[
+      for (final l in _c.ledgers.all())
+        for (final r in l.receipts) _receipt(r),
+    ]..sort((a, b) => b.receivedOn.compareTo(a.receivedOn));
+    return out;
+  }
+
+  @override
+  List<StudentView> expiringSoon() => [
+        for (final s in _sorted())
+          if (_c.memberships
+              .forStudent(s.id)
+              .any((m) => m.expiringSoon(_today, within: 7)))
+            _studentView(s),
+      ];
+
+  @override
+  List<StudentView> withOpenDues() => [
+        for (final s in _sorted())
+          if (_c.outstanding.hasOpenDues(s.id)) _studentView(s),
+      ];
+
+  @override
+  bool isInsideNow(StudentRecordId id) =>
+      _c.attendance.find(id, _today)?.isOpen ?? false;
+
+  @override
+  List<SeatOccupancyView> seatMap() => [
+        for (final o in _c.seatMap.currentMap(_nameOf))
+          SeatOccupancyView(
+            seatLabel: o.seat.label,
+            seatZone: o.seat.zone,
+            hasPowerSocket: o.seat.hasPowerSocket,
+            isOccupied: o.isOccupied,
+            studentName: o.studentName,
+            allocationId: o.allocation?.id,
+            allocatedOn: o.allocation?.allocatedOn,
+            untilEnd: o.allocation?.window.end,
+          ),
+      ];
+
+  @override
+  ({int total, int occupied, int free}) seatSummary() => _c.seatMap.summary();
+
+  @override
+  double elapsedMembershipFraction(StudentRecordId id) {
+    for (final m in _c.memberships.forStudent(id)) {
+      if (m.isValidOn(_today)) {
+        final total = m.term.lengthInDays;
+        if (total == 0) return 1;
+        return _today.difference(m.term.start).inDays / total;
+      }
+    }
+    return 0;
+  }
+
+  @override
+  Future<void> enrollStudent({
+    required String actorRoleName,
+    required String fullName,
+    required String phone,
+    required DateTime dateOfBirth,
+    GuardianDraft? guardian,
+  }) async {
+    final actorRole = AccessRole.values.byName(actorRoleName);
+    await _c.enrollStudent(
+      actorRole: actorRole,
+      fullName: fullName,
+      phone: phone,
+      dateOfBirth: dateOfBirth,
+      personId: _c.provisionIdentityForEnrollment(
+        phone: phone.trim(),
+        displayName: fullName.trim(),
+      ),
+      guardian:
+          guardian == null ? null : GuardianLink(name: guardian.name, phone: guardian.phone),
+    );
+  }
+
+  @override
+  Future<void> collectFee({
+    required String actorRoleName,
+    required StudentRecordId studentId,
+    required Money amount,
+    required PayInMode mode,
+  }) async {
+    await _c.collectFee(
+      actorRole: AccessRole.values.byName(actorRoleName),
+      studentId: studentId,
+      amount: amount,
+      mode: PaymentMode.values.byName(mode.name),
+    );
+  }
 }
 
 /// Everything the app needs, assembled once.
@@ -273,6 +497,10 @@ final class AppContainer {
   /// The Identity Triad forbids deriving one id from another, so the link is
   /// explicit and stored rather than inferred.
   final Map<String, StudentRecordId> studentAccountLinks = {};
+
+  /// The `app -> domain/library` port. Lazy: it reads the container's own
+  /// fields at call time, so it must be built after the constructor finishes.
+  late final LibraryBoundary library = ContainerLibraryBoundary(this);
 
   Tenant tenantById(TenantId id) =>
       tenants.firstWhere((t) => t.id == id, orElse: () => tenants.first);

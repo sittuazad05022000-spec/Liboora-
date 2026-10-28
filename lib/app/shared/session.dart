@@ -12,11 +12,9 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../../bootstrap/di.dart';
 import '../../bootstrap/seed.dart';
-import '../../domain/library/enrollment/enrollment.dart';
-import '../../domain/library/fee/fee.dart';
-import '../../domain/library/membership/membership.dart';
 import '../../platform/identity/identity.dart';
 import '../../platform/tenancy/tenancy.dart';
+import 'library_boundary.dart';
 
 final class SessionController extends ChangeNotifier {
   /// Builds the controller and **restores any persisted session** (P1).

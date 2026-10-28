@@ -501,12 +501,21 @@ void main() {
       final c = await AppContainer.boot(seeder: seedDemoData, durable: durable);
       c.auth.requestOtp('9810000001');
 
-      // A short-lived secret must not become a durable one.
-      final code = c.auth.debugPeekChallenge('9810000001');
-      expect(code, isNotNull, reason: 'Peek is enabled outside product builds.');
+      // A short-lived secret must not become a durable one. The peek surface
+      // that previously supplied the code was deleted (TASK-D10 D10-6), so
+      // the test asserts the strictly stronger property instead: no stored
+      // value in either namespace contains an isolated six-digit numeric run
+      // — the exact shape of a challenge code. Phone numbers (10 digits) and
+      // timestamps never match, because the run must be digit-bounded.
+      final challengeShape = RegExp(r'(?<!\d)\d{6}(?!\d)');
       for (final ns in [kAccountNamespace, 'auth_session']) {
         for (final value in durable.readAll(ns).values) {
-          expect(value.contains(code!), isFalse);
+          expect(
+            challengeShape.hasMatch(value),
+            isFalse,
+            reason: 'A value shaped like a challenge code was persisted to '
+                '"$ns": $value',
+          );
         }
       }
     });

@@ -21,6 +21,23 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 final _t0 = DateTime.utc(2025, 1, 1, 9);
 
+/// The test-only SMS sink (TASK-D10 D10-8, ADR-0007): a test reads the code
+/// from the delivered message — what a legitimate user does — rather than
+/// inspecting the service's private challenge store through a debug surface.
+final class _RecordingDelivery implements OtpDeliveryChannel {
+  final List<({String phone, String code})> sent = [];
+
+  @override
+  bool get isConfigured => true;
+
+  @override
+  String get channelName => 'recording';
+
+  @override
+  void deliver({required String phone, required String code}) =>
+      sent.add((phone: phone, code: code));
+}
+
 PersonIdentityService _service(
   InMemoryPersonIdentityRepository repo, {
   IdGenerator? ids,
@@ -39,6 +56,7 @@ void main() {
     test('creating an account creates its identity in the same call', () {
       final repo = InMemoryPersonIdentityRepository();
       final accounts = <Account>[];
+      final delivery = _RecordingDelivery();
       final auth = AuthService(
         accounts,
         clock: FixedClock(_t0),
@@ -47,8 +65,7 @@ void main() {
         identities: _service(repo),
         // Required rather than defaulted: constructing an adapter inside
         // production code would breach the composition-root rule.
-        delivery: const UnconfiguredOtpDelivery(),
-        challengePeekEnabled: true,
+        delivery: delivery,
       );
 
       expect(repo.count, 0);
@@ -56,7 +73,7 @@ void main() {
       auth.requestOtp('9810000009');
       final created = auth.verifyOtp(
         phone: '9810000009',
-        code: auth.debugPeekChallenge('9810000009')!,
+        code: delivery.sent.last.code,
         displayName: 'New Person',
       );
 
@@ -112,18 +129,18 @@ void main() {
 
     test('identity creation failure fails account creation (SID-AC-1)', () {
       final accounts = <Account>[];
+      final delivery = _RecordingDelivery();
       final auth = AuthService(
         accounts,
         clock: FixedClock(_t0),
         random: FixedRandomSource(const [2, 2, 2, 2, 2, 2]),
         ids: SequentialIdGenerator(),
         identities: _ThrowingIdentityFactory(),
-        delivery: const UnconfiguredOtpDelivery(),
-        challengePeekEnabled: true,
+        delivery: delivery,
       );
 
       auth.requestOtp('9810000010');
-      final code = auth.debugPeekChallenge('9810000010')!;
+      final code = delivery.sent.last.code;
 
       expect(
         () => auth.verifyOtp(

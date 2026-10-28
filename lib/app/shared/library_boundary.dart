@@ -21,6 +21,8 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
+import 'package:liboora/domain/library/enrollment/enrollment.dart';
+
 /// How a collected fee was paid. Mirrors the domain enum one-to-one; the
 /// mapping happens at the composition root, never in a widget (`AP-1`).
 enum PayInMode { cash, upi, card, bankTransfer, cheque }
@@ -32,6 +34,9 @@ final class StudentView {
     required this.fullName,
     required this.phone,
     required this.enrollmentNumber,
+    required this.enrollmentStatus,
+    required this.isExpiringSoon,
+    required this.isArchived,
     this.photoRef,
   });
 
@@ -39,6 +44,16 @@ final class StudentView {
   final String fullName;
   final String phone;
   final String enrollmentNumber;
+
+  /// Enrollment status from BC-01: independent of membership status (LMD-25).
+  final EnrollmentStatus enrollmentStatus;
+
+  /// Membership expiry indicator derived from BC-02 projection using SMCFG-3
+  /// threshold. Not a replacement for membership status (LMD-26).
+  final bool isExpiringSoon;
+
+  /// Whether this record is archived. Hidden by default per LMD-27.
+  final bool isArchived;
 
   /// Opaque file reference (BC-29 / E-22) — never bytes, never a path.
   final FileRef? photoRef;
@@ -180,7 +195,14 @@ abstract interface class LibraryBoundary {
 
   /// Paginated roster. [cursor] is treated as opaque (`PG-2`); a malformed
   /// cursor surfaces as a [DomainError], never a silent reset (`PG-4`).
-  StudentPageView rosterPage({String? cursor, int? pageSize});
+  /// [pageSize] — optional override per LMD-10; clamped to SMCFG-2 maximum (50).
+  /// [includeArchived] — if false (default), excludes `EnrollmentStatus.archived`;
+  /// TR-1 Owner and TR-2 Manager are authorized to set this to true (LMD-27).
+  StudentPageView rosterPage({
+    String? cursor,
+    int? pageSize,
+    bool includeArchived = false,
+  });
 
   StudentView? studentById(StudentRecordId id);
 

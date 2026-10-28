@@ -672,7 +672,10 @@ void main() {
         'tenant holds rows', () {
       final ctx = _contextIn(_tenantA, _branchA);
       final store = TenantPartitionedStore<StudentRecord>(ctx);
-      final repo = InMemoryStudentRepository(store);
+      final repo = InMemoryStudentRepository(
+        store,
+        directoryConfig: const DefaultDirectoryConfig(),
+      );
 
       repo.save(_student('1', enrollmentNumber: 'EN-1'));
       repo.save(_student('2', enrollmentNumber: 'EN-2'));
@@ -707,6 +710,7 @@ void main() {
       final ctx = MutableTenantContext(); // never entered
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       expect(
@@ -731,6 +735,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
       repo.save(_student('1', enrollmentNumber: 'EN-1'));
       expect(repo.all().length, 1);

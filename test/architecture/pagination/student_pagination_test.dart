@@ -71,6 +71,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       for (var i = 1; i <= 50; i++) {
@@ -87,6 +88,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       for (var i = 1; i <= 50; i++) {
@@ -153,6 +155,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       expect(
@@ -165,6 +168,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       expect(
@@ -177,6 +181,7 @@ void main() {
       final ctxA = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctxA),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
       for (var i = 1; i <= 21; i++) {
         repo.save(_student('$i', enrollmentNumber: 'EN-$i'));
@@ -197,6 +202,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       final result = repo.paginatedList();
@@ -208,6 +214,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       repo.save(_student('1', enrollmentNumber: 'EN-1'));
@@ -221,6 +228,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       for (var i = 1; i <= 21; i++) {
@@ -244,6 +252,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       final student = _student('ABC', enrollmentNumber: 'EN-001');
@@ -262,6 +271,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       repo.save(_student('ABC', enrollmentNumber: 'EN-002'));
@@ -277,12 +287,18 @@ void main() {
     test('rebuild preserves persisted records and ordering index', () {
       final ctx = _contextIn(_tenantA, _branchA);
       final store = TenantPartitionedStore<StudentRecord>(ctx);
-      final repo = InMemoryStudentRepository(store);
+      final repo = InMemoryStudentRepository(
+        store,
+        directoryConfig: const DefaultDirectoryConfig(),
+      );
 
       repo.save(_student('B', enrollmentNumber: 'EN-002', fullName: 'Beta'));
       repo.save(_student('A', enrollmentNumber: 'EN-001', fullName: 'Alpha'));
 
-      final rebuilt = InMemoryStudentRepository(store);
+      final rebuilt = InMemoryStudentRepository(
+        store,
+        directoryConfig: const DefaultDirectoryConfig(),
+      );
       final page = rebuilt.paginatedList();
 
       expect(page.items.map((student) => student.id.value), ['SR-A', 'SR-B']);
@@ -293,6 +309,7 @@ void main() {
       final ctx = _contextIn(_tenantA, _branchA);
       final repo = InMemoryStudentRepository(
         TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
       );
 
       repo.save(_student('A', enrollmentNumber: 'EN-900', fullName: 'Zed'));

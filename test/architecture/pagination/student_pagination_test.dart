@@ -132,9 +132,10 @@ void main() {
       'tie-breaking by StudentRecordId when fullName and enrollmentNumber match',
       () {
         final ctx = _contextIn(_tenantA, _branchA);
-        final repo = InMemoryStudentRepository(
-          TenantPartitionedStore<StudentRecord>(ctx),
-        );
+      final repo = InMemoryStudentRepository(
+        TenantPartitionedStore<StudentRecord>(ctx),
+        directoryConfig: const DefaultDirectoryConfig(),
+      );
 
         repo.save(_student('A', enrollmentNumber: 'EN-1', fullName: 'Same'));
         repo.save(_student('B', enrollmentNumber: 'EN-1', fullName: 'Same'));

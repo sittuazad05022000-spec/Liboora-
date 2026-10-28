@@ -18,7 +18,10 @@ void main() {
     correlationId: 'bench_p95',
   );
   final store = TenantPartitionedStore<StudentRecord>(ctx);
-  final repo = InMemoryStudentRepository(store);
+  final repo = InMemoryStudentRepository(
+    store,
+    directoryConfig: const DefaultDirectoryConfig(),
+  );
 
   // 50K fixture via store.put — avoids O(n²logn) from per-save full re-sort
   // in InMemoryStudentRepository.save. The ordered index is built lazily by

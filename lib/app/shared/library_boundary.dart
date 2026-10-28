@@ -21,8 +21,6 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import 'package:liboora/domain/library/enrollment/enrollment.dart';
-
 /// How a collected fee was paid. Mirrors the domain enum one-to-one; the
 /// mapping happens at the composition root, never in a widget (`AP-1`).
 enum PayInMode { cash, upi, card, bankTransfer, cheque }
@@ -45,8 +43,9 @@ final class StudentView {
   final String phone;
   final String enrollmentNumber;
 
-  /// Enrollment status from BC-01: independent of membership status (LMD-25).
-  final EnrollmentStatus enrollmentStatus;
+  /// Enrollment status label (active, inactive, suspended, archived).
+  /// Mapped from domain enum at composition root; two separate from membership status (LMD-25).
+  final String enrollmentStatus;
 
   /// Membership expiry indicator derived from BC-02 projection using SMCFG-3
   /// threshold. Not a replacement for membership status (LMD-26).

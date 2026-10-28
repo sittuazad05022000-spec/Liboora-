@@ -8,10 +8,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
+import '../../shared/library_boundary.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/enrollment/enrollment.dart';
-import '../../../domain/library/fee/fee.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -126,7 +125,7 @@ class _StudentsPageState extends State<StudentsPage> {
 
 class _StudentCard extends StatelessWidget {
   const _StudentCard({required this.student});
-  final StudentRecord student;
+  final StudentView student;
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +201,7 @@ class _StudentCard extends StatelessWidget {
 }
 
 /// Bottom sheet aggregating one student's view across five contexts.
-void showStudentSheet(BuildContext context, StudentRecord student) {
+void showStudentSheet(BuildContext context, StudentView student) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -219,7 +218,7 @@ void showStudentSheet(BuildContext context, StudentRecord student) {
 class _StudentSheet extends StatelessWidget {
   const _StudentSheet({required this.student, required this.controller});
 
-  final StudentRecord student;
+  final StudentView student;
   final ScrollController controller;
 
   @override
@@ -426,7 +425,7 @@ Future<void> _collectDialog(
   StudentRecordId id,
   Money due,
 ) async {
-  var mode = PaymentMode.upi;
+  var mode = PayInMode.upi;
   final amount = TextEditingController(
     text: (due.minorUnits / 100).toStringAsFixed(0),
   );
@@ -452,7 +451,7 @@ Future<void> _collectDialog(
             Wrap(
               spacing: 6,
               children: [
-                for (final m in PaymentMode.values)
+                for (final m in PayInMode.values)
                   ChoiceChip(
                     label: Text(m.name, style: const TextStyle(fontSize: 12)),
                     selected: mode == m,

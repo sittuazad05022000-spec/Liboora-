@@ -153,6 +153,25 @@ final class SeatOccupancyView {
   final DateTime? untilEnd;
 }
 
+/// Membership term as the plan page renders it.
+final class MembershipTermView {
+  const MembershipTermView({
+    required this.planId,
+    required this.planName,
+    required this.start,
+    required this.endDate,
+    required this.price,
+    required this.isValidNow,
+  });
+
+  final String planId;
+  final String planName;
+  final DateTime start;
+  final DateTime endDate;
+  final Money price;
+  final bool isValidNow;
+}
+
 /// The reads (and the two commands whose argument types are domain-owned)
 /// that the app boundary consumes. Implemented at the composition root.
 abstract interface class LibraryBoundary {
@@ -194,6 +213,11 @@ abstract interface class LibraryBoundary {
 
   /// Fraction of the currently valid term elapsed, for the membership meter.
   double elapsedMembershipFraction(StudentRecordId id);
+
+  /// Full membership history for a student, newest first. Each term carries
+  /// its own plan name snapshot (MM-FR-026) — a later plan edit can never
+  /// restate a past term.
+  List<MembershipTermView> membershipHistory(StudentRecordId id);
 
   // ── Commands whose parameter types cross the boundary ──
   Future<void> enrollStudent({

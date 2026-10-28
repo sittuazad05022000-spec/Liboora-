@@ -8,9 +8,10 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/enrollment/enrollment.dart';
+import '../../shared/library_boundary.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -43,7 +44,7 @@ class _ReceptionDeskState extends State<ReceptionDesk> {
     );
   }
 
-  Future<void> _toggle(StudentRecord st) async {
+  Future<void> _toggle(StudentView st) async {
     final s = context.read<SessionController>();
     final wasInside = s.isInsideNow(st.id);
     final validity = s.validityOf(st.id);
@@ -77,7 +78,7 @@ class _ReceptionDeskState extends State<ReceptionDesk> {
     final inside = all.where((st) => s.isInsideNow(st.id)).toList();
 
     final matches = _query.isEmpty
-        ? const <StudentRecord>[]
+        ? const <StudentView>[]
         : all
               .where(
                 (st) =>
@@ -274,7 +275,7 @@ class _ReceptionDeskState extends State<ReceptionDesk> {
                 phone: phone.text,
                 dob: dob,
                 guardian: minor
-                    ? GuardianLink(
+                    ? GuardianDraft(
                         name: 'Guardian of ${name.text}',
                         phone: phone.text,
                       )
@@ -302,7 +303,7 @@ class _DeskRow extends StatelessWidget {
     required this.onOpen,
   });
 
-  final StudentRecord student;
+  final StudentView student;
   final bool inside;
   final VoidCallback onTap;
   final VoidCallback onOpen;

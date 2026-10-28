@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/fee/fee.dart';
+import '../../shared/library_boundary.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -26,15 +26,10 @@ class MoneyPage extends StatelessWidget {
     final collectedToday = Money.paise(m.collectedTodayMinor);
     final outstanding = s.totalOutstanding;
 
-    final ledgers = s.container.ledgers.all();
-    final raisedAll = ledgers.fold(Money.zero, (sum, l) => sum + l.totalDue);
-    final receivedAll = ledgers.fold(
-      Money.zero,
-      (sum, l) => sum + l.totalReceived,
-    );
-
-    final receipts = <Receipt>[for (final l in ledgers) ...l.receipts]
-      ..sort((a, b) => b.receivedOn.compareTo(a.receivedOn));
+    // All three sourced from the boundary — no direct domain access.
+    final raisedAll = s.raisedAll;
+    final receivedAll = s.receivedAll;
+    final receipts = s.receiptsAll();
 
     final debtors = s.withOpenDues.toList()
       ..sort(
@@ -207,26 +202,26 @@ class MoneyPage extends StatelessWidget {
   }
 
   static Widget _row(String k, String v, {Color? color}) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      children: [
-        Expanded(
-          child: Text(
-            k,
-            style: const TextStyle(fontSize: 13, color: LiblColors.textMuted),
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                k,
+                style: const TextStyle(fontSize: 13, color: LiblColors.textMuted),
+              ),
+            ),
+            Text(
+              v,
+              style: TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: color ?? LiblColors.textPrimary,
+              ),
+            ),
+          ],
         ),
-        Text(
-          v,
-          style: TextStyle(
-            fontSize: 13.5,
-            fontWeight: FontWeight.w700,
-            color: color ?? LiblColors.textPrimary,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 
   static String _hhmm(DateTime t) =>
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';

@@ -297,10 +297,14 @@ final class SessionController extends ChangeNotifier {
   }
 
   // ── Queries the dashboards need ─────────────────────────────────
+  //
+  // Every read crosses to BC-01..BC-05 through the app-declared
+  // `app -> domain/library` PORT (manifest L534; ADR-0012 §3.4) — the UI
+  // names view records, never a rank-8 aggregate. The adapter that fills
+  // them lives at the composition root (`ContainerLibraryBoundary`).
 
-  List<StudentRecord> get students =>
-      container.students.all()
-        ..sort((a, b) => a.fullName.compareTo(b.fullName));
+  /// Roster in stable name order (MM-FR-030).
+  List<StudentView> get students => container.library.roster();
 
   /// Paginated roster for PG-1..PG-4. Client treats [cursor] as opaque (PG-2);
   /// server generates it (PG-1). Malformed cursor → DomainError; never silent
@@ -308,47 +312,40 @@ final class SessionController extends ChangeNotifier {
   ///
   /// [pageSize] — optional override per LMD-10; values exceeding [SMCFG-2] maximum
   /// are clamped, not rejected. Null uses [SMCFG-1] default.
-  PaginatedStudents studentsPage({String? cursor, int? pageSize}) =>
-      container.students.paginatedList(cursor: cursor, pageSize: pageSize);
+  StudentPageView studentsPage({String? cursor, int? pageSize}) =>
+      container.library.rosterPage(cursor: cursor, pageSize: pageSize);
 
-  StudentRecord? studentById(StudentRecordId id) => container.students.byId(id);
+  StudentView? studentById(StudentRecordId id) =>
+      container.library.studentById(id);
 
-  String nameOf(StudentRecordId id) =>
-      container.students.byId(id)?.fullName ?? id.value;
+  String nameOf(StudentRecordId id) => container.library.nameOf(id);
 
-  MembershipValidity validityOf(StudentRecordId id) =>
-      container.membershipValidity.forStudent(id, container.clock.today());
+  MembershipValidityView validityOf(StudentRecordId id) =>
+      container.library.validityOf(id);
 
-  FeeLedger? ledgerOf(StudentRecordId id) => container.ledgers.forStudent(id);
+  FeeLedgerView? ledgerOf(StudentRecordId id) => container.library.ledgerOf(id);
 
   Money outstandingOf(StudentRecordId id) =>
-      container.outstanding.forStudent(id);
+      container.library.outstandingOf(id);
 
-  Money get totalOutstanding =>
-      container.ledgers.all().fold(Money.zero, (sum, l) => sum + l.balance);
+  Money get totalOutstanding => container.library.totalOutstanding;
 
-  List<StudentRecord> get expiringSoon {
-    final today = container.clock.today();
-    return students
-        .where((s) {
-          final ms = container.memberships.forStudent(s.id);
-          return ms.any((m) => m.expiringSoon(today, within: 7));
-        })
-        .toList(growable: false);
-  }
+  Money get raisedAll => container.library.raisedAll;
 
-  List<StudentRecord> get withOpenDues => students
-      .where((s) => container.outstanding.hasOpenDues(s.id))
-      .toList(growable: false);
+  Money get receivedAll => container.library.receivedAll;
+
+  /// Every receipt across every ledger, newest first.
+  List<ReceiptView> get receiptsAll => container.library.receiptsAll();
+
+  List<StudentView> get expiringSoon => container.library.expiringSoon();
+
+  List<StudentView> get withOpenDues => container.library.withOpenDues();
 
   /// Verifies a roster page covers only the calling tenant's partition.
   void verifyCursorTenant(String cursor) =>
       container.students.verifyCursorTenant(cursor);
 
-  bool isInsideNow(StudentRecordId id) {
-    final day = container.attendance.find(id, container.clock.today());
-    return day?.isOpen ?? false;
-  }
+  bool isInsideNow(StudentRecordId id) => container.library.isInsideNow(id);
 
   // ── Commands ────────────────────────────────────────────────────
 
@@ -376,10 +373,10 @@ final class SessionController extends ChangeNotifier {
     await container.checkOut(actorRole: role, studentId: id);
   });
 
-  Future<String?> collect(StudentRecordId id, Money amount, PaymentMode mode) =>
+  Future<String?> collect(StudentRecordId id, Money amount, PayInMode mode) =>
       run(() async {
-        await container.collectFee(
-          actorRole: role,
+        await container.library.collectFee(
+          actorRoleName: role.name,
           studentId: id,
           amount: amount,
           mode: mode,
@@ -415,17 +412,13 @@ final class SessionController extends ChangeNotifier {
     required String fullName,
     required String phone,
     required DateTime dob,
-    GuardianLink? guardian,
+    GuardianDraft? guardian,
   }) => run(() async {
-    await container.enrollStudent(
-      actorRole: role,
+    await container.library.enrollStudent(
+      actorRoleName: role.name,
       fullName: fullName,
       phone: phone,
       dateOfBirth: dob,
-      personId: container.provisionIdentityForEnrollment(
-        phone: phone.trim(),
-        displayName: fullName.trim(),
-      ),
       guardian: guardian,
     );
   });

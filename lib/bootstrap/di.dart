@@ -85,8 +85,8 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
         photoRef: r.photoRef,
       );
 
-  /// Roster in the stable order the UI has always shown (MM-FR-030).
-  List<StudentView> _sorted() => _c.students.all()
+  /// Roster in stable name order (MM-FR-030). Internal: returns domain records.
+  List<StudentRecord> _sorted() => _c.students.all()
     ..sort(
       (a, b) => a.fullName.compareTo(b.fullName),
     );
@@ -211,19 +211,12 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   bool isInsideNow(StudentRecordId id) =>
       _c.attendance.find(id, _today)?.isOpen ?? false;
 
+  String _nameOf(StudentRecordId id) =>
+      _c.students.byId(id)?.fullName ?? id.value;
+
   @override
   List<SeatOccupancyView> seatMap() => [
-        for (final o in _c.seatMap.currentMap(_nameOf))
-          SeatOccupancyView(
-            seatLabel: o.seat.label,
-            seatZone: o.seat.zone,
-            hasPowerSocket: o.seat.hasPowerSocket,
-            isOccupied: o.isOccupied,
-            studentName: o.studentName,
-            allocationId: o.allocation?.id,
-            allocatedOn: o.allocation?.allocatedOn,
-            untilEnd: o.allocation?.window.end,
-          ),
+        for (final o in _c.seatMap.currentMap(_nameOf)) _occupancy(o),
       ];
 
   @override
@@ -239,6 +232,22 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
       }
     }
     return 0;
+  }
+
+  @override
+  List<MembershipTermView> membershipHistory(StudentRecordId id) {
+    final today = _today;
+    return [
+      for (final m in _c.memberships.forStudent(id))
+        MembershipTermView(
+          planId: m.planId,
+          planName: _c.membershipPlans.byId(m.planId)?.name ?? 'Plan withdrawn',
+          start: m.term.start,
+          endDate: m.endDate,
+          price: m.priceSnapshot,
+          isValidNow: m.isValidOn(today),
+        ),
+    ];
   }
 
   @override

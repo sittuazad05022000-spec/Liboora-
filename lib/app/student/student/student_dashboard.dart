@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/membership/membership.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -241,7 +240,7 @@ class StudentPlanPage extends StatelessWidget {
     final id = s.subjectStudentId;
     if (id == null) return const _NoSubject();
 
-    final memberships = s.container.memberships.forStudent(id);
+    final history = s.container.library.membershipHistory(id);
     final v = s.validityOf(id);
     final today = s.container.clock.today();
 
@@ -284,7 +283,7 @@ class StudentPlanPage extends StatelessWidget {
                   ),
                   const SizedBox(height: LiblSpace.sm),
                   MeterBar(
-                    fraction: _elapsedFraction(memberships, today),
+                    fraction: s.elapsedMembershipFraction(id),
                     color: v.validUntil!.difference(today).inDays <= 7
                         ? LiblColors.warning
                         : LiblColors.brand,
@@ -303,7 +302,7 @@ class StudentPlanPage extends StatelessWidget {
           ),
         ),
         const SectionHeader(title: 'History', subtitle: 'All terms on record'),
-        if (memberships.isEmpty)
+        if (history.isEmpty)
           const Card(
             child: EmptyState(
               icon: Icons.card_membership_outlined,
@@ -313,13 +312,13 @@ class StudentPlanPage extends StatelessWidget {
         else
           PanelCard(
             children: [
-              for (final m in memberships)
+              for (final m in history)
                 ListTile(
                   dense: true,
                   leading: Icon(
                     Icons.card_membership,
                     size: 18,
-                    color: m.isValidOn(today)
+                    color: m.isValidNow
                         ? LiblColors.success
                         : LiblColors.textMuted,
                   ),
@@ -333,12 +332,12 @@ class StudentPlanPage extends StatelessWidget {
                     style: const TextStyle(fontSize: 13.5),
                   ),
                   subtitle: Text(
-                    '${m.term.start.toIso8601String().substring(0, 10)} → '
+                    '${m.start.toIso8601String().substring(0, 10)} → '
                     '${m.endDate.toIso8601String().substring(0, 10)}',
                     style: const TextStyle(fontSize: 11.5),
                   ),
                   trailing: Text(
-                    m.priceSnapshot.formatted,
+                    m.price.formatted,
                     style: const TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w600,
@@ -376,16 +375,6 @@ class StudentPlanPage extends StatelessWidget {
     );
   }
 
-  static double _elapsedFraction(List<Membership> memberships, DateTime today) {
-    for (final m in memberships) {
-      if (m.isValidOn(today)) {
-        final total = m.term.lengthInDays;
-        if (total == 0) return 1;
-        return today.difference(m.term.start).inDays / total;
-      }
-    }
-    return 0;
-  }
 }
 
 class StudentFeesPage extends StatelessWidget {

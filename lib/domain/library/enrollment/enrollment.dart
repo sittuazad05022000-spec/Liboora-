@@ -72,8 +72,7 @@ final class _StudentOrderKey implements Comparable<_StudentOrderKey> {
 }
 
 final class InMemoryStudentRepository implements StudentRepository {
-  InMemoryStudentRepository(this._store, {DirectoryConfig? directoryConfig})
-      : _config = directoryConfig ?? const DefaultDirectoryConfig();
+  InMemoryStudentRepository(this._store, {required this._config});
   final TenantPartitionedStore<StudentRecord> _store;
   final DirectoryConfig _config;
 

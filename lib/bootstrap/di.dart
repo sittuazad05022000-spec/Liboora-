@@ -325,6 +325,7 @@ final class AppContainer {
     required this.auth,
     required this.sessionStore,
     required this.accountStore,
+    required this.accountResolution,
     required this.enrollStudent,
     required this.createMembership,
     required this.renewMembership,
@@ -452,6 +453,11 @@ final class AppContainer {
   /// Not tenant-partitioned, because an account is not a tenant-scoped row —
   /// see `AccountStore`. Tenant isolation lives in each account's `roles` map.
   final AccountStore accountStore;
+
+  /// BC-18 account resolution (E-11). Resolves an AccountId to its PersonId
+  /// and tenant-scoped roles, used by Enrollment to obtain identity facts
+  /// without creating accounts.
+  final AccountResolution accountResolution;
 
   // ── Use cases ────────────────────────────────────────────────────
   final EnrollStudent enrollStudent;
@@ -804,6 +810,9 @@ final class AppContainer {
     // correctly: tenant isolation for an account lives in its `roles` map, not
     // in where the record is stored.
     final accounts = <Account>[...accountStore.restoreAll()];
+
+    // BC-18 E-11: account resolution port, wired for enrollment use cases.
+    final accountResolution = AccountResolutionImpl(accounts);
 
     // Counted separately from `accounts.length`: a directory of only corrupt
     // records must not look like a first launch and be seeded over.

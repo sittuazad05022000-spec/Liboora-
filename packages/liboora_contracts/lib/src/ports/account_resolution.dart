@@ -9,7 +9,7 @@
 /// AccountCreation (new accounts) is `AR-2`, this port is `AR-6` — resolution.
 library;
 
-import 'package:liboora_contracts/liboora_contracts.dart';
+import '../value_objects/identifiers.dart';
 
 /// The output of resolving an AccountId — the data needed for enrollment.
 ///

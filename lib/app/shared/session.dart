@@ -312,8 +312,30 @@ final class SessionController extends ChangeNotifier {
   ///
   /// [pageSize] — optional override per LMD-10; values exceeding [SMCFG-2] maximum
   /// are clamped, not rejected. Null uses [SMCFG-1] default.
-  StudentPageView studentsPage({String? cursor, int? pageSize}) =>
-      container.library.rosterPage(cursor: cursor, pageSize: pageSize);
+  ///
+  /// [includeArchived] — if true, includes archived records. Per LMD-27, only
+  /// TR-1 Owner and TR-2 Manager are authorized. Sending true with unauthorized
+  /// role throws [DomainError].
+  StudentPageView studentsPage({
+    String? cursor,
+    int? pageSize,
+    bool includeArchived = false,
+  }) {
+    if (includeArchived) {
+      final r = role;
+      if (r != AccessRole.owner && r != AccessRole.manager) {
+        throw const DomainError(
+          DomainErrorCode.authzNoRoleGrantsPermission,
+          'Archived filter requires Owner or Manager role.',
+        );
+      }
+    }
+    return container.library.rosterPage(
+      cursor: cursor,
+      pageSize: pageSize,
+      includeArchived: includeArchived,
+    );
+  }
 
   StudentView? studentById(StudentRecordId id) =>
       container.library.studentById(id);

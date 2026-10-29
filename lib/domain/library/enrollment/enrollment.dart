@@ -22,7 +22,13 @@ abstract interface class StudentRepository {
   List<StudentRecord> all();
   /// Paginated list of students.
   /// [pageSize] — optional override per LMD-10; clamped to SMCFG-2 maximum.
-  PaginatedStudents paginatedList({String? cursor, int? pageSize});
+  /// [includeArchived] — if false (default), excludes `EnrollmentStatus.archived`
+  /// records per LMD-27. TR-1 and TR-2 are authorized to request archived inclusion.
+  PaginatedStudents paginatedList({
+    String? cursor,
+    int? pageSize,
+    bool includeArchived = false,
+  });
   bool enrollmentNumberExists(String number);
   void save(StudentRecord s);
   void verifyCursorTenant(String cursor);
@@ -111,7 +117,14 @@ final class InMemoryStudentRepository implements StudentRepository {
   /// [pageSize] — the number of records to return; if null, uses [SMCFG-1]
   /// default (20). Any value exceeding [SMCFG-2] maximum (50) is **clamped**
   /// per LMD-10.
-  PaginatedStudents paginatedList({String? cursor, int? pageSize}) {
+  /// [includeArchived] — if false (default), excludes `EnrollmentStatus.archived`
+  /// records per LMD-27.
+  @override
+  PaginatedStudents paginatedList({
+    String? cursor,
+    int? pageSize,
+    bool includeArchived = false,
+  }) {
     final tenant = _store.currentTenantId;
     final index = _ordered[tenant];
     // Lazy-sync on first paginated call for tenants seeded before this patch.
@@ -121,7 +134,7 @@ final class InMemoryStudentRepository implements StudentRepository {
     // Clamp to default if not provided, then enforce maximum per LMD-10.
     final clampedSize = _config.clampPageSize(pageSize ?? _config.pageSizeDefault);
     if (cursor == null) {
-      return _pageFrom(ordered, null, keys, clampedSize);
+      return _pageFrom(ordered, null, keys, clampedSize, includeArchived);
     }
     final entry = _cursorRegistry[cursor];
     if (entry == null || entry.tenantId != tenant) {
@@ -130,13 +143,13 @@ final class InMemoryStudentRepository implements StudentRepository {
         'Invalid cursor.',
       );
     }
-    return _pageFrom(ordered, entry.anchorKey, keys, clampedSize);
+    return _pageFrom(ordered, entry.anchorKey, keys, clampedSize, includeArchived);
   }
 
   PaginatedStudents _pageFrom(
     SplayTreeMap<_StudentOrderKey, StudentRecord> ordered,
     _StudentOrderKey? anchorKey,
-    List<_StudentOrderKey> keys, [int pageSize = 20,
+    List<_StudentOrderKey> keys, [int pageSize = 20, bool includeArchived = false,
   ]) {
     final page = <StudentRecord>[];
     _StudentOrderKey? lastKey;
@@ -167,6 +180,10 @@ final class InMemoryStudentRepository implements StudentRepository {
     for (var i = startIndex; i < keys.length && count < pageSize; i++) {
       final key = keys[i];
       final value = ordered[key]!;
+      final isArchivedRecord = value.status == EnrollmentStatus.archived;
+      if (!includeArchived && isArchivedRecord) {
+        continue;
+      }
       page.add(value);
       lastKey = key;
       count++;

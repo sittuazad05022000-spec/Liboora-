@@ -77,13 +77,21 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
 
   DateTime get _today => _c.clock.today();
 
-  StudentView _studentView(StudentRecord r) => StudentView(
-        id: r.id,
-        fullName: r.fullName,
-        phone: r.phone,
-        enrollmentNumber: r.enrollmentNumber,
-        photoRef: r.photoRef,
-      );
+  StudentView _studentView(StudentRecord r) {
+    final isExpiringSoon = _c.memberships
+        .forStudent(r.id)
+        .any((m) => m.expiringSoon(_today, within: _c.membershipConfig.expiringSoonDays));
+    return StudentView(
+      id: r.id,
+      fullName: r.fullName,
+      phone: r.phone,
+      enrollmentNumber: r.enrollmentNumber,
+      enrollmentStatus: r.status.name,
+      isExpiringSoon: isExpiringSoon,
+      isArchived: r.status == EnrollmentStatus.archived,
+      photoRef: r.photoRef,
+    );
+  }
 
   /// Roster in stable name order (MM-FR-030). Internal: returns domain records.
   List<StudentRecord> _sorted() => _c.students.all()
@@ -127,12 +135,21 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
 
   @override
   List<StudentView> roster() => [
-        for (final r in _sorted()) _studentView(r),
+        for (final r in _sorted())
+          if (r.status != EnrollmentStatus.archived) _studentView(r),
       ];
 
   @override
-  StudentPageView rosterPage({String? cursor, int? pageSize}) {
-    final page = _c.students.paginatedList(cursor: cursor, pageSize: pageSize);
+  StudentPageView rosterPage({
+    String? cursor,
+    int? pageSize,
+    bool includeArchived = false,
+  }) {
+    final page = _c.students.paginatedList(
+      cursor: cursor,
+      pageSize: pageSize,
+      includeArchived: includeArchived,
+    );
     return StudentPageView(
       items: [for (final r in page.items) _studentView(r)],
       nextCursor: page.nextCursor,
@@ -195,16 +212,19 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   @override
   List<StudentView> expiringSoon() => [
         for (final s in _sorted())
-          if (_c.memberships
-              .forStudent(s.id)
-              .any((m) => m.expiringSoon(_today, within: 7)))
+          if (s.status != EnrollmentStatus.archived &&
+              _c.memberships
+                  .forStudent(s.id)
+                  .any((m) => m.expiringSoon(_today, within: _c.membershipConfig.expiringSoonDays)))
             _studentView(s),
       ];
 
   @override
   List<StudentView> withOpenDues() => [
         for (final s in _sorted())
-          if (_c.outstanding.hasOpenDues(s.id)) _studentView(s),
+          if (s.status != EnrollmentStatus.archived &&
+              _c.outstanding.hasOpenDues(s.id))
+            _studentView(s),
       ];
 
   @override

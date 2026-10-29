@@ -319,5 +319,121 @@ void main() {
       final page = repo.paginatedList();
       expect(page.items.map((student) => student.id.value), ['SR-A', 'SR-B']);
     });
+
+    group('LMD-27 archived filtering', () {
+      test('archived records excluded by default', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        final active = _student('A', enrollmentNumber: 'EN-001', fullName: 'Active Student');
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-B'),
+          enrollmentNumber: 'EN-002',
+          fullName: 'Archived Student',
+          phone: '9000000002',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-B'),
+        );
+        archived.status = EnrollmentStatus.archived;
+
+        repo.save(active);
+        repo.save(archived);
+
+        final defaultPage = repo.paginatedList();
+        expect(defaultPage.items.length, 1);
+        expect(defaultPage.items.first.fullName, 'Active Student');
+      });
+
+      test('includeArchived=true returns archived records', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        final active = _student('A', enrollmentNumber: 'EN-001', fullName: 'Active Student');
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-B'),
+          enrollmentNumber: 'EN-002',
+          fullName: 'Archived Student',
+          phone: '9000000002',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-B'),
+        );
+        archived.status = EnrollmentStatus.archived;
+        repo.save(active);
+        repo.save(archived);
+
+        final withArchived = repo.paginatedList(includeArchived: true);
+        expect(withArchived.items.length, 2);
+        expect(withArchived.items.any((s) => s.status == EnrollmentStatus.archived), isTrue);
+      });
+
+      test('continuation with archived filter excludes archived records', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        repo.save(_student('A', enrollmentNumber: 'EN-001', fullName: 'Alpha'));
+        repo.save(_student('B', enrollmentNumber: 'EN-002', fullName: 'Beta'));
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-C'),
+          enrollmentNumber: 'EN-003',
+          fullName: 'Archived',
+          phone: '9000000003',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-C'),
+        );
+        archived.status = EnrollmentStatus.archived;
+        repo.save(archived);
+
+        final firstPage = repo.paginatedList(includeArchived: false);
+        expect(firstPage.items.length, 2);
+        expect(firstPage.items[0].fullName, 'Alpha');
+        expect(firstPage.items[1].fullName, 'Beta');
+
+        final secondPage = repo.paginatedList(cursor: firstPage.nextCursor, includeArchived: false);
+        expect(secondPage.items, isEmpty);
+        expect(secondPage.nextCursor, isNull);
+      });
+
+      test('archived records correctly ordered and cursor continues correctly', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        repo.save(_student('A', enrollmentNumber: 'EN-001', fullName: 'Alpha'));
+        repo.save(_student('B', enrollmentNumber: 'EN-002', fullName: 'Beta'));
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-C'),
+          enrollmentNumber: 'EN-003',
+          fullName: 'Archived Record',
+          phone: '9000000003',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-C'),
+        );
+        archived.status = EnrollmentStatus.archived;
+        repo.save(archived);
+        repo.save(_student('D', enrollmentNumber: 'EN-004', fullName: 'Delta'));
+
+        final allWithArchived = repo.paginatedList(includeArchived: true);
+        expect(allWithArchived.items.length, 4);
+
+        final withoutArchived = repo.paginatedList(includeArchived: false);
+        expect(withoutArchived.items.length, 3);
+        expect(withoutArchived.items.map((s) => s.fullName).toList(), ['Alpha', 'Beta', 'Delta']);
+      });
+    });
   });
 }

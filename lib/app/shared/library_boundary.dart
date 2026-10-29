@@ -195,12 +195,15 @@ abstract interface class LibraryBoundary {
   /// Paginated roster. [cursor] is treated as opaque (`PG-2`); a malformed
   /// cursor surfaces as a [DomainError], never a silent reset (`PG-4`).
   /// [pageSize] — optional override per LMD-10; clamped to SMCFG-2 maximum (50).
-  /// [includeArchived] — if false (default), excludes `EnrollmentStatus.archived`;
-  /// TR-1 Owner and TR-2 Manager are authorized to set this to true (LMD-27).
+  /// [includeArchived] — if false (default), excludes archived records (LMD-27).
+  /// [actorRoleName] — the caller's active role, passed **as data**: the
+  /// adapter owns the role-dependent rule for the archived filter and refuses
+  /// unauthorized requests with a [DomainError]. app/shared names no role.
   StudentPageView rosterPage({
     String? cursor,
     int? pageSize,
     bool includeArchived = false,
+    required String actorRoleName,
   });
 
   StudentView? studentById(StudentRecordId id);

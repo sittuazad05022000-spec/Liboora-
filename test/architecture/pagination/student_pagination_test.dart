@@ -395,14 +395,11 @@ void main() {
         archived.status = EnrollmentStatus.archived;
         repo.save(archived);
 
+        // "Archived" sorts between Alpha and Beta, so the first page skips it
+        // mid-scan and — with no live record after Beta — is terminal.
         final firstPage = repo.paginatedList(includeArchived: false);
-        expect(firstPage.items.length, 2);
-        expect(firstPage.items[0].fullName, 'Alpha');
-        expect(firstPage.items[1].fullName, 'Beta');
-
-        final secondPage = repo.paginatedList(cursor: firstPage.nextCursor, includeArchived: false);
-        expect(secondPage.items, isEmpty);
-        expect(secondPage.nextCursor, isNull);
+        expect(firstPage.items.map((s) => s.fullName).toList(), ['Alpha', 'Beta']);
+        expect(firstPage.nextCursor, isNull);
       });
 
       test('archived records correctly ordered and cursor continues correctly', () {
@@ -433,6 +430,77 @@ void main() {
         final withoutArchived = repo.paginatedList(includeArchived: false);
         expect(withoutArchived.items.length, 3);
         expect(withoutArchived.items.map((s) => s.fullName).toList(), ['Alpha', 'Beta', 'Delta']);
+      });
+
+      test('page ending before trailing archived records does not crash', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        repo.save(_student('A', enrollmentNumber: 'EN-001', fullName: 'Alpha'));
+        repo.save(_student('B', enrollmentNumber: 'EN-002', fullName: 'Beta'));
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-Z'),
+          enrollmentNumber: 'EN-003',
+          fullName: 'Zulu',
+          phone: '9000000009',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-Z'),
+        );
+        archived.status = EnrollmentStatus.archived;
+        repo.save(archived);
+
+        // Traversal into the trailing archived zone: page one is Alpha, then
+        // the continuation returns Beta and terminates without issuing a
+        // cursor for the filtered-out remainder.
+        final first = repo.paginatedList(pageSize: 1, includeArchived: false);
+        expect(first.items.single.fullName, 'Alpha');
+        expect(first.nextCursor, isNotNull);
+
+        final second = repo.paginatedList(
+          cursor: first.nextCursor,
+          includeArchived: false,
+        );
+        expect(second.items.map((s) => s.fullName).toList(), ['Beta']);
+        expect(second.nextCursor, isNull);
+      });
+
+      test('cursor issued with archived included reused without is deterministic', () {
+        final ctx = _contextIn(_tenantA, _branchA);
+        final repo = InMemoryStudentRepository(
+          TenantPartitionedStore<StudentRecord>(ctx),
+          directoryConfig: const DefaultDirectoryConfig(),
+        );
+
+        repo.save(_student('A', enrollmentNumber: 'EN-001', fullName: 'Alpha'));
+        final archived = StudentRecord(
+          id: StudentRecordId('SR-B'),
+          enrollmentNumber: 'EN-002',
+          fullName: 'Beta',
+          phone: '9000000002',
+          dateOfBirth: DateTime.utc(2000, 1, 1),
+          enrolledOn: _day,
+          personId: PersonId('P-B'),
+        );
+        archived.status = EnrollmentStatus.archived;
+        repo.save(archived);
+        repo.save(_student('C', enrollmentNumber: 'EN-003', fullName: 'Charlie'));
+
+        // Cursor anchored after Alpha (Charlie follows, Beta is between them).
+        final page = repo.paginatedList(pageSize: 1, includeArchived: true);
+        expect(page.items.single.fullName, 'Alpha');
+        expect(page.nextCursor, isNotNull);
+
+        // Reusing that cursor with the archived filter OFF skips Beta and
+        // still returns the remaining live record, in order.
+        final reused = repo.paginatedList(
+          cursor: page.nextCursor,
+          includeArchived: false,
+        );
+        expect(reused.items.map((s) => s.fullName).toList(), ['Charlie']);
       });
     });
   });

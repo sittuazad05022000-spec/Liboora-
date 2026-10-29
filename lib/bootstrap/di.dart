@@ -144,7 +144,21 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     String? cursor,
     int? pageSize,
     bool includeArchived = false,
+    required String actorRoleName,
   }) {
+    // LMD-27: the archived filter is reachable by TR-1 (Owner) and TR-2
+    // (Manager) only. The gate lives HERE — the composition root, the owning
+    // boundary for role-dependent behaviour — because `app/shared` must stay
+    // role-neutral and pass the role in as data instead.
+    if (includeArchived) {
+      const kArchivedFilterRoles = {AccessRole.owner, AccessRole.manager};
+      if (!kArchivedFilterRoles.contains(AccessRole.values.byName(actorRoleName))) {
+        throw const DomainError(
+          DomainErrorCode.authzNoRoleGrantsPermission,
+          'The archived filter is available to the Owner and Manager roles only.',
+        );
+      }
+    }
     final page = _c.students.paginatedList(
       cursor: cursor,
       pageSize: pageSize,

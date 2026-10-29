@@ -168,6 +168,20 @@ class _StudentCard extends StatelessWidget {
                       spacing: 6,
                       runSpacing: 4,
                       children: [
+                        // LMD-25 / SM-AC-19: enrollment status is its own
+                        // indicator, never merged with the membership one.
+                        Pill(
+                          student.enrollmentStatus,
+                          color: switch (student.enrollmentStatus) {
+                            'active' => LiblColors.success,
+                            'archived' => LiblColors.textMuted,
+                            _ => LiblColors.warning,
+                          },
+                        ),
+                        if (student.isExpiringSoon)
+                          // LMD-26: derived from the BC-02 projection at the
+                          // composition root, never recomputed here.
+                          const Pill('Expiring soon', color: LiblColors.warning),
                         if (inside)
                           const Pill(
                             'Inside',

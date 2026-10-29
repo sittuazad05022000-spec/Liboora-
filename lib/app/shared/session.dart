@@ -312,30 +312,21 @@ final class SessionController extends ChangeNotifier {
   ///
   /// [pageSize] — optional override per LMD-10; values exceeding [SMCFG-2] maximum
   /// are clamped, not rejected. Null uses [SMCFG-1] default.
-  ///
-  /// [includeArchived] — if true, includes archived records. Per LMD-27, only
-  /// TR-1 Owner and TR-2 Manager are authorized. Sending true with unauthorized
-  /// role throws [DomainError].
+  /// [includeArchived] — if true, includes archived records. Per LMD-27 the
+  /// archived filter is a privileged read: the active role is passed **as
+  /// data** to the boundary, which enforces who may set it. app/shared stays
+  /// role-neutral — it names no concrete role here.
   StudentPageView studentsPage({
     String? cursor,
     int? pageSize,
     bool includeArchived = false,
-  }) {
-    if (includeArchived) {
-      final r = role;
-      if (r != AccessRole.owner && r != AccessRole.manager) {
-        throw const DomainError(
-          DomainErrorCode.authzNoRoleGrantsPermission,
-          'Archived filter requires Owner or Manager role.',
-        );
-      }
-    }
-    return container.library.rosterPage(
-      cursor: cursor,
-      pageSize: pageSize,
-      includeArchived: includeArchived,
-    );
-  }
+  }) =>
+      container.library.rosterPage(
+        cursor: cursor,
+        pageSize: pageSize,
+        includeArchived: includeArchived,
+        actorRoleName: role.name,
+      );
 
   StudentView? studentById(StudentRecordId id) =>
       container.library.studentById(id);

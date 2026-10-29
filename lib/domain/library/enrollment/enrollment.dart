@@ -177,20 +177,26 @@ final class InMemoryStudentRepository implements StudentRepository {
     }
 
     var count = 0;
-    for (var i = startIndex; i < keys.length && count < pageSize; i++) {
+    var hasMore = false;
+    for (var i = startIndex; i < keys.length; i++) {
       final key = keys[i];
       final value = ordered[key]!;
       final isArchivedRecord = value.status == EnrollmentStatus.archived;
       if (!includeArchived && isArchivedRecord) {
         continue;
       }
+      if (count == pageSize) {
+        hasMore = true;
+        break;
+      }
       page.add(value);
       lastKey = key;
       count++;
     }
 
-    final hasMore = startIndex + count < keys.length;
-    final next = hasMore ? _issueCursor(anchorKey: lastKey!) : null;
+    final next = hasMore && lastKey != null
+        ? _issueCursor(anchorKey: lastKey)
+        : null;
     return PaginatedStudents(items: page, nextCursor: next);
   }
 

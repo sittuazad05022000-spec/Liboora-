@@ -290,6 +290,7 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     required String fullName,
     required String phone,
     required DateTime dateOfBirth,
+    required String registrationSourceName,
     GuardianDraft? guardian,
   }) async {
     final actorRole = AccessRole.values.byName(actorRoleName);
@@ -301,6 +302,9 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
       personId: _c.provisionIdentityForEnrollment(
         phone: phone.trim(),
         displayName: fullName.trim(),
+      ),
+      registrationSource: RegistrationSource.values.byName(
+        registrationSourceName,
       ),
       guardian:
           guardian == null ? null : GuardianLink(name: guardian.name, phone: guardian.phone),

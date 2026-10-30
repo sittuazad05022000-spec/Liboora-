@@ -101,12 +101,15 @@ T _readEnum<T>(List<T> values, Object? raw, String Function(T) nameOf) {
 
 String encodeStudentRecord(StudentRecord s) => jsonEncode({
   'id': s.id.value,
+  'tenantId': s.tenantId.value,
   'enrollmentNumber': s.enrollmentNumber,
   'fullName': s.fullName,
   'phone': s.phone,
   'email': s.email,
   'dateOfBirth': _date(s.dateOfBirth),
   'enrolledOn': _date(s.enrolledOn),
+  'registeredAt': _date(s.registeredAt),
+  'registrationSource': s.registrationSource.name,
   'personId': s.personId.value,
   'status': s.status.name,
   'archivedAt': s.archivedAt == null ? null : _date(s.archivedAt!),
@@ -125,12 +128,23 @@ StudentRecord decodeStudentRecord(String raw) {
   final g = m['guardian'] as Map<String, Object?>?;
   return StudentRecord(
     id: StudentRecordId(m['id']! as String),
+    // SM-2.2/SM-10.1/SM-INV-8: mandatory and never null. Read without a
+    // fallback — a row written before these fields existed fails to decode
+    // rather than producing a record the constructor would have rejected
+    // (same rule as personId below).
+    tenantId: TenantId(m['tenantId']! as String),
     enrollmentNumber: m['enrollmentNumber']! as String,
     fullName: m['fullName']! as String,
     phone: m['phone']! as String,
     email: m['email'] as String?,
     dateOfBirth: _readDate(m['dateOfBirth']),
     enrolledOn: _readDate(m['enrolledOn']),
+    registeredAt: _readDate(m['registeredAt']),
+    registrationSource: _readEnum(
+      RegistrationSource.values,
+      m['registrationSource'],
+      (e) => e.name,
+    ),
     // Non-nullable by ID-4 / SID-4.17. Read without a fallback so a row
     // missing it fails to decode rather than producing a record the
     // constructor would have rejected.

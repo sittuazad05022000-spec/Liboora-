@@ -162,14 +162,21 @@ String _codeOnly(String source) {
       .join('\n');
 }
 
-StudentRecord _student(String n, {required String enrollmentNumber}) =>
+StudentRecord _student(
+  String n, {
+  required String enrollmentNumber,
+  TenantId tenantId = _tenantA,
+}) =>
     StudentRecord(
       id: StudentRecordId('SR-$n'),
+      tenantId: tenantId,
       enrollmentNumber: enrollmentNumber,
       fullName: 'Student $n',
       phone: '90000000$n',
       dateOfBirth: DateTime.utc(2000, 1, 1),
       enrolledOn: _day,
+      registeredAt: _day,
+      registrationSource: RegistrationSource.staffAssisted,
       personId: PersonId('P-$n'),
     );
 
@@ -347,7 +354,7 @@ void main() {
       // numbers are unique *within* a library, not across the platform; if
       // the probe were global, tenant B could not issue EN-100 at all, and
       // tenant A would learn that tenant B had used it.
-      final b = _student('2', enrollmentNumber: 'EN-100');
+      final b = _student('2', enrollmentNumber: 'EN-100', tenantId: _tenantB);
 
       repo.save(a);
       _asTenant(ctx, _tenantB, _branchB, () => repo.save(b));
@@ -683,7 +690,7 @@ void main() {
         ctx,
         _tenantB,
         _branchB,
-        () => repo.save(_student('3', enrollmentNumber: 'EN-3')),
+        () => repo.save(_student('3', enrollmentNumber: 'EN-3', tenantId: _tenantB)),
       );
 
       // This is the assertion the store's own doc comment was written for:

@@ -73,11 +73,14 @@ void main() {
 
       final archived = StudentRecord(
         id: StudentRecordId('SR-ARC'),
+        tenantId: kDemoTenant,
         enrollmentNumber: 'EN-002',
         fullName: 'Archived Student',
         phone: '9000000002',
         dateOfBirth: DateTime.utc(2000, 1, 1),
         enrolledOn: _day,
+        registeredAt: _day,
+        registrationSource: RegistrationSource.staffAssisted,
         personId: PersonId('per_arc'),
       );
       archived.status = EnrollmentStatus.archived;
@@ -85,11 +88,14 @@ void main() {
       controller.container.students.save(
         StudentRecord(
           id: StudentRecordId('SR-LIVE'),
+          tenantId: kDemoTenant,
           enrollmentNumber: 'EN-001',
           fullName: 'Live Student',
           phone: '9000000001',
           dateOfBirth: DateTime.utc(2000, 1, 1),
           enrolledOn: _day,
+          registeredAt: _day,
+          registrationSource: RegistrationSource.staffAssisted,
           personId: PersonId('per_live'),
         ),
       );
@@ -139,11 +145,14 @@ void main() {
 
     StudentRecord student(String n) => StudentRecord(
           id: StudentRecordId('SR-$n'),
+          tenantId: kDemoTenant,
           enrollmentNumber: 'EN-$n',
           fullName: 'Student $n',
           phone: '90000000$n',
           dateOfBirth: DateTime.utc(2000, 1, 1),
           enrolledOn: _day,
+          registeredAt: _day,
+          registrationSource: RegistrationSource.staffAssisted,
           personId: PersonId('per_$n'),
         );
     final expiring = student('A');

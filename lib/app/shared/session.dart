@@ -444,6 +444,10 @@ final class SessionController extends ChangeNotifier {
       fullName: fullName,
       phone: phone,
       dateOfBirth: dob,
+      // SM-3.8/SM-3.9: this screen is the staff-assisted registration flow —
+      // a staff role enrolls a walk-in on the student's behalf. Passed by
+      // name: the enum lives in domain/library, which `app` does not import.
+      registrationSourceName: 'staffAssisted',
       guardian: guardian,
     );
   });

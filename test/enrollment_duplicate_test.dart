@@ -17,6 +17,7 @@ library;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/bootstrap/di.dart';
 import 'package:liboora/bootstrap/seed.dart';
+import 'package:liboora/domain/library/enrollment/enrollment.dart';
 import 'package:liboora/platform/identity/identity.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 
@@ -39,6 +40,7 @@ void main() {
         phone: '9811122233',
         dateOfBirth: DateTime.utc(1998, 7, 21),
         personId: personId,
+        registrationSource: RegistrationSource.staffAssisted,
       );
 
       expect(
@@ -48,6 +50,7 @@ void main() {
           phone: '9811122244',
           dateOfBirth: DateTime.utc(1998, 7, 21),
           personId: personId,
+          registrationSource: RegistrationSource.staffAssisted,
         ),
         throwsA(
           isA<DomainError>().having(
@@ -78,6 +81,7 @@ void main() {
         phone: '9811122255',
         dateOfBirth: DateTime.utc(1995, 3, 3),
         personId: personId,
+        registrationSource: RegistrationSource.staffAssisted,
       );
       c.leaveScope();
 
@@ -90,6 +94,7 @@ void main() {
         phone: '9811122266',
         dateOfBirth: DateTime.utc(1995, 3, 3),
         personId: personId,
+        registrationSource: RegistrationSource.staffAssisted,
       );
       expect(second.personId, personId);
       c.leaveScope();
@@ -115,6 +120,7 @@ void main() {
         phone: '9811122288',
         dateOfBirth: DateTime.utc(1997, 5, 5),
         personId: personId,
+        registrationSource: RegistrationSource.staffAssisted,
       );
       first.archive(
         outstandingBalance: Money.zero,
@@ -130,6 +136,7 @@ void main() {
         phone: '9811122288',
         dateOfBirth: DateTime.utc(1997, 5, 5),
         personId: personId,
+        registrationSource: RegistrationSource.staffAssisted,
       );
       expect(second.id, isNot(first.id));
       c.leaveScope();

@@ -35,11 +35,14 @@ void main() {
       id,
       StudentRecord(
         id: StudentRecordId(id),
+        tenantId: const TenantId('tnt_bench'),
         enrollmentNumber: 'STU${i.toString().padLeft(8, '0')}',
         fullName: 'Stud ${i.toString().padLeft(8, '0')}',
         phone: '900000${i.toString().padLeft(6, '0')}',
         dateOfBirth: dob,
         enrolledOn: base,
+        registeredAt: base,
+        registrationSource: RegistrationSource.staffAssisted,
         personId: PersonId('per_$id'),
       ),
     );

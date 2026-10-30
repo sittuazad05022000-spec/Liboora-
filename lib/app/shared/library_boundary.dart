@@ -249,6 +249,9 @@ abstract interface class LibraryBoundary {
     required String fullName,
     required String phone,
     required DateTime dateOfBirth,
+    // `SM-3.8` closed set (`StaffAssisted`/`SelfEnrollment`/`Import`), passed
+    // by name — the enum lives in domain/library, which `app` does not import.
+    required String registrationSourceName,
     GuardianDraft? guardian,
   });
 

@@ -74,6 +74,9 @@ final class _FakeTenantContext implements TenantContext {
 }
 
 final _t0 = DateTime.utc(2026, 3, 1, 9);
+/// A second instant, distinct from [_t0]: the codec round-trip asserts
+/// `registeredAt` separately from `enrolledOn`, so a swap would fail.
+final DateTime _registeredAt = DateTime.utc(2026, 3, 1, 10);
 
 void main() {
   // ═══════════════════════════════════════════════════════════════════
@@ -87,12 +90,17 @@ void main() {
     test('1/6 StudentRecord — including the optional guardian and photo', () {
       final original = StudentRecord(
         id: const StudentRecordId('sr_1'),
+        tenantId: const TenantId('tnt_1'),
         enrollmentNumber: 'EN-0001',
         fullName: 'Aarav Sharma',
         phone: '9810000001',
         email: 'aarav@example.com',
         dateOfBirth: DateTime.utc(2001, 5, 14),
         enrolledOn: _t0,
+        // Deliberately a DIFFERENT instant from _t0, so a codec that swapped
+        // enrolledOn and registeredAt would fail the assertions below.
+        registeredAt: _registeredAt,
+        registrationSource: RegistrationSource.staffAssisted,
         personId: const PersonId('per_1'),
         status: EnrollmentStatus.suspended,
         photoRef: const FileRef('file_9'),
@@ -106,12 +114,15 @@ void main() {
       final r = decodeStudentRecord(encodeStudentRecord(original));
 
       expect(r.id, original.id);
+      expect(r.tenantId, const TenantId('tnt_1'));
       expect(r.enrollmentNumber, 'EN-0001');
       expect(r.fullName, 'Aarav Sharma');
       expect(r.phone, '9810000001');
       expect(r.email, 'aarav@example.com');
       expect(r.dateOfBirth, original.dateOfBirth);
       expect(r.enrolledOn, original.enrolledOn);
+      expect(r.registeredAt, _registeredAt);
+      expect(r.registrationSource, RegistrationSource.staffAssisted);
       expect(r.personId, const PersonId('per_1'));
       expect(r.status, EnrollmentStatus.suspended);
       expect(r.photoRef, const FileRef('file_9'));
@@ -123,11 +134,14 @@ void main() {
     test('1/6 StudentRecord — a null guardian and email stay null', () {
       final original = StudentRecord(
         id: const StudentRecordId('sr_2'),
+        tenantId: const TenantId('tnt_1'),
         enrollmentNumber: 'EN-0002',
         fullName: 'Adult Student',
         phone: '9810000002',
         dateOfBirth: DateTime.utc(1995, 1, 1),
         enrolledOn: _t0,
+        registeredAt: _registeredAt,
+        registrationSource: RegistrationSource.staffAssisted,
         personId: const PersonId('per_2'),
       );
 
@@ -144,11 +158,14 @@ void main() {
       final archivedOn = DateTime.utc(2026, 5, 2, 14, 30);
       final original = StudentRecord(
         id: const StudentRecordId('sr_3'),
+        tenantId: const TenantId('tnt_1'),
         enrollmentNumber: 'EN-0003',
         fullName: 'Archived Student',
         phone: '9810000003',
         dateOfBirth: DateTime.utc(1990, 1, 1),
         enrolledOn: _t0,
+        registeredAt: _registeredAt,
+        registrationSource: RegistrationSource.staffAssisted,
         personId: const PersonId('per_3'),
         status: EnrollmentStatus.archived,
         archivedAt: archivedOn,
@@ -589,11 +606,14 @@ void main() {
 
     StudentRecord record(String id) => StudentRecord(
       id: StudentRecordId(id),
+      tenantId: const TenantId('tnt_1'),
       enrollmentNumber: 'EN-$id',
       fullName: 'Name $id',
       phone: '98100000${id.length}',
       dateOfBirth: DateTime.utc(1995, 1, 1),
       enrolledOn: _t0,
+      registeredAt: _registeredAt,
+      registrationSource: RegistrationSource.staffAssisted,
       personId: PersonId('per_$id'),
     );
 
@@ -688,11 +708,14 @@ void main() {
   group('tenant isolation · across a durable boundary', () {
     StudentRecord record(String id, String name) => StudentRecord(
       id: StudentRecordId(id),
+      tenantId: const TenantId('tnt_1'),
       enrollmentNumber: 'EN-$id',
       fullName: name,
       phone: '9810000001',
       dateOfBirth: DateTime.utc(1995, 1, 1),
       enrolledOn: _t0,
+      registeredAt: _registeredAt,
+      registrationSource: RegistrationSource.staffAssisted,
       personId: PersonId('per_$id'),
     );
 
@@ -1032,6 +1055,7 @@ void main() {
           phone: '9811122233',
           displayName: 'Walk In Student',
         ),
+        registrationSource: RegistrationSource.staffAssisted,
       );
       expect(first.students.all().length, before + 1);
       first.leaveScope();

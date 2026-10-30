@@ -16,6 +16,13 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 /// membership — two separate state machines (ubiquitous language table).
 enum EnrollmentStatus { active, inactive, suspended, archived }
 
+/// `SM-3.8` — `registrationSource` MUST be recorded as a closed set:
+/// `StaffAssisted`, `SelfEnrollment`, `Import`. No fourth value may exist.
+///
+/// Values follow the same PRD-to-Dart mapping as [EnrollmentStatus]
+/// (`Active` -> `active`).
+enum RegistrationSource { staffAssisted, selfEnrollment, import }
+
 final class GuardianLink {
   const GuardianLink({
     required this.name,
@@ -30,11 +37,14 @@ final class GuardianLink {
 final class StudentRecord {
   StudentRecord({
     required this.id,
+    required this.tenantId,
     required this.enrollmentNumber,
     required this.fullName,
     required this.phone,
     required this.dateOfBirth,
     required this.enrolledOn,
+    required this.registeredAt,
+    required this.registrationSource,
     this.email,
     this.guardian,
     required this.personId,
@@ -46,12 +56,34 @@ final class StudentRecord {
   }
 
   final StudentRecordId id;
+
+  /// The tenant (library) this record belongs to — `SM-2.2`, `SM-10.1`
+  /// (*"**mandatory** `tenant_id`"*), `SM-INV-8` (*"exactly one `tenantId`,
+  /// never null"*). Non-nullable in the type system; the repository additionally
+  /// partitions on it (`X-13`).
+  final TenantId tenantId;
+
   final String enrollmentNumber;
   String fullName;
   String phone;
   String? email;
   final DateTime dateOfBirth;
   final DateTime enrolledOn;
+
+  /// The system-of-record registration timestamp — `SM-2.2`, `SM-10.1`
+  /// (`registered_at`), indexed by `SM-10.5` (`(tenant_id, registered_at)`)
+  /// for the `LMD-15` registration-date-range filter.
+  ///
+  /// [enrolledOn] is unchanged and remains the enrollment date the minor
+  /// check uses. Both fields appear separately in `SM-2.2`/`SM-10.1`; their
+  /// semantic relationship is an open governance decision and neither may be
+  /// derived from the other.
+  final DateTime registeredAt;
+
+  /// `SM-3.8` — recorded as the closed set [RegistrationSource] at
+  /// registration time. Population at enrollment time is the registration
+  /// use case's concern (`SM-3.4`-`SM-3.10`).
+  final RegistrationSource registrationSource;
   GuardianLink? guardian;
 
   /// The person this record is a library-scoped view of.

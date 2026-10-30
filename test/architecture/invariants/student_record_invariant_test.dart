@@ -39,12 +39,15 @@ StudentRecord _build({
 }) {
   return StudentRecord(
     id: const StudentRecordId('stu-001'),
+    tenantId: const TenantId('tnt-001'),
     enrollmentNumber: 'EN-0001',
     fullName: fullName,
     phone: phone,
     email: email,
     dateOfBirth: dateOfBirth ?? DateTime.utc(2000, 6, 1),
     enrolledOn: _enrolledOn,
+    registeredAt: _enrolledOn,
+    registrationSource: RegistrationSource.staffAssisted,
     guardian: guardian,
     personId: personId ?? const PersonId('per-001'),
   );

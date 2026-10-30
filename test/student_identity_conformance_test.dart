@@ -161,11 +161,14 @@ void main() {
   group('SID-4.17 · a student record always carries an identity', () {
     StudentRecord build({required PersonId personId}) => StudentRecord(
       id: const StudentRecordId('stu_1'),
+      tenantId: const TenantId('tnt_1'),
       enrollmentNumber: 'STU0001',
       fullName: 'Test Student',
       phone: '9810000011',
       dateOfBirth: DateTime(2000, 1, 1),
       enrolledOn: _t0,
+      registeredAt: _t0,
+      registrationSource: RegistrationSource.staffAssisted,
       personId: personId,
     );
 

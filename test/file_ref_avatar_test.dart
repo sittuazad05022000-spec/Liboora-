@@ -134,11 +134,14 @@ void main() {
   test('BC-29 outage does not break student-record encode/decode', () {
     final studentRecord = StudentRecord(
       id: const StudentRecordId('sr_test'),
+      tenantId: const TenantId('tnt_test'),
       enrollmentNumber: 'EN-9999',
       fullName: 'Test Student',
       phone: '9876543210',
       dateOfBirth: DateTime.utc(2000, 1, 1),
       enrolledOn: DateTime.utc(2025, 1, 1),
+      registeredAt: DateTime.utc(2025, 1, 1, 9, 30),
+      registrationSource: RegistrationSource.staffAssisted,
       personId: const PersonId('per_test'),
       photoRef: FileRef('photo-1'),
     );

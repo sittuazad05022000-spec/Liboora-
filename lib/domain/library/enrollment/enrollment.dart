@@ -348,6 +348,7 @@ final class EnrollStudent {
     required String phone,
     required DateTime dateOfBirth,
     required PersonId personId,
+    required RegistrationSource registrationSource,
     String? email,
     GuardianLink? guardian,
   }) async {
@@ -388,12 +389,18 @@ final class EnrollStudent {
     // a minor without a guardian, or no contact channel.
     final student = StudentRecord(
       id: StudentRecordId(ids.next('stu')),
+      tenantId: tenant.tenantId,
       enrollmentNumber: number,
       fullName: fullName,
       phone: phone,
       email: email,
       dateOfBirth: dateOfBirth,
       enrolledOn: clock.today(),
+      // SM-2.2/SM-10.1: a separate registration timestamp from the enrolledOn
+      // date above; both are mandated fields.
+      registeredAt: clock.now(),
+      // SM-3.8 closed set — supplied by the caller, never inferred here.
+      registrationSource: registrationSource,
       guardian: guardian,
       personId: personId,
     );

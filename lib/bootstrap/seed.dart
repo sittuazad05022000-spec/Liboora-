@@ -497,6 +497,9 @@ Future<void> _seedStudents(AppContainer c) async {
       phone: r.phone,
       dateOfBirth: DateTime(r.birthYear, 6, 15),
       personId: personId,
+      // SM-3.8: the seeder enrolls through the real staff flow as the owner
+      // role — staff-assisted. `Import` has no PRD definition to invoke here.
+      registrationSource: RegistrationSource.staffAssisted,
       guardian: DateTime.now().year - r.birthYear < 18
           ? GuardianLink(
               name: 'Guardian of ${r.name}',
@@ -649,6 +652,7 @@ Future<void> _seedOtherTenantStudents(AppContainer c) async {
         account: AccountId('acc_$phone'),
         displayName: name,
       ),
+      registrationSource: RegistrationSource.staffAssisted,
     );
     await c.createMembership(
       actorRole: AccessRole.owner,

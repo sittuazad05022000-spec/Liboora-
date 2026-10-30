@@ -253,3 +253,39 @@ repository's own decomposition precedent; choosing it now forecloses nothing.
 | Date | Change |
 |---|---|
 | 2026-10-30 | Opened as **PROPOSED**: three matters (D-5 → C, D-1 → A1, D-2 → B1 with `[]`-not-null) determined by the operator-convened Architecture + Domain panel; zero signatures; verdict **AWAITING RATIFICATION**; no implementation, no commit, no push |
+| 2026-10-30 | **Project Owner decision recorded** (panel Convenor, scope/priority authority per `PRD_OWNERSHIP_MODEL.md` L83): confirmed D-5/C, D-1/A1, D-2/B1 as the correct scope for IMPL-300; priority ordering D-5→D-1→D-2 accepted; no structural approval claimed — see §below |
+
+---
+
+## Project Owner scope decisions — panel Convenor authority (2026-10-30)
+
+> **Authority notice — read before relying on this section.**
+> This section records the **Product Owner** (panel Convenor) exercising their scope/priority/acceptance
+> authority per `PRD_OWNERSHIP_MODEL.md` L83: *"Whether a requirement is correct and in scope."*
+>
+> It does **not** record Architecture Owner or Domain Owner approval of any matter's substance.
+> The ratification block above (L237-248) is the only authoritative record of ARB/Domain Owner decisions.
+> **This section is not a substitute for those signatures.**
+
+### Decisions recorded (Product Owner, scope/priority authority only)
+
+| Matter | Decision | Scope/priority basis | Structural authority required |
+|---|---|---|---|
+| **D-5** — audit references | Confirmed: Option C (linkage-only, no aggregate field) is the correct scope for IMPL-300 | D-5/C is within IMPL-300 scope; priority D-5→D-1→D-2 ordering accepted | **Yes** — domain-semantics reading of frozen SM-2.2 requires **Architecture Owner + Domain Owner** (joint) per review conditions L87-88 |
+| **D-1** — `accountId` nullability | Confirmed: Option A1 (nullable `AccountId?`, XC-4.2 state, single null→value transition) is the correct scope for IMPL-300 | D-1/A1 is within IMPL-300 scope; cross-PRD dimension acknowledged and accepted as scope item | **Yes** — `accountId` cross-PRD nullability is a structural/boundary matter requiring **Architecture Owner + Domain Owner** per review conditions L157-159 |
+| **D-2** — `DocumentRef[]` representation | Confirmed: Option B1 (non-nullable `List<FileRef>`, `[]` valid, null forbidden) is the correct scope for IMPL-300 | D-2/B1 is within IMPL-300 scope; element-type invariance accepted as a constraint | **Yes** — field representation shape is a structural matter; **Architecture Owner** (shape, L221-223) and **Domain Owner** (semantics, L221-223) both required |
+
+### Governance status of each matter
+
+| Matter | Project Owner scope confirmation | ARB/Domain Owner structural approval | Document status |
+|---|---|---|---|
+| D-5 (audit references) | ✅ Recorded this section | ⏳ Pending — requires Architecture Owner + Domain Owner joint | `PROPOSED` — not RATIFIED |
+| D-1 (`accountId` nullability) | ✅ Recorded this section | ⏳ Pending — requires Architecture Owner + Domain Owner joint | `PROPOSED` — not RATIFIED |
+| D-2 (`DocumentRef[]` representation) | ✅ Recorded this section | ⏳ Pending — requires Architecture Owner (shape) + Domain Owner (semantics) | `PROPOSED` — not RATIFIED |
+
+**DP-0011 remains `PROPOSED — NOT RATIFIED` until both ARB and Domain Owner sign the ratification block above.**
+
+The Project Owner's scope decisions above authorize the IMPL-300 task to proceed **only for the interpretation/analysis phase** — they do not authorize code, schema, or codec changes, which require ratification per L5-8.
+
+---
+

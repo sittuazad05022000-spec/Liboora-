@@ -8,7 +8,7 @@
 | **Date** | 2026-08-04 *(corrected same day — second-review finding `SR-01`)* |
 | **Baseline** | `BASELINE-2026-08-04-B` |
 | **Purpose** | Phase 20 deliverable 5. Expands `PRD-004` §10.7 into sequenced, independently verifiable tasks |
-| **Implementation state** | ⛔ **NOTHING IN THIS DOCUMENT IS IMPLEMENTED.** Zero files under `lib/` were created or modified. No development has started |
+| **Implementation state** | ✅ **PARTIAL** — three `StudentRecord` fields implemented and on remote (`2f0a2d6`): `tenantId` (required, SM-2.2/SM-10.1), `registeredAt` (required, SM-2.2/SM-10.5), `registrationSource` (required, SM-3.8 closed set). Remaining fields blocked on DP-0011 ratification (D-1: `accountId` nullability; D-2: `DocumentRef[]` → `List<FileRef>`; D-5: audit references — linkage-only, no field). See DP-0011 §Project Owner scope decisions. |
 | **Source of truth** | `PRD-004` §10.7. Where this file disagrees with it, **the PRD is right and this file is a defect** |
 
 ---
@@ -53,12 +53,12 @@ existing layers; no new module is proposed.
 
 ### 3.1 Wave 1 — Domain foundation (no Directory yet)
 
-| Task | Scope | Module | Depends on | Requirements | Test requirement |
-|---|---|---|---|---|---|
-| `IMPL-300` | `StudentRecord` aggregate + value objects | `domain/library` | — | `SM-2.1`–`SM-2.4` | Unit: invariants |
-| `IMPL-301` | `EnrollmentStatus` closed state machine | `domain/library` | `IMPL-300` | `SM-2.5`–`SM-2.13` | Reject `Expired`, reject illegal transitions |
-| `IMPL-302` | Schema + unique constraints + indexes | `platform/data` | `IMPL-300` | `SM-10.1`–`SM-10.6` | Schema scan: no credential, no `library_member` |
-| `IMPL-303` | Tenant-key enforcement on all access | `platform/data` | `IMPL-302` | `SM-8.1`–`SM-8.3` | `X-13` checker category 12 |
+| Task | Scope | Module | Depends on | Requirements | Test requirement | Status |
+|---|---|---|---|---|---|---|
+| `IMPL-300` | `StudentRecord` aggregate + value objects | `domain/library` | — | `SM-2.1`–`SM-2.4` | Unit: invariants | **PARTIAL** — 3/6 SM-2.2 MUST-hold fields done (`tenantId`, `registeredAt`, `registrationSource`); remaining blocked on DP-0011 |
+| `IMPL-301` | `EnrollmentStatus` closed state machine | `domain/library` | `IMPL-300` | `SM-2.5`–`SM-2.13` | Reject `Expired`, reject illegal transitions | **READY** — structurally independent of accountId/DocumentRef; pending Project Owner confirmation that IMPL-300 partial increment satisfies dependency |
+| `IMPL-302` | Schema + unique constraints + indexes | `platform/data` | `IMPL-300` | `SM-10.1`–`SM-10.6` | Schema scan: no credential, no `library_member` | **READY** — SM-10.1 provable pending DP-0011 D-1 nullability determination; OWN-4 test independent |
+| `IMPL-303` | Tenant-key enforcement on all access | `platform/data` | `IMPL-302` | `SM-8.1`–`SM-8.3` | `X-13` checker category 12 | Blocked — depends on `IMPL-302` |
 
 **`IMPL-301` is the task that encodes `CONF-1`.** Its test must **fail** if `Expired` is ever accepted as an
 `EnrollmentStatus`, because BC Map line 209 assigns `Expired` to `BC-02`. **`IMPL-302` makes `OWN-4` executable**

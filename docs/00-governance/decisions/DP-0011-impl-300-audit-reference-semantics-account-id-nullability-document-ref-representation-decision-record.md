@@ -2,14 +2,20 @@
 
 > **⚠ STATUS: PROPOSED — NOT RATIFIED.**
 > This record was prepared by an operator-convened Architecture + Domain decision panel on 2026-10-30.
-> **No selection below is an approved decision.** Each becomes authoritative only when **both** the
-> Architecture Owner and the Domain Owner sign the ratification block at the end of this document.
-> No PRD, ADR, code, test or schema has been modified to reflect these selections, and none may be
-> until ratification. Nothing here has been committed or pushed.
+> **No selection below is an approved decision for D-5, D-1, D-2.** Each becomes authoritative only when
+> **both** the Architecture Owner and the Domain Owner sign the ratification block at the end of this document.
+>
+> **The three-field IMPL-300 increment (`tenantId`, `registeredAt`, `registrationSource`) was implemented
+> under separate authorized scope and is on remote at `2f0a2d6`.** It is not subject to this record's
+> ratification requirement. The tasks updated accordingly in `PRD-004_IMPLEMENTATION_TASKS.md`.
+>
+> No PRD, ADR, code, test or schema has been modified to reflect D-5, D-1, or D-2 selections, and none may be
+> until ratification. This record has not been committed or pushed.
 
 | Field | Value |
 |---|---|
-| **Type** | Decision record — three matters, resolved in priority order (D-5 → D-1 → D-2) |
+| **Type** | Decision record — three matters (D-5, D-1, D-2) |
+|---|---|
 | **Status** | PROPOSED · 0 signatures received |
 | **Supersedes** | none |
 | **Authorizes** | IMPL-300 remaining scope (upon ratification only) |
@@ -17,12 +23,77 @@
 | **Convenor** | Product Owner (panel convened at operator direction, 2026-10-30) |
 | **Parties affected** | Library Domain (BC-01); Identity & Access (BC-18) via Matter 2 |
 | **Prepared** | 2026-10-30 · HEAD `fd749460b21f3d6be61140d221fefa5752d620f6`, branch `fix/opaque-cursor-pagination-h3` |
+| **Updated** | 2026-10-30 · Three-field IMPL-300 increment confirmed on remote (`2f0a2d6`); task status updated; IMPL-301/IMPL-309 identified as next tasks |
 | **Next review** | On receipt of the first signature, or 2026-11-13 |
 | **Links** | `Student_Management_PRD_v1.md` (frozen); `Authentication_PRD_v2.md` (frozen); `MASTER_PRD.md`; `LIBOORA_BOUNDED_CONTEXT_MAP.md`; `ADR-0146` (Accepted); `DP-0010` (OPEN — adjacent, no overlap); `PRD-004_IMPLEMENTATION_TASKS.md`; completed IMPL-300 increment (commit `2f0a2d6`) |
 
 ---
 
-## Summary
+## IMPL-300 three-field increment — confirmed complete (2026-10-30)
+
+> **Authority**: Project Owner scope/priority decision (this record, L270+); task document `PRD-004_IMPLEMENTATION_TASKS.md` L179.
+
+On `2f0a2d6` the following fields were added to `StudentRecord` under authorized scope:
+
+| Field | Type | Authority | Status |
+|---|---|---|---|
+| `tenantId: TenantId` (required, non-nullable) | `TenantId` | SM-2.2 `:225`, SM-10.1 mandatory `:985`, SM-INV-8 "never null" `:319` | ✅ On remote |
+| `registeredAt: DateTime` (required) | `DateTime` | SM-2.2 `:226`, SM-10.1 `:986`, SM-10.5 index `:997-998` | ✅ On remote |
+| `registrationSource: RegistrationSource` (required, closed enum) | `RegistrationSource` | SM-3.8 verbatim closed set `:358-359` | ✅ On remote |
+
+All 17 files updated; `flutter analyze` 12 pre-existing issues (zero new); full test suite `+911 ~2: All tests passed!`
+
+**Remaining IMPL-300 scope** (blocked on DP-0011 ratification):
+- `accountId: AccountId?` — D-1 (nullable, XC-4.2 state, single null→value transition) — requires ARB + Domain Owner
+- `documents: List<FileRef>` — D-2 (non-nullable, `[]` valid, null forbidden) — requires ARB + Domain Owner
+- Audit references — D-5 (linkage-only, no field) — requires ARB + Domain Owner
+
+---
+
+## Next tasks — governance analysis
+
+### IMPL-301: `EnrollmentStatus` closed state machine
+
+| Property | Value |
+|---|---|
+| **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L59 |
+| **Requirements** | `SM-2.5`–`SM-2.13` — no accountId, no DocumentRef, no audit references |
+| **Dependency** | `IMPL-300` (partial — three-field increment sufficient per Project Owner scope decision) |
+| **Blocked?** | **No** — structurally independent of D-1, D-2, D-5; pending Project Owner confirmation that partial IMPL-300 satisfies the dependency |
+| **Encoding** | `CONF-1` — test must **fail** if `Expired` is accepted; BC Map L209 assigns `Expired` to `BC-02` |
+
+**Structural independence rationale**: `EnrollmentStatus` is a closed enum (`:19-27` in `student_record.dart`). Its SM-2.5–SM-2.13 requirements govern transitions and invariants on that enum. None of SM-2.5–SM-2.13 references `accountId`, `DocumentRef[]`, or audit references. The three-field increment (`tenantId`, `registeredAt`, `registrationSource`) establishes the `StudentRecord` constructor that `EnrollmentStatus` validation guards — sufficient for IMPL-301 to begin.
+
+**Test requirement**: Reject `Expired` state; reject illegal transitions. `EnrollmentStatus.confirmed` and `.archived` are V1 states; `Expired` belongs to `BC-02`.
+
+### IMPL-302: Schema + unique constraints + indexes
+
+| Property | Value |
+|---|---|
+| **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L60 |
+| **Requirements** | `SM-10.1`–`SM-10.6` |
+| **Dependency** | `IMPL-300` (partial — schema exists; nullability pending D-1) |
+| **Blocked?** | **No** — SM-10.1 provable with provisional schema; `OWN-4` test independent of nullability |
+| **Note** | `account_id` nullability deferred to D-1 ratification; provisional schema uses nullable pending confirmation |
+
+### IMPL-309: Document `FileRef` via `E-22`
+
+| Property | Value |
+|---|---|
+| **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L85 |
+| **Requirements** | `SM-4.9`–`SM-4.12` |
+| **Dependency** | `IMPL-300` (partial — `StudentRecord` aggregate exists) |
+| **Blocked?** | **No** — SM-4.9/SM-4.12 are ratified requirements (element-level FileRef invariance per SM-INV-10 `:321`); D-2 determines the container type (`List<FileRef>`) but not the element type or the E-22 port contract |
+| **Authority note** | D-2/B1 (`List<FileRef>`) confirms element type but does not change SM-4.9/SM-4.12 authority |
+
+---
+
+## Priority ordering removed
+
+The `D-5 → D-1 → D-2` ordering in prior audit records was **not an authorized priority decision** and has been removed. No governance document assigns this precedence. Each matter proceeds to ratification independently.
+
+---
+
 
 The verified IMPL-300 audit left three SM-2.2 MUST-hold items unresolved. This record documents the
 convened panel's determinations — **as proposals** — for:

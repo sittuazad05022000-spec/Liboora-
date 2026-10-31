@@ -7,7 +7,8 @@
 >
 > **The three-field IMPL-300 increment (`tenantId`, `registeredAt`, `registrationSource`) was implemented
 > under separate authorized scope and is on remote at `2f0a2d6`.** It is not subject to this record's
-> ratification requirement. The tasks updated accordingly in `PRD-004_IMPLEMENTATION_TASKS.md`.
+> ratification requirement. Task-status entries in `PRD-004_IMPLEMENTATION_TASKS.md` reflecting this
+> increment are **proposed impacts pending ratification**, not authorized updates.
 >
 > No PRD, ADR, code, test or schema has been modified to reflect D-5, D-1, or D-2 selections, and none may be
 > until ratification. This record has not been committed or pushed.
@@ -23,7 +24,7 @@
 | **Convenor** | Product Owner (panel convened at operator direction, 2026-10-30) |
 | **Parties affected** | Library Domain (BC-01); Identity & Access (BC-18) via Matter 2 |
 | **Prepared** | 2026-10-30 · HEAD `fd749460b21f3d6be61140d221fefa5752d620f6`, branch `fix/opaque-cursor-pagination-h3` |
-| **Updated** | 2026-10-30 · Three-field IMPL-300 increment confirmed on remote (`2f0a2d6`); task status updated; IMPL-301/IMPL-309 identified as next tasks |
+| **Updated** | 2026-10-30 · Three-field IMPL-300 increment confirmed on remote (`2f0a2d6`); downstream task-status entries recorded as PROPOSED IMPACTS pending ratification |
 | **Next review** | On receipt of the first signature, or 2026-11-13 |
 | **Links** | `Student_Management_PRD_v1.md` (frozen); `Authentication_PRD_v2.md` (frozen); `MASTER_PRD.md`; `LIBOORA_BOUNDED_CONTEXT_MAP.md`; `ADR-0146` (Accepted); `DP-0010` (OPEN — adjacent, no overlap); `PRD-004_IMPLEMENTATION_TASKS.md`; completed IMPL-300 increment (commit `2f0a2d6`) |
 
@@ -50,7 +51,12 @@ All 17 files updated; `flutter analyze` 12 pre-existing issues (zero new); full 
 
 ---
 
-## Next tasks — governance analysis
+## Proposed downstream task impacts — PENDING RATIFICATION (not authorized)
+
+> ⛔ **Nothing in this section authorizes any task to start or change status.** Dependency
+> definitions are unchanged; no approved rule permits partial IMPL-300 completion to satisfy
+> another task's dependency. Items below are impact assessments that would apply only upon
+> DP-0011 ratification and any subsequent authorized task-status change.
 
 ### IMPL-301: `EnrollmentStatus` closed state machine
 
@@ -58,11 +64,11 @@ All 17 files updated; `flutter analyze` 12 pre-existing issues (zero new); full 
 |---|---|
 | **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L59 |
 | **Requirements** | `SM-2.5`–`SM-2.13` — no accountId, no DocumentRef, no audit references |
-| **Dependency** | `IMPL-300` (partial — three-field increment sufficient per Project Owner scope decision) |
-| **Blocked?** | **No** — structurally independent of D-1, D-2, D-5; pending Project Owner confirmation that partial IMPL-300 satisfies the dependency |
+| **Dependency** | `IMPL-300` — unchanged; formally requires full IMPL-300 completion |
+| **Blocked?** | **Yes (formally)** — no approved rule permits partial completion to satisfy this dependency |
 | **Encoding** | `CONF-1` — test must **fail** if `Expired` is accepted; BC Map L209 assigns `Expired` to `BC-02` |
 
-**Structural independence rationale**: `EnrollmentStatus` is a closed enum (`:19-27` in `student_record.dart`). Its SM-2.5–SM-2.13 requirements govern transitions and invariants on that enum. None of SM-2.5–SM-2.13 references `accountId`, `DocumentRef[]`, or audit references. The three-field increment (`tenantId`, `registeredAt`, `registrationSource`) establishes the `StudentRecord` constructor that `EnrollmentStatus` validation guards — sufficient for IMPL-301 to begin.
+**Impact assessment (not an authorization)**: `EnrollmentStatus` is a closed enum (`:19-27` in `student_record.dart`). Its SM-2.5–SM-2.13 requirements govern transitions and invariants on that enum. None of SM-2.5–SM-2.13 references `accountId`, `DocumentRef[]`, or audit references. This notes structural independence of *scope only*; the dependency rule itself remains unchanged and full IMPL-300 completion is still required.
 
 **Test requirement**: Reject `Expired` state; reject illegal transitions. `EnrollmentStatus.confirmed` and `.archived` are V1 states; `Expired` belongs to `BC-02`.
 
@@ -72,9 +78,9 @@ All 17 files updated; `flutter analyze` 12 pre-existing issues (zero new); full 
 |---|---|
 | **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L60 |
 | **Requirements** | `SM-10.1`–`SM-10.6` |
-| **Dependency** | `IMPL-300` (partial — schema exists; nullability pending D-1) |
-| **Blocked?** | **No** — SM-10.1 provable with provisional schema; `OWN-4` test independent of nullability |
-| **Note** | `account_id` nullability deferred to D-1 ratification; provisional schema uses nullable pending confirmation |
+| **Dependency** | `IMPL-300` — unchanged; formally requires full IMPL-300 completion |
+| **Blocked?** | **Yes (formally)** — no approved rule permits partial completion to satisfy this dependency |
+| **Note** | No provisional schema values are proposed. `account_id` nullability is an open D-1 matter, decided only by ratification |
 
 ### IMPL-309: Document `FileRef` via `E-22`
 
@@ -82,9 +88,9 @@ All 17 files updated; `flutter analyze` 12 pre-existing issues (zero new); full 
 |---|---|
 | **Authority** | `PRD-004_IMPLEMENTATION_TASKS.md` L85 |
 | **Requirements** | `SM-4.9`–`SM-4.12` |
-| **Dependency** | `IMPL-300` (partial — `StudentRecord` aggregate exists) |
-| **Blocked?** | **No** — SM-4.9/SM-4.12 are ratified requirements (element-level FileRef invariance per SM-INV-10 `:321`); D-2 determines the container type (`List<FileRef>`) but not the element type or the E-22 port contract |
-| **Authority note** | D-2/B1 (`List<FileRef>`) confirms element type but does not change SM-4.9/SM-4.12 authority |
+| **Dependency** | `IMPL-300` — unchanged; formally requires full IMPL-300 completion |
+| **Blocked?** | **Yes (formally)** — no approved rule permits partial completion to satisfy this dependency |
+| **Authority note** | SM-4.9/SM-4.12/SM-INV-10 element-level FileRef invariance is ratified PRD authority regardless of D-2's container outcome; D-2 would determine only the container type upon ratification |
 
 ---
 
@@ -324,7 +330,7 @@ repository's own decomposition precedent; choosing it now forecloses nothing.
 | Date | Change |
 |---|---|
 | 2026-10-30 | Opened as **PROPOSED**: three matters (D-5 → C, D-1 → A1, D-2 → B1 with `[]`-not-null) determined by the operator-convened Architecture + Domain panel; zero signatures; verdict **AWAITING RATIFICATION**; no implementation, no commit, no push |
-| 2026-10-30 | **Project Owner decision recorded** (panel Convenor, scope/priority authority per `PRD_OWNERSHIP_MODEL.md` L83): confirmed D-5/C, D-1/A1, D-2/B1 as the correct scope for IMPL-300; priority ordering D-5→D-1→D-2 accepted; no structural approval claimed — see §below |
+| 2026-10-30 | **Project Owner decision recorded** (panel Convenor, scope/priority authority per `PRD_OWNERSHIP_MODEL.md` L83): confirmed D-5/C, D-1/A1, D-2/B1 as the correct scope for IMPL-300; no structural approval claimed and no replacement ordering introduced — see §below |
 
 ---
 
@@ -342,7 +348,7 @@ repository's own decomposition precedent; choosing it now forecloses nothing.
 
 | Matter | Decision | Scope/priority basis | Structural authority required |
 |---|---|---|---|
-| **D-5** — audit references | Confirmed: Option C (linkage-only, no aggregate field) is the correct scope for IMPL-300 | D-5/C is within IMPL-300 scope; priority D-5→D-1→D-2 ordering accepted | **Yes** — domain-semantics reading of frozen SM-2.2 requires **Architecture Owner + Domain Owner** (joint) per review conditions L87-88 |
+| **D-5** — audit references | Confirmed: Option C (linkage-only, no aggregate field) is the correct scope for IMPL-300 | D-5/C is within IMPL-300 scope; no priority ordering over the other matters is claimed | **Yes** — domain-semantics reading of frozen SM-2.2 requires **Architecture Owner + Domain Owner** (joint) per review conditions L87-88 |
 | **D-1** — `accountId` nullability | Confirmed: Option A1 (nullable `AccountId?`, XC-4.2 state, single null→value transition) is the correct scope for IMPL-300 | D-1/A1 is within IMPL-300 scope; cross-PRD dimension acknowledged and accepted as scope item | **Yes** — `accountId` cross-PRD nullability is a structural/boundary matter requiring **Architecture Owner + Domain Owner** per review conditions L157-159 |
 | **D-2** — `DocumentRef[]` representation | Confirmed: Option B1 (non-nullable `List<FileRef>`, `[]` valid, null forbidden) is the correct scope for IMPL-300 | D-2/B1 is within IMPL-300 scope; element-type invariance accepted as a constraint | **Yes** — field representation shape is a structural matter; **Architecture Owner** (shape, L221-223) and **Domain Owner** (semantics, L221-223) both required |
 

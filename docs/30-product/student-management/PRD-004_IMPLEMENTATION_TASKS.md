@@ -56,8 +56,8 @@ existing layers; no new module is proposed.
 | Task | Scope | Module | Depends on | Requirements | Test requirement | Status |
 |---|---|---|---|---|---|---|
 | `IMPL-300` | `StudentRecord` aggregate + value objects | `domain/library` | — | `SM-2.1`–`SM-2.4` | Unit: invariants | **PARTIAL** — 3/6 SM-2.2 MUST-hold fields done (`tenantId`, `registeredAt`, `registrationSource`); remaining blocked on DP-0011 |
-| `IMPL-301` | `EnrollmentStatus` closed state machine | `domain/library` | `IMPL-300` | `SM-2.5`–`SM-2.13` | Reject `Expired`, reject illegal transitions | **READY** — structurally independent of accountId/DocumentRef; pending Project Owner confirmation that IMPL-300 partial increment satisfies dependency |
-| `IMPL-302` | Schema + unique constraints + indexes | `platform/data` | `IMPL-300` | `SM-10.1`–`SM-10.6` | Schema scan: no credential, no `library_member` | **READY** — SM-10.1 provable pending DP-0011 D-1 nullability determination; OWN-4 test independent |
+| `IMPL-301` | `EnrollmentStatus` closed state machine | `domain/library` | `IMPL-300` | `SM-2.5`–`SM-2.13` | Reject `Expired`, reject illegal transitions | Blocked — dependency on full `IMPL-300` completion; no approved rule permits partial completion to satisfy it |
+| `IMPL-302` | Schema + unique constraints + indexes | `platform/data` | `IMPL-300` | `SM-10.1`–`SM-10.6` | Schema scan: no credential, no `library_member` | Blocked — dependency on full `IMPL-300` completion; no approved rule permits partial completion to satisfy it |
 | `IMPL-303` | Tenant-key enforcement on all access | `platform/data` | `IMPL-302` | `SM-8.1`–`SM-8.3` | `X-13` checker category 12 | Blocked — depends on `IMPL-302` |
 
 **`IMPL-301` is the task that encodes `CONF-1`.** Its test must **fail** if `Expired` is ever accepted as an

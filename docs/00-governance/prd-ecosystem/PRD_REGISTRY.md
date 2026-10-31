@@ -177,7 +177,7 @@ see [`PRD_GAP_ANALYSIS.md`](./PRD_GAP_ANALYSIS.md) §7.
 | **Dependents** | `PRD-002` (`E-13` ACL) · future `MP-FUT-01`…`05` · `BC-11`…`BC-13` as **consumers** |
 | **Related ADRs** | **`ADR-0011`** (the governing decision) · `ADR-0012` (scaffold port-inversion debt) |
 | **Related implementation tasks** | **`IMPL-200`…`IMPL-208`, `IMPL-210`…`IMPL-216`, `IMPL-220`…`IMPL-226`** — 25 tasks, 17 at P0 |
-| **Implementation status** | **Partial.** `IMPL-200`, `IMPL-201`, `IMPL-207`, `IMPL-208` and `IMPL-014` **implemented** (`a22fd7e`). `IMPL-220` **unblocked but not done** — `SID-INT-1`…`12` are review-verified only and therefore **unmet** per `SID-4.56` |
+| **Implementation status** | **Partial.** `IMPL-200`, `IMPL-207`, `IMPL-208`, `IMPL-014` implemented (`a22fd7e`). **IMPL-201 partially implemented:** `PersonId` and the `DomainEvent` schema-versioning base date to `a22fd7e`; the `SEV-1`…`SEV-16` event schemas were **overstated as implemented in a prior revision of this row** — they now exist (`packages/liboora_contracts` `src/events/identity_events.dart`, ADR-0078 Global envelope, 20 contract tests passing); emission wiring remains `IMPL-203`/`IMPL-205` scope. `IMPL-220` unblocked but not done — `SID-INT-1`…`12` remain unmet per `SID-4.56` (its `ADR-0125` §9.1 artifacts A1/A2 still do not exist) |
 | **Freeze status** | **Frozen.** Rank 3, baseline §3.3 (`BASELINE-2026-08-04`) |
 
 Registers: 343 identifiers — `SID-c.n` (226) · `SID-BR-n` (18) · `SXC-n` (11) · `SPO-n` (9) · `SEV-n` (16) ·

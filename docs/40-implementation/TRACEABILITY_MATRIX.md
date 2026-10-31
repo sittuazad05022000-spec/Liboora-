@@ -3534,7 +3534,7 @@ rulings and cover a fraction of 588 requirements. Re-verification is part of Gat
 | Rank 7.5 tier declaration | `tool/module_dependencies.yaml` | ✅ **Declared** — `domain/person: 7.5`, ports, banned imports, banned symbols | — |
 | Boundary enforcement of that declaration | `tool/check_module_boundaries.dart` | ⛔ **File does not exist** | `IMPL-014` |
 | `domain/person` module | `lib/domain/person/` | ⬜ **Absent** — the directory does not exist | `IMPL-202` |
-| `SEV-1` … `SEV-16` schemas | `packages/liboora_contracts` | ⬜ Absent | `IMPL-201` |
+| `SEV-1` … `SEV-16` schemas | `packages/liboora_contracts` | ✅ Implemented — `src/events/identity_events.dart` (closed set of 16 per §4.14, ADR-0078 Global envelope, `SID-4.52` payload contract) + `src/events/global_event.dart`; 20 conformance tests passing (`identity_events_test.dart`); emission wiring still `IMPL-203`/`IMPL-205` scope | `IMPL-201` (schemas) / `IMPL-205`, `IMPL-222` (emission) |
 
 **The manifest and the code now disagree, and the manifest is the one that is right.**
 `tool/module_dependencies.yaml` declares `domain/social` contexts as `[graph, messaging, safety]` — `identity`

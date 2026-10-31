@@ -34,6 +34,16 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 /// profile *content* is never administratively editable (`SID-3.32`).
 enum PersonIdentityStatus { active, suspended, archived, anonymised }
 
+/// The Global Profile privacy mode (`SID-2.26`).
+///
+/// Exactly these two values exist in V1 — custom visibility is `SXC-9`,
+/// deferred to V2. **Private is the default** for every newly created
+/// identity (`SID-2.27`); Public requires an explicit, recorded consent act
+/// (`SID-5.15`) — the consent and allow-list *behaviour* belongs to the
+/// privacy use cases (`IMPL-213`); this type exists so the default and the
+/// closed value set are enforced by the compiler (`SID-INV-9`).
+enum PrivacyMode { public, private }
+
 /// The Global Person Identity aggregate.
 ///
 /// There is exactly **one** identity aggregate in this system. Any change that
@@ -44,10 +54,17 @@ final class PersonIdentity {
     required this.accountId,
     required this.createdAt,
     required this.displayName,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.email,
+    this.occupation,
+    this.bio,
     this.headline = '',
     this.examTrack = '',
     this.avatarRef,
     this.status = PersonIdentityStatus.active,
+    this.privacyMode = PrivacyMode.private,
   }) {
     _assertInvariants();
   }
@@ -74,6 +91,39 @@ final class PersonIdentity {
 
   /// A `FileRef` only. Never bytes, never a raw storage path, never a URL.
   FileRef? avatarRef;
+
+  /// Optional Global Profile field (`SID-2.2`). The value set beyond
+  /// "prefer not to say" is **not defined at this rank** (`SID-2.7`,
+  /// `SID-5.10`) — this field stores what the presentation layer offered and
+  /// the person selected; it invents no enumeration. Absence never blocks
+  /// profile completion (`SID-5.10`).
+  String? gender;
+
+  /// Optional. Stored because minor-safety obligations (`ID-6`) depend on it;
+  /// **never publicly visible in any form** — not as an age, an age bracket or
+  /// a birthday (`SID-5.9`). Never in an event payload or index (`SID-INV-11`).
+  DateTime? dateOfBirth;
+
+  /// Optional, **restricted** (`SID-5.11`): never public, never in an event
+  /// payload, never indexed (`SID-INV-10`/`SID-INV-11`).
+  String? address;
+
+  /// Optional, **restricted** (`SID-5.11`): never public, never in an event
+  /// payload, never indexed. Not an authentication surface (`ID-1`).
+  String? email;
+
+  /// Optional (`SID-2.2`). No format or value constraint exists at this rank.
+  String? occupation;
+
+  /// Optional (`SID-2.2`). Maximum length is configuration `SCFG-6`
+  /// (300 characters by default, range 0–1,000) — owned by `BC-25` and
+  /// enforced by the update use cases (`IMPL-210`), never by a literal here.
+  String? bio;
+
+  /// `SID-2.26`/`SID-2.27`/`SID-INV-9` — Private until an explicit, recorded
+  /// consent act makes it Public (`SID-5.15`). The mutation use case and the
+  /// same-operation cache invalidation belong to `IMPL-213` (`SID-2.30`).
+  PrivacyMode privacyMode;
 
   PersonIdentityStatus status;
 
@@ -109,8 +159,21 @@ final class PersonIdentity {
   /// does **not** delete any `StudentRecord` financial or attendance history,
   /// which a library retains under legal basis. This asymmetry is the
   /// load-bearing reason the identity split is kept at all.
+  ///
+  /// Every profile field the person could have supplied is cleared — after
+  /// erasure the record is pseudonymised, and retaining any of it (including
+  /// `dateOfBirth`, which `SID-5.9` stores only for minor-safety) would
+  /// retain personal data the legal basis no longer covers. `privacyMode` is
+  /// left as-is: with no profile content left, it has no observable effect,
+  /// and no rule specifies a post-erasure value.
   void anonymise() {
     displayName = 'Removed user';
+    gender = null;
+    dateOfBirth = null;
+    address = null;
+    email = null;
+    occupation = null;
+    bio = null;
     headline = '';
     examTrack = '';
     avatarRef = null;

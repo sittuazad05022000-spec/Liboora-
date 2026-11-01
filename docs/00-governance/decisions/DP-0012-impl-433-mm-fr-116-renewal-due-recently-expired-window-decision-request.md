@@ -1,5 +1,143 @@
 # DP-0012 — IMPL-433: `MM-FR-116` renewal-due "recently expired and not yet renewed" window (BC-02)
 
+---
+
+## HUMAN DECISION HANDOFF — EXECUTIVE BRIEF
+
+> **Who reads this:** the BC-02 Domain Owner (Library Domain) — the single human authority who may
+> lawfully decide the four matters below. No agent, Project Owner, or AI may sign on the Domain Owner's
+> behalf. See §D for authorization prerequisites and known gaps.
+
+### What decision is required
+
+`MM-FR-116` requires a **renewal-due list**: *"Expiring plus recently expired and not yet renewed."*
+The **expiring half** is implemented and tested (uses `MM-CFG-008`'s 7-day window). The
+**"recently expired and not yet renewed" half** is blocked — no frozen requirement defines "recently"
+or specifies how "not yet renewed" is determined. Four separate decisions are needed before the
+feature can be completed.
+
+---
+
+### M-1 — What window defines "recently expired"?
+
+**Options — pick one:**
+
+| Option | Meaning | PRD impact | Code impact |
+|---|---|---|---|
+| **A** | Fixed calendar window after `endDate` (e.g. 30 days) | Requires either `MM-CFG-010` (new configurable → M-3) or reuse of `MM-CFG-008` (→ M-3/M-4) | Hard-codes or configures a named window value |
+| **B** | All `Expired` memberships, regardless of elapsed time | None | List grows without bound — arguably defeats the "due" intent |
+| **C** | Same window the staff user selected in the expired view | None | Requires a parameter added to the `renewalDue()` call signature |
+| **D** | No window — "recently" is non-constant wording, not a threshold | None (interpretation only) | Binds to nothing; list inherits B's unbounded growth unless M-2 caps it |
+
+**Evidence:** The word "recently" appears nowhere quantified in `PRD-MEMBERSHIP-MANAGEMENT.md`. `MM-FR-081`
+(`:816-817`) confirms renewal eligibility is **unbounded by elapsed time** — the window is purely a
+staff task-scoping decision, not an eligibility rule.
+
+---
+
+### M-2 — How is "not yet renewed" determined?
+
+**Options — pick one:**
+
+| Option | Mechanism | PRD impact | Code impact |
+|---|---|---|---|
+| **A** (recommended by evidence) | Test: does a successor exist with `renewedFromMembershipId == this.id`? | None — uses existing lineage field | Reuses `membership.dart:742` finder; no schema change |
+| **B** | Test: does the successor's `createdAt` fall within the M-1 window? | None | Semantically odd — membership reappears on list after renewal if successor was created outside window |
+| **C** | Add a persisted "renewed" marker on the source membership | Requires schema change (successor amendment) | Contradicts `MM-FR-084` ("MUST NOT mutate the previous membership's term") |
+
+**Note:** Renewal creates a **new** membership — it does **not** change the source's status. Only **upgrade**
+transitions a membership to `Superseded` (`MM-FR-096`, `:881-882`). A renewed-from membership stays
+`Active`/`Expired`. "Already renewed" is identifiable **only** by a successor existing, not by status.
+
+**Open sub-point:** does the renewal-due list also exclude memberships whose successor was created by **upgrade**
+(`upgradedFromMembershipId`)? The model treats both lineage patterns identically.
+
+---
+
+### M-3 — Where does the window value live (if it is a named constant)?
+
+| Option | What it means | Register impact | `MM-BR-026` impact |
+|---|---|---|---|
+| **A** | New configurable `MM-CFG-010` — "recently-expired window (days)" | Register grows to 10 → successor amendment required | `MM-BR-026` unchanged |
+| **B** | Reuse `MM-CFG-008` (the 7-day expiring-soon threshold) for "recently expired" too | None | `MM-BR-026` wording must change; reminder and list share one value |
+| **C** | Reuse `MM-CFG-008`'s numeric value but treat renewal-due list as a third consumer | None | `MM-BR-026` must be amended to name renewal-due list; `MM-CFG-008` note changes |
+| **D** | Hard-code the M-1 window in code | None | None — but hard-coding contradicts `MM-CFG-008`'s own rationale (:1356-1357) |
+
+**Evidence:** `MM-CFG-*` register is **closed at 9** — deliberately preserved through v1.5 and v1.6 amendments
+(`TRACEABILITY_MATRIX.md:230, :3611-3612`). `MM-BR-026` binds `MM-CFG-008` to **exactly two consumers**.
+
+---
+
+### M-4 — What instrument records the decisions?
+
+| Option | When it may be used | What it requires |
+|---|---|---|
+| **A — Successor amendment (v1.6 → v1.7)** | If M-1-D / M-2-A / M-3-D are NOT the selected combination (any option that changes frozen text or the register) | A new accepted ADR, Domain Owner's single-act conferral (the v1.5 conferral has reverted), version increment, changelog, baseline re-measure |
+| **B — Clarifying-pass changelog** | Only if the combination is M-1-D / M-2-A / M-3-D — interpretation only, no text changes | Changelog entry in `DOCUMENTATION_BASELINE.md`; NOT valid if `MM-BR-026` or `MM-CFG-008` changes |
+| **C — Interpretation-record only** | Same as B — zero PRD/ADR surface change | Owner's reading recorded in this DP once signed; no PRD amendment |
+
+**Critical rule:** `PRD_LIFECYCLE.md:177` — *"A frozen PRD is never silently modified."*
+`MM-BR-026` is **not** in the `ADR-0019:315` clarifying-pass set (`MM-BR-012/022/027/028` only). Any
+change to it must go through the successor amendment route.
+
+---
+
+## Authority and authorization
+
+### Required decision-maker
+
+**BC-02 Domain Owner (Library Domain)** — `PRD_OWNERSHIP_MODEL.md:162`.
+Domain Owner is a **derived organizational office**, not a chosen individual:
+> *"Domain Owner is derived from the context's owning module (rule 3), not chosen."* — `PRD_OWNERSHIP_MODEL.md:157`
+
+Amendment authority for `PRD-005` is held by the Domain Owner, exercised by **explicit single-act
+conferral**, scoped to **one act only**, reverting on completion:
+> *"`ADR-0033` §7.1: a conferral for one act is not a standing licence."* — `PRD-MEMBERSHIP-MANAGEMENT.md:10`
+
+The v1.5 → v1.6 amendment conferral has **reverted**. A **new** conferral is required for any new act.
+
+### Known authorization gaps (HUMAN_AUTHORITY_AUDIT-001 findings)
+
+| Finding | Verdict | Source |
+|---|---|---|
+| Human Principal identity | **UNVERIFIABLE** — no named human authority found repo-wide | `HUMAN_AUTHORITY_AUDIT-001:18` |
+| Personal incumbent of Domain Owner office | **NOT RECORDED** — names live in external team directory, not repository | `HUMAN_AUTHORITY_AUDIT-001:23` |
+| Human authorization evidence | **NOT INDEPENDENTLY ESTABLISHED** — all records are agent-authored | `HUMAN_AUTHORITY_AUDIT-001:20` |
+| No agent, Project Owner, or AI may substitute for the authorized human | Confirmed — `DP-0011:314-324`, `HUMAN_AUTHORITY_AUDIT-001:18,23,30,33` | `HUMAN_AUTHORITY_AUDIT-001:29-30` |
+
+### Unresolved authorization prerequisites before this record can advance
+
+1. **Identity of the Human Principal** — not established by any repo record (`HUMAN_AUTHORITY_AUDIT-001:18`).
+   A human who can identify themselves as the Human Principal must do so through evidence outside the
+   agent authorship chain (e.g. hand-signed or GPG-signed statement).
+2. **Domain Owner incumbency** — the personal holder of the Library Domain Owner office is not named in
+   the repository (`HUMAN_AUTHORITY_AUDIT-001:23`). The office is assigned; the incumbent is in an
+   external team directory.
+3. **New single-act conferral** — the v1.5/v1.6 conferral for `PRD-005` amendment authority has reverted
+   (`PRD-MEMBERSHIP-MANAGEMENT.md:10`). Any new amendment act (M-4 option A) requires a fresh conferral.
+4. **No ARB quorum or independent review** — every accepted ADR in the engagement discloses zero
+   independent review (`HUMAN_AUTHORITY_AUDIT-001:20`). This is a known constraint, not a blocker.
+
+> **This record does not create, confer, or assume any authority.** The ratification block at the end
+> of this document requires a human-executed signature. No agent may auto-ratify.
+
+---
+
+## Current implementation state
+
+| Capability | Status | Location |
+|---|---|---|
+| Expiring-memberships view (`MM-FR-116` half 1) | ✅ Implemented + 19 tests passing | `lib/bootstrap/di.dart:349-438` |
+| Today's renewals (`MM-FR-116` today's-renewals) | ✅ Implemented + tested | `lib/bootstrap/di.dart:467-483` |
+| All `MM-FR-115` filters/pagination | ✅ Implemented + tested | `lib/bootstrap/di.dart:349-438` |
+| `MM-FR-117` / `MM-FR-118` | ✅ Implemented + tested | `di.dart` (same view surface) |
+| **Renewal-due "recently expired and not yet renewed"** | ⛔ **Blocked — awaiting this decision** | `di.dart:485-490` note |
+
+`IMPL-433` status: **PARTIAL** — three of four views delivered; the fourth is blocked on these four
+decisions.
+
+---
+
 > **⚠ STATUS: PROPOSED — NOT DECIDED.**
 > This record is a **decision request** prepared by the IMPL-433 implementer, convened by the Product
 > Owner at operator direction, on 2026-11-01.

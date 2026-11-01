@@ -33,6 +33,7 @@ import 'clock.dart';
 import 'account_store.dart';
 import 'codecs.dart';
 import 'session_store.dart';
+import 'membership_cursor_registry.dart';
 import '../app/shared/library_boundary.dart';
 
 /// Branch display facts, flattened for the UI.
@@ -71,7 +72,7 @@ final class BranchView {
 /// across the seam and forwards the two commands whose parameter types are
 /// domain-owned. Every business rule stays inside the domain use case.
 final class ContainerLibraryBoundary implements LibraryBoundary {
-  const ContainerLibraryBoundary(this._c);
+  ContainerLibraryBoundary(this._c, this._cursorRegistry);
 
   /// `MM-FR-115` pagination defaults. Not a configurable: `PRD-005` defines
   /// no membership page-size configurable, so these are implementation
@@ -80,6 +81,7 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   static const int _maxMembershipPageSize = 50;
 
   final AppContainer _c;
+  final MembershipCursorRegistry _cursorRegistry;
 
   DateTime get _today => _c.clock.today();
 
@@ -339,10 +341,11 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     };
   }
 
-  /// Opaque per-page cursor, seed-less. The next-page anchor is the last
-  /// returned row's membership id, treated as opaque by contract (PG-1/PG-2)
-  /// and validated against the current filtered tenant set — malformed or
-  /// out-of-scope input fails loudly, never reset (`PG-4`).
+  /// Opaque per-page cursor. The next-page anchor is the last returned row's
+  /// membership id, registered **server-side** under an unforgeable token
+  /// (`PG-1`/`PG-2`/`PG-3`); the id itself never goes on the wire. The token
+  /// is bound to the issuing tenant and the query fingerprint, so an unknown,
+  /// cross-tenant or cross-filter token fails loudly, never resets (`PG-4`).
   @override
   MembershipListPageView membershipListPage({
     required MembershipListKind kind,
@@ -372,6 +375,19 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
       }).toList();
     }
 
+    // Canonical fingerprint of this exact query: kind + every applied filter.
+    // A cursor minted for one view is rejected when presented against any
+    // other — replaces the membership id on the wire with a server-side check.
+    final fingerprint = _listFingerprint(
+      kind: kind,
+      status: status,
+      planId: planId,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      rangeOverStartDate: rangeOverStartDate,
+    );
+    final tenant = _c.tenantContext.tenantId;
+
     // Stable order by startDate then membershipId (deterministic pagination).
     rows.sort((a, b) {
       final c = a.startDate.compareTo(b.startDate);
@@ -381,12 +397,15 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     // Cursor handling.
     int anchorIndex = 0;
     if (cursor != null) {
-      final anchorId = cursor;
+      final anchorId = _cursorRegistry.resolve(
+        token: cursor,
+        tenant: tenant,
+        fingerprint: fingerprint,
+      );
       final idx = rows.indexWhere((m) => m.id == anchorId);
       if (idx == -1) {
-        // Cursor referenced a membership not in this filtered/tenant set —
-        // always a malformed or out-of-scope cursor. Fail loudly, never a
-        // silent reset (`PG-4`).
+        // Anchor is no longer in this filtered/tenant set — the records it
+        // resumed after changed under this token. Fail loudly (PG-4).
         throw const DomainError(
           DomainErrorCode.validationFailed,
           'Invalid cursor.',
@@ -404,13 +423,41 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
         : anchorIndex + size;
     final page = rows.sublist(anchorIndex, end);
     final hasMore = end < rows.length;
-    final next = hasMore ? page.last.id : null;
+    final next = hasMore
+        ? _cursorRegistry.issue(
+            tenant: tenant,
+            anchorId: page.last.id,
+            fingerprint: fingerprint,
+          )
+        : null;
 
     return MembershipListPageView(
       items: [for (final m in page) _membershipRow(m)],
       nextCursor: next,
     );
   }
+
+  /// Canonical, stable fingerprint of a membership list query.
+  ///
+  /// Only the list-shaping inputs participate — kind, status, plan, date
+  /// bounds and the date-edge choice. Canonicalised so that equivalent queries
+  /// (e.g. absent dates vs null) hash identically, and a cursor issued under
+  /// one set of filters can never be replayed against a different one.
+  String _listFingerprint({
+    required MembershipListKind kind,
+    String? status,
+    String? planId,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+    bool rangeOverStartDate = false,
+  }) => [
+    'kind=${kind.name}',
+    'status=${status ?? ''}',
+    'planId=${planId ?? ''}',
+    'dateFrom=${dateFrom?.toIso8601String() ?? ''}',
+    'dateTo=${dateTo?.toIso8601String() ?? ''}',
+    'rangeOverStartDate=$rangeOverStartDate',
+  ].join('|');
 
   @override
   List<MembershipRowView> todaysRenewals() {
@@ -584,6 +631,7 @@ final class AppContainer {
     required this.releaseSeat,
     required this.raiseFeeDue,
     required this.collectFee,
+    required this.membershipCursorRegistry,
   });
 
   // ── Kernel adapters ──────────────────────────────────────────────
@@ -759,7 +807,18 @@ final class AppContainer {
 
   /// The `app -> domain/library` port. Lazy: it reads the container's own
   /// fields at call time, so it must be built after the constructor finishes.
-  late final LibraryBoundary library = ContainerLibraryBoundary(this);
+  late final LibraryBoundary library = ContainerLibraryBoundary(
+    this,
+    membershipCursorRegistry,
+  );
+
+  /// IMPL-433 — opaque server-side cursor registry for `MM-FR-115` pagination.
+  ///
+  /// A composition-root-owned, stateful service. It cannot live on the const
+  /// `ContainerLibraryBoundary`, which is why it is injected here and handed
+  /// into the boundary at `:762`. Container-lifetime retention (no TTL/cleanup)
+  /// mirrors the `BC-01` enrollment registry — see the registry's file doc.
+  final MembershipCursorRegistry membershipCursorRegistry;
 
   Tenant tenantById(TenantId id) =>
       tenants.firstWhere((t) => t.id == id, orElse: () => tenants.first);
@@ -1109,6 +1168,10 @@ final class AppContainer {
       identityService: identityService,
       socialPresences: InMemorySocialPresenceRepository(),
       messagingEnforcement: messagingEnforcement,
+      // IMPL-433 — the opaque cursor registry, shared with the boundary.
+      // Container-lifetime, no TTL/cleanup (mirrors the BC-01 enrollment
+      // registry).
+      membershipCursorRegistry: MembershipCursorRegistry(),
       // P1 session restore. Shares one adapter with the account directory, so
       // a restored session is always validated against a directory from the
       // same storage.

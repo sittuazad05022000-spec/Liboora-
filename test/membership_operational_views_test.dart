@@ -9,6 +9,8 @@
 /// remaining surfaces are implemented and verified here.
 library;
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/bootstrap/di.dart';
 import 'package:liboora/bootstrap/seed.dart';
@@ -282,4 +284,142 @@ void main() {
       expect(ids, isNot(contains('mem_renewed_earlier')));
     });
   });
+  group('IMPL-433 corrective · opaque cursor registry (PG-1..PG-4)', () {
+    test('cursor is an opaque token, not a membership id (PG-1/PG-3)', () {
+      final page = c.library.membershipListPage(
+        kind: MembershipListKind.active,
+        pageSize: 1,
+      );
+      final token = page.nextCursor;
+      expect(token, isNotNull);
+      // Base64url body of 32 random bytes → 44 chars incl. "==" padding.
+      expect(token!.length, 44);
+      expect(_isValidBase64Url(token), isTrue);
+      // Never an identifier, ordering key or membership id on the wire.
+      final ids = c.memberships.all().map((m) => m.id).toSet();
+      expect(ids, isNot(contains(token)));
+      expect(
+        c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          pageSize: 1,
+          cursor: token,
+        ),
+        isNot(throwsA(anything)),
+        reason: 'a well-formed opaque token is accepted by its issuer',
+      );
+    });
+    test(
+      'a malformed/unknown cursor is a domain error, not a reset (PG-4)',
+      () {
+        expect(
+          () => c.library.membershipListPage(
+            kind: MembershipListKind.active,
+            cursor: 'no-such-cursor',
+          ),
+          throwsA(isA<DomainError>()),
+        );
+        expect(
+          () => c.library.membershipListPage(
+            kind: MembershipListKind.active,
+            cursor: 'aGVsbG8', // valid base64url but never issued
+          ),
+          throwsA(isA<DomainError>()),
+        );
+      },
+    );
+    test('a token issued under one tenant is rejected in another (cross-'
+        'tenant reuse)', () {
+      final page = c.library.membershipListPage(
+        kind: MembershipListKind.active,
+        pageSize: 1,
+      );
+      final token = page.nextCursor;
+      expect(token, isNotNull);
+      c.enterScope(tenant: kOtherTenant, branch: kOtherBranch);
+      expect(
+        () => c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          cursor: token,
+          pageSize: 1,
+        ),
+        throwsA(isA<DomainError>()),
+        reason:
+            'PG-1..PG-4 — a tenant-scoped token must not be reusable '
+            'across tenants',
+      );
+    });
+    test('a token issued under one filter set is rejected under a different '
+        'one (cross-filter reuse)', () {
+      final plan = c.membershipPlans.all().firstWhere(
+        (p) => p.durationDays == 90, // the plan mem_active/mem_expiring share
+      );
+      final paged = c.library.membershipListPage(
+        kind: MembershipListKind.active,
+        planId: plan.id,
+        pageSize: 1,
+      );
+      expect(paged.nextCursor, isNotNull, reason: 'page must have a next');
+      final token = paged.nextCursor!;
+      // Token valid within its own filter set...
+      expect(
+        () => c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          planId: plan.id,
+          cursor: token,
+          pageSize: 1,
+        ),
+        isNot(throwsA(anything)),
+      );
+      // ...but rejected when the query changes (different fingerprint).
+      expect(
+        () => c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          cursor: token,
+          pageSize: 1,
+        ),
+        throwsA(isA<DomainError>()),
+        reason: 'PG-1..PG-4 — a cursor is bound to its issuing query',
+      );
+    });
+    test('opaque traversal preserves total count and order (PG-2)', () {
+      final total = c.library
+          .membershipListPage(kind: MembershipListKind.active, pageSize: 50)
+          .items
+          .length;
+      expect(total, greaterThan(1), reason: 'seed must provide >1 active');
+      var page = c.library.membershipListPage(
+        kind: MembershipListKind.active,
+        pageSize: 1,
+      );
+      final tokensOnWire = <String>[];
+      var seen = page.items.length;
+      while (page.nextCursor != null) {
+        tokensOnWire.add(page.nextCursor!);
+        page = c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          cursor: page.nextCursor,
+          pageSize: 1,
+        );
+        seen += page.items.length;
+      }
+      expect(seen, total);
+      // No membership id ever appears on the wire (PG-3).
+      for (final m in c.memberships.all()) {
+        for (final t in tokensOnWire) {
+          expect(t, isNot(contains(m.id)));
+        }
+      }
+    });
+  });
+}
+
+bool _isValidBase64Url(String s) {
+  final re = RegExp(r'^[A-Za-z0-9_-]+={0,2}$');
+  if (!re.hasMatch(s)) return false;
+  try {
+    base64Url.decode(s);
+    return true;
+  } catch (_) {
+    return false;
+  }
 }

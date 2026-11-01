@@ -381,6 +381,73 @@ void main() {
         reason: 'PG-1..PG-4 — a cursor is bound to its issuing query',
       );
     });
+    test('a cursor issued with a UTC-represented date filter is accepted with '
+        'the same instant in local time (fingerprint normalizes to UTC)', () {
+      // The same absolute instant, expressed in two zone representations. These
+      // genuinely differ as strings pre-normalization (proving the test is not
+      // vacuous), while .toUtc() makes the fingerprint identical regardless of
+      // the host's own timezone.
+      final instant = today
+          .subtract(const Duration(days: 1))
+          .microsecondsSinceEpoch;
+      final utcDateFrom = DateTime.fromMicrosecondsSinceEpoch(
+        instant,
+        isUtc: true,
+      );
+      final localDateFrom = DateTime.fromMicrosecondsSinceEpoch(
+        instant,
+        isUtc: false,
+      );
+      expect(
+        utcDateFrom.toIso8601String(),
+        isNot(localDateFrom.toIso8601String()),
+        reason:
+            'test premise — the two representations must differ as strings, '
+            'or the date normalisation is never exercised',
+      );
+
+      // Filtering is unchanged: both representations select the same rows.
+      final utcAll = c.library
+          .membershipListPage(
+            kind: MembershipListKind.active,
+            dateFrom: utcDateFrom,
+            pageSize: 50,
+          )
+          .items
+          .map((r) => r.membershipId)
+          .toList();
+      final localAll = c.library
+          .membershipListPage(
+            kind: MembershipListKind.active,
+            dateFrom: localDateFrom,
+            pageSize: 50,
+          )
+          .items
+          .map((r) => r.membershipId)
+          .toList();
+      expect(localAll, utcAll);
+
+      // A cursor minted under the UTC representation must be accepted when the
+      // client presents the same instant in local time.
+      final paged = c.library.membershipListPage(
+        kind: MembershipListKind.active,
+        dateFrom: utcDateFrom,
+        pageSize: 1,
+      );
+      expect(paged.nextCursor, isNotNull, reason: 'page must have a next');
+      expect(
+        () => c.library.membershipListPage(
+          kind: MembershipListKind.active,
+          dateFrom: localDateFrom,
+          cursor: paged.nextCursor,
+          pageSize: 1,
+        ),
+        isNot(throwsA(anything)),
+        reason:
+            'same instant in a different zone representation is not a '
+            'cross-filter replay — the fingerprint normalizes dates to UTC',
+      );
+    });
     test('opaque traversal preserves total count and order (PG-2)', () {
       final total = c.library
           .membershipListPage(kind: MembershipListKind.active, pageSize: 50)

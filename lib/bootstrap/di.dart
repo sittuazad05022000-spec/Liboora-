@@ -443,6 +443,11 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   /// bounds and the date-edge choice. Canonicalised so that equivalent queries
   /// (e.g. absent dates vs null) hash identically, and a cursor issued under
   /// one set of filters can never be replayed against a different one.
+  ///
+  /// Dates are normalized to UTC before serialization: the same instant
+  /// represented in UTC and in any local offset must yield the same fingerprint
+  /// (otherwise a client that changes zone representation between pages would
+  /// be wrongly rejected as cross-filter).
   String _listFingerprint({
     required MembershipListKind kind,
     String? status,
@@ -454,8 +459,8 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     'kind=${kind.name}',
     'status=${status ?? ''}',
     'planId=${planId ?? ''}',
-    'dateFrom=${dateFrom?.toIso8601String() ?? ''}',
-    'dateTo=${dateTo?.toIso8601String() ?? ''}',
+    'dateFrom=${dateFrom?.toUtc().toIso8601String() ?? ''}',
+    'dateTo=${dateTo?.toUtc().toIso8601String() ?? ''}',
     'rangeOverStartDate=$rangeOverStartDate',
   ].join('|');
 

@@ -133,19 +133,22 @@ membership state marks a membership as "already renewed" so it can be excluded?
   `Membership` with a new `membershipId` and records `renewedFromMembershipId` on the successor.
 - **At most one successor** — `MM-INV-005` (`:1388`): *"A membership has at most one successor by renewal
   and at most one by upgrade."* Renewal is **rejected** if a successor already exists (`MM-FR-090`'s
-  *"existing successor"* error, `:859-860`; `MM-AC-037`, `:1829`).
+  *"existing successor"* error, `:858-859`; `MM-AC-037`, `:1829`).
 - **The lineage already exists in the model** — `membership.dart:742` finds successors by
   `renewedFromMembershipId == source.id`; the field is persisted (`codecs.dart:202`, `:254`) and populated
   on renewal (`domain/membership.dart:408,457,475`).
-- **The upstream source becomes `Superseded`** — renewal and upgrade are not permitted *from* `Superseded`
-  (`MM-FR-082`, `:819`), so a membership whose renewal (or upgrade) succeeded is distinguishable by a
-  successor existing / status, not by time.
+- **Only an upgrade transitions the source to `Superseded`** — `MM-FR-096` (`:881-882`) sets the source
+  `Superseded` on upgrade; the `Superseded` meaning and its only transition are both upgrade-specific
+  (`:712`, `:771`). **A renewal does NOT change the source's status**: `MM-FR-084` (`:827-828`) creates a
+  new successor via `renewedFromMembershipId` and *"MUST NOT mutate the previous membership's term"`, so a
+  renewed-from membership remains `Active`/`Expired` per its own lifecycle (`MM-FR-087`, `:848-849`).
+  "Already renewed" is therefore identified **only** by a successor existing, not by a status change.
 
 ### Options considered (NOT DECIDED — selection required)
 
 | Option | Description | Consequences | Disposition |
 |---|---|---|---|
-| **A** | **Derived from lineage** — "not yet renewed" := no successor exists (`renewedFromMembershipId == its id`), i.e. the membership is not `Superseded` by renewal/upgrade | Least new machinery; reuses the finder at `membership.dart:742`; no persisted change; deterministic | **NOT DECIDED** |
+| **A** | **Derived from lineage** — "not yet renewed" := no successor exists (`renewedFromMembershipId == its id`); a new membership is created on renewal (`MM-FR-084`), with no status change to the source | Least new machinery; reuses the finder at `membership.dart:742`; no persisted change; deterministic | **NOT DECIDED** |
 | **B** | **Renewed-window filter** — a membership is "renewed" only if its successor's `createdAt` falls inside the same "recently expired" window (M-1); outside it, the old membership reappears as not-yet-renewed | Bounds the list per window, but reintroduces the old membership even though a successor exists — semantically odd and requires a second rule to explain | **NOT DECIDED** |
 | **C** | **State/flag** — add a persisted "renewed" marker on the source membership at renewal time | Contradicts `MM-FR-084`'s *"MUST NOT mutate the previous membership's term"* in spirit and adds a field the derived reading makes unnecessary | **NOT DECIDED** |
 
@@ -153,7 +156,7 @@ membership state marks a membership as "already renewed" so it can be excluded?
 - **Derived reading (A)** needs **no** PRD text change if paired with a M-1 window and no `MM-CFG-*`
   extension; implementation is a composition over existing state.
 - None of A–C changes the event surface: `MM-EVT-003` (`:1163`) already carries `renewedFromMembershipId`.
-- `MM-FR-090`'s at-most-one-successor rule (`:859-860`) is what keeps the lineage test sound — no new
+- `MM-FR-090`'s at-most-one-successor rule (`:858-859`) is what keeps the lineage test sound — no new
   invariant needed.
 
 ### Conflicts evaluated
@@ -214,7 +217,8 @@ expired window reuse `MM-CFG-008`, or must it be a separate configurable (a tent
 - vs `MM-BR-026` (`:1353-1354`): B and C edit it; A and D leave it byte-unchanged.
 - vs the configurable-threshold rationale (`:1356-1357`): A is most consistent; D least.
 - vs the "one configurable for one meaning" precedent of `MM-CFG-008`/`MM-CFG-007`: B overloads one
-  configurable with two meanings — the strongest argument for A's separation.
+  configurable with two meanings — a consequence the Domain Owner weighs against the alternative of a
+  separate configurable.
 
 ### Review conditions
 - **Domain Owner signs** for configurability choice; if B or C is selected the owner must also accept the
@@ -242,8 +246,9 @@ records the owner's decision and any required text change?
   clarifying pass to `MM-BR-012/022/027/028` (changelog entry, no ADR). `MM-BR-026` is not one of them, so
   the clarifying-pass route does **not** cover a change to it.
 - The **successor-amendment precedent** exists and is the established route for frozen `PRD` content:
-  `ADR-0149` (v1.4 → v1.5) and `ADR-0150` (v1.5 → v1.6), both recorded in `DOCUMENTATION_BASELINE.md:162`
-  and `PRD_LIFECYCLE.md` §4. `PRD_LIFECYCLE.md:67` bars a separate successor PRD (*"It is an amendment to
+  `ADR-0149` (v1.4 → v1.5) is recorded at `DOCUMENTATION_BASELINE.md:162` and `ADR-0150` (v1.5 → v1.6) at
+  `DOCUMENTATION_BASELINE.md:393`, both as `PRD_LIFECYCLE.md` §4 successor amendments.
+  `PRD_LIFECYCLE.md:67` bars a separate successor PRD (*"It is an amendment to
   that PRD, not a new one"*).
 - **Amendment authority** for `PRD-005` is the **Domain Owner (Library Domain)**, by direct explicit
   conferral scoped to a **single act**, reverting on completion (`PRD-MEMBERSHIP-MANAGEMENT.md:10`,
@@ -257,7 +262,7 @@ records the owner's decision and any required text change?
 |---|---|---|---|
 | **A** | **Successor amendment (v1.6 → v1.7)** — a new accepted ADR as the instrument, carrying the owner's decision, with the version increment, changelog row and baseline update | The established, unambiguous route for any text/register change; requires a new single-act Domain Owner conferral; heavier than needed if the decision is pure interpretation (M-1-D / M-2-A / M-3-D) | **NOT DECIDED** |
 | **B** | **Clarifying-pass changelog entry only** — treat the decision as clarifying `MM-FR-116`'s wording (e.g. reading "recently" as non-constant) | Lightest instrument; **only lawful if NO business rule or register count changes** (M-1-D / M-2-A / M-3-D combination) and stays within `ADR-0019:315`'s clarifying-pass scope; would not cover any `MM-BR-026`/`MM-CFG-*` text change | **NOT DECIDED** |
-| **C** | **Interpretation-record only, no PRD text change** — record the decision in a governance record (this DP, once decided) and implement from the recorded reading | Zero PRD/ADR surface change; lowest ceremony; valid only for the no-text-change combination (M-1-D / M-2-A / M-3-D); the owner's reading must be recorded in the implementation task per Stage 8 rule ([`PRD_LIFECYCLE.md:200`](PRD_LIFECYCLE.md:200)) | **NOT DECIDED** |
+| **C** | **Interpretation-record only, no PRD text change** — record the decision in a governance record (this DP, once decided) and implement from the recorded reading | Zero PRD/ADR surface change; lowest ceremony; valid only for the no-text-change combination (M-1-D / M-2-A / M-3-D); consistent with `PRD_LIFECYCLE.md:200`'s bar on silently reinterpreting a requirement — a recorded reading must not be treated as an amendment | **NOT DECIDED** |
 
 ### Impact
 - A is mandatory for any option that edits `MM-BR-026`, `MM-CFG-008`'s note, or mints `MM-CFG-010`.

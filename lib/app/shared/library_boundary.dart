@@ -243,6 +243,42 @@ abstract interface class LibraryBoundary {
   /// restate a past term.
   List<MembershipTermView> membershipHistory(StudentRecordId id);
 
+  // ── IMPL-433 · Operational Membership Views (MM-FR-115..118) ──
+
+  /// `MM-FR-115` — the active / expiring / expired lists, paginated and
+  /// filterable by [status], [planId] and a date range over `startDate` or
+  /// `endDate`. Read-composition only, over the tenant-scoped repository.
+  ///
+  /// [kind] selects the list. [cursor] is opaque (`PG-2`/`PG-3`); malformed
+  /// input is a [DomainError] (`PG-4`). [pageSize] is clamped to 50.
+  /// [dateFrom]/[dateTo] bound the chosen range edge; [rangeOverStartDate]
+  /// selects `startDate` vs `endDate`.
+  MembershipListPageView membershipListPage({
+    required MembershipListKind kind,
+    String? cursor,
+    int? pageSize,
+    String? status,
+    String? planId,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+    bool rangeOverStartDate = false,
+  });
+
+  /// `MM-FR-116` — today's renewals: memberships created today. A current-state
+  /// list derived from membership state, no analytics store. (The renewal-due
+  /// "recently expired" half is NOT included — its window is undefined by any
+  /// frozen requirement; see the adapter.)
+  List<MembershipRowView> todaysRenewals();
+
+  /// `MM-FR-117` — a current-state count of currently-valid memberships
+  /// grouped by plan. Never a trend or comparison (`MM-BR-030`).
+  List<PlanWiseCountView> planWiseCounts();
+
+  /// `MM-FR-118` — full detail for one membership, with term, plan, status,
+  /// price snapshot and history references. The student's name resolves
+  /// through `BC-01` at render time.
+  MembershipDetailView? membershipDetail(String membershipId);
+
   // ── Commands whose parameter types cross the boundary ──
   Future<void> enrollStudent({
     required String actorRoleName,
@@ -261,4 +297,106 @@ abstract interface class LibraryBoundary {
     required Money amount,
     required PayInMode mode,
   });
+}
+
+/// The kind of operational membership list — `MM-FR-115`'s three lists.
+///
+/// Read-composition only; the discriminator is a read filter, never a write.
+enum MembershipListKind { active, expiring, expired }
+
+/// One membership row for the operational lists (`MM-FR-115`).
+///
+/// The student's name is resolved **through `BC-01`** at render time
+/// (`MM-FR-118` — `MM-FR-003` forbids storing a name here); this view never
+/// carries a name literal. It carries exactly the fields the screens render.
+final class MembershipRowView {
+  const MembershipRowView({
+    required this.membershipId,
+    required this.studentRecordId,
+    required this.studentName,
+    required this.planId,
+    required this.planName,
+    required this.status,
+    required this.startDate,
+    required this.endDate,
+    required this.unitPrice,
+    required this.isExpiringSoon,
+  });
+
+  final String membershipId;
+  final StudentRecordId studentRecordId;
+  final String studentName;
+  final String planId;
+  final String planName;
+  final String status;
+  final DateTime startDate;
+  final DateTime endDate;
+  final Money unitPrice;
+  final bool isExpiringSoon;
+}
+
+/// One page of membership rows with an opaque server-issued cursor.
+///
+/// Cursor is opaque per `PG-2`/`PG-3` — it carries no tenant, ids or ordering
+/// keys on the wire; a malformed cursor is a [DomainError], never a silent
+/// reset (`PG-4`).
+final class MembershipListPageView {
+  const MembershipListPageView({required this.items, required this.nextCursor});
+
+  final List<MembershipRowView> items;
+  final String? nextCursor;
+}
+
+/// A current-state plan-wise count (`MM-FR-117`).
+///
+/// A **current-state count** — never a trend, comparison or growth rate
+/// (`MM-BR-030`, `MM-XC-006`).
+final class PlanWiseCountView {
+  const PlanWiseCountView({
+    required this.planId,
+    required this.planName,
+    required this.count,
+  });
+
+  final String planId;
+  final String planName;
+  final int count;
+}
+
+/// Full membership detail — term, plan, status, snapshot and history
+/// references (`MM-FR-118`).
+final class MembershipDetailView {
+  const MembershipDetailView({
+    required this.membershipId,
+    required this.studentRecordId,
+    required this.studentName,
+    required this.planId,
+    required this.planName,
+    required this.status,
+    required this.startDate,
+    required this.endDate,
+    required this.unitPrice,
+    required this.planVersionAtPurchase,
+    required this.seatQuotaSnapshot,
+    required this.activatedAt,
+    required this.isValidToday,
+    required this.renewedFromMembershipId,
+    required this.upgradedFromMembershipId,
+  });
+
+  final String membershipId;
+  final StudentRecordId studentRecordId;
+  final String studentName;
+  final String planId;
+  final String planName;
+  final String status;
+  final DateTime startDate;
+  final DateTime endDate;
+  final Money unitPrice;
+  final int planVersionAtPurchase;
+  final int seatQuotaSnapshot;
+  final DateTime? activatedAt;
+  final bool isValidToday;
+  final String? renewedFromMembershipId;
+  final String? upgradedFromMembershipId;
 }

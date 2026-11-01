@@ -73,6 +73,12 @@ final class BranchView {
 final class ContainerLibraryBoundary implements LibraryBoundary {
   const ContainerLibraryBoundary(this._c);
 
+  /// `MM-FR-115` pagination defaults. Not a configurable: `PRD-005` defines
+  /// no membership page-size configurable, so these are implementation
+  /// constants mirroring the roster's default (20) and maximum (50).
+  static const int _defaultMembershipPageSize = 20;
+  static const int _maxMembershipPageSize = 50;
+
   final AppContainer _c;
 
   DateTime get _today => _c.clock.today();
@@ -80,7 +86,12 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   StudentView _studentView(StudentRecord r) {
     final isExpiringSoon = _c.memberships
         .forStudent(r.id)
-        .any((m) => m.expiringSoon(_today, within: _c.membershipConfig.expiringSoonDays));
+        .any(
+          (m) => m.expiringSoon(
+            _today,
+            within: _c.membershipConfig.expiringSoonDays,
+          ),
+        );
     return StudentView(
       id: r.id,
       fullName: r.fullName,
@@ -94,50 +105,48 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   }
 
   /// Roster in stable name order (MM-FR-030). Internal: returns domain records.
-  List<StudentRecord> _sorted() => _c.students.all()
-    ..sort(
-      (a, b) => a.fullName.compareTo(b.fullName),
-    );
+  List<StudentRecord> _sorted() =>
+      _c.students.all()..sort((a, b) => a.fullName.compareTo(b.fullName));
 
   static ReceiptView _receipt(Receipt r) => ReceiptView(
-        receiptNumber: r.receiptNumber,
-        amount: r.amount,
-        mode: PayInMode.values.byName(r.mode.name),
-        receivedOn: r.receivedOn,
-        collectedBy: r.collectedBy,
-      );
+    receiptNumber: r.receiptNumber,
+    amount: r.amount,
+    mode: PayInMode.values.byName(r.mode.name),
+    receivedOn: r.receivedOn,
+    collectedBy: r.collectedBy,
+  );
 
   FeeLedgerView _ledgerView(FeeLedger l) => FeeLedgerView(
-        totalDue: l.totalDue,
-        totalReceived: l.totalReceived,
-        dues: [
-          for (final d in l.dues)
-            FeeDueView(
-              description: d.description,
-              dueOn: d.dueOn,
-              discount: d.discount,
-              netAmount: d.netAmount,
-            ),
-        ],
-        receipts: [for (final r in l.receipts) _receipt(r)],
-      );
+    totalDue: l.totalDue,
+    totalReceived: l.totalReceived,
+    dues: [
+      for (final d in l.dues)
+        FeeDueView(
+          description: d.description,
+          dueOn: d.dueOn,
+          discount: d.discount,
+          netAmount: d.netAmount,
+        ),
+    ],
+    receipts: [for (final r in l.receipts) _receipt(r)],
+  );
 
   SeatOccupancyView _occupancy(SeatOccupancy o) => SeatOccupancyView(
-        seatLabel: o.seat.label,
-        seatZone: o.seat.zone,
-        hasPowerSocket: o.seat.hasPowerSocket,
-        isOccupied: o.isOccupied,
-        studentName: o.studentName,
-        allocationId: o.allocation?.id,
-        allocatedOn: o.allocation?.allocatedOn,
-        untilEnd: o.allocation?.window.end,
-      );
+    seatLabel: o.seat.label,
+    seatZone: o.seat.zone,
+    hasPowerSocket: o.seat.hasPowerSocket,
+    isOccupied: o.isOccupied,
+    studentName: o.studentName,
+    allocationId: o.allocation?.id,
+    allocatedOn: o.allocation?.allocatedOn,
+    untilEnd: o.allocation?.window.end,
+  );
 
   @override
   List<StudentView> roster() => [
-        for (final r in _sorted())
-          if (r.status != EnrollmentStatus.archived) _studentView(r),
-      ];
+    for (final r in _sorted())
+      if (r.status != EnrollmentStatus.archived) _studentView(r),
+  ];
 
   @override
   StudentPageView rosterPage({
@@ -152,7 +161,9 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     // role-neutral and pass the role in as data instead.
     if (includeArchived) {
       const kArchivedFilterRoles = {AccessRole.owner, AccessRole.manager};
-      if (!kArchivedFilterRoles.contains(AccessRole.values.byName(actorRoleName))) {
+      if (!kArchivedFilterRoles.contains(
+        AccessRole.values.byName(actorRoleName),
+      )) {
         throw const DomainError(
           DomainErrorCode.authzNoRoleGrantsPermission,
           'The archived filter is available to the Owner and Manager roles only.',
@@ -202,9 +213,8 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
   Money outstandingOf(StudentRecordId id) => _c.outstanding.forStudent(id);
 
   @override
-  Money get totalOutstanding => _c.ledgers
-      .all()
-      .fold(Money.zero, (sum, l) => sum + l.balance);
+  Money get totalOutstanding =>
+      _c.ledgers.all().fold(Money.zero, (sum, l) => sum + l.balance);
 
   @override
   Money get raisedAll =>
@@ -225,21 +235,26 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
 
   @override
   List<StudentView> expiringSoon() => [
-        for (final s in _sorted())
-          if (s.status != EnrollmentStatus.archived &&
-              _c.memberships
-                  .forStudent(s.id)
-                  .any((m) => m.expiringSoon(_today, within: _c.membershipConfig.expiringSoonDays)))
-            _studentView(s),
-      ];
+    for (final s in _sorted())
+      if (s.status != EnrollmentStatus.archived &&
+          _c.memberships
+              .forStudent(s.id)
+              .any(
+                (m) => m.expiringSoon(
+                  _today,
+                  within: _c.membershipConfig.expiringSoonDays,
+                ),
+              ))
+        _studentView(s),
+  ];
 
   @override
   List<StudentView> withOpenDues() => [
-        for (final s in _sorted())
-          if (s.status != EnrollmentStatus.archived &&
-              _c.outstanding.hasOpenDues(s.id))
-            _studentView(s),
-      ];
+    for (final s in _sorted())
+      if (s.status != EnrollmentStatus.archived &&
+          _c.outstanding.hasOpenDues(s.id))
+        _studentView(s),
+  ];
 
   @override
   bool isInsideNow(StudentRecordId id) =>
@@ -250,8 +265,8 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
 
   @override
   List<SeatOccupancyView> seatMap() => [
-        for (final o in _c.seatMap.currentMap(_nameOf)) _occupancy(o),
-      ];
+    for (final o in _c.seatMap.currentMap(_nameOf)) _occupancy(o),
+  ];
 
   @override
   ({int total, int occupied, int free}) seatSummary() => _c.seatMap.summary();
@@ -284,6 +299,196 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
     ];
   }
 
+  // ── IMPL-433 · Operational Membership Views ──────────────────────
+
+  MembershipRowView _membershipRow(Membership m) => MembershipRowView(
+    membershipId: m.id,
+    studentRecordId: m.studentRecordId,
+    studentName: nameOf(m.studentRecordId),
+    planId: m.planId,
+    planName: _c.membershipPlans.byId(m.planId)?.name ?? 'Plan withdrawn',
+    status: m.status.name,
+    startDate: m.startDate,
+    endDate: m.endDate,
+    unitPrice: m.priceSnapshot,
+    isExpiringSoon: m.expiringSoon(
+      _today,
+      within: _c.membershipConfig.expiringSoonDays,
+    ),
+  );
+
+  /// Membership list selection for a page, pinned to `MM-FR-115`/`MM-FR-074`.
+  ///
+  /// * Active — status `active` and valid today.
+  /// * Expiring — status `active`, `endDate` within `MM-CFG-008` days.
+  /// * Expired — status `expired` (any past term end; no window needed).
+  Iterable<Membership> _selectList(MembershipListKind kind) {
+    final today = _today;
+    return switch (kind) {
+      MembershipListKind.active => _c.memberships.all().where(
+        (m) => m.status == MembershipStatus.active && m.isValidOn(today),
+      ),
+      MembershipListKind.expiring => _c.memberships.all().where(
+        (m) =>
+            m.status == MembershipStatus.active &&
+            m.expiringSoon(today, within: _c.membershipConfig.expiringSoonDays),
+      ),
+      MembershipListKind.expired => _c.memberships.all().where(
+        (m) => m.status == MembershipStatus.expired,
+      ),
+    };
+  }
+
+  /// Opaque per-page cursor, seed-less. The next-page anchor is the last
+  /// returned row's membership id, treated as opaque by contract (PG-1/PG-2)
+  /// and validated against the current filtered tenant set — malformed or
+  /// out-of-scope input fails loudly, never reset (`PG-4`).
+  @override
+  MembershipListPageView membershipListPage({
+    required MembershipListKind kind,
+    String? cursor,
+    int? pageSize,
+    String? status,
+    String? planId,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+    bool rangeOverStartDate = false,
+  }) {
+    var rows = _selectList(kind).toList();
+
+    // MM-FR-115 filters.
+    if (status != null) {
+      rows = rows.where((m) => m.status.name == status).toList();
+    }
+    if (planId != null) {
+      rows = rows.where((m) => m.planId == planId).toList();
+    }
+    if (dateFrom != null || dateTo != null) {
+      rows = rows.where((m) {
+        final edge = rangeOverStartDate ? m.startDate : m.endDate;
+        if (dateFrom != null && edge.isBefore(dateFrom)) return false;
+        if (dateTo != null && edge.isAfter(dateTo)) return false;
+        return true;
+      }).toList();
+    }
+
+    // Stable order by startDate then membershipId (deterministic pagination).
+    rows.sort((a, b) {
+      final c = a.startDate.compareTo(b.startDate);
+      return c != 0 ? c : a.id.compareTo(b.id);
+    });
+
+    // Cursor handling.
+    int anchorIndex = 0;
+    if (cursor != null) {
+      final anchorId = cursor;
+      final idx = rows.indexWhere((m) => m.id == anchorId);
+      if (idx == -1) {
+        // Cursor referenced a membership not in this filtered/tenant set —
+        // always a malformed or out-of-scope cursor. Fail loudly, never a
+        // silent reset (`PG-4`).
+        throw const DomainError(
+          DomainErrorCode.validationFailed,
+          'Invalid cursor.',
+        );
+      }
+      anchorIndex = idx + 1;
+    }
+
+    final size = (pageSize ?? _defaultMembershipPageSize).clamp(
+      1,
+      _maxMembershipPageSize,
+    );
+    final end = anchorIndex + size > rows.length
+        ? rows.length
+        : anchorIndex + size;
+    final page = rows.sublist(anchorIndex, end);
+    final hasMore = end < rows.length;
+    final next = hasMore ? page.last.id : null;
+
+    return MembershipListPageView(
+      items: [for (final m in page) _membershipRow(m)],
+      nextCursor: next,
+    );
+  }
+
+  @override
+  List<MembershipRowView> todaysRenewals() {
+    // Clock.today() returns local midnight; renewals created "today" are
+    // those whose createdAt falls on that same local date.
+    final today = _c.clock.today();
+    return [
+      for (final m in _c.memberships.all())
+        if (m.renewedFromMembershipId != null &&
+            _isSameLocalDate(m.createdAt, today))
+          _membershipRow(m),
+    ];
+  }
+
+  bool _isSameLocalDate(DateTime? d, DateTime today) {
+    if (d == null) return false;
+    return d.year == today.year && d.month == today.month && d.day == today.day;
+  }
+
+  /// `MM-FR-116` note — the renewal-due list's "recently expired" half is NOT
+  /// served here: its window is not defined by any frozen requirement.
+  /// `MM-CFG-008` is bound, by `MM-BR-026`, to exactly two consumers —
+  /// `MM-EVT-006` and the expiring-memberships view — and extending it to
+  /// "recently expired" would invent a meaning the rule did not grant. See
+  /// the IMPL-433 report; this half waits on a BC-02 domain-owner ruling.
+
+  @override
+  List<PlanWiseCountView> planWiseCounts() {
+    final today = _today;
+    final valid = _c.memberships.all().where(
+      (m) => m.status == MembershipStatus.active && m.isValidOn(today),
+    );
+    final byPlan = <String, int>{};
+    for (final m in valid) {
+      byPlan[m.planId] = (byPlan[m.planId] ?? 0) + 1;
+    }
+    final plans = _c.membershipPlans.all();
+    return [
+      for (final seed in byPlan.entries)
+        PlanWiseCountView(
+          planId: seed.key,
+          planName: plans
+              .firstWhere(
+                (p) => p.id == seed.key,
+                orElse: () => throw const DomainError(
+                  DomainErrorCode.notFound,
+                  'Membership references a plan that is not in this tenant\'s catalogue.',
+                ),
+              )
+              .name,
+          count: seed.value,
+        ),
+    ];
+  }
+
+  @override
+  MembershipDetailView? membershipDetail(String membershipId) {
+    final m = _c.memberships.byId(membershipId);
+    if (m == null) return null;
+    return MembershipDetailView(
+      membershipId: m.id,
+      studentRecordId: m.studentRecordId,
+      studentName: nameOf(m.studentRecordId),
+      planId: m.planId,
+      planName: _c.membershipPlans.byId(m.planId)?.name ?? 'Plan withdrawn',
+      status: m.status.name,
+      startDate: m.startDate,
+      endDate: m.endDate,
+      unitPrice: m.priceSnapshot,
+      planVersionAtPurchase: m.planVersionAtPurchase,
+      seatQuotaSnapshot: m.seatQuotaSnapshot,
+      activatedAt: m.activatedAt,
+      isValidToday: m.isValidOn(_today),
+      renewedFromMembershipId: m.renewedFromMembershipId,
+      upgradedFromMembershipId: m.upgradedFromMembershipId,
+    );
+  }
+
   @override
   Future<void> enrollStudent({
     required String actorRoleName,
@@ -306,8 +511,9 @@ final class ContainerLibraryBoundary implements LibraryBoundary {
       registrationSource: RegistrationSource.values.byName(
         registrationSourceName,
       ),
-      guardian:
-          guardian == null ? null : GuardianLink(name: guardian.name, phone: guardian.phone),
+      guardian: guardian == null
+          ? null
+          : GuardianLink(name: guardian.name, phone: guardian.phone),
     );
   }
 

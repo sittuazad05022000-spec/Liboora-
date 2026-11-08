@@ -7,15 +7,13 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import '../tenancy/tenancy.dart';
-
 enum Feature { students, seats, branches, aiInsights, advancedReports }
 
 /// Single source of truth for "is tenant T allowed to do X, and how much is
 /// left". Consulted before every gated write.
 ///
 /// Derived state only — rebuildable from Subscription events (X-11).
-final class EntitlementService {
+final class EntitlementService implements TenantTierSource {
   EntitlementService(this._tenantContext);
 
   final TenantContext _tenantContext;
@@ -48,8 +46,9 @@ final class EntitlementService {
 
   void registerTenant(TenantId id, TenantTier tier) => _tiers[id.value] = tier;
 
-  TenantTier get _tier =>
-      _tiers[_tenantContext.tenantId.value] ?? TenantTier.starter;
+  @override
+  TenantTier tenantTierFor(TenantId tenant) =>
+      _tiers[tenant.value] ?? TenantTier.starter;
 
   /// -1 means unlimited.
   int limitFor(Feature f) => _limits[_tier]?[f] ?? -1;

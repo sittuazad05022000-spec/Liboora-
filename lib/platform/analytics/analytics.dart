@@ -13,8 +13,6 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import '../event/event.dart';
-
 /// One row of the activity feed shown on every dashboard.
 final class ActivityItem {
   const ActivityItem({
@@ -150,7 +148,7 @@ final class AnalyticsProjections {
   }
 
   /// Wire every projection to the bus. Called once, from `bootstrap/`.
-  void register(EventBus bus) {
+  void register(EventStream bus) {
     bus.subscribe(
       'enrollment.StudentEnrolled',
       _onEnrolled,
@@ -195,7 +193,7 @@ final class AnalyticsProjections {
   }
 
   /// Rebuild everything from the log. Proof that no state is unrecoverable.
-  Future<void> rebuildFrom(EventBus bus) async {
+  Future<void> rebuildFrom(EventStream bus) async {
     _byTenant.clear();
     _feed.clear();
     _attendanceDays.clear();

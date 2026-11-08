@@ -307,9 +307,9 @@ void main() {
 
       expect(
         src,
-        contains('rebuildFrom(EventBus bus)'),
+        contains('rebuildFrom(EventStream bus)'),
         reason:
-            'AnalyticsProjections no longer exposes rebuildFrom(EventBus). If '
+            'AnalyticsProjections no longer exposes rebuildFrom(EventStream). If '
             'it was renamed to rebuild(), update this test and the header '
             'comment — the divergence this test tracks would then be resolved.',
       );

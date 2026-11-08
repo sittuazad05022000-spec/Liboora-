@@ -34,7 +34,7 @@ final class _Subscription {
 /// the state write; [drain] publishes. Application code never publishes
 /// directly — that ordering is what makes "event emitted but state rolled
 /// back" impossible.
-final class EventBus {
+final class EventBus implements EventStream {
   EventBus(this._telemetry);
 
   final Telemetry _telemetry;
@@ -53,6 +53,7 @@ final class EventBus {
   /// Idempotency ledger: (consumer, eventId) already processed.
   final Set<String> _processed = {};
 
+  @override
   void subscribe(
     String pattern,
     EventHandler handler, {

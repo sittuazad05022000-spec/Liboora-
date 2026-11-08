@@ -33,7 +33,7 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-enum TenantTier { starter, growth, pro }
+export 'package:liboora_contracts/liboora_contracts.dart' show TenantTier;
 
 /// The tenant (library organisation). BC-19's sole aggregate root.
 ///

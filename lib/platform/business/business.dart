@@ -50,6 +50,8 @@ final class EntitlementService implements TenantTierSource {
   TenantTier tenantTierFor(TenantId tenant) =>
       _tiers[tenant.value] ?? TenantTier.starter;
 
+  TenantTier get _tier => tenantTierFor(_tenantContext.tenantId);
+
   /// -1 means unlimited.
   int limitFor(Feature f) => _limits[_tier]?[f] ?? -1;
 

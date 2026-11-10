@@ -633,20 +633,6 @@ global:
 # match a cycle regardless of what this list says (§11 step 3).
 exceptions:
   # ── Wave 1 — smallest surface, establishes the pattern ────────────
-  - from: platform/business
-    to: platform/tenancy
-    mode: port
-    reason: "EntitlementService imports the tenancy barrel for the TenantTier enum. The TenantContext it also uses is already correctly taken from R0 contracts (§8.3). Fix: promote TenantTier to shared vocabulary, or declare a one-method TenantTierSource port."
-    adr: ADR-0012
-    expires: 2026-10-31
-
-  - from: platform/analytics
-    to: platform/event
-    mode: port
-    reason: "AnalyticsProjections needs subscribe-and-replay only. Fix: declare EventStream in liboora_contracts and have EventBus implement it. §6 grants no capability platform a direct import either."
-    adr: ADR-0012
-    expires: 2026-10-31
-
   # ── Wave 2 — append-only interfaces, no read surface ──────────────
   - from: domain/library
     to: platform/event

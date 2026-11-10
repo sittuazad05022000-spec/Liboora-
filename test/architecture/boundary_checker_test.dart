@@ -224,7 +224,7 @@ void main() {
     test('an exception naming an unknown module halts the checker', () {
       final run = _runChecker(
         mutateManifest: (m) => m.replaceFirst(
-          'from: platform/business',
+          'from: domain/library',
           'from: platform/does_not_exist',
         ),
       );

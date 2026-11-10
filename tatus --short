@@ -1,0 +1,38 @@
+[1mdiff --git a/test/architecture/boundary_checker_test.dart b/test/architecture/boundary_checker_test.dart[m
+[1mindex 5bc2fca..801b244 100644[m
+[1m--- a/test/architecture/boundary_checker_test.dart[m
+[1m+++ b/test/architecture/boundary_checker_test.dart[m
+[36m@@ -224,7 +224,7 @@[m [mvoid main() {[m
+     test('an exception naming an unknown module halts the checker', () {[m
+       final run = _runChecker([m
+         mutateManifest: (m) => m.replaceFirst([m
+[31m-          'from: platform/business',[m
+[32m+[m[32m          'from: domain/library',[m
+           'from: platform/does_not_exist',[m
+         ),[m
+       );[m
+[1mdiff --git a/tool/module_dependencies.yaml b/tool/module_dependencies.yaml[m
+[1mindex d55b2f6..f3edc72 100644[m
+[1m--- a/tool/module_dependencies.yaml[m
+[1m+++ b/tool/module_dependencies.yaml[m
+[36m@@ -633,20 +633,6 @@[m [mglobal:[m
+ # match a cycle regardless of what this list says (§11 step 3).[m
+ exceptions:[m
+   # ── Wave 1 — smallest surface, establishes the pattern ────────────[m
+[31m-  - from: platform/business[m
+[31m-    to: platform/tenancy[m
+[31m-    mode: port[m
+[31m-    reason: "EntitlementService imports the tenancy barrel for the TenantTier enum. The TenantContext it also uses is already correctly taken from R0 contracts (§8.3). Fix: promote TenantTier to shared vocabulary, or declare a one-method TenantTierSource port."[m
+[31m-    adr: ADR-0012[m
+[31m-    expires: 2026-10-31[m
+[31m-[m
+[31m-  - from: platform/analytics[m
+[31m-    to: platform/event[m
+[31m-    mode: port[m
+[31m-    reason: "AnalyticsProjections needs subscribe-and-replay only. Fix: declare EventStream in liboora_contracts and have EventBus implement it. §6 grants no capability platform a direct import either."[m
+[31m-    adr: ADR-0012[m
+[31m-    expires: 2026-10-31[m
+[31m-[m
+   # ── Wave 2 — append-only interfaces, no read surface ──────────────[m
+   - from: domain/library[m
+     to: platform/event[m

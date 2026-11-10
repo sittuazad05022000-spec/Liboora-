@@ -826,7 +826,13 @@ final class AppContainer {
   final MembershipCursorRegistry membershipCursorRegistry;
 
   Tenant tenantById(TenantId id) =>
-      tenants.firstWhere((t) => t.id == id, orElse: () => tenants.first);
+      tenants.firstWhere(
+        (t) => t.id == id,
+        orElse: () => throw DomainError(
+          DomainErrorCode.notFound,
+          'No tenant with id $id is registered.',
+        ),
+      );
 
   /// Resolve the Global Person Identity to record against a new enrollment,
   /// provisioning the account if reception is enrolling a walk-in student who

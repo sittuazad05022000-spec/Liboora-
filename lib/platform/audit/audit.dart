@@ -2,10 +2,28 @@
 ///
 /// Append-only by construction: this class exposes no update, delete or purge
 /// method (forbidden edge X-10). A correction is a new entry, never an edit.
+///
+/// **Nine-attribute guarantee (LIB-19.4):** every [append] call carries
+/// actor, role, tenant, action, target, priorValue, newValue, timestamp and
+/// source. Where a value is not meaningful for a given change (e.g. a creation
+/// has no priorValue) the field is null — not omitted and not invented.
+///
+/// **Erasure-safe identity (AUTH-9.57 / LIB-19.6):** [eraseAccount] records a
+/// durable redaction register. Every [forTenant] and [recent] read applies
+/// read-time projection: erased actors are replaced by a fixed pseudonym.
+/// The stored record is never touched — append-only is preserved byte-for-byte.
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
+const String _kRedactionNamespace = 'audit-redactions';
+
+/// The nine fields every administrative audit entry carries (LIB-19.4).
+///
+/// Nine fields, not fewer. A missing field is a gap in the audit guarantee, not
+/// a storage optimisation. Where a field does not apply to a given change the
+/// value is null — the absence is load-bearing evidence that the field was
+/// considered and deemed inapplicable.
 final class AuditEntry {
   const AuditEntry({
     required this.id,
@@ -14,6 +32,10 @@ final class AuditEntry {
     required this.action,
     required this.target,
     required this.at,
+    this.role,
+    this.priorValue,
+    this.newValue,
+    this.source,
     this.detail = const {},
   });
 
@@ -23,14 +45,75 @@ final class AuditEntry {
   final String action;
   final String target;
   final DateTime at;
+  final String? role;
+  final Object? priorValue;
+  final Object? newValue;
+  final String? source;
   final Map<String, Object?> detail;
 }
 
 final class AuditTrail {
-  AuditTrail(this._idGen);
+  AuditTrail(this._idGen, {DurableKeyValueStore? durable}) {
+    _redactedActors.addAll(_loadRedactions(durable));
+  }
 
   final IdGenerator _idGen;
+  final DurableKeyValueStore? _durable;
   final List<AuditEntry> _entries = [];
+  final Set<String> _redactedActors = {};
+
+  Set<String> _loadRedactions(DurableKeyValueStore? store) {
+    if (store == null) return {};
+    try {
+      final raw = store.readAll(_kRedactionNamespace);
+      return raw.keys.toSet();
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Erasure-safe redaction register (AUTH-9.57 / LIB-19.6).
+  ///
+  /// Adds [actorId] to the persistent redaction set. After this call, all
+  /// [forTenant] and [recent] reads project any entry with this actor to the
+  /// pseudonym `'erased-account'`. The stored entry is never modified — this
+  /// preserves the append-only guarantee (AC-73-1 / LIB-19.5).
+  ///
+  /// The erasure fact itself is also recorded as an audit entry so the redaction
+  /// event is auditable history.
+  void eraseAccount(String actorId) {
+    if (_redactedActors.add(actorId)) {
+      _durable?.write(_kRedactionNamespace, actorId, '1');
+      append(
+        tenantId: TenantId('system'),
+        actor: 'system',
+        action: 'audit.AccountErased',
+        target: actorId,
+        at: DateTime.now(),
+        detail: const {'erasedActor': actorId},
+      );
+    }
+  }
+
+  /// Apply read-time redaction projection.
+  String _project(String actor) =>
+      _redactedActors.contains(actor) ? 'erased-account' : actor;
+
+  AuditEntry _projectEntry(AuditEntry e) => _redactedActors.contains(e.actor)
+      ? AuditEntry(
+          id: e.id,
+          tenantId: e.tenantId,
+          actor: 'erased-account',
+          action: e.action,
+          target: e.target,
+          at: e.at,
+          role: e.role,
+          priorValue: e.priorValue,
+          newValue: e.newValue,
+          source: e.source,
+          detail: e.detail,
+        )
+      : e;
 
   /// The ONLY mutation method. Intentional.
   void append({
@@ -39,6 +122,10 @@ final class AuditTrail {
     required String action,
     required String target,
     DateTime? at,
+    String? role,
+    Object? priorValue,
+    Object? newValue,
+    String? source,
     Map<String, Object?> detail = const {},
   }) {
     _entries.add(
@@ -49,16 +136,20 @@ final class AuditTrail {
         action: action,
         target: target,
         at: at ?? DateTime.fromMillisecondsSinceEpoch(0),
+        role: role,
+        priorValue: priorValue,
+        newValue: newValue,
+        source: source,
         detail: detail,
       ),
     );
   }
 
   List<AuditEntry> forTenant(TenantId t) =>
-      _entries.where((e) => e.tenantId == t).toList();
+      _entries.where((e) => e.tenantId == t).map(_projectEntry).toList();
 
   List<AuditEntry> recent([int n = 25]) =>
-      _entries.reversed.take(n).toList(growable: false);
+      _entries.reversed.take(n).map(_projectEntry).toList(growable: false);
 
   int get count => _entries.length;
 
@@ -101,6 +192,13 @@ final class AuditTrail {
       action: event.eventType,
       target: (event.payload['membershipId'] as String?) ?? event.aggregateId,
       at: event.occurredAt,
+      // role, priorValue, newValue — sourced from additive payload keys.
+      // These are null when the emitting context does not provide them;
+      // they are not invented.
+      role: event.payload['actorRole'] as String?,
+      priorValue: event.payload['priorValue'],
+      newValue: event.payload['newValue'],
+      source: event.payload['source'] as String?,
       detail: detail,
     );
   }

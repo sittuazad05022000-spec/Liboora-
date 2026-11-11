@@ -501,20 +501,25 @@ void main() {
       final clock = FixedClock(_t0);
 
       // No name at all.
-      final a = seeded(clock)..requestOtp(newcomer);
+      final delivery1 = _RecordingDelivery();
+      final a = seeded(clock, delivery: delivery1)..requestOtp(newcomer);
       expect(
-        a.verifyOtp(phone: newcomer, code: a.debugPeekChallenge(newcomer)!),
+        a.verifyOtp(
+          phone: newcomer,
+          code: delivery1.sent.first.code,
+        ),
         isNull,
       );
       expect(a.accounts, hasLength(1));
 
       // Empty, and whitespace-only, are both the prohibited empty string.
       for (final prohibited in ['', '   ']) {
-        final svc = seeded(clock)..requestOtp(newcomer);
+        final delivery = _RecordingDelivery();
+        final svc = seeded(clock, delivery: delivery)..requestOtp(newcomer);
         expect(
           svc.verifyOtp(
             phone: newcomer,
-            code: svc.debugPeekChallenge(newcomer)!,
+            code: delivery.sent.first.code,
             displayName: prohibited,
           ),
           isNull,
@@ -575,8 +580,10 @@ void main() {
 
       // Expired challenge.
       final expiredClock = FixedClock(_t0);
-      final expired = seeded(expiredClock)..requestOtp(newcomer);
-      final code = expired.debugPeekChallenge(newcomer)!;
+      final expiredDelivery = _RecordingDelivery();
+      final expired = seeded(expiredClock, delivery: expiredDelivery)
+        ..requestOtp(newcomer);
+      final code = expiredDelivery.sent.first.code;
       expiredClock.advance(
         AuthService.challengeTtl + const Duration(seconds: 1),
       );
@@ -591,8 +598,10 @@ void main() {
       expect(expired.accounts, hasLength(1));
 
       // Exhausted attempt budget.
-      final exhausted = seeded(clock)..requestOtp(newcomer);
-      final good = exhausted.debugPeekChallenge(newcomer)!;
+      final exhaustedDelivery = _RecordingDelivery();
+      final exhausted =
+          seeded(clock, delivery: exhaustedDelivery)..requestOtp(newcomer);
+      final good = exhaustedDelivery.sent.first.code;
       for (var i = 0; i < AuthService.maxVerifyAttempts + 1; i++) {
         exhausted.verifyOtp(phone: newcomer, code: '000000');
       }

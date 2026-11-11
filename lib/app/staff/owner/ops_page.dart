@@ -267,9 +267,10 @@ class OpsPage extends StatelessWidget {
           ),
         SectionHeader(
           title: 'Audit trail',
-          subtitle: '${c.audit.count} entries · append-only by construction',
+          subtitle:
+              '${c.audit.forTenant(s.tenant.id).length} entries · append-only by construction',
         ),
-        if (c.audit.count == 0)
+        if (c.audit.forTenant(s.tenant.id).isEmpty)
           const Card(
             child: EmptyState(
               icon: Icons.history,
@@ -279,7 +280,7 @@ class OpsPage extends StatelessWidget {
         else
           PanelCard(
             children: [
-              for (final a in c.audit.recent(8))
+              for (final a in c.audit.forTenant(s.tenant.id).reversed.take(8))
                 ListTile(
                   dense: true,
                   leading: const Icon(

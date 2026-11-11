@@ -46,10 +46,13 @@ void main() {
       final entriesA = auditA.forTenant(TenantId('tnt_a'));
       final entriesB = auditA.forTenant(TenantId('tnt_b'));
 
-      expect(entriesA.map((e) => e.action).toList(),
-          ['membership.MembershipCreated']);
-      expect(entriesB.map((e) => e.action).toList(),
-          ['membership.MembershipCreated', 'membership.MembershipActivated']);
+      expect(entriesA.map((e) => e.action).toList(), [
+        'membership.MembershipCreated',
+      ]);
+      expect(entriesB.map((e) => e.action).toList(), [
+        'membership.MembershipCreated',
+        'membership.MembershipActivated',
+      ]);
     });
 
     test('forTenant count reflects only that tenant', () {

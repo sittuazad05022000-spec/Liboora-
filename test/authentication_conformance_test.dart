@@ -618,12 +618,13 @@ void main() {
 
     test('a new account holds no tenant role, so no session is issued', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery);
 
       svc.requestOtp(newcomer);
       final account = svc.verifyOtp(
         phone: newcomer,
-        code: svc.debugPeekChallenge(newcomer)!,
+        code: delivery.sent.first.code,
         displayName: collectedName,
       );
 
@@ -640,12 +641,13 @@ void main() {
 
     test('a session is issued once a role exists in the tenant (AR-6)', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery);
 
       svc.requestOtp(known);
       final account = svc.verifyOtp(
         phone: known,
-        code: svc.debugPeekChallenge(known)!,
+        code: delivery.sent.first.code,
       );
       final session = svc.issueSession(
         account: account!,
@@ -662,12 +664,13 @@ void main() {
 
     test('authentication never yields a session by itself (AR-6)', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery);
 
       svc.requestOtp(known);
       final result = svc.verifyOtp(
         phone: known,
-        code: svc.debugPeekChallenge(known)!,
+        code: delivery.sent.first.code,
       );
 
       // The stages are distinct types: authentication cannot return a session,
@@ -793,14 +796,16 @@ void main() {
 
     test('authentication succeeds with no entitlement input at all', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
       svc.requestOtp(known);
       // AuthService takes no entitlement dependency, by construction.
       expect(
-        svc.verifyOtp(phone: known, code: svc.debugPeekChallenge(known)!),
+        svc.verifyOtp(phone: known, code: delivery.sent.first.code),
         isNotNull,
       );
     });

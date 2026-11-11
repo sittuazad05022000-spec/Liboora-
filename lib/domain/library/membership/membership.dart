@@ -978,6 +978,9 @@ final class ActivateMembership {
     // and the term window; the business date comes from the TENANT's
     // timezone (MM-FR-061), never the server's.
     final today = calendar.businessDateAt(clock.now());
+    // IMPL-103 / LIB-19.4 — the prior status is captured BEFORE the mutation;
+    // the mutated object must never be used to derive the "before" value.
+    final priorStatus = m.status.name;
     m.activateOn(today, by: tenant.actorId);
     repo.save(m);
 
@@ -1002,6 +1005,10 @@ final class ActivateMembership {
               : 'payment_received',
           'startDate': m.startDate.toIso8601String(),
           'validUntil': m.endDate.toIso8601String(),
+          // IMPL-103 / LIB-19.4 — nine mandatory audit attributes.
+          'actorRole': actorRole.name,
+          'priorValue': priorStatus,
+          'newValue': m.status.name,
         },
       ),
     ]);
@@ -1057,6 +1064,9 @@ final class VoidMembership {
       );
     }
 
+    // IMPL-103 / LIB-19.4 — the prior status is captured BEFORE the mutation;
+    // the mutated object must never be used to derive the "before" value.
+    final priorStatus = m.status.name;
     m.voidBeforeActivation(reason: reason, by: tenant.actorId);
     repo.save(m);
 
@@ -1077,6 +1087,10 @@ final class VoidMembership {
           // MM-EVT-007's declared payload: reason, voidedBy.
           'reason': m.voidReason,
           'voidedBy': m.voidedBy,
+          // IMPL-103 / LIB-19.4 — nine mandatory audit attributes.
+          'actorRole': actorRole.name,
+          'priorValue': priorStatus,
+          'newValue': m.status.name,
         },
       ),
     ]);

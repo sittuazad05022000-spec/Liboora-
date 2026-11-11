@@ -959,7 +959,7 @@ final class AppContainer {
     // TEN-FR-018.
     final FileAccess fileAccess = InProcessFileAccess();
     final sync = OfflineSyncEngine();
-    final audit = AuditTrail(ids);
+    final audit = AuditTrail(ids, durable: durable);
     final analytics = AnalyticsProjections(clock)..register(events);
     // IMPL-1410 / ADR-0065 §7.1. Subscribes to safety.EnforcementActionTaken
     // only. Freshness is NOT declared here: until the stream is observed live

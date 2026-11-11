@@ -880,6 +880,10 @@ final class RenewMembership {
           'status': renewal.status.name,
           'startDate': renewal.startDate.toIso8601String(),
           'validUntil': renewal.endDate.toIso8601String(),
+          // IMPL-103 / LIB-19.4 — nine mandatory audit attributes.
+          'actorRole': actorRole.name,
+          'priorValue': source.status.name,
+          'newValue': renewal.status.name,
         },
       ),
     ]);

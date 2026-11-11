@@ -615,6 +615,10 @@ final class CreateMembership {
           // MM-FR-055: the inclusive last business date, not the half-open
           // DateRange bound, which is a day later.
           'validUntil': m.endDate.toIso8601String(),
+          // IMPL-103 / LIB-19.4 — nine mandatory audit attributes.
+          'actorRole': actorRole.name,
+          'priorValue': null,
+          'newValue': m.status.name,
         },
       ),
     ]);

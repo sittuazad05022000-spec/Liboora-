@@ -30,6 +30,23 @@ PersonIdentityService _service(
   ids: ids ?? SequentialIdGenerator(),
 );
 
+/// Records every delivery attempt so a test can read the code from the
+/// delivered message — what a legitimate user does — rather than from
+/// `AuthService`'s private challenge store (`ADR-0007`, `TASK-D10` §4).
+final class _RecordingDelivery implements OtpDeliveryChannel {
+  final List<({String phone, String code})> sent = [];
+
+  @override
+  bool get isConfigured => true;
+
+  @override
+  String get channelName => 'recording';
+
+  @override
+  void deliver({required String phone, required String code}) =>
+      sent.add((phone: phone, code: code));
+}
+
 void main() {
   // ═══════════════════════════════════════════════════════════════════
   // SID-INV-1 / SID-INV-2 / SID-AC-1 — exactly one identity per account,
@@ -39,16 +56,14 @@ void main() {
     test('creating an account creates its identity in the same call', () {
       final repo = InMemoryPersonIdentityRepository();
       final accounts = <Account>[];
+      final delivery = _RecordingDelivery();
       final auth = AuthService(
         accounts,
         clock: FixedClock(_t0),
         random: FixedRandomSource(const [1, 1, 1, 1, 1, 1]),
         ids: SequentialIdGenerator(),
         identities: _service(repo),
-        // Required rather than defaulted: constructing an adapter inside
-        // production code would breach the composition-root rule.
-        delivery: const UnconfiguredOtpDelivery(),
-        challengePeekEnabled: true,
+        delivery: delivery,
       );
 
       expect(repo.count, 0);
@@ -56,7 +71,7 @@ void main() {
       auth.requestOtp('9810000009');
       final created = auth.verifyOtp(
         phone: '9810000009',
-        code: auth.debugPeekChallenge('9810000009')!,
+        code: delivery.sent.first.code,
         displayName: 'New Person',
       );
 
@@ -112,18 +127,18 @@ void main() {
 
     test('identity creation failure fails account creation (SID-AC-1)', () {
       final accounts = <Account>[];
+      final delivery = _RecordingDelivery();
       final auth = AuthService(
         accounts,
         clock: FixedClock(_t0),
         random: FixedRandomSource(const [2, 2, 2, 2, 2, 2]),
         ids: SequentialIdGenerator(),
         identities: _ThrowingIdentityFactory(),
-        delivery: const UnconfiguredOtpDelivery(),
-        challengePeekEnabled: true,
+        delivery: delivery,
       );
 
       auth.requestOtp('9810000010');
-      final code = auth.debugPeekChallenge('9810000010')!;
+      final code = delivery.sent.first.code;
 
       expect(
         () => auth.verifyOtp(

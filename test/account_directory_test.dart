@@ -26,6 +26,7 @@
 /// because it also proves no state survived in a static.
 library;
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liboora/bootstrap/account_store.dart';
 import 'package:liboora/bootstrap/di.dart';
@@ -499,11 +500,27 @@ void main() {
     test('NO OTP challenge is ever written to storage', () async {
       final durable = InMemoryKeyValueStore();
       final c = await AppContainer.boot(seeder: seedDemoData, durable: durable);
-      c.auth.requestOtp('9810000001');
 
-      // A short-lived secret must not become a durable one.
-      final code = c.auth.debugPeekChallenge('9810000001');
-      expect(code, isNotNull, reason: 'Peek is enabled outside product builds.');
+      // The composed transport (DebugConsoleOtpDelivery) terminates in
+      // debugPrint outside product builds, so capture that console message —
+      // the code the transport actually carried — rather than reading
+      // AuthService's private challenge store (ADR-0007, TASK-D10 §4).
+      final delivered = <String>[];
+      final previous = debugPrintOverride;
+      debugPrintOverride = (message, {int? wrapWidth}) {
+        if (message != null) delivered.add(message);
+      };
+      try {
+        c.auth.requestOtp('9810000001');
+      } finally {
+        debugPrintOverride = previous;
+      }
+
+      final match = RegExp(
+        r'\[OTP\] 9810000001 -> (\d+)',
+      ).firstMatch(delivered.join('\n'));
+      final code = match?.group(1);
+      expect(code, isNotNull, reason: 'Delivery is on outside product builds.');
       for (final ns in [kAccountNamespace, 'auth_session']) {
         for (final value in durable.readAll(ns).values) {
           expect(value.contains(code!), isFalse);

@@ -53,7 +53,8 @@ final class AuditEntry {
 }
 
 final class AuditTrail {
-  AuditTrail(this._idGen, {DurableKeyValueStore? durable}) {
+  AuditTrail(this._idGen, {DurableKeyValueStore? durable})
+      : _durable = durable {
     _redactedActors.addAll(_loadRedactions(durable));
   }
 
@@ -90,14 +91,10 @@ final class AuditTrail {
         action: 'audit.AccountErased',
         target: actorId,
         at: DateTime.now(),
-        detail: const {'erasedActor': actorId},
+        detail: {'erasedActor': actorId},
       );
     }
   }
-
-  /// Apply read-time redaction projection.
-  String _project(String actor) =>
-      _redactedActors.contains(actor) ? 'erased-account' : actor;
 
   AuditEntry _projectEntry(AuditEntry e) => _redactedActors.contains(e.actor)
       ? AuditEntry(

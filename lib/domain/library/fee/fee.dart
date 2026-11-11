@@ -187,6 +187,9 @@ final class CollectFee {
       action: 'fee.collect',
       target: studentId.value,
       at: now,
+      role: actorRole.name,
+      priorValue: ledger.balance.minorUnits,
+      newValue: ledger.balance.minorUnits + amount.minorUnits,
       detail: {
         'receiptNumber': receipt.receiptNumber,
         'amountMinor': amount.minorUnits,

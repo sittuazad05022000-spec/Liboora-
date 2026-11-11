@@ -62,7 +62,7 @@ final class SessionController extends ChangeNotifier {
     container.enterScope(
       tenant: restored.tenantId,
       branch: restored.branchId,
-      actor: restored.account.displayName,
+      actor: restored.account.id.value,
     );
 
     // Activity refreshes the idle boundary only (AUTH-6.16: the absolute
@@ -247,7 +247,7 @@ final class SessionController extends ChangeNotifier {
     container.enterScope(
       tenant: s.tenantId,
       branch: s.branchId,
-      actor: s.account.displayName,
+      actor: s.account.id.value,
     );
     notifyListeners();
     return true;
@@ -276,7 +276,7 @@ final class SessionController extends ChangeNotifier {
       container.enterScope(
         tenant: s.tenantId,
         branch: id,
-        actor: s.account.displayName,
+        actor: s.account.id.value,
       );
       // Re-persist, so a restart reopens the branch the user was actually in
       // rather than the one they signed in to. Switching library is a

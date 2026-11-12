@@ -499,21 +499,25 @@ void main() {
 
     test('NO OTP challenge is ever written to storage', () async {
       final durable = InMemoryKeyValueStore();
-      final c = await AppContainer.boot(seeder: seedDemoData, durable: durable);
 
       // The composed transport (DebugConsoleOtpDelivery) terminates in
-      // debugPrint outside product builds, so capture that console message —
-      // the code the transport actually carried — rather than reading
-      // AuthService's private challenge store (ADR-0007, TASK-D10 §4).
+      // debugPrint outside product builds, and boot() value-captures that
+      // sink at construction, so install the recorder BEFORE boot. This reads
+      // the code from the message the transport actually carried rather than
+      // from AuthService's private challenge store (ADR-0007, TASK-D10 §4).
       final delivered = <String>[];
-      final previous = debugPrintOverride;
-      debugPrintOverride = (message, {int? wrapWidth}) {
+      final previousDebugPrint = debugPrint;
+      debugPrint = (message, {int? wrapWidth}) {
         if (message != null) delivered.add(message);
       };
       try {
+        final c = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
         c.auth.requestOtp('9810000001');
       } finally {
-        debugPrintOverride = previous;
+        debugPrint = previousDebugPrint;
       }
 
       final match = RegExp(

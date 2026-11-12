@@ -109,8 +109,8 @@ final class InMemoryStudentRepository implements StudentRepository {
       lastKey = e.key;
       count++;
     }
-    final hasMore = lastKey != null &&
-        ordered.keys.any((k) => k.compareTo(lastKey!) > 0);
+    final hasMore =
+        lastKey != null && ordered.keys.any((k) => k.compareTo(lastKey!) > 0);
     final next = hasMore ? _issueCursor(anchorKey: lastKey) : null;
     return PaginatedStudents(items: page, nextCursor: next);
   }
@@ -142,9 +142,11 @@ final class InMemoryStudentRepository implements StudentRepository {
       out
         ..write(alphabet[(b0 >> 2) & 0x3F])
         ..write(alphabet[((b0 & 0x3) << 4) | ((b1 >> 4) & 0xF)])
-        ..write(i + 1 < bytes.length
-            ? alphabet[((b1 & 0xF) << 2) | ((b2 >> 6) & 0x3)]
-            : '=')
+        ..write(
+          i + 1 < bytes.length
+              ? alphabet[((b1 & 0xF) << 2) | ((b2 >> 6) & 0x3)]
+              : '=',
+        )
         ..write(i + 2 < bytes.length ? alphabet[b2 & 0x3F] : '=');
     }
     return out.toString();
@@ -170,8 +172,7 @@ final class InMemoryStudentRepository implements StudentRepository {
     // sorted entries insertion into a LinkedHashMap-equivalent sorted map
     // by re-sorting keys. For TRUE ordered iteration, keep a SplayTreeMap.
     final sorted = Map<String, StudentRecord>.fromEntries(
-      map.entries.toList()
-        ..sort((a, b) => a.key.compareTo(b.key)),
+      map.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
     );
     _ordered[tenant] = sorted;
     final idMap = _idToKey.putIfAbsent(tenant, () => <String, String>{});
@@ -193,7 +194,10 @@ final class InMemoryStudentRepository implements StudentRepository {
     final tenant = _store.currentTenantId;
     // Maintain ordered index incrementally for bounded reads.
     final key = _compositeKey(s);
-    final ordered = _ordered.putIfAbsent(tenant, () => <String, StudentRecord>{});
+    final ordered = _ordered.putIfAbsent(
+      tenant,
+      () => <String, StudentRecord>{},
+    );
     final idMap = _idToKey.putIfAbsent(tenant, () => <String, String>{});
     final oldKey = idMap[s.id.value];
     if (oldKey != null && oldKey != key) ordered.remove(oldKey);

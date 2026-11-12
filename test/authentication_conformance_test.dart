@@ -269,18 +269,20 @@ void main() {
       // Same number, different randomness -> different code. The old
       // implementation returned phone.hashCode-derived digits, so this was
       // impossible to satisfy.
-      final a = _service(
+      final svcA = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
         random: const [1, 1, 1, 1, 1, 1],
         delivery: deliveryA,
-      )..requestOtp(known);
-      final b = _service(
+      );
+      final svcB = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
         random: const [2, 2, 2, 2, 2, 2],
         delivery: deliveryB,
-      )..requestOtp(known);
+      );
+      svcA.requestOtp(known);
+      svcB.requestOtp(known);
 
       final codeA = deliveryA.sent.first.code;
       final codeB = deliveryB.sent.first.code;

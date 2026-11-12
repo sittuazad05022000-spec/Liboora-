@@ -18,6 +18,11 @@ abstract interface class StudentRepository {
   PaginatedStudents paginatedList({String? cursor});
   bool enrollmentNumberExists(String number);
   void save(StudentRecord s);
+
+  /// Verifies [cursor] was issued for the tenant currently in scope — the
+  /// tenant-scoped check the pagination contract (PG-1..PG-4) requires.
+  /// Throws a domain error for an unknown or foreign-tenant cursor.
+  void verifyCursorTenant(String cursor);
 }
 
 final class PaginatedStudents {
@@ -51,7 +56,6 @@ final class InMemoryStudentRepository implements StudentRepository {
   /// reset (PG-4). Bounded-read traverses the per-tenant ordered index;
   /// [cursor] is a server-side anchor handle, not an offset.
   PaginatedStudents paginatedList({String? cursor}) {
-    const pageSize = 20; // UNRATIFIED operational default (existing feed(limit:12) class; NOT a CFG-* / NFR)
     final tenant = _store.currentTenantId;
     final index = _ordered[tenant];
     // Lazy-sync on first paginated call for tenants seeded before this patch.
@@ -107,7 +111,7 @@ final class InMemoryStudentRepository implements StudentRepository {
     }
     final hasMore = lastKey != null &&
         ordered.keys.any((k) => k.compareTo(lastKey!) > 0);
-    final next = hasMore ? _issueCursor(anchorKey: lastKey!) : null;
+    final next = hasMore ? _issueCursor(anchorKey: lastKey) : null;
     return PaginatedStudents(items: page, nextCursor: next);
   }
 
@@ -146,6 +150,7 @@ final class InMemoryStudentRepository implements StudentRepository {
     return out.toString();
   }
 
+  @override
   void verifyCursorTenant(String cursor) {
     final entry = _cursorRegistry[cursor];
     if (entry == null || entry.tenantId != _store.currentTenantId) {
@@ -209,171 +214,6 @@ final class _CursorEntry {
   const _CursorEntry({required this.tenantId, required this.anchorKey});
   final String tenantId;
   final String anchorKey;
-}
-    final decoded = _decodeCursor(cursor);
-    if (decoded == null) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'Invalid cursor.',
-      );
-    }
-    final tenant = _store.currentTenantId;
-    if (decoded.tenantId != tenant) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'Invalid cursor.',
-      );
-    }
-    final start = _indexAfter(sorted, decoded);
-    if (start == null) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'Invalid cursor.',
-      );
-    }
-    final window = sorted.sublist(start);
-    final page = window.take(pageSize).toList(growable: false);
-    final next =
-        window.length > pageSize ? _encodeCursor(page.last) : null;
-    return PaginatedStudents(items: page, nextCursor: next);
-  }
-
-  void verifyCursorTenant(String cursor) {
-    final decoded = _decodeCursor(cursor);
-    if (decoded == null) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'Invalid cursor.',
-      );
-    }
-    if (decoded.tenantId != _store.currentTenantId) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'Invalid cursor.',
-      );
-    }
-  }
-
-  int _repositoryOrdering(StudentRecord a, StudentRecord b) {
-    var c = a.fullName.compareTo(b.fullName);
-    if (c != 0) return c;
-    c = a.enrollmentNumber.compareTo(b.enrollmentNumber);
-    if (c != 0) return c;
-    return a.id.value.compareTo(b.id.value);
-  }
-
-  String _encodeCursor(StudentRecord anchor) {
-    final raw =
-        '${_store.currentTenantId}|${anchor.fullName}\u0000${anchor.enrollmentNumber}\u0000${anchor.id.value}';
-    return _b64Encode(raw);
-  }
-
-  _DecodedCursor? _decodeCursor(String cursor) {
-    try {
-      final raw = _b64Decode(cursor);
-      final sep = raw.indexOf('|');
-      if (sep <= 0) return null;
-      final tenantId = raw.substring(0, sep);
-      final rest = raw.substring(sep + 1);
-      final parts = rest.split('\u0000');
-      if (parts.length != 3) return null;
-      if (parts.any((p) => p.isEmpty)) return null;
-      return _DecodedCursor(
-        tenantId: tenantId,
-        fullName: parts[0],
-        enrollmentNumber: parts[1],
-        studentId: parts[2],
-      );
-    } catch (_) {
-      return null;
-    }
-  }
-
-  int? _indexAfter(List<StudentRecord> sorted, _DecodedCursor c) {
-    for (var i = 0; i < sorted.length; i++) {
-      final s = sorted[i];
-      final cmp = _compareRecordToCursor(s, c);
-      if (cmp > 0) return i;
-      if (cmp == 0) return i + 1;
-    }
-    return sorted.length;
-  }
-
-  int _compareRecordToCursor(StudentRecord s, _DecodedCursor c) {
-    var r = s.fullName.compareTo(c.fullName);
-    if (r != 0) return r;
-    r = s.enrollmentNumber.compareTo(c.enrollmentNumber);
-    if (r != 0) return r;
-    return s.id.value.compareTo(c.studentId);
-  }
-
-  String _b64Encode(String raw) {
-    final bytes = raw.codeUnits
-        .expand((c) => [c >> 8, c & 0xFF])
-        .toList(growable: false);
-    const alphabet =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    var out = StringBuffer();
-    for (var i = 0; i < bytes.length; i += 3) {
-      final b0 = bytes[i];
-      final b1 = i + 1 < bytes.length ? bytes[i + 1] : 0;
-      final b2 = i + 2 < bytes.length ? bytes[i + 2] : 0;
-      out
-        ..write(alphabet[(b0 >> 2) & 0x3F])
-        ..write(alphabet[((b0 & 0x3) << 4) | ((b1 >> 4) & 0xF)])
-        ..write(i + 1 < bytes.length ? alphabet[((b1 & 0xF) << 2) | ((b2 >> 6) & 0x3)] : '=')
-        ..write(i + 2 < bytes.length ? alphabet[b2 & 0x3F] : '=');
-    }
-    return out.toString();
-  }
-
-  String _b64Decode(String cursor) {
-    const alphabet =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    final clean = cursor.replaceAll('=', '');
-    final bytes = <int>[];
-    for (var i = 0; i < clean.length; i += 4) {
-      final c0 = alphabet.indexOf(clean[i]);
-      final c1 = i + 1 < clean.length ? alphabet.indexOf(clean[i + 1]) : 0;
-      final c2 = i + 2 < clean.length ? alphabet.indexOf(clean[i + 2]) : 0;
-      final c3 = i + 3 < clean.length ? alphabet.indexOf(clean[i + 3]) : 0;
-      if (c0 < 0 || c1 < 0 || c2 < 0 || c3 < 0) throw const FormatException();
-      bytes.addAll([
-        (c0 << 2) | (c1 >> 4),
-        ((c1 & 0xF) << 4) | (c2 >> 2),
-        ((c2 & 0x3) << 6) | c3,
-      ]);
-    }
-    final trimmed = cursor.endsWith('==')
-        ? bytes.length - 2
-        : cursor.endsWith('=') ? bytes.length - 1 : bytes.length;
-    final actual = bytes.sublist(0, trimmed);
-    final chars = <int>[];
-    for (var i = 0; i + 1 < actual.length; i += 2) {
-      chars.add((actual[i] << 8) | actual[i + 1]);
-    }
-    return String.fromCharCodes(chars);
-  }
-
-  @override
-  bool enrollmentNumberExists(String number) =>
-      _store.where((s) => s.enrollmentNumber == number).isNotEmpty;
-
-  @override
-  void save(StudentRecord s) => _store.put(s.id.value, s);
-}
-
-final class _DecodedCursor {
-  const _DecodedCursor({
-    required this.tenantId,
-    required this.fullName,
-    required this.enrollmentNumber,
-    required this.studentId,
-  });
-  final String tenantId;
-  final String fullName;
-  final String enrollmentNumber;
-  final String studentId;
 }
 
 /// Use case: enroll a walk-in student.

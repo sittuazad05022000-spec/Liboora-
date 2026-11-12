@@ -33,18 +33,17 @@ AuthService _service({
   required List<Account> accounts,
   required FixedClock clock,
   List<int> random = const [1, 2, 3, 4, 5, 6],
-  bool peek = true,
   PersonIdentityFactory? identities,
   OtpDeliveryChannel? delivery,
-}) => AuthService(
-  accounts,
-  clock: clock,
-  random: FixedRandomSource(random),
-  ids: SequentialIdGenerator(),
-  identities: identities ?? _identityService(clock),
-  delivery: delivery ?? _noDelivery,
-  challengePeekEnabled: peek,
-);
+}) =>
+    AuthService(
+      accounts,
+      clock: clock,
+      random: FixedRandomSource(random),
+      ids: SequentialIdGenerator(),
+      identities: identities ?? _identityService(clock),
+      delivery: delivery ?? _noDelivery,
+    );
 
 /// The unconfigured transport, as a test fixture.
 ///
@@ -236,20 +235,23 @@ void main() {
     // detail read through a debug surface that is disabled in release wiring.
     test('a registered and an unregistered number are indistinguishable', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
 
       svc.requestOtp(known);
       svc.requestOtp(unknown);
 
       // Identical treatment: a challenge of identical shape exists for both.
-      final forKnown = svc.debugPeekChallenge(known);
-      final forUnknown = svc.debugPeekChallenge(unknown);
+      final forKnown = delivery.sent.firstWhere((s) => s.phone == known).code;
+      final forUnknown =
+          delivery.sent.firstWhere((s) => s.phone == unknown).code;
       expect(forKnown, isNotNull);
       expect(forUnknown, isNotNull);
-      expect(forUnknown, hasLength(forKnown!.length));
+      expect(forUnknown, hasLength(forKnown.length));
 
       // And a wrong code fails identically for both.
       expect(svc.verifyOtp(phone: known, code: '000000'), isNull);
@@ -262,6 +264,8 @@ void main() {
 
     test('the challenge is not a function of the subject', () {
       final clock = FixedClock(_t0);
+      final deliveryA = _RecordingDelivery();
+      final deliveryB = _RecordingDelivery();
       // Same number, different randomness -> different code. The old
       // implementation returned phone.hashCode-derived digits, so this was
       // impossible to satisfy.
@@ -269,17 +273,21 @@ void main() {
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
         random: const [1, 1, 1, 1, 1, 1],
+        delivery: deliveryA,
       )..requestOtp(known);
       final b = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
         random: const [2, 2, 2, 2, 2, 2],
+        delivery: deliveryB,
       )..requestOtp(known);
 
-      expect(a.debugPeekChallenge(known), isNot(b.debugPeekChallenge(known)));
-      expect(a.debugPeekChallenge(known), hasLength(6));
+      final codeA = deliveryA.sent.first.code;
+      final codeB = deliveryB.sent.first.code;
+      expect(codeA, isNot(codeB));
+      expect(codeA, hasLength(6));
       expect(
-        int.tryParse(a.debugPeekChallenge(known)!),
+        int.tryParse(codeA),
         isNotNull,
         reason: 'TRAI DLT templates are numeric',
       );
@@ -287,12 +295,14 @@ void main() {
 
     test('the challenge expires', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
       svc.requestOtp(known);
-      final code = svc.debugPeekChallenge(known)!;
+      final code = delivery.sent.first.code;
 
       clock.advance(AuthService.challengeTtl + const Duration(seconds: 1));
       expect(svc.verifyOtp(phone: known, code: code), isNull);
@@ -300,12 +310,14 @@ void main() {
 
     test('the challenge has an attempt budget', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
       svc.requestOtp(known);
-      final code = svc.debugPeekChallenge(known)!;
+      final code = delivery.sent.first.code;
 
       for (var i = 0; i < AuthService.maxVerifyAttempts + 1; i++) {
         svc.verifyOtp(phone: known, code: '000000');
@@ -316,27 +328,18 @@ void main() {
 
     test('the challenge is single-use', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
       svc.requestOtp(known);
-      final code = svc.debugPeekChallenge(known)!;
+      final code = delivery.sent.first.code;
 
       final first = svc.verifyOtp(phone: known, code: code);
       expect(first, isNotNull);
       expect(svc.verifyOtp(phone: known, code: code), isNull);
-    });
-
-    test('the peek surface is off unless explicitly enabled', () {
-      final clock = FixedClock(_t0);
-      final svc = _service(
-        accounts: [_account(known, tenant, AccessRole.student)],
-        clock: clock,
-        peek: false,
-      );
-      svc.requestOtp(known);
-      expect(svc.debugPeekChallenge(known), isNull);
     });
 
     // ─────────────────────────────────────────────────────────────
@@ -437,15 +440,17 @@ void main() {
 
     test('a session carries an opaque identity', () {
       final clock = FixedClock(_t0);
+      final delivery = _RecordingDelivery();
       final svc = _service(
         accounts: [_account(known, tenant, AccessRole.student)],
         clock: clock,
+        delivery: delivery,
       );
       svc.requestOtp(known);
       // Two stages under AR-6: authenticate, then issue a session.
       final account = svc.verifyOtp(
         phone: known,
-        code: svc.debugPeekChallenge(known)!,
+        code: delivery.sent.first.code,
       );
       final session = svc.issueSession(
         account: account!,
@@ -467,19 +472,22 @@ void main() {
     const newcomer = '9990000001';
     const collectedName = 'Anjali Deshmukh';
 
-    AuthService seeded(FixedClock clock) => _service(
-      accounts: [_account(known, tenant, AccessRole.student)],
-      clock: clock,
-    );
+    AuthService seeded(FixedClock clock, {OtpDeliveryChannel? delivery}) =>
+        _service(
+          accounts: [_account(known, tenant, AccessRole.student)],
+          clock: clock,
+          delivery: delivery,
+        );
 
     test('a first successful verification creates the account (AR-2)', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery);
 
       svc.requestOtp(newcomer);
       final account = svc.verifyOtp(
         phone: newcomer,
-        code: svc.debugPeekChallenge(newcomer)!,
+        code: delivery.sent.first.code,
         displayName: collectedName,
       );
 
@@ -518,12 +526,13 @@ void main() {
 
     test('the mobile number is not an acceptable display name (AR-5)', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock)..requestOtp(newcomer);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery)..requestOtp(newcomer);
 
       expect(
         svc.verifyOtp(
           phone: newcomer,
-          code: svc.debugPeekChallenge(newcomer)!,
+          code: delivery.sent.first.code,
           displayName: newcomer,
         ),
         isNull,
@@ -534,12 +543,13 @@ void main() {
 
     test('an existing display name is never rewritten (AR-5)', () {
       final clock = FixedClock(_t0);
-      final svc = seeded(clock);
+      final delivery = _RecordingDelivery();
+      final svc = seeded(clock, delivery: delivery);
 
       svc.requestOtp(known);
       final account = svc.verifyOtp(
         phone: known,
-        code: svc.debugPeekChallenge(known)!,
+        code: delivery.sent.first.code,
         displayName: 'Someone Else',
       );
 

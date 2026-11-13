@@ -1,49 +1,39 @@
-/// Subject resolution for the **student app boundary**.
-///
-/// **Why this is not in `app/shared`.** "Which student record is this session
-/// about?" has an answer only for `TR-4` Student and `TR-5` Parent — the two
-/// roles this boundary owns. For staff roles the question is meaningless: they
-/// operate on many students, not one subject.
-///
-/// It previously lived on `SessionController` in `app/shared`, where it forced
-/// a `switch (role)` naming `AccessRole.student` and `AccessRole.parent` into
-/// role-neutral shared code. That is a small leak with a large consequence: it
-/// meant the shared session object could not be compiled for a staff-only or
-/// platform-only app without carrying customer-role knowledge with it. The
-/// architecture test `app_boundary_test.dart` caught it, which is what the test
-/// is for.
-///
-/// ⭐ **Behaviour is unchanged.** Same lookups, same `null` for staff roles,
-/// same demo-guardian constant. Only the *location* moved, from shared code
-/// into the boundary that is the sole consumer.
 library;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTE: `kDemoChildPhone` is deleted here per ADR-0085 §5 ruling 4 ("do not
+// infer the relationship from unrelated data").  The `AccessRole.parent`
+// branch previously hard-coded this constant as the student looked up for
+// every parent session — a precise instance of the forbidden inference.
+//
+// `subjectStudentId` now returns `null` for `AccessRole.parent` until
+// D10-10 (Option B — real parent→student link via `studentAccountLinks`)
+// is unblocked.  Until then: parent access to the student boundary is
+// intentionally absent.  ADR-0085 §5 explicitly records this gap as
+// "genuine" (it belongs to a future BC, not Identity or Enrollment).
+// ─────────────────────────────────────────────────────────────────────────────
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../../platform/identity/identity.dart';
 import '../shared/session.dart';
 
-/// Phone of the student this demo parent account is guardian to.
-///
-/// V1 has no Family Access context — the parent↔student link is a genuine gap
-/// (it belongs in a future BC, not in Identity and not in Enrollment). Hard-
-/// coding it here keeps the gap visible instead of inventing a wrong model.
-///
-/// ⚠ Moved verbatim from `app/shared/session.dart`. It is a **student-boundary**
-/// concern, so it belongs here; the gap it documents is untouched and still
-/// open.
-const String kDemoChildPhone = '9810000004';
-
 /// Resolves the student record a customer-facing session is *about*.
 extension StudentSubject on SessionController {
   /// For a student, themselves; for a parent, their child. `null` for any
   /// other role — including staff, for whom the concept does not apply.
+  ///
+  /// ⚠ Parent access is currently `null` — blocked by D10-10 (Option B).
+  /// `studentAccountLinks[accountPhone]` returns `null` for a parent because
+  /// the seeder has no parent→student link entry (no parent Account to key
+  /// from; inventing one would breach ADR-0085 §6).  Until D10-10 unblocks,
+  /// `AccessRole.parent` has no subject in this boundary.
   StudentRecordId? get subjectStudentId {
     final phone = accountPhone;
     if (phone == null) return null;
     return switch (role) {
       AccessRole.student => container.studentAccountLinks[phone],
-      AccessRole.parent => container.studentAccountLinks[kDemoChildPhone],
+      AccessRole.parent => null, // D10-10 blocked — no real parent→student link
       AccessRole.owner || AccessRole.manager || AccessRole.reception => null,
     };
   }

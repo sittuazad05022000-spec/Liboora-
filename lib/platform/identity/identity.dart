@@ -108,9 +108,8 @@ final class AuthSession {
   /// holds **any** staff role in the active tenant, not merely whether the
   /// currently-active role is a staff one — otherwise a staff user could
   /// obtain mobile-length limits by switching to a student role.
-  bool get isStaffAudience => account
-      .rolesIn(tenantId)
-      .any(kStaffRoles.contains);
+  bool get isStaffAudience =>
+      account.rolesIn(tenantId).any(kStaffRoles.contains);
 
   /// The moment this session ends, whichever boundary comes first
   /// (`AUTH-6.18`, `AC-6.6`).

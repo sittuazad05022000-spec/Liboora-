@@ -35,15 +35,14 @@ AuthService _service({
   List<int> random = const [1, 2, 3, 4, 5, 6],
   PersonIdentityFactory? identities,
   OtpDeliveryChannel? delivery,
-}) =>
-    AuthService(
-      accounts,
-      clock: clock,
-      random: FixedRandomSource(random),
-      ids: SequentialIdGenerator(),
-      identities: identities ?? _identityService(clock),
-      delivery: delivery ?? _noDelivery,
-    );
+}) => AuthService(
+  accounts,
+  clock: clock,
+  random: FixedRandomSource(random),
+  ids: SequentialIdGenerator(),
+  identities: identities ?? _identityService(clock),
+  delivery: delivery ?? _noDelivery,
+);
 
 /// The unconfigured transport, as a test fixture.
 ///
@@ -247,8 +246,9 @@ void main() {
 
       // Identical treatment: a challenge of identical shape exists for both.
       final forKnown = delivery.sent.firstWhere((s) => s.phone == known).code;
-      final forUnknown =
-          delivery.sent.firstWhere((s) => s.phone == unknown).code;
+      final forUnknown = delivery.sent
+          .firstWhere((s) => s.phone == unknown)
+          .code;
       expect(forKnown, isNotNull);
       expect(forUnknown, isNotNull);
       expect(forUnknown, hasLength(forKnown.length));
@@ -506,10 +506,7 @@ void main() {
       final delivery1 = _RecordingDelivery();
       final a = seeded(clock, delivery: delivery1)..requestOtp(newcomer);
       expect(
-        a.verifyOtp(
-          phone: newcomer,
-          code: delivery1.sent.first.code,
-        ),
+        a.verifyOtp(phone: newcomer, code: delivery1.sent.first.code),
         isNull,
       );
       expect(a.accounts, hasLength(1));
@@ -601,8 +598,8 @@ void main() {
 
       // Exhausted attempt budget.
       final exhaustedDelivery = _RecordingDelivery();
-      final exhausted =
-          seeded(clock, delivery: exhaustedDelivery)..requestOtp(newcomer);
+      final exhausted = seeded(clock, delivery: exhaustedDelivery)
+        ..requestOtp(newcomer);
       final good = exhaustedDelivery.sent.first.code;
       for (var i = 0; i < AuthService.maxVerifyAttempts + 1; i++) {
         exhausted.verifyOtp(phone: newcomer, code: '000000');

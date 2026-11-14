@@ -236,41 +236,43 @@ void main() {
       );
     });
 
-    test('a restored account cannot be authorised in the wrong tenant',
-        () async {
-      // The end-to-end consequence: issueSession must refuse a tenant the
-      // account holds no role in, even after restore.
-      final durable = InMemoryKeyValueStore();
-      AccountStore(durable).save(
-        _account(
-          '6',
-          roles: const {
-            't_alpha': {AccessRole.owner},
-          },
-        ),
-      );
+    test(
+      'a restored account cannot be authorised in the wrong tenant',
+      () async {
+        // The end-to-end consequence: issueSession must refuse a tenant the
+        // account holds no role in, even after restore.
+        final durable = InMemoryKeyValueStore();
+        AccountStore(durable).save(
+          _account(
+            '6',
+            roles: const {
+              't_alpha': {AccessRole.owner},
+            },
+          ),
+        );
 
-      final c = await AppContainer.boot(durable: durable);
-      final a = c.auth.accounts.single;
+        final c = await AppContainer.boot(durable: durable);
+        final a = c.auth.accounts.single;
 
-      expect(
-        c.auth.issueSession(
-          account: a,
-          tenant: _alpha,
-          branch: const BranchId('b'),
-        ),
-        isNotNull,
-      );
-      expect(
-        c.auth.issueSession(
-          account: a,
-          tenant: _beta,
-          branch: const BranchId('b'),
-        ),
-        isNull,
-        reason: 'No role in t_beta means no session in t_beta.',
-      );
-    });
+        expect(
+          c.auth.issueSession(
+            account: a,
+            tenant: _alpha,
+            branch: const BranchId('b'),
+          ),
+          isNotNull,
+        );
+        expect(
+          c.auth.issueSession(
+            account: a,
+            tenant: _beta,
+            branch: const BranchId('b'),
+          ),
+          isNull,
+          reason: 'No role in t_beta means no session in t_beta.',
+        );
+      },
+    );
 
     test('accounts do not collide with tenant-scoped namespaces', () {
       final durable = InMemoryKeyValueStore();
@@ -295,12 +297,13 @@ void main() {
   group('boot behaviour', () {
     test('first boot seeds accounts AND persists them', () async {
       final durable = InMemoryKeyValueStore();
-      final c = await AppContainer.boot(
-        seeder: seedDemoData,
-        durable: durable,
-      );
+      final c = await AppContainer.boot(seeder: seedDemoData, durable: durable);
 
-      expect(c.auth.accounts, isNotEmpty, reason: 'Seeder produced no accounts.');
+      expect(
+        c.auth.accounts,
+        isNotEmpty,
+        reason: 'Seeder produced no accounts.',
+      );
       expect(
         durable.readAll(kAccountNamespace).length,
         c.auth.accounts.length,
@@ -482,9 +485,7 @@ void main() {
         seeder: seedDemoData,
         durable: durable,
       );
-      final a = second.auth.accounts.firstWhere(
-        (x) => x.phone == '9812345679',
-      );
+      final a = second.auth.accounts.firstWhere((x) => x.phone == '9812345679');
       expect(a.roles, isEmpty);
       expect(
         second.auth.issueSession(
@@ -537,60 +538,60 @@ void main() {
   // 6 — END TO END: the chain P1 could not previously complete.
   // ═══════════════════════════════════════════════════════════════════
   group('E2E · account restore -> session restore -> authenticated', () {
-    test('a real session survives a restart now that accounts persist',
-        () async {
-      final durable = InMemoryKeyValueStore();
+    test(
+      'a real session survives a restart now that accounts persist',
+      () async {
+        final durable = InMemoryKeyValueStore();
 
-      // ── Boot 1: sign in and persist ──
-      final first = await AppContainer.boot(
-        seeder: seedDemoData,
-        durable: durable,
-      );
-      final staff = first.auth.accounts.firstWhere(
-        (a) => a.rolesIn(kDemoTenant).any(kStaffRoles.contains),
-      );
-      final issued = first.auth.issueSession(
-        account: staff,
-        tenant: kDemoTenant,
-        branch: kDemoBranch,
-      );
-      expect(issued, isNotNull);
-      first.sessionStore.save(issued!);
+        // ── Boot 1: sign in and persist ──
+        final first = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
+        final staff = first.auth.accounts.firstWhere(
+          (a) => a.rolesIn(kDemoTenant).any(kStaffRoles.contains),
+        );
+        final issued = first.auth.issueSession(
+          account: staff,
+          tenant: kDemoTenant,
+          branch: kDemoBranch,
+        );
+        expect(issued, isNotNull);
+        first.sessionStore.save(issued!);
 
-      // ── Boot 2: the restart ──
-      final second = await AppContainer.boot(
-        seeder: seedDemoData,
-        durable: durable,
-      );
+        // ── Boot 2: the restart ──
+        final second = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
 
-      // The directory is populated from storage — the step that was missing.
-      expect(
-        second.auth.accounts,
-        isNotEmpty,
-        reason: 'This was empty before account persistence, blocking restore.',
-      );
+        // The directory is populated from storage — the step that was missing.
+        expect(
+          second.auth.accounts,
+          isNotEmpty,
+          reason:
+              'This was empty before account persistence, blocking restore.',
+        );
 
-      // And the session now resolves against the CONTAINER'S OWN directory,
-      // not one borrowed from the previous boot.
-      final restored = second.sessionStore.restore(
-        accounts: second.auth.accounts,
-        now: second.clock.now(),
-      );
-      expect(restored, isNotNull);
-      expect(restored!.account.id, staff.id);
-      expect(restored.tenantId, kDemoTenant);
-      expect(restored.branchId, kDemoBranch);
-      expect(restored.activeRole, issued.activeRole);
+        // And the session now resolves against the CONTAINER'S OWN directory,
+        // not one borrowed from the previous boot.
+        final restored = second.sessionStore.restore(
+          accounts: second.auth.accounts,
+          now: second.clock.now(),
+        );
+        expect(restored, isNotNull);
+        expect(restored!.account.id, staff.id);
+        expect(restored.tenantId, kDemoTenant);
+        expect(restored.branchId, kDemoBranch);
+        expect(restored.activeRole, issued.activeRole);
 
-      // Authenticated state is genuinely usable: enter the restored scope and
-      // read tenant data.
-      second.enterScope(
-        tenant: restored.tenantId,
-        branch: restored.branchId,
-      );
-      expect(second.students.all(), isNotEmpty);
-      second.leaveScope();
-    });
+        // Authenticated state is genuinely usable: enter the restored scope and
+        // read tenant data.
+        second.enterScope(tenant: restored.tenantId, branch: restored.branchId);
+        expect(second.students.all(), isNotEmpty);
+        second.leaveScope();
+      },
+    );
 
     test('logout then restart stays UNAUTHENTICATED', () async {
       final durable = InMemoryKeyValueStore();
@@ -630,8 +631,7 @@ void main() {
       );
     });
 
-    test('an EXPIRED session is still refused after account restore',
-        () async {
+    test('an EXPIRED session is still refused after account restore', () async {
       // Guards against account persistence accidentally weakening expiry.
       final durable = InMemoryKeyValueStore();
       final first = await AppContainer.boot(
@@ -662,8 +662,7 @@ void main() {
       );
     });
 
-    test('a session whose role was revoked between boots is refused',
-        () async {
+    test('a session whose role was revoked between boots is refused', () async {
       final durable = InMemoryKeyValueStore();
       final first = await AppContainer.boot(
         seeder: seedDemoData,

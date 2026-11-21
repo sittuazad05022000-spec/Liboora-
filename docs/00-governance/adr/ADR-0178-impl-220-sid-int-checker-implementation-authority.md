@@ -1,0 +1,153 @@
+<!-- LIBOORA Governance | Architecture Decision Record | 2026-11-21 -->
+
+> ⛔ **THIS DOCUMENT IS A DRAFT (PROPOSED, v0.1) PRESENTED FOR REVIEW.** It is **not** an Accepted ADR, **records no conferral**, **asserts no authority**, and **authorizes nothing** while it remains unaccepted. Nothing in this file constitutes approval of `IMPL-220` implementation, a change to any `SID-INT` rule, or a change to any ranked document. If never accepted, this file is a null act and should be withdrawn, not left to imply permission. `ADR-0125`, `tool/check_module_boundaries.dart`, `tool/module_dependencies.yaml` and every test file remain byte-unchanged by this draft's existence.
+
+# ADR-0178 — **`IMPL-220` checker implementation authority: `SID-DET-5`, `SID-DET-6`, `SID-DET-8`, `SID-DET-9`, `SID-DET-11` in `tool/check_module_boundaries.dart`**
+
+| Field | Value |
+|---|---|
+| **Status** | ⛔ **PROPOSED — DRAFT FOR REVIEW (v0.1, 2026-11-21). NOT accepted.** No conferral is recorded; the conferral block at §6 is an empty placeholder. Upon acceptance this Status line is replaced by the one-act conferral recorded verbatim at §6 (Architecture Owner + `BC-10` Domain Owner, one-principal disclosure form per `ADR-0103`/`ADR-0146`; authority reverts on completion per `ADR-0033` §7.1) — and **nothing else in §1–§5 decision text is edited** (Process rule 2: *"Never edit an Accepted ADR's decision text"*). |
+| **Rank** | **5 — Implementation Governance Decision** |
+| **Date prepared** | 2026-11-21 |
+| **Bounded context** | ⛔ **NONE** — cross-cutting enforcement tooling (`tool/`); no BC aggregate, edge or invariant touched |
+| **Route** | ⭐ **Standalone one-act conferral** on the `ADR-0012`/`ADR-0014`/`ADR-0177` shape — **not** a `PRD_LIFECYCLE.md` §4 PRD-amendment route, **not** a standing authority |
+| **Supersedes** | ⛔ **NOTHING** — `ADR-0125` remains **Accepted and byte-unchanged**; its decision text is quoted, never reinterpreted |
+| **Superseded by** | — |
+| **Amends** | ⛔ **NOTHING as filed.** Upon acceptance **and verified execution**, the authorized change surface is **exactly two files**: `tool/check_module_boundaries.dart` and `test/architecture/boundary_checker_test.dart`. ⛔ `ADR-0125` **byte-unchanged** · `tool/module_dependencies.yaml` **byte-unchanged** · No Rank 1–5 document · No PRD · No BC Map edge · No `X-*`/`SID-*`/`SXC-*`/`SEV-*`/`SID-INV-*`/`SID-AC-*` identifier · No `lib/` application or domain code · No dependency |
+| **Closes** | ⛔ **NOTHING as filed.** Upon acceptance **and verified execution** of all five criteria with all required tests green: the **five-criteria enforcement portion** of `BLK-03`/`IMPL-220` is recorded as executed — by a **separate register-recording edit** to `docs/40-implementation/IMPLEMENTATION_BLOCKER_REGISTER.md` (Unranked), never by this ADR's text. ⛔ **`BLK-03` itself remains OPEN**: `SID-DET-10` is **not implemented** (prerequisite A2 missing), the `SID-INT-9` **string-literal limb** is not implemented (prerequisite A1 missing), and the `SID-INT-1`/`-2`/`-3`/`-4`/`-7` **labelling act** (`ADR-0125` §9.3) remains unperformed |
+| **Decides** | ⭐ **One matter only:** whether checker implementation of the five **executable** `SID-DET` criteria — semantics fixed verbatim by **Accepted `ADR-0125` §3, §4, §5, §6 and §8** — is **authorized**, in which files, under which verification requirements, and with which residues expressly preserved |
+| **Expressly does NOT decide** | ⛔ **`SID-DET-10` implementation** — prerequisite artifact **A2** (machine-readable index-field declaration for `domain/person`) does **not exist** (`ADR-0125` §7, §9.1) · ⛔ **Creation of A1** (per-context table/index name inventory) or **A2** — neither is created, drafted, named as a file, or given a schema; **no table, index or field name is invented** · ⛔ **The `SID-DET-9` string-literal limb** (a raw table/index name passed as a string to a declared port) — unimplemented until A1 exists · ⛔ **The substance of any `SID-INT` rule** — `SID-INT-1`…`SID-INT-12` remain **byte-unchanged**; §4.16's `Detection` column is **not rewritten** · ⛔ **Any manifest edit** · ⛔ **The labelling act** for `SID-INT-1`/`-2`/`-3`/`-4`/`-7` (`ADR-0125` §9.3) · ⛔ **The behavioural revocation-test limb of `SID-INT-6`** — it remains **test authority, not checker authority**, per `ADR-0125` §4 and `SID-AC-20` · ⛔ **No Matrix §11 waiver** is added, extended or shortened · ⛔ **No standing authority** conferred, no office holder appointed — the conferral, once executed, **reverts** per `ADR-0033` §7.1 |
+| **Deciding authority** | ⛔ **NONE YET — DRAFT.** Upon acceptance: **Architecture Owner + `BC-10` Domain Owner, jointly**, under a **new** one-act conferral recorded verbatim at §6 — two offices because the act has a **detection-method limb** (Architecture, `PRD_OWNERSHIP_MODEL.md` **L85**: boundaries, ranks, permitted edges) and a **faithfulness-to-the-`BC-10`-rule limb** (Domain Owner, **L84**) — the `ADR-0011`/`ADR-0125` precedent. ⛔ No ARB quorum, attendee list, sign-off date or Security review is asserted unless the actual conferral records one. |
+| **Origin** | ⭐ **The implementation-authority restriction in `ADR-0125`, resolved rather than assumed away.** `ADR-0125` (**Accepted**, 2026-09-08) confers authority *"for one act only"* (its Status field): defining and recording the mechanical detection criteria. Its own text excludes implementation at every relevant point: header/§10 callout *"It authorises no checker implementation. **A detection criterion is not a check.**"*; §2.2 *"The checker implementation — ⛔ Expressly excluded"*; §10 *"It does **not** implement, edit or configure the checker; `tool/check_module_boundaries.dart` and `tool/module_dependencies.yaml` are byte-unchanged"* and *"It confers **no standing authority** and appoints **no holder**"*. Under `ADR-0033` §7.1 — *"A conferral for one act is not a standing licence"* — the `ADR-0125` offices reverted on recording, so **no current authority permits this implementation**, and `SID-4.56` keeps counting the twelve rules **unmet** while the checks do not run. A **separate governance act** is therefore required; this draft is that act, filed **unaccepted** for review. The execution-evidence precedent is `ADR-0014`'s: build the check without touching the rule, and prove **zero false positives** against the current tree. |
+
+---
+
+## 1. ⭐ Purpose — the gap, measured before deciding
+
+`ADR-0125` closed the **detection-specification** gap for `SID-INT-5`, `-6`, `-8`, `-9`, `-10`, `-11` and deliberately stopped there. Measured state at drafting:
+
+| Fact | Evidence |
+|---|---|
+| `tool/check_module_boundaries.dart` contains **0** occurrences of `SID-INT` | Measured: `rg 'SID-INT' tool/check_module_boundaries.dart` → 0 matches |
+| The checker enforces **twelve categories** — rank ordering, cross-context, `banned_imports`, L1 cycles, same-rank, L4 layers, L5 kernel, ownership, barrel-only, banned symbols, X-10 audit mutation, X-13 tenant keys — **none of them a `SID-INT` criterion** | Checker library doc, categories 1–12 |
+| All twelve `SID-INT` rules count as **unmet, not satisfied** while the checks do not run | `SID-4.56` (**L1064–1066**), quoted in `ADR-0125` §1 |
+| `IMPL-220` is registered, P0, unblocked, and specifies exactly this work: *"Extend the module boundary checker to fail the build on any `SID-INT-1` … `SID-INT-12` violation"* | `STUDENT_IDENTITY_IMPLEMENTATION_TASKS.md` §1.4 (**L133**); unblocked since `IMPL-014` shipped (**L27**) |
+| `BLK-03` is **OPEN — specification gap closed, implementation not done**; A1 and A2 **do not exist**; `SID-DET-10` is *well-defined but not yet executable* | `IMPLEMENTATION_BLOCKER_REGISTER.md` **L41** (v1.13 row) |
+
+⭐ **The task is already specified and already unblocked; what is missing is the authority to execute it.** `ADR-0125` cannot supply that authority — it expressly excluded implementation, and its one-act conferral has reverted. Once accepted, this ADR supplies it; until then, nothing is authorized.
+
+---
+
+## 2. ⭐ The one matter decided (upon acceptance)
+
+**Checker implementation of exactly five `SID-DET` criteria is authorized**, under five fixed conditions:
+
+1. **The criteria are implemented, not redefined.** Normative semantics are **`ADR-0125` §3, §4, §5, §6 and §8 verbatim** — artifact inspected, what is a violation, what is compliance, what must NOT be flagged, method class. §3 of this ADR cites them; it does not paraphrase them into new meanings.
+2. **The change surface is exactly two files**: `tool/check_module_boundaries.dart` (new check categories, wired into the existing `run()` pipeline and report) and `test/architecture/boundary_checker_test.dart` (positive, negative, missing-authority and false-positive tests).
+3. **Every existing checker behavior is preserved.** The twelve existing categories, the `Violation`/`DependencyException` model, §11 waiver mechanics, exit-code semantics (`0` clean / `1` violations / `2` cannot run) and report format are untouched except for additive integration of the new categories.
+4. **The residues stay residues.** Each disclosed limit (§7 below) is preserved in code and tests as a documented limitation — ⛔ the rule is never narrowed to match the check (`ADR-0125` §3 ⚠, §5 ⚠, §6 ⚠⚠, §8 ⚠).
+5. **No authority beyond this act is used.** The manifest, the PRDs, `ADR-0125` and every other ranked document remain byte-unchanged; nothing outside the two files is modified by the implementation act.
+
+⛔ **Never authorized, even after acceptance:** implementing `SID-DET-10`; creating A1 or A2; implementing the `SID-DET-9` string-literal limb; the labelling act of `ADR-0125` §9.3; any manifest, PRD, `lib/`, dependency or exception change (§8).
+
+---
+
+## 3. ⭐ The five criteria — cited, not redefined
+
+The implementation is bound to `ADR-0125`'s own words. Each row quotes the criterion headline and violation definition **verbatim from `ADR-0125`**, then names the checker mechanism and the **already-verified** repository authorities it reads. No symbol, port or field below was invented — each was measured to exist.
+
+| # | `ADR-0125` criterion (headline + violation, verbatim) | Checker mechanism · verified authority |
+|---|---|---|
+| **`SID-DET-5`** | *"Lexical scan of declared member names and string literals in `domain/person`, plus of every declared `SEV-*` event payload field, against the four credential classes `ID-1` names."* Violation: *"A declared member name, in code (not comment), matching any token in the credential-class set"* (§3 rows 1–2) | **Lexical, comment-stripped, on declarations** (§3 row 6 — the existing `banned_symbols` mechanism's scope, extended from symbol occurrence to declared-member names: fields, getters, constructor parameters, event payload fields). Credential-class token set = the intersection `ADR-0125` §3 row 4 fixes: `SID-INV-5` (**L1307**) ∩ the manifest's already-declared `global.observability_plane.banned_content` (manifest **L579–588**: mobile number · challenge value · session token/revalidating material · device secret · key material). NOT violations (§3 row 5): comments/doc-comments (existing `_stripComment` applies), port/interface **types** (read-through accessors per `SID-4.13`), **`AccountId`** (*"it is not a credential"*, `person.dart` L61), **`FileRef`/`avatarRef`**. ⚠ Disclosed limit preserved: cannot catch a credential under a misleading name; the residue stays under `SID-4.56`. |
+| **`SID-DET-6`** | *"Structural check: within `domain/person`, the value returned by the declared `platform/identity:policy_decision` port MUST NOT be assigned to any field, static, top-level variable, collection or memo; it may only be consumed within the invoking expression or local scope."* Violation: the four shapes **(a)** result assigned to an instance/static/top-level; **(b)** inserted into a `Map`/`List`/`Set`; **(c)** declared member matching a cache idiom (`*cache*`, `*cached*`, `*memo*`) whose type is an authorisation result; **(d)** a local `Map`/`Set` keyed by subject identity holding an authorisation result (§4 row 2) | **Structural, assignment-destination analysis + lexical cache-idiom sub-check; not call-graph based** (§4 row 6). Port surface verified in source: `PolicyDecisionPoint` — `bool allows(...)` (**L265**), `AccessScope? scopeOf(...)` (**L269**) — `lib/platform/identity/identity.dart`; the port is declared on `domain/person` at manifest **L186** with the constraint *"ask BC-18 per request; never cache (MP-GBR-26)"*. NOT violations (§4 row 5): holding the port **interface itself** as a constructor-injected field (the required DI shape); a local variable used once within the same method; caching a **non-authorisation** value (e.g. a settings value). ⚠ The revocation-test limb remains **test authority** (`SID-AC-20`), preserved not replaced. |
+| **`SID-DET-8`** | *"Structural check: `domain/person` MUST NOT import, reference as a type, or hold as a collaborator any `platform/audit` symbol. Audit facts leave this module only as outbox-delivered events."* Violation: *"An import of `platform/audit/**`, or any `platform/audit` type appearing as a declared type, parameter type or field type"* (§5 row 2) | **Structural/graph on the import and type graph — mechanically a per-module `banned_imports`-shaped test** (§5 row 6), justified by the `E-20` structural equivalence (§5 row 4: the only sanctioned audit path is an **event**, so any reference from domain code is necessarily off-path — the `ADR-0014` X-10 reasoning, *"it needs no call-graph"*). Verified `platform/audit` public surface (`lib/platform/audit/audit.dart`): **`AuditEntry`** (**L9**), **`AuditTrail`** (**L29**). NOT violations (§5 row 5): emitting an audit **event** with `contracts` payload types; comments naming `BC-24`/`platform/audit`; `platform/audit` importing `contracts`; **`domain/library`'s existing reference, covered by the dated `ADR-0012` waiver — untouched**, this criterion being scoped to `domain/person`. ⚠ Disclosed limit preserved: a synchronous call bound through a rank-0 contracts interface at the composition root is not detected. |
+| **`SID-DET-9`** | *"Structural check against the module's ALREADY-DECLARED `ports:` list: every persistence or index access from `domain/person` MUST resolve to a port declared for `domain/person` in `tool/module_dependencies.yaml`. Any store or index access not so declared is a violation."* Violation: *"A persistence, repository, query or index type reached other than through a declared port — specifically any reference to another module's repository, store, table or index type"* (§6 rows 1–2) | **Structural, manifest-driven** (§6 row 6 — the `ADR-0014` shape exactly): the allow-list already exists in substance as `domain/person`'s **eight declared ports** (manifest **L179–187**) plus **`provides_ports:`** `identity_directory`, `person_identity_factory` (**L188–195**), under `default_decision: deny` (**L21**). NOT violations (§6 row 5): the module's **own repository** (`PersonIdentityRepository`, `InMemoryPersonIdentityRepository` — `person.dart` **L123/L160**), **`identity_directory`** (provided across E-13), **`contracts`** types (rank 0, L5), a declared port whose implementation reads another store. ⛔ **String-literal limb NOT implemented** — detecting `repository.query('bc01_student_records')`-shaped access requires A1, which exists nowhere in the repository; recorded, not invented (§7). |
+| **`SID-DET-11`** | *"Layer check: no type declared in `domain/person` may aggregate data originating from more than one bounded context. Concretely: a declared type in `domain/person` MUST NOT hold, as a field, both a `BC-10` field and a value obtained from any other context's port."* Violation: *"A type declared in `domain/person` holding fields sourced from two or more contexts — e.g. a class combining `PersonIdentity` content with membership, attendance, seat or fee data; or a method in `domain/person` returning such a composite"* (§8 rows 1–2) | **Structural/layer analysis on declared field provenance** (§8 row 6), per `SID-4.9` (**L785–786**) + `AR-1` (*a read composition "owns no aggregate"*). Compliance shape verified in source: **`IdentityCoreFields`** (`person.dart` **L148–158**) — the single-context `E-13` ACL projection, *"Carries no aggregate, no status history and no reference back into this module"*. NOT violations (§8 row 5): `IdentityCoreFields`; **app**-layer composition (the required location); **`AccountId`** linkage (mandated by `SID-INV-1`, not aggregation); a summary fetched live for display under `SID-4.24` provided it is not composed here; a type merely **referencing** `PersonId`. ⚠ Disclosed limit preserved: a composite assembled purely from primitives (`String`, `int`) that semantically originate elsewhere is not caught. |
+
+⛔ **Method-class boundaries carried over unchanged:** `SID-DET-6` is **not** call-graph based; `SID-DET-8` needs no call-graph; `SID-DET-9` inspects imports/declared types only (no string literals); `SID-DET-11` judges **field provenance**, not semantics. The implementation may not silently widen any of these to look complete — that would change the rule, which §2(1) forbids.
+
+---
+
+## 4. ⭐ Implementation scope — the two files, and what must not change in them
+
+### 4.1 `tool/check_module_boundaries.dart` (authorized to change)
+
+- **Additive only**: new detection logic for the five criteria, invoked from the existing per-file `run()` loop for files resolving to module `domain/person`, reporting through the existing `Violation` model under a `sid-int` category family whose rule labels **cite the underlying rules** (`ID-1` · `SID-INT-5`, `MP-GBR-26`/`X-13` · `SID-INT-6`, `E-20` · `SID-INT-8`, `X-07`/`X-08` · `SID-INT-9`, `AR-1` · `SID-INT-11`).
+- **Reuses existing mechanisms**: comment stripping (`_stripComment`), import parsing (`_parseImports`), module resolution (`_moduleFor`), glob matching (`_globMatch`), manifest-derived module data. New knowledge is read from the manifest only (ports, `banned_content`, module paths) — ⛔ no new rule source beyond the token/type tables `ADR-0125` §3–§8 themselves fix, each traceable to quoted authority (§3 of this ADR).
+- **Preserved exactly**: exit-code semantics; the `Violation`/`DependencyException`/waiver model; the twelve existing categories' behavior; report format. The header's category list is updated additively to name the new categories — an edit to a doc-comment, not to enforcement behavior.
+
+### 4.2 `test/architecture/boundary_checker_test.dart` (authorized to change)
+
+- **Additive only**: a new test group for `SID-INT` enforcement, following the file's established patterns (`_runChecker`, `_runWithProbe`, `_blockingCount`) so every assertion runs the **real checker over the real manifest**, never a re-implementation.
+
+### 4.3 ⛔ Files that must not change
+
+`tool/module_dependencies.yaml` · `docs/00-governance/adr/ADR-0125-*.md` · everything under `lib/` · `pubspec.yaml` · CI workflow files · every other `docs/` file. Any change needed beyond §4.1/§4.2 is **out of scope for this act** and requires its own governance decision.
+
+---
+
+## 5. ⭐ Verification requirements — what "done" means for the implementation act
+
+The implementation is complete only when **all** of the following hold, with results reported:
+
+1. **Every criterion has a positive test** — a synthetic probe in `domain/person` that violates it and is **caught** (checker exit `1`, violation labelled with the rule and the exact file). A check that cannot be shown to fire is indistinguishable from an absent check; the X-10/X-13 test precedent (`ADR-0014`, categories 11–12) is followed.
+2. **Every criterion has negative tests** for its NOT-violation list (§3 row 5 of `ADR-0125`, mirrored in §3 of this ADR) — sanctioned shapes must **not** fire. Over-matching is what creates pressure to weaken a rule for a green build; it is itself a defect.
+3. **Missing-authority tests** — where a criterion reads a manifest authority, a probe with that authority removed must not crash the checker (exit `2`) and must not fire falsely; the checker degrades to "authority absent ⇒ criterion not asserted", which is `SID-4.56`'s *unmet* discipline, never a false *satisfied*.
+4. **Zero false positives on the current tree** — the real checker over the unmodified repository reports **no new `sid-int` violations** (`lib/domain/person` today holds no credential member, no cached decision, no audit reference, no undeclared store access, no cross-context aggregate). This is `ADR-0014`'s acceptance standard, quoted: *"the checker's output on the existing codebase is byte-identical to the pre-implementation baseline, proving the two new categories added zero false positives"* — adapted here as: byte-identical **except for the new categories, which report nothing**.
+5. **Existing behavior preserved** — every pre-existing test in the file still passes unmodified; the twelve existing categories produce the same findings as before on the current tree.
+6. **Full verification run, reported exactly**: focused boundary-checker tests · the full test suite · `flutter analyze` (no new findings) · `git diff --check` (no whitespace errors) · inspection of the final diff and working tree (only the two authorized files changed).
+7. **Residues visibly preserved** — code comments and tests document, without weakening anything: the misleading-name limit (`SID-DET-5`), the contracts-bound-call limit (`SID-DET-8`), the unimplemented string-literal limb of `SID-DET-9` pending **A1**, and the unimplemented `SID-DET-10` pending **A2**.
+
+---
+
+## 6. ⛔ Conferral — placeholder, intentionally empty
+
+> **Nothing is recorded here.** Under the `ADR-0012`/`ADR-0014`/`ADR-0177` convention, the deciding offices' one-act conferral is recorded **verbatim** in this section **at the moment of acceptance** — until then this ADR authorizes nothing. The offices, when the act is brought to them, are the **Architecture Owner** and the **BC-10 Domain Owner** (§ header, *Deciding authority*), conferring jointly, once, on exactly the decision text of §1–§5 above; the authority reverts on completion of the authorized act and its verification (`ADR-0033` §7.1).
+>
+> **This draft deliberately does not pre-write the conferral text.** A conferral recorded by anyone other than the offices themselves would be a fabricated governance record. The reviewer's acceptance instruction to the offices should be: *"Confer, or refuse — then record the outcome verbatim at §6, replacing the Status line and nothing else."*
+
+---
+
+## 7. ⭐ A1, A2 and the excluded residues — preserved, not weakened
+
+| Item | Status under this ADR (if accepted) | Why |
+|---|---|---|
+| **A1** — per-context table/index name inventory | ⛔ **Not created, not drafted, not named, no schema given.** Owner remains the **Architecture Owner** (`ADR-0125` §9.1) | `SID-DET-9`'s string-literal limb cannot detect a raw table/index name passed to a declared port without knowing which names each context owns. Measured: **no such inventory exists anywhere in the repository**. Inventing one would partition persistence — an Architecture Owner act reserved to boundaries/edges (**L85**) — on invented data. |
+| **A2** — machine-readable index-field declaration for `domain/person` | ⛔ **Not created.** Owners remain **BC-10 Domain Owner + Architecture Owner** (`ADR-0125` §9.1) | `SID-DET-10` requires set membership against the `SID-2.28` public allow-list and never-public set, currently **prose in a Rank-3 PRD** (`Student_Identity_PRD_v1.md` **L379–397**). Measured: **0** index declarations in `lib/` or `packages/` — nothing to inspect. Transcription requires field-level fidelity this act does not attempt; **no field is added, removed or renamed here**. |
+| **`SID-DET-10`** (indexing a never-public field) | ⛔ **Not implemented** — *well-defined but not executable* until A2 exists | `ADR-0125` §7 ⚠⚠. Implementing it against invented field data would violate §9.1 of both ADRs. The residue stays under `SID-4.56`: the rule remains **unmet**, not satisfied. |
+| **`SID-DET-9` string-literal limb** | ⛔ **Not implemented** until A1 exists | `ADR-0125` §6 ⚠⚠. The **port/type limb** (store access reached by import or declared type) **is** in scope (§3). |
+| **Disclosed limits of `-5`, `-8`, `-11`** | ✅ **Preserved as documented limitations** in code and tests | `ADR-0125` §3/§5/§8 ⚠. The rule is never narrowed to match the check; each residue remains under `SID-4.56`. |
+| **`SID-INT-6` revocation test** | ⛔ **Not checker work** — behavioural test authority per `SID-AC-20`, preserved not replaced | `ADR-0125` §4 closing note. |
+| **Labelling act** (`SID-INT-1`/`-2`/`-3`/`-4`/`-7`) | ⛔ **Not performed** — separate manifest/checker act (`ADR-0125` §9.3) | Those rules already fire under `ID-2`/`X-05`/`X-04`/`L2`; relabelling is a distinct decision. |
+
+---
+
+## 8. ⛔ Out-of-scope changes — expressly NOT authorized by this act, even once accepted
+
+- ⛔ Any edit to `tool/module_dependencies.yaml` — no key, port, exception, comment or version change.
+- ⛔ Any edit to `ADR-0125` or any other ADR's decision text (Process rule 2); `ADR-INDEX.md` registration happens **only after** acceptance, as an end-of-file addendum (§9).
+- ⛔ Any change to `Student_Identity_PRD_v1.md` — §4.16's `Detection` column is **not rewritten**; **0** `SID-*`/`SID-BR-*`/`SXC-*`/`SPO-*`/`SEV-*`/`SID-INV-*`/`SCFG-*`/`SID-AC-*` identifiers minted, moved or altered.
+- ⛔ Any change under `lib/` (application, domain or platform code) — including `lib/domain/person`, which the criteria inspect but must not be "fixed" by this act: if a criterion fired on the real tree, the finding would be reported, and the remedy would be a separate decision.
+- ⛔ Any dependency addition, CI workflow change, or new ADR-referenced artifact (A1/A2).
+- ⛔ Any Matrix §11 exception added, extended, shortened or re-dated; `domain/library`'s existing `platform/audit` waiver (ADR-0012) is untouched.
+- ⛔ Any weakening of an existing checker category to reduce findings — including any interaction between the new categories and existing ones that would silence a currently-reported violation.
+
+---
+
+## 9. Registration hygiene (planned; ⛔ **not performed by this draft**)
+
+| Check | Plan |
+|---|---|
+| Number | ⭐ `ADR-0178` is the **next unregistered ADR** (verified: 163 numbered ADR files; highest existing `ADR-0177`; no `ADR-0178`+ exists). No number reused, reserved or renumbered. |
+| ADR-INDEX | After acceptance, an **end-of-file addendum** to `ADR-INDEX.md` on the `ADR-0177` pattern: new table row + status record, **no past entry edited**, `Date`/`Count` cells untouched — **zero citation cost**. Registration records the Accepted status only; it does not re-decide or widen (Process rule 2). |
+| Baseline | ⭐ No Rank 1–5 document is changed by acceptance or execution, so `DOCUMENTATION_BASELINE.md` §7 rules 1–4 are all **unmet** ⇒ **no version bump anywhere**; the standing baseline identifier does not move. |
+| Register | After verified execution, a **separate, Unranked** edit to `IMPLEMENTATION_BLOCKER_REGISTER.md` records the five-criteria portion of `BLK-03` as executed — with `BLK-03` **still OPEN** for `SID-DET-10`/A1/A2 and the labelling act. |
+
+---
+
+## 10. Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| **v0.1** | 2026-11-21 | ⭐ **DRAFT CREATED — PROPOSED, FOR REVIEW. NOT ACCEPTED; RECORDS NO CONFERRAL; AUTHORIZES NOTHING.** Drafted to resolve the implementation-authority restriction that `ADR-0125` records against itself (§2.2 *"Expressly excluded"*, §10 *"It authorises no checker implementation"* + *"no standing authority"*) through the appropriate governance process: a separate, new, one-act conferral of the **Architecture Owner + `BC-10` Domain Owner** (two-limb, `ADR-0011`/`ADR-0125` precedent), to be recorded verbatim at §6 **only** upon acceptance. The draft authorizes implementation of exactly the five executable criteria — `SID-DET-5`, `-6`, `-8`, `-9` (port/type limb only), `-11` — with semantics bound verbatim to `ADR-0125` §3/§4/§5/§6/§8, a change surface of exactly `tool/check_module_boundaries.dart` + `test/architecture/boundary_checker_test.dart`, the `ADR-0014` zero-false-positive acceptance standard, and express preservation of: `SID-DET-10` unimplemented (A2 missing), A1 and A2 uncreated, the `SID-DET-9` string-literal limb unimplemented, the `SID-INT-6` revocation test as test authority, the labelling act unperformed, all twelve `SID-INT` rules byte-unchanged, the manifest byte-unchanged, and every existing checker category and exit-code semantic intact. ⛔ `ADR-0125` byte-unchanged; checker, manifest and tests untouched by this draft; no code, no dependency, no other document edited. |
+

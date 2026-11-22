@@ -6,14 +6,12 @@
 /// library domain along (forbidden edge X-12: capability platforms must never
 /// depend on a domain context).
 ///
-/// Every number below is rebuildable by replaying `EventBus.log` from zero.
+/// Every number below is rebuildable by replaying the event log from zero.
 /// If a projection ever holds state that cannot be reconstructed that way,
 /// it has become a second source of truth and must be deleted.
 library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
-
-import '../event/event.dart';
 
 /// One row of the activity feed shown on every dashboard.
 final class ActivityItem {
@@ -67,7 +65,8 @@ final class DashboardMetrics {
 /// Event-fed projection store.
 ///
 /// Subscribes once at the composition root. Consumers are idempotent by
-/// eventId inside [EventBus], so at-least-once delivery cannot double-count.
+/// eventId behind the [EventStream] port, so at-least-once delivery cannot
+/// double-count.
 final class AnalyticsProjections {
   /// The [Clock] is accepted for composition-root compatibility but is
   /// deliberately NOT stored or read.
@@ -149,8 +148,10 @@ final class AnalyticsProjections {
     m.insideNow = open.length;
   }
 
-  /// Wire every projection to the bus. Called once, from `bootstrap/`.
-  void register(EventBus bus) {
+  /// Wire every projection to the bus. Called once, from `bootstrap/`, which
+  /// passes the composition root's `EventBus` as the [EventStream] port
+  /// (ADR-0012 wave 1).
+  void register(EventStream bus) {
     bus.subscribe(
       'enrollment.StudentEnrolled',
       _onEnrolled,
@@ -195,14 +196,14 @@ final class AnalyticsProjections {
   }
 
   /// Rebuild everything from the log. Proof that no state is unrecoverable.
-  Future<void> rebuildFrom(EventBus bus) async {
+  Future<void> rebuildFrom(EventStream bus) async {
     _byTenant.clear();
     _feed.clear();
     _attendanceDays.clear();
     _allocationsByTenant.clear();
     _openSessionsByTenant.clear();
     _reportingDay = null;
-    for (final e in bus.log) {
+    await for (final e in bus.replay()) {
       switch (e.eventType) {
         case 'enrollment.StudentEnrolled':
           _onEnrolled(e);

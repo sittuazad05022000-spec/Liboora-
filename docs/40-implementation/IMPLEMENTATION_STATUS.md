@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Document** | Implementation Status — what is built, what is enforced, what is not |
-| **Version** | v1.2 |
+| **Version** | v1.3 |
 | **Status** | Active — the single place to check before assuming a capability exists |
 | **Date** | 2026-08-04 |
 | **Commit** | `a22fd7e` + Phase 6 documentation pack |
@@ -32,7 +32,7 @@ authoritative.** Where another document disagrees, this one wins — and the oth
 | Checker verified against itself | ✅ 14 tests | `test/architecture/boundary_checker_test.dart` |
 | Law `L1` acyclic | ✅ Enforced + **unwaivable** | 0 cycles; cycle exceptions structurally ignored |
 | Law `L2` downward-only | ✅ Enforced | 0 violations |
-| Law `L3` ports-only | ✅ Enforced | 37 findings — 9 blocking, 28 waived |
+| | Law `L3` ports-only | ✅ Enforced | 35 findings — 9 blocking, 26 waived |
 | Law `L4` capability ≠ domain | ✅ Enforced | 0 violations |
 | Law `L5` contracts import nothing | ✅ Enforced **meaningfully** | 0 violations; `R-5` closed |
 | Ownership / banned symbols | ✅ Enforced | 0 violations |
@@ -87,9 +87,9 @@ review-verified and therefore **unmet** (`SID-4.56`).
 |---|---|
 | 1 · `dart format` | ✅ Clean |
 | 2 · `flutter analyze` | ✅ **No issues found!** |
-| 3 · boundary checker ◄ blocks merge | ⛔ **Exit 1 — intentional** (9 blocking, 28 waived) |
-| 4 · `flutter test test/architecture/` ◄ blocks merge | ✅ **20/20** |
-| 5 · `flutter test` | ✅ **77/77** |
+| 3 · boundary checker ◄ blocks merge | ⛔ **Exit 1 — intentional** (9 blocking, 26 waived) |
+| 4 · `flutter test test/architecture/` ◄ blocks merge | ✅ **287/287** |
+| 5 · `flutter test` | ✅ **884/884** |
 | 6 · `flutter build web --release` | ✅ Builds |
 
 **Gate 3 is red by design**, not by neglect. The nine blocking findings are `app → domain/library` imports owned
@@ -103,7 +103,7 @@ by `TASK-D10`, a P0 release blocker. See [`ADR-0012`](../00-governance/adr/ADR-0
 |---|---|---|
 | `TASK-D10` — remove demo surfaces | **P0** | Release blocker; also turns gate 3 green |
 | `IMPL-020` — SMS / DLT integration | **P0** | Release blocker |
-| `ADR-0012` wave 1 (2 edges) | — | Expires **2026-10-31** |
+| `ADR-0012` wave 1 (2 edges) | — | ✅ **PAID 2026-11-22** — `EventStream` declared in `liboora_contracts` (`EventBus` implements it) and a one-method `TenantTierSource` port declared by Business; both imports removed; exceptions removed from the manifest. Wave 1's own fix prescription (`ADR-0012` wave table) was followed exactly |
 | `ADR-0012` wave 2 (2 edges) | — | Expires **2026-12-31** |
 | `ADR-0012` waves 3–4 (8 edges) | — | Expire **2027-03-31** |
 | `IMPL-220` — `SID-INT-*` enforcement | P0 | Now unblocked; **`BLK-03`** |
@@ -121,7 +121,7 @@ dart format --output=none --set-exit-if-changed .     # gate 1
 flutter analyze                                       # gate 2
 dart run tool/check_module_boundaries.dart            # gate 3 — expect exit 1
 flutter test test/architecture/                       # gate 4
-flutter test                                          # gate 5 — expect 77/77
+flutter test                                          # gate 5 — expect 884/884
 ```
 
 To confirm the GitHub backup claim — note this deliberately does **not** trust `git push`'s own exit code:
@@ -144,3 +144,4 @@ the change that made it stale.
 | v1.0 | 2026-08-04 | Created during Phase 6 after validation found 10 stale `IMPL-014` statements across 7 documents. Establishes a single authoritative status record and names the two Matrix §10.2 checks that remain unimplemented and therefore unmet. |
 | v1.1 | 2026-08-04 | GitHub backup row moved from **Failing** to **Current** (`011db0c`) after authorization was restored and the push verified against the GitHub API. Added the divergence commands to §6, since this document's own credibility rests on every claim in it being checkable — the same principle as `SID-4.56`. |
 | v1.2 | 2026-08-04 | **Corrected this document's own stale claims,** found by the Governance Closure Phase while running item 8's validation. Four defects: (1) `X-13` and `X-10` were recorded *NOT IMPLEMENTED* although the checker implements both — corrected to IMPLEMENTED per `ADR-0014`, with coverage stated as 12 of 12; (2) architecture test count 14 → **20**; (3) full suite count 71 → **77**, in §4 and in the §6 command comment; (4) the header read v1.0 while this history already listed a v1.1, so the version field was never incremented when v1.1 was written. Added `GCP-02` and `PRD-012a` to §5 and cross-referenced the new `IMPLEMENTATION_BLOCKER_REGISTER.md`. **Gate 3 was not touched and remains red at 9 unwaived violations.** |
+| v1.3 | 2026-11-22 | **`ADR-0012` wave-1 debt PAID** — `platform/analytics -> platform/event` inverted through the new R0 `EventStream` port (declared in `liboora_contracts`; `EventBus` implements it) and `platform/business -> platform/tenancy` inverted through Business's one-method `TenantTierSource` port, exactly the fixes `ADR-0012`'s wave table prescribed; both waivers had lapsed **2026-10-31** and both exceptions were removed from `tool/module_dependencies.yaml`. Gate 3 unchanged in kind: **9 blocking** (the `TASK-D10` `app → domain/library` set), waived findings 28 → **26**. Gate 4 re-measured 20 → **287/287** and gate 5 77 → **884/884** (`dart`-on-`PATH` was also required for the checker-spawning tests in this environment). The eight `tool/bench_p95.dart` analyzer lints are pre-existing and out of scope. |

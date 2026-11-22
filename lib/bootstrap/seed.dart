@@ -23,6 +23,7 @@ import '../domain/person/person.dart';
 import '../domain/social/social.dart';
 import '../platform/identity/identity.dart';
 import '../platform/tenancy/tenancy.dart';
+import '../platform/business/business.dart';
 import 'di.dart';
 
 /// The tenant the demo signs into.
@@ -77,8 +78,8 @@ void _seedTenants(AppContainer c) {
     ),
   ]);
 
-  c.entitlements.registerTenant(kDemoTenant, TenantTier.growth);
-  c.entitlements.registerTenant(kOtherTenant, TenantTier.starter);
+  c.entitlements.registerTenant(kDemoTenant, PlanTier.growth);
+  c.entitlements.registerTenant(kOtherTenant, PlanTier.starter);
 }
 
 /// Branch display records, owned by **BC-06** rather than by `Tenant`.

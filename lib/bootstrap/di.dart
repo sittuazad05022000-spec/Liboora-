@@ -388,7 +388,13 @@ final class AppContainer {
     final telemetry = ConsoleTelemetry(tenantContext);
 
     final events = EventBus(telemetry);
-    final entitlements = EntitlementService(tenantContext);
+    // ADR-0012 wave 1 — the tier source is wired explicitly so the
+    // TenantTierSource port has exactly one composition-root registration.
+    final tierSource = RegisteredTierSource();
+    final entitlements = EntitlementService(
+      tenantContext,
+      tierSource: tierSource,
+    );
     final idempotency = IdempotencyService(tenantContext);
     // ADR-0058: the V1 adapter for the job_runtime port. Takes the clock so
     // the FIL-FR-095 deadline is measured against injected time and a test can
@@ -421,10 +427,10 @@ final class AppContainer {
     //
     // Wired HERE rather than inside platform/audit on purpose. §6 grants
     // platform/audit (R5) only a contracts import, so subscribing inside it
-    // would need platform/event (R3) — the same edge already carried as
-    // acknowledged debt for platform/analytics -> platform/event. The
-    // composition root is the sanctioned place to know two modules, so this
-    // costs no new debt.
+    // would need platform/event (R3) — an upward edge, the same one
+    // platform/analytics now avoids through the R0 EventStream port
+    // (ADR-0012 wave 1). The composition root is the sanctioned place to
+    // know two modules, so this costs no new debt.
     //
     // Subscribing on the bus is also what makes §17's "MUST NOT call audit
     // synchronously" structurally true: the domain has no audit reference to

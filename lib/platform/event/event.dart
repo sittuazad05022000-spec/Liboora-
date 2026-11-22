@@ -34,7 +34,10 @@ final class _Subscription {
 /// the state write; [drain] publishes. Application code never publishes
 /// directly — that ordering is what makes "event emitted but state rolled
 /// back" impossible.
-final class EventBus {
+///
+/// Implements the R0 [EventStream] port (ADR-0012 wave 1): consumers that
+/// need subscribe-and-replay name the port, not this class.
+final class EventBus implements EventStream {
   EventBus(this._telemetry);
 
   final Telemetry _telemetry;
@@ -53,6 +56,7 @@ final class EventBus {
   /// Idempotency ledger: (consumer, eventId) already processed.
   final Set<String> _processed = {};
 
+  @override
   void subscribe(
     String pattern,
     EventHandler handler, {
@@ -141,6 +145,13 @@ final class EventBus {
 
   List<DomainEvent> recent([int n = 20]) =>
       log.reversed.take(n).toList(growable: false);
+
+  /// `EventStream.replay` — the published log, in order, exactly once per
+  /// listen. Read-only over [log]: replay never re-enters subscriber
+  /// delivery or the idempotency ledger, so projections rebuild without
+  /// touching governed delivery semantics.
+  @override
+  Stream<DomainEvent> replay() => Stream.fromIterable(log);
 }
 
 /// `IMPL-429`/`IMPL-430` — the `BC-02` event register and its guarantees.

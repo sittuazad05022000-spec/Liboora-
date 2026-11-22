@@ -8,8 +8,9 @@
 /// ## Divergence from the literal wording, disclosed
 ///
 /// There is no `rebuild()` in the codebase. `AnalyticsProjections` implements
-/// **`Future<void> rebuildFrom(EventBus bus)`** (`lib/platform/analytics/analytics.dart`
-/// L117). The name differs; the obligation does not.
+/// **`Future<void> rebuildFrom(EventStream bus)`** (`lib/platform/analytics/analytics.dart`).
+/// The name differs; the obligation does not. The parameter is the R0
+/// `EventStream` port (ADR-0012 wave 1) rather than the concrete bus.
 ///
 /// Asserting the literal string `rebuild()` would fail for a reason that has
 /// nothing to do with rebuildability — a spelling mismatch between a document
@@ -307,10 +308,10 @@ void main() {
 
       expect(
         src,
-        contains('rebuildFrom(EventBus bus)'),
+        contains('rebuildFrom(EventStream bus)'),
         reason:
-            'AnalyticsProjections no longer exposes rebuildFrom(EventBus). If '
-            'it was renamed to rebuild(), update this test and the header '
+            'AnalyticsProjections no longer exposes rebuildFrom(EventStream). '
+            'If it was renamed to rebuild(), update this test and the header '
             'comment — the divergence this test tracks would then be resolved.',
       );
 

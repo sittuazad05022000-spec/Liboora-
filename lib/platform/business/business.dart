@@ -7,49 +7,79 @@ library;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import '../tenancy/tenancy.dart';
-
 enum Feature { students, seats, branches, aiInsights, advancedReports }
+
+/// Business-owned tier vocabulary. ADR-0012 wave 1: the direct
+/// `platform/business -> platform/tenancy` import existed only to name
+/// tenancy's enum; that waiver lapsed 2026-10-31, so the tier is named here
+/// and the composition root (or seed wiring) adapts tenancy's value.
+enum PlanTier { starter, growth, pro }
+
+/// One-method consumer port (ADR-0012 wave 1): resolves the tier a tenant is
+/// registered at. Tenancy is never imported for it.
+abstract interface class TenantTierSource {
+  PlanTier tierOf(TenantId tenantId);
+}
+
+/// Default source: the registry `registerTenant` populates, so existing
+/// bootstrap/seed call sites keep working unchanged.
+final class RegisteredTierSource implements TenantTierSource {
+  final Map<String, PlanTier> _tiers = {};
+
+  void register(TenantId id, PlanTier tier) => _tiers[id.value] = tier;
+
+  @override
+  PlanTier tierOf(TenantId id) => _tiers[id.value] ?? PlanTier.starter;
+}
 
 /// Single source of truth for "is tenant T allowed to do X, and how much is
 /// left". Consulted before every gated write.
 ///
 /// Derived state only — rebuildable from Subscription events (X-11).
 final class EntitlementService {
-  EntitlementService(this._tenantContext);
+  EntitlementService(this._tenantContext, {TenantTierSource? tierSource})
+    : _tierSource = tierSource ?? RegisteredTierSource();
 
   final TenantContext _tenantContext;
-  final Map<String, TenantTier> _tiers = {};
+  final TenantTierSource _tierSource;
   final Map<String, int> _usage = {};
 
-  static const Map<TenantTier, Map<Feature, int>> _limits = {
-    TenantTier.starter: {
+  static const Map<PlanTier, Map<Feature, int>> _limits = {
+    PlanTier.starter: {
       Feature.students: 50,
       Feature.seats: 25,
       Feature.branches: 1,
     },
-    TenantTier.growth: {
+    PlanTier.growth: {
       Feature.students: 300,
       Feature.seats: 150,
       Feature.branches: 3,
     },
-    TenantTier.pro: {
+    PlanTier.pro: {
       Feature.students: -1,
       Feature.seats: -1,
       Feature.branches: -1,
     },
   };
 
-  static const Map<TenantTier, Set<Feature>> _gates = {
-    TenantTier.starter: {},
-    TenantTier.growth: {Feature.advancedReports},
-    TenantTier.pro: {Feature.advancedReports, Feature.aiInsights},
+  static const Map<PlanTier, Set<Feature>> _gates = {
+    PlanTier.starter: {},
+    PlanTier.growth: {Feature.advancedReports},
+    PlanTier.pro: {Feature.advancedReports, Feature.aiInsights},
   };
 
-  void registerTenant(TenantId id, TenantTier tier) => _tiers[id.value] = tier;
+  void registerTenant(TenantId id, PlanTier tier) {
+    final source = _tierSource;
+    if (source is! RegisteredTierSource) {
+      throw StateError(
+        'tier source is read-only; registering tiers is a '
+        'composition-root concern',
+      );
+    }
+    source.register(id, tier);
+  }
 
-  TenantTier get _tier =>
-      _tiers[_tenantContext.tenantId.value] ?? TenantTier.starter;
+  PlanTier get _tier => _tierSource.tierOf(_tenantContext.tenantId);
 
   /// -1 means unlimited.
   int limitFor(Feature f) => _limits[_tier]?[f] ?? -1;

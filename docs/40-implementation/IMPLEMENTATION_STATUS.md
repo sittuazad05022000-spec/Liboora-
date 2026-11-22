@@ -32,7 +32,7 @@ authoritative.** Where another document disagrees, this one wins — and the oth
 | Checker verified against itself | ✅ 14 tests | `test/architecture/boundary_checker_test.dart` |
 | Law `L1` acyclic | ✅ Enforced + **unwaivable** | 0 cycles; cycle exceptions structurally ignored |
 | Law `L2` downward-only | ✅ Enforced | 0 violations |
-| | Law `L3` ports-only | ✅ Enforced | 35 findings — 9 blocking, 26 waived |
+| Law `L3` ports-only | ✅ Enforced | 35 findings — 9 blocking, 26 waived |
 | Law `L4` capability ≠ domain | ✅ Enforced | 0 violations |
 | Law `L5` contracts import nothing | ✅ Enforced **meaningfully** | 0 violations; `R-5` closed |
 | Ownership / banned symbols | ✅ Enforced | 0 violations |

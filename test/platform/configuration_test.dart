@@ -250,22 +250,22 @@ void main() {
 String _formatViolations(List<ConfigurationViolation> violations) =>
     violations.map((v) => '${v.parameter} ${v.rule}: ${v.message}').join('; ');
 
-void _expect(List<ConfigurationViolation> violations, String rule) {
+void _expect(List<ConfigurationViolation> violations, String identifier) {
   expect(
-    violations.any((v) => v.rule == rule),
+    violations.any((v) => v.rule == identifier || v.parameter == identifier),
     isTrue,
     reason:
-        'Expected $rule violation but got none. '
+        'Expected $identifier violation but got none. '
         'Violations: ${_formatViolations(violations)}',
   );
 }
 
-void _expectNoViolation(List<ConfigurationViolation> violations, String rule) {
+void _expectNoViolation(List<ConfigurationViolation> violations, String identifier) {
   expect(
-    violations.any((v) => v.rule == rule),
+    violations.any((v) => v.rule == identifier || v.parameter == identifier),
     isFalse,
     reason:
-        'Unexpected $rule violation. '
+        'Unexpected $identifier violation. '
         'Violations: ${_formatViolations(violations)}',
   );
 }

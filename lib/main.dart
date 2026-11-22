@@ -11,7 +11,19 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'app/liboora_app.dart';
 import 'bootstrap/di.dart';
 import 'bootstrap/seed.dart';
+import 'platform/configuration/configuration.dart';
 import 'platform/data/data.dart';
+
+/// IMPL-015 — validate auth configuration (INV-1…INV-9) at startup.
+///
+/// Throws [ConfigurationError] if any invariant is violated, stopping boot.
+void _validateConfiguration() {
+  final config = AuthConfiguration.loadForEnvironment();
+  final violations = validateAuthInvariants(config);
+  if (violations.isNotEmpty) {
+    throw ConfigurationError(violations);
+  }
+}
 
 /// The application's durable box. One box, opened once — see [HiveKeyValueStore].
 const String _boxName = 'liboora_v1';
@@ -34,6 +46,11 @@ Future<void> main() async {
     // is the only place allowed to know both a port and its adapter, and
     // constructing one in this file would leave the port looking unwired.
     // This call says only *that* durability is wanted, and under which box.
+    // IMPL-015: validate configuration before building anything. A silently
+    // invalid security configuration is worse than a startup refusal — INV-1…9
+    // must all hold before any session can be created.
+    _validateConfiguration();
+
     final durable = await AppContainer.openDurableStore(_boxName);
 
     // The composition root is the one place allowed to know both the wiring and

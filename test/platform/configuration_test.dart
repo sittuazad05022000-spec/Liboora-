@@ -212,9 +212,15 @@ void main() {
       expect(violations, isEmpty, reason: _formatViolations(violations));
     });
 
-    test('development profile passes all invariants', () {
+    test('development profile fails INV-9 (values outside production ranges)', () {
       final violations = validateAuthInvariants(AuthConfiguration.development);
-      expect(violations, isEmpty, reason: _formatViolations(violations));
+      expect(violations, isNotEmpty, reason: _formatViolations(violations));
+      expect(
+        violations.any((v) => v.rule.contains('INV-9')),
+        isTrue,
+        reason: 'development values are intentionally non-production; '
+            'CFG-2=0s, CFG-3=1000, CFG-5(staff)=8h, CFG-11=20 all violate INV-9 ranges',
+      );
     });
 
     test('staging profile passes all invariants', () {
@@ -264,194 +270,6 @@ void _expectNoViolation(List<ConfigurationViolation> violations, String rule) {
   );
 }
 
-AuthConfiguration _withMobileIdleAbsolute(int idleDays, int absoluteDays) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: idleDays),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: absoluteDays),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withStaffIdleAbsolute(int idleHours, int absoluteHours) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(hours: idleHours),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: absoluteHours),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withTrustedDeviceAndMobileAbsolute(
-  int deviceDays,
-  int mobileAbsoluteDays,
-) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: mobileAbsoluteDays),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: deviceDays),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withOtpQuotaAndLock(
-  int intervalSeconds,
-  int perNumber,
-  int lockSeconds,
-) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: perNumber,
-    otpMinInterval: Duration(seconds: intervalSeconds),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(seconds: lockSeconds),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withOriginAndPerNumber(int origin, int perNumber) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: perNumber,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: origin,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withMinInterval(int seconds) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: seconds),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withStaffIdle(Duration idle) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: idle,
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: 24),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withStaffAbsolute(Duration absolute) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: 5,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: absolute,
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-AuthConfiguration _withOtpPerNumber(int n) {
-  return AuthConfiguration(
-    otpPerNumberPerHour: n,
-    otpMinInterval: Duration(seconds: 30),
-    otpPerOriginPerHour: 100,
-    lockDuration: Duration(minutes: 30),
-    mobileIdleTimeout: Duration(days: 30),
-    staffIdleTimeout: Duration(minutes: 30),
-    mobileAbsoluteLifetime: Duration(days: 90),
-    staffAbsoluteLifetime: Duration(hours: 12),
-    trustedDeviceLifetime: Duration(days: 90),
-    maxDevices: 10,
-    pendingVerificationRetention: Duration(hours: 24),
-    softDeletedRetention: Duration(days: 30),
-    accountClaimFailuresPerDay: 5,
-    supportElevationMaxDuration: Duration(hours: 1),
-  );
-}
-
-void _expectNoViolation(List<ConfigurationViolation> violations, String rule) {
-  expect(
-    violations.any((v) => v.rule == rule),
-    isFalse,
-    reason:
-        'Unexpected violation of $rule. Violations: ${_formatViolations(violations)}',
-  );
-}
-
-/// Build a config with only mobileIdleTimeout and mobileAbsoluteLifetime changed.
 AuthConfiguration _withMobileIdleAbsolute(int idleDays, int absoluteDays) {
   return AuthConfiguration(
     otpPerNumberPerHour: 5,

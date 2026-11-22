@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v1.0 |
-| **Date** | 2026-08-04 |
+| **Version** | v1.1 |
+| **Date** | 2026-11-22 |
 | **Audience** | Anyone changing code, documentation or governance in this repository |
 | **Read first** | [`docs/40-implementation/DEVELOPER_HANDOFF.md`](./docs/40-implementation/DEVELOPER_HANDOFF.md) — it orients you in about ten minutes |
 
@@ -25,6 +25,27 @@ A corollary worth stating plainly, from `SID-4.56`:
 
 So a rule you cannot enforce mechanically is **not** satisfied by careful review. It is recorded as unmet. This is
 why governance tooling exists and why silencing it is a serious matter.
+
+---
+
+## 1A. Delivery-First Principles
+
+The following principles apply to **implementation work on FROZEN PRDs** (Stage 8 of `PRD_LIFECYCLE.md`). They do not replace or weaken any mandatory PRD lifecycle gate (Stages 1–7) or exit artefact.
+
+| # | Principle | Governance Basis |
+|---|---|---|
+| 1 | Implementation is the default for sufficiently specified and authorized work | `IMPLEMENTATION_ROADMAP.md` dependency graph; `PRD_LIFECYCLE.md` Stage 8 |
+| 2 | Do not create a new ADR for code that implements a frozen requirement without changing its text, scope, identifiers, or acceptance criteria | `PRD_LIFECYCLE.md` §4: any business-rule change requires ADR |
+| 3 | Reuse existing approved ADRs and PRDs | `DOCUMENTATION_BASELINE.md` — 16 FROZEN PRDs, 118 Accepted ADRs |
+| 4 | Do not repeat audits when valid evidence already exists | `ADR-INDEX.md` mechanical re-derivation; `CONTRIBUTING.md` §6.2 same-commit updates |
+| 5 | Avoid unnecessary planning phases and repeated status reports | Stage 6A (Technical Specification) is **optional and non-blocking** per `PRD_LIFECYCLE.md` §7A.3 |
+| 6 | Prefer small, testable implementation batches | `DEFINITION_OF_DONE.md` §7.1 Step 4: implement thinly, one aggregate/boundary at a time |
+| 7 | Resolve straightforward blockers independently | `DEVELOPER_HANDOFF.md` §10: TASK-D10 step D10-4 (one line, no dependencies) |
+| 8 | Report only material risks, decisions, and blockers | `CONTRIBUTING.md` §4.2: gate evidence, traceability links, boundary finding count |
+| 9 | Keep documentation proportional to complexity and risk | `CONTRIBUTING.md` §6.2 specific update rules; `ADR-0079` §8.5 append-not-insert |
+| 10 | Prioritize a working, testable MVP over unnecessary perfection | `DEFINITION_OF_DONE.md` §5 "Never done" table — 25 permanent exclusions never deferred |
+
+**Scope:** These principles govern the 4-stage implementation workflow below. For new PRDs or amendments, the 9-stage `PRD_LIFECYCLE.md` (Stages 1–7) remains mandatory and non-skippable.
 
 ---
 
@@ -95,51 +116,7 @@ Bad: `fixed stuff` · `WIP` · `update` · `feat: changes as discussed`
 
 **Never** commit a secret, a generated artefact under `build/`, or a commented-out block of code.
 
----
-
-## 4. Pull request rules
-
-### 4.1 Before opening
-
-Run the pipeline gates **in this order**. The order matters: an earlier gate feeds the later one — reformatting can
-expose a lint that an over-long line was hiding.
-
-```bash
-dart format .                                  # 1
-flutter analyze                                # 2
-dart run tool/check_module_boundaries.dart     # 3 ◄ blocks merge
-flutter test test/architecture/                # 4 ◄ blocks merge
-flutter test                                   # 5
-flutter build web --release                    # 6
-```
-
-> **Gate 3 currently exits 1 by design.** Nine `app → domain/library` findings are deliberately **not** waived:
-> they live in demo surfaces that `TASK-D10` deletes, and waiving them would create an exception for code already
-> scheduled for removal. Compare your output to the documented baseline in
-> [`docs/40-implementation/IMPLEMENTATION_STATUS.md`](./docs/40-implementation/IMPLEMENTATION_STATUS.md) §4.
-> **Your change must not add findings.** Do not "fix" this gate by adding an exception.
-
-### 4.2 PR requirements
-
-| Requirement | Detail |
-|---|---|
-| **Title** | Same convention as the commit subject |
-| **Description** | What changed, **why**, and which governance IDs it touches |
-| **Scope** | One logical change. Split unrelated work |
-| **Traceability** | Link the requirement, task or ADR. A change with no traceable driver needs justification |
-| **Gate evidence** | Paste gate output, including gate 3's finding count |
-| **No new findings** | Boundary checker findings must not increase |
-| **Documentation** | Updated per §6 |
-| **No merge commits from `main`** | Rebase to keep history readable |
-
-### 4.3 Automatic rejection
-
-- A governance check disabled, weakened, or its output suppressed
-- A new dependency-manifest exception without an accepted ADR and an expiry date
-- A frozen PRD modified — see §6.1
-- A secret, keystore, or `google-services.json` added
-- `TODO`, `FIXME` or a placeholder left in shipped code
-- Status claimed as complete without evidence
+**Explicit authorization** (recorded in an Accepted ADR or conferred decision) is required for **governance changes only**: ADRs, PRD amendments, baseline updates, architecture exceptions. Ordinary implementation commits on FROZEN PRDs require gate evidence per §4.2, not separate authorization.
 
 ---
 
@@ -274,4 +251,5 @@ By contributing you agree your contributions are licensed under the [MIT License
 
 | Version | Date | Change |
 |---|---|---|
+| v1.1 | 2026-11-22 | Added Delivery-First principles (§1A) and 4-stage workflow for FROZEN PRD implementation (§4.0); clarified explicit authorization scope for governance changes vs implementation commits; no existing gate weakened |
 | v1.0 | 2026-08-04 | Created. Branch naming, commit convention, PR and review rules, documentation update rules including the frozen-PRD prohibition and the §11 exception process, and testing requirements |

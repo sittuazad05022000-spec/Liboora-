@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| **Version** | **v1.3** |
+| **Version** | **v1.4** |
 | **Status** | Binding on all merges and releases |
-| **Date** | 2026-08-04 |
+| **Date** | 2026-11-22 |
 | **Baseline** | BASELINE-2026-08-04 |
 | **Applies to** | All modules. Authentication, Library Management **and** Student Identity |
 | **ADRs applied** | `ADR-0001` … **`ADR-0011`** |
@@ -22,6 +22,8 @@ Three gates. A change passes **every** item in a gate or it does not pass the ga
 | **Gate 3 — Release** | Any build reaching a real user | Release checklist |
 
 **"Done" is not a feeling.** If an item cannot be verified, it is not done.
+
+**Delivery-First principles** (`CONTRIBUTING.md` §1A) apply to implementation work on FROZEN PRDs. They do not replace or weaken any gate, the `PRD_LIFECYCLE.md` 9-stage process, or the `Never done` table (§5).
 
 ---
 
@@ -218,6 +220,7 @@ Authentication PRD v2.0 Chapter 11 · **Library PRD v1.0** · `14B-Public-Librar
 | **v1.2** | **2026-08-04** | **Extended to cover Student Identity.** Gate 1 gains eight identity security checks — Private by default, never-public fields never indexed, no `StudentRecordId`/`tenantId`, no credential, date of birth never public *"including as an age"*, Trust & Safety restricted to the public projection, no organisation role mutating global state — and three specification checks: the `SXC-*` exclusion register, the four newly closed registers (`SPO-*`, `SEV-*`, `SID-AC-*`), and an explicit *"no new role name"* rule. The `PO-n` / `SPO-n` prefix hazard is recorded. *"Never done"* gains **nine** rows, one of which (**account without identity**) *inverts* a rule that held before `ADR-0011`; that inversion is stated in the row rather than left implicit. Baseline advanced to `BASELINE-2026-08-04`; ADR range to `ADR-0011`; Master PRD reference to v1.7. **No existing gate was weakened or removed.** |
 | v1.0 | 2026-08-02 | Created. Three gates, authored against the authentication baseline. |
 | **v1.1** | **2026-08-03** | **Extended to cover Library Management.** Gate 1 gains six Library security checks, the exclusion-register check and the closed-register check; the traceability prefix list is extended to the seven Library prefixes; the *"Never done"* table gains eight Library rows and the stale `AR-4` *"do not invent"* row is **replaced** — the deferral was lifted, so the rule is now *"do not deviate"*. Baseline reference advanced to `BASELINE-2026-08-03`; ADR range to `ADR-0010`. **No existing gate was weakened or removed.** |
+| **v1.4** | **2026-11-22** | **Records Delivery-First principles reference (§1).** Adds cross-reference to `CONTRIBUTING.md` §1A; confirms principles apply to FROZEN PRD implementation only; no gate weakened, no `PRD_LIFECYCLE.md` stage skipped, no `Never done` item deferred. |
 | **v1.3** | **2026-10-11** | **Records the adopted implementation workflow (ADOPT-WITH-ADAPTATION).** Adopts `GSD Core`'s slice → contract → thin-implementation → test loop as **methodology/reference only**; Liboora `PRD-*` (FROZEN via `DOCUMENTATION_BASELINE.md`), ADR/DDR-governance, BC-aggregate catalogue, ERDs and `IMPLEMENTATION_ROADMAP.md` §11 remain **sole source** of requirements. Records the 8-step workflow (slice by aggregate/BC/invariant; contract from `ATT-*` registers; ports/fakes first; thin implementation; invariant tests; evidence-bound acceptance; dependency-safe order; governance as gate) **without creating new requirements/tasks**, without deciding any `ATT-GAP-*`, without Face/RFID in V1, and without reopening `Q-04`/`MP-DEP-07`. **No existing gate was weakened or removed.** |
 
 ---

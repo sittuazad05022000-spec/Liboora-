@@ -48,6 +48,7 @@ final class PersonIdentity {
     this.examTrack = '',
     this.avatarRef,
     this.status = PersonIdentityStatus.active,
+    this.dateOfBirth,
   }) {
     _assertInvariants();
   }
@@ -74,6 +75,13 @@ final class PersonIdentity {
 
   /// A `FileRef` only. Never bytes, never a raw storage path, never a URL.
   FileRef? avatarRef;
+
+  /// The person's date of birth — **nullable, and never inferred**
+  /// (`ADR-0179`, Option C: BC-10 is the authoritative DOB owner per
+  /// `PRD-004` `SM-4.2`/`SM-4.5`; `SID-2.5` keeps it optional). Historical
+  /// identities recorded before Option C hold `null` — that is an honest
+  /// "unrecorded", never backfilled by guesswork.
+  DateTime? dateOfBirth;
 
   PersonIdentityStatus status;
 
@@ -103,6 +111,15 @@ final class PersonIdentity {
         'A Global Person Identity requires a display name.',
       );
     }
+    // ADR-0179: a DOB, when present, must be a real past date. A future DOB
+    // is invalid input, never "a person not yet born".
+    final dob = dateOfBirth;
+    if (dob != null && dob.isAfter(DateTime.now())) {
+      throw const DomainError(
+        DomainErrorCode.validationFailed,
+        'A date of birth cannot be in the future.',
+      );
+    }
   }
 
   /// `ID-5` / `SEV-16` — erasure anonymises the person here. It deliberately
@@ -114,6 +131,9 @@ final class PersonIdentity {
     headline = '';
     examTrack = '';
     avatarRef = null;
+    // ADR-0179: the DOB is personal data owned here; erasure clears it
+    // together with the rest of the profile content.
+    dateOfBirth = null;
     status = PersonIdentityStatus.anonymised;
   }
 }
@@ -150,15 +170,32 @@ final class IdentityCoreFields {
     required this.personId,
     required this.displayName,
     required this.isActive,
+    this.dateOfBirth,
   });
 
   final PersonId personId;
   final String displayName;
   final bool isActive;
+
+  /// `ADR-0179` — the DOB as owned by BC-10, read through the `E-13` ACL
+  /// (`PRD-004` `SM-4.5`: age derives from here, never from a stored copy).
+  /// `null` is an explicit "absent/unknown" result (`SM-4.5a`), never a
+  /// default age.
+  final DateTime? dateOfBirth;
 }
 
 final class InMemoryPersonIdentityRepository
     implements PersonIdentityRepository, IdentityDirectory {
+  InMemoryPersonIdentityRepository({DurableKeyValueStore? durable})
+    : _durable = durable;
+
+  final DurableKeyValueStore? _durable;
+
+  /// Durable namespace for the global identity directory. Identity is global
+  /// (`SID-4.49` — no tenant key), so keys are bare person ids, never
+  /// tenant-scoped. Follows the `AccountStore` precedent.
+  static const String durableNamespace = 'person_identities';
+
   final Map<String, PersonIdentity> _byPerson = {};
   final Map<String, PersonId> _accountIndex = {};
 
@@ -186,10 +223,39 @@ final class InMemoryPersonIdentityRepository
     }
     _byPerson[identity.personId.value] = identity;
     _accountIndex[identity.accountId.value] = identity.personId;
+    // ADR-0179 — write-through, so the identity (and its owned DOB) survives
+    // restart. Identities were in-memory-only before Option C, which is why
+    // restored accounts could point at vanished identities; this closes it.
+    _durable?.write(
+      durableNamespace,
+      identity.personId.value,
+      encodePersonIdentity(identity),
+    );
   }
 
   @override
   int get count => _byPerson.length;
+
+  /// Restores every persisted identity. Called once at boot, before the
+  /// account directory is validated against it (`di.dart` ordering). A row
+  /// that cannot be decoded is **skipped, not guessed** — the same semantics
+  /// as `TenantPartitionedStore.restore`.
+  int restoreAll() {
+    final durable = _durable;
+    if (durable == null) return 0;
+    var restored = 0;
+    for (final entry in durable.readAll(durableNamespace).entries) {
+      try {
+        final identity = decodePersonIdentity(entry.value);
+        _byPerson[identity.personId.value] = identity;
+        _accountIndex[identity.accountId.value] = identity.personId;
+        restored++;
+      } catch (_) {
+        continue; // Skip the unreadable row; never fabricate one.
+      }
+    }
+    return restored;
+  }
 
   @override
   IdentityCoreFields? resolve(PersonId id) {
@@ -199,6 +265,7 @@ final class InMemoryPersonIdentityRepository
       personId: identity.personId,
       displayName: identity.displayName,
       isActive: identity.status == PersonIdentityStatus.active,
+      dateOfBirth: identity.dateOfBirth,
     );
   }
 }
@@ -241,4 +308,48 @@ final class PersonIdentityService implements PersonIdentityFactory {
     _repository.save(identity);
     return identity.personId;
   }
+
+  /// `ADR-0179` — records a date of birth against the identity. **BC-10 is
+  /// the DOB owner**; this is the only sanctioned write path besides the boot
+  /// migration. Callers are system-driven (the composition root's enrollment
+  /// provisioning), with the acting staff member recorded as [recordedBy].
+  ///
+  /// Rules:
+  ///  - the identity must exist — no identity is created here (`SPO-1`);
+  ///  - a **different** DOB than the one already recorded is a conflict,
+  ///    never a silent overwrite;
+  ///  - the **same** DOB is a no-op, so provisioning replay stays idempotent;
+  ///  - a future date is invalid input (`PersonIdentity` invariant).
+  void recordDateOfBirth({
+    required PersonId personId,
+    required DateTime dateOfBirth,
+    required String recordedBy,
+  }) {
+    final identity = _repository.byPersonId(personId);
+    if (identity == null) {
+      throw DomainError(
+        DomainErrorCode.notFound,
+        'No identity exists for ${personId.value}; a DOB cannot be recorded.',
+        context: {'personId': personId.value},
+      );
+    }
+    final existing = identity.dateOfBirth;
+    if (existing != null) {
+      if (_sameDay(existing, dateOfBirth)) return; // Idempotent replay.
+      throw DomainError(
+        DomainErrorCode.conflict,
+        'Identity ${personId.value} already has a date of birth; a different '
+        'one cannot be recorded over it.',
+        context: {
+          'personId': personId.value,
+          'recordedBy': recordedBy,
+        },
+      );
+    }
+    identity.dateOfBirth = dateOfBirth;
+    _repository.save(identity);
+  }
+
+  static bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 }

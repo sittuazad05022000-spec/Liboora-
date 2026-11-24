@@ -191,7 +191,11 @@ enum Permission {
   applyDiscount,
   viewRevenue,
   viewAllBranches,
-  managePolicy;
+  managePolicy,
+
+  /// `SM-2.3` — `Archived → Active` restore is **TR-1 only** (owner).
+  /// Granted to no other role; `PolicyDecisionPoint.require` fails closed.
+  restoreStudent;
 
   /// Typed catalogue identity (amendment A-8).
   PermissionId get id => PermissionId('perm.$name');
@@ -215,6 +219,32 @@ enum AccessScope {
   tenantWide,
 }
 
+/// E-11 Account resolution: resolves an AccountId to AccountInfo.
+///
+/// Implementation of the E-11 sync port. Resolves accounts by their
+/// globally-unique `AccountId`. Used by Enrollment to obtain a `PersonId`
+/// and tenant roles without creating accounts. Recovered verbatim from
+/// commit `86d8008` (IMPL-304) — see ADR-0179.
+final class AccountResolutionImpl implements AccountResolution {
+  AccountResolutionImpl(this._accounts);
+
+  final List<Account> _accounts;
+
+  @override
+  AccountInfo? byId(AccountId accountId) {
+    for (final a in _accounts) {
+      if (a.id == accountId) {
+        final rolesByTenant = <String, Set<String>>{};
+        for (final entry in a.roles.entries) {
+          rolesByTenant[entry.key] = entry.value.map((r) => r.name).toSet();
+        }
+        return AccountInfo(personId: a.personId, rolesByTenant: rolesByTenant);
+      }
+    }
+    return null;
+  }
+}
+
 /// Centralised authorisation. Domain contexts call this port; they never
 /// implement their own role checks.
 final class PolicyDecisionPoint {
@@ -234,6 +264,7 @@ final class PolicyDecisionPoint {
       Permission.viewRevenue: AccessScope.tenantWide,
       Permission.viewAllBranches: AccessScope.tenantWide,
       Permission.managePolicy: AccessScope.tenantWide,
+      Permission.restoreStudent: AccessScope.tenantWide,
     },
     AccessRole.manager: {
       Permission.enrollStudent: AccessScope.tenantWide,

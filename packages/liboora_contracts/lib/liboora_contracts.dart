@@ -14,6 +14,9 @@ export 'src/value_objects/identifiers.dart';
 export 'src/value_objects/money.dart';
 export 'src/value_objects/date_range.dart';
 
+// ── App-facing library read models and ports (PRD-004 §3.4) ──
+export 'src/read/library_reads.dart';
+
 // ── Errors ───────────────────────────────────────────────────
 export 'src/errors/domain_error.dart';
 

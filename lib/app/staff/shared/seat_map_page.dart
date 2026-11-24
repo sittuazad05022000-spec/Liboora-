@@ -7,9 +7,9 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/seating/seating.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -20,8 +20,8 @@ class SeatMapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.watch<SessionController>();
-    final occupancy = s.container.seatMap.currentMap(s.nameOf);
-    final summary = s.container.seatMap.summary();
+    final occupancy = s.container.seatingReads.currentMap(s.nameOf);
+    final summary = s.container.seatingReads.summary();
 
     if (occupancy.isEmpty) {
       return const EmptyState(
@@ -31,9 +31,9 @@ class SeatMapPage extends StatelessWidget {
       );
     }
 
-    final zones = <String, List<SeatOccupancy>>{};
+    final zones = <String, List<SeatOccupancyView>>{};
     for (final o in occupancy) {
-      zones.putIfAbsent(o.seat.zone, () => []).add(o);
+      zones.putIfAbsent(o.zone, () => []).add(o);
     }
 
     return ListView(
@@ -119,7 +119,7 @@ class SeatMapPage extends StatelessWidget {
 
 class _SeatGrid extends StatelessWidget {
   const _SeatGrid({required this.seats});
-  final List<SeatOccupancy> seats;
+  final List<SeatOccupancyView> seats;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +138,7 @@ class _SeatGrid extends StatelessWidget {
 
 class _SeatChip extends StatelessWidget {
   const _SeatChip({required this.occupancy});
-  final SeatOccupancy occupancy;
+  final SeatOccupancyView occupancy;
 
   @override
   Widget build(BuildContext context) {
@@ -167,14 +167,14 @@ class _SeatChip extends StatelessWidget {
             ),
             const SizedBox(height: 3),
             Text(
-              occupancy.seat.label,
+              occupancy.label,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),
             ),
-            if (occupancy.seat.hasPowerSocket)
+            if (occupancy.hasPowerSocket)
               const Icon(Icons.power, size: 9, color: LiblColors.textMuted),
           ],
         ),
@@ -183,16 +183,16 @@ class _SeatChip extends StatelessWidget {
   }
 
   Future<void> _onTap(BuildContext context, SessionController s) async {
-    final alloc = occupancy.allocation;
+    final allocId = occupancy.allocationId;
 
-    if (alloc != null) {
+    if (allocId != null) {
       final release = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text('Seat ${occupancy.seat.label}'),
+          title: Text('Seat ${occupancy.label}'),
           content: Text(
             '${occupancy.studentName ?? 'A student'} holds this seat until '
-            '${alloc.window.end.toIso8601String().substring(0, 10)}.',
+            '${occupancy.allocatedUntil!.toIso8601String().substring(0, 10)}.',
           ),
           actions: [
             TextButton(
@@ -211,9 +211,9 @@ class _SeatChip extends StatelessWidget {
         ),
       );
       if (release == true) {
-        final msg = await s.releaseSeat(alloc.id);
+        final msg = await s.releaseSeat(allocId);
         if (context.mounted) {
-          _snack(context, msg ?? 'Seat ${occupancy.seat.label} released');
+          _snack(context, msg ?? 'Seat ${occupancy.label} released');
         }
       }
       return;
@@ -231,7 +231,7 @@ class _SeatChip extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(LiblSpace.lg),
               child: Text(
-                'Assign seat ${occupancy.seat.label}',
+                'Assign seat ${occupancy.label}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -275,11 +275,11 @@ class _SeatChip extends StatelessWidget {
     final target = s.students.where((st) => st.id.value == picked).toList();
     if (target.isEmpty) return;
 
-    final msg = await s.assignSeat(target.first.id, occupancy.seat.id);
+    final msg = await s.assignSeat(target.first.id, occupancy.seatId);
     if (context.mounted) {
       _snack(
         context,
-        msg ?? '${occupancy.seat.label} assigned to ${target.first.fullName}',
+        msg ?? '${occupancy.label} assigned to ${target.first.fullName}',
       );
     }
   }

@@ -16,16 +16,8 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 /// membership — two separate state machines (ubiquitous language table).
 enum EnrollmentStatus { active, inactive, suspended, archived }
 
-final class GuardianLink {
-  const GuardianLink({
-    required this.name,
-    required this.phone,
-    this.relation = 'Parent',
-  });
-  final String name;
-  final String phone;
-  final String relation;
-}
+// GuardianLink moved to the shared kernel (liboora_contracts) so the app can
+// name it without a rank-8 import; re-exported by the enrollment barrel.
 
 final class StudentRecord {
   StudentRecord({

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/fee/fee.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -26,14 +25,11 @@ class MoneyPage extends StatelessWidget {
     final collectedToday = Money.paise(m.collectedTodayMinor);
     final outstanding = s.totalOutstanding;
 
-    final ledgers = s.container.ledgers.all();
-    final raisedAll = ledgers.fold(Money.zero, (sum, l) => sum + l.totalDue);
-    final receivedAll = ledgers.fold(
-      Money.zero,
-      (sum, l) => sum + l.totalReceived,
-    );
+    final totals = s.container.feeReads.totals();
+    final raisedAll = totals.raised;
+    final receivedAll = totals.received;
 
-    final receipts = <Receipt>[for (final l in ledgers) ...l.receipts]
+    final receipts = s.container.feeReads.allReceipts()
       ..sort((a, b) => b.receivedOn.compareTo(a.receivedOn));
 
     final debtors = s.withOpenDues.toList()

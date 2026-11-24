@@ -14,8 +14,6 @@ library;
 import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../domain/library/attendance/attendance.dart';
-import '../domain/library/enrollment/enrollment.dart';
-import '../domain/library/fee/fee.dart';
 import '../domain/library/membership/membership.dart';
 import '../domain/library/policy/policy.dart';
 import '../domain/library/seating/seating.dart';

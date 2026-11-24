@@ -2,6 +2,9 @@
 library;
 
 export 'domain/student_record.dart';
+// GuardianLink lives in the shared kernel; re-exported so existing consumers
+// of this barrel keep resolving it.
+export 'package:liboora_contracts/liboora_contracts.dart' show GuardianLink;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 

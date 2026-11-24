@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/library/membership/membership.dart';
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -228,7 +227,7 @@ class StudentPlanPage extends StatelessWidget {
     final id = s.subjectStudentId;
     if (id == null) return const _NoSubject();
 
-    final memberships = s.container.memberships.forStudent(id);
+    final memberships = s.container.membershipReads.historyFor(id);
     final v = s.validityOf(id);
     final today = s.container.clock.today();
 
@@ -306,26 +305,25 @@ class StudentPlanPage extends StatelessWidget {
                   leading: Icon(
                     Icons.card_membership,
                     size: 18,
-                    color: m.isValidOn(today)
+                    color: m.isActiveOn
                         ? LiblColors.success
                         : LiblColors.textMuted,
                   ),
                   title: Text(
                     // MM-FR-026: the history shows what was sold. The plan
-                    // name is looked up for display; the price comes from the
+                    // name is resolved at read time; the price is the
                     // membership's own immutable snapshot, so a later plan
                     // edit can never restate a past term.
-                    s.container.membershipPlans.byId(m.planId)?.name ??
-                        'Plan withdrawn',
+                    m.planName,
                     style: const TextStyle(fontSize: 13.5),
                   ),
                   subtitle: Text(
                     '${m.term.start.toIso8601String().substring(0, 10)} → '
-                    '${m.endDate.toIso8601String().substring(0, 10)}',
+                    '${m.endsOn.toIso8601String().substring(0, 10)}',
                     style: const TextStyle(fontSize: 11.5),
                   ),
                   trailing: Text(
-                    m.priceSnapshot.formatted,
+                    m.price.formatted,
                     style: const TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w600,
@@ -363,9 +361,12 @@ class StudentPlanPage extends StatelessWidget {
     );
   }
 
-  static double _elapsedFraction(List<Membership> memberships, DateTime today) {
+  static double _elapsedFraction(
+    List<MembershipTermView> memberships,
+    DateTime today,
+  ) {
     for (final m in memberships) {
-      if (m.isValidOn(today)) {
+      if (m.isActiveOn) {
         final total = m.term.lengthInDays;
         if (total == 0) return 1;
         return today.difference(m.term.start).inDays / total;

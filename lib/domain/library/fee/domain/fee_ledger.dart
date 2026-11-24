@@ -16,7 +16,8 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 enum FeeCategory { membership, seat, locker, lateFee, security, other }
 
-enum PaymentMode { cash, upi, card, bankTransfer, cheque }
+// PaymentMode moved to the shared kernel (liboora_contracts) so the app can
+// name it without a rank-8 import; re-exported by the fee barrel below.
 
 /// A charge raised against a student.
 final class FeeDue {

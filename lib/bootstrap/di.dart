@@ -84,6 +84,10 @@ final class AppContainer {
     required this.seatMap,
     required this.ledgers,
     required this.outstanding,
+    required this.studentDirectory,
+    required this.membershipReads,
+    required this.feeReads,
+    required this.seatingReads,
     required this.identities,
     required this.identityService,
     required this.socialPresences,
@@ -185,6 +189,17 @@ final class AppContainer {
   final SeatMapService seatMap;
   final FeeLedgerRepository ledgers;
   final OutstandingBalanceService outstanding;
+
+  // ── App-facing read ports (PRD-004 §3.4 wave 4) ───────────────────
+  //
+  // Rank-0 interfaces from `liboora_contracts`, adapted above from the
+  // domain repositories. `app` consumes these — never a domain barrel —
+  // which is what closes the nine `app → domain/library` boundary sites
+  // (`TASK-D10` / ADR-0012 L181) by extraction rather than waiver.
+  final StudentDirectoryPort studentDirectory;
+  final MembershipReadPort membershipReads;
+  final FeeReadPort feeReads;
+  final SeatingReadPort seatingReads;
 
   /// BC-10 Global Person Identity (rank 7.5). Not tenant-partitioned: identity
   /// is global by construction and holds no tenant key (`SID-4.49`).
@@ -547,6 +562,13 @@ final class AppContainer {
       seatAllocationStore,
     );
     final ledgers = InMemoryFeeLedgerRepository(ledgerStore);
+    final outstanding = OutstandingBalanceService(ledgers);
+    final seatMap = SeatMapService(
+      layouts: seatLayouts,
+      allocations: seatAllocations,
+      clock: clock,
+      tenant: tenantContext,
+    );
 
     const pdp = PolicyDecisionPoint();
 
@@ -605,14 +627,23 @@ final class AppContainer {
       attendance: attendance,
       seatLayouts: seatLayouts,
       seatAllocations: seatAllocations,
-      seatMap: SeatMapService(
-        layouts: seatLayouts,
-        allocations: seatAllocations,
-        clock: clock,
-        tenant: tenantContext,
-      ),
+      seatMap: seatMap,
       ledgers: ledgers,
-      outstanding: OutstandingBalanceService(ledgers),
+      outstanding: outstanding,
+      studentDirectory: StudentDirectoryAdapter(
+        students: students,
+        memberships: memberships,
+        outstanding: outstanding,
+        clock: clock,
+      ),
+      membershipReads: MembershipReadAdapter(
+        validity: membershipValidity,
+        memberships: memberships,
+        plans: membershipPlans,
+        clock: clock,
+      ),
+      feeReads: FeeReadAdapter(ledgers: ledgers, outstanding: outstanding),
+      seatingReads: SeatingReadAdapter(seatMap),
       identities: identities,
       identityService: identityService,
       socialPresences: InMemorySocialPresenceRepository(),
@@ -899,6 +930,227 @@ final class StudentRecordEnrollmentAcl implements EnrollmentStatusReader {
       EnrollmentStatus.archived => MembershipEnrollmentState.archived,
     };
   }
+}
+
+// ── App-facing read-port adapters (PRD-004 §3.4 wave 4) ─────────────
+//
+// `app` may not compile-time-import `domain/library` (manifest L628 — the
+// nine `TASK-D10` boundary sites). These adapters bind the domain
+// repositories and read services to the rank-0 port interfaces declared in
+// `liboora_contracts`, so the UI consumes contract DTOs only. Each mapping is
+// field-for-field against what a screen demonstrably renders — nothing is
+// invented, and no analytics counter stands in for an entity.
+
+/// `BC-01` → [StudentDirectoryPort].
+final class StudentDirectoryAdapter implements StudentDirectoryPort {
+  StudentDirectoryAdapter({
+    required StudentRepository students,
+    required MembershipRepository memberships,
+    required OutstandingBalanceService outstanding,
+    required Clock clock,
+  }) : _students = students,
+       _memberships = memberships,
+       _outstanding = outstanding,
+       _clock = clock;
+
+  final StudentRepository _students;
+  final MembershipRepository _memberships;
+  final OutstandingBalanceService _outstanding;
+  final Clock _clock;
+
+  StudentEntry _entry(StudentRecord s) => StudentEntry(
+    id: s.id,
+    fullName: s.fullName,
+    phone: s.phone,
+    enrollmentNumber: s.enrollmentNumber,
+  );
+
+  @override
+  List<StudentEntry> all() => [for (final s in _students.all()) _entry(s)];
+
+  @override
+  StudentPage page({String? cursor}) {
+    final p = _students.paginatedList(cursor: cursor);
+    return StudentPage(
+      items: [for (final s in p.items) _entry(s)],
+      nextCursor: p.nextCursor,
+    );
+  }
+
+  @override
+  StudentEntry? byId(StudentRecordId id) {
+    final s = _students.byId(id);
+    return s == null ? null : _entry(s);
+  }
+
+  @override
+  List<StudentEntry> expiringSoon() {
+    final today = _clock.today();
+    return [
+      for (final s in _students.all())
+        if (_memberships
+            .forStudent(s.id)
+            .any((m) => m.expiringSoon(today, within: 7)))
+          _entry(s),
+    ];
+  }
+
+  @override
+  List<StudentEntry> withOpenDues() => [
+    for (final s in _students.all())
+      if (_outstanding.hasOpenDues(s.id)) _entry(s),
+  ];
+
+  @override
+  void verifyCursorTenant(String cursor) =>
+      _students.verifyCursorTenant(cursor);
+}
+
+/// `BC-02` → [MembershipReadPort].
+final class MembershipReadAdapter implements MembershipReadPort {
+  MembershipReadAdapter({
+    required MembershipValidityReader validity,
+    required MembershipRepository memberships,
+    required MembershipPlanRepository plans,
+    required Clock clock,
+  }) : _validity = validity,
+       _memberships = memberships,
+       _plans = plans,
+       _clock = clock;
+
+  final MembershipValidityReader _validity;
+  final MembershipRepository _memberships;
+  final MembershipPlanRepository _plans;
+  final Clock _clock;
+
+  @override
+  ValidityView validityOf(StudentRecordId id) {
+    final v = _validity.forStudent(id, _clock.today());
+    return ValidityView(
+      planName: v.planName,
+      isValid: v.isValid,
+      validUntil: v.validUntil,
+      seatQuota: v.seatQuota,
+    );
+  }
+
+  @override
+  List<MembershipTermView> historyFor(StudentRecordId id) {
+    final today = _clock.today();
+    return [
+      for (final m in _memberships.forStudent(id))
+        MembershipTermView(
+          // MM-FR-026: the plan name is looked up at read time; the price is
+          // the membership's own immutable snapshot. The withdrawn-plan
+          // fallback is preserved verbatim.
+          planName: _plans.byId(m.planId)?.name ?? 'Plan withdrawn',
+          term: m.term,
+          endsOn: m.endDate,
+          price: m.priceSnapshot,
+          isActiveOn: m.isValidOn(today),
+        ),
+    ];
+  }
+}
+
+/// `BC-05` → [FeeReadPort].
+final class FeeReadAdapter implements FeeReadPort {
+  FeeReadAdapter({
+    required FeeLedgerRepository ledgers,
+    required OutstandingBalanceService outstanding,
+  }) : _ledgers = ledgers,
+       _outstanding = outstanding;
+
+  final FeeLedgerRepository _ledgers;
+  final OutstandingBalanceService _outstanding;
+
+  LedgerView _view(FeeLedger l) => LedgerView(
+    totalDue: l.totalDue,
+    totalReceived: l.totalReceived,
+    dues: [
+      for (final d in l.dues)
+        DueView(
+          description: d.description,
+          dueOn: d.dueOn,
+          discount: d.discount,
+          netAmount: d.netAmount,
+        ),
+    ],
+    receipts: [
+      for (final r in l.receipts)
+        ReceiptView(
+          receiptNumber: r.receiptNumber,
+          mode: r.mode,
+          amount: r.amount,
+          receivedOn: r.receivedOn,
+          collectedBy: r.collectedBy,
+        ),
+    ],
+  );
+
+  @override
+  LedgerView? ledgerFor(StudentRecordId id) {
+    final l = _ledgers.forStudent(id);
+    return l == null ? null : _view(l);
+  }
+
+  @override
+  Money outstandingFor(StudentRecordId id) => _outstanding.forStudent(id);
+
+  @override
+  bool hasOpenDues(StudentRecordId id) => _outstanding.hasOpenDues(id);
+
+  @override
+  Money totalOutstanding() =>
+      _ledgers.all().fold(Money.zero, (sum, l) => sum + l.balance);
+
+  @override
+  ({Money raised, Money received}) totals() {
+    final all = _ledgers.all();
+    return (
+      raised: all.fold(Money.zero, (sum, l) => sum + l.totalDue),
+      received: all.fold(Money.zero, (sum, l) => sum + l.totalReceived),
+    );
+  }
+
+  @override
+  List<ReceiptView> allReceipts() => [
+    for (final l in _ledgers.all())
+      for (final r in l.receipts)
+        ReceiptView(
+          receiptNumber: r.receiptNumber,
+          mode: r.mode,
+          amount: r.amount,
+          receivedOn: r.receivedOn,
+          collectedBy: r.collectedBy,
+        ),
+  ];
+}
+
+/// `BC-04` → [SeatingReadPort].
+final class SeatingReadAdapter implements SeatingReadPort {
+  const SeatingReadAdapter(this._seatMap);
+  final SeatMapService _seatMap;
+
+  @override
+  List<SeatOccupancyView> currentMap(
+    String Function(StudentRecordId id) nameOf,
+  ) => [
+    for (final o in _seatMap.currentMap(nameOf))
+      SeatOccupancyView(
+        seatId: o.seat.id,
+        label: o.seat.label,
+        zone: o.seat.zone,
+        hasPowerSocket: o.seat.hasPowerSocket,
+        isOccupied: o.isOccupied,
+        studentName: o.studentName,
+        allocationId: o.allocation?.id,
+        allocatedUntil: o.allocation?.window.end,
+      ),
+  ];
+
+  @override
+  ({int total, int occupied, int free}) summary() => _seatMap.summary();
 }
 
 /// What [AppContainer.boot] needs from a seeder, expressed without naming one.

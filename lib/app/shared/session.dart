@@ -12,9 +12,6 @@ import 'package:liboora_contracts/liboora_contracts.dart';
 
 import '../../bootstrap/di.dart';
 import '../../bootstrap/seed.dart';
-import '../../domain/library/enrollment/enrollment.dart';
-import '../../domain/library/fee/fee.dart';
-import '../../domain/library/membership/membership.dart';
 import '../../platform/identity/identity.dart';
 import '../../platform/tenancy/tenancy.dart';
 
@@ -298,50 +295,46 @@ final class SessionController extends ChangeNotifier {
   }
 
   // ── Queries the dashboards need ─────────────────────────────────
+  //
+  // Every read below flows through a rank-0 read port from
+  // `liboora_contracts` (PRD-004 §3.4 wave 4), adapted at the composition
+  // root. No domain/library type is named here.
 
-  List<StudentRecord> get students =>
-      container.students.all()
+  List<StudentEntry> get students =>
+      container.studentDirectory.all()
         ..sort((a, b) => a.fullName.compareTo(b.fullName));
 
   /// Paginated roster for PG-1..PG-4. Client treats [cursor] as opaque (PG-2);
   /// server generates it (PG-1). Malformed cursor → DomainError; never silent
   /// reset (PG-4). Existing [students] is preserved for non-paginated consumers.
-  PaginatedStudents studentsPage({String? cursor}) =>
-      container.students.paginatedList(cursor: cursor);
+  StudentPage studentsPage({String? cursor}) =>
+      container.studentDirectory.page(cursor: cursor);
 
-  StudentRecord? studentById(StudentRecordId id) => container.students.byId(id);
+  StudentEntry? studentById(StudentRecordId id) =>
+      container.studentDirectory.byId(id);
 
   String nameOf(StudentRecordId id) =>
-      container.students.byId(id)?.fullName ?? id.value;
+      container.studentDirectory.byId(id)?.fullName ?? id.value;
 
-  MembershipValidity validityOf(StudentRecordId id) =>
-      container.membershipValidity.forStudent(id, container.clock.today());
+  ValidityView validityOf(StudentRecordId id) =>
+      container.membershipReads.validityOf(id);
 
-  FeeLedger? ledgerOf(StudentRecordId id) => container.ledgers.forStudent(id);
+  LedgerView? ledgerOf(StudentRecordId id) => container.feeReads.ledgerFor(id);
 
   Money outstandingOf(StudentRecordId id) =>
-      container.outstanding.forStudent(id);
+      container.feeReads.outstandingFor(id);
 
-  Money get totalOutstanding =>
-      container.ledgers.all().fold(Money.zero, (sum, l) => sum + l.balance);
+  Money get totalOutstanding => container.feeReads.totalOutstanding();
 
-  List<StudentRecord> get expiringSoon {
-    final today = container.clock.today();
-    return students
-        .where((s) {
-          final ms = container.memberships.forStudent(s.id);
-          return ms.any((m) => m.expiringSoon(today, within: 7));
-        })
-        .toList(growable: false);
-  }
+  List<StudentEntry> get expiringSoon =>
+      container.studentDirectory.expiringSoon();
 
-  List<StudentRecord> get withOpenDues => students
-      .where((s) => container.outstanding.hasOpenDues(s.id))
-      .toList(growable: false);
+  List<StudentEntry> get withOpenDues =>
+      container.studentDirectory.withOpenDues();
 
   /// Verifies a roster page covers only the calling tenant's partition.
   void verifyCursorTenant(String cursor) =>
-      container.students.verifyCursorTenant(cursor);
+      container.studentDirectory.verifyCursorTenant(cursor);
 
   bool isInsideNow(StudentRecordId id) {
     final day = container.attendance.find(id, container.clock.today());

@@ -27,10 +27,7 @@ Set<String> _declaredFieldNames(String classBody) {
     r'^\s*(?:final\s+|late\s+final\s+)?[A-Za-z0-9_<>?,\s]+\s+(_?[a-z][A-Za-z0-9_]*)\s*;',
     multiLine: true,
   );
-  return pattern
-      .allMatches(classBody)
-      .map((m) => m.group(1)!)
-      .toSet();
+  return pattern.allMatches(classBody).map((m) => m.group(1)!).toSet();
 }
 
 String _classBody(String source, String className) {
@@ -119,29 +116,31 @@ void main() {
       );
     });
 
-    test('MM-XC-002 — no ledger, seat or attendance field is representable',
-        () {
-      final fields = _declaredFieldNames(_classBody(source, 'Membership'));
-      const foreign = {
-        'balance',
-        'amountPaid',
-        'receipts',
-        'dues',
-        'seatId',
-        'seatNumber',
-        'checkInAt',
-        'punches',
-        'attendance',
-      };
-      final leaked = fields.intersection(foreign);
-      expect(
-        leaked,
-        isEmpty,
-        reason:
-            'MM-XC-002 forbids writing to BC-01/BC-03/BC-04/BC-05. Holding '
-            'their fields here is the first step to writing them: $leaked',
-      );
-    });
+    test(
+      'MM-XC-002 — no ledger, seat or attendance field is representable',
+      () {
+        final fields = _declaredFieldNames(_classBody(source, 'Membership'));
+        const foreign = {
+          'balance',
+          'amountPaid',
+          'receipts',
+          'dues',
+          'seatId',
+          'seatNumber',
+          'checkInAt',
+          'punches',
+          'attendance',
+        };
+        final leaked = fields.intersection(foreign);
+        expect(
+          leaked,
+          isEmpty,
+          reason:
+              'MM-XC-002 forbids writing to BC-01/BC-03/BC-04/BC-05. Holding '
+              'their fields here is the first step to writing them: $leaked',
+        );
+      },
+    );
 
     test('the three concepts are distinct types', () {
       // MembershipPlan (offer), Membership (granted right), MembershipStatus
@@ -156,27 +155,32 @@ void main() {
   // IMPL-402 — tenant scoping is ambient, never a domain parameter.
   // ════════════════════════════════════════════════════════════════════
   group('IMPL-402 · tenant scope is ambient (MM-BR-027, MM-INV-007)', () {
-    test('MM-NFR-002 — tenantId is not accepted as a domain-method parameter',
-        () {
-      // The compile-level rule TenantContext's own doc states: "It is never
-      // passed as a domain method parameter — that would leak infrastructure
-      // into the domain signature."
-      final offenders = RegExp(
-        r'(?:TenantId|BranchId)\s+(?:required\s+)?tenantId|'
-        r'required\s+TenantId\s+tenant',
-      ).allMatches(
-        File('lib/domain/library/membership/membership.dart').readAsStringSync(),
-      );
-      expect(
-        offenders,
-        isEmpty,
-        reason:
-            'A use case that accepts tenantId can be called with the wrong '
-            'one. MM-BR-027 requires the tenant to equal the AMBIENT context '
-            'on every read and write, which only holds if it is never an '
-            'argument.',
-      );
-    });
+    test(
+      'MM-NFR-002 — tenantId is not accepted as a domain-method parameter',
+      () {
+        // The compile-level rule TenantContext's own doc states: "It is never
+        // passed as a domain method parameter — that would leak infrastructure
+        // into the domain signature."
+        final offenders =
+            RegExp(
+              r'(?:TenantId|BranchId)\s+(?:required\s+)?tenantId|'
+              r'required\s+TenantId\s+tenant',
+            ).allMatches(
+              File(
+                'lib/domain/library/membership/membership.dart',
+              ).readAsStringSync(),
+            );
+        expect(
+          offenders,
+          isEmpty,
+          reason:
+              'A use case that accepts tenantId can be called with the wrong '
+              'one. MM-BR-027 requires the tenant to equal the AMBIENT context '
+              'on every read and write, which only holds if it is never an '
+              'argument.',
+        );
+      },
+    );
 
     test('MM-INV-007 — a plan carries its tenant and cannot be re-scoped', () {
       final body = _classBody(source, 'MembershipPlan');
@@ -197,19 +201,24 @@ void main() {
       );
     });
 
-    test('a repository read with no tenant in scope throws, never defaults',
-        () async {
-      final c = await AppContainer.boot(seeder: seedDemoData);
-      // No enterScope() — this is the dangerous state.
-      expect(
-        () => c.memberships.all(),
-        throwsA(isA<TenantContextMissing>()),
-        reason:
-            'Returning every tenant\'s memberships when the scope is unset is '
-            'the worst possible default. MM-NFR-003/004 require failure.',
-      );
-      expect(() => c.membershipPlans.all(), throwsA(isA<TenantContextMissing>()));
-    });
+    test(
+      'a repository read with no tenant in scope throws, never defaults',
+      () async {
+        final c = await AppContainer.boot(seeder: seedDemoData);
+        // No enterScope() — this is the dangerous state.
+        expect(
+          () => c.memberships.all(),
+          throwsA(isA<TenantContextMissing>()),
+          reason:
+              'Returning every tenant\'s memberships when the scope is unset is '
+              'the worst possible default. MM-NFR-003/004 require failure.',
+        );
+        expect(
+          () => c.membershipPlans.all(),
+          throwsA(isA<TenantContextMissing>()),
+        );
+      },
+    );
   });
 
   // ════════════════════════════════════════════════════════════════════
@@ -230,8 +239,7 @@ void main() {
       expect(cfg.reDeriveTermOnDelayedActivation, isFalse); // MM-CFG-009
     });
 
-    test('MM-BR-026 — MM-CFG-008 resolves to ONE value, not two equal ones',
-        () {
+    test('MM-BR-026 — MM-CFG-008 resolves to ONE value, not two equal ones', () {
       // The rule: the expiring-soon threshold behind MM-EVT-006 and behind the
       // expiring view must be the SAME source, "so the reminder and the list
       // can never disagree". Two accessors returning 7 would pass a naive
@@ -239,11 +247,12 @@ void main() {
       const shifted = DefaultMembershipConfig(expiringSoonDays: 3);
       expect(shifted.expiringSoonDays, 3);
 
-      final declaration =
-          File('packages/liboora_contracts/lib/src/ports/membership_config.dart')
-              .readAsStringSync();
-      final thresholdAccessors =
-          RegExp(r'get\s+\w*[Ee]xpiring\w*\s*;').allMatches(declaration).length;
+      final declaration = File(
+        'packages/liboora_contracts/lib/src/ports/membership_config.dart',
+      ).readAsStringSync();
+      final thresholdAccessors = RegExp(
+        r'get\s+\w*[Ee]xpiring\w*\s*;',
+      ).allMatches(declaration).length;
       expect(
         thresholdAccessors,
         1,
@@ -261,8 +270,9 @@ void main() {
       ]) {
         final code = File(path).readAsStringSync();
         expect(
-          RegExp(r"""config\[|getConfig\(\s*['"]|setting\(\s*['"]""")
-              .hasMatch(code),
+          RegExp(
+            r"""config\[|getConfig\(\s*['"]|setting\(\s*['"]""",
+          ).hasMatch(code),
           isFalse,
           reason:
               '§13.4 requires typed accessors, never raw string lookups. '

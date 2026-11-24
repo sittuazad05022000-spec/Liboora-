@@ -70,8 +70,7 @@ final class HiveKeyValueStore implements DurableKeyValueStore {
 
   /// `<namespace>::<key>`. The separator is two colons so a single colon
   /// inside an identifier can never be mistaken for a namespace boundary.
-  static String _composite(String namespace, String key) =>
-      '$namespace::$key';
+  static String _composite(String namespace, String key) => '$namespace::$key';
 
   static const String _separator = '::';
 

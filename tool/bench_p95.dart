@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:liboora/domain/library/enrollment/domain/student_record.dart';
 import 'package:liboora/domain/library/enrollment/enrollment.dart';
 import 'package:liboora/platform/data/data.dart';
 import 'package:liboora/platform/tenancy/tenancy.dart';
@@ -61,7 +60,7 @@ void main() {
     // Advance cursor on continuation steps; reset to first on even steps for coverage.
     if (useCursor) {
       cursor = p.nextCursor;
-      if (cursor == null) cursor = repo.paginatedList().nextCursor;
+      cursor ??= repo.paginatedList().nextCursor;
     } else {
       cursor = p.nextCursor;
     }
@@ -80,20 +79,20 @@ void main() {
   final minVal = micros.reduce(min);
   final avg = micros.reduce((a, b) => a + b) / micros.length;
 
-  print('Dart: ${_dartVersion()}');
-  print(
+  stdout.writeln('Dart: ${_dartVersion()}');
+  stdout.writeln(
     'Host: ${Uri.base} — tenant bench_tenant, fixture $n, pageSize 20 (UNRATIFIED operational, existing feed(limit:12) class)',
   );
-  print(
+  stdout.writeln(
     'IMPL-678 paginatedList: fullName→enrollmentNumber→StudentRecordId, opaque server token, tenant-scoped verify',
   );
-  print(
+  stdout.writeln(
     'Measured: $measured paginatedList(cursor) alternating first/continuation, after 400 warm-up, Stopwatch.elapsedMicroseconds',
   );
-  print(
+  stdout.writeln(
     'min=${(minVal / 1000).toStringAsFixed(2)}ms avg=${(avg / 1000).toStringAsFixed(2)}ms median=${(median / 1000).toStringAsFixed(2)}ms p95=${(p95 / 1000).toStringAsFixed(2)}ms p99=${(p99 / 1000).toStringAsFixed(2)}ms max=${(maxVal / 1000).toStringAsFixed(2)}ms',
   );
-  print('NFR: p95 < 300ms → ${p95 < 300 * 1000 ? 'PASS' : 'FAIL'}');
+  stdout.writeln('NFR: p95 < 300ms → ${p95 < 300 * 1000 ? 'PASS' : 'FAIL'}');
   // Gate 7 enforcement: p95 is in microseconds (Stopwatch.elapsedMicroseconds),
   // so the ATT-GAP-017a bound 300ms = 300_000 µs. Non-zero exit fails CI.
   exit(p95 < 300 * 1000 ? 0 : 1);

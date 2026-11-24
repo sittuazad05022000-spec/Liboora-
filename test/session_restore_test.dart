@@ -35,19 +35,16 @@ const _tenant = TenantId('t_alpha');
 const _otherTenant = TenantId('t_beta');
 const _branch = BranchId('b_main');
 
-Account _account(
-  String id,
-  AccessRole role, {
-  TenantId tenant = _tenant,
-}) => Account(
-  id: AccountId(id),
-  phone: '98100000$id',
-  displayName: 'User $id',
-  personId: PersonId('per_$id'),
-  roles: {
-    tenant.value: {role},
-  },
-);
+Account _account(String id, AccessRole role, {TenantId tenant = _tenant}) =>
+    Account(
+      id: AccountId(id),
+      phone: '98100000$id',
+      displayName: 'User $id',
+      personId: PersonId('per_$id'),
+      roles: {
+        tenant.value: {role},
+      },
+    );
 
 AuthSession _session(
   Account account, {
@@ -98,10 +95,9 @@ void main() {
       SessionStore(durable).save(_session(account));
 
       // The restart: a different SessionStore object, same storage.
-      final restored = SessionStore(durable).restore(
-        accounts: [account],
-        now: _t0.add(const Duration(minutes: 5)),
-      );
+      final restored = SessionStore(
+        durable,
+      ).restore(accounts: [account], now: _t0.add(const Duration(minutes: 5)));
 
       expect(restored, isNotNull);
       expect(restored!.id, const SessionId('sess_1'));
@@ -126,16 +122,14 @@ void main() {
       SessionStore(durable).save(_session(account));
 
       expect(
-        SessionStore(durable).restore(
-          accounts: [account],
-          now: _t0.add(const Duration(days: 20)),
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [account], now: _t0.add(const Duration(days: 20))),
         isNotNull,
       );
     });
 
-    test('the restored session carries the LIVE account, not the stored one',
-        () {
+    test('the restored session carries the LIVE account, not the stored one', () {
       // The record persists only an account id, so a renamed account must come
       // back renamed rather than stale. This is also what makes a revoked role
       // take effect (AUTH-6.17).
@@ -224,10 +218,9 @@ void main() {
       );
 
       expect(
-        SessionStore(durable).restore(
-          accounts: [account],
-          now: _t0.add(const Duration(hours: 12)),
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [account], now: _t0.add(const Duration(hours: 12))),
         isNull,
         reason:
             'Activity must not extend the absolute boundary (AUTH-6.16) — '
@@ -241,10 +234,9 @@ void main() {
       SessionStore(durable).save(_session(account));
 
       expect(
-        SessionStore(durable).restore(
-          accounts: [account],
-          now: _t0.add(const Duration(days: 30)),
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [account], now: _t0.add(const Duration(days: 30))),
         isNull,
       );
     });
@@ -267,10 +259,9 @@ void main() {
       SessionStore(durable).save(_session(dual, role: AccessRole.student));
 
       expect(
-        SessionStore(durable).restore(
-          accounts: [dual],
-          now: _t0.add(const Duration(hours: 1)),
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [dual], now: _t0.add(const Duration(hours: 1))),
         isNull,
         reason:
             'Holding ANY staff role must impose staff limits, whatever the '
@@ -283,10 +274,9 @@ void main() {
       final account = _account('9', AccessRole.owner);
       SessionStore(durable).save(_session(account));
 
-      SessionStore(durable).restore(
-        accounts: [account],
-        now: _t0.add(const Duration(days: 1)),
-      );
+      SessionStore(
+        durable,
+      ).restore(accounts: [account], now: _t0.add(const Duration(days: 1)));
 
       expect(durable.readAll(kSessionNamespace), isEmpty);
     });
@@ -324,15 +314,14 @@ void main() {
           kSessionNamespace,
           kSessionKey,
           '{"v":999,"sessionId":"s","accountId":"1","tenantId":"t_alpha",'
-              '"branchId":"b_main","activeRole":"owner",'
-              '"startedAt":"2026-04-01T09:00:00.000Z",'
-              '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
+          '"branchId":"b_main","activeRole":"owner",'
+          '"startedAt":"2026-04-01T09:00:00.000Z",'
+          '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
         );
       expect(
-        SessionStore(durable).restore(
-          accounts: [_account('1', AccessRole.owner)],
-          now: _t0,
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [_account('1', AccessRole.owner)], now: _t0),
         isNull,
       );
     });
@@ -343,15 +332,14 @@ void main() {
           kSessionNamespace,
           kSessionKey,
           '{"v":1,"sessionId":"s","accountId":"1","tenantId":"t_alpha",'
-              '"branchId":"b_main","activeRole":"superadmin",'
-              '"startedAt":"2026-04-01T09:00:00.000Z",'
-              '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
+          '"branchId":"b_main","activeRole":"superadmin",'
+          '"startedAt":"2026-04-01T09:00:00.000Z",'
+          '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
         );
       expect(
-        SessionStore(durable).restore(
-          accounts: [_account('1', AccessRole.owner)],
-          now: _t0,
-        ),
+        SessionStore(
+          durable,
+        ).restore(accounts: [_account('1', AccessRole.owner)], now: _t0),
         isNull,
         reason:
             'An unrecognised role must never be honoured — and never silently '
@@ -404,11 +392,7 @@ void main() {
       final durable = InMemoryKeyValueStore();
       SessionStore(durable).save(_session(_account('12', AccessRole.owner)));
 
-      final elsewhere = _account(
-        '12',
-        AccessRole.owner,
-        tenant: _otherTenant,
-      );
+      final elsewhere = _account('12', AccessRole.owner, tenant: _otherTenant);
       expect(
         SessionStore(durable).restore(accounts: [elsewhere], now: _t0),
         isNull,
@@ -421,9 +405,9 @@ void main() {
           kSessionNamespace,
           kSessionKey,
           '{"v":1,"sessionId":"s","accountId":"","tenantId":"t_alpha",'
-              '"branchId":"b_main","activeRole":"owner",'
-              '"startedAt":"2026-04-01T09:00:00.000Z",'
-              '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
+          '"branchId":"b_main","activeRole":"owner",'
+          '"startedAt":"2026-04-01T09:00:00.000Z",'
+          '"lastActiveAt":"2026-04-01T09:00:00.000Z"}',
         );
       expect(
         SessionStore(durable).restore(accounts: const [], now: _t0),
@@ -461,8 +445,10 @@ void main() {
     });
 
     test('clear on an already-empty store is not an error', () {
-      expect(() => SessionStore(InMemoryKeyValueStore()).clear(),
-          returnsNormally);
+      expect(
+        () => SessionStore(InMemoryKeyValueStore()).clear(),
+        returnsNormally,
+      );
     });
   });
 
@@ -498,9 +484,7 @@ void main() {
       final durable = InMemoryKeyValueStore();
       final store = SessionStore(durable);
       store.save(_session(_account('17', AccessRole.owner)));
-      store.save(
-        _session(_account('18', AccessRole.manager), tenant: _tenant),
-      );
+      store.save(_session(_account('18', AccessRole.manager), tenant: _tenant));
 
       expect(durable.readAll(kSessionNamespace).length, 1);
       final restored = store.restore(
@@ -556,7 +540,11 @@ void main() {
 
       expect(touched.lastActiveAt, later);
       expect(touched.startedAt, _t0, reason: 'AUTH-6.16.');
-      expect(touched.id, s.id, reason: 'Renewal must not re-establish identity.');
+      expect(
+        touched.id,
+        s.id,
+        reason: 'Renewal must not re-establish identity.',
+      );
       expect(touched.expiresAt, later.add(kStaffIdle));
     });
 
@@ -567,8 +555,11 @@ void main() {
       expect(kStaffAbsolute, const Duration(hours: 12));
       expect(kMobileIdle, const Duration(days: 30));
       expect(kMobileAbsolute, const Duration(days: 90));
-      expect(kStaffIdle < kStaffAbsolute, isTrue,
-          reason: 'CFG-5 must be strictly less than CFG-6 or idle never fires.');
+      expect(
+        kStaffIdle < kStaffAbsolute,
+        isTrue,
+        reason: 'CFG-5 must be strictly less than CFG-6 or idle never fires.',
+      );
       expect(kMobileIdle < kMobileAbsolute, isTrue);
     });
   });
@@ -577,16 +568,18 @@ void main() {
   // 8 — THROUGH THE REAL CONTAINER
   // ═══════════════════════════════════════════════════════════════════
   group('integration · through AppContainer', () {
-    test('the container exposes a session store even without durability',
-        () async {
-      // Non-nullable field, so no call site needs a null check.
-      final c = await AppContainer.boot(seeder: seedDemoData);
-      expect(c.sessionStore, isNotNull);
-      expect(
-        c.sessionStore.restore(accounts: c.auth.accounts, now: _t0),
-        isNull,
-      );
-    });
+    test(
+      'the container exposes a session store even without durability',
+      () async {
+        // Non-nullable field, so no call site needs a null check.
+        final c = await AppContainer.boot(seeder: seedDemoData);
+        expect(c.sessionStore, isNotNull);
+        expect(
+          c.sessionStore.restore(accounts: c.auth.accounts, now: _t0),
+          isNull,
+        );
+      },
+    );
 
     test('a session saved in one container is restored by the next', () async {
       final durable = InMemoryKeyValueStore();
@@ -694,10 +687,7 @@ void main() {
       second.leaveScope();
       expect(() => second.students.all(), throwsA(isA<TenantContextMissing>()));
 
-      second.enterScope(
-        tenant: restored.tenantId,
-        branch: restored.branchId,
-      );
+      second.enterScope(tenant: restored.tenantId, branch: restored.branchId);
       expect(second.students.all(), isNotEmpty);
     });
 
@@ -733,35 +723,37 @@ void main() {
       );
     });
 
-    test('restoring a session does NOT re-seed or disturb persisted data',
-        () async {
-      final durable = InMemoryKeyValueStore();
-      final first = await AppContainer.boot(
-        seeder: seedDemoData,
-        durable: durable,
-      );
-      first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
-      final studentCount = first.students.all().length;
-      first.leaveScope();
+    test(
+      'restoring a session does NOT re-seed or disturb persisted data',
+      () async {
+        final durable = InMemoryKeyValueStore();
+        final first = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
+        first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+        final studentCount = first.students.all().length;
+        first.leaveScope();
 
-      final staff = first.auth.accounts.firstWhere(
-        (a) => a.rolesIn(kDemoTenant).any(kStaffRoles.contains),
-      );
-      first.sessionStore.save(
-        first.auth.issueSession(
-          account: staff,
-          tenant: kDemoTenant,
-          branch: kDemoBranch,
-        )!,
-      );
+        final staff = first.auth.accounts.firstWhere(
+          (a) => a.rolesIn(kDemoTenant).any(kStaffRoles.contains),
+        );
+        first.sessionStore.save(
+          first.auth.issueSession(
+            account: staff,
+            tenant: kDemoTenant,
+            branch: kDemoBranch,
+          )!,
+        );
 
-      final second = await AppContainer.boot(
-        seeder: seedDemoData,
-        durable: durable,
-      );
-      second.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
-      expect(second.students.all().length, studentCount);
-      second.leaveScope();
-    });
+        final second = await AppContainer.boot(
+          seeder: seedDemoData,
+          durable: durable,
+        );
+        second.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
+        expect(second.students.all().length, studentCount);
+        second.leaveScope();
+      },
+    );
   });
 }

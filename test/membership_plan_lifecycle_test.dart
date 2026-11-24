@@ -105,8 +105,9 @@ void main() {
       expect(Money.paise(1).currency, 'INR');
       expect(Money.zero.currency, 'INR');
 
-      final src = File('lib/domain/library/membership/domain/membership.dart')
-          .readAsStringSync();
+      final src = File(
+        'lib/domain/library/membership/domain/membership.dart',
+      ).readAsStringSync();
       expect(
         src.contains('[A-Z]{3}') && src.contains('_isIso4217'),
         isTrue,
@@ -135,8 +136,7 @@ void main() {
       expect(_rejection(() => _plan(name: '   ')).context['field'], 'name');
     });
 
-    test('MM-FR-008 — currency is exposed and always agrees with the price',
-        () {
+    test('MM-FR-008 — currency is exposed and always agrees with the price', () {
       final p = _plan(price: Money.rupees(500));
       expect(p.currency, 'INR');
       expect(
@@ -153,55 +153,64 @@ void main() {
   // IMPL-404 — only the two specified eligibility rules exist.
   // ════════════════════════════════════════════════════════════════════
   group('IMPL-404 · eligibility is deliberately minimal', () {
-    test('MM-FR-016 — the rule set is exactly enrollment + optional age bound',
-        () {
-      final fields = RegExp(r'final\s+int\?\s+(\w+);')
-          .allMatches(
-            File('lib/domain/library/membership/domain/membership.dart')
-                .readAsStringSync(),
-          )
-          .map((m) => m.group(1))
-          .toSet();
-      expect(
-        fields.containsAll({'minAgeYears', 'maxAgeYears'}),
-        isTrue,
-        reason: 'The two specified bounds must exist.',
-      );
-      // A third criterion is not silently added: IMPL-404's own obligation.
-      expect(
-        PlanEligibility.enrollmentOnly.hasAgeBound,
-        isFalse,
-        reason: 'The default plan carries no age rule at all.',
-      );
-    });
+    test(
+      'MM-FR-016 — the rule set is exactly enrollment + optional age bound',
+      () {
+        final fields = RegExp(r'final\s+int\?\s+(\w+);')
+            .allMatches(
+              File(
+                'lib/domain/library/membership/domain/membership.dart',
+              ).readAsStringSync(),
+            )
+            .map((m) => m.group(1))
+            .toSet();
+        expect(
+          fields.containsAll({'minAgeYears', 'maxAgeYears'}),
+          isTrue,
+          reason: 'The two specified bounds must exist.',
+        );
+        // A third criterion is not silently added: IMPL-404's own obligation.
+        expect(
+          PlanEligibility.enrollmentOnly.hasAgeBound,
+          isFalse,
+          reason: 'The default plan carries no age rule at all.',
+        );
+      },
+    );
 
-    test('MM-FR-017 / MM-XC-001 — evaluated from an age, never a birth date',
-        () {
-      const rule = PlanEligibility(minAgeYears: 18, maxAgeYears: 25);
-      expect(rule.isSatisfiedByAge(18), isTrue); // inclusive lower bound
-      expect(rule.isSatisfiedByAge(25), isTrue); // inclusive upper bound
-      expect(rule.isSatisfiedByAge(17), isFalse);
-      expect(rule.isSatisfiedByAge(26), isFalse);
+    test(
+      'MM-FR-017 / MM-XC-001 — evaluated from an age, never a birth date',
+      () {
+        const rule = PlanEligibility(minAgeYears: 18, maxAgeYears: 25);
+        expect(rule.isSatisfiedByAge(18), isTrue); // inclusive lower bound
+        expect(rule.isSatisfiedByAge(25), isTrue); // inclusive upper bound
+        expect(rule.isSatisfiedByAge(17), isFalse);
+        expect(rule.isSatisfiedByAge(26), isFalse);
 
-      // The signature takes an int that BC-01 resolved. If it took a
-      // DateTime, this module would be computing from a DOB, which MM-XC-001
-      // forbids. Asserted structurally:
-      final src = File('lib/domain/library/membership/domain/membership.dart')
-          .readAsStringSync();
-      expect(
-        src.contains('isSatisfiedByAge(int ageYears)'),
-        isTrue,
-        reason:
-            'MM-FR-017: BC-01 answers the age question. A DateTime parameter '
-            'here would make BC-02 compute from a date of birth.',
-      );
-    });
+        // The signature takes an int that BC-01 resolved. If it took a
+        // DateTime, this module would be computing from a DOB, which MM-XC-001
+        // forbids. Asserted structurally:
+        final src = File(
+          'lib/domain/library/membership/domain/membership.dart',
+        ).readAsStringSync();
+        expect(
+          src.contains('isSatisfiedByAge(int ageYears)'),
+          isTrue,
+          reason:
+              'MM-FR-017: BC-01 answers the age question. A DateTime parameter '
+              'here would make BC-02 compute from a date of birth.',
+        );
+      },
+    );
 
     test('a reversed or negative age bound is a typed rejection', () {
       expect(
         _rejection(
           () => _plan(
-            eligibility: const PlanEligibility(minAgeYears: 30, maxAgeYears: 20),
+            eligibility: const PlanEligibility(
+              minAgeYears: 30,
+              maxAgeYears: 20,
+            ),
           ),
         ).context['field'],
         'maxAgeYears',
@@ -256,19 +265,22 @@ void main() {
       expect(_plan().deactivate().isSelectable, isFalse);
     });
 
-    test('MM-FR-015 / MM-AC-012 — a StaffOnly plan is never student-visible',
-        () {
-      final staff = _plan(availability: PlanAvailability.staffOnly);
-      expect(
-        staff.isStudentVisible,
-        isFalse,
-        reason: 'MM-AC-012: a StaffOnly plan never appears in a '
-            'student-facing list.',
-      );
-      // It remains sellable by reception.
-      expect(staff.isSelectable, isTrue);
-      expect(_plan().isStudentVisible, isTrue);
-    });
+    test(
+      'MM-FR-015 / MM-AC-012 — a StaffOnly plan is never student-visible',
+      () {
+        final staff = _plan(availability: PlanAvailability.staffOnly);
+        expect(
+          staff.isStudentVisible,
+          isFalse,
+          reason:
+              'MM-AC-012: a StaffOnly plan never appears in a '
+              'student-facing list.',
+        );
+        // It remains sellable by reception.
+        expect(staff.isSelectable, isTrue);
+        expect(_plan().isStudentVisible, isTrue);
+      },
+    );
 
     test('the repository separates selectable from student-visible', () {
       final ctx = _BoundContext();
@@ -286,10 +298,10 @@ void main() {
       repo.save(_plan(id: 'p_retired', name: 'Retired', isActive: false));
 
       expect(repo.all().length, 3, reason: 'Nothing is deleted.');
-      expect(
-        repo.selectable().map((p) => p.id).toSet(),
-        {'p_public', 'p_staff'},
-      );
+      expect(repo.selectable().map((p) => p.id).toSet(), {
+        'p_public',
+        'p_staff',
+      });
       expect(repo.studentVisible().map((p) => p.id).toSet(), {'p_public'});
     });
   });
@@ -314,8 +326,9 @@ void main() {
       // the public API — stated plainly rather than dressed up as a passing
       // negative test. The guard is asserted structurally, because MM-FR-024
       // must already hold on the day Money gains a second currency.
-      final src = File('lib/domain/library/membership/domain/membership.dart')
-          .readAsStringSync();
+      final src = File(
+        'lib/domain/library/membership/domain/membership.dart',
+      ).readAsStringSync();
       final start = src.indexOf('MembershipPlan withEdits(');
       final body = src.substring(start, start + 1400);
       expect(
@@ -356,8 +369,9 @@ void main() {
     });
 
     test('MM-FR-021 — identity and scope cannot be edited at all', () {
-      final src = File('lib/domain/library/membership/domain/membership.dart')
-          .readAsStringSync();
+      final src = File(
+        'lib/domain/library/membership/domain/membership.dart',
+      ).readAsStringSync();
       final start = src.indexOf('MembershipPlan withEdits(');
       final sig = src.substring(start, src.indexOf('}) {', start));
       for (final immutable in ['tenantId', 'branchId', 'planId', 'createdAt']) {
@@ -429,9 +443,7 @@ void main() {
 
       // Exactly one edge blocks. If a second ever does, the asymmetry is gone.
       expect(
-        MembershipEdge.values
-            .where((e) => e.blocksOnInvalidMembership)
-            .length,
+        MembershipEdge.values.where((e) => e.blocksOnInvalidMembership).length,
         1,
       );
     });

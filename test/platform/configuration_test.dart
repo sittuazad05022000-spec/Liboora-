@@ -212,16 +212,22 @@ void main() {
       expect(violations, isEmpty, reason: _formatViolations(violations));
     });
 
-    test('development profile fails INV-9 (values outside production ranges)', () {
-      final violations = validateAuthInvariants(AuthConfiguration.development);
-      expect(violations, isNotEmpty, reason: _formatViolations(violations));
-      expect(
-        violations.any((v) => v.rule.contains('INV-9')),
-        isTrue,
-        reason: 'development values are intentionally non-production; '
-            'CFG-2=0s, CFG-3=1000, CFG-5(staff)=8h, CFG-11=20 all violate INV-9 ranges',
-      );
-    });
+    test(
+      'development profile fails INV-9 (values outside production ranges)',
+      () {
+        final violations = validateAuthInvariants(
+          AuthConfiguration.development,
+        );
+        expect(violations, isNotEmpty, reason: _formatViolations(violations));
+        expect(
+          violations.any((v) => v.rule.contains('INV-9')),
+          isTrue,
+          reason:
+              'development values are intentionally non-production; '
+              'CFG-2=0s, CFG-3=1000, CFG-5(staff)=8h, CFG-11=20 all violate INV-9 ranges',
+        );
+      },
+    );
 
     test('staging profile passes all invariants', () {
       final violations = validateAuthInvariants(AuthConfiguration.staging);
@@ -260,7 +266,10 @@ void _expect(List<ConfigurationViolation> violations, String identifier) {
   );
 }
 
-void _expectNoViolation(List<ConfigurationViolation> violations, String identifier) {
+void _expectNoViolation(
+  List<ConfigurationViolation> violations,
+  String identifier,
+) {
   expect(
     violations.any((v) => v.rule == identifier || v.parameter == identifier),
     isFalse,

@@ -38,6 +38,7 @@ import '../domain/library/enrollment/domain/student_record.dart';
 import '../domain/library/fee/domain/fee_ledger.dart';
 import '../domain/library/membership/domain/membership.dart';
 import '../domain/library/seating/domain/seat_allocation.dart';
+import '../domain/person/person.dart';
 
 // ───────────────────────────────────────────────────────────────────
 // Shared primitives
@@ -99,16 +100,38 @@ T _readEnum<T>(List<T> values, Object? raw, String Function(T) nameOf) {
 // 1 — StudentRecord (BC-01 Enrollment)
 // ───────────────────────────────────────────────────────────────────
 
+/// Schema version for the student row.
+///
+/// v1 (pre-`ADR-0179`): aggregate carried `dateOfBirth` and nothing of the
+/// Option C set. v2: DOB removed (BC-10 owns it — `SM-4.2`), `accountId`,
+/// `registrationSource`, `minorStatus`, `ageDeclaration`, `archivedAt` and
+/// `statusHistory` added. Versioned decode follows the membership precedent.
+const int kStudentSchemaV2 = 2;
+
+/// `ADR-0179` — v2 never writes a DOB: BC-10 owns it (`SM-4.2`). The raw
+/// v1 rows keep their `dateOfBirth` key untouched, which is what the boot
+/// migration reads to transfer ownership; nothing is deleted.
 String encodeStudentRecord(StudentRecord s) => jsonEncode({
+  'v': kStudentSchemaV2,
   'id': s.id.value,
   'enrollmentNumber': s.enrollmentNumber,
   'fullName': s.fullName,
   'phone': s.phone,
   'email': s.email,
-  'dateOfBirth': _date(s.dateOfBirth),
   'enrolledOn': _date(s.enrolledOn),
   'personId': s.personId.value,
+  'accountId': s.accountId?.value,
+  'registrationSource': s.registrationSource?.name,
+  'minorStatus': s.minorStatus.name,
+  'ageDeclaration': s.ageDeclaration == null
+      ? null
+      : {
+          'isMinor': s.ageDeclaration!.isMinor,
+          'declaredBy': s.ageDeclaration!.declaredBy,
+          'declaredAt': _date(s.ageDeclaration!.declaredAt),
+        },
   'status': s.status.name,
+  'archivedAt': s.archivedAt == null ? null : _date(s.archivedAt!),
   'photoRef': s.photoRef?.value,
   'guardian': s.guardian == null
       ? null
@@ -117,24 +140,81 @@ String encodeStudentRecord(StudentRecord s) => jsonEncode({
           'phone': s.guardian!.phone,
           'relation': s.guardian!.relation,
         },
+  'statusHistory': [
+    for (final c in s.statusHistory)
+      {
+        'to': c.to.name,
+        'at': _date(c.at),
+        'actor': c.actor,
+        'reason': c.reason,
+      },
+  ],
 });
 
 StudentRecord decodeStudentRecord(String raw) {
   final m = jsonDecode(raw) as Map<String, Object?>;
   final g = m['guardian'] as Map<String, Object?>?;
+  final version = m['v'] as int? ?? 1;
+
+  // `SM-4.5` — the minor status. v2 rows carry it explicitly. v1 rows stored
+  // a DOB, so it is DERIVED from that recorded fact (never fabricated, never
+  // defaulted): a v1 minor always carried a guardian (the v1 invariant), and
+  // a v1 adult needs none — so the fail-safe never misfires on restored data.
+  final MinorStatus minorStatus;
+  final AgeDeclaration? declaration;
+  if (version >= kStudentSchemaV2) {
+    minorStatus = _readEnum(
+      MinorStatus.values,
+      m['minorStatus'],
+      (e) => e.name,
+    );
+    final d = m['ageDeclaration'] as Map<String, Object?>?;
+    declaration = d == null
+        ? null
+        : AgeDeclaration(
+            isMinor: d['isMinor']! as bool,
+            declaredBy: d['declaredBy']! as String,
+            declaredAt: _readDate(d['declaredAt']),
+          );
+  } else {
+    final v1Dob = m['dateOfBirth'] == null
+        ? null
+        : _readDate(m['dateOfBirth']);
+    minorStatus = v1Dob == null
+        ? MinorStatus.unknown
+        : (_ageOnV1(v1Dob, _readDate(m['enrolledOn'])) < 18
+              ? MinorStatus.minor
+              : MinorStatus.adult);
+    declaration = null;
+  }
+
   return StudentRecord(
     id: StudentRecordId(m['id']! as String),
     enrollmentNumber: m['enrollmentNumber']! as String,
     fullName: m['fullName']! as String,
     phone: m['phone']! as String,
     email: m['email'] as String?,
-    dateOfBirth: _readDate(m['dateOfBirth']),
     enrolledOn: _readDate(m['enrolledOn']),
     // Non-nullable by ID-4 / SID-4.17. Read without a fallback so a row
     // missing it fails to decode rather than producing a record the
     // constructor would have rejected.
     personId: PersonId(m['personId']! as String),
+    // `ADR-0179`: legacy rows hold no account link — an honest null, never a
+    // guessed one.
+    accountId: m['accountId'] == null
+        ? null
+        : AccountId(m['accountId']! as String),
+    registrationSource: m['registrationSource'] == null
+        ? null
+        : _readEnum(
+            RegistrationSource.values,
+            m['registrationSource'],
+            (e) => e.name,
+          ),
+    minorStatus: minorStatus,
+    ageDeclaration: declaration,
     status: _readEnum(EnrollmentStatus.values, m['status'], (e) => e.name),
+    archivedAt: m['archivedAt'] == null ? null : _readDate(m['archivedAt']),
     photoRef: m['photoRef'] == null ? null : FileRef(m['photoRef']! as String),
     guardian: g == null
         ? null
@@ -143,7 +223,67 @@ StudentRecord decodeStudentRecord(String raw) {
             phone: g['phone']! as String,
             relation: g['relation']! as String,
           ),
+    statusHistory: version >= kStudentSchemaV2
+        ? [
+            for (final c in (m['statusHistory'] ?? []) as List<dynamic>)
+              StudentStatusChange(
+                to: _readEnum(
+                  EnrollmentStatus.values,
+                  (c as Map<String, Object?>)['to'],
+                  (e) => e.name,
+                ),
+                at: _readDate(c['at']),
+                actor: c['actor']! as String,
+                reason: c['reason'] as String?,
+              ),
+          ]
+        : const [], // Legacy: never synthesized (SM-2.13 honesty rule).
   );
+}
+
+int _ageOnV1(DateTime dob, DateTime when) {
+  var age = when.year - dob.year;
+  if (when.month < dob.month ||
+      (when.month == dob.month && when.day < dob.day)) {
+    age--;
+  }
+  return age;
+}
+
+// ───────────────────────────────────────────────────────────────────
+// 1b — PersonIdentity (BC-10 Global Person Identity)
+// ───────────────────────────────────────────────────────────────────
+
+/// `ADR-0179` — the identity (and its owned DOB) is persisted through the
+/// same hand-written codec discipline: every field round-trips; a nullable
+/// stays nullable; DOB is `null` when genuinely unrecorded.
+String encodePersonIdentity(PersonIdentity i) => jsonEncode({
+  'personId': i.personId.value,
+  'accountId': i.accountId.value,
+  'createdAt': _date(i.createdAt),
+  'displayName': i.displayName,
+  'headline': i.headline,
+  'examTrack': i.examTrack,
+  'avatarRef': i.avatarRef?.value,
+  'status': i.status.name,
+  'dateOfBirth': i.dateOfBirth == null ? null : _date(i.dateOfBirth!),
+  'lifetimeStudyMinutes': i.lifetimeStudyMinutes,
+});
+
+PersonIdentity decodePersonIdentity(String raw) {
+  final m = jsonDecode(raw) as Map<String, Object?>;
+  return PersonIdentity(
+    personId: PersonId(m['personId']! as String),
+    accountId: AccountId(m['accountId']! as String),
+    createdAt: _readDate(m['createdAt']),
+    displayName: m['displayName']! as String,
+    headline: m['headline'] as String? ?? '',
+    examTrack: m['examTrack'] as String? ?? '',
+    avatarRef: m['avatarRef'] == null ? null : FileRef(m['avatarRef']! as String),
+    status: _readEnum(PersonIdentityStatus.values, m['status'], (e) => e.name),
+    dateOfBirth: _readDateOrNull(m['dateOfBirth']),
+  )
+    ..lifetimeStudyMinutes = m['lifetimeStudyMinutes'] as int? ?? 0;
 }
 
 // ───────────────────────────────────────────────────────────────────

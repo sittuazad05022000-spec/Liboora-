@@ -473,7 +473,9 @@ final class AppContainer {
     final studentStore = TenantPartitionedStore<StudentRecord>(
       tenantContext,
       durable: durable,
-      namespace: durable == null ? null : 'student_records',
+      namespace: durable == null
+          ? null
+          : kStudentRecordsDurableNamespace,
       encode: durable == null ? null : encodeStudentRecord,
       decode: durable == null ? null : decodeStudentRecord,
     );
@@ -597,7 +599,13 @@ final class AppContainer {
     // account creation now depends on identity creation rather than the reverse
     // (ADR-0011). The dependency is expressed as the rank-0
     // PersonIdentityFactory port, so rank 4 never points upward at rank 7.5.
-    final identities = InMemoryPersonIdentityRepository();
+    //
+    // ADR-0179 — identities now persist through the same durable adapter
+    // (global keys, no tenant partition, `SID-4.49`), closing the pre-Option-C
+    // gap where a restart silently emptied the identity directory that
+    // restored accounts point at.
+    final identities = InMemoryPersonIdentityRepository(durable: durable);
+    final restoredIdentities = identities.restoreAll();
     final identityService = PersonIdentityService(
       repository: identities,
       clock: clock,

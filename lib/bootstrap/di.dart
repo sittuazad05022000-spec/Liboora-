@@ -426,8 +426,7 @@ final class AppContainer {
         // names the most-recently-archived record (`SM-3.14a`).
         return RestoreRequiredOutcome(
           archivedStudentRecordId: StudentRecordId(archived),
-          archivedCount:
-              (e.context['archivedCount'] as num?)?.toInt() ?? 1,
+          archivedCount: (e.context['archivedCount'] as num?)?.toInt() ?? 1,
           message: e.message,
         );
       }
@@ -582,9 +581,7 @@ final class AppContainer {
     final studentStore = TenantPartitionedStore<StudentRecord>(
       tenantContext,
       durable: durable,
-      namespace: durable == null
-          ? null
-          : kStudentRecordsDurableNamespace,
+      namespace: durable == null ? null : kStudentRecordsDurableNamespace,
       encode: durable == null ? null : encodeStudentRecord,
       decode: durable == null ? null : decodeStudentRecord,
     );

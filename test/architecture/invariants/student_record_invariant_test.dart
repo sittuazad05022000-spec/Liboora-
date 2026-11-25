@@ -239,20 +239,22 @@ void main() {
   });
 
   group('BC-01 StudentRecord — status history (SM-2.13)', () {
-    test('every transition appends an audited entry; history is append-only',
-        () {
-      final rec = _build();
-      rec.suspend(actor: 'owner-1', at: _enrolledOn, reason: 'fee default');
-      rec.reactivate(actor: 'owner-1', at: _enrolledOn, reason: 'paid');
-      expect(rec.statusHistory, hasLength(3));
-      expect(rec.statusHistory.map((c) => c.to.name).toList(), [
-        'active',
-        'suspended',
-        'active',
-      ]);
-      // Append-only: the first entry is still the registration itself.
-      expect(rec.statusHistory.first.to, EnrollmentStatus.active);
-    });
+    test(
+      'every transition appends an audited entry; history is append-only',
+      () {
+        final rec = _build();
+        rec.suspend(actor: 'owner-1', at: _enrolledOn, reason: 'fee default');
+        rec.reactivate(actor: 'owner-1', at: _enrolledOn, reason: 'paid');
+        expect(rec.statusHistory, hasLength(3));
+        expect(rec.statusHistory.map((c) => c.to.name).toList(), [
+          'active',
+          'suspended',
+          'active',
+        ]);
+        // Append-only: the first entry is still the registration itself.
+        expect(rec.statusHistory.first.to, EnrollmentStatus.active);
+      },
+    );
 
     test('restore is refused unless the record is archived', () {
       final rec = _build();

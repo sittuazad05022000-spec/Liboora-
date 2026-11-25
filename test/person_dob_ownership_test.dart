@@ -27,14 +27,17 @@ void main() {
   group('BC-10 recordDateOfBirth — the single write path', () {
     test('records the DOB and the E-13 read returns it', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       final (personId, _) = c.provisionIdentityForEnrollment(
         phone: '9811100001',
         displayName: 'Dob Holder',
         dateOfBirth: DateTime(2000, 5, 17),
       );
 
-      final core = c.identityService.resolve(personId);
+      final core = c.identities.resolve(personId);
       expect(core, isNotNull);
       expect(core!.dateOfBirth, DateTime(2000, 5, 17));
       expect(core.displayName, 'Dob Holder');
@@ -42,7 +45,10 @@ void main() {
 
     test('recording the same DOB again is an idempotent no-op', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       final (personId, _) = c.provisionIdentityForEnrollment(
         phone: '9811100002',
         displayName: 'Replay Person',
@@ -57,15 +63,15 @@ void main() {
         ),
         returnsNormally,
       );
-      expect(
-        c.identityService.resolve(personId)!.dateOfBirth,
-        DateTime(1999, 2, 1),
-      );
+      expect(c.identities.resolve(personId)!.dateOfBirth, DateTime(1999, 2, 1));
     });
 
     test('a different DOB is a conflict, never a silent overwrite', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       final (personId, _) = c.provisionIdentityForEnrollment(
         phone: '9811100003',
         displayName: 'Conflict Person',
@@ -87,15 +93,15 @@ void main() {
         ),
       );
       // First-wins: the original fact is untouched.
-      expect(
-        c.identityService.resolve(personId)!.dateOfBirth,
-        DateTime(1999, 2, 1),
-      );
+      expect(c.identities.resolve(personId)!.dateOfBirth, DateTime(1999, 2, 1));
     });
 
     test('a future DOB is invalid input, measured against the clock', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       final (personId, _) = c.provisionIdentityForEnrollment(
         phone: '9811100004',
         displayName: 'Not Yet Born',
@@ -110,12 +116,15 @@ void main() {
         ),
         throwsA(isA<DomainError>()),
       );
-      expect(c.identityService.resolve(personId)!.dateOfBirth, isNull);
+      expect(c.identities.resolve(personId)!.dateOfBirth, isNull);
     });
 
     test('a DOB cannot be recorded for a person with no identity', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       expect(
         () => c.identityService.recordDateOfBirth(
           personId: const PersonId('per_missing'),
@@ -136,7 +145,10 @@ void main() {
   group('BC-10 DOB — erasure and durability', () {
     test('anonymise clears the DOB with the rest of the profile', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
+      );
       final (personId, _) = c.provisionIdentityForEnrollment(
         phone: '9811100005',
         displayName: 'Erased Person',
@@ -144,58 +156,80 @@ void main() {
       );
       c.identities.byPersonId(personId)!.anonymise();
 
-      expect(c.identityService.resolve(personId), isNull,
-          reason: 'An anonymised identity is not resolvable as active.');
+      final core = c.identities.resolve(personId);
+      expect(
+        core,
+        isNotNull,
+        reason: 'The identity still exists; it is anonymised, not deleted.',
+      );
+      expect(core!.isActive, isFalse);
+      expect(
+        core.dateOfBirth,
+        isNull,
+        reason:
+            'ID-5/SEV-16 — erasure removes the personal data the '
+            'identity owns, the DOB with it.',
+      );
     });
 
-    test('the owned DOB survives a restart through the durable directory',
-        () async {
-      final durable = InMemoryKeyValueStore();
-      final first = await AppContainer.boot(durable: durable);
-      first.enterScope(
-        tenant: const TenantId('t_dob'),
-        branch: const BranchId('b'),
-      );
-      final (personId, _) = first.provisionIdentityForEnrollment(
-        phone: '9811100006',
-        displayName: 'Durable Person',
-        dateOfBirth: DateTime(1996, 12, 3),
-      );
-      first.leaveScope();
+    test(
+      'the owned DOB survives a restart through the durable directory',
+      () async {
+        final durable = InMemoryKeyValueStore();
+        final first = await AppContainer.boot(durable: durable);
+        first.enterScope(
+          tenant: const TenantId('t_dob'),
+          branch: const BranchId('b'),
+        );
+        final (personId, _) = first.provisionIdentityForEnrollment(
+          phone: '9811100006',
+          displayName: 'Durable Person',
+          dateOfBirth: DateTime(1996, 12, 3),
+        );
+        first.leaveScope();
 
-      final second = await AppContainer.boot(durable: durable);
-      second.enterScope(
-        tenant: const TenantId('t_dob'),
-        branch: const BranchId('b'),
-      );
-      final core = second.identityService.resolve(personId);
-      expect(core, isNotNull);
-      expect(core!.dateOfBirth, DateTime(1996, 12, 3),
-          reason: 'BC-10 owns the DOB; an owned fact must survive restart.');
-    });
+        final second = await AppContainer.boot(durable: durable);
+        second.enterScope(
+          tenant: const TenantId('t_dob'),
+          branch: const BranchId('b'),
+        );
+        final core = second.identities.resolve(personId);
+        expect(core, isNotNull);
+        expect(
+          core!.dateOfBirth,
+          DateTime(1996, 12, 3),
+          reason: 'BC-10 owns the DOB; an owned fact must survive restart.',
+        );
+      },
+    );
   });
 
   group('E-13 — the identity directory read capability', () {
     test('an unknown person resolves to null, never to a guess', () async {
       final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
-      expect(
-        c.identities.resolve(const PersonId('per_nowhere')),
-        isNull,
+      c.enterScope(
+        tenant: const TenantId('t_dob'),
+        branch: const BranchId('b'),
       );
+      expect(c.identities.resolve(const PersonId('per_nowhere')), isNull);
     });
 
-    test('an identity without a DOB reads as null, never as a default age',
-        () async {
-      final c = await AppContainer.boot();
-      c.enterScope(tenant: const TenantId('t_dob'), branch: const BranchId('b'));
-      final (personId, _) = c.provisionIdentityForEnrollment(
-        phone: '9811100007',
-        displayName: 'Undated Person',
-      );
-      final core = c.identityService.resolve(personId)!;
-      expect(core.dateOfBirth, isNull);
-      expect(core.isActive, isTrue);
-    });
+    test(
+      'an identity without a DOB reads as null, never as a default age',
+      () async {
+        final c = await AppContainer.boot();
+        c.enterScope(
+          tenant: const TenantId('t_dob'),
+          branch: const BranchId('b'),
+        );
+        final (personId, _) = c.provisionIdentityForEnrollment(
+          phone: '9811100007',
+          displayName: 'Undated Person',
+        );
+        final core = c.identities.resolve(personId)!;
+        expect(core.dateOfBirth, isNull);
+        expect(core.isActive, isTrue);
+      },
+    );
   });
 }

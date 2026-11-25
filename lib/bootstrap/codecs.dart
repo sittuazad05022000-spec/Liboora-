@@ -177,9 +177,7 @@ StudentRecord decodeStudentRecord(String raw) {
             declaredAt: _readDate(d['declaredAt']),
           );
   } else {
-    final v1Dob = m['dateOfBirth'] == null
-        ? null
-        : _readDate(m['dateOfBirth']);
+    final v1Dob = m['dateOfBirth'] == null ? null : _readDate(m['dateOfBirth']);
     minorStatus = v1Dob == null
         ? MinorStatus.unknown
         : (_ageOnV1(v1Dob, _readDate(m['enrolledOn'])) < 18
@@ -279,11 +277,12 @@ PersonIdentity decodePersonIdentity(String raw) {
     displayName: m['displayName']! as String,
     headline: m['headline'] as String? ?? '',
     examTrack: m['examTrack'] as String? ?? '',
-    avatarRef: m['avatarRef'] == null ? null : FileRef(m['avatarRef']! as String),
+    avatarRef: m['avatarRef'] == null
+        ? null
+        : FileRef(m['avatarRef']! as String),
     status: _readEnum(PersonIdentityStatus.values, m['status'], (e) => e.name),
     dateOfBirth: _readDateOrNull(m['dateOfBirth']),
-  )
-    ..lifetimeStudyMinutes = m['lifetimeStudyMinutes'] as int? ?? 0;
+  )..lifetimeStudyMinutes = m['lifetimeStudyMinutes'] as int? ?? 0;
 }
 
 // ───────────────────────────────────────────────────────────────────

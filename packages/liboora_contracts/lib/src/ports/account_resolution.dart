@@ -20,10 +20,7 @@ import '../value_objects/identifiers.dart';
 /// Carries the global person identity and the tenant-scoped roles that
 /// enrollment needs. The role set is keyed by tenant-id.
 final class AccountInfo {
-  const AccountInfo({
-    required this.personId,
-    required this.rolesByTenant,
-  });
+  const AccountInfo({required this.personId, required this.rolesByTenant});
 
   /// The global person identity tied to this account.
   final PersonId personId;

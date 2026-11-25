@@ -87,7 +87,11 @@ final class InMemoryStudentRepository implements StudentRepository {
   List<StudentRecord> findArchivedByPerson(PersonId personId) {
     final archived =
         _store
-            .where((s) => s.personId == personId && s.status == EnrollmentStatus.archived)
+            .where(
+              (s) =>
+                  s.personId == personId &&
+                  s.status == EnrollmentStatus.archived,
+            )
             .toList()
           ..sort((a, b) {
             // SM-3.14a — most recently archived first; `archivedAt` ties break
@@ -402,7 +406,9 @@ final class EnrollStudent {
       }
       minorStatus = age < 18 ? MinorStatus.minor : MinorStatus.adult;
     } else if (declaration != null) {
-      minorStatus = declaration.isMinor ? MinorStatus.minor : MinorStatus.unknown;
+      minorStatus = declaration.isMinor
+          ? MinorStatus.minor
+          : MinorStatus.unknown;
     } else {
       minorStatus = MinorStatus.unknown;
     }
@@ -486,9 +492,9 @@ final class EnrollStudent {
           'enrollmentNumber': student.enrollmentNumber,
           'fullName': student.fullName,
           'isMinor': student.requiresGuardian,
-          'registrationSource': (student.registrationSource ??
-                  RegistrationSource.staffAssisted)
-              .name,
+          'registrationSource':
+              (student.registrationSource ?? RegistrationSource.staffAssisted)
+                  .name,
         },
       ),
     ]);

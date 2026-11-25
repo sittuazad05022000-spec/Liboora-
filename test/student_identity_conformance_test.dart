@@ -299,14 +299,18 @@ void main() {
 
     test('enrolling the same number twice reuses one identity', () async {
       final c = await AppContainer.boot(seeder: seedDemoData);
-      final first = c.provisionIdentityForEnrollment(
-        phone: '9899999999',
-        displayName: 'Repeat Person',
-      ).$1;
-      final second = c.provisionIdentityForEnrollment(
-        phone: '9899999999',
-        displayName: 'Repeat Person',
-      ).$1;
+      final first = c
+          .provisionIdentityForEnrollment(
+            phone: '9899999999',
+            displayName: 'Repeat Person',
+          )
+          .$1;
+      final second = c
+          .provisionIdentityForEnrollment(
+            phone: '9899999999',
+            displayName: 'Repeat Person',
+          )
+          .$1;
 
       // Two libraries, two StudentRecords, ONE PersonId (ID-5, SID-INV-1).
       expect(second, equals(first));

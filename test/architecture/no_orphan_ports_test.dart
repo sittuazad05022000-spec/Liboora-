@@ -425,8 +425,7 @@ void main() {
       // And it must still be registered, so this assertion cannot be
       // confused with a hand-wired promise.
       final impls =
-          _implementationsByPort()['IdentityDirectoryPort'] ??
-          const <String>{};
+          _implementationsByPort()['IdentityDirectoryPort'] ?? const <String>{};
       expect(impls, contains('InMemoryPersonIdentityRepository'));
       expect(
         _constructedInCompositionRoot(),

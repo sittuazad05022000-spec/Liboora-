@@ -316,10 +316,7 @@ final class PersonIdentityService implements PersonIdentityFactory {
         DomainErrorCode.conflict,
         'Identity ${personId.value} already has a date of birth; a different '
         'one cannot be recorded over it.',
-        context: {
-          'personId': personId.value,
-          'recordedBy': recordedBy,
-        },
+        context: {'personId': personId.value, 'recordedBy': recordedBy},
       );
     }
     // `ADR-0179`: a DOB must be a real past date, measured against the

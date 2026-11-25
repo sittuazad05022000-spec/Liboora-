@@ -206,7 +206,11 @@ final class StudentRecord {
 
   /// `SM-2.3` — `Inactive → Active` (no reason) and `Suspended → Active`
   /// (reason required). `SM-2.10`: archived records leave only via restore.
-  void reactivate({required String actor, required DateTime at, String? reason}) {
+  void reactivate({
+    required String actor,
+    required DateTime at,
+    String? reason,
+  }) {
     if (status == EnrollmentStatus.archived) {
       throw const DomainError(
         DomainErrorCode.validationFailed,
@@ -250,9 +254,7 @@ final class StudentRecord {
     }
     status = EnrollmentStatus.archived;
     archivedAt = at;
-    _appendStatus(
-      StudentStatusChange(to: status, at: at, actor: actor),
-    );
+    _appendStatus(StudentStatusChange(to: status, at: at, actor: actor));
   }
 
   /// `SM-2.3` — `Archived → Active`, **TR-1 only** (owner); the use case

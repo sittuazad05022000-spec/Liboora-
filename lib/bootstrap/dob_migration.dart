@@ -86,9 +86,8 @@ DobMigrationReport migrateStudentDobToIdentities({
     );
   }
 
-  for (final raw in durableStore
-      .readAll(kStudentRecordsDurableNamespace)
-      .values) {
+  for (final raw
+      in durableStore.readAll(kStudentRecordsDurableNamespace).values) {
     rowsScanned++;
     try {
       final row = jsonDecode(raw) as Map<String, Object?>;

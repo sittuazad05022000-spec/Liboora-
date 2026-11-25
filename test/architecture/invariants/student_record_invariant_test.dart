@@ -10,7 +10,10 @@
 ///     by `tenant_isolation_test.dart` rather than here, because uniqueness is a
 ///     property of the store and not of a single instance;
 ///   * **at least one contactable channel**;
-///   * **guardian mandatory if age < 18**;
+///   * **guardian mandatory if age < 18** — expressed through `minorStatus`
+///     since `ADR-0179`: the aggregate never stores a DOB (`SM-4.2`), so the
+///     fail-safe works off the resolved status (`SM-4.5b`) and the derived
+///     status itself is exercised in the enrollment registration tests;
 ///   * **cannot Archive with open dues** (checked via the `E-09` pre-condition,
 ///     i.e. the balance is *supplied* by `BC-05`, never read directly).
 ///
@@ -33,9 +36,11 @@ StudentRecord _build({
   String fullName = 'Aarav Sharma',
   String phone = '+919812345678',
   String? email,
-  DateTime? dateOfBirth,
+  MinorStatus minorStatus = MinorStatus.adult,
+  AgeDeclaration? declaration,
   GuardianLink? guardian,
   PersonId? personId,
+  EnrollmentStatus status = EnrollmentStatus.active,
 }) {
   return StudentRecord(
     id: const StudentRecordId('stu-001'),
@@ -43,10 +48,15 @@ StudentRecord _build({
     fullName: fullName,
     phone: phone,
     email: email,
-    dateOfBirth: dateOfBirth ?? DateTime.utc(2000, 6, 1),
     enrolledOn: _enrolledOn,
     guardian: guardian,
     personId: personId ?? const PersonId('per-001'),
+    minorStatus: minorStatus,
+    ageDeclaration: declaration,
+    status: status,
+    statusHistory: [
+      StudentStatusChange(to: status, at: _enrolledOn, actor: 'test'),
+    ],
   );
 }
 
@@ -83,10 +93,10 @@ void main() {
     });
   });
 
-  group('BC-01 StudentRecord — guardian mandatory under 18', () {
+  group('BC-01 StudentRecord — guardian mandatory under 18 (SM-4.5b)', () {
     test('a minor without a guardian is refused', () {
       expect(
-        () => _build(dateOfBirth: DateTime.utc(2015, 6, 1)),
+        () => _build(minorStatus: MinorStatus.minor),
         throwsA(
           isA<DomainError>().having(
             (e) => e.code,
@@ -99,22 +109,64 @@ void main() {
 
     test('a minor with a guardian is accepted', () {
       final rec = _build(
-        dateOfBirth: DateTime.utc(2015, 6, 1),
+        minorStatus: MinorStatus.minor,
         guardian: const GuardianLink(name: 'R. Sharma', phone: '+919800000000'),
       );
       expect(rec.guardian, isNotNull);
+      expect(rec.requiresGuardian, isTrue);
     });
 
-    test('minority is evaluated as of the enrolment date, not "now"', () {
-      // Born exactly 18 years before enrolment => NOT a minor on that date.
-      final adultOnTheDay = _build(dateOfBirth: DateTime.utc(2008, 1, 15));
-      expect(adultOnTheDay.isMinorOn(_enrolledOn), isFalse);
-
-      // One day short of 18 on the enrolment date => minor, guardian required.
+    test('an unknown status with a minor declaration requires a guardian', () {
+      // `SM-4.5a` — the declaration is the recorded assertion; the fail-safe
+      // follows it. A record declared-minor without a guardian cannot exist.
       expect(
-        () => _build(dateOfBirth: DateTime.utc(2008, 1, 16)),
-        throwsA(isA<DomainError>()),
+        () => _build(
+          minorStatus: MinorStatus.unknown,
+          declaration: AgeDeclaration(
+            isMinor: true,
+            declaredBy: 'reception-1',
+            declaredAt: _enrolledOn,
+          ),
+        ),
+        throwsA(
+          isA<DomainError>().having(
+            (e) => e.code,
+            'code',
+            DomainErrorCode.guardianRequiredForMinor,
+          ),
+        ),
       );
+    });
+
+    test('an unknown status declared adult needs no guardian', () {
+      final rec = _build(
+        minorStatus: MinorStatus.unknown,
+        declaration: AgeDeclaration(
+          isMinor: false,
+          declaredBy: 'reception-1',
+          declaredAt: _enrolledOn,
+        ),
+      );
+      expect(rec.requiresGuardian, isFalse);
+    });
+
+    test('an unknown status with no declaration fails safe to minor', () {
+      // `SM-4.5b` — when age cannot be checked the student is treated as a
+      // minor, never as an adult: the record cannot exist without a guardian.
+      expect(
+        () => _build(minorStatus: MinorStatus.unknown),
+        throwsA(
+          isA<DomainError>().having(
+            (e) => e.code,
+            'code',
+            DomainErrorCode.guardianRequiredForMinor,
+          ),
+        ),
+      );
+    });
+
+    test('an adult needs no guardian', () {
+      expect(_build(minorStatus: MinorStatus.adult).requiresGuardian, isFalse);
     });
   });
 
@@ -141,7 +193,11 @@ void main() {
     test('archiving with a positive balance is refused', () {
       final rec = _build();
       expect(
-        () => rec.archive(outstandingBalance: Money.rupees(500)),
+        () => rec.archive(
+          outstandingBalance: Money.rupees(500),
+          actor: 'test',
+          at: _enrolledOn,
+        ),
         throwsA(
           isA<DomainError>().having(
             (e) => e.code,
@@ -157,7 +213,11 @@ void main() {
 
     test('archiving with a zero balance succeeds', () {
       final rec = _build();
-      rec.archive(outstandingBalance: Money.zero);
+      rec.archive(
+        outstandingBalance: Money.zero,
+        actor: 'test',
+        at: _enrolledOn,
+      );
       expect(rec.status, EnrollmentStatus.archived);
     });
 
@@ -167,10 +227,40 @@ void main() {
       // number — there is no no-arg overload to fall back on.
       final rec = _build();
       expect(
-        () => rec.archive(outstandingBalance: Money.zero),
+        () => rec.archive(
+          outstandingBalance: Money.zero,
+          actor: 'test',
+          at: _enrolledOn,
+        ),
         returnsNormally,
       );
       expect(rec.status, EnrollmentStatus.archived);
+    });
+  });
+
+  group('BC-01 StudentRecord — status history (SM-2.13)', () {
+    test('every transition appends an audited entry; history is append-only',
+        () {
+      final rec = _build();
+      rec.suspend(actor: 'owner-1', at: _enrolledOn, reason: 'fee default');
+      rec.reactivate(actor: 'owner-1', at: _enrolledOn, reason: 'paid');
+      expect(rec.statusHistory, hasLength(3));
+      expect(rec.statusHistory.map((c) => c.to.name).toList(), [
+        'active',
+        'suspended',
+        'active',
+      ]);
+      // Append-only: the first entry is still the registration itself.
+      expect(rec.statusHistory.first.to, EnrollmentStatus.active);
+    });
+
+    test('restore is refused unless the record is archived', () {
+      final rec = _build();
+      expect(
+        () => rec.restore(actor: 'owner-1', at: _enrolledOn),
+        throwsA(isA<DomainError>()),
+      );
+      expect(rec.status, EnrollmentStatus.active);
     });
   });
 }

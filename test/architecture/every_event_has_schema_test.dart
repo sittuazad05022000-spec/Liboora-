@@ -731,7 +731,12 @@ void main() {
         // so IMPL-431's enum-named producers would have been invisible to it
         // and this measurement would have under-reported while reporting
         // green. The scanner now reads both forms.
-        13,
+        //
+        // 13 -> 14: ADR-0179 / SM-2.12 added enrollment.StudentStatusChanged
+        // — the restore use case's own fact (SM-EV-2), raised alongside the
+        // existing SM-EV-1 registration event. Declared in §9, so this is a
+        // producer catching up with the catalogue.
+        14,
         reason:
             'Measured: ${raised.length} of ${declared.length} declared §9 '
             'events are raised in lib/. Raised: '

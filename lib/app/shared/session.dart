@@ -402,23 +402,37 @@ final class SessionController extends ChangeNotifier {
   /// possession of the number is the sole factor), so the account created here
   /// is **unverified and role-less**: it is a record awaiting the student's own
   /// first sign-in, which is exactly the `E-11` claim flow. It grants nothing.
-  Future<String?> enroll({
+  ///
+  /// Returns a typed [EnrollmentOutcome] (composition-root type, defined in
+  /// `di.dart`) rather than an error string, because `SM-3.13`/`SM-3.14` are
+  /// business outcomes the desk acts on — open the existing record, or offer
+  /// restore — not failures to print.
+  Future<EnrollmentOutcome> enroll({
     required String fullName,
     required String phone,
-    required DateTime dob,
+    required IdempotencyKey idempotencyKey,
+    DateTime? dateOfBirth,
+    bool? declaredMinor,
     GuardianLink? guardian,
-  }) => run(() async {
-    await container.enrollStudent(
+  }) async {
+    final outcome = await container.registerWalkIn(
       actorRole: role,
+      idempotencyKey: idempotencyKey,
       fullName: fullName,
       phone: phone,
-      dateOfBirth: dob,
-      personId: container.provisionIdentityForEnrollment(
-        phone: phone.trim(),
-        displayName: fullName.trim(),
-      ),
+      dateOfBirth: dateOfBirth,
+      declaredMinor: declaredMinor,
       guardian: guardian,
     );
+    notifyListeners();
+    return outcome;
+  }
+
+  /// `SM-2.3` — restore an archived Student Record. Authority (TR-1 only) is
+  /// enforced inside [RestoreStudent] via the PDP; this surface merely
+  /// forwards, and reports refusal as an operator-readable message.
+  Future<String?> restoreStudent(StudentRecordId id) => run(() async {
+    await container.restoreStudent(actorRole: role, studentId: id);
   });
 
   void toggleOffline() {

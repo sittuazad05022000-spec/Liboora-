@@ -111,15 +111,6 @@ final class PersonIdentity {
         'A Global Person Identity requires a display name.',
       );
     }
-    // ADR-0179: a DOB, when present, must be a real past date. A future DOB
-    // is invalid input, never "a person not yet born".
-    final dob = dateOfBirth;
-    if (dob != null && dob.isAfter(DateTime.now())) {
-      throw const DomainError(
-        DomainErrorCode.validationFailed,
-        'A date of birth cannot be in the future.',
-      );
-    }
   }
 
   /// `ID-5` / `SEV-16` — erasure anonymises the person here. It deliberately
@@ -147,49 +138,30 @@ abstract interface class PersonIdentityRepository {
   int get count;
 }
 
-/// The `E-13` **Anti-Corruption Layer**, consumed by `domain/library`.
-///
-/// Deliberately narrower than the aggregate: it exposes only the core fields a
-/// library legitimately needs for a `PersonId` a Student Record *already
-/// holds* (`SPO-9`). It offers no listing, no search, and no way to ask which
-/// organisations a person attends (`SID-4.19`).
-///
-/// `BC-01` never receives this module's domain types, and this module never
-/// receives `BC-01`'s (`SID-4.18`).
-abstract interface class IdentityDirectory {
-  /// Non-mutating resolution of display fields. Returns null when no identity
-  /// exists for [id], which callers must treat as "not resolvable", never as
-  /// grounds to create one.
-  IdentityCoreFields? resolve(PersonId id);
-}
-
-/// The flat, translated projection crossing the `E-13` ACL. Carries no
-/// aggregate, no status history and no reference back into this module.
-final class IdentityCoreFields {
-  const IdentityCoreFields({
-    required this.personId,
-    required this.displayName,
-    required this.isActive,
-    this.dateOfBirth,
-  });
-
-  final PersonId personId;
-  final String displayName;
-  final bool isActive;
-
-  /// `ADR-0179` — the DOB as owned by BC-10, read through the `E-13` ACL
-  /// (`PRD-004` `SM-4.5`: age derives from here, never from a stored copy).
-  /// `null` is an explicit "absent/unknown" result (`SM-4.5a`), never a
-  /// default age.
-  final DateTime? dateOfBirth;
-}
+// The `E-13` Anti-Corruption Layer port ([IdentityDirectoryPort] and
+// [IdentityCoreFields]) is declared in `liboora_contracts` (rank 0) because
+// the manifest bans `domain/library -> domain/person` imports — `ADR-0011`:
+// reach BC-10 by PORT, never by import. This module implements the port
+// through [InMemoryPersonIdentityRepository]; `BC-01` consumes it via the
+// rank-0 barrel, the same inversion as [PersonIdentityFactory].
 
 final class InMemoryPersonIdentityRepository
-    implements PersonIdentityRepository, IdentityDirectory {
-  InMemoryPersonIdentityRepository({DurableKeyValueStore? durable})
-    : _durable = durable;
+    implements PersonIdentityRepository, IdentityDirectoryPort {
+  /// The codec is **injected, not imported** (`ADR-0012` discipline): rank 7.5
+  /// may not reach the composition root's codecs, so `di.dart` hands them in —
+  /// the same pattern `TenantPartitionedStore` uses. `null` alongside a null
+  /// `durable`: an in-memory world has nothing to encode.
+  InMemoryPersonIdentityRepository({
+    DurableKeyValueStore? durable,
+    String Function(PersonIdentity identity)? encode,
+    PersonIdentity Function(String raw)? decode,
+  }) : _durable = durable,
+       _encode = encode,
+       _decode = decode;
 
   final DurableKeyValueStore? _durable;
+  final String Function(PersonIdentity identity)? _encode;
+  final PersonIdentity Function(String raw)? _decode;
 
   /// Durable namespace for the global identity directory. Identity is global
   /// (`SID-4.49` — no tenant key), so keys are bare person ids, never
@@ -226,11 +198,14 @@ final class InMemoryPersonIdentityRepository
     // ADR-0179 — write-through, so the identity (and its owned DOB) survives
     // restart. Identities were in-memory-only before Option C, which is why
     // restored accounts could point at vanished identities; this closes it.
-    _durable?.write(
-      durableNamespace,
-      identity.personId.value,
-      encodePersonIdentity(identity),
-    );
+    final encode = _encode;
+    if (encode != null) {
+      _durable?.write(
+        durableNamespace,
+        identity.personId.value,
+        encode(identity),
+      );
+    }
   }
 
   @override
@@ -242,11 +217,12 @@ final class InMemoryPersonIdentityRepository
   /// as `TenantPartitionedStore.restore`.
   int restoreAll() {
     final durable = _durable;
-    if (durable == null) return 0;
+    final decode = _decode;
+    if (durable == null || decode == null) return 0;
     var restored = 0;
     for (final entry in durable.readAll(durableNamespace).entries) {
       try {
-        final identity = decodePersonIdentity(entry.value);
+        final identity = decode(entry.value);
         _byPerson[identity.personId.value] = identity;
         _accountIndex[identity.accountId.value] = identity.personId;
         restored++;
@@ -344,6 +320,16 @@ final class PersonIdentityService implements PersonIdentityFactory {
           'personId': personId.value,
           'recordedBy': recordedBy,
         },
+      );
+    }
+    // `ADR-0179`: a DOB must be a real past date, measured against the
+    // injected clock (`X-09` — no `DateTime.now()` in domain code, so the
+    // invariant lives on this write path where a clock exists, never in the
+    // aggregate constructor).
+    if (dateOfBirth.isAfter(_clock.today())) {
+      throw const DomainError(
+        DomainErrorCode.validationFailed,
+        'A date of birth cannot be in the future.',
       );
     }
     identity.dateOfBirth = dateOfBirth;

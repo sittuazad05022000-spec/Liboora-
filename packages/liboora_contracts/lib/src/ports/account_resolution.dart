@@ -13,7 +13,7 @@
 /// Option C authorization (ADR-0179).
 library;
 
-import 'package:liboora_contracts/liboora_contracts.dart';
+import '../value_objects/identifiers.dart';
 
 /// The output of resolving an AccountId — the data needed for enrollment.
 ///

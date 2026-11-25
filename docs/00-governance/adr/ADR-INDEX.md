@@ -1965,3 +1965,29 @@ interim-policy (`RET-01…RET-13`) remains **DISCHARGED in effect** and carried 
 | Number | ⭐ `ADR-0177` is the next unregistered ADR; no number reused, reserved, or renumbered |
 | Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit past entries or the `Date`/`Count` cells; both remain for a later `ADR-0146`-conforming registration pass |
 | Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at §6); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** ⛔ `ADR-0177`'s §1–§6 decision text is byte-preserved by this act |
+
+---
+
+## ⭐ End-of-file addendum — `ADR-0179` registered **ACCEPTED** (2026-11-25)
+
+⭐ Registered as a **status act**, not a re-decision. `ADR-0179` is now `Accepted` by
+**direct Product Owner conferral** (one-act form; authority reverts on completion of
+the act and its verification per `ADR-0033` §7.1), recorded verbatim in the ADR's
+header.
+
+| Field | Value |
+|---|---|
+| **ADR** | [`ADR-0179`](ADR-0179-bc-10-dob-ownership-correction.md) |
+| **Status** | ⭐⭐ **Accepted** — 2026-11-25, by **direct Product Owner conferral** recorded verbatim at the ADR header (one-principal form; ⛔ no ARB quorum / external audit asserted — `ADR-0103`/`ADR-0146` disclosure form; authority **reverts** on completion per `ADR-0033` §7.1) |
+| **Subject** | **BC-10 owns the date of birth** — `PersonIdentity.dateOfBirth`, the `E-13` DOB read through the rank-0 `IdentityDirectoryPort`, `StudentRecord` v2 with no DOB, and the idempotent legacy DOB transfer (orphans reported, never guessed) |
+| **Authority** | ⭐ **Product Owner** — one-act conferral (Option C), recorded verbatim at the ADR header |
+| **Downstream** | `BC-01` enrollment derives age via `E-13` (`SM-4.5`/`SM-4.5a`/`SM-4.5b`); v1 rows preserved on disk until verified transfer; all changes left **uncommitted** pending the separately authorized git act |
+| **Preserved** | ⛔ No manifest edit · no Rank 1–3 document touched · no checker rule change · no waiver added or shortened · `SM-3.16` remains the future persistence migration's obligation · ⛔ **0** new roles, permissions or events (restore emits the §9-declared `SM-EV-2`) |
+
+### ⛔ Registration hygiene
+
+| Check | Result |
+|---|---|
+| Number | ⭐ `ADR-0179` is the next unregistered ADR; no number reused, reserved, or renumbered |
+| Citation cost | ⭐⭐ **ZERO** — this end-of-file addendum does not edit past entries or the `Date`/`Count` cells |
+| Status act | ⭐ Registration records the **Accepted** status (the conferral was performed at the ADR header); ⛔ it does **not** re-decide or widen the ADR — ⭐ **Process rule 2: *"Never edit an Accepted ADR's decision text."*** |

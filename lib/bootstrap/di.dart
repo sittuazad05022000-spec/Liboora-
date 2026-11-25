@@ -32,6 +32,7 @@ import '../platform/tenancy/tenancy.dart';
 import 'clock.dart';
 import 'account_store.dart';
 import 'codecs.dart';
+import 'dob_migration.dart';
 import 'session_store.dart';
 
 /// Branch display facts, flattened for the UI.
@@ -90,12 +91,14 @@ final class AppContainer {
     required this.seatingReads,
     required this.identities,
     required this.identityService,
+    required this.accountResolution,
     required this.socialPresences,
     required this.messagingEnforcement,
     required this.auth,
     required this.sessionStore,
     required this.accountStore,
     required this.enrollStudent,
+    required this.restoreStudent,
     required this.createMembership,
     required this.renewMembership,
     required this.activateMembership,
@@ -209,6 +212,11 @@ final class AppContainer {
   /// [PersonIdentityFactory] port.
   final PersonIdentityService identityService;
 
+  /// `E-11` — the sync account-resolution port. Resolves an [AccountId] to the
+  /// `PersonId` and tenant roles an enrolling caller needs, without creating
+  /// accounts (`SID-4.11`). Recovered verbatim from commit `86d8008`.
+  final AccountResolution accountResolution;
+
   /// BC-11 social graph presence. A consumer of identity, never its owner.
   final InMemorySocialPresenceRepository socialPresences;
 
@@ -235,6 +243,10 @@ final class AppContainer {
 
   // ── Use cases ────────────────────────────────────────────────────
   final EnrollStudent enrollStudent;
+
+  /// `SM-2.3` — restore of an archived Student Record. TR-1-only authority is
+  /// enforced inside the use case via the PDP, never in UI.
+  final RestoreStudent restoreStudent;
   final CreateMembership createMembership;
 
   /// `IMPL-424` — renewal (`MM-FR-080`..`MM-FR-092`).
@@ -306,15 +318,20 @@ final class AppContainer {
   /// student claims it at their own first sign-in (`E-11`). Creating it grants
   /// no access whatsoever — [AuthService.issueSession] refuses an account with
   /// no role in the tenant.
-  PersonId provisionIdentityForEnrollment({
+  ///
+  /// Returns **both** ids: enrollment needs the account (`MP-GBR-01`) and the
+  /// person behind it (`SID-4.17`), and the two are minted together here —
+  /// never re-derived by a caller (`SPO-1`).
+  (PersonId, AccountId) provisionIdentityForEnrollment({
     required String phone,
     required String displayName,
+    DateTime? dateOfBirth,
   }) {
     for (final a in auth.accounts) {
       // An identity already exists for this number; enrollment reuses it. A
       // second library enrolling the same person yields a second
       // StudentRecord and the SAME PersonId — the asymmetry ID-5 depends on.
-      if (a.phone == phone) return a.personId;
+      if (a.phone == phone) return (a.personId, a.id);
     }
 
     // MP-GBR-02: the account and its identity are created together. The
@@ -324,6 +341,16 @@ final class AppContainer {
       account: accountId,
       displayName: displayName,
     );
+    // `ADR-0179` — the DOB belongs to BC-10. If reception captured one, it is
+    // recorded on the identity through BC-10's own write path (first-wins,
+    // conflict-on-different) before any caller can hold the pair.
+    if (dateOfBirth != null) {
+      identityService.recordDateOfBirth(
+        personId: personId,
+        dateOfBirth: dateOfBirth,
+        recordedBy: tenantContext.actorId ?? 'system',
+      );
+    }
     auth.registerProvisionedAccount(
       Account(
         id: accountId,
@@ -333,7 +360,79 @@ final class AppContainer {
         roles: const {},
       ),
     );
-    return personId;
+    return (personId, accountId);
+  }
+
+  /// `SM-3.2` — the complete walk-in registration orchestration. It spans
+  /// `BC-18` (account), `BC-10` (identity) and `BC-01` (enrollment), which no
+  /// lower module may know together (`SPO-1`), so it lives at the composition
+  /// root beside [provisionIdentityForEnrollment], the step it extends.
+  ///
+  /// Returns an [EnrollmentOutcome] rather than throwing, so the desk can act
+  /// on `SM-3.13` (duplicate → open the existing record) and `SM-3.14`
+  /// (archived → offer restore) without try/catch policy decisions in UI.
+  /// Authority is never weakened here: [EnrollStudent] still runs the PDP.
+  Future<EnrollmentOutcome> registerWalkIn({
+    required AccessRole actorRole,
+    required IdempotencyKey idempotencyKey,
+    required String fullName,
+    required String phone,
+    DateTime? dateOfBirth,
+    bool? declaredMinor,
+    GuardianLink? guardian,
+  }) async {
+    final (personId, accountId) = provisionIdentityForEnrollment(
+      phone: phone,
+      displayName: fullName,
+      dateOfBirth: dateOfBirth,
+    );
+    try {
+      final student = await enrollStudent(
+        actorRole: actorRole,
+        idempotencyKey: idempotencyKey,
+        accountId: accountId,
+        personId: personId,
+        fullName: fullName,
+        phone: phone,
+        guardian: guardian,
+        // `SM-4.5a` — a declaration is recorded only when BC-10 holds no DOB.
+        // A DOB and a declaration are mutually exclusive inputs; the recorded
+        // DOB always wins because it is evidence, not assertion.
+        declaration: dateOfBirth == null && declaredMinor != null
+            ? AgeDeclaration(
+                isMinor: declaredMinor,
+                declaredBy: tenantContext.actorId ?? 'system',
+                declaredAt: clock.today(),
+              )
+            : null,
+      );
+      return EnrolledOutcome(
+        studentRecordId: student.id,
+        enrollmentNumber: student.enrollmentNumber,
+      );
+    } on DomainError catch (e) {
+      final existing = e.context['existingStudentRecordId'] as String?;
+      if (existing != null) {
+        // `SM-3.13` — carry the id so the desk opens the record instead of
+        // retrying.
+        return DuplicateOutcome(
+          existingStudentRecordId: StudentRecordId(existing),
+          message: e.message,
+        );
+      }
+      final archived = e.context['archivedStudentRecordId'] as String?;
+      if (archived != null) {
+        // `SM-3.14` — the count travels so the desk can present it; the id
+        // names the most-recently-archived record (`SM-3.14a`).
+        return RestoreRequiredOutcome(
+          archivedStudentRecordId: StudentRecordId(archived),
+          archivedCount:
+              (e.context['archivedCount'] as num?)?.toInt() ?? 1,
+          message: e.message,
+        );
+      }
+      return FailedOutcome(e.message);
+    }
   }
 
   /// Enter a tenant scope. The ONLY caller permitted by the dependency rules.
@@ -455,6 +554,16 @@ final class AppContainer {
       'membership.*',
       audit.recordDomainFact,
       consumer: 'audit-bc24',
+    );
+
+    // `SM-EV-1`/`SM-EV-2` — the enrollment context's facts ride the same
+    // E-20 outbox into the audit trail. Subscribed here for the same reason
+    // as `membership.*`: the composition root is the sanctioned place to
+    // know two modules.
+    events.subscribe(
+      'enrollment.*',
+      audit.recordDomainFact,
+      consumer: 'audit-bc01',
     );
 
     // Tenant-partitioned stores. Every one of these refuses to answer
@@ -604,13 +713,39 @@ final class AppContainer {
     // (global keys, no tenant partition, `SID-4.49`), closing the pre-Option-C
     // gap where a restart silently emptied the identity directory that
     // restored accounts point at.
-    final identities = InMemoryPersonIdentityRepository(durable: durable);
-    final restoredIdentities = identities.restoreAll();
+    final identities = InMemoryPersonIdentityRepository(
+      durable: durable,
+      encode: durable == null ? null : encodePersonIdentity,
+      decode: durable == null ? null : decodePersonIdentity,
+    );
+    identities.restoreAll();
     final identityService = PersonIdentityService(
       repository: identities,
       clock: clock,
       ids: ids,
     );
+
+    // `ADR-0179` Option C, Phase 3 — one idempotent transfer of every DOB the
+    // v1 student rows still carry over to the BC-10 identity that owns it.
+    // Runs AFTER the identity directory is restored (the transfer's write
+    // path) and BEFORE the container is built (no use case may observe a
+    // half-migrated world). Raw student rows are never written here; the old
+    // `dateOfBirth` keys stay on disk until a row is next saved in v2, so the
+    // pre-migration state remains recoverable by not running this migration.
+    // Orphans are reported at boot, never guessed at.
+    final dobMigration = migrateStudentDobToIdentities(
+      durable: durable,
+      identityService: identityService,
+      identities: identities,
+      recordActor: () => tenantContext.actorId ?? 'system',
+    );
+    if (dobMigration.hasOrphans) {
+      debugPrint(
+        'Liboora: DOB migration found ${dobMigration.orphans.length} student '
+        'row(s) without a Global Person Identity — DOB left in place, not '
+        'guessed: ${dobMigration.orphans.take(5).join(', ')}',
+      );
+    }
 
     final container = AppContainer._(
       tenantContext: tenantContext,
@@ -654,6 +789,7 @@ final class AppContainer {
       seatingReads: SeatingReadAdapter(seatMap),
       identities: identities,
       identityService: identityService,
+      accountResolution: AccountResolutionImpl(accounts),
       socialPresences: InMemorySocialPresenceRepository(),
       messagingEnforcement: messagingEnforcement,
       // P1 session restore. Shares one adapter with the account directory, so
@@ -695,6 +831,18 @@ final class AppContainer {
       enrollStudent: EnrollStudent(
         repo: students,
         entitlements: entitlements,
+        events: events,
+        clock: clock,
+        ids: ids,
+        tenant: tenantContext,
+        pdp: pdp,
+        // `E-13` — age derives from BC-10's identity directory (`SM-4.5`).
+        identities: identities,
+        // `SM-3.6` — tenant-scoped replay protection, adapter here.
+        idempotency: EnrollmentIdempotencyAdapter(idempotency),
+      ),
+      restoreStudent: RestoreStudent(
+        repo: students,
         events: events,
         clock: clock,
         ids: ids,
@@ -910,6 +1058,75 @@ final class MembershipIdempotencyAdapter implements MembershipIdempotencyStore {
   @override
   void remember(IdempotencyKey key, Membership result) =>
       _service.remember(key, result);
+}
+
+/// `SM-3.6` / `ADR-0179` — adapter for BC-01's idempotency port, same shape
+/// and same reason as [MembershipIdempotencyAdapter]: `enrollment` declares
+/// the port; `platform/services` owns the mechanism; binding them is the
+/// composition root's job.
+final class EnrollmentIdempotencyAdapter implements EnrollmentIdempotencyStore {
+  const EnrollmentIdempotencyAdapter(this._service);
+  final IdempotencyService _service;
+
+  @override
+  StudentRecord? recall(IdempotencyKey key) =>
+      _service.recall<StudentRecord>(key);
+
+  @override
+  void remember(IdempotencyKey key, StudentRecord result) =>
+      _service.remember(key, result);
+}
+
+/// The outcome of a walk-in registration, as [AppContainer.registerWalkIn]
+/// reports it. Sealed so a new outcome is a compile error at the desk, not a
+/// silent fall-through. The app layer sees these types through the
+/// composition root — never the `BC-01` aggregate behind them.
+sealed class EnrollmentOutcome {
+  const EnrollmentOutcome();
+}
+
+/// `SM-3.9` — the registration succeeded.
+final class EnrolledOutcome extends EnrollmentOutcome {
+  const EnrolledOutcome({
+    required this.studentRecordId,
+    required this.enrollmentNumber,
+  });
+
+  final StudentRecordId studentRecordId;
+  final String enrollmentNumber;
+}
+
+/// `SM-3.13` — this person is already enrolled here. Carries the existing
+/// record so the desk opens it instead of retrying.
+final class DuplicateOutcome extends EnrollmentOutcome {
+  const DuplicateOutcome({
+    required this.existingStudentRecordId,
+    required this.message,
+  });
+
+  final StudentRecordId existingStudentRecordId;
+  final String message;
+}
+
+/// `SM-3.14` — the person has archived record(s). Carries the
+/// most-recently-archived record (`SM-3.14a`) and the count, so the desk can
+/// present restore — which only [RestoreStudent] (TR-1) may perform.
+final class RestoreRequiredOutcome extends EnrollmentOutcome {
+  const RestoreRequiredOutcome({
+    required this.archivedStudentRecordId,
+    required this.archivedCount,
+    required this.message,
+  });
+
+  final StudentRecordId archivedStudentRecordId;
+  final int archivedCount;
+  final String message;
+}
+
+/// Any other business refusal — message is operator-facing (`ERR-1130`).
+final class FailedOutcome extends EnrollmentOutcome {
+  const FailedOutcome(this.message);
+  final String message;
 }
 
 /// `IMPL-411` — the `E-01` anti-corruption layer.

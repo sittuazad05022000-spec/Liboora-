@@ -69,35 +69,42 @@ DobMigrationReport migrateStudentDobToIdentities({
   required PersonIdentityRepository identities,
   required String Function() recordActor,
 }) {
-  final report = DobMigrationReport(
-    rowsScanned: 0,
-    rowsWithDob: 0,
-    migrated: 0,
-    alreadyOwned: 0,
-    orphans: [],
-  );
+  var rowsScanned = 0;
+  var rowsWithDob = 0;
+  var migrated = 0;
+  var alreadyOwned = 0;
+  final orphans = <String>[];
   final durableStore = durable;
-  if (durableStore == null) return report; // In-memory world: nothing to migrate.
+  if (durableStore == null) {
+    // In-memory world: nothing to migrate.
+    return DobMigrationReport(
+      rowsScanned: 0,
+      rowsWithDob: 0,
+      migrated: 0,
+      alreadyOwned: 0,
+      orphans: orphans,
+    );
+  }
 
   for (final raw in durableStore
       .readAll(kStudentRecordsDurableNamespace)
       .values) {
-    report.rowsScanned++;
+    rowsScanned++;
     try {
       final row = jsonDecode(raw) as Map<String, Object?>;
       final dobRaw = row['dateOfBirth'];
       if (dobRaw == null) continue; // v2 row, or a legacy row with no DOB.
-      report.rowsWithDob++;
+      rowsWithDob++;
       final personId = PersonId(row['personId']! as String);
       final identity = identities.byPersonId(personId);
       if (identity == null) {
         // Never guess a mapping. The row stays intact on disk; the report
         // surfaces the orphan for the operator.
-        report.orphans.add(personId.value);
+        orphans.add(personId.value);
         continue;
       }
       if (identity.dateOfBirth != null) {
-        report.alreadyOwned++;
+        alreadyOwned++;
         continue;
       }
       identityService.recordDateOfBirth(
@@ -105,10 +112,16 @@ DobMigrationReport migrateStudentDobToIdentities({
         dateOfBirth: DateTime.parse(dobRaw as String),
         recordedBy: recordActor(),
       );
-      report.migrated++;
+      migrated++;
     } catch (_) {
       continue; // Undecodable row: skipped, never fabricated (restore rule).
     }
   }
-  return report;
+  return DobMigrationReport(
+    rowsScanned: rowsScanned,
+    rowsWithDob: rowsWithDob,
+    migrated: migrated,
+    alreadyOwned: alreadyOwned,
+    orphans: orphans,
+  );
 }

@@ -91,9 +91,11 @@ void main() {
         fullName: 'Aarav Sharma',
         phone: '9810000001',
         email: 'aarav@example.com',
-        dateOfBirth: DateTime.utc(2001, 5, 14),
         enrolledOn: _t0,
         personId: const PersonId('per_1'),
+        accountId: const AccountId('acc_1'),
+        registrationSource: RegistrationSource.staffAssisted,
+        minorStatus: MinorStatus.minor,
         status: EnrollmentStatus.suspended,
         photoRef: const FileRef('file_9'),
         guardian: const GuardianLink(
@@ -101,6 +103,19 @@ void main() {
           phone: '9810000099',
           relation: 'Mother',
         ),
+        statusHistory: [
+          StudentStatusChange(
+            to: EnrollmentStatus.active,
+            at: _t0,
+            actor: 'reception-1',
+          ),
+          StudentStatusChange(
+            to: EnrollmentStatus.suspended,
+            at: _t0,
+            actor: 'owner-1',
+            reason: 'fee default',
+          ),
+        ],
       );
 
       final r = decodeStudentRecord(encodeStudentRecord(original));
@@ -110,9 +125,15 @@ void main() {
       expect(r.fullName, 'Aarav Sharma');
       expect(r.phone, '9810000001');
       expect(r.email, 'aarav@example.com');
-      expect(r.dateOfBirth, original.dateOfBirth);
       expect(r.enrolledOn, original.enrolledOn);
       expect(r.personId, const PersonId('per_1'));
+      expect(r.accountId, const AccountId('acc_1'));
+      expect(r.registrationSource, RegistrationSource.staffAssisted);
+      expect(r.minorStatus, MinorStatus.minor);
+      expect(r.ageDeclaration, isNull);
+      expect(r.statusHistory, hasLength(2));
+      expect(r.statusHistory[1].actor, 'owner-1');
+      expect(r.statusHistory[1].reason, 'fee default');
       expect(r.status, EnrollmentStatus.suspended);
       expect(r.photoRef, const FileRef('file_9'));
       expect(r.guardian!.name, 'Meera Sharma');
@@ -126,9 +147,9 @@ void main() {
         enrollmentNumber: 'EN-0002',
         fullName: 'Adult Student',
         phone: '9810000002',
-        dateOfBirth: DateTime.utc(1995, 1, 1),
         enrolledOn: _t0,
         personId: const PersonId('per_2'),
+        minorStatus: MinorStatus.adult,
       );
 
       final r = decodeStudentRecord(encodeStudentRecord(original));
@@ -569,9 +590,9 @@ void main() {
       enrollmentNumber: 'EN-$id',
       fullName: 'Name $id',
       phone: '98100000${id.length}',
-      dateOfBirth: DateTime.utc(1995, 1, 1),
       enrolledOn: _t0,
       personId: PersonId('per_$id'),
+      minorStatus: MinorStatus.adult,
     );
 
     setUp(() {
@@ -668,9 +689,9 @@ void main() {
       enrollmentNumber: 'EN-$id',
       fullName: name,
       phone: '9810000001',
-      dateOfBirth: DateTime.utc(1995, 1, 1),
       enrolledOn: _t0,
       personId: PersonId('per_$id'),
+      minorStatus: MinorStatus.adult,
     );
 
     test('two tenants writing the same row id do not collide', () {
@@ -960,15 +981,20 @@ void main() {
 
       first.enterScope(tenant: kDemoTenant, branch: kDemoBranch);
       final before = first.students.all().length;
+      // `ADR-0179` — the DOB is recorded on the BC-10 identity through the
+      // real provisioning path; the enrollment derives minor status from it.
+      final (personId, accountId) = first.provisionIdentityForEnrollment(
+        phone: '9811122233',
+        displayName: 'Walk In Student',
+        dateOfBirth: DateTime.utc(1998, 7, 21),
+      );
       final id = await first.enrollStudent(
         actorRole: AccessRole.reception,
+        idempotencyKey: const IdempotencyKey('test_walkin_9811122233'),
+        accountId: accountId,
         fullName: 'Walk In Student',
         phone: '9811122233',
-        dateOfBirth: DateTime.utc(1998, 7, 21),
-        personId: first.provisionIdentityForEnrollment(
-          phone: '9811122233',
-          displayName: 'Walk In Student',
-        ),
+        personId: personId,
       );
       expect(first.students.all().length, before + 1);
       first.leaveScope();

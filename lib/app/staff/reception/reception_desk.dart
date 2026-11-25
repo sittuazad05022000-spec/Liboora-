@@ -11,6 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:liboora_contracts/liboora_contracts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../bootstrap/di.dart'
+    show
+        DuplicateOutcome,
+        EnrolledOutcome,
+        FailedOutcome,
+        RestoreRequiredOutcome;
 import '../../shared/session.dart';
 import '../../shared/theme.dart';
 import '../../shared/widgets/common.dart';
@@ -224,71 +230,220 @@ class _ReceptionDeskState extends State<ReceptionDesk> {
     final s = context.read<SessionController>();
     final name = TextEditingController();
     final phone = TextEditingController();
-    final year = TextEditingController(text: '2002');
+    final guardianName = TextEditingController();
+    final guardianPhone = TextEditingController();
+    // `ADR-0179` — a DOB is recorded only when it is truly known (BC-10
+    // evidence). When it is not, the staff record an audited `SM-4.5a`
+    // declaration instead; a year alone is never expanded into a fabricated
+    // date.
+    DateTime? dob;
+    bool? declaredMinor;
+    // `SM-3.6` — one key per dialog, generated before any submission so a
+    // double-tap on Enroll replays to the same record instead of creating a
+    // second one.
+    final key = IdempotencyKey('enroll_${s.container.ids.next('enr')}');
+
+    Future<void> submit(BuildContext ctx) async {
+      final pickedDob = dob;
+      final guardianRequired = pickedDob != null
+          ? DateTime.now().year - pickedDob.year < 18
+          : (declaredMinor ?? true); // `SM-4.5b` fail-safe mirrors the domain.
+      final hasGuardian = guardianName.text.trim().isNotEmpty;
+      if (guardianRequired && !hasGuardian) {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'A guardian is mandatory for minors, and whenever no age '
+              'evidence exists (SM-4.5b).',
+            ),
+          ),
+        );
+        return;
+      }
+      final guardian = hasGuardian
+          ? GuardianLink(
+              name: guardianName.text.trim(),
+              phone: guardianPhone.text.trim(),
+            )
+          : null;
+      if (ctx.mounted) Navigator.of(ctx).pop();
+      final outcome = await s.enroll(
+        fullName: name.text.trim(),
+        phone: phone.text.trim(),
+        idempotencyKey: key,
+        dateOfBirth: dob,
+        declaredMinor: dob == null ? declaredMinor : null,
+        guardian: guardian,
+      );
+      if (!mounted) return;
+      switch (outcome) {
+        case EnrolledOutcome(:final enrollmentNumber):
+          _snack(
+            '${name.text.trim()} enrolled as $enrollmentNumber',
+            color: LiblColors.success,
+          );
+        case DuplicateOutcome(:final existingStudentRecordId, :final message):
+          // `SM-3.13` — open the existing record, never retry.
+          _snack(message, color: LiblColors.warning);
+          final entry = s.container.studentDirectory.byId(
+            existingStudentRecordId,
+          );
+          if (entry != null && context.mounted) {
+            showStudentSheet(context, entry);
+          }
+        case RestoreRequiredOutcome(
+          :final archivedStudentRecordId,
+          :final archivedCount,
+          :final message,
+        ):
+          // `SM-3.14` — restore is offered, never performed silently; the
+          // authority check (TR-1) lives in the use case, not here.
+          if (!context.mounted) return;
+          final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Archived record found'),
+              content: Text(
+                '$message\n\nRestore the most recent one? '
+                '($archivedCount archived record(s); restore is owner-only.)',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  child: const Text('Restore'),
+                ),
+              ],
+            ),
+          );
+          if (confirmed != true || !mounted) return;
+          final err = await s.restoreStudent(archivedStudentRecordId);
+          if (!mounted) return;
+          _snack(
+            err ?? 'Record restored',
+            color: err == null ? LiblColors.success : LiblColors.danger,
+          );
+        case FailedOutcome(:final message):
+          _snack(message, color: LiblColors.danger);
+      }
+    }
 
     await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Enroll walk-in student'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: name,
-              decoration: const InputDecoration(labelText: 'Full name'),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Enroll walk-in student'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: name,
+                  decoration: const InputDecoration(labelText: 'Full name'),
+                ),
+                const SizedBox(height: LiblSpace.md),
+                TextField(
+                  controller: phone,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Mobile',
+                    prefixText: '+91 ',
+                  ),
+                ),
+                const SizedBox(height: LiblSpace.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Date of birth: '
+                        '${dob == null ? 'not recorded' : '${dob!.day}/${dob!.month}/${dob!.year}'}',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final picked = await showDatePicker(
+                          context: ctx,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          // A future DOB is invalid input (BC-10 invariant) —
+                          // the picker cannot produce one.
+                          lastDate: DateTime.now(),
+                        );
+                        if (picked != null) {
+                          setDialogState(() {
+                            dob = picked;
+                            declaredMinor = null;
+                          });
+                        }
+                      },
+                      child: const Text('Pick'),
+                    ),
+                    if (dob != null)
+                      IconButton(
+                        tooltip: 'Clear date of birth',
+                        onPressed: () => setDialogState(() => dob = null),
+                        icon: const Icon(Icons.clear, size: 20),
+                      ),
+                  ],
+                ),
+                if (dob == null)
+                  DropdownButtonFormField<bool?>(
+                    initialValue: declaredMinor,
+                    decoration: const InputDecoration(
+                      labelText: 'Age declaration (no DOB recorded)',
+                      helperText: 'SM-4.5a — recorded against the actor',
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: null,
+                        child: Text('Not declared — treated as minor'),
+                      ),
+                      DropdownMenuItem(
+                        value: false,
+                        child: Text('Declared adult (18+)'),
+                      ),
+                      DropdownMenuItem(
+                        value: true,
+                        child: Text('Declared minor (under 18)'),
+                      ),
+                    ],
+                    onChanged: (v) => setDialogState(() => declaredMinor = v),
+                  ),
+                const SizedBox(height: LiblSpace.md),
+                TextField(
+                  controller: guardianName,
+                  decoration: const InputDecoration(
+                    labelText: 'Guardian name (if applicable)',
+                  ),
+                ),
+                const SizedBox(height: LiblSpace.md),
+                TextField(
+                  controller: guardianPhone,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Guardian mobile (if applicable)',
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: LiblSpace.md),
-            TextField(
-              controller: phone,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'Mobile',
-                prefixText: '+91 ',
-              ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel'),
             ),
-            const SizedBox(height: LiblSpace.md),
-            TextField(
-              controller: year,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Year of birth',
-                helperText: 'A guardian is mandatory under 18',
-              ),
+            FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(90, 42)),
+              onPressed: () => submit(ctx),
+              child: const Text('Enroll'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(minimumSize: const Size(90, 42)),
-            onPressed: () async {
-              final y = int.tryParse(year.text) ?? 2002;
-              final dob = DateTime(y, 6, 15);
-              final minor = DateTime.now().year - y < 18;
-              Navigator.of(ctx).pop();
-              final msg = await s.enroll(
-                fullName: name.text,
-                phone: phone.text,
-                dob: dob,
-                guardian: minor
-                    ? GuardianLink(
-                        name: 'Guardian of ${name.text}',
-                        phone: phone.text,
-                      )
-                    : null,
-              );
-              if (!mounted) return;
-              _snack(
-                msg ?? '${name.text} enrolled',
-                color: msg == null ? LiblColors.success : LiblColors.danger,
-              );
-            },
-            child: const Text('Enroll'),
-          ),
-        ],
       ),
     );
   }

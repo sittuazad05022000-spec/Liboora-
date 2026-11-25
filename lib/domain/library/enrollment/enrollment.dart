@@ -8,7 +8,6 @@ export 'package:liboora_contracts/liboora_contracts.dart' show GuardianLink;
 
 import 'package:liboora_contracts/liboora_contracts.dart';
 
-import '../../../domain/person/person.dart';
 import '../../../platform/business/business.dart';
 import '../../../platform/data/data.dart';
 import '../../../platform/event/event.dart';
@@ -299,7 +298,7 @@ final class EnrollStudent {
   /// `E-13` — the BC-10 anti-corruption layer. Age derives from the DOB it
   /// returns (`SM-4.5`); this module never stores a DOB of its own
   /// (`SM-4.2`, `ADR-0179`).
-  final IdentityDirectory identities;
+  final IdentityDirectoryPort identities;
 
   /// `SM-3.6` — idempotency port, adapter at the composition root.
   final EnrollmentIdempotencyStore idempotency;
@@ -448,6 +447,7 @@ final class EnrollStudent {
       fullName: fullName,
       phone: phone,
       email: email,
+      enrolledOn: clock.today(),
       guardian: guardian,
       personId: personId,
       accountId: accountId,

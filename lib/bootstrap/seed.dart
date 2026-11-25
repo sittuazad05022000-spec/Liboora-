@@ -489,12 +489,21 @@ Future<void> _seedStudents(AppContainer c) async {
       account: AccountId('acc_${r.phone}'),
       displayName: r.name,
     );
+    // `ADR-0179` — the DOB belongs to BC-10. Demo data enters through BC-10's
+    // own write path so enrollment derives minor status from the identity
+    // (`SM-4.5`), never from a StudentRecord field.
+    c.identityService.recordDateOfBirth(
+      personId: personId,
+      dateOfBirth: DateTime(r.birthYear, 6, 15),
+      recordedBy: 'seed',
+    );
 
     final student = await c.enrollStudent(
       actorRole: owner,
+      idempotencyKey: IdempotencyKey('seed_enroll_${r.phone}'),
+      accountId: AccountId('acc_${r.phone}'),
       fullName: r.name,
       phone: r.phone,
-      dateOfBirth: DateTime(r.birthYear, 6, 15),
       personId: personId,
       guardian: DateTime.now().year - r.birthYear < 18
           ? GuardianLink(
@@ -631,15 +640,23 @@ Future<void> _seedOtherTenantStudents(AppContainer c) async {
   c.clock.pin(c.clock.todayAt(9, 0));
   for (final name in ['Aditya Nair', 'Pooja Sharma', 'Harsh Tiwari']) {
     final phone = '9990000${c.students.all().length + 1}';
+    final personId = c.identityService.createFor(
+      account: AccountId('acc_$phone'),
+      displayName: name,
+    );
+    // `ADR-0179` — DOB recorded through BC-10's write path (demo data, adult).
+    c.identityService.recordDateOfBirth(
+      personId: personId,
+      dateOfBirth: DateTime(2002, 3, 10),
+      recordedBy: 'seed',
+    );
     final s = await c.enrollStudent(
       actorRole: AccessRole.owner,
+      idempotencyKey: IdempotencyKey('seed_enroll_$phone'),
+      accountId: AccountId('acc_$phone'),
       fullName: name,
       phone: phone,
-      dateOfBirth: DateTime(2002, 3, 10),
-      personId: c.identityService.createFor(
-        account: AccountId('acc_$phone'),
-        displayName: name,
-      ),
+      personId: personId,
     );
     await c.createMembership(
       actorRole: AccessRole.owner,

@@ -387,44 +387,52 @@ void main() {
       );
     });
 
-    test('OBSERVED GAP — IdentityDirectory is declared and implemented but '
-        'has no consumer', () {
-      // Not a failure of §10.3: `InMemoryPersonIdentityRepository` implements
-      // it and IS constructed at the root, so the port has exactly one
-      // registered implementation. But nothing anywhere depends on the port
-      // type, so the abstraction is currently doing no work.
+    test('IdentityDirectoryPort is wired by type — declared in contracts, '
+        'implemented by domain/person, consumed by BC-01 (E-13)', () {
+      // `ADR-0179` closed the gap this test previously disclosed as an
+      // "OBSERVED GAP": `PRD-004` `SM-3.4`/`SM-4.5` gave the port its first
+      // real consumer — `EnrollStudent` resolves the identity core through
+      // the `E-13` ACL. The disclosure was removed and replaced with the
+      // positive assertion it asked for.
       //
-      // Recorded rather than "fixed": deleting a declared port is an
-      // architecture decision (BC-10 / E-13 surface), and inventing a consumer
-      // to justify it would be worse. This test fails if the situation
-      // CHANGES, so the observation cannot silently rot.
+      // The port is declared in contracts (rank 0) because the manifest bans
+      // `domain/library -> domain/person` imports (`ADR-0011`); the
+      // repository implements it; `EnrollStudent` holds it by type.
       final consumers = <String>[];
       for (final file in _dartFiles()) {
-        if (file.path.endsWith('lib/domain/person/person.dart')) continue;
-        if (_codeOnly(file.readAsStringSync()).contains('IdentityDirectory')) {
+        if (file.path.endsWith('packages/liboora_contracts/') ||
+            file.path.contains('liboora_contracts/lib/')) {
+          continue; // Declaration and tests, not consumers.
+        }
+        final code = _codeOnly(file.readAsStringSync());
+        if (file.path.contains('/test/')) continue;
+        if (code.contains('IdentityDirectoryPort')) {
           consumers.add(file.path);
         }
       }
-
       expect(
         consumers,
-        isEmpty,
+        containsAll([
+          'lib/domain/library/enrollment/enrollment.dart',
+          'lib/domain/person/person.dart',
+        ]),
         reason:
-            'PROGRESS DETECTED — IdentityDirectory now has a consumer '
-            '($consumers). Remove this disclosure and, if the port is now '
-            'wired by type, assert that instead.',
+            'E-13 must be consumed by BC-01 and implemented by BC-10. A '
+            'regression to "declared but unused" is the orphan this test '
+            'exists to catch.',
       );
 
-      // And it must still be registered, so this observation cannot be
-      // confused with an orphan.
+      // And it must still be registered, so this assertion cannot be
+      // confused with a hand-wired promise.
       final impls =
-          _implementationsByPort()['IdentityDirectory'] ?? const <String>{};
+          _implementationsByPort()['IdentityDirectoryPort'] ??
+          const <String>{};
       expect(impls, contains('InMemoryPersonIdentityRepository'));
       expect(
         _constructedInCompositionRoot(),
         contains('InMemoryPersonIdentityRepository'),
         reason:
-            'IdentityDirectory has become a true orphan port — its only '
+            'IdentityDirectoryPort has become a true orphan port — its only '
             'implementation is no longer wired at the composition root.',
       );
     });

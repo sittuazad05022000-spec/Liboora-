@@ -168,9 +168,9 @@ StudentRecord _student(String n, {required String enrollmentNumber}) =>
       enrollmentNumber: enrollmentNumber,
       fullName: 'Student $n',
       phone: '90000000$n',
-      dateOfBirth: DateTime.utc(2000, 1, 1),
       enrolledOn: _day,
       personId: PersonId('P-$n'),
+      minorStatus: MinorStatus.adult,
     );
 
 Membership _membership(String n, StudentRecordId student) =>

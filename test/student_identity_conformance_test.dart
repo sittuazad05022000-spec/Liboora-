@@ -162,9 +162,9 @@ void main() {
       enrollmentNumber: 'STU0001',
       fullName: 'Test Student',
       phone: '9810000011',
-      dateOfBirth: DateTime(2000, 1, 1),
       enrolledOn: _t0,
       personId: personId,
+      minorStatus: MinorStatus.adult,
     );
 
     test('a valid PersonId is accepted', () {
@@ -229,7 +229,7 @@ void main() {
         repo,
       ).createFor(account: const AccountId('acc_acl'), displayName: 'Reader');
 
-      final IdentityDirectory directory = repo;
+      final IdentityDirectoryPort directory = repo;
       final fields = directory.resolve(personId)!;
 
       // The projection is a closed, flat set of three values. It carries no
@@ -302,11 +302,11 @@ void main() {
       final first = c.provisionIdentityForEnrollment(
         phone: '9899999999',
         displayName: 'Repeat Person',
-      );
+      ).$1;
       final second = c.provisionIdentityForEnrollment(
         phone: '9899999999',
         displayName: 'Repeat Person',
-      );
+      ).$1;
 
       // Two libraries, two StudentRecords, ONE PersonId (ID-5, SID-INV-1).
       expect(second, equals(first));

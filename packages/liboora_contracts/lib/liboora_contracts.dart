@@ -30,6 +30,7 @@ export 'src/ports/durable_store.dart';
 export 'src/ports/event_stream.dart';
 export 'src/ports/file_access.dart';
 export 'src/ports/id_generator.dart';
+export 'src/ports/identity_directory.dart';
 export 'src/ports/job_runtime.dart';
 export 'src/ports/membership_config.dart';
 export 'src/ports/otp_delivery.dart';

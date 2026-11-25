@@ -23,7 +23,6 @@ void main() {
   // in InMemoryStudentRepository.save. The ordered index is built lazily by
   // _rebuildOrdered on the first paginatedList() call (single O(n log n) sort).
   const n = 50000;
-  final dob = DateTime(2000, 1, 1);
   final base = DateTime(2025, 9, 1);
   for (var i = 0; i < n; i++) {
     final id = 'stu_${i.toString().padLeft(8, '0')}';
@@ -34,8 +33,8 @@ void main() {
         enrollmentNumber: 'STU${i.toString().padLeft(8, '0')}',
         fullName: 'Stud ${i.toString().padLeft(8, '0')}',
         phone: '900000${i.toString().padLeft(6, '0')}',
-        dateOfBirth: dob,
         enrolledOn: base,
+        minorStatus: MinorStatus.adult,
         personId: PersonId('per_$id'),
       ),
     );

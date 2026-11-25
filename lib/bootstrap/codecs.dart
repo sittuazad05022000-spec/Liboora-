@@ -206,7 +206,7 @@ StudentRecord decodeStudentRecord(String raw) {
         : AccountId(m['accountId']! as String),
     registrationSource: m['registrationSource'] == null
         ? null
-        : _readEnum(
+        : _readEnum<RegistrationSource>(
             RegistrationSource.values,
             m['registrationSource'],
             (e) => e.name,

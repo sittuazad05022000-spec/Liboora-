@@ -39,15 +39,17 @@ void main() {
   );
 
   Future<StudentRecordId> enrollStudent(String name, String phone) async {
-    final personId = c.provisionIdentityForEnrollment(
+    final (personId, accountId) = c.provisionIdentityForEnrollment(
       phone: phone,
       displayName: name,
+      dateOfBirth: DateTime(2000, 1, 1),
     );
     final student = await c.enrollStudent(
       actorRole: AccessRole.owner,
+      idempotencyKey: IdempotencyKey('test_enroll_$phone'),
+      accountId: accountId,
       fullName: name,
       phone: phone,
-      dateOfBirth: DateTime(2000, 1, 1),
       personId: personId,
     );
     return student.id;

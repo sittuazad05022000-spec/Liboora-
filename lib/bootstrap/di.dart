@@ -331,7 +331,22 @@ final class AppContainer {
       // An identity already exists for this number; enrollment reuses it. A
       // second library enrolling the same person yields a second
       // StudentRecord and the SAME PersonId — the asymmetry ID-5 depends on.
-      if (a.phone == phone) return (a.personId, a.id);
+      if (a.phone == phone) {
+        // Review follow-up (`ADR-0179`) — a captured DOB is not discarded
+        // merely because the identity predates the desk visit. If BC-10 holds
+        // none, the DOB is recorded now through BC-10's own write path:
+        // first-wins (a different DOB than an already-owned one is a
+        // conflict, never an overwrite; the same DOB is a no-op replay), so
+        // reuse and ownership compose without either weakening the other.
+        if (dateOfBirth != null) {
+          identityService.recordDateOfBirth(
+            personId: a.personId,
+            dateOfBirth: dateOfBirth,
+            recordedBy: tenantContext.actorId ?? 'system',
+          );
+        }
+        return (a.personId, a.id);
+      }
     }
 
     // MP-GBR-02: the account and its identity are created together. The
@@ -372,6 +387,14 @@ final class AppContainer {
   /// on `SM-3.13` (duplicate → open the existing record) and `SM-3.14`
   /// (archived → offer restore) without try/catch policy decisions in UI.
   /// Authority is never weakened here: [EnrollStudent] still runs the PDP.
+  ///
+  /// The whole orchestration — identity provisioning included — sits inside
+  /// the outcome boundary (review follow-up, `ADR-0179`): a provisioning
+  /// refusal (a future DOB, a DOB that conflicts with an already-owned one)
+  /// is a business outcome, surfaced as a [FailedOutcome] carrying the
+  /// domain message. It can never emit `SM-EV-1` or allocate a number,
+  /// because [EnrollStudent] has not run. Unexpected (non-`DomainError`)
+  /// failures still throw — visibility preserved.
   Future<EnrollmentOutcome> registerWalkIn({
     required AccessRole actorRole,
     required IdempotencyKey idempotencyKey,
@@ -381,12 +404,12 @@ final class AppContainer {
     bool? declaredMinor,
     GuardianLink? guardian,
   }) async {
-    final (personId, accountId) = provisionIdentityForEnrollment(
-      phone: phone,
-      displayName: fullName,
-      dateOfBirth: dateOfBirth,
-    );
     try {
+      final (personId, accountId) = provisionIdentityForEnrollment(
+        phone: phone,
+        displayName: fullName,
+        dateOfBirth: dateOfBirth,
+      );
       final student = await enrollStudent(
         actorRole: actorRole,
         idempotencyKey: idempotencyKey,
@@ -395,9 +418,11 @@ final class AppContainer {
         fullName: fullName,
         phone: phone,
         guardian: guardian,
-        // `SM-4.5a` — a declaration is recorded only when BC-10 holds no DOB.
-        // A DOB and a declaration are mutually exclusive inputs; the recorded
-        // DOB always wins because it is evidence, not assertion.
+        // `SM-4.5a` — a declaration is recorded only when reception captured
+        // no DOB. When a DOB was captured, provisioning has already recorded
+        // it or refused the registration, so BC-10 provably holds the
+        // evidence here and the mutually exclusive declaration is neither
+        // derived from nor stored (`SM-4.5` — evidence wins, never assertion).
         declaration: dateOfBirth == null && declaredMinor != null
             ? AgeDeclaration(
                 isMinor: declaredMinor,

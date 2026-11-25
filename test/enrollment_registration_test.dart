@@ -399,4 +399,150 @@ void main() {
       },
     );
   });
+
+  group('registration — the desk outcome boundary (ADR-0179 review fixes)', () {
+    test(
+      'a future DOB surfaces as a FailedOutcome — no SM-EV-1, no number burned',
+      () async {
+        final c = await world(pinnedAt: pinned);
+        final outcome = await c.registerWalkIn(
+          actorRole: AccessRole.owner,
+          idempotencyKey: const IdempotencyKey('k_desk_future_1'),
+          fullName: 'Time Traveller',
+          phone: '9814400020',
+          dateOfBirth: DateTime(2026, 3, 16), // One day after the pinned clock.
+        );
+
+        expect(outcome, isA<FailedOutcome>());
+        expect((outcome as FailedOutcome).message, contains('future'));
+        // The provisioning refusal happened before enrollment could run, so
+        // the half-built state must be visible but inert: no account was
+        // registered, no event was emitted.
+        expect(
+          c.auth.accounts.any((a) => a.phone == '9814400020'),
+          isFalse,
+          reason: 'An unprovisioned account must not exist.',
+        );
+        expect(
+          c.events.log.where(
+            (e) => e.eventType == 'enrollment.StudentEnrolled',
+          ),
+          isEmpty,
+          reason: 'SM-3.7 — a refused registration emits nothing.',
+        );
+
+        // And the next valid registration still takes STU0001 (SM-3.5).
+        final next = await c.registerWalkIn(
+          actorRole: AccessRole.owner,
+          idempotencyKey: const IdempotencyKey('k_desk_future_2'),
+          fullName: 'Valid Walk In',
+          phone: '9814400021',
+          dateOfBirth: DateTime(2000, 1, 1),
+        );
+        expect(next, isA<EnrolledOutcome>());
+        expect((next as EnrolledOutcome).enrollmentNumber, 'STU0001');
+      },
+    );
+
+    test('a DOB captured for an existing identity without one is recorded — '
+        'the evidence wins over the declaration', () async {
+      final c = await world(pinnedAt: pinned);
+      // The person signed up earlier (E-11) but never gave a DOB.
+      final (existingPerson, _) = c.provisionIdentityForEnrollment(
+        phone: '9814400022',
+        displayName: 'Late Dater',
+      );
+      expect(c.identities.resolve(existingPerson)!.dateOfBirth, isNull);
+
+      final outcome = await c.registerWalkIn(
+        actorRole: AccessRole.owner,
+        idempotencyKey: const IdempotencyKey('k_desk_dob_1'),
+        fullName: 'Late Dater',
+        phone: '9814400022',
+        dateOfBirth: DateTime(2015, 1, 1), // 11 on the pinned day — minor.
+        declaredMinor: false, // The contradicted assertion must lose.
+        guardian: const GuardianLink(name: 'Guardian G', phone: '9814400999'),
+      );
+
+      expect(outcome, isA<EnrolledOutcome>());
+      // First-wins: BC-10 now owns the captured DOB.
+      expect(
+        c.identities.resolve(existingPerson)!.dateOfBirth,
+        DateTime(2015, 1, 1),
+      );
+      final student = c.students.byId(
+        (outcome as EnrolledOutcome).studentRecordId,
+      )!;
+      expect(student.personId, existingPerson);
+      // The DOB (evidence) decided — not the declaration.
+      expect(student.minorStatus, MinorStatus.minor);
+      expect(student.ageDeclaration, isNull);
+      expect(student.requiresGuardian, isTrue);
+    });
+
+    test('a different DOB than an already-owned one refuses the registration '
+        'as a FailedOutcome — first-wins, never an overwrite', () async {
+      final c = await world(pinnedAt: pinned);
+      final (existingPerson, _) = c.provisionIdentityForEnrollment(
+        phone: '9814400023',
+        displayName: 'Owned Dob',
+        dateOfBirth: DateTime(2000, 1, 1),
+      );
+
+      final outcome = await c.registerWalkIn(
+        actorRole: AccessRole.owner,
+        idempotencyKey: const IdempotencyKey('k_desk_conflict_1'),
+        fullName: 'Owned Dob',
+        phone: '9814400023',
+        dateOfBirth: DateTime(1999, 5, 5),
+      );
+
+      expect(outcome, isA<FailedOutcome>());
+      expect((outcome as FailedOutcome).message, contains('already has'));
+      expect(
+        c.identities.resolve(existingPerson)!.dateOfBirth,
+        DateTime(2000, 1, 1),
+        reason: 'First-wins: the owned fact is untouched.',
+      );
+      expect(
+        c.events.log.where((e) => e.eventType == 'enrollment.StudentEnrolled'),
+        isEmpty,
+      );
+    });
+
+    test('the same DOB for an already-owned one is a no-op replay — the desk '
+        'reaches the duplicate answer', () async {
+      final c = await world(pinnedAt: pinned);
+      final (existingPerson, accountId) = c.provisionIdentityForEnrollment(
+        phone: '9814400024',
+        displayName: 'Replay Dob',
+        dateOfBirth: DateTime(2000, 1, 1),
+      );
+      await c.enrollStudent(
+        actorRole: AccessRole.owner,
+        idempotencyKey: const IdempotencyKey('k_desk_replay_1'),
+        accountId: accountId,
+        fullName: 'Replay Dob',
+        phone: '9814400024',
+        personId: existingPerson,
+      );
+
+      final outcome = await c.registerWalkIn(
+        actorRole: AccessRole.owner,
+        idempotencyKey: const IdempotencyKey('k_desk_replay_2'),
+        fullName: 'Replay Dob',
+        phone: '9814400024',
+        dateOfBirth: DateTime(2000, 1, 1),
+      );
+
+      // Provisioning replayed (no conflict), then the personId duplicate
+      // check answered `SM-3.13` — the desk opens the existing record.
+      expect(outcome, isA<DuplicateOutcome>());
+      final dup = outcome as DuplicateOutcome;
+      expect(
+        c.students.byId(dup.existingStudentRecordId)!.personId,
+        existingPerson,
+      );
+    });
+  });
 }

@@ -25,6 +25,25 @@
 ///  11. Audit mutation — a banned method name is declared (`X-10`, `AU-1`).
 ///  12. Tenant keys — an `X-13` surface built without a tenant scope.
 ///
+/// **Category 13–17 · SID-INT** (added additively by ADR-0178, IMPL-220):
+/// five executable `SID-DET` criteria of Accepted `ADR-0125` (§3, §4, §5,
+/// §6, §8 — semantics quoted, never redefined), all scoped to
+/// `domain/person`:
+///  13. Credential members (ID-1/SID-INT-5) — a declared member name
+///      matching a credential class (`SID-INV-5` ∩
+///      `global.observability_plane.banned_content`).
+///  14. Cached authorisation decisions (MP-GBR-26/X-13/SID-INT-6) — a
+///      `policy_decision` port result stored in a field/static/top-level,
+///      collection or memo.
+///  15. Audit references (E-20/SID-INT-8) — a `platform/audit` import or
+///      declared type in `domain/person`.
+///  16. Undeclared store access (X-07/X-08/SID-INT-9) — another module's
+///      repository/store/table/index/query type reached outside the module's
+///      declared ports (port/type limb only; the string-literal limb awaits
+///      artifact A1).
+///  17. Cross-context aggregation (AR-1/SID-INT-11) — a declared type in
+///      `domain/person` holding fields from two or more contexts.
+///
 /// **Categories 11 and 12 were the last two gaps.** Both rules were declared in
 /// the manifest from the beginning — `banned_method_names` on `platform/audit`
 /// and `global.tenant_key_required_in` — but this checker never read either key,
@@ -155,6 +174,7 @@ final class Module {
     required this.bannedSymbolsInDomainLayer,
     required this.allowedImports,
     required this.declaredImports,
+    required this.declaredPorts,
     required this.contexts,
     required this.classification,
     required this.bannedMethodNames,
@@ -178,6 +198,14 @@ final class Module {
 
   /// Module names this module may import at compile time (`mode: import`).
   final List<String> declaredImports;
+
+  /// Port URIs this module declares (`ports:` entries, e.g.
+  /// `platform/identity:policy_decision`). Manifest-derived data read for the
+  /// `sid-int` checks (ADR-0178 §4.1): the declared allow-list that
+  /// `SID-DET-9` checks persistence access against, and the port whose
+  /// presence switches `SID-DET-6` on.
+  final List<String> declaredPorts;
+
   final List<String> contexts;
   final String? classification;
 }
@@ -229,6 +257,11 @@ final class BoundaryChecker {
   /// this list, so widening `X-13` is a manifest edit, not a code edit.
   late final List<String> _tenantKeySurfaces;
 
+  /// `global.observability_plane.banned_content` classes, read defensively.
+  /// Empty when the manifest omits them, in which case the SID-INT checks
+  /// degrade silently (authority absent ⇒ criterion not asserted).
+  late final List<String> _bannedContentClasses;
+
   /// `global.tenant_key_violation_severity`. Declared `blocker`; carried into
   /// the violation so the report cannot understate a cross-tenant leak.
   late final String _tenantKeySeverity;
@@ -255,6 +288,12 @@ final class BoundaryChecker {
 
     final graph = <String, Set<String>>{};
 
+    // SID-INT pre-pass (ADR-0178 §4.1): a cheap line-based map from every
+    // top-level declared type name to the module that owns it, used by the
+    // SID-DET-9 and SID-DET-11 checks. Second pass over the same files; no
+    // AST, consistent with _parseImports.
+    final typeOwner = _buildTypeOwnerMap(files);
+
     for (final file in files) {
       final content = file.readAsStringSync();
       final imports = _parseImports(content);
@@ -275,6 +314,12 @@ final class BoundaryChecker {
       _checkOwnership(file, module, content); // category 8
       _checkAuditMutation(file, module, content); // X-10 + category 11
       _checkTenantKey(file, module, content); // X-13 + category 12
+      // 13–17 · SID-INT (ADR-0178) — scoped to domain/person; each self-gates.
+      _checkSidInt5Credentials(file, module, content);
+      _checkSidInt6DecisionCaching(file, module, content);
+      _checkSidInt8AuditReference(file, module, content, imports);
+      _checkSidInt9UndeclaredStore(file, module, content, typeOwner);
+      _checkSidInt11CrossContextFields(file, module, content, typeOwner);
     }
 
     _checkCircularDependencies(graph); // L1 + category 4
@@ -394,6 +439,17 @@ final class BoundaryChecker {
             : null) ??
         'blocker';
 
+    // `global.observability_plane.banned_content` — the credential-class
+    // classes ADR-0125 §3 row 4 intersects with SID-INV-5 to derive the
+    // SID-DET-5 token set. Read defensively: absent (or malformed) means the
+    // criterion is not asserted, never a checker error — the checks degrade,
+    // they do not fail with exit 2.
+    _bannedContentClasses = global is YamlMap
+        ? _stringList(
+            (global['observability_plane'] as YamlMap?)?['banned_content'],
+          )
+        : const [];
+
     _exceptions = _parseExceptions(doc['exceptions']);
 
     _modules = {};
@@ -411,6 +467,7 @@ final class BoundaryChecker {
         ),
         allowedImports: _stringList(blockMap?['allowed_imports']),
         declaredImports: _declaredImports(blockMap?['imports']),
+        declaredPorts: _stringList(blockMap?['ports']),
         contexts: _stringList(blockMap?['contexts']),
         classification: blockMap?['classification']?.toString(),
         bannedMethodNames: _stringList(blockMap?['banned_method_names']),
@@ -476,6 +533,234 @@ final class BoundaryChecker {
     return out;
   }
 
+  /// **16 · SID-INT-9 — reading another context's tables or index**
+  /// (`X-07/X-08 · SID-INT-9`).
+  ///
+  /// ADR-0125 §6 (`SID-DET-9`, **port/type limb only**): every persistence or
+  /// index access from `domain/person` MUST resolve to a port declared for
+  /// `domain/person` in the manifest. Mechanically: a type reference in a
+  /// type position (field type, parameter type, local declaration,
+  /// extends/implements clause) whose name ends in `Repository`/`Store`/
+  /// `Table`/`Index`/`Query` and whose **owning module** (from the
+  /// [_buildTypeOwnerMap] pre-pass) is neither `domain/person` itself, nor
+  /// `contracts` (rank 0), nor absent (unknown types under-match). `SID-4.6`:
+  /// this module SHALL ask through a declared synchronous port and SHALL NOT
+  /// read another context's store. The manifest's eight declared ports under
+  /// `default_decision: deny` are the allow-list by construction.
+  ///
+  /// NOT violations (ADR-0125 §6 row 5): the module's **own** repository
+  /// (`PersonIdentityRepository`, `InMemoryPersonIdentityRepository`);
+  /// `contracts` types (rank 0 — e.g. `DurableKeyValueStore`); a member *name*
+  /// containing e.g. `Index` is not a *type* reference; dart: core types
+  /// never match the suffix set.
+  ///
+  /// ⚠⚠ **String-literal limb NOT implemented** (ADR-0125 §6 ⚠⚠): a raw
+  /// table/index name passed as a string to a declared generic port (e.g.
+  /// `repository.query('bc01_student_records')`) is invisible to this check.
+  /// Detecting it requires artifact **A1** (a per-context table/index name
+  /// inventory), which does not exist anywhere in the repository and is NOT
+  /// created here (ADR-0178 §7). The residue stays under `SID-4.56`; the rule
+  /// is not narrowed to the check.
+  void _checkSidInt9UndeclaredStore(
+    File file,
+    Module? module,
+    String content,
+    Map<String, String> typeOwner,
+  ) {
+    if (module == null || !_isDomainPerson(module)) return;
+    if (module.declaredPorts.isEmpty) return; // No allow-list ⇒ not asserted.
+
+    final storeType = RegExp(
+      r'\b([A-Za-z_]\w*(?:Repository|Store|Table|Index|Query))\b',
+    );
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+
+      for (final match in storeType.allMatches(code)) {
+        final typeName = match.group(1)!;
+        final owner = typeOwner[typeName];
+        if (owner == null) continue; // Unknown type: under-match.
+        if (owner == 'domain/person') continue; // Own repository: sanctioned.
+        if (owner == 'contracts') continue; // Rank 0: not another context.
+
+        violations.add(
+          Violation(
+            category: 'sid-int',
+            rule: 'X-07/X-08 · SID-INT-9',
+            file: file.path,
+            line: i + 1,
+            severity: 'blocker',
+            consumer: module.name,
+            provider: owner,
+            detail:
+                'Persistence/index type "$typeName" (owned by "$owner") is '
+                'referenced in domain/person outside its declared ports '
+                '(ADR-0125 §6, SID-DET-9, port/type limb). SID-4.6: ask '
+                'through a declared synchronous port; SHALL NOT read another '
+                'context\'s store. Allow-list: the eight declared ports under '
+                'default_decision: deny.\n'
+                '⚠⚠ String-literal limb NOT implemented pending artifact A1 '
+                '(a raw table/index name passed as a string to a declared '
+                'port is invisible here) — recorded, not invented.',
+          ),
+        );
+      }
+    }
+  }
+
+  /// **17 · SID-INT-11 — composing the aggregated profile inside this
+  /// module** (`AR-1 · SID-INT-11`).
+  ///
+  /// ADR-0125 §8 (`SID-DET-11`): a **structural/layer check on declared
+  /// field provenance** — no type declared in `domain/person` may aggregate
+  /// data originating from more than one bounded context. `SID-4.9`: read
+  /// composition of the aggregated profile screen SHALL occur in the
+  /// application layer (app, rank 9), never inside this module; `AR-1`: a
+  /// read composition "owns no aggregate".
+  ///
+  /// Mechanic: for each class declared in a `domain/person` file, every
+  /// declared field type (`^\s+(final|late)? <Type>? <name> =|;`) is
+  /// classified by its owning module: `person` (own/BC-10), `contracts`
+  /// (rank 0), `primitive`, or `other` (another module's type). Violation
+  /// when a class mixes own/BC-10 provenance with `other`-context
+  /// provenance, or holds fields from two or more distinct non-person,
+  /// non-contracts modules.
+  ///
+  /// NOT violations (ADR-0125 §8 row 5): `IdentityCoreFields` (single
+  /// context); app-layer composition (the required location, not inspected
+  /// here); `AccountId` linkage (contracts, mandated by `SID-INV-1`, not
+  /// aggregation); a type merely referencing `PersonId` (contracts-owned).
+  ///
+  /// ⚠ **Disclosed limits, preserved** (ADR-0125 §8 ⚠): a composite assembled
+  /// purely from **primitives** (`String`, `int`) that semantically originate
+  /// elsewhere is NOT caught; the method-return composite limb is covered
+  /// only when the composite is a declared type (then inspected as a class) —
+  /// an inline composite of primitives is part of the same disclosed
+  /// primitive limit. Only `domain/person` files are inspected. The residue
+  /// stays under `SID-4.56`; the rule is not narrowed to the check.
+  void _checkSidInt11CrossContextFields(
+    File file,
+    Module? module,
+    String content,
+    Map<String, String> typeOwner,
+  ) {
+    if (module == null || !_isDomainPerson(module)) return;
+
+    const primitives = {
+      'String',
+      'int',
+      'double',
+      'bool',
+      'num',
+      'DateTime',
+      'Duration',
+      'dynamic',
+      'var',
+      'Object',
+      'void',
+      'Function',
+    };
+    final fieldDecl = RegExp(
+      r'^\s{2,}(?:final\s+|late\s+|late\s+final\s+|static\s+|'
+      r'static\s+final\s+|static\s+const\s+|const\s+)?'
+      r'([A-Za-z_][\w<>,\s\?]*)\s+([a-zA-Z_]\w*)\s*(?:=|;)',
+    );
+    final classDecl = RegExp(
+      r'^(?:abstract\s+|base\s+|final\s+|sealed\s+|interface\s+)*'
+      r'(?:class|mixin|enum)\s+([A-Za-z_]\w*)',
+    );
+
+    String? currentClass;
+    final contextsByClass = <String, Set<String>>{};
+
+    void classifyField(String rawType) {
+      var type = rawType.trim();
+      // Generic containers: judge by their type arguments.
+      while (type.startsWith('List<') ||
+          type.startsWith('Map<') ||
+          type.startsWith('Set<') ||
+          type.startsWith('Iterable<')) {
+        final inner = type.substring(type.indexOf('<') + 1);
+        type = inner.endsWith('>')
+            ? inner.substring(0, inner.length - 1)
+            : inner;
+      }
+      if (type.endsWith('?')) type = type.substring(0, type.length - 1);
+      final base = type.split('<').first.trim();
+      if (currentClass == null) return;
+      if (base.isEmpty || primitives.contains(base)) {
+        contextsByClass[currentClass]!.add('primitive');
+        return;
+      }
+      final owner = typeOwner[base];
+      if (owner == null) {
+        contextsByClass[currentClass]!.add(
+          'primitive',
+        ); // Unknown: under-match.
+        return;
+      }
+      if (owner == 'domain/person') {
+        contextsByClass[currentClass]!.add('person');
+      } else if (owner == 'contracts') {
+        contextsByClass[currentClass]!.add('contracts');
+      } else {
+        contextsByClass[currentClass]!.add(owner);
+      }
+    }
+
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+      final classMatch = classDecl.firstMatch(code.trimLeft());
+      if (classMatch != null) {
+        currentClass = classMatch.group(1)!;
+        contextsByClass.putIfAbsent(currentClass, () => <String>{});
+        continue;
+      }
+      if (currentClass == null) continue;
+      final fieldMatch = fieldDecl.firstMatch(code);
+      if (fieldMatch == null) continue;
+      classifyField(fieldMatch.group(1)!);
+    }
+
+    for (final entry in contextsByClass.entries) {
+      final contexts = entry.value;
+      final others = contexts
+          .where((c) => c != 'person' && c != 'contracts' && c != 'primitive')
+          .toSet();
+      final mixesOwnWithOther =
+          contexts.contains('person') && others.isNotEmpty;
+      final twoOtherContexts = others.length >= 2;
+      if (!mixesOwnWithOther && !twoOtherContexts) continue;
+
+      violations.add(
+        Violation(
+          category: 'sid-int',
+          rule: 'AR-1 · SID-INT-11',
+          file: file.path,
+          severity: 'blocker',
+          consumer: module.name,
+          provider: others.join(', '),
+          detail:
+              'Type "${entry.key}" declared in domain/person aggregates data '
+              'from more than one bounded context '
+              '(${contexts.join(", ")}) (ADR-0125 §8, SID-DET-11). SID-4.9: '
+              'read composition SHALL occur in the application layer (app, '
+              'rank 9), never inside this module; AR-1: a read composition '
+              'owns no aggregate.\n'
+              '⚠ Disclosed limit: a composite assembled purely from '
+              'primitives that semantically originate elsewhere is not '
+              'caught — the residue stays unmet under SID-4.56.',
+        ),
+      );
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // 8 — ownership violations
   // ────────────────────────────────────────────────────────────────
   // File discovery and import parsing
   // ────────────────────────────────────────────────────────────────
@@ -1150,8 +1435,478 @@ final class BoundaryChecker {
       lowerCode.contains('fortenant');
 
   // ────────────────────────────────────────────────────────────────
+  // 13–17 · SID-INT — the five executable SID-DET criteria (ADR-0178)
+  // ────────────────────────────────────────────────────────────────
+
+  /// Shared gate: the five criteria of `ADR-0125` are scoped to
+  /// `domain/person` and must never disturb other modules (including
+  /// `domain/library`'s ADR-0012-waived `platform/audit` reference).
+  bool _isDomainPerson(Module? module) => module?.name == 'domain/person';
+
+  /// Comment-stripped code line that is not itself a comment heading.
+  ///
+  /// `_stripComment` only removes `//` tails, so doc-comment lines (`///`)
+  /// and block-comment fragments (`/*`, `*`, `*/`) survive it; the SID-INT
+  /// lexical checks skip those lines entirely.
+  String _codeOrEmpty(String line) {
+    final trimmed = line.trim();
+    if (trimmed.isEmpty || trimmed.startsWith('/') || trimmed.startsWith('*')) {
+      return '';
+    }
+    return _stripComment(line);
+  }
+
+  /// A line-based map from every top-level declared type name to the module
+  /// that owns its file. Feeds SID-DET-9 and SID-DET-11 (ADR-0125 §6, §8).
+  ///
+  /// Line-based like every other pass in this checker: a declaration is a
+  /// line whose stripped form starts with (optionally-modified)
+  /// `class`/`enum`/`mixin`/`interface class` at column 0. Nesting is not
+  /// modelled — under-match is the deliberate bias.
+  Map<String, String> _buildTypeOwnerMap(List<File> files) {
+    final pattern = RegExp(
+      r'^(?:abstract\s+|base\s+|final\s+|sealed\s+|interface\s+)*'
+      r'(class|enum|mixin)\s+([A-Za-z_]\w*)',
+    );
+    final out = <String, String>{};
+    for (final file in files) {
+      final module = _moduleFor(file.path);
+      if (module == null) continue;
+      for (final rawLine in file.readAsStringSync().split('\n')) {
+        final code = _codeOrEmpty(rawLine);
+        if (code.isEmpty) continue;
+        final match = pattern.firstMatch(code);
+        if (match == null) continue;
+        out.putIfAbsent(match.group(2)!, () => module.name);
+      }
+    }
+    return out;
+  }
+
+  /// CamelCase / snake_case word split of [name], lower-cased. Tokens stay
+  /// traceable to the member name itself; see [_checkSidInt5Credentials].
+  Set<String> _memberNameWords(String name) {
+    final words = name
+        .replaceAllMapped(
+          RegExp(r'([a-z0-9])([A-Z])'),
+          (m) => '${m.group(1)} ${m.group(2)}',
+        )
+        .replaceAll('_', ' ')
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .toSet();
+    return words;
+  }
+
+  /// **13 · SID-INT-5 — credential member names** (`ID-1 · SID-INT-5`).
+  ///
+  /// ADR-0125 §3 (`SID-DET-5`): a lexical scan of **declared member names**
+  /// in `domain/person` — instance/static field names, getter/setter names,
+  /// constructor parameter names, method names — against the credential
+  /// classes. Comment-stripped: `_stripComment` removes `//` tails and whole
+  /// `///` / block-comment lines are skipped by [_codeOrEmpty], so a comment
+  /// naming a credential class is never flagged (person.dart L21–26 names
+  /// them legitimately in prose).
+  ///
+  /// **The token set is derived, not invented** (ADR-0125 §3 row 4): the
+  /// intersection of `SID-INV-5` ("No credential, OTP, session, device
+  /// record or mobile number exists in this module's schema, events, logs or
+  /// indices") with the manifest's already-declared
+  /// `global.observability_plane.banned_content`, plus the module's existing
+  /// `banned_symbols` (`mobileNumber`, `otp`). Tokens, each traceable to a
+  /// quoted class: `mobile` ("mobile number, in any form or transform"),
+  /// `challenge` ("challenge value"), the ordered pair `session`+`token`
+  /// ("session token or any revalidating material"), `secret` ("device
+  /// secret"), the ordered pair `key`+`material` ("key material"), `otp`
+  /// (manifest banned_symbols + SID-INV-5). Word-boundary matching on the
+  /// split member name is what keeps `accountId` (NOT a credential,
+  /// person.dart L59–61) and `avatarRef` (an opaque FileRef) unflagged.
+  ///
+  /// ⚠ **Disclosed limit, preserved not narrowed** (ADR-0125 §3 ⚠): a
+  /// credential stored under a **misleading name** (e.g. `note` holding an
+  /// OTP) is invisible to a lexical scan. The residue stays under
+  /// `SID-4.56` — unmet, not satisfied. The rule is not narrowed to the
+  /// check.
+  void _checkSidInt5Credentials(File file, Module? module, String content) {
+    if (module == null || !_isDomainPerson(module)) return;
+    if (_bannedContentClasses.isEmpty) {
+      return; // Authority absent ⇒ not asserted.
+    }
+
+    // Single words and ordered word pairs, each documented with its authority.
+    const singleWords = {'mobile', 'otp', 'challenge', 'secret'};
+    const pairs = [('session', 'token'), ('key', 'material')];
+
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+
+      for (final name in _declaredMemberNames(code)) {
+        final words = _memberNameWords(name);
+        String? matchedClass;
+        for (final word in words) {
+          if (singleWords.contains(word)) {
+            matchedClass = word == 'otp'
+                ? 'otp (manifest banned_symbols · SID-INV-5)'
+                : word;
+            break;
+          }
+        }
+        if (matchedClass == null) {
+          for (final (a, b) in pairs) {
+            if (words.contains(a) && words.contains(b)) {
+              matchedClass = '$a $b';
+              break;
+            }
+          }
+        }
+        if (matchedClass == null) continue;
+
+        violations.add(
+          Violation(
+            category: 'sid-int',
+            rule: 'ID-1 · SID-INT-5',
+            file: file.path,
+            line: i + 1,
+            severity: 'blocker',
+            consumer: module.name,
+            provider: module.name,
+            detail:
+                'Declared member "$name" matches credential class '
+                '"$matchedClass" in domain/person (ADR-0125 §3, SID-DET-5; '
+                'SID-INV-5 ∩ global.observability_plane.banned_content). The '
+                'credential is absent from this module and read-through from '
+                'BC-18 per SID-4.13.\n'
+                '⚠ Disclosed limit: a credential under a misleading name is '
+                'not caught by a lexical scan; the residue stays unmet under '
+                'SID-4.56.',
+          ),
+        );
+      }
+    }
+  }
+
+  /// Declared member names on a single comment-stripped [code] line, for the
+  /// SID-DET-5 lexical scan. Under-match biased: fields, getters, setters,
+  /// methods and constructor/named parameters whose name is declared here.
+  Iterable<String> _declaredMemberNames(String code) {
+    final out = <String>[];
+
+    // Field / variable declarations: `final Type name`, `Type name;`,
+    // `late final Type name`, `static const Type name =`.
+    final field = RegExp(
+      r'^\s*(?:static\s+)?(?:const\s+|final\s+|late\s+|var\s+|'
+      r'[A-Za-z_][\w<>,\s\?]*\s+)([a-zA-Z_]\w*)\s*(?:=|;|=>|in\b)',
+    );
+    // Getter / setter: `Type get name =>`, `set name(value)`.
+    final accessor = RegExp(
+      r'^\s*(?:[\w<>,\s\?]+\s+)?(?:get|set)\s+([a-zA-Z_]\w*)',
+    );
+    // Method: reuse the existing shape — name immediately before `(`.
+    final method = RegExp(
+      r'^\s*(?:@[\w.]+\s+)*(?:external\s+|static\s+|abstract\s+)*'
+      r'(?:[\w<>,\s\?\[\]\.]+\s+)?([a-zA-Z_]\w*)\s*(?:<[^>]*>\s*)?\(',
+    );
+    // Parameter names inside a parameter list `name: value`.
+    final param = RegExp(r'(?:required\s+)?(?:this\.)?([a-zA-Z_]\w*)\s*[:=]');
+
+    final fieldMatch = field.firstMatch(code);
+    if (fieldMatch != null) out.add(fieldMatch.group(1)!);
+    final accessorMatch = accessor.firstMatch(code);
+    if (accessorMatch != null) out.add(accessorMatch.group(1)!);
+    if (code.contains('(')) {
+      final methodMatch = method.firstMatch(code);
+      if (methodMatch != null) out.add(methodMatch.group(1)!);
+      for (final m in param.allMatches(code)) {
+        out.add(m.group(1)!);
+      }
+    }
+    return out;
+  }
+
+  /// **14 · SID-INT-6 — caching an authorisation decision**
+  /// (`MP-GBR-26/X-13 · SID-INT-6`).
+  ///
+  /// ADR-0125 §4 (`SID-DET-6`): a **structural, assignment-destination
+  /// analysis + lexical cache-idiom sub-check — not call-graph based**. Within
+  /// `domain/person`, the value returned by the declared
+  /// `platform/identity:policy_decision` port (`PolicyDecisionPoint.allows` /
+  /// `.scopeOf`, verified at `lib/platform/identity/identity.dart`) MUST NOT
+  /// be assigned to any field, static, top-level variable, collection or
+  /// memo; it may only be consumed within the invoking expression or local
+  /// scope (`SID-AC-20`).
+  ///
+  /// **Gate (missing authority degrades, never fires):** the check runs only
+  /// when `domain/person` declares the `platform/identity:policy_decision`
+  /// port in the manifest. Authority absent ⇒ criterion not asserted.
+  ///
+  /// Violation shapes (ADR-0125 §4 row 2):
+  ///  (a) a port-call result assigned to an instance field (`this._x =`),
+  ///      `_`-prefixed destination (`_x =`), or a top-level (column-0)
+  ///      `final/var/<Type> name =` declaration;
+  ///  (b)+(d) a port-call result inserted into a `Map`/`List`/`Set` via
+  ///      `.add(`/`..add(`, `[...] =`, `.putIfAbsent(` or `.update(` — a
+  ///      local `Map`/`Set` keyed by subject identity is just an insertion
+  ///      destination, so this one mechanical form covers both (b) and (d);
+  ///  (c) a declared member whose name matches the cache idiom (`cache`,
+  ///      `memo`) whose declared type is an authorisation result (`bool`,
+  ///      `AccessScope`, optionally `?`/`List<…>`/`Map<…, …>`).
+  ///
+  /// NOT violations (ADR-0125 §4 row 5): holding the port *interface* as a
+  /// constructor-injected field (the required DI shape); a local
+  /// `final ok = p.allows(...)` consumed in place; caching a non-authorisation
+  /// value (e.g. a settings value).
+  ///
+  /// ⚠ The **revocation-test** limb of §4.16's Detection column is preserved,
+  /// not replaced: it remains **test authority** per `SID-AC-20`, outside
+  /// this checker.
+  void _checkSidInt6DecisionCaching(File file, Module? module, String content) {
+    if (module == null || !_isDomainPerson(module)) return;
+    if (!module.declaredPorts.contains('platform/identity:policy_decision')) {
+      return; // Port not declared ⇒ criterion not asserted.
+    }
+
+    final portCall = RegExp(r'\.(allows|scopeOf)\(');
+    final lines = content.split('\n');
+
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+      if (!portCall.hasMatch(code)) continue;
+
+      final isInsertion = RegExp(
+        r'\.(?:add|putIfAbsent|update)\(|\[\s*[^\]]*\]\s*=|\.\.add\(',
+      ).hasMatch(code);
+      final underscoreDest = RegExp(
+        r'(?<![\w.])_[a-zA-Z_]\w*\s*=[^=]',
+      ).hasMatch(code);
+      final thisDest = RegExp(r'this\.[a-zA-Z_]\w*\s*=[^=]').hasMatch(code);
+      final plainLocalDecl = RegExp(
+        r'^\s+(?:final|var)\s+[a-z][a-zA-Z0-9_]*\s*=',
+      ).hasMatch(code);
+      final topLevelDecl = RegExp(
+        r'^(?:final|var|[A-Z][\w<>,\s\?]*)\s+[a-zA-Z_]\w*\s*=[^=]',
+      ).hasMatch(code.trimLeft());
+
+      if (isInsertion || ((underscoreDest || thisDest) && !plainLocalDecl)) {
+        violations.add(
+          Violation(
+            category: 'sid-int',
+            rule: 'MP-GBR-26/X-13 · SID-INT-6',
+            file: file.path,
+            line: i + 1,
+            severity: 'blocker',
+            consumer: module.name,
+            provider: module.name,
+            detail:
+                'The value of a policy_decision port call (allows/scopeOf) is '
+                'stored — assigned to a field/static/top-level or inserted '
+                'into a collection (ADR-0125 §4, SID-DET-6, shapes a/b/d). '
+                'SID-AC-20: every authorisation decision is obtained from '
+                'BC-18 per request and never cached; MP-GBR-26: revocation is '
+                'immediate and global, with no propagation window.\n'
+                '⚠ The revocation test limb remains TEST authority '
+                '(SID-AC-20), not checker authority.',
+          ),
+        );
+        continue;
+      }
+      if (topLevelDecl && !plainLocalDecl) {
+        violations.add(
+          Violation(
+            category: 'sid-int',
+            rule: 'MP-GBR-26/X-13 · SID-INT-6',
+            file: file.path,
+            line: i + 1,
+            severity: 'blocker',
+            consumer: module.name,
+            provider: module.name,
+            detail:
+                'A top-level variable is initialised from a policy_decision '
+                'port call (ADR-0125 §4, SID-DET-6, shape a). SID-AC-20: '
+                'obtained per request, never cached; the revocation test '
+                'limb remains TEST authority (SID-AC-20).',
+          ),
+        );
+      }
+    }
+
+    // Shape (c): cache-idiom member with an authorisation-result type.
+    final cacheMember = RegExp(
+      r'^\s*(?:static\s+)?(?:final\s+|late\s+final\s+|var\s+)?'
+      r'(bool|AccessScope\??|List<[^>]*>|Map<[^>]*>)\s+'
+      r'(\w*(cache|memo)\w*)\s*(?:=|;)',
+      caseSensitive: false,
+    );
+    final authResultType = RegExp(
+      r'^(bool|AccessScope\??|List<[^>]*(bool|AccessScope)[^>]*>|'
+      r'Map<[^>]*,[^>]*(bool|AccessScope)[^>]*)$',
+    );
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+      final m = cacheMember.firstMatch(code);
+      if (m == null) continue;
+      final type = m.group(1)!.trim();
+      final member = m.group(2)!;
+      if (!authResultType.hasMatch(type)) continue; // Non-authz cache: fine.
+      violations.add(
+        Violation(
+          category: 'sid-int',
+          rule: 'MP-GBR-26/X-13 · SID-INT-6',
+          file: file.path,
+          line: i + 1,
+          severity: 'blocker',
+          consumer: module.name,
+          provider: module.name,
+          detail:
+              'Member "$member" matches a cache idiom and is typed as an '
+              'authorisation result ($type) in domain/person (ADR-0125 §4, '
+              'SID-DET-6, shape c). SID-AC-20: never cached; revocation is '
+              'immediate (MP-GBR-26). The revocation test limb remains TEST '
+              'authority (SID-AC-20).',
+        ),
+      );
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────
   // 8 — ownership violations
   // ────────────────────────────────────────────────────────────────
+
+  /// **15 · SID-INT-8 — calling BC-24 synchronously from domain code**
+  /// (`E-20 · SID-INT-8`).
+  ///
+  /// ADR-0125 §5 (`SID-DET-8`): `domain/person` MUST NOT import, reference as
+  /// a type, or hold as a collaborator any `platform/audit` symbol. Mechanic-
+  /// ally a per-module `banned_imports`-shaped test plus a type limb, per the
+  /// E-20 structural equivalence: BC Map `E-20` declares the *only* sanctioned
+  /// audit path to be an **event** (fire-and-forget, outbox-backed), so any
+  /// reference from domain code is necessarily off-path — the ADR-0014 X-10
+  /// reasoning: "if no mutator exists, no caller can invoke one. Checking
+  /// declarations needs no call graph."
+  ///
+  /// Two limbs:
+  ///  * **Import limb** — any import resolving into module `platform/audit`;
+  ///  * **Type limb** — the platform/audit public type surface is derived
+  ///    mechanically from the audit barrel (`lib/platform/audit/audit.dart`):
+  ///    its top-level class/enum/mixin declarations (today `AuditEntry`,
+  ///    `AuditTrail`). A barrel type appearing in a declared-type position in
+  ///    `domain/person` (field/parameter/variable declaration line) fires.
+  ///
+  /// NOT violations (ADR-0125 §5 row 5): comments naming BC-24/platform/audit
+  /// (comment stripping); audit *events* with `contracts` payload types;
+  /// platform/audit's own files (different module); domain/library's existing
+  /// reference, covered by the dated ADR-0012 waiver — this criterion is
+  /// scoped to `domain/person` and does not disturb that waiver.
+  ///
+  /// ⚠ **Disclosed limit, preserved** (ADR-0125 §5 ⚠): a synchronous call
+  /// bound through a **rank-0 contracts interface** at the composition root
+  /// is not detected by import/type analysis. Recorded, not resolved; E-20 is
+  /// not reinterpreted to make the check look complete. The only sanctioned
+  /// audit path is an outbox event (SID-4.44, E-20).
+  void _checkSidInt8AuditReference(
+    File file,
+    Module? module,
+    String content,
+    List<({String uri, int line})> imports,
+  ) {
+    if (module == null || !_isDomainPerson(module)) return;
+
+    // Import limb.
+    for (final imp in imports) {
+      final target = _targetModule(imp.uri, file.path);
+      if (target != null && target.name == 'platform/audit') {
+        violations.add(
+          Violation(
+            category: 'sid-int',
+            rule: 'E-20 · SID-INT-8',
+            file: file.path,
+            line: imp.line,
+            severity: 'blocker',
+            consumer: module.name,
+            provider: target.name,
+            detail:
+                'domain/person imports platform/audit ("${imp.uri}") '
+                '(ADR-0125 §5, SID-DET-8, import limb). SID-4.44: this module '
+                'SHALL emit audit events fire-and-forget through the outbox '
+                'and SHALL NOT call BC-24 synchronously from domain code. '
+                'E-20: the only sanctioned audit path is an event.',
+          ),
+        );
+      }
+    }
+
+    // Type limb: the platform/audit public surface, derived from its barrel.
+    final auditTypes = _barrelTypeNames('platform/audit');
+    if (auditTypes.isEmpty) return;
+
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final code = _codeOrEmpty(lines[i]);
+      if (code.isEmpty) continue;
+      if (!RegExp(r'=\s*|;|\(|,|<|>\s').hasMatch(code)) continue;
+      if (!RegExp(
+        r'(?:final|late|var|this\.|required|,\s*$|\?\s*\w+\s*[;=])',
+      ).hasMatch(code)) {
+        continue;
+      }
+
+      for (final typeName in auditTypes) {
+        // Declared-type position: `<TypeName> <name>` / `<TypeName>? <name>`
+        // as a field, parameter or local — never a comment or a string.
+        final pattern = RegExp(
+          r'\b' + typeName + r'\??\s+[a-z_][a-zA-Z0-9_]*\s*(?:[;=,)]|$)',
+        );
+        if (pattern.hasMatch(code)) {
+          violations.add(
+            Violation(
+              category: 'sid-int',
+              rule: 'E-20 · SID-INT-8',
+              file: file.path,
+              line: i + 1,
+              severity: 'blocker',
+              consumer: module.name,
+              provider: 'platform/audit',
+              detail:
+                  'A platform/audit type ($typeName) appears as a declared '
+                  'type in domain/person (ADR-0125 §5, SID-DET-8, type limb). '
+                  'SID-4.44: audit facts leave this module only as '
+                  'outbox-delivered events; E-20 is the only sanctioned path. '
+                  '⚠ Disclosed limit: a synchronous call bound through a '
+                  'rank-0 contracts interface is not detected by import/type '
+                  'analysis — recorded, not resolved (SID-4.56).',
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  /// Top-level type names declared in [moduleName]'s barrel
+  /// (`<module.path>/<leaf>.dart`), derived mechanically from source.
+  List<String> _barrelTypeNames(String moduleName) {
+    final module = _modules[moduleName];
+    if (module == null) return const [];
+    final leaf = moduleName.split('/').last;
+    final barrel = File('${module.path}/$leaf.dart');
+    if (!barrel.existsSync()) return const [];
+
+    final pattern = RegExp(
+      r'^(?:abstract\s+|base\s+|final\s+|sealed\s+|interface\s+)*'
+      r'(?:class|enum|mixin)\s+([A-Za-z_]\w*)',
+    );
+    final out = <String>[];
+    for (final rawLine in barrel.readAsStringSync().split('\n')) {
+      final code = _codeOrEmpty(rawLine);
+      if (code.isEmpty) continue;
+      final match = pattern.firstMatch(code);
+      if (match != null) out.add(match.group(1)!);
+    }
+    return out;
+  }
 
   /// Symbols that may be *declared* only inside their owning module.
   ///

@@ -529,7 +529,375 @@ final class ProbeScopedKeys {
       expect(report.stdout.contains('■ tenant-key'), isFalse);
     });
   });
+
+  // ══════════════════════════════════════════════════════════════════
+  // SID-INT — the five executable SID-DET criteria (ADR-0178 · IMPL-220)
+  // ══════════════════════════════════════════════════════════════════
+
+  /// ADR-0178 authorises checker implementation of `SID-DET-5`, `-6`, `-8`,
+  /// `-9` (port/type limb only) and `-11`, with semantics bound verbatim to
+  /// `ADR-0125` §3/§4/§5/§6/§8. Following the X-10/X-13 precedent: every
+  /// criterion gets a synthetic violation that must be **caught**, negative
+  /// probes for its NOT-violation list, missing-authority degradation (exit
+  /// must never be 2), and a last zero-false-positive run over the real tree.
+  ///
+  /// Residues preserved, never narrowed away:
+  ///  * SID-DET-5 cannot catch a credential under a misleading name;
+  ///  * SID-DET-8 cannot catch a contracts-bound synchronous audit call;
+  ///  * SID-DET-9's string-literal limb (raw table/index names) awaits
+  ///    artifact A1 — not implemented;
+  ///  * SID-DET-10 awaits artifact A2 — not implemented;
+  ///  * SID-INT-6's revocation-test limb remains TEST authority (SID-AC-20).
+  group('SID-INT enforcement (ADR-0178 · IMPL-220)', () {
+    test('SID-INT-5 fires on credential-named members (ID-1 · SID-INT-5)', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid5.dart', '''
+library;
+
+final class ProbeCredentials {
+  final String mobileNumber = '';
+  final String sessionToken = '';
 }
+''');
+
+      expect(report.exitCode, 1, reason: run('sid-int', report));
+      expect(report.stdout, contains('sid-int'));
+      expect(report.stdout, contains('ID-1 · SID-INT-5'));
+      expect(report.stdout, contains('_probe_sid5.dart'));
+      expect(
+        report.stdout,
+        contains('mobileNumber'),
+        reason: 'The violation must name the member and its credential class.',
+      );
+      expect(
+        report.stdout,
+        contains('misleading name'),
+        reason: 'The disclosed lexical-scan limit must stay visible.',
+      );
+    });
+
+    test('SID-INT-5 does not flag non-credentials, pairs or comments', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid5_ok.dart', '''
+library;
+
+// Comment mentioning a mobile number and otp must never fire.
+final class ProbeClean {
+  final AccountId accountId;
+  final FileRef? avatarRef;
+  final String note;
+  final int lifetimeStudyMinutes;
+
+  ProbeCredentials(this.accountId, {this.avatarRef, this.note = ''})
+      : lifetimeStudyMinutes = 0;
+}
+''');
+
+      expect(
+        report.stdout.contains('ID-1 · SID-INT-5'),
+        isFalse,
+        reason:
+            'accountId (person.dart L59-61: "it is not a credential"), '
+            'avatarRef, note and lifetimeStudyMinutes are sanctioned; '
+            'comments are stripped. Over-matching would pressure a rule '
+            'weakening for a green build.',
+      );
+    });
+
+    test('SID-INT-6 fires on stored policy_decision results', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid6.dart', '''
+library;
+
+final class ProbeDecisionCaching {
+  bool ok = false;
+  final Map<String, bool> seen = {};
+
+  void check(dynamic source, dynamic actor, dynamic action) {
+    this._lastDecision = source.allows(actor, action);
+    seen['x'] = source.scopeOf(actor, action);
+  }
+}
+''');
+
+      expect(report.exitCode, 1, reason: run('sid-int', report));
+      expect(report.stdout, contains('sid-int'));
+      expect(report.stdout, contains('MP-GBR-26/X-13 · SID-INT-6'));
+      expect(report.stdout, contains('_probe_sid6.dart'));
+      expect(report.stdout, contains('SID-AC-20'));
+    });
+
+    test('SID-INT-6 fires on a cache-idiom authorisation member', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid6c.dart', '''
+library;
+
+final class ProbeDecisionMemo {
+  bool decisionCache = false;
+  AccessScope? scopeMemo;
+}
+''');
+
+      expect(report.stdout, contains('MP-GBR-26/X-13 · SID-INT-6'));
+      expect(report.stdout, contains('_probe_sid6c.dart'));
+    });
+
+    test('SID-INT-6 does not flag DI shape, local use or non-authz cache', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid6_ok.dart', '''
+library;
+
+final class ProbeDecisionClean {
+  final PolicyDecisionPoint pdp;
+  final Map<String, String> settingsCache = {};
+
+  ProbeDecisionClean(this.pdp);
+
+  void check(dynamic actor, dynamic action) {
+    final ok = pdp.allows(actor, action);
+    if (!ok) return;
+  }
+}
+''');
+
+      expect(
+        report.stdout.contains('MP-GBR-26/X-13 · SID-INT-6'),
+        isFalse,
+        reason:
+            'Holding the port interface (DI shape), a local consumed in '
+            'place, and a non-authorisation cache are the sanctioned shapes '
+            '(ADR-0125 §4 row 5).',
+      );
+    });
+
+    test('SID-INT-8 fires on platform/audit import and declared types', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid8.dart', '''
+library;
+
+import 'package:liboora/platform/audit/audit.dart';
+
+final class ProbeAuditRef {
+  AuditTrail? trail;
+}
+''');
+
+      expect(report.exitCode, 1, reason: run('sid-int', report));
+      expect(report.stdout, contains('sid-int'));
+      expect(report.stdout, contains('E-20 · SID-INT-8'));
+      expect(report.stdout, contains('_probe_sid8.dart'));
+      expect(report.stdout, contains('SID-4.44'));
+    });
+
+    test('SID-INT-8 does not flag comments or contracts-only references', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid8_ok.dart', '''
+library;
+
+// A comment naming BC-24 and platform/audit for explanatory purposes
+// must never fire (ADR-0125 §5 row 5).
+final class ProbeAuditClean {
+  final PersonId personId;
+  final DateTime createdAt;
+
+  ProbeAuditClean({required this.personId, required this.createdAt});
+}
+''');
+
+      expect(
+        report.stdout.contains('E-20 · SID-INT-8'),
+        isFalse,
+        reason: 'Comments are stripped; contracts types are rank 0.',
+      );
+    });
+
+    test('SID-INT-9 fires on another module repository type', () {
+      // StudentRepository is really declared in domain/library
+      // (enrollment/enrollment.dart), so the type-owner pre-pass can
+      // attribute it to another context.
+      final report = _runWithProbe('lib/domain/person/_probe_sid9.dart', '''
+library;
+
+final class ProbeForeignStore {
+  final StudentRepository? other;
+}
+''');
+
+      expect(report.exitCode, 1, reason: run('sid-int', report));
+      expect(report.stdout, contains('sid-int'));
+      expect(report.stdout, contains('X-07/X-08 · SID-INT-9'));
+      expect(report.stdout, contains('_probe_sid9.dart'));
+      expect(report.stdout, contains('domain/library'));
+      expect(
+        report.stdout,
+        contains('A1'),
+        reason: 'The string-literal limb residue must stay visible.',
+      );
+    });
+
+    test('SID-INT-9 does not flag own, contracts or name-only matches', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid9_ok.dart', '''
+library;
+
+final class ProbeStoreClean {
+  final PersonIdentityRepository repo;
+  final DurableKeyValueStore? durable;
+  int _accountIndex = 0;
+
+  ProbeStoreClean({required this.repo, this.durable});
+}
+''');
+
+      expect(
+        report.stdout.contains('X-07/X-08 · SID-INT-9'),
+        isFalse,
+        reason:
+            'The module owns PersonIdentityRepository (ADR-0125 §6 row 5); '
+            'DurableKeyValueStore is contracts (rank 0); _accountIndex is a '
+            'member NAME, not a type reference.',
+      );
+    });
+
+    test('SID-INT-11 fires on a cross-context aggregate', () {
+      // MembershipValidity is really declared in domain/library
+      // (membership/membership.dart), a distinct bounded context from BC-10.
+      final report = _runWithProbe('lib/domain/person/_probe_sid11.dart', '''
+library;
+
+final class ProbeAggregation {
+  final PersonIdentity identity;
+  final MembershipValidity validity;
+}
+''');
+
+      expect(report.exitCode, 1, reason: run('sid-int', report));
+      expect(report.stdout, contains('sid-int'));
+      expect(report.stdout, contains('AR-1 · SID-INT-11'));
+      expect(report.stdout, contains('_probe_sid11.dart'));
+      expect(report.stdout, contains('SID-4.9'));
+    });
+
+    test('SID-INT-11 does not flag single-context or contracts linkage', () {
+      final report = _runWithProbe('lib/domain/person/_probe_sid11_ok.dart', '''
+library;
+
+final class ProbeAggregationClean {
+  final PersonId personId;
+  final String displayName;
+  final DateTime createdAt;
+}
+''');
+
+      expect(
+        report.stdout.contains('AR-1 · SID-INT-11'),
+        isFalse,
+        reason:
+            'The IdentityCoreFields shape (person.dart L148-158) is the '
+            'compliant single-context projection; PersonId is contracts-'
+            'owned, so AccountId-style linkage is not aggregation.',
+      );
+    });
+
+    test('missing banned_content authority degrades, never exit 2', () {
+      final report = _runChecker(
+        mutateManifest: (m) {
+          final stripped = m.replaceAll(
+            RegExp(
+              r'\n      - .*(mobile number|challenge value|session token|'
+              r'device secret|key material|consent document|guardian '
+              r'relationship|subject free text|remaining attempt).*',
+            ),
+            '',
+          );
+          expect(stripped, isNot(m), reason: 'Expected banned_content rows.');
+          return stripped;
+        },
+      );
+
+      expect(
+        report.exitCode,
+        isNot(2),
+        reason: 'A missing authority degrades the criterion, never the run.',
+      );
+      expect(
+        report.stdout.contains('sid-int'),
+        isFalse,
+        reason: 'Authority absent ⇒ criterion not asserted, never fired.',
+      );
+    });
+
+    test('missing domain/person ports degrades SID-DET-6/9, never exit 2', () {
+      final report = _runChecker(
+        mutateManifest: (m) {
+          final stripped = m.replaceAll(
+            RegExp(
+              r'    - platform/(data:repository|security:crypto|'
+              r'configuration:settings|observability:telemetry|services:files|'
+              r'services:clock|identity:policy_decision|search:indexer).*\n',
+            ),
+            '',
+          );
+          expect(stripped, isNot(m), reason: 'Expected ports rows.');
+          return stripped;
+        },
+      );
+
+      expect(
+        report.exitCode,
+        isNot(2),
+        reason: 'Missing port authority ⇒ SID-DET-6/9 not asserted.',
+      );
+      expect(report.stdout.contains('sid-int'), isFalse);
+    });
+
+    test('checker reads sid-int authorities from the manifest, not code', () {
+      final manifest = File(_manifestPath).readAsStringSync();
+      expect(manifest, contains('banned_content'));
+      expect(manifest, contains('policy_decision'));
+
+      final checker = File(_checkerPath).readAsStringSync();
+      expect(
+        checker,
+        contains("_stringList(blockMap?['ports'])"),
+        reason:
+            'The ports allow-list must come from the manifest (ADR-0125 §6: '
+            'the ALREADY-DECLARED ports), like X-10 and X-13 before it.',
+      );
+      expect(
+        checker,
+        contains("_bannedContentClasses"),
+        reason: 'The credential classes come from global.observability_plane.',
+      );
+    });
+
+    test('the real repository has no SID-INT violation (zero FP)', () {
+      // Asserted LAST, after every probe above proves the checks can fire:
+      // a clean result here means "verified compliant", not "not looked at"
+      // (the ADR-0178 §5 item 4 acceptance standard).
+      final report = _runChecker();
+
+      expect(
+        report.stdout.contains('■ sid-int'),
+        isFalse,
+        reason:
+            'lib/domain/person today holds no credential member, no '
+            'cached decision, no audit reference, no undeclared store '
+            'access and no cross-context aggregate.',
+      );
+      for (final rule in const [
+        'ID-1 · SID-INT-5',
+        'MP-GBR-26/X-13 · SID-INT-6',
+        'E-20 · SID-INT-8',
+        'X-07/X-08 · SID-INT-9',
+        'AR-1 · SID-INT-11',
+      ]) {
+        expect(report.stdout, isNot(contains(rule)));
+      }
+      expect(
+        report.exitCode,
+        isNot(2),
+        reason: 'The zero-FP run must behave exactly like the baseline run.',
+      );
+    });
+  });
+}
+
+/// Formats the reason string for a positive-probe exit-code expectation.
+String run(String category, ({int exitCode, String stdout, String stderr}) r) =>
+    'A $category violation must fail the build (exit 1). stderr: ${r.stderr}';
 
 /// Runs the checker with one extra source file present, then deletes it.
 ///

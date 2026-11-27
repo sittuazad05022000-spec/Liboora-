@@ -1437,6 +1437,11 @@ final class BoundaryChecker {
   // ────────────────────────────────────────────────────────────────
   // 13–17 · SID-INT — the five executable SID-DET criteria (ADR-0178)
   // ────────────────────────────────────────────────────────────────
+  //
+  // Deliberately NOT implemented (ADR-0178 §7): SID-DET-10 — indexing a
+  // never-public field — awaits artifact A2 (a machine-readable index-field
+  // declaration for domain/person), which does not exist and is NOT created
+  // here; the residue stays unmet under SID-4.56, never satisfied by intent.
 
   /// Shared gate: the five criteria of `ADR-0125` are scoped to
   /// `domain/person` and must never disturb other modules (including

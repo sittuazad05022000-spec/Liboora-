@@ -299,19 +299,42 @@ final class SessionController extends ChangeNotifier {
   // Every read below flows through a rank-0 read port from
   // `liboora_contracts` (PRD-004 §3.4 wave 4), adapted at the composition
   // root. No domain/library type is named here.
+  //
+  // `IMPL-313` / `LMD-4` — the three directory reads are gated by `LCFG-5`,
+  // whose frozen default is **Disabled** (`AP-3`, deny by default). While
+  // disabled they answer *suppressed* — an empty roster, an empty page, a
+  // null lookup — without touching the repository, so `LIB-16.6`'s "without
+  // deleting any membership or student record" holds structurally:
+  // suppression cannot delete what it never reads. Enabling the flag (a
+  // `BC-25` concern) makes the same reads answer normally again.
 
-  List<StudentEntry> get students =>
-      container.studentDirectory.all()
-        ..sort((a, b) => a.fullName.compareTo(b.fullName));
+  /// Whether directory exposure is on (`LCFG-5`), read through the `E-19`
+  /// typed accessor — never a raw string lookup (`LMD-6`).
+  bool get directoryEnabled => container.directoryConfig.memberDirectoryEnabled;
+
+  List<StudentEntry> get students {
+    if (!directoryEnabled) return const [];
+    return container.studentDirectory.all()
+      ..sort((a, b) => a.fullName.compareTo(b.fullName));
+  }
 
   /// Paginated roster for PG-1..PG-4. Client treats [cursor] as opaque (PG-2);
   /// server generates it (PG-1). Malformed cursor → DomainError; never silent
   /// reset (PG-4). Existing [students] is preserved for non-paginated consumers.
-  StudentPage studentsPage({String? cursor}) =>
-      container.studentDirectory.page(cursor: cursor);
+  /// Suppressed to an empty page while `LCFG-5` is disabled (see above).
+  StudentPage studentsPage({String? cursor}) {
+    if (!directoryEnabled) {
+      return const StudentPage(items: [], nextCursor: null);
+    }
+    return container.studentDirectory.page(cursor: cursor);
+  }
 
-  StudentEntry? studentById(StudentRecordId id) =>
-      container.studentDirectory.byId(id);
+  /// Suppressed to null while `LCFG-5` is disabled (see above); the customer
+  /// dashboards already render the null case as placeholders.
+  StudentEntry? studentById(StudentRecordId id) {
+    if (!directoryEnabled) return null;
+    return container.studentDirectory.byId(id);
+  }
 
   String nameOf(StudentRecordId id) =>
       container.studentDirectory.byId(id)?.fullName ?? id.value;

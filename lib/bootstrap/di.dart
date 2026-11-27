@@ -76,6 +76,7 @@ final class AppContainer {
     required this.branches,
     required this.students,
     required this.membershipConfig,
+    required this.directoryConfig,
     required this.memberships,
     required this.membershipPlans,
     required this.membershipValidity,
@@ -152,6 +153,13 @@ final class AppContainer {
   /// Port-typed so that when `BC-25` Configuration is implemented, replacing
   /// the default-carrying adapter stays a change to this file alone.
   final MembershipConfig membershipConfig;
+
+  /// `IMPL-313` — the `LCFG-5` / `SMCFG-1` / `SMCFG-2` Member Directory
+  /// configurables, typed.
+  ///
+  /// Port-typed so that when `BC-25` Configuration covers library settings,
+  /// replacing the default-carrying adapter stays a change to this file alone.
+  final StudentDirectoryConfig directoryConfig;
   final AnalyticsProjections analytics;
 
   // ── Domain repositories / read models ────────────────────────────
@@ -519,6 +527,8 @@ final class AppContainer {
   static Future<AppContainer> boot({
     ContainerSeeder? seeder,
     DurableKeyValueStore? durable,
+    StudentDirectoryConfig directoryConfig =
+        const DefaultStudentDirectoryConfig(),
   }) async {
     final tenantContext = MutableTenantContext();
     final clock = MutableClock();
@@ -677,6 +687,11 @@ final class AppContainer {
     // Task document L128 requires exactly this — build against the port with
     // a fake, never defer.
     const membershipConfig = DefaultMembershipConfig();
+    // IMPL-313: LCFG-5/SMCFG-1/SMCFG-2 — BC-25 has no library-configuration
+    // implementation yet, so the port arrives as the [directoryConfig]
+    // parameter, defaulted to the frozen defaults (LCFG-5 Disabled, deny by
+    // default). The parameter is the seam a test or a future BC-25 adapter
+    // plugs into, the same wholesale replacement IMPL-407 anticipated.
 
     final memberships = InMemoryMembershipRepository(membershipStore);
     final membershipPlans = InMemoryMembershipPlanRepository(
@@ -786,6 +801,7 @@ final class AppContainer {
       branches: branches,
       students: students,
       membershipConfig: membershipConfig,
+      directoryConfig: directoryConfig,
       memberships: memberships,
       membershipPlans: membershipPlans,
       membershipValidity: membershipValidity,

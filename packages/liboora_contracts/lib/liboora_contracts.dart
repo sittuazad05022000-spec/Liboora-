@@ -36,5 +36,6 @@ export 'src/ports/membership_config.dart';
 export 'src/ports/otp_delivery.dart';
 export 'src/ports/person_identity_factory.dart';
 export 'src/ports/random_source.dart';
+export 'src/ports/student_directory_config.dart';
 export 'src/ports/telemetry.dart';
 export 'src/ports/tenant_context.dart';

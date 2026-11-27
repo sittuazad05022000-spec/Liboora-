@@ -68,7 +68,10 @@ class StaffAppShell extends StatelessWidget {
     }
 
     return AppScaffold(
-      destinations: _destinationsFor(s.role),
+      destinations: _destinationsFor(
+        s.role,
+        directoryEnabled: s.directoryEnabled,
+      ),
       title: s.tenant.name,
       subtitle: '${s.branchInfo.name} · ${s.role.label}',
       accountInitial: (s.account?.displayName ?? '?')
@@ -88,35 +91,46 @@ class StaffAppShell extends StatelessWidget {
   /// never built — defence in depth behind the Policy Decision Point, which
   /// would refuse the command anyway. Each set is byte-for-byte the set the
   /// pre-split `HomeShell` produced, so no behaviour changed here.
-  List<AppDestination> _destinationsFor(AccessRole role) {
+  ///
+  /// `IMPL-313` / `LMD-4` — the Students destination **is** the Member
+  /// Directory, so it is built only while `LCFG-5` is enabled; its frozen
+  /// default is Disabled (`AP-3`, deny by default), and a destination that is
+  /// never built cannot be navigated to — the same structural argument as the
+  /// role gate above. `LMD-5`/`LIB-16.6`: this suppresses exposure only; the
+  /// underlying records are untouched.
+  List<AppDestination> _destinationsFor(
+    AccessRole role, {
+    required bool directoryEnabled,
+  }) {
     switch (role) {
       case AccessRole.owner:
-        return const [
-          AppDestination(
+        return [
+          const AppDestination(
             icon: Icons.insights_outlined,
             selectedIcon: Icons.insights,
             label: 'Overview',
             page: OverviewPage(),
           ),
-          AppDestination(
-            icon: Icons.people_outline,
-            selectedIcon: Icons.people,
-            label: 'Students',
-            page: StudentsPage(),
-          ),
-          AppDestination(
+          if (directoryEnabled)
+            const AppDestination(
+              icon: Icons.people_outline,
+              selectedIcon: Icons.people,
+              label: 'Students',
+              page: StudentsPage(),
+            ),
+          const AppDestination(
             icon: Icons.grid_view_outlined,
             selectedIcon: Icons.grid_view,
             label: 'Seats',
             page: SeatMapPage(),
           ),
-          AppDestination(
+          const AppDestination(
             icon: Icons.payments_outlined,
             selectedIcon: Icons.payments,
             label: 'Money',
             page: MoneyPage(),
           ),
-          AppDestination(
+          const AppDestination(
             icon: Icons.tune_outlined,
             selectedIcon: Icons.tune,
             label: 'Ops',
@@ -124,26 +138,27 @@ class StaffAppShell extends StatelessWidget {
           ),
         ];
       case AccessRole.manager:
-        return const [
-          AppDestination(
+        return [
+          const AppDestination(
             icon: Icons.insights_outlined,
             selectedIcon: Icons.insights,
             label: 'Overview',
             page: OverviewPage(),
           ),
-          AppDestination(
-            icon: Icons.people_outline,
-            selectedIcon: Icons.people,
-            label: 'Students',
-            page: StudentsPage(),
-          ),
-          AppDestination(
+          if (directoryEnabled)
+            const AppDestination(
+              icon: Icons.people_outline,
+              selectedIcon: Icons.people,
+              label: 'Students',
+              page: StudentsPage(),
+            ),
+          const AppDestination(
             icon: Icons.grid_view_outlined,
             selectedIcon: Icons.grid_view,
             label: 'Seats',
             page: SeatMapPage(),
           ),
-          AppDestination(
+          const AppDestination(
             icon: Icons.payments_outlined,
             selectedIcon: Icons.payments,
             label: 'Money',
@@ -151,20 +166,21 @@ class StaffAppShell extends StatelessWidget {
           ),
         ];
       case AccessRole.reception:
-        return const [
-          AppDestination(
+        return [
+          const AppDestination(
             icon: Icons.how_to_reg_outlined,
             selectedIcon: Icons.how_to_reg,
             label: 'Desk',
             page: ReceptionDesk(),
           ),
-          AppDestination(
-            icon: Icons.people_outline,
-            selectedIcon: Icons.people,
-            label: 'Students',
-            page: StudentsPage(),
-          ),
-          AppDestination(
+          if (directoryEnabled)
+            const AppDestination(
+              icon: Icons.people_outline,
+              selectedIcon: Icons.people,
+              label: 'Students',
+              page: StudentsPage(),
+            ),
+          const AppDestination(
             icon: Icons.grid_view_outlined,
             selectedIcon: Icons.grid_view,
             label: 'Seats',
